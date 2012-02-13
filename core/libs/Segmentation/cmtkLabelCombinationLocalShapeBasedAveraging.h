@@ -71,9 +71,6 @@ public:
     this->m_DetectLocalOutliers = detectOutliers;
   }
   
-  /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
-  void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
-
   /// Get resulting combined segmentation.
   virtual TypedArray::SmartPtr GetResult() const;  
 

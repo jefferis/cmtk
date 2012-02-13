@@ -34,6 +34,7 @@ SET(cmtkSegmentation_SRCS
   cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
   cmtkLabelCombinationLocalBinaryShapeBasedAveraging.cxx
+  cmtkLabelCombinationLocalShapeBasedAveraging.cxx
   cmtkLabelCombinationLocalVoting.cxx
   cmtkLabelCombinationLocalWeighting.cxx
   cmtkLabelCombinationMultiClassSTAPLE.cxx

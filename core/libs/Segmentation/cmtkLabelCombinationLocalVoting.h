@@ -90,7 +90,10 @@ protected:
   std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
 
   /// Compute maximum label value in the input label maps.
-  int GetMaximumLabelValue() const;
+  int ComputeMaximumLabelValue() const;
+
+  /// Compute number of pixels with given label value in all input label maps.
+  size_t ComputeLabelNumberOfPixels( const int label ) const;
 
   /** Delete atlas with given index. 
    * Call inherited member, then delete distance map.

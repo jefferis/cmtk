@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkUniformDistanceMap.h>
@@ -60,27 +61,34 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
   const size_t nAtlases = this->m_AtlasImages.size();
   std::vector<UniformVolume::SmartConstPtr> atlasDMaps( nAtlases );
 
-  const int maxLabelValue = (this->m_MaxLabelValue>0) ? this->m_MaxLabelValue : this->GetMaximumLabelValue();
+  const int maxLabelValue = (this->m_MaxLabelValue>0) ? this->m_MaxLabelValue : this->ComputeMaximumLabelValue();
   for ( int label = 0; label <= maxLabelValue; ++label )
     {
-    for ( size_t n = 0; n < nAtlases; ++n )
+    if ( this->ComputeLabelNumberOfPixels( label ) > 0 ) // skip unused label values
       {
-      atlasDMaps[n] = ( UniformDistanceMap<float>( *(this->m_AtlasLabels[n]), UniformDistanceMap<float>::SIGNED | UniformDistanceMap<float>::SQUARED | UniformDistanceMap<float>::VALUE_EXACT, label ).Get() );
-      }
-    
+      DebugOutput( 2 ) << "Processing label " << label << "\n";
+
+      DebugOutput( 5 ) << "  Creating distance maps\n";
+      for ( size_t n = 0; n < nAtlases; ++n )
+	{
+	atlasDMaps[n] = ( UniformDistanceMap<float>( *(this->m_AtlasLabels[n]), UniformDistanceMap<float>::SIGNED | UniformDistanceMap<float>::SQUARED | UniformDistanceMap<float>::VALUE_EXACT, label ).Get() );
+	}
+      
+      DebugOutput( 5 ) << "  Combining distance maps\n";
 #ifdef _OPENMP
 #pragma omp parallel for
-    for ( int slice = region.From()[2]; slice < region.To()[2]; ++slice )
-      {
-      TargetRegionType threadRegion = region;
-      threadRegion.From()[2] = slice;
-      threadRegion.To()[2] = slice+1;
-      
-      this->ComputeResultForRegion( *result, resultDistance, label, threadRegion, atlasDMaps );
-      }
+      for ( int slice = region.From()[2]; slice < region.To()[2]; ++slice )
+	{
+	TargetRegionType threadRegion = region;
+	threadRegion.From()[2] = slice;
+	threadRegion.To()[2] = slice+1;
+	
+	this->ComputeResultForRegion( *result, resultDistance, label, threadRegion, atlasDMaps );
+	}
 #else // _OPENMP
-    this->ComputeResultForRegion( *result, resultDistance, label, region, atlasDMaps );
+      this->ComputeResultForRegion( *result, resultDistance, label, region, atlasDMaps );
 #endif // _OPENMP
+      }
     }
   
   return result;

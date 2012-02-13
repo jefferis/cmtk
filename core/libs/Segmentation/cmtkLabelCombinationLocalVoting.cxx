@@ -62,7 +62,7 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
 }
 
 int 
-cmtk::LabelCombinationLocalVoting::GetMaximumLabelValue() const
+cmtk::LabelCombinationLocalVoting::ComputeMaximumLabelValue() const
 {
   int maxLabel = 0;
   for ( size_t n = 0; n < this->m_AtlasLabels.size(); ++n )
@@ -71,6 +71,22 @@ cmtk::LabelCombinationLocalVoting::GetMaximumLabelValue() const
     }
 
   return maxLabel;
+}
+
+size_t
+cmtk::LabelCombinationLocalVoting::ComputeLabelNumberOfPixels( const int label ) const
+{
+  size_t nPixelsLabel = 0;
+  for ( size_t n = 0; n < this->m_AtlasLabels.size(); ++n )
+    {
+    const size_t nPixels = this->m_AtlasLabels[n]->GetNumberOfPixels();
+    for ( size_t px = 0; px < nPixels; ++px )
+      {
+      if ( label == static_cast<int>( this->m_AtlasLabels[n]->GetDataAt( px, -1 ) ) )
+	++nPixelsLabel;
+      }
+    }
+  return nPixelsLabel;
 }
 
 cmtk::TypedArray::SmartPtr 
