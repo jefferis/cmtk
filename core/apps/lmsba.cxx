@@ -41,7 +41,7 @@
 #include <vector>
 #include <string>
 
-#include <Segmentation/cmtkLabelCombinationLocalBinaryShapeBasedAveraging.h>
+#include <Segmentation/cmtkLabelCombinationLocalShapeBasedAveraging.h>
 
 int
 doMain
@@ -65,7 +65,7 @@ doMain
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Local voting." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple binary segmentations from co-registered and reformatted atlases using locally-weighted Shape-Based Averaging." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple multi-class segmentations from co-registered and reformatted atlases using locally-weighted Shape-Based Averaging." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "lsba [options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
 
     cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -107,7 +107,7 @@ doMain
 
   cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
   
-  cmtk::LabelCombinationLocalBinaryShapeBasedAveraging lsba( targetImage );
+  cmtk::LabelCombinationLocalShapeBasedAveraging lsba( targetImage );
   lsba.SetPatchRadius( patchRadius );
   lsba.SetSearchRadius( searchRadius );
   lsba.SetDetectLocalOutliers( detectLocalOutliers );

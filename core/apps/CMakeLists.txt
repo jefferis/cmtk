@@ -60,6 +60,7 @@ SET(APPS avg_adm
   jidb
   levelset
   lsba
+  lmsba
   lvote
   make_initial_affine
   mat2dof
