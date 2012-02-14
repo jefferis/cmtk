@@ -33,6 +33,7 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkAffineXform.h>
 #include <Base/cmtkWarpXform.h>
 
 namespace
@@ -59,6 +60,9 @@ public:
 private:
   /// Input nonrigid warp transformation.
   WarpXform::SmartConstPtr m_WarpXform;
+
+  /// Compute mean translation vector.
+  FixedVector<3,Types::Coordinate> GetMeanTranslation( const WarpXform& warpXform /*!< Reference to current warp transformation.*/ ) const;
 };
 
 } // namespace

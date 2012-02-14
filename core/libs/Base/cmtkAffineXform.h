@@ -317,6 +317,14 @@ public:
    */
   //@{
   /// Set transformation's translation vector.
+  void SetTranslation( const Self::SpaceVectorType& delta ) 
+  { 
+    for ( int dim = 0; dim < 3; ++dim ) 
+      this->m_Parameters[dim] = delta[dim];
+    this->ComposeMatrix();
+  }
+  
+  /// Set transformation's translation vector.
   void SetXlate ( const Types::Coordinate* xlate ) 
   { 
     if ( this->RetXlate() != xlate )

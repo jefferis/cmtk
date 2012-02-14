@@ -130,6 +130,16 @@ public:
     return false;
   }
 
+  /** Get the deformed position of a transformation control point.
+   *\note This function does not necessarily return the shifted control point position,
+   * but rather it applies the current transformation to the given control
+   * point.
+   */
+  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int idxX, const int idxY, const int idxZ ) const
+  {
+    return this->GetTransformedGrid( idxX, idxY, idxZ );
+  }
+  
   /// Get a grid point from the deformed grid.
   virtual Self::SpaceVectorType GetTransformedGrid( const int idxX, const int idxY, const int idxZ ) const;
   

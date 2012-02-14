@@ -267,6 +267,13 @@ public:
       this->m_Parameters[idx+offset*3] = v[idx];
   }
 
+  /** Get the deformed position of a transformation control point.
+   *\note This function does not necessarily return the shifted control point position,
+   * but rather it applies the current transformation to the given control
+   * point.
+   */
+  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int, const int, const int ) const = 0;
+
   /// Get parameter step given a transformed volume size.
   virtual Types::Coordinate GetParamStep( const size_t, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const;
 
