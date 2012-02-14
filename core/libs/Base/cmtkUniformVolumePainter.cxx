@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -120,10 +120,15 @@ cmtk::UniformVolumePainter::DrawBox
       break;
     }
 
-  // make sure boundaries are in correct order
+  // make sure boundaries are in correct order and in valid range
   for ( int dim = 0; dim < 3; ++dim )
+    {
     if ( indexFrom[dim] > indexTo[dim] )
       std::swap( indexFrom[dim], indexTo[dim] );
+
+    indexFrom[dim] = std::max( 0, std::min( this->m_Volume->m_Dims[dim]-1, indexFrom[dim] ) );
+    indexTo[dim] = std::max( 0, std::min( this->m_Volume->m_Dims[dim]-1, indexTo[dim] ) );
+    }
   
   for ( int k = indexFrom[2]; k <= indexTo[2]; ++k )
     {

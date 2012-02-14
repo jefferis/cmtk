@@ -472,6 +472,7 @@ LIST(APPEND testList
 # Tests for "mk_phantom_3d" tool
 LIST(APPEND testList
   mk_phantom_3dBoxIndexed 
+  mk_phantom_3dBoxIndexedRange
   mk_phantom_3dBoxAbsolute
   mk_phantom_3dBoxRelative
   mk_phantom_3dSphereIndexed

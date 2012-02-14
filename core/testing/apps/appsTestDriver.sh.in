@@ -1418,6 +1418,10 @@ case ${RUNTEST} in
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 2,2,2 box 2,2,2 5,5,5 10
 	check_results phantom.nii
 	;;
+    mk_phantom_3dBoxIndexedRange)
+        run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 2,2,2 box 11,11,11 5,5,5 10
+	check_results phantom.nii
+	;;
     mk_phantom_3dBoxAbsolute)
 	run mk_phantom_3d --absolute -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
 	check_results phantom.nii
