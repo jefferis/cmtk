@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2009 SRI International
+//
+//  Copyright 2009, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,9 +37,7 @@
 
 #define HAVE_STL_HASH_MAP
 
-#if defined(__APPLE__)
-#  include <hash_map.h>
-#elif defined(HAVE_UNORDERED_MAP)
+#if defined(HAVE_UNORDERED_MAP)
 #  include <unordered_map>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
 #  include <tr1/unordered_map>
@@ -50,27 +49,11 @@
 #  undef HAVE_STL_HASH_MAP
 #endif
 
-#ifdef __APPLE__
-namespace __gnu_cxx
-{
-
-  template<>
-    struct hash<unsigned long long>
-    {
-      size_t
-      operator()(unsigned long long __x) const
-      { return (__x & 0xffff) ^ (__x >> 32 ); }
-    };
-
-}
-#endif // #ifdef __APPLE__
-
 #ifdef HAVE_STL_HASH_MAP
 namespace
 cmtk
 {
 
-#ifndef __APPLE__
 /// Generic hash function for all integer types.
 template<typename TKey>
 struct HashFunctionInteger
@@ -81,7 +64,6 @@ struct HashFunctionInteger
     return static_cast<size_t>( x ); 
   }
 };
-#endif // #ifdef __APPLE__
 
 /** Wrapper class for STL hash_map or unordered_map classes.
  * This class will use whatever hash map implementation is provided by the
@@ -91,17 +73,11 @@ struct HashFunctionInteger
 template<
   class TKey, 
   class TValue, 
-#ifndef __APPLE__
   class THashFunc = HashFunctionInteger<TKey>
-#else
-  class THashFunc = __gnu_cxx::hash<TKey>
-#endif
   >
 class HashMapSTL : 
     /// Inherit STL hash/unordered map.
-#if defined(__APPLE__)
-    public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
     public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP)
     public std::unordered_map<TKey,TValue,THashFunc>
@@ -118,4 +94,5 @@ class HashMapSTL :
 } // namespace cmtk
 
 #endif // #ifdef HAVE_STL_HASH_MAP
+
 #endif // #ifndef __cmtkHashMapSTL_h_included_
