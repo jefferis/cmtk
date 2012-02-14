@@ -1212,6 +1212,22 @@ case ${RUNTEST} in
         run lsba -v -o ${tmpdir}/lsba.nii --search-radius 1 --patch-radius 3 --no-local-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
 	check_results lsba.nii
 	;;
+    lmsbaRadius3)
+        run lmsba -v -o ${tmpdir}/lmsba.nii --patch-radius 3 lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lmsba.nii
+	;;
+    lmsbaRadius3Outliers)
+        run lmsba -v -o ${tmpdir}/lmsba.nii --patch-radius 3 --no-local-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lmsba.nii
+	;;
+    lmsbaRadius3OutliersGlobal)
+        run lmsba -v -o ${tmpdir}/lmsba.nii --patch-radius 3 --no-global-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lmsba.nii
+	;;
+    lmsbaRadius3Search1)
+        run lmsba -v -o ${tmpdir}/lmsba.nii --search-radius 1 --patch-radius 3 --no-local-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lmsba.nii
+	;;
     make_initial_affineCenterOfMass)
 	run make_initial_affine --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform

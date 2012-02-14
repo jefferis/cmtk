@@ -394,6 +394,18 @@ LIST(APPEND testList
   )
 
 # ==========================================
+# Tests for "lmsba" tool
+LIST(APPEND testList lmsbaRadius3 lmsbaRadius3Outliers lmsbaRadius3OutliersGlobal lmsbaRadius3Search1)
+
+# ==========================================
+# Tests for "lsba" tool
+LIST(APPEND testList lsbaRadius3 lsbaRadius3Outliers lsbaRadius3OutliersGlobal lsbaRadius3Search1)
+
+# ==========================================
+# Tests for "lvote" tool
+LIST(APPEND testList lvoteDefault lvoteGlobalWeights lvoteRadius3 lvoteOutliersGlobal)
+
+# ==========================================
 # Tests for "make_initial_affine" tool
 LIST(APPEND testList
   make_initial_affineCenterOfMass
@@ -770,18 +782,6 @@ IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList
     xform2scalarDfield)
 ENDIF(CMTK_BUILD_NRRD)
-
-IF(CMTK_BUILD_UNSTABLE)
-  LIST(APPEND testList
-    lvoteDefault
-    lvoteGlobalWeights
-    lvoteRadius3
-    lvoteOutliersGlobal
-    lsbaRadius3
-    lsbaRadius3Outliers
-    lsbaRadius3OutliersGlobal
-    lsbaRadius3Search1)
-ENDIF(CMTK_BUILD_UNSTABLE)
 
 # ==========================================
 # Set up all tests
