@@ -747,30 +747,6 @@ case ${RUNTEST} in
         run destripe -y --kernel-fwhm 5 --kernel-radius 2 --write-float stripes_crop_byte.nii ${tmpdir}/destripe.nii
 	check_results destripe.nii
 	;;
-    dfield2xformSpacing)
-        run dfield2xform --final-cp-spacing 40 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
-    dfield2xformSpacingMultiLevel)
-        run dfield2xform --final-cp-spacing 40 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
-    dfield2xformDims)
-        run dfield2xform --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
-    dfield2xformDimsRelative)
-        run dfield2xform --relative --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
-    dfield2xformDimsMultiLevel)
-        run dfield2xform --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
-    dfield2xformDimsMultiLevelSafe)
-        run dfield2xform --final-cp-dims 10,10,5 --levels 400 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
-	check_results warp.xform
-	;;
     epiunwarp)
         export CMTK_NUM_THREADS=1
         run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
@@ -809,6 +785,30 @@ case ${RUNTEST} in
     filmMISincRefSPGR)
 	run film --mi --coronal --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --reference-image interleave_3dspgr.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img
+	;;
+    fit_spline_xformSpacing)
+        run fit_spline_xform --final-cp-spacing 40 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    fit_spline_xformSpacingMultiLevel)
+        run fit_spline_xform --final-cp-spacing 40 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    fit_spline_xformDims)
+        run fit_spline_xform --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    fit_spline_xformDimsRelative)
+        run fit_spline_xform --relative --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    fit_spline_xformDimsMultiLevel)
+        run fit_spline_xform --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    fit_spline_xformDimsMultiLevelSafe)
+        run fit_spline_xform --final-cp-dims 10,10,5 --levels 400 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
 	;;
     glmDefault)
 	run_eval "${BINDIR}/glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"

@@ -49,6 +49,7 @@ SET(cmtkBase_SRCS
   cmtkDeformationField_Jacobian.cxx
   cmtkDirectionSet.cxx
   cmtkFilterVolume.cxx
+  cmtkFitAffineToWarpXform.cxx
   cmtkFitSplineWarpToDeformationField.cxx
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx

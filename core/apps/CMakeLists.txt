@@ -47,10 +47,11 @@ SET(APPS avg_adm
   convertx
   convert_warp
   destripe
-  dfield2xform
   epiunwarp
   film
   filter
+  fit_affine_xform
+  fit_spline_xform
   glm
   gmm
   gregxform

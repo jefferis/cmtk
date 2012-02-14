@@ -284,16 +284,6 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 # ==========================================
-# Tests for "dfield2xform" tool
-LIST(APPEND testList
-  dfield2xformSpacing
-  dfield2xformSpacingMultiLevel
-  dfield2xformDims
-  dfield2xformDimsRelative
-  dfield2xformDimsMultiLevel
-  dfield2xformDimsMultiLevelSafe)
-
-# ==========================================
 # Tests for "filter" tool
 LIST(APPEND testList
   filterGaussian
@@ -308,6 +298,16 @@ LIST(APPEND testList
   filmFourthOrder
   filmMSDLinearNoTrunc
   filmMISincRefSPGR)
+
+# ==========================================
+# Tests for "fit_spline_xform" tool
+LIST(APPEND testList
+  fit_spline_xformSpacing
+  fit_spline_xformSpacingMultiLevel
+  fit_spline_xformDims
+  fit_spline_xformDimsRelative
+  fit_spline_xformDimsMultiLevel
+  fit_spline_xformDimsMultiLevelSafe)
 
 # ==========================================
 # Tests for "glm" tool
