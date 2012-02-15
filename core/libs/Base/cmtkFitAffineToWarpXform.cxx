@@ -42,13 +42,14 @@ cmtk::FitAffineToWarpXform::FitAffineToWarpXform( WarpXform::SmartConstPtr warp 
 cmtk::AffineXform::SmartPtr 
 cmtk::FitAffineToWarpXform::Fit()
 {
-  cmtk::AffineXform::SmartPtr result( new AffineXform );
-
   const cmtk::FixedVector<3,cmtk::Types::Coordinate> xlate = Self::GetMeanTranslation( *(this->m_WarpXform) );
-  result->SetTranslation( xlate );
 
   Matrix3x3<Types::Coordinate> matrix = Self::GetMatrix( *(this->m_WarpXform), xlate );
-
+  
+  AffineXform::MatrixType matrix4x4( matrix );
+  AffineXform::SmartPtr result( new AffineXform( matrix4x4 ) );
+  result->SetTranslation( xlate );
+  
   return result;
 }
 
