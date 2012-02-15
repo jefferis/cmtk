@@ -407,6 +407,14 @@ public:
   }
 
   /// Set transformation's rotation, scaling, and shearing center.
+  void SetCenter( const Self::SpaceVectorType& center ) 
+  {
+    for ( size_t dim = 0; dim < 3; ++dim )
+      this->m_Parameters[12+dim] = center[dim];
+    this->ComposeMatrix();
+  }
+
+  /// Set transformation's rotation, scaling, and shearing center.
   void SetCenter ( const Types::Coordinate* center ) 
   {
     if ( this->RetCenter() != center )

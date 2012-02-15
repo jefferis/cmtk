@@ -67,7 +67,8 @@ cmtk::FitAffineToWarpXform::Fit()
   AffineXform::MatrixType matrix4x4( matrix );
   AffineXform::SmartPtr result( new AffineXform( matrix4x4 ) );
   result->SetTranslation( (cTo - cFrom) );
-  
+  result->SetCenter( cFrom );
+
   return result;
 }
 
