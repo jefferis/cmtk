@@ -58,10 +58,11 @@ cmtk::FitAffineToWarpXform::GetMeanTranslation( const WarpXform& warpXform )
 {
   cmtk::FixedVector<3,cmtk::Types::Coordinate> delta( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
   
-  size_t ofs = 0;
-  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it, ++ofs )
+  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {
-    delta += warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - warpXform.GetOriginalControlPointPositionByOffset( ofs );
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> xT = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
+    delta += xT - x;
     }
 
   return (delta /= warpXform.GetAllControlPointsRegion().Size());
@@ -76,10 +77,9 @@ cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::F
   txT.Fill( 0.0 );
   xxT.Fill( 0.0 );
 
-  size_t ofs = 0;
-  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it, ++ofs )
+  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPositionByOffset( ofs );
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
     const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - x - xlate;
 
     for ( size_t j = 0; j < 3; ++j )
