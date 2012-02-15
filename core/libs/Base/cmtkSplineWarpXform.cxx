@@ -175,6 +175,16 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
     }
 }
 
+SplineWarpXform::ControlPointRegionType 
+SplineWarpXform::GetInsideControlPointsRegion() const
+{
+  Self::ControlPointRegionType region = this->GetAllControlPointsRegion();
+  region.From().AddScalar( 1 );
+  region.To().AddScalar( -2 );
+  
+  return region;
+}
+
 void
 SplineWarpXform::Update 
 ( const bool exactDelta ) 

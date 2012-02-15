@@ -91,6 +91,13 @@ public:
    */
   void Init( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
   
+  /** Get region containing all "inside" control point indexes.
+   * The "inside" control points are those for which the transformation can be evaluated.
+   * Since we are using curbic spline basis functions this region is smaller
+   * than that returned by GetAllControlPointsRegion.
+   */
+  virtual Self::ControlPointRegionType GetInsideControlPointsRegion() const;
+
   /// Clone and return smart pointer.
   Self::SmartPtr Clone () const 
   {

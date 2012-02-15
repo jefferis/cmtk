@@ -189,6 +189,17 @@ public:
   /// Get region containing all control point indexes.
   virtual Self::ControlPointRegionType GetAllControlPointsRegion() const;
 
+  /** Get region containing all "inside" control point indexes.
+   * The "inside" control points are those for which the transformation can be evaluated.
+   * For higher-order interpolation kernels, e.g., cubic spline, this region may be smaller
+   * than that returned by GetAllControlPointsRegion, but for general transformations we
+   * default to return the same region here.
+   */
+  virtual Self::ControlPointRegionType GetInsideControlPointsRegion() const
+  {
+    return this->GetAllControlPointsRegion();
+  }
+
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Self::SpaceVectorType& v ) const 
   {
