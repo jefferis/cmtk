@@ -47,6 +47,7 @@ SET(APPS avg_adm
   convertx
   convert_warp
   destripe
+  dof2mat
   epiunwarp
   film
   filter
