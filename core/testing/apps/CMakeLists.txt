@@ -284,6 +284,10 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 # ==========================================
+# Tests for "dof2mat" tool
+LIST(APPEND testList dof2mat dof2matTranspose)
+
+# ==========================================
 # Tests for "filter" tool
 LIST(APPEND testList
   filterGaussian

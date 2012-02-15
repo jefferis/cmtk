@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3873) Added: "dof2mat" tool to convert affine transformation in
+    degree-of-freedom representation to 4x4 transformation matrix.
 (r3847) Added: "lvote" local voting tool can now normalize local, patch-based
     similarity scores with global image-to-atlas correlations.
 (r3837) Added: "fit_spline_xform" tool to fit B-spline free-form deformation

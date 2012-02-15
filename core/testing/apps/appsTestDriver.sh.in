@@ -747,6 +747,14 @@ case ${RUNTEST} in
         run destripe -y --kernel-fwhm 5 --kernel-radius 2 --write-float stripes_crop_byte.nii ${tmpdir}/destripe.nii
 	check_results destripe.nii
 	;;
+    dof2mat)
+        run_eval "${BINDIR}/dof2mat parc1_parc2_9dof.xform > ${tmpdir}/matrix"
+	check_results matrix
+        ;;
+    dof2matTranspose)
+        run_eval "${BINDIR}/dof2mat --transpose parc1_parc2_9dof.xform > ${tmpdir}/matrix"
+	check_results matrix
+        ;;
     epiunwarp)
         export CMTK_NUM_THREADS=1
         run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
