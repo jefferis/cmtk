@@ -60,4 +60,6 @@ cmtk::FitAffineToWarpXform::GetMeanTranslation( const WarpXform& warpXform ) con
     {
     delta += warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - warpXform.GetOriginalControlPointPositionByOffset( ofs );
     }
+
+  return (delta /= warpXform.GetAllControlPointsRegion().Size());
 }

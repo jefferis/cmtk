@@ -38,6 +38,7 @@
 
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkDeformationField.h>
+#include <Base/cmtkFitAffineToWarpXform.h>
 #include <Base/cmtkFitSplineWarpToDeformationField.h>
 
 #include <IO/cmtkXformIO.h>
@@ -48,6 +49,8 @@ const char *OutputPath = NULL;
 const char* GridDims = NULL;
 cmtk::Types::Coordinate GridSpacing = 0;
 int Levels = 1;
+
+bool AffineFirst = false;
 
 bool Absolute = true;
 
@@ -66,10 +69,14 @@ doMain ( const int argc, const char *argv[] )
     cl.AddSwitch( Key( "relative" ), &Absolute, false, "Input is relative deformation field, e.g., a gradient or force field [x maps to x+input(x)]" );
     cl.EndGroup();
 
+    cl.BeginGroup( "Fitting", "Fitting Options" );
+    cl.AddOption( Key( "levels" ), &Levels, "Number of levels in the multi-level B-spline approximation procedure." );
+    cl.AddSwitch( Key( "fit-affine-first" ), &AffineFirst, true, "Fit affine transformation first, then initialize spline with it." );
+    cl.EndGroup();
+
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( "final-cp-spacing" ), &GridSpacing, "Final control point grid spacing of the output B-spline transformation." );
     cl.AddOption( Key( "final-cp-dims" ), &GridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
-    cl.AddOption( Key( "levels" ), &Levels, "Number of levels in the multi-level B-spline approximation procedure." );
     cl.EndGroup();
 
     cl.AddParameter( &InputPath, "InputDField", "Input deformation field." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
@@ -94,9 +101,15 @@ doMain ( const int argc, const char *argv[] )
   cmtk::FitSplineWarpToDeformationField fitSpline( dfield, Absolute );
   cmtk::SplineWarpXform::SmartPtr splineWarp;
 
+  cmtk::AffineXform::SmartPtr affineXform;
+  if ( AffineFirst )
+    {
+    affineXform = cmtk::FitAffineToWarpXform( dfield ).Fit();
+    }
+
   if ( GridSpacing )
     {
-    splineWarp = fitSpline.Fit( GridSpacing, Levels );
+    splineWarp = fitSpline.Fit( GridSpacing, Levels, affineXform );
     }
   else
     {
@@ -109,7 +122,7 @@ doMain ( const int argc, const char *argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>( dims ), Levels );
+      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>( dims ), Levels, affineXform );
       }
     else
       {
