@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,7 @@
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkFileUtils.h>
 #include <System/cmtkMountPoints.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkFileFormat.h>
 #include <IO/cmtkClassStream.h>
@@ -91,19 +92,16 @@ XformIO::Read( const char* path )
       return Xform::SmartPtr( warpXform );
     
     stream.Open( realPath, ClassStream::MODE_READ );
-    try
-      {
-      AffineXform affineXform;
-      stream >> affineXform;
-      return Xform::SmartPtr( new AffineXform( affineXform ) );
-      }
-    catch (...)
-      {
-      return Xform::SmartPtr( NULL );
-      }
+
+    AffineXform affineXform;
+    stream >> affineXform;
+    return Xform::SmartPtr( new AffineXform( affineXform ) );
     }
     default:
-      StdErr << "The file/directory " << realPath << " does not seem to be in a supported transformation format\n";
+    {
+    StdErr << "The file/directory " << realPath << " does not seem to be in a supported transformation format\n";
+    throw ExitException( 1 );
+    }
     }
   return Xform::SmartPtr( NULL );
 }
