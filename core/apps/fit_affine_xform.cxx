@@ -55,7 +55,7 @@ doMain ( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a linear affine transformation to a nonrigid transformation, either a B-spline free-form deformation or a non-parametric deformation field." );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddParameter( &InputPath, "InputDField", "Input nonridid transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+    cl.AddParameter( &InputPath, "InputDField", "Input transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
     cl.AddParameter( &OutputPath, "OutputXform", "Path for output fitted affine transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
