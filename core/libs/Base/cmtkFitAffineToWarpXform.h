@@ -35,6 +35,7 @@
 
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkWarpXform.h>
+#include <Base/cmtkMatrix3x3.h>
 
 namespace
 cmtk
@@ -62,7 +63,15 @@ private:
   WarpXform::SmartConstPtr m_WarpXform;
 
   /// Compute mean translation vector.
-  FixedVector<3,Types::Coordinate> GetMeanTranslation( const WarpXform& warpXform /*!< Reference to current warp transformation.*/ ) const;
+  static FixedVector<3,Types::Coordinate> GetMeanTranslation( const WarpXform& warpXform /*!< Reference to current warp transformation.*/ );
+
+  /** Compute rotation, scale, and shear matrix using previously computed translation.
+   * We are using simple pseudoinverse rather than procrustes because we do not care whether
+   * the result is rigid (det = 1). In fact, if the underlying transformation is not
+   * rigid but full affine, then that is exactly what we want the output to be.
+   */
+  static Matrix3x3<Types::Coordinate> GetMatrix( const WarpXform& warpXform /*!< Reference to current warp transformation.*/, 
+						 const cmtk::FixedVector<3,cmtk::Types::Coordinate>& xlate /*!< Translation previously computed by GetMeanTranslation member function.*/ );
 };
 
 } // namespace
