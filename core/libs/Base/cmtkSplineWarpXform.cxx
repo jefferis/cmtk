@@ -180,7 +180,7 @@ SplineWarpXform::GetInsideControlPointsRegion() const
 {
   Self::ControlPointRegionType region = this->GetAllControlPointsRegion();
   region.From().AddScalar( 1 );
-  region.To().AddScalar( -2 );
+  region.To().AddScalar( -1 );
   
   return region;
 }
@@ -491,7 +491,7 @@ SplineWarpXform::GetDeformedControlPointPosition( const int x, const int y, cons
   Self::SpaceVectorType v;
   
   // Create a pointer to the front-lower-left corner of the c.p.g. cell.
-  const Types::Coordinate* coeff = m_Parameters + x * nextI + y * nextJ + z * nextK;  
+  const Types::Coordinate* coeff = m_Parameters + (x-1) * nextI + (y-1) * nextJ + (z-1) * nextK;  
   static const Types::Coordinate spline[3] = { 1.0/6, 4.0/6, 1.0/6 };
 
   for ( int dim = 0; dim<3; ++dim ) 

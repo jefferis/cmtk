@@ -336,8 +336,11 @@ public:
    * point. It does so more efficiently than applying the transformation to
    * the explicit 3D coordinate of the control point, because most spline
    * coefficients vanish at control points and need not be considered.
+   *\attention The valid range for x,y,z begins at 1, not 0, because we cannot
+   *  compute the transformation for control points outside the domain
+   *  boundary.
    */
-  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int, const int, const int ) const;
+  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int x, const int y, const int z ) const;
   
   /** Return array of pre deformation vectors.
    * The newly alocated data array contains the control point positions
