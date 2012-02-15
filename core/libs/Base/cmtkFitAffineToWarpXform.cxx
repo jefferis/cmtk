@@ -60,9 +60,7 @@ cmtk::FitAffineToWarpXform::GetMeanTranslation( const WarpXform& warpXform )
   
   for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> xT = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
-    delta += xT - x;
+    delta += warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
     }
 
   return (delta /= warpXform.GetAllControlPointsRegion().Size());
