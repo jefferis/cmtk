@@ -34,6 +34,8 @@
 
 #include <System/cmtkDebugOutput.h>
 
+#include <Numerics/svd.h>
+
 cmtk::FitAffineToWarpXform::FitAffineToWarpXform( WarpXform::SmartConstPtr warp ) 
   : m_WarpXform( warp )
 {  
@@ -42,53 +44,60 @@ cmtk::FitAffineToWarpXform::FitAffineToWarpXform( WarpXform::SmartConstPtr warp 
 cmtk::AffineXform::SmartPtr 
 cmtk::FitAffineToWarpXform::Fit()
 {
-  const cmtk::FixedVector<3,cmtk::Types::Coordinate> xlate = Self::GetMeanTranslation( *(this->m_WarpXform) );
-
-  Matrix3x3<Types::Coordinate> matrix = Self::GetMatrix( *(this->m_WarpXform), xlate );
+  const WarpXform& warpXform = *(this->m_WarpXform); // bypass smart pointer for speed
   
+  // first, get the centroids in "from" and "to" space
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
+  
+  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
+    {
+    cFrom += warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
+    cTo += warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
+    }
+  
+  const size_t size = warpXform.GetInsideControlPointsRegion().Size();
+  cFrom /= size;
+  cTo /= size;
+
+  // now get the transformation matrix for rotation, scale, shear, using the previously computed centroids for reference
+  Matrix3x3<Types::Coordinate> matrix = Self::GetMatrix( *(this->m_WarpXform), cFrom, cTo );
+  
+  // put everything together
   AffineXform::MatrixType matrix4x4( matrix );
   AffineXform::SmartPtr result( new AffineXform( matrix4x4 ) );
-  result->SetTranslation( xlate );
+  result->SetTranslation( (cTo - cFrom) );
   
   return result;
 }
 
-cmtk::FixedVector<3,cmtk::Types::Coordinate> 
-cmtk::FitAffineToWarpXform::GetMeanTranslation( const WarpXform& warpXform )
-{
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> delta( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
-  
-  for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
-    {
-    delta += warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
-    }
-
-  return (delta /= warpXform.GetAllControlPointsRegion().Size());
-}
-
 cmtk::Matrix3x3<cmtk::Types::Coordinate> 
-cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::FixedVector<3,cmtk::Types::Coordinate>& xlate )
+cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom, const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo )
 {
   Matrix3x3<Types::Coordinate> txT; // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
   Matrix3x3<Types::Coordinate> xxT; // "x" is the 3xN matrix of control point grid coordinates
-
+  
   txT.Fill( 0.0 );
   xxT.Fill( 0.0 );
 
+  // build the two 3x3 matrices of (t*xT)(x*xT) on the fly.
   for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - xlate;
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - cFrom;
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - cTo;
 
     for ( size_t j = 0; j < 3; ++j )
       {
       for ( size_t i = 0; i < 3; ++i )
 	{
-	txT[i][j] += t[i] * x[j];
-	xxT[i][j] += x[i] * x[j];
+	txT[i][j] += t[j] * x[i];
+	xxT[i][j] += x[j] * x[i];
 	}
       }
     }  
   
-  return (txT * xxT.Invert3x3());
+  StdErr << xxT << "\n";
+  StdErr << txT << "\n";
+
+  return (xxT.Invert3x3()*txT);
 }
