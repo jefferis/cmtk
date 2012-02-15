@@ -96,8 +96,5 @@ cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::F
       }
     }  
   
-  StdErr << xxT << "\n";
-  StdErr << txT << "\n";
-
   return (xxT.Invert3x3()*txT);
 }
