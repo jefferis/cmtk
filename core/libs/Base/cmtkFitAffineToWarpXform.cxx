@@ -78,7 +78,7 @@ cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::F
   for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {
     const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = warpXform.GetOriginalControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] );
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - x - xlate;
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = warpXform.GetDeformedControlPointPosition( it.Index()[0], it.Index()[1], it.Index()[2] ) - xlate;
 
     for ( size_t j = 0; j < 3; ++j )
       {
