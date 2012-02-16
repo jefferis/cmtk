@@ -303,6 +303,11 @@ LIST(APPEND testList
   filmMSDLinearNoTrunc
   filmMISincRefSPGR)
 
+
+# ==========================================
+# Tests for "fit_affine_xform" tool
+LIST(APPEND testList fit_affine_xformDField fit_affine_xformFFD)
+
 # ==========================================
 # Tests for "fit_spline_xform" tool
 LIST(APPEND testList
