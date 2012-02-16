@@ -1,5 +1,10 @@
 Release CMTK-2.1.2:
 
+(r3880) Added: "fit_affine_xform" can fit an affine transformation to a
+    nonrigid transformation, either a deformation field or a B-spline
+    free-form deformation. The "fit_warp_xform" tool can use this
+    functionality now to estimate the global affine component of a deformation
+    before fitting a spline to the residual.
 (r3873) Added: "dof2mat" tool to convert affine transformation in
     degree-of-freedom representation to 4x4 transformation matrix.
 (r3847) Added: "lvote" local voting tool can now normalize local, patch-based
