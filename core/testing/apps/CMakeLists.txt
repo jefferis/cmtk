@@ -316,7 +316,8 @@ LIST(APPEND testList
   fit_spline_xformDims
   fit_spline_xformDimsRelative
   fit_spline_xformDimsMultiLevel
-  fit_spline_xformDimsMultiLevelSafe)
+  fit_spline_xformDimsMultiLevelSafe
+  fit_spline_xformDimsWithAffine)
 
 # ==========================================
 # Tests for "glm" tool
