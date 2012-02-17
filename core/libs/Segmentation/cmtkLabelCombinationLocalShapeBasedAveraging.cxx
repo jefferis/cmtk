@@ -104,7 +104,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( TypedArr
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );  
   std::vector<size_t> bestPatchOffset( nAtlases );
-  std::vector<float> distances( nAtlases );
+  std::vector<double> distances( nAtlases );
 
   for ( RegionIndexIterator<TargetRegionType> it( region ); it != it.end(); ++it )
     {
@@ -132,19 +132,19 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( TypedArr
       std::sort( distances.begin(), distances.begin()+nn );
       
       // determine 1st and 3rd quartile values
-      const float Q1 = distances[static_cast<size_t>( 0.25 * nn )];
-      const float Q3 = distances[static_cast<size_t>( 0.75 * nn )];
+      const double Q1 = distances[static_cast<size_t>( 0.25 * nn )];
+      const double Q3 = distances[static_cast<size_t>( 0.75 * nn )];
       
       // compute thresholds from quartiles and inter-quartile range
-      const float lThresh = Q1 - 1.5 * (Q3-Q1);
-      const float uThresh = Q3 + 1.5 * (Q3-Q1);
+      const double lThresh = Q1 - 1.5 * (Q3-Q1);
+      const double uThresh = Q3 + 1.5 * (Q3-Q1);
 
       // mark as invalid those atlases with values outside the "inlier" range
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	if ( valid[n] )
 	  {
-	  const float d = dmaps[n]->GetDataAt( i );
+	  const double d = dmaps[n]->GetDataAt( i );
 	  if ( (d < lThresh) || (d > uThresh) )
 	    valid[n] = false;
 	  }
@@ -227,7 +227,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( TypedArr
     if ( totalDistance < resultDistance[i] )
       {
       result.Set( label, i );
-      resultDistance[i] = totalDistance;
+      resultDistance[i] = static_cast<float>( totalDistance );
       }
     }
 }
