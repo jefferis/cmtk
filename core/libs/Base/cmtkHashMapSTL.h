@@ -39,8 +39,6 @@
 
 #if defined(HAVE_UNORDERED_MAP)
 #  include <unordered_map>
-#elif defined(HAVE_UNORDERED_MAP_TR1)
-#  include <tr1/unordered_map>
 #elif defined(HAVE_HASH_MAP_H)
 #  include <hash_map.h>
 #elif defined(HAVE_HASH_MAP)
@@ -81,8 +79,6 @@ class HashMapSTL :
     public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP)
     public std::unordered_map<TKey,TValue,THashFunc>
-#elif defined(HAVE_UNORDERED_MAP_TR1)
-    public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(__GNUC__)
     public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
 #else
