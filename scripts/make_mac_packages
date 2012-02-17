@@ -1,0 +1,56 @@
+#!/bin/sh
+
+##
+##  Copyright 2010-2012 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+#
+# This script creates the official MAC OS X binary packages
+#
+
+BASEDIR=`dirname $0`
+
+SDKs="$*"
+if [ "${SDKs}" = "" ]; then
+    SDKs="10.4 10.5 10.6 gcc4.6-macports-OSX-10.6"
+fi
+
+svn update source
+for sdk in ${SDKs}; do
+    if [ ! -d ${sdk} ]; then
+	mkdir ${sdk}
+	pushd ${sdk}
+	cmake -C ${BASEDIR}/core/config/package.cmake -C ${BASEDIR}/core/source/config/OSX-${sdk}*.cmake ${BASEDIR}/core/
+    else
+	pushd ${sdk}
+    fi
+    
+    cmake .
+    make -j2 package
+    cpack -G PackageMaker
+    popd
+done
