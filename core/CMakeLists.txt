@@ -158,17 +158,14 @@ ENDIF(QNANHIBIT_VALUE)
 INCLUDE (CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(unordered_map HAVE_UNORDERED_MAP)
 IF(NOT HAVE_UNORDERED_MAP)
-  CHECK_INCLUDE_FILE_CXX(tr1/unordered_map HAVE_UNORDERED_MAP_TR1)
-  IF(NOT HAVE_UNORDERED_MAP_TR1)
-    CHECK_INCLUDE_FILE_CXX(hash_map HAVE_HASH_MAP)
-    IF(NOT HAVE_HASH_MAP)
-      CHECK_INCLUDE_FILE_CXX(hash_map.h HAVE_HASH_MAP_H)
-    ENDIF(NOT HAVE_HASH_MAP)
-  ENDIF(NOT HAVE_UNORDERED_MAP_TR1)
+  CHECK_INCLUDE_FILE_CXX(hash_map HAVE_HASH_MAP)
+  IF(NOT HAVE_HASH_MAP)
+    CHECK_INCLUDE_FILE_CXX(hash_map.h HAVE_HASH_MAP_H)
+  ENDIF(NOT HAVE_HASH_MAP)
 ENDIF(NOT HAVE_UNORDERED_MAP)
 
 # set a single flag is we have ANY hash map implementation in STL
-SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_UNORDERED_MAP_TR1}${HAVE_HASH_MAP}${HAVE_HASH_MAP_H} CACHE INTERNAL "Flag for presence of ANY hash map implementation in the C++ STL")
+SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_HASH_MAP}${HAVE_HASH_MAP_H} CACHE INTERNAL "Flag for presence of ANY hash map implementation in the C++ STL")
 
 #-----------------------------------------------------------------------------
 # build configuration options.
