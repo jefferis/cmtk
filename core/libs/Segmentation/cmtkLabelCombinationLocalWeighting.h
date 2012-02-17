@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -84,14 +84,14 @@ public:
   void ExcludeGlobalOutliers();
 
   /// Set patch radius.
-  void SetPatchRadius( const size_t radius )
+  void SetPatchRadius( const int radius )
   {
     this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius ) );
     this->m_PatchRadiusPlusOne = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
   }
 
   /// Set patch radius.
-  void SetSearchRadius( const size_t radius )
+  void SetSearchRadius( const int radius )
   {
     this->m_SearchRegion.From() = UniformVolume::IndexType( UniformVolume::IndexType::Init( -radius ) );
     this->m_SearchRegion.To() = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
