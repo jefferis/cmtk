@@ -298,7 +298,7 @@ TypedStream
     case Self::MODE_APPEND:
       if ( GzFile ) 
 	{
-	if ( 0 == gztell( File) )
+	if ( 0 == gztell( this->GzFile) )
 	  gzprintf( GzFile, "%s\n", GetTypedStreamIdent() );
 	} 
       else
@@ -797,7 +797,7 @@ TypedStream
     {
     for ( int level = 0; level < currentLevel; level++ )
       gzputs( GzFile, "\t" );
-    gzprintf( File, "%s %.*f\n", key, PrecisionDouble, value );
+    gzprintf( this->GzFile, "%s %.*f\n", key, PrecisionDouble, value );
     } 
   else
     {
@@ -944,7 +944,7 @@ TypedStream
     for ( int level = 0; level < currentLevel; level++)
       gzputs( GzFile, "\t" );
     
-    gzprintf( File, "%s ", key );
+    gzprintf( this->GzFile, "%s ", key );
     
     for ( int i = 0; i < size; i++) 
       {
