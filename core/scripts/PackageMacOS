@@ -38,7 +38,7 @@
 
 SOURCEDIR=`dirname $0`
 SOURCEDIR=`dirname ${SOURCEDIR}`
-SOURCEDIR=`cd ${SOUREDIR}; pwd`
+SOURCEDIR=`cd ${SOURCEDIR}; pwd`
 
 SDKs="$*"
 if [ "${SDKs}" == "" ]; then
