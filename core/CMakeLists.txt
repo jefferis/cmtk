@@ -57,6 +57,17 @@ INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 #-----------------------------------------------------------------------------
+# On Mac, if we have MacPorts installed, we need to look for libraries in 
+# /opt/local.
+
+MESSAGE(STATUS "System is " ${CMAKE_SYSTEM})
+IF(CMAKE_SYSTEM MATCHES "Darwin.*")
+  IF(EXISTS /opt/local)
+    LIST(INSERT CMAKE_PREFIX_PATH 0 "/opt/local")
+  ENDIF(EXISTS /opt/local)
+ENDIF(CMAKE_SYSTEM MATCHES "Darwin.*")
+
+#-----------------------------------------------------------------------------
 # Output directories.
 IF(NOT LIBRARY_OUTPUT_PATH)
   SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
