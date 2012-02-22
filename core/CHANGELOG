@@ -1,5 +1,8 @@
 Release CMTK-2.1.2:
 
+(r3896) Fixed: compilation errors using latest zlib (1.2.6); also fixed
+    configuration problem on Mac with system zlib and MacPorts zlib being
+    incompatible. 
 (r3880) Added: "fit_affine_xform" can fit an affine transformation to a
     nonrigid transformation, either a deformation field or a B-spline
     free-form deformation. The "fit_warp_xform" tool can use this
