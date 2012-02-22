@@ -1,4 +1,4 @@
-Release CMTK-2.1.2:
+Release CMTK-2.1.2 (2012-02-22):
 
 (r3902) Fixed: compilation errors using latest zlib (1.2.6); also fixed
     configuration problem on Mac with system zlib and MacPorts zlib being
