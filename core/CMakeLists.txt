@@ -414,7 +414,7 @@ IF(CMTK_USE_BZIP2)
 
     # Check if bzip library is actually working (rather than, e.g., wrong architecture)
     IF(BZIP2_NEED_PREFIX)
-      CHECK_LIBRARY_EXISTS(${BZIP2_LIBRARIES} BZ2_bzCompressInit "" BZIP2_LIBRARY_WORKING)
+      SET(BZIP2_LIBRARY_WORKING TRUE)
     ELSE(BZIP2_NEED_PREFIX)
       CHECK_LIBRARY_EXISTS(${BZIP2_LIBRARIES} bzCompressInit "" BZIP2_LIBRARY_WORKING)
     ENDIF(BZIP2_NEED_PREFIX)
