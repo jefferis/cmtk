@@ -42,7 +42,7 @@ SOURCEDIR=`cd ${SOURCEDIR}; pwd`
 
 SDKs="$*"
 if [ "${SDKs}" == "" ]; then
-    SDKs="10.4 10.5 10.6 gcc4.6-macports-OSX-10.6"
+    SDKs="OSX-10.4 OSX-10.5 OSX-10.6 gcc4.6-macports-OSX-10.6"
 fi
 
 svn update source
@@ -50,7 +50,7 @@ for sdk in ${SDKs}; do
     if [ ! -d ${sdk} ]; then
 	mkdir ${sdk}
 	pushd ${sdk}
-	cmake -C ${SOURCEDIR}/config/package.cmake -C ${SOURCEDIR}/config/OSX-${sdk}*.cmake ${SOURCEDIR}
+	cmake -C ${SOURCEDIR}/config/package.cmake -C ${SOURCEDIR}/config/${sdk}*.cmake ${SOURCEDIR}
     else
 	pushd ${sdk}
 	cmake .
