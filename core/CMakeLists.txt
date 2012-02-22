@@ -406,28 +406,37 @@ ENDIF(CMTK_BUILD_MXML)
 #-----------------------------------------------------------------------------
 # Add an option to use or not use bzip2 library
 
-FIND_PACKAGE(BZip2)
-IF(BZIP2_FOUND)
-  MESSAGE( STATUS "Using system libbz2" )
-  SET(CMTK_BZIP2_LIBS ${BZIP2_LIBRARIES})
-  OPTION(CMTK_USE_BZIP2 "Compile support for on-the-fly BZip2 decompression" ON)
-  MARK_AS_ADVANCED(CMTK_USE_BZIP2)
-ENDIF(BZIP2_FOUND)
+OPTION(CMTK_USE_BZIP2 "Compile support for on-the-fly BZip2 decompression" ON)
+
+IF(CMTK_USE_BZIP2)
+  FIND_PACKAGE(BZip2)
+  IF(BZIP2_FOUND)
+    MESSAGE( STATUS "Found system libbz2" )
+    SET(CMTK_BZIP2_LIBS ${BZIP2_LIBRARIES})
+  ELSE(BZIP2_FOUND)
+    SET(CMTK_USE_BZIP2 OFF)
+  ENDIF(BZIP2_FOUND)
+ENDIF(CMTK_USE_BZIP2)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use lzma decompression library
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindLZMA.cmake)
-IF(LZMA_FOUND)
-  MESSAGE( STATUS "Using system lzma library" )
-  SET(CMTK_LZMA_LIBS ${LZMA_LIBRARY})
-  OPTION(CMTK_USE_LZMA "Compile support for on-the-fly LZMA decompression" ON)
-  MARK_AS_ADVANCED(CMTK_USE_LZMA)
-ENDIF(LZMA_FOUND)
+OPTION(CMTK_USE_LZMA "Compile support for on-the-fly LZMA decompression" ON)
 
+IF(CMTK_USE_LZMA)
+  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindLZMA.cmake)
+  IF(LZMA_FOUND)
+    MESSAGE( STATUS "Found system lzma library" )
+    SET(CMTK_LZMA_LIBS ${LZMA_LIBRARY})
+  ELSE(LZMA_FOUND)
+    SET(CMTK_USE_LZMA OFF)
+  ENDIF(LZMA_FOUND)
+ENDIF(CMTK_USE_LZMA)
+  
 IF(CMTK_USE_LZMA)
   INCLUDE_DIRECTORIES(${LZMA_INCLUDE_DIR})
 ENDIF(CMTK_USE_LZMA)
+
 
 #-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
