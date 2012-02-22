@@ -53,9 +53,9 @@ for sdk in ${SDKs}; do
 	cmake -C ${SOURCEDIR}/config/package.cmake -C ${SOURCEDIR}/config/OSX-${sdk}*.cmake ${SOURCEDIR}
     else
 	pushd ${sdk}
+	cmake .
     fi
     
-    cmake .
     make -j2 package
     cpack -G PackageMaker
     popd
