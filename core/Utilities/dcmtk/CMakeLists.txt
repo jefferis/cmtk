@@ -2,7 +2,7 @@ PROJECT(D4CMTK)
 
 ##  Copyright 2004-2010 SRI International
 ##
-##  Copyright 2010 SRI International
+##  Copyright 2010, 2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -255,7 +255,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/config/cfunix.h.in ${CMAKE_CURR
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-)
+	${ZCONF_INCLUDE_DIR}
+	${ZLIB_INCLUDE_DIR})
 
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
@@ -338,10 +339,6 @@ SET(dcmtk_SRCS
   ofthread.cc
   oftime.cc
 )
-
-INCLUDE_DIRECTORIES(BEFORE
-  ${ZCONF_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR})
 
 ADD_LIBRARY(D4CMTK ${dcmtk_SRCS})
 TARGET_LINK_LIBRARIES(D4CMTK ${ZLIB_LIBRARIES})
