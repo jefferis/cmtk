@@ -423,7 +423,7 @@ IF(CMTK_USE_BZIP2)
       MESSAGE( STATUS "Found system libbz2" )
       SET(CMTK_BZIP2_LIBS ${BZIP2_LIBRARIES})
     ELSE(BZIP2_LIBRARY_WORKING)
-      MESSAGE( WARNING "Found system bzip2 library at " ${BZIP2_LIBRARIES} " but it does not see to be working" )
+      MESSAGE( WARNING "Found system bzip2 library at " ${BZIP2_LIBRARIES} " but it does not seem to be working" )
       UNSET(BZIP2_FOUND CACHE)
     ENDIF(BZIP2_LIBRARY_WORKING)      
 
