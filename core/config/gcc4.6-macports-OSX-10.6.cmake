@@ -35,9 +35,8 @@ SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 SET(CMTK_SYSTEM_NAME "MacOSX-10.6" CACHE STRING "System name")
 SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 
-# 64 bit for OS X >=10.6
-SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "OS-X architecture")
-SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.6" CACHE STRING "OS-X target")
+# MacOS stuff
+SET(CMAKE_OSX_SYSROOT "/" CACHE STRING "OS-X architecture")
 
 # Select MacPorts compiler
 SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.6" CACHE FILEPATH "C++ compiler path")
@@ -49,6 +48,7 @@ SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
 # CMTK config settings
 SET(CMTK_USE_OPENMP ON CACHE BOOL "Use OpenMP for parallelization" )
+SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch for SMP parallelism" )
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
 SET(CMTK_USE_QT ON CACHE BOOL "Use Qt toolkit")
 SET(BUILD_GUI ON CACHE BOOL "Build GUI applications (requires Qt)")
