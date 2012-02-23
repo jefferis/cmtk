@@ -6,6 +6,12 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.1.3
 ===========================
 
+The "average_edt" tool has been replaced by two new tools, "sba" and "sbai",
+for Shape-Based Averaging (and Interpolation). The "sba" tool implements the
+"--interpolate-image" mode of "average_edt", whereas "sbai" implements the
+"--interpolate-distance" mode. "Windowed" averaging of intensity images was
+not really useful and is no longer supported.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 
