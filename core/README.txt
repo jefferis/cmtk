@@ -3,22 +3,8 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 2.1.2
+Release Notes -- CMTK 2.1.3
 ===========================
-
-This is a bug fix release. Previous versions of CMTK do not compile with the
-latest version of zlib (1.2.6); this is now fixed. This release also fixes
-another problem with zlib on Mac, where the system zlib is not compatible with
-the MacPorts zlib, which we need for Qt support and others.
-
-This release also adds some new options to the "registrationx",
-"groupwise_init", "groupwise_affine", and "lvote" tools.
-
-Finally, this release introduces tools and library support for fitting
-parametric transformations to deformation fields as well as linear
-transformations to nonrigid transformations. The next major release of CMTK
-will use this functionality to introduce CMTK support for directly-manipulated
-free-form deformations (DM-FFD).
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
