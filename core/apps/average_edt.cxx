@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,7 +76,7 @@ const char* WriteLabelMapNameMask = NULL;
 
 std::list<const char*> InputFileList;
 
-byte NumberOfLabels = 0;
+short NumberOfLabels = 0;
 
 const char* ReplaceFrom;
 std::map<std::string,std::string> ReplaceMap;
@@ -96,7 +96,7 @@ void AddReplaceTo( const char* arg )
 
 cmtk::TypedArray::SmartPtr
 Average
-( std::list<cmtk::UniformVolume::SmartPtr> volumes, const byte numLabels )
+( std::list<cmtk::UniformVolume::SmartPtr> volumes, const short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
@@ -120,16 +120,16 @@ Average
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	pFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<short>( l )] = true;
       }
 #ifdef CMTK_USE_GCD
 		    });
 #endif
     }
 
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, numPixels ) );
+  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  byte* resultPtr = (byte*) result->GetDataPtr();
+  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
@@ -258,7 +258,7 @@ Average
 
 cmtk::TypedArray::SmartPtr
 AverageWindowed
-( std::list<cmtk::UniformVolume::SmartPtr> volumes, const byte numLabels )
+( std::list<cmtk::UniformVolume::SmartPtr> volumes, const short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
@@ -283,7 +283,7 @@ AverageWindowed
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	pFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<short>( l )] = true;
       }
 #ifdef CMTK_USE_GCD
 		    });
@@ -294,9 +294,9 @@ AverageWindowed
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
   float* resultPtr = (float*) result->GetDataPtr();
   
-  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, numPixels ) );
+  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numPixels ) );
   resultDivider->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  byte* resultDividerPtr = (byte*) resultDivider->GetDataPtr();
+  short* resultDividerPtr = static_cast<short*>( resultDivider->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
@@ -427,7 +427,7 @@ AverageWindowed
 		  });
 #endif
 
-  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_BYTE ) );
+  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_SHORT ) );
   return result;
 }
 
@@ -436,7 +436,7 @@ Average
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
-  const byte numLabels )
+  const short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
@@ -462,16 +462,16 @@ Average
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	pFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<short>( l )] = true;
       }
 #ifdef CMTK_USE_GCD
 		    });
 #endif
     }
   
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, nPixelsReference ) );
+  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
-  byte* resultPtr = (byte*) result->GetDataPtr();
+  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr referenceInOutDistance( new cmtk::FloatArray( nPixelsReference ) );
   float* referenceInOutDistancePtr = referenceInOutDistance->GetDataPtrTemplate();
@@ -600,7 +600,7 @@ AverageWindowed
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
-  const byte numLabels )
+  const short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
@@ -618,7 +618,7 @@ AverageWindowed
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	labelFlags[static_cast<byte>( l )] = true;
+	labelFlags[static_cast<short>( l )] = true;
       }
     }
   
@@ -626,12 +626,12 @@ AverageWindowed
   result->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
   float* resultPtr = (float*) result->GetDataPtr();
 
-  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, nPixelsReference ) );
+  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
   resultDivider->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
-  byte* resultDividerPtr = (byte*) resultDivider->GetDataPtr();
+  short* resultDividerPtr = static_cast<short*>( resultDivider->GetDataPtr() );
   
-  cmtk::TypedArray::SmartPtr countDistanceSamples( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, nPixelsReference ) );
-  byte* countDistanceSamplesPtr = (byte*) countDistanceSamples->GetDataPtr();
+  cmtk::TypedArray::SmartPtr countDistanceSamples( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
+  short* countDistanceSamplesPtr = static_cast<short*>( countDistanceSamples->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr referenceInOutDistance( new cmtk::FloatArray( nPixelsReference ) );
   float* referenceInOutDistancePtr = referenceInOutDistance->GetDataPtrTemplate();
@@ -766,7 +766,7 @@ AverageWindowed
     resultDividerPtr[i] = 0;
     }
 
-  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_BYTE ) );
+  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_SHORT ) );
   return result;
 }
 
@@ -794,12 +794,11 @@ AddVolumeFile
       nextVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
       }
     
-    if ( nextVolume->GetData()->GetType() != cmtk::TYPE_BYTE )
+    if ( nextVolume->GetData()->GetType() != cmtk::TYPE_SHORT )
       {
-      cmtk::StdErr << "WARNING: converting data to 'byte'\n";
+      cmtk::StdErr << "WARNING: converting data to 'short'\n";
       
-      cmtk::TypedArray::SmartPtr byteData( nextVolume->GetData()->Convert( cmtk::TYPE_BYTE ) );
-      nextVolume->SetData( byteData );
+      nextVolume->SetData( cmtk::TypedArray::SmartPtr( nextVolume->GetData()->Convert( cmtk::TYPE_SHORT ) ) );
       }
     volumeList.push_back( nextVolume );
     }
@@ -939,12 +938,11 @@ AddVolumeStudyList
     dataVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
     }
 
-  if ( dataVolume->GetData()->GetType() != cmtk::TYPE_BYTE )
+  if ( dataVolume->GetData()->GetType() != cmtk::TYPE_SHORT )
     {
-    cmtk::StdErr << "WARNING: converting data to 'byte'\n";
+    cmtk::StdErr << "WARNING: converting data to 'short'\n";
     
-    cmtk::TypedArray::SmartPtr byteData( dataVolume->GetData()->Convert( cmtk::TYPE_BYTE ) );
-    dataVolume->SetData( byteData );
+    dataVolume->SetData( cmtk::TypedArray::SmartPtr( dataVolume->GetData()->Convert( cmtk::TYPE_SHORT ) ) );
     } 
   volumeList.push_back( dataVolume );
 }
