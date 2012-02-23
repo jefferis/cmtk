@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -115,12 +116,20 @@ CommandLine::Item::Convert<signed char>( const char* str )
   return static_cast<signed char>( this->ConvertStrToLong( str ) );
 }
 
-/// Convert string to char.
+/// Convert string to short integer.
 template<> 
 inline short 
 CommandLine::Item::Convert<short>( const char* str ) 
 {
   return static_cast<short>( this->ConvertStrToLong( str ) );
+}
+
+/// Convert string to unsigned short integer.
+template<> 
+inline unsigned short 
+CommandLine::Item::Convert<unsigned short>( const char* str ) 
+{
+  return static_cast<unsigned short>( this->ConvertStrToLong( str ) );
 }
 
 /// Convert string to string.
