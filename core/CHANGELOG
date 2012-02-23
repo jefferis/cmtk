@@ -1,5 +1,7 @@
 Release CMTK-2.1.3:
 
+Changed: "average_edt" tool now represents labels as short integers, not
+bytes, so it can now support label values up to 65535.
 
 
 Release CMTK-2.1.2 (2012-02-22):

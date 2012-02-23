@@ -57,6 +57,7 @@
 
 #include <math.h>
 #include <list>
+#include <vector>
 
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
@@ -76,7 +77,7 @@ const char* WriteLabelMapNameMask = NULL;
 
 std::list<const char*> InputFileList;
 
-short NumberOfLabels = 0;
+unsigned short NumberOfLabels = 0;
 
 const char* ReplaceFrom;
 std::map<std::string,std::string> ReplaceMap;
@@ -96,40 +97,28 @@ void AddReplaceTo( const char* arg )
 
 cmtk::TypedArray::SmartPtr
 Average
-( std::list<cmtk::UniformVolume::SmartPtr> volumes, const short numLabels )
+( std::list<cmtk::UniformVolume::SmartPtr> volumes, const unsigned short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t numPixels = (*volumes.begin())->GetNumberOfPixels();
 
-  bool labelFlags[256];
-  memset( labelFlags, 0, sizeof( labelFlags ) );
-  bool* pFlags = labelFlags; // need to use ptr to array to work around GCD bug
-
+  std::vector<bool> labelFlags( numLabels, false );  
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
-    const cmtk::TypedArray* data = (*it)->GetData();
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
-#endif
+    const cmtk::TypedArray& data = *((*it)->GetData());
+
+    cmtk::Types::DataItem l;
+    for ( size_t i = 0; i < numPixels; ++i )
       {
-      cmtk::Types::DataItem l;
-      if ( data->Get( l, i ) )
-	pFlags[static_cast<short>( l )] = true;
+      if ( data.Get( l, i ) )
+	labelFlags[static_cast<unsigned short>( l )] = true;
       }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
     }
 
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numPixels ) );
+  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, numPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
+  unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
@@ -258,45 +247,32 @@ Average
 
 cmtk::TypedArray::SmartPtr
 AverageWindowed
-( std::list<cmtk::UniformVolume::SmartPtr> volumes, const short numLabels )
+( std::list<cmtk::UniformVolume::SmartPtr> volumes, const unsigned short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t numPixels = (*volumes.begin())->GetNumberOfPixels();
 
-  bool labelFlags[256];
-  memset( labelFlags, 0, sizeof( labelFlags ) );
-  bool *pFlags = labelFlags; // need pointer to work around GCD bug
-
+  std::vector<bool> labelFlags( numLabels, false );  
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
-    const cmtk::TypedArray* data = (*it)->GetData();
-
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
-#endif
+    const cmtk::TypedArray& data = *((*it)->GetData());
+    
+    cmtk::Types::DataItem l;
+    for ( size_t i = 0; i < numPixels; ++i )
       {
-      cmtk::Types::DataItem l;
-      if ( data->Get( l, i ) )
-	pFlags[static_cast<short>( l )] = true;
+      if ( data.Get( l, i ) )
+	labelFlags[static_cast<unsigned short>( l )] = true;
       }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
     }
-  
+
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, numPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
   float* resultPtr = (float*) result->GetDataPtr();
   
-  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numPixels ) );
+  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, numPixels ) );
   resultDivider->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  short* resultDividerPtr = static_cast<short*>( resultDivider->GetDataPtr() );
+  unsigned short* resultDividerPtr = static_cast<unsigned short*>( resultDivider->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
@@ -427,7 +403,7 @@ AverageWindowed
 		  });
 #endif
 
-  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_SHORT ) );
+  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_USHORT ) );
   return result;
 }
 
@@ -436,42 +412,30 @@ Average
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
-  const short numLabels )
+  const unsigned short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
   const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
 
-  bool labelFlags[256];
-  memset( labelFlags, 0, sizeof( labelFlags ) );
-  bool *pFlags = labelFlags; // need pointer to work around GCD bug
-
-  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV )
+  std::vector<bool> labelFlags( numLabels, false );  
+  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
-    const cmtk::TypedArray* data = (*itV)->GetData();
-
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( data->GetDataSize() );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( data->GetDataSize() ); ++i )
-#endif
+    const size_t numPixels = (*it)->GetNumberOfPixels();
+    const cmtk::TypedArray& data = *((*it)->GetData());
+    
+    cmtk::Types::DataItem l;
+    for ( size_t i = 0; i < numPixels; ++i )
       {
-      cmtk::Types::DataItem l;
-      if ( data->Get( l, i ) )
-	pFlags[static_cast<short>( l )] = true;
+      if ( data.Get( l, i ) )
+	labelFlags[static_cast<unsigned short>( l )] = true;
       }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
     }
-  
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
+
+  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, nPixelsReference ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
-  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
+  unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr referenceInOutDistance( new cmtk::FloatArray( nPixelsReference ) );
   float* referenceInOutDistancePtr = referenceInOutDistance->GetDataPtrTemplate();
@@ -600,38 +564,37 @@ AverageWindowed
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
-  const short numLabels )
+  const unsigned short numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
   const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
 
-  bool labelFlags[256];
-  memset( labelFlags, 0, sizeof( labelFlags ) );
-
-  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV )
+  std::vector<bool> labelFlags( numLabels, false );  
+  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
-    const cmtk::TypedArray* data = (*itV)->GetData();
-#pragma omp parallel for
-    for ( int i = 0; i < static_cast<int>( data->GetDataSize() ); ++i )
+    const size_t numPixels = (*it)->GetNumberOfPixels();
+    const cmtk::TypedArray& data = *((*it)->GetData());
+    
+    cmtk::Types::DataItem l;
+    for ( size_t i = 0; i < numPixels; ++i )
       {
-      cmtk::Types::DataItem l;
-      if ( data->Get( l, i ) )
-	labelFlags[static_cast<short>( l )] = true;
+      if ( data.Get( l, i ) )
+	labelFlags[static_cast<unsigned short>( l )] = true;
       }
     }
-  
+
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, nPixelsReference ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
   float* resultPtr = (float*) result->GetDataPtr();
 
-  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
+  cmtk::TypedArray::SmartPtr resultDivider( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, nPixelsReference ) );
   resultDivider->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
-  short* resultDividerPtr = static_cast<short*>( resultDivider->GetDataPtr() );
+  unsigned short* resultDividerPtr = static_cast<unsigned short*>( resultDivider->GetDataPtr() );
   
-  cmtk::TypedArray::SmartPtr countDistanceSamples( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, nPixelsReference ) );
-  short* countDistanceSamplesPtr = static_cast<short*>( countDistanceSamples->GetDataPtr() );
+  cmtk::TypedArray::SmartPtr countDistanceSamples( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, nPixelsReference ) );
+  unsigned short* countDistanceSamplesPtr = static_cast<unsigned short*>( countDistanceSamples->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr referenceInOutDistance( new cmtk::FloatArray( nPixelsReference ) );
   float* referenceInOutDistancePtr = referenceInOutDistance->GetDataPtrTemplate();
@@ -766,7 +729,7 @@ AverageWindowed
     resultDividerPtr[i] = 0;
     }
 
-  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_SHORT ) );
+  result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_USHORT ) );
   return result;
 }
 
@@ -794,11 +757,11 @@ AddVolumeFile
       nextVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
       }
     
-    if ( nextVolume->GetData()->GetType() != cmtk::TYPE_SHORT )
+    if ( nextVolume->GetData()->GetType() != cmtk::TYPE_USHORT )
       {
-      cmtk::StdErr << "WARNING: converting data to 'short'\n";
+      cmtk::StdErr << "WARNING: converting data to 'unsigned short'\n";
       
-      nextVolume->SetData( cmtk::TypedArray::SmartPtr( nextVolume->GetData()->Convert( cmtk::TYPE_SHORT ) ) );
+      nextVolume->SetData( cmtk::TypedArray::SmartPtr( nextVolume->GetData()->Convert( cmtk::TYPE_USHORT ) ) );
       }
     volumeList.push_back( nextVolume );
     }
@@ -938,11 +901,11 @@ AddVolumeStudyList
     dataVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
     }
 
-  if ( dataVolume->GetData()->GetType() != cmtk::TYPE_SHORT )
+  if ( dataVolume->GetData()->GetType() != cmtk::TYPE_USHORT )
     {
-    cmtk::StdErr << "WARNING: converting data to 'short'\n";
+    cmtk::StdErr << "WARNING: converting data to 'unsigned short'\n";
     
-    dataVolume->SetData( cmtk::TypedArray::SmartPtr( dataVolume->GetData()->Convert( cmtk::TYPE_SHORT ) ) );
+    dataVolume->SetData( cmtk::TypedArray::SmartPtr( dataVolume->GetData()->Convert( cmtk::TYPE_USHORT ) ) );
     } 
   volumeList.push_back( dataVolume );
 }
