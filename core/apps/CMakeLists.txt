@@ -40,7 +40,6 @@ SET(APPS avg_adm
   groupwise_warp
   asegment
   average_affine
-  average_edt
   average_images
   average_labels
   concat_affine
@@ -78,6 +77,8 @@ SET(APPS avg_adm
   registrationx
   regress
   reorient
+  sba
+  sbai
   sequence
   similarity
   split

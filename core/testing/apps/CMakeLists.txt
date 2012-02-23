@@ -169,14 +169,6 @@ LIST(APPEND testList
   concat_affineA1A)
 
 # ==========================================
-# Tests for "average_edt" tool
-LIST(APPEND testList
-  average_edt 
-  average_edtWindowed
-  average_edtWindowedInterpolation
-  average_edtInterpolation)
-
-# ==========================================
 # Tests for "average_images" tool
 LIST(APPEND testList
   average_imagesMean 
@@ -653,6 +645,14 @@ IF(CMTK_BUILD_NRRD)
     reformatxDfieldNrrd
     reformatxDfieldNrrdJacobian)
 ENDIF(CMTK_BUILD_NRRD)
+
+# ==========================================
+# Tests for "sba" tool
+LIST(APPEND testList sbaDefault)
+
+# ==========================================
+# Tests for "sbai" tool
+LIST(APPEND testList sbaiDefault)
 
 # ==========================================
 # Tests for "sequence" tool

@@ -182,22 +182,6 @@ check_images()
 }
 
 case ${RUNTEST} in
-    average_edt)
-	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
-	check_results shape_average.img
-	;;
-    average_edtWindowed)
-	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --feature-window-radius 10 --interpolate-image spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_results shape_average.img
-	;;
-    average_edtWindowedInterpolation)
-	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --feature-window-radius 10 --interpolate-distance spgr_brain_12_warp.list spgr_brain_13_warp.list
-	check_results shape_average.img
-	;;
-    average_edtInterpolation)
-	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-distance parc12_warp.xform parc13_warp.xform
-	check_results shape_average.img
-	;;
     average_imagesMean)
 	run average_images -o ${tmpdir}/average.hdr spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results average.img
@@ -1893,6 +1877,14 @@ case ${RUNTEST} in
     registrationRigidCrop)
 	run registration -v -i -e 2.0 -a 0.125 --sampling 0.25 --crop-index-ref 17,20,0,47,49,12 --crop-index-flt 12,15,0,52,54,12 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
+	;;
+    sbaDefault)
+	run sba -o ${tmpdir}/sba.nii -n 255 parc1.hdr parc2.hdr parc3.hdr
+	check_results sba.nii
+	;;
+    sbaiDefault)
+	run sbai -o ${tmpdir}/sbai.nii -n 255 parc12_warp.xform parc13_warp.xform
+	check_results sbai.nii
 	;;
     sequenceDefault)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence > ${tmpdir}/sequence.txt"
