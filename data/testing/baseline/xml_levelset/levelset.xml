@@ -13,7 +13,7 @@ Levelset-type segmentation of foreground/background using minimum regional varia
 http://www.fsf.org/licensing/licenses/gpl.html
 </license>
 <contributor>
-Torsten Rohlfing, Michael P. Hasak, Greg Jefferis, Calvin R. Maurer, Daniel B. Russakoff
+Torsten Rohlfing, with contributions from Michael P. Hasak, Greg Jefferis, Calvin R. Maurer, and Daniel B. Russakoff
 </contributor>
 <acknowledgements>
 CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381
