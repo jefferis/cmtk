@@ -47,7 +47,7 @@ cmtk
 /** \addtogroup Segmentation */
 //@{
 
-LabelCombinationShapeBasedAveraging::LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, const LabelIndexType numberOfLabels )
+LabelCombinationShapeBasedAveraging::LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, const Self::LabelIndexType numberOfLabels )
   : m_NumberOfLabels( numberOfLabels ),
     m_LabelImages( labelImages )
 {
@@ -57,7 +57,7 @@ LabelCombinationShapeBasedAveraging::LabelCombinationShapeBasedAveraging( const 
     for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
       {
       const Types::DataItemRange range = this->m_LabelImages[k]->GetData()->GetRange();
-      this->m_NumberOfLabels = std::max( this->m_NumberOfLabels, static_cast<LabelIndexType>( 1 + range.m_UpperBound ) );
+      this->m_NumberOfLabels = std::max( this->m_NumberOfLabels, static_cast<Self::LabelIndexType>( 1 + range.m_UpperBound ) );
       }
     
     DebugOutput( 9 ) << "Determined number of labels to be " << this->m_NumberOfLabels << "\n";
@@ -81,13 +81,11 @@ LabelCombinationShapeBasedAveraging::LabelCombinationShapeBasedAveraging( const 
 }
 
 TypedArray::SmartPtr
-LabelCombinationShapeBasedAveraging::GetResult() const
+LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) const
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
-
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, this->m_NumberOfPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
-  unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
+  Self::LabelIndexType* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
   cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( this->m_NumberOfPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
@@ -105,53 +103,37 @@ LabelCombinationShapeBasedAveraging::GetResult() const
 
     inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
 
-    for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
+    if ( detectOutliers )
       {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
-      const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
-
-      // if this is the first label, write directly to accumulation distance map
-      if ( !label )
-	{
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-	  {
-	  totalDistancePtr[i] += signedDistancePtr[i];
-	  }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
-	}
-      else
-	// for all other labels, add to label distance map
-	{
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-	  {
-	  inOutDistancePtr[i] += signedDistancePtr[i];
-	  }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
-	}
+      this->ProcessLabelExcludeOutliers( label, resultPtr, totalDistancePtr, inOutDistancePtr );
+      }
+    else
+      {
+      this->ProcessLabelIncludeOutliers( label, resultPtr, totalDistancePtr, inOutDistancePtr );
       }
 
-    // if this is not the first label, compare this label's sum distance map
-    // (over all volumes) pixel by pixel and set this label where it is
-    // closer than previous closest label
-    if ( label )
+    }
+  
+  return result;
+}
+
+void
+LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, float* totalDistancePtr, float* inOutDistancePtr ) const
+{
+}
+
+void
+LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, float* totalDistancePtr, float* inOutDistancePtr ) const
+{
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
+  
+  for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
+    {
+    cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
+    const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
+    
+    // if this is the first label, write directly to accumulation distance map
+    if ( !label )
       {
 #ifdef CMTK_USE_GCD
       const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
@@ -161,25 +143,62 @@ LabelCombinationShapeBasedAveraging::GetResult() const
 #pragma omp parallel for
 			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
-	{
-	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
-	  {
-	  totalDistancePtr[i] = inOutDistancePtr[i];
-	  resultPtr[i] = label;
-	  }
-	else
-	  if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
-	    {
-	    resultPtr[i] = this->m_NumberOfLabels;
-	    }	  
-	}
+			    {
+			    totalDistancePtr[i] += signedDistancePtr[i];
+			    }
+#ifdef CMTK_USE_GCD
+		      });
+#endif
+      }
+    else
+      // for all other labels, add to label distance map
+      {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
+#pragma omp parallel for
+			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+#endif
+			    {
+			    inOutDistancePtr[i] += signedDistancePtr[i];
+			    }
 #ifdef CMTK_USE_GCD
 		      });
 #endif
       }
     }
   
-  return result;
+  // if this is not the first label, compare this label's sum distance map
+  // (over all volumes) pixel by pixel and set this label where it is
+  // closer than previous closest label
+  if ( label )
+    {
+#ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
+#pragma omp parallel for
+			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+#endif
+			  {
+			  if ( inOutDistancePtr[i] < totalDistancePtr[i] )
+			    {
+			    totalDistancePtr[i] = inOutDistancePtr[i];
+			    resultPtr[i] = label;
+			    }
+			  else
+			    if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
+			      {
+			      resultPtr[i] = this->m_NumberOfLabels;
+			      }	  
+			  }
+#ifdef CMTK_USE_GCD
+		    });
+#endif
+    }
 }
 
 } // namespace cmtk

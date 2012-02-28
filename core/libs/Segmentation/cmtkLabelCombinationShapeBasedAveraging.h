@@ -69,14 +69,15 @@ public:
   typedef unsigned short LabelIndexType;
 
   /// Constructor: compute label combination.
-  LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, const LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
+  LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, 
+				       const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
 
   /// Get result.
-  TypedArray::SmartPtr GetResult() const;
+  TypedArray::SmartPtr GetResult( const bool detectOutliers = false /*!< Flag for local outlier detection.*/ ) const;
 
 private:
   /// Number of labels.
-  LabelIndexType m_NumberOfLabels;
+  Self::LabelIndexType m_NumberOfLabels;
 
   /// Vector of label images.
   const std::vector<UniformVolume::SmartConstPtr>& m_LabelImages;
@@ -86,6 +87,19 @@ private:
 
   /// Flags for which labels actually exist in the data.
   std::vector<bool> m_LabelFlags;
+
+  /// Handle one label and include outliers.
+  void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
+				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
+				    float* totalDistancePtr /*!< Pointer to evolving total distance map array */,
+				    float* inOutDistancePtr /*!< Pointer to evolving inside/outside distance map array */ ) const;
+
+  /// Handle one label and exclude outliers.
+  void ProcessLabelExcludeOutliers( const Self::LabelIndexType label /*!< Current label */,
+				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
+				    float* totalDistancePtr /*!< Pointer to evolving total distance map array */,
+				    float* inOutDistancePtr /*!< Pointer to evolving inside/outside distance map array */ ) const;
+
 };
 
 } // namespace cmtk
