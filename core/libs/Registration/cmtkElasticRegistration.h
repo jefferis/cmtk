@@ -231,14 +231,6 @@ private:
   const SplineWarpXform::SmartPtr MakeWarpXform( const Vector3D& size, const AffineXform* initialAffine ) const;
 
   /** Create functional with all settings and two given volume objects.
-   *\todo Currently, if a tissue property map is used for local constraint
-   * weights, this cannot be used with edge volumes. This is because this
-   * function has access to the resampled edge data in such a case, but not
-   * to the actual image intensities of the resmpled image. The latter is
-   * required for the tissue property map. Potentially, we could create the
-   * entire map outside this function and give it as an additional optional
-   * parameter. But since we're using neither edge images nor tissue maps
-   * much, it doesn't seem worth the effort.
    */
   Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, UniformVolume::SmartPtr& rigidityMap ) const;
 };
