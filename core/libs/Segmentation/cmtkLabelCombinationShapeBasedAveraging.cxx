@@ -149,6 +149,54 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 void
 LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, float* totalDistancePtr, float* inOutDistancePtr ) const
 {
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
+  
+  const size_t nLabelMaps = this->m_LabelImages.size();
+  std::vector<cmtk::UniformVolume::SmartConstPtr> signedDistanceMaps( nLabelMaps );
+  for ( size_t k = 0; k < nLabelMaps; ++k )
+    {
+    signedDistanceMaps[k] = cmtk::UniformDistanceMap<float>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
+    }
+
+  std::vector<float> distances( nLabelMaps );
+  
+  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+    {
+    for ( size_t k = 0; k < nLabelMaps; ++k )
+      {
+      distances[k] = signedDistanceMaps[k]->GetDataAt( i );
+      }
+    
+    // sort distance
+    std::sort( distances.begin(), distances.end() );
+    
+    // determine 1st and 3rd quartile values
+    const double Q1 = distances[static_cast<size_t>( 0.25 * nLabelMaps )];
+    const double Q3 = distances[static_cast<size_t>( 0.75 * nLabelMaps )];
+    
+    // compute thresholds from quartiles and inter-quartile range
+    const double lThresh = Q1 - 1.5 * (Q3-Q1);
+    const double uThresh = Q3 + 1.5 * (Q3-Q1);
+    
+    // if this is the first label, write directly to accumulation distance map
+    if ( !label )
+      {
+      for ( size_t k = 0; k < nLabelMaps; ++k )
+	{
+	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
+	  totalDistancePtr[i] += distances[k];
+	}
+      }
+    else
+      // for all other labels, add to label distance map
+      {
+      for ( size_t k = 0; k < nLabelMaps; ++k )
+	{
+	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
+	  inOutDistancePtr[i] += distances[k];
+	}
+      }
+    }
 }
 
 void

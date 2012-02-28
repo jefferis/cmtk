@@ -59,6 +59,8 @@ unsigned short NumberOfLabels = 0;
 bool PaddingFlag = false;
 float PaddingValue = 0;
 
+bool ExcludeLocalOutliers = false;
+
 void
 AddVolumeFile
 ( const char* fileName, std::vector<cmtk::UniformVolume::SmartConstPtr>& volumeVector )
@@ -99,6 +101,11 @@ doMain ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'p', "padding" ), &PaddingValue, "Padding value in input image", &PaddingFlag );
     cl.EndGroup();
 
+    cl.BeginGroup( "Combination", "Label Combination Options" );
+    cl.AddSwitch( Key( 'x', "exclude-outliers" ), &ExcludeLocalOutliers, true, "Exclude local outliers in the shape-based averaging algorithm. Outliers at each pixel are defined as those input images for which the distance from "
+		  "the nearest pixel with the current label exceeds thresholds computed from the set of distances over all inputs." );
+    cl.EndGroup();
+
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( 'o', "output" ), &OutputFileName, "File name for output segmentation file." );
     cl.EndGroup();
@@ -119,7 +126,7 @@ doMain ( const int argc, const char* argv[] )
 
   const double timeBaseline = cmtk::Timers::GetTimeProcess();
 
-  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr( cmtk::LabelCombinationShapeBasedAveraging( volumeVector, NumberOfLabels ).GetResult() );
+  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr( cmtk::LabelCombinationShapeBasedAveraging( volumeVector, NumberOfLabels ).GetResult( ExcludeLocalOutliers ) );
   cmtk::DebugOutput( 1 ).GetStream().printf( "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
   
   cmtk::UniformVolume::SmartPtr volume = volumeVector[0]->CloneGrid();
