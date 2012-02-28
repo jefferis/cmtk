@@ -68,6 +68,9 @@ public:
   /// Label index type.
   typedef unsigned short LabelIndexType;
 
+  /// Real-value type for distance maps.
+  typedef float DistanceMapRealType;
+
   /// Constructor: compute label combination.
   LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, 
 				       const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
@@ -91,14 +94,14 @@ private:
   /// Handle one label and include outliers.
   void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
 				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
-				    std::vector<float>& totalDistance /*!< Evolving total distance map array */,
-				    std::vector<float>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
+				    std::vector<Self::DistanceMapRealType>& totalDistance /*!< Evolving total distance map array */,
+				    std::vector<Self::DistanceMapRealType>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
 
   /// Handle one label and exclude outliers.
   void ProcessLabelExcludeOutliers( const Self::LabelIndexType label /*!< Current label */,
 				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
-				    std::vector<float>& totalDistance /*!< Evolving total distance map array */,
-				    std::vector<float>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
+				    std::vector<Self::DistanceMapRealType>& totalDistance /*!< Evolving total distance map array */,
+				    std::vector<Self::DistanceMapRealType>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
 
 };
 
