@@ -40,6 +40,7 @@ SET(cmtkSegmentation_SRCS
   cmtkLabelCombinationMultiClassSTAPLE.cxx
   cmtkLabelCombinationSTAPLE.cxx
   cmtkLabelCombinationVoting.cxx
+  cmtkLabelCombinationShapeBasedAveraging.cxx
   cmtkOverlapMeasures.cxx
   cmtkSimpleLevelset.cxx
   cmtkSimpleLevelsetCommandLineBase.cxx

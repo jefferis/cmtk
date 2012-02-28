@@ -40,15 +40,10 @@
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkUniformDistanceMap.h>
-#include <Base/cmtkTypedArray.h>
-#include <Base/cmtkTemplateArray.h>
-#include <Base/cmtkLinearInterpolator.h>
-#include <Base/cmtkUniformVolumeInterpolator.h>
 
 #include <IO/cmtkVolumeIO.h>
 
-#include <Registration/cmtkReformatVolume.h>
+#include <Segmentation/cmtkLabelCombinationShapeBasedAveraging.h>
 
 #include <math.h>
 #include <vector>
@@ -66,127 +61,9 @@ unsigned short NumberOfLabels = 0;
 bool PaddingFlag = false;
 float PaddingValue = 0;
 
-cmtk::TypedArray::SmartPtr
-Average
-( std::vector<cmtk::UniformVolume::SmartPtr> volumes, const unsigned short numLabels )
-{
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
-
-  const size_t numPixels = (*volumes.begin())->GetNumberOfPixels();
-
-  std::vector<bool> labelFlags( numLabels, false );  
-  for ( std::vector<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
-    {
-    const cmtk::TypedArray& data = *((*it)->GetData());
-
-    cmtk::Types::DataItem l;
-    for ( size_t i = 0; i < numPixels; ++i )
-      {
-      if ( data.Get( l, i ) )
-	labelFlags[static_cast<unsigned short>( l )] = true;
-      }
-    }
-
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, numPixels ) );
-  result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
-  
-  cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
-  float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
-
-  cmtk::FloatArray::SmartPtr inOutDistance( new cmtk::FloatArray(numPixels ) );
-  float* inOutDistancePtr = inOutDistance->GetDataPtrTemplate();
-
-  totalDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-  for ( int label = 0; label < numLabels; ++label )
-    {
-    /// skip labels that are not in any image.
-    if ( ! labelFlags[label] ) continue;
-
-    cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
-
-    inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
-
-    for ( std::vector<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
-      {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label ).Get();
-      const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
-
-      // if this is the first label, write directly to accumulation distance map
-      if ( !label )
-	{
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
-#endif
-	  {
-	  totalDistancePtr[i] += signedDistancePtr[i];
-	  }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
-	}
-      else
-	// for all other labels, add to label distance map
-	{
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
-#endif
-	  {
-	  inOutDistancePtr[i] += signedDistancePtr[i];
-	  }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
-	}
-      }
-
-    // if this is not the first label, compare this label's sum distance map
-    // (over all volumes) pixel by pixel and set this label where it is
-    // closer than previous closest label
-    if ( label )
-      {
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( numPixels );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
-#endif
-	{
-	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
-	  {
-	  totalDistancePtr[i] = inOutDistancePtr[i];
-	  resultPtr[i] = label;
-	  }
-	else
-	  if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
-	    {
-	    resultPtr[i] = numLabels;
-	    }	  
-	}
-#ifdef CMTK_USE_GCD
-		      });
-#endif
-      }
-    }
-  
-  return result;
-}
-
 void
 AddVolumeFile
-( const char* fileName, std::vector<cmtk::UniformVolume::SmartPtr>& volumeVector )
+( const char* fileName, std::vector<cmtk::UniformVolume::SmartConstPtr>& volumeVector )
 {
   cmtk::DebugOutput( 1 ) << "Opening image " << fileName << ".\n";
   
@@ -236,19 +113,20 @@ doMain ( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  std::vector<cmtk::UniformVolume::SmartPtr> volumeVector;
+  std::vector<cmtk::UniformVolume::SmartConstPtr> volumeVector;
   for ( std::vector<std::string>::const_iterator it = InputFileVector.begin(); it != InputFileVector.end(); ++it ) 
     {
     AddVolumeFile( it->c_str(), volumeVector );
     }
 
   const double timeBaseline = cmtk::Timers::GetTimeProcess();
-  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr( Average( volumeVector, NumberOfLabels ) );
+
+  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr( cmtk::LabelCombinationShapeBasedAveraging( volumeVector, NumberOfLabels ).GetResult() );
   cmtk::DebugOutput( 1 ).GetStream().printf( "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
-    
-  cmtk::UniformVolume& volume = *(volumeVector[0]);
-  volume.SetData( avgArray );
-  cmtk::VolumeIO::Write( volume, OutputFileName );
+  
+  cmtk::UniformVolume::SmartPtr volume = volumeVector[0]->CloneGrid();
+  volume->SetData( avgArray );
+  cmtk::VolumeIO::Write( *volume, OutputFileName );
 
   return 0;
 }
