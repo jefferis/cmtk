@@ -648,7 +648,7 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "sba" tool
-LIST(APPEND testList sbaDefault)
+LIST(APPEND testList sbaDefault sbaOutliers sbaOutliers2)
 
 # ==========================================
 # Tests for "sbai" tool

@@ -1882,6 +1882,14 @@ case ${RUNTEST} in
 	run sba -o ${tmpdir}/sba.nii -n 255 parc1.hdr parc2.hdr parc3.hdr
 	check_results sba.nii
 	;;
+    sbaOutliers)
+	run sba --exclude-outliers -o ${tmpdir}/sba.nii -n 255 parc1.hdr parc1.hdr parc1.hdr parc1.hdr parc1.hdr parc2.hdr
+	check_results sba.nii
+	;;
+    sbaOutliers2)
+	run sba --exclude-outliers -o ${tmpdir}/sba.nii -n 255 parc1.hdr parc2.hdr parc3.hdr
+	check_results sba.nii
+	;;
     sbaiDefault)
 	run sbai -o ${tmpdir}/sbai.nii -n 255 parc12_warp.xform parc13_warp.xform
 	check_results sbai.nii
