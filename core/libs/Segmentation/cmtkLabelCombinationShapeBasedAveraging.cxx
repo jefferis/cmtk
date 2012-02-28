@@ -112,6 +112,35 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
       this->ProcessLabelIncludeOutliers( label, resultPtr, totalDistancePtr, inOutDistancePtr );
       }
 
+    // if this is not the first label, compare this label's sum distance map
+    // (over all volumes) pixel by pixel and set this label where it is
+    // closer than previous closest label
+    if ( label )
+      {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
+#pragma omp parallel for
+			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+#endif
+			    {
+			    if ( inOutDistancePtr[i] < totalDistancePtr[i] )
+			      {
+			      totalDistancePtr[i] = inOutDistancePtr[i];
+			      resultPtr[i] = label;
+			      }
+			    else
+			      if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
+				{
+				resultPtr[i] = this->m_NumberOfLabels;
+				}	  
+			    }
+#ifdef CMTK_USE_GCD
+		      });
+#endif
+      }
     }
   
   return result;
@@ -168,36 +197,6 @@ LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::La
 		      });
 #endif
       }
-    }
-  
-  // if this is not the first label, compare this label's sum distance map
-  // (over all volumes) pixel by pixel and set this label where it is
-  // closer than previous closest label
-  if ( label )
-    {
-#ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-			  {
-			  if ( inOutDistancePtr[i] < totalDistancePtr[i] )
-			    {
-			    totalDistancePtr[i] = inOutDistancePtr[i];
-			    resultPtr[i] = label;
-			    }
-			  else
-			    if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
-			      {
-			      resultPtr[i] = this->m_NumberOfLabels;
-			      }	  
-			  }
-#ifdef CMTK_USE_GCD
-		    });
-#endif
     }
 }
 
