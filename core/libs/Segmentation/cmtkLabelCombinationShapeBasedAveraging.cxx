@@ -38,7 +38,6 @@
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkTemplateArray.h>
 
-#include <vector>
 #include <algorithm>
 
 namespace
@@ -63,6 +62,22 @@ LabelCombinationShapeBasedAveraging::LabelCombinationShapeBasedAveraging( const 
     
     DebugOutput( 9 ) << "Determined number of labels to be " << this->m_NumberOfLabels << "\n";
     }
+
+  this->m_NumberOfPixels = this->m_LabelImages[0]->GetNumberOfPixels();
+  
+  this->m_LabelFlags.resize( this->m_NumberOfLabels, false );
+  for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
+    {
+    const cmtk::TypedArray& data = *(this->m_LabelImages[k]->GetData());
+    
+    cmtk::Types::DataItem l;
+    for ( size_t i = 0; i < this->m_NumberOfPixels; ++i )
+      {
+      if ( data.Get( l, i ) )
+	this->m_LabelFlags[static_cast<unsigned short>( l )] = true;
+      }
+    }
+  
 }
 
 TypedArray::SmartPtr
@@ -70,40 +85,25 @@ LabelCombinationShapeBasedAveraging::GetResult() const
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
-  const size_t numPixels = this->m_LabelImages[0]->GetNumberOfPixels();
-  
-  std::vector<bool> labelFlags( this->m_NumberOfLabels, false );  
-  for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
-    {
-    const cmtk::TypedArray& data = *(this->m_LabelImages[k]->GetData());
-    
-    cmtk::Types::DataItem l;
-    for ( size_t i = 0; i < numPixels; ++i )
-      {
-      if ( data.Get( l, i ) )
-	labelFlags[static_cast<unsigned short>( l )] = true;
-      }
-    }
-  
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, numPixels ) );
-  result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
+  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, this->m_NumberOfPixels ) );
+  result->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
   unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
-  cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( numPixels ) );
+  cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( this->m_NumberOfPixels ) );
   float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
 
-  cmtk::FloatArray::SmartPtr inOutDistance( new cmtk::FloatArray(numPixels ) );
+  cmtk::FloatArray::SmartPtr inOutDistance( new cmtk::FloatArray( this->m_NumberOfPixels ) );
   float* inOutDistancePtr = inOutDistance->GetDataPtrTemplate();
 
-  totalDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
+  totalDistance->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
   for ( int label = 0; label < this->m_NumberOfLabels; ++label )
     {
     /// skip labels that are not in any image.
-    if ( ! labelFlags[label] ) continue;
+    if ( ! this->m_LabelFlags[label] ) continue;
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
+    inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
 
     for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
       {
@@ -114,12 +114,12 @@ LabelCombinationShapeBasedAveraging::GetResult() const
       if ( !label )
 	{
 #ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
+    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
     dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
+			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 	  {
 	  totalDistancePtr[i] += signedDistancePtr[i];
@@ -132,12 +132,12 @@ LabelCombinationShapeBasedAveraging::GetResult() const
 	// for all other labels, add to label distance map
 	{
 #ifdef CMTK_USE_GCD
-    const cmtk::Threads::Stride stride( numPixels );
+    const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
     dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
+			for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 	  {
 	  inOutDistancePtr[i] += signedDistancePtr[i];
@@ -154,12 +154,12 @@ LabelCombinationShapeBasedAveraging::GetResult() const
     if ( label )
       {
 #ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( numPixels );
+      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
       dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
+			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 	{
 	if ( inOutDistancePtr[i] < totalDistancePtr[i] )

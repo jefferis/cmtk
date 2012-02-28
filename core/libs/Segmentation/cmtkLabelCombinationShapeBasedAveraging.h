@@ -80,6 +80,12 @@ private:
 
   /// Vector of label images.
   const std::vector<UniformVolume::SmartConstPtr>& m_LabelImages;
+
+  /// Number of pixels per image.
+  size_t m_NumberOfPixels;
+
+  /// Flags for which labels actually exist in the data.
+  std::vector<bool> m_LabelFlags;
 };
 
 } // namespace cmtk

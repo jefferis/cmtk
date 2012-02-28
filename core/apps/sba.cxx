@@ -36,7 +36,6 @@
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
-#include <System/cmtkStrUtility.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -45,7 +44,6 @@
 
 #include <Segmentation/cmtkLabelCombinationShapeBasedAveraging.h>
 
-#include <math.h>
 #include <vector>
 
 #ifdef CMTK_USE_GCD
