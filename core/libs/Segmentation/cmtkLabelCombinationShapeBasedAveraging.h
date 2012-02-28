@@ -91,14 +91,14 @@ private:
   /// Handle one label and include outliers.
   void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
 				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
-				    float* totalDistancePtr /*!< Pointer to evolving total distance map array */,
-				    float* inOutDistancePtr /*!< Pointer to evolving inside/outside distance map array */ ) const;
+				    std::vector<float>& totalDistance /*!< Evolving total distance map array */,
+				    std::vector<float>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
 
   /// Handle one label and exclude outliers.
   void ProcessLabelExcludeOutliers( const Self::LabelIndexType label /*!< Current label */,
 				    Self::LabelIndexType* resultPtr /*!< Pointer to result label field array */,
-				    float* totalDistancePtr /*!< Pointer to evolving total distance map array */,
-				    float* inOutDistancePtr /*!< Pointer to evolving inside/outside distance map array */ ) const;
+				    std::vector<float>& totalDistance /*!< Evolving total distance map array */,
+				    std::vector<float>& inOutDistance /*!< Evolving inside/outside distance map array */ ) const;
 
 };
 

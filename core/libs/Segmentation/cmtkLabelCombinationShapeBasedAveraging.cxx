@@ -87,13 +87,9 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
   result->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
   Self::LabelIndexType* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
-  cmtk::FloatArray::SmartPtr totalDistance( new cmtk::FloatArray( this->m_NumberOfPixels ) );
-  float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
+  std::vector<float> totalDistance( this->m_NumberOfPixels, 0.0 );
+  std::vector<float> inOutDistance( this->m_NumberOfPixels );
 
-  cmtk::FloatArray::SmartPtr inOutDistance( new cmtk::FloatArray( this->m_NumberOfPixels ) );
-  float* inOutDistancePtr = inOutDistance->GetDataPtrTemplate();
-
-  totalDistance->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
   for ( int label = 0; label < this->m_NumberOfLabels; ++label )
     {
     /// skip labels that are not in any image.
@@ -101,15 +97,15 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
+    std::fill( inOutDistance.begin(), inOutDistance.end(), 0.0 );
 
     if ( detectOutliers )
       {
-      this->ProcessLabelExcludeOutliers( label, resultPtr, totalDistancePtr, inOutDistancePtr );
+      this->ProcessLabelExcludeOutliers( label, resultPtr, totalDistance, inOutDistance );
       }
     else
       {
-      this->ProcessLabelIncludeOutliers( label, resultPtr, totalDistancePtr, inOutDistancePtr );
+      this->ProcessLabelIncludeOutliers( label, resultPtr, totalDistance, inOutDistance );
       }
 
     // if this is not the first label, compare this label's sum distance map
@@ -126,13 +122,13 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 			    {
-			    if ( inOutDistancePtr[i] < totalDistancePtr[i] )
+			    if ( inOutDistance[i] < totalDistance[i] )
 			      {
-			      totalDistancePtr[i] = inOutDistancePtr[i];
+			      totalDistance[i] = inOutDistance[i];
 			      resultPtr[i] = label;
 			      }
 			    else
-			      if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
+			      if ( !(inOutDistance[i] > totalDistance[i]) )
 				{
 				resultPtr[i] = this->m_NumberOfLabels;
 				}	  
@@ -147,7 +143,7 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 }
 
 void
-LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, float* totalDistancePtr, float* inOutDistancePtr ) const
+LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, std::vector<float>& totalDistance, std::vector<float>& inOutDistance ) const
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
   
@@ -184,7 +180,7 @@ LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::La
       for ( size_t k = 0; k < nLabelMaps; ++k )
 	{
 	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
-	  totalDistancePtr[i] += distances[k];
+	  totalDistance[i] += distances[k];
 	}
       }
     else
@@ -193,14 +189,14 @@ LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers( const Self::La
       for ( size_t k = 0; k < nLabelMaps; ++k )
 	{
 	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
-	  inOutDistancePtr[i] += distances[k];
+	  inOutDistance[i] += distances[k];
 	}
       }
     }
 }
 
 void
-LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, float* totalDistancePtr, float* inOutDistancePtr ) const
+LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, std::vector<float>& totalDistance, std::vector<float>& inOutDistance ) const
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
   
@@ -221,7 +217,7 @@ LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::La
 			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 			    {
-			    totalDistancePtr[i] += signedDistancePtr[i];
+			    totalDistance[i] += signedDistancePtr[i];
 			    }
 #ifdef CMTK_USE_GCD
 		      });
@@ -239,7 +235,7 @@ LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers( const Self::La
 			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 #endif
 			    {
-			    inOutDistancePtr[i] += signedDistancePtr[i];
+			    inOutDistance[i] += signedDistancePtr[i];
 			    }
 #ifdef CMTK_USE_GCD
 		      });
