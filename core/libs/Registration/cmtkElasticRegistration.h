@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,10 +36,9 @@
 #include <cmtkconfig.h>
 
 #include <Registration/cmtkVoxelRegistration.h>
+
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkMatchedLandmarkList.h>
-
-#include <string.h>
 
 namespace
 cmtk
