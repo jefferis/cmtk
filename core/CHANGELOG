@@ -1,5 +1,8 @@
 Release CMTK-2.1.3:
 
+(r3953) Refactored: the Shape-Based Averaging and Interpolation code was move
+    from the "sbai.cxx" tool source code to a new library class,
+    "cmtk::LabelCombinationShapeBasedAveragingInterpolation"
 (r3941) Added: the "sba" tool for Shape-Based Averaging (and the underlying
     library class) can now optionally detect and exclude local outlier pixels
     based on distribution of distances over all inputs at each pixel and for
