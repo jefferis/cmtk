@@ -337,7 +337,7 @@ cmtk::EchoPlanarUnwarpFunctional
   const int phaseEncodeDirection = function.m_PhaseEncodeDirection;
 
   // reset gradient vector
-  for ( size_t i = g.getlowbound(); i <= g.gethighbound(); ++i )
+  for ( int i = g.getlowbound(); i <= g.gethighbound(); ++i )
     g(i) = 0.0;
 
   const UniformVolume& sourceImage = *(function.m_ImageGrid);
