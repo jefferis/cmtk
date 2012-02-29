@@ -110,9 +110,8 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
       this->ProcessLabelIncludeOutliers( label, (label == 0) ? totalDistance : labelDistanceMap );
       }
     
-    // if this is not the first label, compare this label's sum distance map
-    // (over all volumes) pixel by pixel and set this label where it is
-    // closer than previous closest label
+    // compare sum over all inputs of this label's distance maps pixel by pixel with current total distance map.
+    // Set result map to this label where it is closer than previous closest label.
     if ( label )
       {
 #pragma omp parallel for
