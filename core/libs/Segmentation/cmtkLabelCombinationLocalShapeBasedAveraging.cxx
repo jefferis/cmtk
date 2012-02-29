@@ -163,20 +163,6 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion
       continue;
       }
 
-    // check if all (valid) input atlas labels are the same
-    bool allTheSame = true;
-    for ( size_t n = 1; n < nAtlases; ++n )
-      {
-      if ( valid[n] )
-	{
-	if ( labels[n] != labels[firstValid] )
-	  {
-	  allTheSame = false;
-	  break;
-	  }
-	}
-      }
-    
     std::fill( weights.begin(), weights.end(), -1 );
     std::fill( bestPatchOffset.begin(), bestPatchOffset.end(), 0 );
     
