@@ -114,29 +114,22 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
     // closer than previous closest label
     if ( label )
       {
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
 #pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-			    {
-			    if ( inOutDistance[i] < totalDistance[i] )
-			      {
-			      totalDistance[i] = inOutDistance[i];
-			      resultPtr[i] = label;
-			      }
-			    else
-			      if ( !(inOutDistance[i] > totalDistance[i]) )
-				{
-				resultPtr[i] = this->m_NumberOfLabels;
-				}	  
-			    }
-#ifdef CMTK_USE_GCD
-		      });
-#endif
+      for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+	{
+	if ( inOutDistance[i] < totalDistance[i] )
+	  {
+	  totalDistance[i] = inOutDistance[i];
+	  resultPtr[i] = label;
+	  }
+	else
+	  {
+	  if ( !(inOutDistance[i] > totalDistance[i]) )
+	    {
+	    resultPtr[i] = this->m_NumberOfLabels;
+	    }	  
+	  }
+	}
       }
     }
   
@@ -211,38 +204,20 @@ LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers
     // if this is the first label, write directly to accumulation distance map
     if ( !label )
       {
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
 #pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-			    {
-			    totalDistance[i] += signedDistancePtr[i];
-			    }
-#ifdef CMTK_USE_GCD
-		      });
-#endif
+      for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+	{
+	totalDistance[i] += signedDistancePtr[i];
+	}
       }
     else
       // for all other labels, add to label distance map
       {
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( this->m_NumberOfPixels );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
 #pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-#endif
-			    {
-			    inOutDistance[i] += signedDistancePtr[i];
-			    }
-#ifdef CMTK_USE_GCD
-		      });
-#endif
+      for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
+	{
+	inOutDistance[i] += signedDistancePtr[i];
+	}
       }
     }
 }
