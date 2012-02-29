@@ -71,7 +71,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
       DebugOutput( 5 ) << "  Creating distance maps\n";
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
-	atlasDMaps[n] = ( UniformDistanceMap<float>( *(this->m_AtlasLabels[n]), UniformDistanceMap<float>::SIGNED | UniformDistanceMap<float>::SQUARED | UniformDistanceMap<float>::VALUE_EXACT, label ).Get() );
+	atlasDMaps[n] = ( UniformDistanceMap<float>( *(this->m_AtlasLabels[n]), DistanceMap::SIGNED | DistanceMap::SQUARED | DistanceMap::VALUE_EXACT, label ).Get() );
 	}
       
       DebugOutput( 5 ) << "  Combining distance maps\n";
@@ -95,7 +95,8 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
 }
 
 void
-cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( TypedArray& result, std::vector<float>& resultDistance, const int label, const Self::TargetRegionType& region, std::vector<UniformVolume::SmartConstPtr> dmaps ) const
+cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion
+( TypedArray& result, std::vector<float>& resultDistance, const int label, const Self::TargetRegionType& region, std::vector<UniformVolume::SmartConstPtr> dmaps ) const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
   const Self::TargetRegionType wholeImageRegion = targetImage.CropRegion();

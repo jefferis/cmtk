@@ -91,7 +91,7 @@ Average
   std::vector<cmtk::XformUniformVolume::SmartConstPtr> xforms,
   const unsigned short numLabels )
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
+  const int distanceMapFlags = cmtk::DistanceMap::VALUE_EXACT + cmtk::DistanceMap::SIGNED;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
   const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
