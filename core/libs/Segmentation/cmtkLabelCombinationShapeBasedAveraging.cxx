@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2012 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
 //
@@ -33,6 +33,7 @@
 #include "cmtkLabelCombinationShapeBasedAveraging.h"
 
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkThreads.h>
 
 #include <Base/cmtkUniformDistanceMap.h>
 #include <Base/cmtkTypedArray.h>
