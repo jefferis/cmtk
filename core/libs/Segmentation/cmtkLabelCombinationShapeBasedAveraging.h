@@ -72,7 +72,7 @@ public:
   typedef float DistanceMapRealType;
 
   /// Constructor: compute label combination.
-  LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages, 
+  LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages /*!< Input label images. */, 
 				       const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
 
   /// Get result.
