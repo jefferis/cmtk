@@ -86,10 +86,9 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 {
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, this->m_NumberOfPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
-  Self::LabelIndexType* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
   std::vector<Self::DistanceMapRealType> totalDistance( this->m_NumberOfPixels, 0.0 );
-  std::vector<Self::DistanceMapRealType> inOutDistance( this->m_NumberOfPixels );
+  std::vector<Self::DistanceMapRealType> labelDistanceMap( this->m_NumberOfPixels );
 
   for ( int label = 0; label < this->m_NumberOfLabels; ++label )
     {
@@ -98,17 +97,19 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    std::fill( inOutDistance.begin(), inOutDistance.end(), 0.0 );
+    std::fill( labelDistanceMap.begin(), labelDistanceMap.end(), 0.0 );
 
     if ( detectOutliers )
       {
-      this->ProcessLabelExcludeOutliers( label, resultPtr, totalDistance, inOutDistance );
+      // if this is the first label, write directly to totalDistance, otherwise labelDistanceMap
+      this->ProcessLabelExcludeOutliers( label, (label == 0) ? totalDistance : labelDistanceMap );
       }
     else
       {
-      this->ProcessLabelIncludeOutliers( label, resultPtr, totalDistance, inOutDistance );
+      // if this is the first label, write directly to totalDistance, otherwise labelDistanceMap
+      this->ProcessLabelIncludeOutliers( label, (label == 0) ? totalDistance : labelDistanceMap );
       }
-
+    
     // if this is not the first label, compare this label's sum distance map
     // (over all volumes) pixel by pixel and set this label where it is
     // closer than previous closest label
@@ -117,16 +118,16 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 #pragma omp parallel for
       for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
 	{
-	if ( inOutDistance[i] < totalDistance[i] )
+	if ( labelDistanceMap[i] < totalDistance[i] )
 	  {
-	  totalDistance[i] = inOutDistance[i];
-	  resultPtr[i] = label;
+	  totalDistance[i] = labelDistanceMap[i];
+	  result->Set( label, i );
 	  }
 	else
 	  {
-	  if ( !(inOutDistance[i] > totalDistance[i]) )
+	  if ( !(labelDistanceMap[i] > totalDistance[i]) )
 	    {
-	    resultPtr[i] = this->m_NumberOfLabels;
+	    result->Set( this->m_NumberOfLabels, i );
 	    }	  
 	  }
 	}
@@ -138,7 +139,7 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 
 void
 LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers
-( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, std::vector<Self::DistanceMapRealType>& totalDistance, std::vector<Self::DistanceMapRealType>& inOutDistance ) const
+( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<Self::DistanceMapRealType>::VALUE_EXACT + cmtk::UniformDistanceMap<Self::DistanceMapRealType>::SIGNED;
   
@@ -169,30 +170,17 @@ LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers
     const double lThresh = Q1 - 1.5 * (Q3-Q1);
     const double uThresh = Q3 + 1.5 * (Q3-Q1);
     
-    // if this is the first label, write directly to accumulation distance map
-    if ( !label )
+    for ( size_t k = 0; k < nLabelMaps; ++k )
       {
-      for ( size_t k = 0; k < nLabelMaps; ++k )
-	{
-	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
-	  totalDistance[i] += distances[k];
-	}
-      }
-    else
-      // for all other labels, add to label distance map
-      {
-      for ( size_t k = 0; k < nLabelMaps; ++k )
-	{
-	if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
-	  inOutDistance[i] += distances[k];
-	}
+      if ( (distances[k] >= lThresh) && (distances[k] <= uThresh) )
+	labelDistanceMap[i] += distances[k];
       }
     }
 }
 
 void
 LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers
-( const Self::LabelIndexType label, Self::LabelIndexType* resultPtr, std::vector<Self::DistanceMapRealType>& totalDistance, std::vector<Self::DistanceMapRealType>& inOutDistance ) const
+( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<Self::DistanceMapRealType>::VALUE_EXACT + cmtk::UniformDistanceMap<Self::DistanceMapRealType>::SIGNED;
   
@@ -201,23 +189,10 @@ LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers
     cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<Self::DistanceMapRealType>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
     const Self::DistanceMapRealType* signedDistancePtr = static_cast<const Self::DistanceMapRealType*>( signedDistanceMap->GetData()->GetDataPtr() );
     
-    // if this is the first label, write directly to accumulation distance map
-    if ( !label )
-      {
 #pragma omp parallel for
-      for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-	{
-	totalDistance[i] += signedDistancePtr[i];
-	}
-      }
-    else
-      // for all other labels, add to label distance map
+    for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
       {
-#pragma omp parallel for
-      for ( int i = 0; i < static_cast<int>( this->m_NumberOfPixels ); ++i )
-	{
-	inOutDistance[i] += signedDistancePtr[i];
-	}
+      labelDistanceMap[i] += signedDistancePtr[i];
       }
     }
 }
