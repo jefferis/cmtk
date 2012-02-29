@@ -75,15 +75,10 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult( const bool detectOu
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT,this->m_NumberOfPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/,this->m_NumberOfPixels /*len*/ );
-  unsigned short* resultPtr = static_cast<unsigned short*>( result->GetDataPtr() );
   
-  cmtk::FloatArray::SmartPtr referenceInOutDistance( new cmtk::FloatArray(this->m_NumberOfPixels ) );
-  float* referenceInOutDistancePtr = referenceInOutDistance->GetDataPtrTemplate();
+  std::vector<Self::DistanceMapRealType> totalDistance( this->m_NumberOfPixels, 0.0 );
 
-  cmtk::FloatArray::SmartPtr totalDistance ( new cmtk::FloatArray(this->m_NumberOfPixels ) );
-  float* totalDistancePtr = totalDistance->GetDataPtrTemplate();
-
-  totalDistance->BlockSet( 0 /*value*/, 0 /*idx*/,this->m_NumberOfPixels /*len*/ );
+  std::vector<Self::DistanceMapRealType> labelDistance( this->m_NumberOfPixels );
   for ( int label = 0; label < this->m_NumberOfLabels; ++label )
     {
     /// skip labels that are not in any image.
@@ -91,8 +86,8 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult( const bool detectOu
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/,this->m_NumberOfPixels /*len*/ );
-
+    std::fill( labelDistance.begin(), labelDistance.end(), 0.0 );
+    
     for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
       {
       cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(this->m_LabelImages[k]), cmtk::DistanceMap::VALUE_EXACT + cmtk::DistanceMap::SIGNED, label ).Get();
@@ -113,7 +108,7 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult( const bool detectOu
 	    this->m_Transformations[k]->GetTransformedGrid( v, x, y, z );
 	    if ( interpolator.GetDataAt( v, dvalue ) )
 	      {
-	      referenceInOutDistancePtr[i] += dvalue;
+	      labelDistance[i] += dvalue;
 	      }
 	    }
 	  }
@@ -125,57 +120,34 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult( const bool detectOu
     // closer than previous closest label
     if ( label )
       {
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride(this->m_NumberOfPixels );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
 #pragma omp parallel for
-			  for ( int i = 0; i < static_cast<int>(this->m_NumberOfPixels ); ++i )
-#endif
+      for ( int i = 0; i < static_cast<int>(this->m_NumberOfPixels ); ++i )
 	{
-	if ( referenceInOutDistancePtr[i] < totalDistancePtr[i] )
+	if ( labelDistance[i] < totalDistance[i] )
 	  {
-	  totalDistancePtr[i] = referenceInOutDistancePtr[i];
-	  resultPtr[i] = label;
+	  totalDistance[i] = labelDistance[i];
+	  result->Set( label, i );
 	  }
 	else
 	  {
-	  if ( !(referenceInOutDistancePtr[i] > totalDistancePtr[i]) )
+	  if ( !(labelDistance[i] > totalDistance[i]) )
 	    {
-	    resultPtr[i] = this->m_NumberOfLabels;
+	    result->Set( this->m_NumberOfLabels, i );
 	    }
 	  }
 	}
-#ifdef CMTK_USE_GCD
-		      });
-#endif
-
       }
     else
       {
       // for label 0, simply copy map.
-// #pragma omp parallel for // not worth parallelizing a simple copy
       for ( size_t i = 0; i <this->m_NumberOfPixels; ++i )
 	{
-	totalDistancePtr[i] = referenceInOutDistancePtr[i];
+	totalDistance[i] = labelDistance[i];
 	}
       }
     }
   
   return result;
-}
-
-void
-LabelCombinationShapeBasedAveragingInterpolation::ProcessLabelExcludeOutliers
-( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
-{
-}
-
-void
-LabelCombinationShapeBasedAveragingInterpolation::ProcessLabelIncludeOutliers
-( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
-{
 }
 
 } // namespace cmtk

@@ -92,14 +92,6 @@ private:
 
   /// Vector of transformations to the label images.
   const std::vector<cmtk::XformUniformVolume::SmartConstPtr> m_Transformations;
-
-  /// Handle one label and include outliers.
-  void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
-				    std::vector<Self::DistanceMapRealType>& labelDistanceMap /*!< Distance map array for the current label */ ) const;
-
-  /// Handle one label and exclude outliers.
-  void ProcessLabelExcludeOutliers( const Self::LabelIndexType label /*!< Current label */,
-				    std::vector<Self::DistanceMapRealType>& labelDistanceMap /*!< Distance map array for the current label */ ) const;
 };
 
 } // namespace cmtk
