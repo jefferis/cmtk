@@ -141,13 +141,11 @@ void
 LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers
 ( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
-  const int distanceMapFlags = DistanceMap::VALUE_EXACT + DistanceMap::SIGNED;
-  
   const size_t nLabelMaps = this->m_LabelImages.size();
   std::vector<cmtk::UniformVolume::SmartConstPtr> signedDistanceMaps( nLabelMaps );
   for ( size_t k = 0; k < nLabelMaps; ++k )
     {
-    signedDistanceMaps[k] = cmtk::UniformDistanceMap<Self::DistanceMapRealType>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
+    signedDistanceMaps[k] = cmtk::UniformDistanceMap<Self::DistanceMapRealType>( *(this->m_LabelImages[k]), DistanceMap::VALUE_EXACT + DistanceMap::SIGNED, label ).Get();
     }
 
   std::vector<Self::DistanceMapRealType> distances( nLabelMaps );
@@ -182,11 +180,9 @@ void
 LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers
 ( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
-  const int distanceMapFlags = DistanceMap::VALUE_EXACT + DistanceMap::SIGNED;
-  
   for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
     {
-    cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<Self::DistanceMapRealType>( *(this->m_LabelImages[k]), distanceMapFlags, label ).Get();
+    cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<Self::DistanceMapRealType>( *(this->m_LabelImages[k]), DistanceMap::VALUE_EXACT + DistanceMap::SIGNED, label ).Get();
     const Self::DistanceMapRealType* signedDistancePtr = static_cast<const Self::DistanceMapRealType*>( signedDistanceMap->GetData()->GetDataPtr() );
     
 #pragma omp parallel for

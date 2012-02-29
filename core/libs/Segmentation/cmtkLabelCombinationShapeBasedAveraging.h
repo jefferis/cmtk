@@ -78,7 +78,7 @@ public:
   /// Get result.
   TypedArray::SmartPtr GetResult( const bool detectOutliers = false /*!< Flag for local outlier detection.*/ ) const;
 
-private:
+protected:
   /// Number of labels.
   Self::LabelIndexType m_NumberOfLabels;
 
@@ -91,6 +91,7 @@ private:
   /// Flags for which labels actually exist in the data.
   std::vector<bool> m_LabelFlags;
 
+private:
   /// Handle one label and include outliers.
   void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
 				    std::vector<Self::DistanceMapRealType>& labelDistanceMap /*!< Distance map array for the current label */ ) const;
