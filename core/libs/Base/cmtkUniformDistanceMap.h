@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkDistanceMap.h>
 #include <Base/cmtkUniformVolume.h>
 
 #include <System/cmtkSmartPtr.h>
@@ -52,64 +53,23 @@ cmtk
  *\author This class is based on code originally written by Calvin R. Maurer, Jr.
  */
 template<class TDistanceDataType>
-class UniformDistanceMap
+class UniformDistanceMap : public DistanceMap
 {
 public:
-  static const long int EDT_MAX_DISTANCE_SQUARED = 2147329548;
-
   /** This class. */
   typedef UniformDistanceMap<TDistanceDataType> Self;
 
   /** Superclass. */
-  typedef UniformVolume Superclass;
+  typedef DistanceMap Superclass;
 
   /// Smart pointer to distance map.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to distance map.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /** Distance data type. */
   typedef TDistanceDataType DistanceDataType;
-
-  /** Enumeration with binary flags that control distance map computation.
-   * The defined values can be combined by arithmetic "or".
-   */
-  typedef enum 
-  {
-    /** No special functions. 
-     * This flag will create a distance-from-feature map where any non-zero 
-     * voxel in the feature image will be considered.
-     */
-    DEFAULT = 0,
-    /** Compute distance-from-background map.
-     * The resulting distance values will be non-zero at all feature voxels,
-     * specifying the distance to the nearest non-feature voxel.
-     */
-    INSIDE = 1,
-    /** Compute "inside", rather than "outside" map. Ths essentially inverts
-     * the mask.
-     */
-    VALUE_EXACT = 2,
-    /** Use specific feature value.
-     * If this flag is set, only voxels in the feature image with values equal
-     * to or larger than a given constant will be considered feature voxels.
-     * All voxels with lower values will be considered background voxels.
-     */
-    VALUE_WINDOW = 4,
-    /** Use window around specific feature value.
-     * If this flag is set, only voxels in the feature image with values that are
-     * within a range from a given constant will be considered feature voxels.
-     * All voxels with lower values will be considered background voxels.
-     */
-    VALUE_THRESHOLD = 8,
-    /** Compute signed distance map.
-     * The "INSIDE" flag determines whether negative distance values are assigned to
-     * pixels inside (flag off) or outside (flag on) the labelled region.
-     */
-    SIGNED = 16,
-    /** Compute squared distance - do not apply final sqrt() operator.
-     * This can increase efficiency if the outside code wants the squared distance in the first place.
-     */
-    SQUARED = 32
-  } Flags;
 
   /** Construct map from given volume.
    *\param volume 3-D feature image.
@@ -117,7 +77,7 @@ public:
    *\param value Feature value
    *\param window Window radius around feature value.
    */
-  UniformDistanceMap( const UniformVolume& volume, const byte flags = DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
+  UniformDistanceMap( const UniformVolume& volume, const byte flags = Self::DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
 
   // Get the computed distance map.
   UniformVolume::SmartPtr Get()

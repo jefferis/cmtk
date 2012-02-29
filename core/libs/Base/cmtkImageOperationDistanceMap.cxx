@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +36,7 @@ cmtk::ImageOperationDistanceMap
 {
   if ( this->m_SignedDistance )
     {
-    UniformVolume::SmartPtr iMap = DistanceMapType( *volume, DistanceMapType::INSIDE ).Get();
+    UniformVolume::SmartPtr iMap = DistanceMapType( *volume, DistanceMap::INSIDE ).Get();
     UniformVolume::SmartPtr oMap = DistanceMapType( *volume ).Get();
     
     const size_t nPixels = volume->GetNumberOfPixels();

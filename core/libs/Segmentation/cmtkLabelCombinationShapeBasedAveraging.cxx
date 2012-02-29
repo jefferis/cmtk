@@ -35,6 +35,7 @@
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkThreads.h>
 
+#include <Base/cmtkDistanceMap.h>
 #include <Base/cmtkUniformDistanceMap.h>
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkTemplateArray.h>
@@ -140,7 +141,7 @@ void
 LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers
 ( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<Self::DistanceMapRealType>::VALUE_EXACT + cmtk::UniformDistanceMap<Self::DistanceMapRealType>::SIGNED;
+  const int distanceMapFlags = DistanceMap::VALUE_EXACT + DistanceMap::SIGNED;
   
   const size_t nLabelMaps = this->m_LabelImages.size();
   std::vector<cmtk::UniformVolume::SmartConstPtr> signedDistanceMaps( nLabelMaps );
@@ -181,7 +182,7 @@ void
 LabelCombinationShapeBasedAveraging::ProcessLabelIncludeOutliers
 ( const Self::LabelIndexType label, std::vector<Self::DistanceMapRealType>& labelDistanceMap ) const
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<Self::DistanceMapRealType>::VALUE_EXACT + cmtk::UniformDistanceMap<Self::DistanceMapRealType>::SIGNED;
+  const int distanceMapFlags = DistanceMap::VALUE_EXACT + DistanceMap::SIGNED;
   
   for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
     {

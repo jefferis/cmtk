@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,7 +34,10 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkImageOperation.h>
+
+#include <Base/cmtkDistanceMap.h>
 #include <Base/cmtkUniformDistanceMap.h>
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

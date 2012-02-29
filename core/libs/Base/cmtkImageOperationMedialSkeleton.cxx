@@ -36,7 +36,7 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationMedialSkeleton
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-  UniformVolume::SmartPtr iMap = DistanceMapType( *volume, DistanceMapType::INSIDE ).Get();  
+  UniformVolume::SmartPtr iMap = DistanceMapType( *volume, DistanceMap::INSIDE ).Get();  
 
   UniformVolume::SmartPtr skeleton( iMap->CloneGrid() );
   skeleton->CreateDataArray( TYPE_COORDINATE );

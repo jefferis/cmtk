@@ -4,7 +4,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,14 +86,14 @@ UniformDistanceMap<TDistanceDataType>
   TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume.GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );
 
-  const byte inside = ( flags & UniformDistanceMap::INSIDE ) ? 0 : 1;
+  const byte inside = ( flags & Self::INSIDE ) ? 0 : 1;
   const byte outside = 1 - inside;
 
   const TypedArray& feature = *(volume.GetData());
 
   Types::DataItem c;
   DistanceDataType *p = Distance;
-  if ( flags & UniformDistanceMap::VALUE_EXACT ) 
+  if ( flags & Self::VALUE_EXACT ) 
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
@@ -107,7 +107,7 @@ UniformDistanceMap<TDistanceDataType>
 	}
       }
     } 
-  else if ( flags & UniformDistanceMap::VALUE_THRESHOLD ) 
+  else if ( flags & Self::VALUE_THRESHOLD ) 
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
@@ -121,7 +121,7 @@ UniformDistanceMap<TDistanceDataType>
 	}
       }
     } 
-  else if ( flags & UniformDistanceMap::VALUE_WINDOW ) 
+  else if ( flags & Self::VALUE_WINDOW ) 
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
@@ -276,7 +276,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     /* forward pass */
     p = plane + j * this->m_DistanceMap->m_Dims[0];
-    DistanceDataType d = static_cast<DistanceDataType>( EDT_MAX_DISTANCE_SQUARED );
+    DistanceDataType d = static_cast<DistanceDataType>( Self::EDT_MAX_DISTANCE_SQUARED );
     for ( int i = 0; i < this->m_DistanceMap->m_Dims[0]; i++, p++ ) 
       {
       /* set d = 0 when we encounter a feature voxel */
@@ -286,21 +286,21 @@ UniformDistanceMap<TDistanceDataType>
 	}
       /* increment distance ... */
       else 
-	if ( d != EDT_MAX_DISTANCE_SQUARED ) 
+	if ( d != Self::EDT_MAX_DISTANCE_SQUARED ) 
 	  {
 	  *p = ++d;
 	  }
       /* ... unless we haven't encountered a feature voxel yet */
 	else
 	  {
-	  *p = static_cast<DistanceDataType>( EDT_MAX_DISTANCE_SQUARED );
+	  *p = static_cast<DistanceDataType>( Self::EDT_MAX_DISTANCE_SQUARED );
 	  }
       }
     
     /* reverse pass */
-    if ( *(--p) != EDT_MAX_DISTANCE_SQUARED ) 
+    if ( *(--p) != Self::EDT_MAX_DISTANCE_SQUARED ) 
       {
-      DistanceDataType d = static_cast<DistanceDataType>( EDT_MAX_DISTANCE_SQUARED );
+      DistanceDataType d = static_cast<DistanceDataType>( Self::EDT_MAX_DISTANCE_SQUARED );
       for ( int i = this->m_DistanceMap->m_Dims[0] - 1; i >= 0; i--, p-- ) 
 	{
 	/* set d = 0 when we encounter a feature voxel */
@@ -310,7 +310,7 @@ UniformDistanceMap<TDistanceDataType>
 	  }
 	/* increment distance after encountering a feature voxel */
 	else
-	  if ( d != EDT_MAX_DISTANCE_SQUARED ) 
+	  if ( d != Self::EDT_MAX_DISTANCE_SQUARED ) 
 	    {
 	    /* compare forward and reverse distances */
 	    if ( ++d < *p ) 
@@ -380,7 +380,7 @@ UniformDistanceMap<TDistanceDataType>
   for (i = 0, l = -1; i < nSize; i++, deltai += delta) 
     {
     /* line 4 */
-    if ( distanceSoFar[i] != EDT_MAX_DISTANCE_SQUARED ) 
+    if ( distanceSoFar[i] != Self::EDT_MAX_DISTANCE_SQUARED ) 
       {
       /* line 5 */
       if ( l < 1 ) 
