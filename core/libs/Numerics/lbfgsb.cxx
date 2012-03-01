@@ -2187,7 +2187,7 @@ lbfgsbminimize
   int ileave;
   int nenter;
   ap::real_value_type theta;
-  ap::real_value_type fold;
+  ap::real_value_type fold = 0;
   ap::real_value_type dr;
   ap::real_value_type rr;
   ap::real_value_type dnrm;
