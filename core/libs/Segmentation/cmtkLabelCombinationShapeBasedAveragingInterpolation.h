@@ -84,7 +84,7 @@ public:
 						    const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
   
   /// Get result.
-  TypedArray::SmartPtr GetResult( const bool detectOutliers = false /*!< Flag for local outlier detection.*/ ) const;
+  TypedArray::SmartPtr GetResult() const;
 
 private:
   /// Target grid for all transformations.

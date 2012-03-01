@@ -69,7 +69,7 @@ LabelCombinationShapeBasedAveragingInterpolation::LabelCombinationShapeBasedAver
 }
 
 TypedArray::SmartPtr
-LabelCombinationShapeBasedAveragingInterpolation::GetResult( const bool detectOutliers ) const
+LabelCombinationShapeBasedAveragingInterpolation::GetResult() const
 {
   const cmtk::DataGrid::IndexType& targetDims = this->m_TargetGrid->GetDims();
 
