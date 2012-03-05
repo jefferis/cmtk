@@ -6,11 +6,18 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.1.3
 ===========================
 
+This is a minor feature release focused on CMTK's label combination
+functionality.
+
 The "average_edt" tool has been replaced by two new tools, "sba" and "sbai",
 for Shape-Based Averaging (and Interpolation). The "sba" tool implements the
 "--interpolate-image" mode of "average_edt", whereas "sbai" implements the
 "--interpolate-distance" mode. "Windowed" averaging of intensity images was
 not really useful and is no longer supported.
+
+The actual label combination code has been moved from the front-end tools into
+the cmtkSegmentation library, and local outlier detection has been added to
+shape-based averaging.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
@@ -90,6 +97,7 @@ Open64 Compiler
 
 - CMTK does not build in Release mode with the Open64 compiler due to internal
   compilar errors.
+
 
 ==========================================================================
 
