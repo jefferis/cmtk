@@ -6,6 +6,9 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.0
 ===========================
 
+CMTK now requires at least CMake 2.8.0 to build.
+
+
 CMTK has been built and tested on the following platforms:
 
 - Linux 32bit (Fedora 15), gcc 4.6.1
