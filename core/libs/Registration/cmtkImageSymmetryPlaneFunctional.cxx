@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,17 +43,17 @@ cmtk
 
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume ) 
-  : ImageSymmetryPlaneFunctionalBase( volume ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
+  : ImageSymmetryPlaneFunctionalBase( volume )
 {
+  this->m_Metric = Self::MetricType::SmartPtr( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) );
 }
 
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
-  : ImageSymmetryPlaneFunctionalBase( volume, valueRange ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
+  : ImageSymmetryPlaneFunctionalBase( volume, valueRange )
 {
+  this->m_Metric = Self::MetricType::SmartPtr( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) );
 }
 
 ImageSymmetryPlaneFunctional::ReturnType
