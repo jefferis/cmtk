@@ -2195,7 +2195,9 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxInverseConsistentCC)
+        export CMTK_NUM_THREADS=1
 	run warpx --fast --max-stepsize 8 --grid-spacing 80 --min-stepsize 1 --ncc --inverse-consistency-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+        unset CMTK_NUM_THREADS
 	check_results registration
 	;;
     warpxMultiLevel)
