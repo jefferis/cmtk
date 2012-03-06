@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r3964) Fixed: cmtk::ImagePairSimilarityJointHistogram constructor was using
+    "this" pointer before properly constructing object (Visual C++ warning).
 
 
 Release CMTK-2.1.3 (2012-03-05):
