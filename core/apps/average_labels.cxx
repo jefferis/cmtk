@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -141,7 +141,7 @@ doMain( const int argc, const char* argv[] )
 	  cmtk::ProbeInfo probeInfo;
 	  if ( volume->ProbeNoXform( probeInfo, vx ) )
 	    for ( int corner = 0; corner < 8; ++corner )
-	      labelWeights[static_cast<byte>( probeInfo.Values[corner] )] += probeInfo.GetWeight( corner );
+	      labelWeights[static_cast<byte>( probeInfo.Values[corner] )] += static_cast<float>( probeInfo.GetWeight( corner ) );
 	  }
 
 	short maxLabel = -1;

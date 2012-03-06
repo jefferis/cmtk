@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -352,7 +352,7 @@ CallbackThreshBelow( const char* argv )
 {
   CheckStackOneImage( "ThreshBelow" );
 
-  const float threshold = atof( argv );
+  const cmtk::Types::DataItem threshold = static_cast<cmtk::Types::DataItem>( atof( argv ) );
   
   ImageStackType::iterator it = ImageStack.begin();
   while ( it != ImageStack.end() )
@@ -375,7 +375,7 @@ CallbackThreshAbove( const char* argv )
 {
   CheckStackOneImage( "ThreshAbove" );
 
-  const float threshold = atof( argv );
+  const Types::DataItem threshold = static_cast<Types::DataItem>( atof( argv ) );
   
   ImageStackType::iterator it = ImageStack.begin();
   while ( it != ImageStack.end() )
@@ -1209,7 +1209,7 @@ CallbackMaxIndex()
   for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
-    float maxValue = 0;
+    cmtk::Types::DataItem maxValue = 0;
     short maxIndex = -2;
     cmtk::Types::DataItem v;
     
