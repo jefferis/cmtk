@@ -105,7 +105,9 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "epiunwarp" tool
-LIST(APPEND testList epiunwarp)
+IF(CMTK_BUILD_NRRD)
+  LIST(APPEND testList epiunwarp)
+ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "groupwise_init" tool
