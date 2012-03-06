@@ -375,7 +375,7 @@ CallbackThreshAbove( const char* argv )
 {
   CheckStackOneImage( "ThreshAbove" );
 
-  const Types::DataItem threshold = static_cast<Types::DataItem>( atof( argv ) );
+  const cmtk::Types::DataItem threshold = static_cast<cmtk::Types::DataItem>( atof( argv ) );
   
   ImageStackType::iterator it = ImageStack.begin();
   while ( it != ImageStack.end() )
