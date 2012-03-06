@@ -1301,7 +1301,9 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     mcaffine1)
+	export CMTK_NUM_THREADS=1
 	run mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --covariance -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
+	unset CMTK_NUM_THREADS
 	check_results xform
 	;;
     mcaffine2)
