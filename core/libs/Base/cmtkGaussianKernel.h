@@ -63,7 +63,7 @@ public:
   static std::vector<TFloat> GetSymmetricKernel( const Units::GaussianSigma& sigma /*!< Sigma parameter (standard deviation) of the kernel */, 
 						 const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
   {
-    const TFloat normFactor = 1.0/(sqrt(2*M_PI) * sigma.Value());
+    const TFloat normFactor = static_cast<TFloat>( 1.0/(sqrt(2*M_PI) * sigma.Value()) );
     const size_t radius = static_cast<size_t>( Self::GetRadius( sigma, normFactor, maxError ) );
     
     std::vector<TFloat> kernel( 2 * radius + 1 );
