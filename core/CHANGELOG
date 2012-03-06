@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r3969) Added: cmtk::RegressionTracker class for checksum-based tracking down
+    of regression problems.
 (r3964) Fixed: cmtk::ImagePairSimilarityJointHistogram constructor was using
     "this" pointer before properly constructing object (Visual C++ warning).
 
