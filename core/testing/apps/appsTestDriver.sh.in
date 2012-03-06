@@ -2207,8 +2207,10 @@ case ${RUNTEST} in
 	unset CMTK_NUM_THREADS
 	;;
     warpxMultiLevelDeltaFThreshold)
+        export CMTK_NUM_THREADS=1
 	run warpx --fast --max-stepsize 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
+	unset CMTK_NUM_THREADS
 	;;
     warpxMultiLevelExact)
 	run warpx --fast --max-stepsize 8 --grid-spacing 160 --exact-spacing --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
