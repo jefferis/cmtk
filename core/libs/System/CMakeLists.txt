@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -61,25 +61,20 @@ SET(cmtkSystem_SRCS
   cmtkTimers.cxx
 )
 
+IF(CMTK_BUILD_RTRACKER)
+  LIST(APPEND cmtkSystem_SRCS cmtkRegressionTracker.cxx)
+ENDIF(CMTK_BUILD_RTRACKER)
+
 IF(CMTK_USE_BZIP2)
-  SET(cmtkSystem_SRCS
-    ${cmtkSystem_SRCS}
-    cmtkCompressedStreamBZip2.cxx
-    )
+  LIST(APPEND cmtkSystem_SRCS cmtkCompressedStreamBZip2.cxx)
 ENDIF(CMTK_USE_BZIP2)
 
 IF(CMTK_USE_LZMA)
-  SET(cmtkSystem_SRCS
-    ${cmtkSystem_SRCS}
-    cmtkCompressedStreamLZMA.cxx
-    )
+  LIST(APPEND cmtkSystem_SRCS cmtkCompressedStreamLZMA.cxx)
 ENDIF(CMTK_USE_LZMA)
 
 IF(CMTK_USE_GCD)
-  SET(cmtkSystem_SRCS
-    ${cmtkSystem_SRCS}
-    cmtkSafeCounterGCD.cxx
-    cmtkThreadPoolGCD.cxx)
+  LIST(APPEND cmtkSystem_SRCS cmtkSafeCounterGCD.cxx cmtkThreadPoolGCD.cxx)
 ENDIF(CMTK_USE_GCD)
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})

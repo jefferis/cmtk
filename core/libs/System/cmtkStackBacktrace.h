@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,6 +71,13 @@ public:
 
   /// Print current stack backtrace.
   static void PrintBacktrace( const int levels = 0 /*!< Maximum number of levels to display (default: 0 = no limit). */ );
+
+  /// Get static stack backtrace object instance.
+  static Self& Static()
+  {
+    static Self instance;
+    return instance;
+  }
 };
 
 //@}

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +49,8 @@
 //
 
 #cmakedefine CMTK_BUILD_UNSTABLE 1
+#cmakedefine CMTK_BUILD_STACKTRACE 1
+#cmakedefine CMTK_BUILD_RTRACKER 1
 #cmakedefine CMTK_BUILD_DEMO 1
 #cmakedefine CMTK_BUILD_NRRD 1
 

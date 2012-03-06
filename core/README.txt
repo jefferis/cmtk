@@ -12,16 +12,15 @@ CMTK now requires at least CMake 2.8.0 to build.
 CMTK has been built and tested on the following platforms:
 
 - Linux 32bit (Fedora 15), gcc 4.6.1
-- Linux 64bit (Fedora 15), gcc 4.6.2
+- Linux 64bit (Fedora 15), gcc 4.6.1
 - Linux 32bit (Fedora 16), gcc 4.6.2
 - Linux 64bit (Fedora 16), gcc 4.6.2, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 4.1
-- MacOSX 10.6, x86_64, MacPorts gcc 4.6.2, CUDA 4.1
+- MacOSX 10.6, x86_64, MacPorts gcc 4.6.3, CUDA 4.1
 - MacOSX 10.6, x86_64, llvm-gcc-4.2.1
 - MacOSX 10.6, x86_64, clang 2.0
 - Cygwin, gcc 4.5.3
-- Windows XP, VisualStudio 9 (2008 Express Edition), CUDA 3.2
 - Windows XP, VisualStudio 10SP1 (2010 Express Edition), CUDA 4.1
 
 

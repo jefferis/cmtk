@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,8 +32,13 @@
 #  include <stdio.h>
 #endif
 
+#ifdef CMTK_BUILD_STACKTRACE
 #include <System/cmtkStackBacktrace.h>
-namespace cmtk { static StackBacktrace StackBacktraceInstance; }
+#endif // #ifdef CMTK_BUILD_STACKTRACE
+
+#ifdef CMTK_BUILD_RTRACKER
+#include <System/cmtkRegressionTracker.h>
+#endif // #ifdef CMTK_BUILD_RTRACKER
 
 #include <System/cmtkThreads.h>
 
@@ -45,6 +50,15 @@ main( const int argc, const char* argv[] )
 #endif
 
   cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
+
+#ifdef CMTK_BUILD_STACKTRACE
+  cmtk::StackBacktrace::Static();
+#endif
+
+#ifdef CMTK_BUILD_RTRACKER
+  // initialize optional regression tracker
+  cmtk::RegressionTracker::Static();
+#endif
 
   int exitCode = 0;
   try

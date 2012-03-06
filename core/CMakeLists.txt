@@ -192,6 +192,9 @@ MARK_AS_ADVANCED(CMTK_BUILD_UNSTABLE)
 OPTION(CMTK_BUILD_STACKTRACE "Build tools with stack trace printing in case of crash (increases build time)" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_STACKTRACE)
 
+OPTION(CMTK_BUILD_RTRACKER "Build tools with regression tracker support" OFF)
+MARK_AS_ADVANCED(CMTK_BUILD_RTRACKER)
+
 OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
 IF(CMTK_BUILD_DEMO)
@@ -278,14 +281,13 @@ ENDIF(HAVE_DISPATCH_H)
 OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
 
 IF(CMTK_USE_CUDA)
-
   # check using cmake's own FindCUDA above v2.8 or use our own for earlier versions
   IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
     INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindCUDA.cmake)
   ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
     FIND_PACKAGE(CUDA)
   ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
-  
+ 
 ENDIF(CMTK_USE_CUDA)
 
 #-----------------------------------------------------------------------------
