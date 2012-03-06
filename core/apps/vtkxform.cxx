@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -170,7 +170,7 @@ doMain( const int argc, const char* argv[] )
       // Read original point coordinates from file
       if ( binaryMode )
 	{
-	float xyzFloat[3] = { xyz[0], xyz[1], xyz[2] };
+	cmtk::Types::Coordinate xyzFloat[3] = { xyz[0], xyz[1], xyz[2] };
 
 #ifndef WORDS_BIGENDIAN
 	for ( size_t i = 0; i<3; ++i )

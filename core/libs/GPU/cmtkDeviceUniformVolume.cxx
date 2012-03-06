@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,7 +38,7 @@ DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple
   for ( size_t i = 0; i < 3; ++i )
     {
     onDevice.m_Dims[i] = volume.m_Dims[i];
-    onDevice.m_Delta[i] = volume.m_Delta[i];
+    onDevice.m_Delta[i] = static_cast<float>( volume.m_Delta[i] );
     }
 
   // convert volume data to float and copy to device

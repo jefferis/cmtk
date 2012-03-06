@@ -104,7 +104,7 @@ public:
   FixedVector( const FixedVector<NDIM,T2>& rhs )
   {
     for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Data[i] = rhs[i];
+      this->m_Data[i] = static_cast<T>( rhs[i] );
   }
 
   /// Get element reference.

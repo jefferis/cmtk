@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -131,7 +131,7 @@ doMain( const int argc, const char *argv[] )
   if ( affineXform )
     inverseAffineXform = affineXform->GetInverse();
 
-  const float globalScaling = (splineWarp) ? splineWarp->GetGlobalScaling() : affineXform->GetGlobalScaling();
+  const cmtk::Types::Coordinate globalScaling = (splineWarp) ? splineWarp->GetGlobalScaling() : affineXform->GetGlobalScaling();
 
   cmtk::Xform::SmartPtr fallbackInverseXform;
   if ( FallbackInversePath )
@@ -191,13 +191,13 @@ doMain( const int argc, const char *argv[] )
       cmtk::FixedVector<3,cmtk::Types::Coordinate> u( v );
       cmtk::FixedVector<3,cmtk::Types::Coordinate> uu;
 
-      float error = 0;
+      cmtk::Types::Coordinate error = 0;
       bool success = true;
       if ( splineWarp && ! AffineOnly ) 
 	{
 	if( Jacobian || NormalisedJacobian )
 	  {
-	  float j = splineWarp->GetJacobianDeterminant(u);
+	  cmtk::Types::Coordinate j = splineWarp->GetJacobianDeterminant(u);
 	  if (NormalisedJacobian)
 	    j /= globalScaling;
 	  

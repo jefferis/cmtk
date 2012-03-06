@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,7 +79,7 @@ ImagePairAffineRegistrationFunctionalDevice::Evaluate()
     {
     for ( size_t i = 0; i < 3; ++i )
       {
-      matrix[j][i] /= this->m_FloatingGrid->Size[i];
+      matrix[j][i] /= static_cast<float>( this->m_FloatingGrid->Size[i] );
       }
     }
   

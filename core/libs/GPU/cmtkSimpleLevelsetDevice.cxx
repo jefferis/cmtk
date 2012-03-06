@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +52,7 @@ cmtk::SimpleLevelsetDevice
 
   for ( int dim = 0; dim < 3; ++dim )
     {
-    kernels[dim] = GaussianKernel<float>::GetSymmetricKernel( this->m_FilterSigma / this->m_Volume->Deltas()[dim], 0.01 /*maxError*/ );
+    kernels[dim] = GaussianKernel<float>::GetSymmetricKernel( this->m_FilterSigma / this->m_Volume->Deltas()[dim], 0.01f /*maxError*/ );
     }
 
   const size_t numberOfPixels = this->m_Levelset->GetNumberOfPixels();
@@ -76,7 +76,8 @@ cmtk::SimpleLevelsetDevice
     SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
 
     const int nOutside = numberOfPixels - nInside;
-    SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0 * nInside / nOutside, this->m_TimeDelta, this->m_LevelsetThreshold );
+    SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0 * nInside / nOutside, 
+			static_cast<float>( this->m_TimeDelta ), static_cast<float>( this->m_LevelsetThreshold ) );
 
     deviceLevelset->GetDeviceArrayPtr()->CopyOnDeviceToArray( temporary->Ptr() );
     }

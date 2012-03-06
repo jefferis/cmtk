@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,13 +63,13 @@ public:
   static std::vector<TFloat> GetSymmetricKernel( const Units::GaussianSigma& sigma /*!< Sigma parameter (standard deviation) of the kernel */, 
 						 const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
   {
-    const double normFactor = 1.0/(sqrt(2*M_PI) * sigma.Value());
-    const size_t radius = Self::GetRadius( sigma, normFactor, maxError );
+    const TFloat normFactor = 1.0/(sqrt(2*M_PI) * sigma.Value());
+    const size_t radius = static_cast<size_t>( Self::GetRadius( sigma, normFactor, maxError ) );
     
     std::vector<TFloat> kernel( 2 * radius + 1 );
     for ( size_t i = 0; i <= radius; ++i )
       {
-      kernel[radius-i] = kernel[radius+i] = normFactor * exp( -MathUtil::Square( 1.0 * i / sigma.Value() ) / 2 );
+      kernel[radius-i] = kernel[radius+i] = static_cast<TFloat>( normFactor * exp( -MathUtil::Square( 1.0 * i / sigma.Value() ) / 2 ) );
       }
 
     return kernel;
@@ -98,7 +98,7 @@ private:
     if ( maxError >= normFactor ) // if normFactor is less than max error, then we really need no kernel at all
       return 0;
     else
-      return static_cast<size_t>( sqrt( -2.0 * log( maxError / normFactor ) ) * sigma.Value() );
+      return static_cast<TFloat>( sqrt( -2.0 * log( maxError / normFactor ) ) * sigma.Value() );
   }
 };
 

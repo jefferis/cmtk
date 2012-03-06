@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -176,7 +176,7 @@ doMain( const int argc, const char *argv[] )
     {
     if ( ThresholdAuto )
       {
-      ThresholdForegroundMin = cmtk::TypedArrayNoiseEstimatorNaiveGaussian( *(inputImage->GetData()) ).GetNoiseThreshold();
+      ThresholdForegroundMin = static_cast<float>( cmtk::TypedArrayNoiseEstimatorNaiveGaussian( *(inputImage->GetData()) ).GetNoiseThreshold() );
       ThresholdForegroundFlag = true;
 
       cmtk::DebugOutput( 1 ) << "INFO: estimated foreground threshold from noise level as " << ThresholdForegroundMin << "\n";
