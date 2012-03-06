@@ -177,7 +177,7 @@ doMain( const int argc, const char *argv[] )
     {
     if ( ThresholdAuto )
       {
-      ThresholdForegroundMin = cmtk::TypedArrayNoiseEstimatorNaiveGaussian( *(inputImage->GetData()) ).GetNoiseThreshold();
+      ThresholdForegroundMin = static_cast<float>( cmtk::TypedArrayNoiseEstimatorNaiveGaussian( *(inputImage->GetData()) ).GetNoiseThreshold() );
       ThresholdForegroundFlag = true;
 
       cmtk::DebugOutput( 1 ) << "INFO: estimated foreground threshold from noise level as " << ThresholdForegroundMin << "\n";
