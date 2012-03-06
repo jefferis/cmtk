@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,9 +41,10 @@ cmtk
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ), 
-				Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ), interpolation )
+  : ImagePairSimilarityMeasure( interpolation )
 {
+  Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) ); 
+  Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
