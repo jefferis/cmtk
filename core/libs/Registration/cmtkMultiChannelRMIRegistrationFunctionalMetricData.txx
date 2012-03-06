@@ -130,7 +130,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
   const size_t numberOfChannels = this->m_Sums.size();
   for ( size_t j = 0; j < numberOfChannels; ++j )
     {
-    this->m_Sums[j] += values[j];
+    this->m_Sums[j] += static_cast<TRealType>( values[j] );
     }
     
   size_t idx = 0;
@@ -138,7 +138,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
     {
     for ( size_t i = 0; i <= j; ++i, ++idx )
       {
-      this->m_Products[idx] += values[i] * values[j];
+      this->m_Products[idx] += static_cast<TRealType>( values[i] * values[j] );
       }
     }
 
@@ -153,7 +153,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
   const size_t numberOfChannels = this->m_Sums.size();
   for ( size_t j = 0; j < numberOfChannels; ++j )
     {
-    this->m_Sums[j] -= values[j];
+    this->m_Sums[j] -= static_cast<TRealType>( values[j] );
     }
     
   size_t idx = 0;
@@ -161,7 +161,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
     {
     for ( size_t i = 0; i <= j; ++i, ++idx )
       {
-      this->m_Products[idx] -= values[i] * values[j];
+      this->m_Products[idx] -= static_cast<TRealType>( values[i] * values[j] );
       }
     }
 

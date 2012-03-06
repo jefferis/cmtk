@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +48,7 @@ class ScaleHistogramValueTrait
 {
 public:
   /// In general return original value as scaled value.
-  static T Scale( const float value ) 
+  static T Scale( const  Types::DataItem value ) 
   {
     return value;
   }
@@ -58,7 +59,7 @@ class ScaleHistogramValueTrait<int>
 {
 public:
   /// For integer bins, scale with factor 256 for added resolution.
-  static int Scale( const float value )
+  static int Scale( const  Types::DataItem value )
   {
     return static_cast<int>( 256 * value );
   }
@@ -69,7 +70,7 @@ class ScaleHistogramValueTrait<unsigned int>
 {
 public:
   /// For integer bins, scale with factor 256 for added resolution.
-  static unsigned int Scale( const float value )
+  static unsigned int Scale( const Types::DataItem value )
   {
     return static_cast<unsigned int>( 256 * value );
   }

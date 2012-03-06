@@ -48,7 +48,7 @@ template<class TXform>
 GroupwiseRegistrationFunctionalXformTemplateBase<TXform>::GroupwiseRegistrationFunctionalXformTemplateBase() :
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
-  m_MaxRelativeNumberOutsidePixels( 0.99 ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
+  m_MaxRelativeNumberOutsidePixels( 0.99f ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
   m_CropImageHistograms( false )
 {}
 

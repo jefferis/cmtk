@@ -86,7 +86,7 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult() const
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    std::fill( labelDistance.begin(), labelDistance.end(), 0.0 );
+    std::fill( labelDistance.begin(), labelDistance.end(), static_cast<Self::DistanceMapRealType>( 0 ) );
     
     for ( size_t k = 0; k < this->m_LabelImages.size(); ++k )
       {
@@ -108,7 +108,7 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult() const
 	    this->m_Transformations[k]->GetTransformedGrid( v, x, y, z );
 	    if ( interpolator.GetDataAt( v, dvalue ) )
 	      {
-	      labelDistance[i] += dvalue;
+	      labelDistance[i] += static_cast<Self::DistanceMapRealType>( dvalue );
 	      }
 	    }
 	  }

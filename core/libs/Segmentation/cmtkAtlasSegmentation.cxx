@@ -92,7 +92,7 @@ cmtk::AtlasSegmentation
   er.SetRefineGrid( std::max<int>( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMaxDelta() ) / log(2.0)) - 3 ) ) );
   er.SetDelayRefineGrid( !this->m_Fast );
   
-  er.SetGridEnergyWeight( 1e-1 );
+  er.SetGridEnergyWeight( 1e-1f );
   er.SetAdaptiveFixParameters( true );
 
   er.SetAlgorithm( 3 );

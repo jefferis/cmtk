@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -152,7 +152,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
 {
   const Types::DataItemRange range = this->m_EntropyHistogram->GetRange();
   this->m_HistogramDevice->Reset();
-  this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, range.m_LowerBound, range.m_UpperBound, this->m_UseLogIntensities );
+  this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, 
+		static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ), this->m_UseLogIntensities );
 
   return -this->m_HistogramDevice->GetEntropy();
 }

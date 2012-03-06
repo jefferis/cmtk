@@ -98,7 +98,7 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 
     cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
-    std::fill( labelDistanceMap.begin(), labelDistanceMap.end(), 0.0 );
+    std::fill( labelDistanceMap.begin(), labelDistanceMap.end(), static_cast<Self::DistanceMapRealType>( 0 ) );
 
     if ( detectOutliers )
       {
@@ -154,7 +154,7 @@ LabelCombinationShapeBasedAveraging::ProcessLabelExcludeOutliers
     {
     for ( size_t k = 0; k < nLabelMaps; ++k )
       {
-      distances[k] = signedDistanceMaps[k]->GetDataAt( i );
+      distances[k] = static_cast<Self::DistanceMapRealType>( signedDistanceMaps[k]->GetDataAt( i ) );
       }
     
     // sort distance
