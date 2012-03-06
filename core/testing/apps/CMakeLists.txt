@@ -302,14 +302,16 @@ LIST(APPEND testList fit_affine_xformDField fit_affine_xformFFD)
 
 # ==========================================
 # Tests for "fit_spline_xform" tool
-LIST(APPEND testList
-  fit_spline_xformSpacing
-  fit_spline_xformSpacingMultiLevel
-  fit_spline_xformDims
-  fit_spline_xformDimsRelative
-  fit_spline_xformDimsMultiLevel
-  fit_spline_xformDimsMultiLevelSafe
-  fit_spline_xformDimsWithAffine)
+IF(CMTK_BUILD_NRRD)
+  LIST(APPEND testList
+    fit_spline_xformSpacing
+    fit_spline_xformSpacingMultiLevel
+    fit_spline_xformDims
+    fit_spline_xformDimsRelative
+    fit_spline_xformDimsMultiLevel
+    fit_spline_xformDimsMultiLevelSafe
+    fit_spline_xformDimsWithAffine)
+ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "glm" tool
