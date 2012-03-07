@@ -43,17 +43,17 @@ cmtk
 
 ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume ) 
-  : ImageSymmetryPlaneFunctionalBase( volume ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
+  : ImageSymmetryPlaneFunctionalBase( volume )
 {
+  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) );
 }
 
 ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
-  : ImageSymmetryPlaneFunctionalBase( volume, valueRange ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
+  : ImageSymmetryPlaneFunctionalBase( volume, valueRange )
 {
+  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) );
 }
 
 ImageSymmetryPlaneFunctionalDevice::ReturnType
