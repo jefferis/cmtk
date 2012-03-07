@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r3981) Fixed: numerous Visual C++ 2010 compiler warnings, including
+    potentially serious use of "this" pointer in member initialization.
 (r3969) Added: cmtk::RegressionTracker class for checksum-based tracking down
     of regression problems.
 (r3964) Fixed: cmtk::ImagePairSimilarityJointHistogram constructor was using
