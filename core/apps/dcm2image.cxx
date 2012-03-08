@@ -93,8 +93,7 @@ int progress = 0;
 bool Recursive = false;
 int SortFiles = 1;
 
-bool WithExtensionsGE = false;
-const char *const GERawDataTypeString[4] = { "magn", "phas", "real", "imag" };
+const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
 
 bool DisableOrientationCheck = false;
 double Tolerance = 1e-5;
@@ -165,8 +164,8 @@ public:
   /// DICOM image number (index in volume).
   Sint32 InstanceNumber;
 
-  /// GE private DICOM tag: raw data type (real, imaginary, phase, magnitude).
-  Sint16 GERawDataType;
+  /// Raw data type (real, imaginary, phase, magnitude) currently supported on GE images only.
+  Sint16 RawDataType;
 
   /// Constructor.
   ImageFileDCM( const char* filename );
@@ -230,11 +229,12 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
     ( EchoTime == other.EchoTime ) &&
     ( RepetitionTime == other.RepetitionTime ) && 
     (( AcquisitionNumber == other.AcquisitionNumber ) || IgnoreAcquisitionNumber) && 
-    ( this->GERawDataType == other.GERawDataType );
+    ( this->RawDataType == other.RawDataType );
 }
 
 ImageFileDCM::ImageFileDCM( const char* filename )
-  : IsMultislice( false )
+  : IsMultislice( false ),
+    RawDataType( 0 )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
@@ -301,6 +301,13 @@ ImageFileDCM::ImageFileDCM( const char* filename )
       const DcmTagKey nSlicesTag(0x0019,0x100a);
       this->IsMultislice = (document->getValue( nSlicesTag, nFrames ) != 0);
       }      
+    
+    if ( !strncmp( tmpStr, "GE", 2 ) )
+      {
+      if ( ! document->getValue( DCM_RawDataType_ImageType, this->RawDataType ) )
+	this->RawDataType = 3; // assume this is a magnitude image
+      this->RawDataType = std::min( 3, std::max( 0, (int)RawDataType ) );
+      }
     }
   
   if ( document->getValue( DCM_PatientsName, tmpStr ) )
@@ -338,18 +345,6 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
   if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
-
-  if ( WithExtensionsGE )
-    {
-    if ( ! document->getValue( DCM_RawDataType_ImageType, this->GERawDataType ) )
-      this->GERawDataType = 3; // assume this is a magnitude image
-    this->GERawDataType = std::min( 3, std::max( 0, (int)GERawDataType ) );
-    }
-  else
-    {
-    // GE extensions disabled
-    this->GERawDataType = 0;
-    }
 }
 
 ImageFileDCM::~ImageFileDCM()
@@ -466,18 +461,14 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
     }
   
   cmtk::DebugOutput( 1 ) << "DICOM Information: \n"
-			 << "  Description: " << first->SeriesDescription << "\n"
-			 << "  Series:      " << first->SeriesUID << "\n"
-			 << "  Study:       " << first->StudyUID << "\n"
-			 << "  Acquisition: " << first->AcquisitionNumber << "\n"
-			 << "  TR / TE:     " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n"
-			 << "  Position:    " << first->ImagePositionPatient << "\n"
-			 << "  Orientation: " << first->ImageOrientationPatient << "\n";
-  
-  if ( WithExtensionsGE )
-    {
-    cmtk::DebugOutput( 1 ) << "  GE Raw Data Type: " << first->GERawDataType << "\n";
-    }
+			 << "  Description:   " << first->SeriesDescription << "\n"
+			 << "  Series:        " << first->SeriesUID << "\n"
+			 << "  Study:         " << first->StudyUID << "\n"
+			 << "  Acquisition:   " << first->AcquisitionNumber << "\n"
+			 << "  TR / TE:       " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n"
+			 << "  Position:      " << first->ImagePositionPatient << "\n"
+			 << "  Orientation:   " << first->ImageOrientationPatient << "\n"
+			 << "  Raw Data Type: " << first->RawDataType << "\n";
     
   cmtk::DebugOutput( 1 ) << "\nImage List:\n";
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
@@ -536,7 +527,7 @@ VolumeList::WriteToArchive()
       replacein( path, "%D", MakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
       replacein( path, "%R", MakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
       replacein( path, "%E", MakeLegalInPath( (*it)[0][0]->EchoTime ) );
-      replacein( path, "%T", GERawDataTypeString[(*it)[0][0]->GERawDataType] );
+      replacein( path, "%T", RawDataTypeString[(*it)[0][0]->RawDataType] );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
@@ -773,7 +764,6 @@ doMain ( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options");
     cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories" );
-    cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options");
@@ -784,7 +774,7 @@ doMain ( const int argc, const char *argv[] )
 		  "%D (DICOM SeriesDescription); "
 		  "%R (DICOM RepetitionTime - MRI only)"
 		  "%E (DICOM EchoTime - MRI only)"
-		  "%T (GE RawDataType - vendor-specific, MRI only)" );
+		  "%T (RawDataType - vendor-specific, currently GE MRI only)" );
 
     cmtk::CommandLine::EnumGroup<EmbedInfoEnum>::SmartPtr embedGroup = cl.AddEnum( "embed", &EmbedInfo, "Embed DICOM information into output images as 'description' (if supported by output file format)." );
     embedGroup->AddSwitch( Key( "StudyID_StudyDate" ), EMBED_STUDYID_STUDYDATE, "StudyID, tag (0020,0010), then underscore, followed by StudyDate, tag (0008,0020). "
@@ -816,13 +806,13 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
   
-  if ( WithExtensionsGE && !dcmDataDict.rdlock().findEntry( "RawDataType_ImageType" ) )
+  if ( !dcmDataDict.rdlock().findEntry( "RawDataType_ImageType" ) )
     {
     dcmDataDict.unlock();
     dcmDataDict.wrlock().addEntry( new DcmDictEntry( 0x0043, 0x102f, EVR_SS, "RawDataType_ImageType", 1, 1, NULL, OFFalse, "GE" ) );
     dcmDataDict.unlock();
     }
-
+  
   VolumeList studylist;
   for ( std::vector<std::string>::const_iterator it = SearchRootDirVector.begin(); it != SearchRootDirVector.end(); ++it )
     {
