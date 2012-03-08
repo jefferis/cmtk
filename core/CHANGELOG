@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r3984) Changed: "dcm2image" tool no longer accepts "--ge-extensions" command
+    line option. Instead, all supported vendor-specific extensions are now
+    automatically activated based on the vendor tag in the actual input files.
 (r3981) Fixed: numerous Visual C++ 2010 compiler warnings, including
     potentially serious use of "this" pointer in member initialization.
 (r3969) Added: cmtk::RegressionTracker class for checksum-based tracking down
