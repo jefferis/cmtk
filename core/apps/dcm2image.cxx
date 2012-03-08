@@ -548,7 +548,7 @@ VolumeList::WriteToArchive()
     cmtk::DebugOutput( 1 ) << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks:\n\n";
     for ( const_iterator it = begin(); it != end(); ++it ) 
       {
-      if ( (*it)->size() == 1 )
+      if ( ((*it)->size() == 1) && !(*(*it)->begin())->IsMultislice )
 	{
 	(*(*it))[0]->Print();
 	cmtk::DebugOutput( 1 ) << "\n";
