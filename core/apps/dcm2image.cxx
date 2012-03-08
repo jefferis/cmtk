@@ -46,6 +46,8 @@
 #include <IO/cmtkVolumeFromFile.h>
 #include <IO/cmtkFileFormat.h>
 
+#include <mxml.h>
+
 #ifndef CMTK_USE_DCMTK
 #error Build system is broken: this application should not be build if CMTK_USE_DCMTK is not set.
 #endif
@@ -92,6 +94,7 @@ int progress = 0;
 
 bool Recursive = false;
 int SortFiles = 1;
+bool WriteXML = false;
 
 const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
 
@@ -166,6 +169,15 @@ public:
 
   /// Raw data type (real, imaginary, phase, magnitude) currently supported on GE images only.
   Sint16 RawDataType;
+
+  /// Flag for diffusion-weighted images.
+  bool IsDWI;
+
+  /// B value for DWI.
+  Sint16 BValue;
+
+  /// B vector for DWI.
+  cmtk::FixedVector<3,double> BVector;
 
   /// Constructor.
   ImageFileDCM( const char* filename );
@@ -294,12 +306,32 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
   // check if this is a Siemens mosaic image with multiple slices
   const char* tmpStr = NULL;
-  if ( document->getValue( DCM_Manufacturer, tmpStr ) )
+  if ( document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
       const DcmTagKey nSlicesTag(0x0019,0x100a);
-      this->IsMultislice = (document->getValue( nSlicesTag, nFrames ) != 0);
+      this->IsMultislice = document->getValue( nSlicesTag, nFrames );
+
+      const DcmTagKey directionalityTag(0x0019,0x100d);
+      if ( (this->IsDWI = (document->getValue( directionalityTag, tmpStr )!=0)) )
+	{
+	const DcmTagKey bValueTag(0x0019,0x100c);
+	if ( document->getValue( bValueTag, tmpStr ) != 0 )
+	  {
+	  this->BValue = atoi( tmpStr );
+	  this->IsDWI |= (this->BValue > 0);
+	  }
+
+	if ( this->BValue > 0 )
+	  {
+	  const DcmTagKey bVectorTag(0x0019,0x100e);
+	  for ( int idx = 0; idx < 3; ++idx )
+	    {
+	    this->IsDWI |= (document->getValue( bVectorTag, this->BVector[idx], idx ) != 0);
+	    }
+	  }
+	}
       }      
     
     if ( !strncmp( tmpStr, "GE", 2 ) )
@@ -356,13 +388,28 @@ ImageFileDCM::~ImageFileDCM()
 class VolumeDCM : public std::vector<ImageFileDCM*> 
 {
 public:
-  void AddImageFileDCM( ImageFileDCM *const image );
+  /// This class.
+  typedef VolumeDCM Self;
   
+  /// Add new DICOM image file to this stack.
+  void AddImageFileDCM( ImageFileDCM *const image );
+
+  /// Match new image file against this volume stack.
   bool Match ( const ImageFileDCM *newImage ) const;
 
-  void WriteToArchive ( const std::string& name ) const;
+  /// Write XML sidecare file.
+  void WriteXML ( const std::string& name ) const;
 
+  /// Write to image file.
+  void WriteImage ( const std::string& name ) const;
+
+  /// Print stack information.
   void print() const;
+
+private:
+  /// Generate custom whitespaces for XML output.
+  static const char *WhitespaceWriteMiniXML( mxml_node_t*, int where);
+
 };
 
 bool
@@ -399,8 +446,71 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
   insert( it, newImage );
 }
 
+const char *
+VolumeDCM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
+{
+  switch ( where )
+    {
+    case MXML_WS_BEFORE_OPEN:
+      return "\n";
+    case MXML_WS_AFTER_OPEN:
+      return NULL;
+    case MXML_WS_BEFORE_CLOSE:
+      return NULL;
+    case MXML_WS_AFTER_CLOSE:
+      return "\n";
+    }
+  return NULL;
+}
+
 void
-VolumeDCM::WriteToArchive( const std::string& fname ) const
+VolumeDCM::WriteXML( const std::string& fname ) const
+{
+  mxml_node_t *xml = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
+    
+  mxml_node_t *x_stack = mxmlNewElement( xml, "stack" );
+  mxmlElementSetAttr( x_stack, "path", this->front()->fpath );
+
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    mxml_node_t *dcmfile = mxmlNewElement( x_stack, "dcmfile");
+    mxmlNewText( dcmfile, 0, (*it)->fname );
+    }
+
+  if ( this->front()->IsDWI )
+    {
+    mxml_node_t *x_dwi = mxmlNewElement( xml, "dwi" );
+    
+    mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bvalue");
+    mxmlNewInteger( x_bval, this->front()->BValue );
+    
+    if ( this->front()->BValue > 0 )
+      {
+      mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bvector");
+      for ( int idx = 0; idx < 3; ++idx )
+	{
+	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
+	}
+      }
+    }
+  
+  FILE *file = fopen( fname.c_str(), "w" );
+  if ( file )
+    {
+    mxmlSaveFile( xml, file, Self::WhitespaceWriteMiniXML );
+    fputs( "\n", file ); // end last line
+    fclose( file );
+    }
+  else
+    {
+    cmtk::StdErr << "ERROR: could not open file " << fname << " for writing\n";
+    }
+  
+  mxmlDelete( xml );
+}
+
+void
+VolumeDCM::WriteImage( const std::string& fname ) const
 {
   const ImageFileDCM *first = this->front();
     
@@ -484,7 +594,7 @@ class VolumeList :
 public:
   void AddImageFileDCM( ImageFileDCM *const newImage );
   
-  void WriteToArchive();
+  void WriteImages();
 };
 
 inline std::string &
@@ -512,7 +622,7 @@ MakeLegalInPath( const std::string& s )
 }
 
 void
-VolumeList::WriteToArchive() 
+VolumeList::WriteImages() 
 {
   size_t cntSingleImages = 0;
 
@@ -571,7 +681,13 @@ VolumeList::WriteToArchive()
 
       char finalPath[PATH_MAX];
       sprintf( finalPath, uniquePath.c_str(), idx++ );
-      it->second[0]->WriteToArchive( finalPath );
+      it->second[0]->WriteImage( finalPath );
+
+      if ( WriteXML )
+	{
+	strcat( finalPath, ".xml" );
+	it->second[0]->WriteXML( finalPath );
+	}
       }
     else
       {			
@@ -589,7 +705,13 @@ VolumeList::WriteToArchive()
 
 	char finalPath[PATH_MAX];
 	sprintf( finalPath, uniquePath.c_str(), idx++ );
-	it->second[i]->WriteToArchive( finalPath );
+	it->second[i]->WriteImage( finalPath );
+
+	if ( WriteXML )
+	  {
+	  strcat( finalPath, ".xml" );
+	  it->second[i]->WriteXML( finalPath );
+	  }
 	}
       }
     }
@@ -776,6 +898,8 @@ doMain ( const int argc, const char *argv[] )
 		  "%E (DICOM EchoTime - MRI only)"
 		  "%T (RawDataType - vendor-specific, currently GE MRI only)" );
 
+    cl.AddSwitch( Key( 'x', "xml" ), &WriteXML, true, "Write XML sidecar file for each created image." );
+
     cmtk::CommandLine::EnumGroup<EmbedInfoEnum>::SmartPtr embedGroup = cl.AddEnum( "embed", &EmbedInfo, "Embed DICOM information into output images as 'description' (if supported by output file format)." );
     embedGroup->AddSwitch( Key( "StudyID_StudyDate" ), EMBED_STUDYID_STUDYDATE, "StudyID, tag (0020,0010), then underscore, followed by StudyDate, tag (0008,0020). "
 			   "Date is appended because StudyID is four digits only and will repeat sooner or later." );
@@ -819,7 +943,7 @@ doMain ( const int argc, const char *argv[] )
     traverse_directory( studylist, *it, "*" );
     }
   
-  studylist.WriteToArchive();
+  studylist.WriteImages();
 
   return 0;
 }
