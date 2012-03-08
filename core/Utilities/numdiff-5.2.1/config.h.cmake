@@ -1,5 +1,5 @@
 /*
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -152,6 +152,9 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the <libintl.h> header file. */
+#cmakedefine HAVE_LIBINTL_H 1
 
 /* Define to 1 if you have the `isascii' function. */
 #cmakedefine HAVE_ISASCII 1
