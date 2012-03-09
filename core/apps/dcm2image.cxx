@@ -374,6 +374,10 @@ ImageFile::ImageFile( const char* filename )
     if ( document->getValue( DCM_RepetitionTime, tmpStr ) )
       RepetitionTime = tmpStr;
     }
+  else
+    {
+    this->EchoTime = this->RepititionTime = 0;
+    }
 }
 
 void
