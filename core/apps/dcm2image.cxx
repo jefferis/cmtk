@@ -201,6 +201,13 @@ public:
   }
 
   void Print() const;
+
+private:
+  /// Handle Siemens private tags.
+  void DoVendorTagsSiemens( const DiDocument& document );
+
+  /// Handle GE private tags.
+  void DoVendorTagsGE( const DiDocument& document );
 };
 
 void
@@ -310,35 +317,12 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
-      const DcmTagKey nSlicesTag(0x0019,0x100a);
-      this->IsMultislice = document->getValue( nSlicesTag, nFrames );
-
-      const DcmTagKey directionalityTag(0x0019,0x100d);
-      if ( (this->IsDWI = (document->getValue( directionalityTag, tmpStr )!=0)) )
-	{
-	const DcmTagKey bValueTag(0x0019,0x100c);
-	if ( document->getValue( bValueTag, tmpStr ) != 0 )
-	  {
-	  this->BValue = atoi( tmpStr );
-	  this->IsDWI |= (this->BValue > 0);
-	  }
-
-	if ( this->BValue > 0 )
-	  {
-	  const DcmTagKey bVectorTag(0x0019,0x100e);
-	  for ( int idx = 0; idx < 3; ++idx )
-	    {
-	    this->IsDWI |= (document->getValue( bVectorTag, this->BVector[idx], idx ) != 0);
-	    }
-	  }
-	}
+      this->DoVendorTagsSiemens( *document );
       }      
     
     if ( !strncmp( tmpStr, "GE", 2 ) )
       {
-      if ( ! document->getValue( DCM_RawDataType_ImageType, this->RawDataType ) )
-	this->RawDataType = 3; // assume this is a magnitude image
-      this->RawDataType = std::min( 3, std::max( 0, (int)RawDataType ) );
+      this->DoVendorTagsGE( *document );
       }
     }
   
@@ -377,6 +361,46 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
   if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
+}
+
+void
+ImageFileDCM::DoVendorTagsSiemens( const DiDocument& document )
+{
+  Uint16 nFrames = 0;
+  const char* tmpStr = NULL;
+
+  const DcmTagKey nSlicesTag(0x0019,0x100a);
+  this->IsMultislice = document.getValue( nSlicesTag, nFrames );
+  
+  const DcmTagKey directionalityTag(0x0019,0x100d);
+  if ( (this->IsDWI = (document.getValue( directionalityTag, tmpStr )!=0)) )
+    {
+    const DcmTagKey bValueTag(0x0019,0x100c);
+    if ( document.getValue( bValueTag, tmpStr ) != 0 )
+      {
+      this->BValue = atoi( tmpStr );
+      this->IsDWI |= (this->BValue > 0);
+      }
+    
+    if ( this->BValue > 0 )
+      {
+      const DcmTagKey bVectorTag(0x0019,0x100e);
+      for ( int idx = 0; idx < 3; ++idx )
+	{
+	this->IsDWI |= (document.getValue( bVectorTag, this->BVector[idx], idx ) != 0);
+	}
+      }
+    }
+}
+
+void
+ImageFileDCM::DoVendorTagsGE( const DiDocument& document )
+{
+  const char* tmpStr = NULL;
+
+  if ( ! document.getValue( DCM_RawDataType_ImageType, this->RawDataType ) )
+    this->RawDataType = 3; // assume this is a magnitude image
+  this->RawDataType = std::min( 3, std::max( 0, (int)RawDataType ) );
 }
 
 ImageFileDCM::~ImageFileDCM()
@@ -447,7 +471,7 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
 }
 
 const char *
-VolumeDCM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
+VolumeDCM::WhitespaceWriteMiniXML( mxml_node_t*, int where)
 {
   switch ( where )
     {
@@ -473,8 +497,8 @@ VolumeDCM::WriteXML( const std::string& fname ) const
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    mxml_node_t *dcmfile = mxmlNewElement( x_stack, "dcmfile");
-    mxmlNewText( dcmfile, 0, (*it)->fname );
+    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmfile");
+    mxmlNewText( x_dcmfile, 0, (*it)->fname );
     }
 
   if ( this->front()->IsDWI )
