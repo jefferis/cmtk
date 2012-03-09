@@ -397,6 +397,7 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
 {
   const char* tmpStr = NULL;
 
+  // raw data type
   Sint16 rawTypeIdx = 3;
   if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
     rawTypeIdx = 3; // assume this is a magnitude image
@@ -404,6 +405,27 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
   
   const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
   this->RawDataType = RawDataTypeString[rawTypeIdx];
+
+  // dwi information
+  const DcmTagKey bValueTag(0x0043,0x1039);
+  if ( document.getValue( bValueTag, tmpStr ) > 0 )
+    {
+    this->IsDWI = true;
+    sscanf( tmpStr, "%d\\%*c", &this->BValue );
+
+    for ( int i = 0; i < 3; ++i )
+      {
+      const DcmTagKey bVecTag(0x0019,0x10bb+i);
+      if ( document.getValue( bVecTag, tmpStr ) > 0 )
+	{
+	this->BVector[i] = atof( tmpStr );
+	}
+      else
+	{
+	this->BVector[i] = 0;
+	}
+      }
+    }
 }
 
 ImageFile::~ImageFile()
