@@ -127,6 +127,12 @@ public:
   /// File system path (i.e., directory).
   char* fpath;
 
+  /// Modality.
+  std::string Modality;
+
+  /// Modality.
+  std::string Manufacturer;
+
   /// Flag for multislice images
   bool IsMultislice;
 
@@ -147,9 +153,6 @@ public:
   
   /// DICOM StudyUID.
   std::string StudyUID;
-
-  /// Modality.
-  std::string Modality;
 
   /// MR repetition time, TR
   std::string RepetitionTime;
@@ -259,7 +262,9 @@ ImageFile::Match( const ImageFile& other ) const
 }
 
 ImageFile::ImageFile( const char* filename )
-  : IsMultislice( false ),
+  : Modality( "unknown" ),
+    Manufacturer( "unknown" ),
+    IsMultislice( false ),
     RawDataType( "unknown" )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
@@ -311,6 +316,10 @@ ImageFile::ImageFile( const char* filename )
     throw(2);
     }
 
+  const char* tmpStr = NULL;
+  if ( document->getValue( DCM_Modality, tmpStr ) )
+    this->Modality = tmpStr;
+
   // check for multi-slice DICOMs
   Uint16 nFrames = 0;
   if ( document->getValue( DCM_NumberOfFrames, nFrames ) ) 
@@ -318,21 +327,6 @@ ImageFile::ImageFile( const char* filename )
     this->IsMultislice = (nFrames > 1 );
     }
 
-  // check if this is a Siemens mosaic image with multiple slices
-  const char* tmpStr = NULL;
-  if ( document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
-    {
-    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
-      {
-      this->DoVendorTagsSiemens( *document );
-      }      
-    
-    if ( !strncmp( tmpStr, "GE", 2 ) )
-      {
-      this->DoVendorTagsGE( *document );
-      }
-    }
-  
   if ( document->getValue( DCM_PatientsName, tmpStr ) )
     PatientName = tmpStr;
 
@@ -351,9 +345,6 @@ ImageFile::ImageFile( const char* filename )
   if ( document->getValue( DCM_StudyDate, tmpStr ) )
     StudyDate = tmpStr;
   
-  if ( document->getValue( DCM_Modality, tmpStr ) )
-    this->Modality = tmpStr;
-
   if ( document->getValue( DCM_ImagePositionPatient, tmpStr ) )
     ImagePositionPatient = tmpStr;
 
@@ -376,7 +367,22 @@ ImageFile::ImageFile( const char* filename )
     }
   else
     {
-    this->EchoTime = this->RepititionTime = 0;
+    this->EchoTime = this->RepetitionTime = "";
+    }
+  
+  // check if this is a Siemens mosaic image with multiple slices
+  if ( document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
+    {
+    this->Manufacturer = tmpStr;
+    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
+      {
+      this->DoVendorTagsSiemens( *document );
+      }      
+    
+    if ( !strncmp( tmpStr, "GE", 2 ) )
+      {
+      this->DoVendorTagsGE( *document );
+      }
     }
 }
 
@@ -426,6 +432,7 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
     this->RawDataType = RawDataTypeString[rawTypeIdx];
     
     // dwi information
+    this->IsDWI = false;
     if ( document.getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
       {
       const int nDirections = atoi( tmpStr );
@@ -543,33 +550,50 @@ void
 ImageStack::WriteXML( const std::string& fname ) const
 {
   mxml_node_t *xml = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
+
+  mxml_node_t *x_device = mxmlNewElement( xml, "device" );
+  mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "manufacturer" );
+  mxmlNewText( x_manufacturer, 0, this->front()->Manufacturer.c_str() );
     
   mxml_node_t *x_stack = mxmlNewElement( xml, "stack" );
   mxmlElementSetAttr( x_stack, "path", this->front()->fpath );
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmfile");
+    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmFile" );
     mxmlNewText( x_dcmfile, 0, (*it)->fname );
     }
 
-  if ( this->front()->IsDWI )
+  std::string modality = this->front()->Modality;
+  std::transform( modality.begin(), modality.end(), modality.begin(), tolower );
+  
+  mxml_node_t *x_modality = mxmlNewElement( x_stack, modality.c_str() );
+  if ( modality == "mr" )
     {
-    mxml_node_t *x_dwi = mxmlNewElement( xml, "dwi" );
+    mxml_node_t *x_tr = mxmlNewElement( x_modality, "tr");
+    mxmlNewReal( x_tr, atof( this->front()->RepetitionTime.c_str() ) );
     
-    mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bvalue");
-    mxmlNewInteger( x_bval, this->front()->BValue );
+    mxml_node_t *x_te = mxmlNewElement( x_modality, "te");
+    mxmlNewReal( x_te, atof( this->front()->EchoTime.c_str() ) );
     
-    if ( this->front()->BValue > 0 )
+    if ( this->front()->IsDWI )
       {
-      mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bvector");
-      for ( int idx = 0; idx < 3; ++idx )
+      mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
+      
+      mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bValue");
+      mxmlNewInteger( x_bval, this->front()->BValue );
+      
+      if ( this->front()->BValue > 0 )
 	{
-	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
+	mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
+	for ( int idx = 0; idx < 3; ++idx )
+	  {
+	  mxmlNewReal( x_bvec, this->front()->BVector[idx] );
+	  }
 	}
       }
     }
-  
+    
   FILE *file = fopen( fname.c_str(), "w" );
   if ( file )
     {
