@@ -148,6 +148,9 @@ public:
   /// DICOM StudyUID.
   std::string StudyUID;
 
+  /// Modality.
+  std::string Modality;
+
   /// MR repetition time, TR
   std::string RepetitionTime;
 
@@ -343,11 +346,8 @@ ImageFile::ImageFile( const char* filename )
   if ( document->getValue( DCM_StudyDate, tmpStr ) )
     StudyDate = tmpStr;
   
-  if ( document->getValue( DCM_EchoTime, tmpStr ) )
-    EchoTime = tmpStr;
-
-  if ( document->getValue( DCM_RepetitionTime, tmpStr ) )
-    RepetitionTime = tmpStr;
+  if ( document->getValue( DCM_Modality, tmpStr ) )
+    this->Modality = tmpStr;
 
   if ( document->getValue( DCM_ImagePositionPatient, tmpStr ) )
     ImagePositionPatient = tmpStr;
@@ -360,6 +360,15 @@ ImageFile::ImageFile( const char* filename )
 
   if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
+
+  if ( this->Modality == "MR" )
+    {
+    if ( document->getValue( DCM_EchoTime, tmpStr ) )
+      EchoTime = tmpStr;
+    
+    if ( document->getValue( DCM_RepetitionTime, tmpStr ) )
+      RepetitionTime = tmpStr;
+    }
 }
 
 void
@@ -370,19 +379,22 @@ ImageFile::DoVendorTagsSiemens( const DiDocument& document )
 
   this->IsMultislice = document.getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
   
-  if ( (this->IsDWI = (document.getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
+  if ( this->Modality == "MR" )
     {
-    if ( document.getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
+    if ( (this->IsDWI = (document.getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
-      this->BValue = atoi( tmpStr );
-      this->IsDWI |= (this->BValue > 0);
-      }
-    
-    if ( this->BValue > 0 )
-      {
-      for ( int idx = 0; idx < 3; ++idx )
+      if ( document.getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
 	{
-	this->IsDWI |= (document.getValue( DcmTagKey(0x0019,0x100e), this->BVector[idx], idx ) != 0);
+	this->BValue = atoi( tmpStr );
+	this->IsDWI |= (this->BValue > 0);
+	}
+      
+      if ( this->BValue > 0 )
+	{
+	for ( int idx = 0; idx < 3; ++idx )
+	  {
+	  this->IsDWI |= (document.getValue( DcmTagKey(0x0019,0x100e), this->BVector[idx], idx ) != 0);
+	  }
 	}
       }
     }
@@ -393,36 +405,39 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
 {
   const char* tmpStr = NULL;
 
-  // raw data type
-  Sint16 rawTypeIdx = 3;
-  if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
-    rawTypeIdx = 3; // assume this is a magnitude image
-  rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
-  
-  const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
-  this->RawDataType = RawDataTypeString[rawTypeIdx];
-
-  // dwi information
-  if ( document.getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
+  if ( this->Modality == "MR" )
     {
-    const int nDirections = atoi( tmpStr );
-    if ( nDirections > 0 )
+    // raw data type
+    Sint16 rawTypeIdx = 3;
+    if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
+      rawTypeIdx = 3; // assume this is a magnitude image
+    rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
+    
+    const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
+    this->RawDataType = RawDataTypeString[rawTypeIdx];
+    
+    // dwi information
+    if ( document.getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
       {
-      this->IsDWI = true;
-      
-      if ( document.getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
+      const int nDirections = atoi( tmpStr );
+      if ( nDirections > 0 )
 	{
-	sscanf( tmpStr, "%d\\%*c", &this->BValue );
+	this->IsDWI = true;
 	
-	for ( int i = 0; i < 3; ++i )
+	if ( document.getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	  {
-	  if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
+	  sscanf( tmpStr, "%d\\%*c", &this->BValue );
+	  
+	  for ( int i = 0; i < 3; ++i )
 	    {
-	    this->BVector[i] = atof( tmpStr );
-	    }
-	  else
-	    {
-	    this->BVector[i] = 0;
+	    if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
+	      {
+	      this->BVector[i] = atof( tmpStr );
+	      }
+	    else
+	      {
+	      this->BVector[i] = 0;
+	      }
 	    }
 	  }
 	}
