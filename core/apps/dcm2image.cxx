@@ -117,7 +117,8 @@ typedef enum
 /// Selector for embedded image information.
 EmbedInfoEnum EmbedInfo = EMBED_STUDYID_STUDYDATE;
 
-class ImageFileDCM 
+/// Class handling a single image file and its meta data.
+class ImageFile 
 {
 public:
   /// File name.
@@ -178,22 +179,22 @@ public:
   cmtk::FixedVector<3,double> BVector;
 
   /// Constructor.
-  ImageFileDCM( const char* filename );
+  ImageFile( const char* filename );
 
   /// Destructor.
-  ~ImageFileDCM();
+  ~ImageFile();
 
   /// Determine whether two images match, i.e., belong to the same volume.
-  bool Match( const ImageFileDCM& other ) const;
+  bool Match( const ImageFile& other ) const;
 
   /// Compare order based on file name (for lexicographic sorting).
-  static bool lessFileName( const ImageFileDCM* lhs, const ImageFileDCM* rhs )
+  static bool lessFileName( const ImageFile* lhs, const ImageFile* rhs )
   {
     return strcmp( lhs->fname, rhs->fname ) < 0;
   }
 
   /// Compare order based on image instace (for sorting in acquisition order).
-  static bool lessInstanceNumber( const ImageFileDCM* lhs, const ImageFileDCM* rhs )
+  static bool lessInstanceNumber( const ImageFile* lhs, const ImageFile* rhs )
   {
     return lhs->InstanceNumber < rhs->InstanceNumber;
   }
@@ -209,7 +210,7 @@ private:
 };
 
 void
-ImageFileDCM::Print() const
+ImageFile::Print() const
 {
   cmtk::DebugOutput( 1 ) << "  File Name = [" << this->fpath << "/" << this->fname << "]\n";
   cmtk::DebugOutput( 1 ) << "  SeriesID =    [" << this->SeriesUID << "]\n";
@@ -221,7 +222,7 @@ ImageFileDCM::Print() const
 }
   
 bool
-ImageFileDCM::Match( const ImageFileDCM& other ) const
+ImageFile::Match( const ImageFile& other ) const
 {
   // do not stack multislice images
   if ( this->IsMultislice || other.IsMultislice )
@@ -249,7 +250,7 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
     ( this->RawDataType == other.RawDataType );
 }
 
-ImageFileDCM::ImageFileDCM( const char* filename )
+ImageFile::ImageFile( const char* filename )
   : IsMultislice( false ),
     RawDataType( "unknown" )
 {
@@ -362,7 +363,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 }
 
 void
-ImageFileDCM::DoVendorTagsSiemens( const DiDocument& document )
+ImageFile::DoVendorTagsSiemens( const DiDocument& document )
 {
   Uint16 nFrames = 0;
   const char* tmpStr = NULL;
@@ -392,7 +393,7 @@ ImageFileDCM::DoVendorTagsSiemens( const DiDocument& document )
 }
 
 void
-ImageFileDCM::DoVendorTagsGE( const DiDocument& document )
+ImageFile::DoVendorTagsGE( const DiDocument& document )
 {
   const char* tmpStr = NULL;
 
@@ -405,23 +406,24 @@ ImageFileDCM::DoVendorTagsGE( const DiDocument& document )
   this->RawDataType = RawDataTypeString[rawTypeIdx];
 }
 
-ImageFileDCM::~ImageFileDCM()
+ImageFile::~ImageFile()
 {
   free( fname );
   free( fpath );
 }
 
-class VolumeDCM : public std::vector<ImageFileDCM*> 
+/// Class handling a stack of image files.
+class ImageStack : public std::vector<ImageFile*> 
 {
 public:
   /// This class.
-  typedef VolumeDCM Self;
+  typedef ImageStack Self;
   
   /// Add new DICOM image file to this stack.
-  void AddImageFileDCM( ImageFileDCM *const image );
+  void AddImageFile( ImageFile *const image );
 
   /// Match new image file against this volume stack.
-  bool Match ( const ImageFileDCM *newImage ) const;
+  bool Match ( const ImageFile *newImage ) const;
 
   /// Write XML sidecare file.
   void WriteXML ( const std::string& name ) const;
@@ -439,12 +441,12 @@ private:
 };
 
 bool
-VolumeDCM::Match ( const ImageFileDCM *newImage ) const
+ImageStack::Match ( const ImageFile *newImage ) const
 {
   if ( empty() ) 
     return 1;
 
-  const ImageFileDCM *check = front();
+  const ImageFile *check = front();
   if ( check )
     {
     if ( !check->Match( *newImage ) )
@@ -464,7 +466,7 @@ VolumeDCM::Match ( const ImageFileDCM *newImage ) const
 }
 
 void
-VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
+ImageStack::AddImageFile ( ImageFile *const newImage )
 {
   iterator it = begin();
   for ( ; it != end(); ++it )
@@ -473,7 +475,7 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
 }
 
 const char *
-VolumeDCM::WhitespaceWriteMiniXML( mxml_node_t*, int where)
+ImageStack::WhitespaceWriteMiniXML( mxml_node_t*, int where)
 {
   switch ( where )
     {
@@ -490,7 +492,7 @@ VolumeDCM::WhitespaceWriteMiniXML( mxml_node_t*, int where)
 }
 
 void
-VolumeDCM::WriteXML( const std::string& fname ) const
+ImageStack::WriteXML( const std::string& fname ) const
 {
   mxml_node_t *xml = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
     
@@ -536,9 +538,9 @@ VolumeDCM::WriteXML( const std::string& fname ) const
 }
 
 void
-VolumeDCM::WriteImage( const std::string& fname ) const
+ImageStack::WriteImage( const std::string& fname ) const
 {
-  const ImageFileDCM *first = this->front();
+  const ImageFile *first = this->front();
     
   cmtk::UniformVolume::SmartPtr volume;
   if ( !first->IsMultislice )
@@ -614,13 +616,16 @@ VolumeDCM::WriteImage( const std::string& fname ) const
   cmtk::DebugOutput( 1 ) << "\n====================================================\n";
 }
 
+/// Class handling a list of image stacks, i.e., volumes.
 class VolumeList : 
-  public std::vector<VolumeDCM*> 
+  public std::vector<ImageStack*> 
 {
 public:
-  void AddImageFileDCM( ImageFileDCM *const newImage );
+  /// Add a new image file to the correct stack or create a new stack.
+  void AddImageFile( ImageFile *const newImage );
   
-  void WriteImages();
+  /// Write all volumes in this list.
+  void WriteVolumes();
 };
 
 inline std::string &
@@ -648,12 +653,12 @@ MakeLegalInPath( const std::string& s )
 }
 
 void
-VolumeList::WriteImages() 
+VolumeList::WriteVolumes() 
 {
   size_t cntSingleImages = 0;
 
   int idx = 1;
-  std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
+  std::map< std::string,std::vector<const ImageStack*> > pathToVolumeMap;
   for ( const_iterator it = begin(); it != end(); ++it ) 
     {
     if ( ((*it)->size() > 1) || (*(*it)->begin())->IsMultislice )
@@ -693,7 +698,7 @@ VolumeList::WriteImages()
     cmtk::DebugOutput( 1 ) << "\n====================================================\n";
     }
   
-  for ( std::map< std::string,std::vector<const VolumeDCM*> >::const_iterator it = pathToVolumeMap.begin(); it != pathToVolumeMap.end(); ++it )
+  for ( std::map< std::string,std::vector<const ImageStack*> >::const_iterator it = pathToVolumeMap.begin(); it != pathToVolumeMap.end(); ++it )
     {						
     const size_t nVolumes = it->second.size();
 
@@ -745,23 +750,23 @@ VolumeList::WriteImages()
 
 
 void
-VolumeList::AddImageFileDCM( ImageFileDCM *const newImage )
+VolumeList::AddImageFile( ImageFile *const newImage )
 {
   if ( empty() ) 
     {
-    VolumeDCM *newVolumeDCM = new VolumeDCM;
-    newVolumeDCM->AddImageFileDCM( newImage );
-    push_back( newVolumeDCM );
+    ImageStack *newImageStack = new ImageStack;
+    newImageStack->AddImageFile( newImage );
+    push_back( newImageStack );
     } 
   else
     {
     const_iterator it = begin();
     while ( it != end() ) 
       {
-      VolumeDCM *study = *it;
+      ImageStack *study = *it;
       if ( study->Match( newImage ) ) 
 	{
-	study->AddImageFileDCM( newImage );
+	study->AddImageFile( newImage );
 	return;
 	} 
       else 
@@ -769,18 +774,18 @@ VolumeList::AddImageFileDCM( ImageFileDCM *const newImage )
 	++it;
 	}
       }
-    VolumeDCM *newVolumeDCM = new VolumeDCM;
-    newVolumeDCM->AddImageFileDCM( newImage );
-    push_back( newVolumeDCM );    
+    ImageStack *newImageStack = new ImageStack;
+    newImageStack->AddImageFile( newImage );
+    push_back( newImageStack );    
     }
 }
 
 int
-traverse_directory( VolumeList& studylist, const std::string& path, const char *wildcard )
+traverse_directory( VolumeList& volumeList, const std::string& path, const char *wildcard )
 {
   char fullname[PATH_MAX];
 
-  std::vector<ImageFileDCM*> fileList;
+  std::vector<ImageFile*> fileList;
 
 #ifdef _MSC_VER
   WIN32_FIND_DATA fData;
@@ -794,14 +799,14 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
       {
       if ( Recursive && (fData.cFileName[0] != '.') )
 	{
-	traverse_directory( studylist, fullname, wildcard );
+	traverse_directory( volumeList, fullname, wildcard );
 	}
       }
     else
       {
       try
 	{
-	fileList.push_back( new ImageFileDCM( fullname ) );
+	fileList.push_back( new ImageFile( fullname ) );
 	(cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
 	}
       catch ( ... )
@@ -826,7 +831,7 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
 	if ( S_ISDIR( entry_status.st_mode ) && Recursive && (entry_pointer->d_name[0] != '.') ) 
 	  {
 	  strcat( fullname, "/" );
-	  traverse_directory( studylist, fullname, wildcard );
+	  traverse_directory( volumeList, fullname, wildcard );
 	  } 
 	else
 	  {
@@ -834,7 +839,7 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
 	    {
 	    try
 	      {
-	      fileList.push_back( new ImageFileDCM( fullname ) );
+	      fileList.push_back( new ImageFile( fullname ) );
 	      (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
 	      }
 	    catch ( ... )
@@ -855,18 +860,18 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
     default:
       break;
     case 1:
-      std::sort( fileList.begin(), fileList.end(), ImageFileDCM::lessFileName );
+      std::sort( fileList.begin(), fileList.end(), ImageFile::lessFileName );
       break;
     case 2:
-      std::sort( fileList.begin(), fileList.end(), ImageFileDCM::lessInstanceNumber );
+      std::sort( fileList.begin(), fileList.end(), ImageFile::lessInstanceNumber );
       break;
     }
   
-  for ( std::vector<ImageFileDCM*>::const_iterator it = fileList.begin(); it != fileList.end(); ++it )
+  for ( std::vector<ImageFile*>::const_iterator it = fileList.begin(); it != fileList.end(); ++it )
     {
     try 
       {
-      studylist.AddImageFileDCM( *it );
+      volumeList.AddImageFile( *it );
       }
     catch (int)
       {
@@ -963,13 +968,13 @@ doMain ( const int argc, const char *argv[] )
     dcmDataDict.unlock();
     }
   
-  VolumeList studylist;
+  VolumeList volumeList;
   for ( std::vector<std::string>::const_iterator it = SearchRootDirVector.begin(); it != SearchRootDirVector.end(); ++it )
     {
-    traverse_directory( studylist, *it, "*" );
+    traverse_directory( volumeList, *it, "*" );
     }
   
-  studylist.WriteImages();
+  volumeList.WriteVolumes();
 
   return 0;
 }
