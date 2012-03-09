@@ -66,16 +66,12 @@ for bX in ${bXlist}; do
     fi
 done
  
+b0FwdCorr=${outdir}/`basename ${b0Fwd}`
+b0RevCorr=${outdir}/`basename ${b0Rev}`
 if needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
     echo "Computing deformation..."
-    cmtk epiunwarp --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${outdir}/b0Fwd.nii ${outdir}/b0Rev.nii ${outdir}/dfield_fwd.nrrd
+    cmtk epiunwarp --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${b0FwdCorr} ${b0RevCorr} ${outdir}/dfield_fwd.nrrd
     lockfile_delete ${outdir}/dfield_fwd.nrrd
-fi
-
-average=${outdir}/`basename ${b0Fwd}`
-if needs_update_and_lock ${average} ${outdir}/b0Fwd.nii ${outdir}/b0Rev.nii; then
-    cmtk imagemath --in ${outdir}/b0Fwd.nii ${outdir}/b0Rev.nii --average --out ${average}
-    lockfile_delete ${average}
 fi
 
 for bX in ${bXlist}; do
@@ -84,7 +80,7 @@ for bX in ${bXlist}; do
     xform=${outdir}/eddy/b0_${pref}.xform
     if needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
 	echo "Unwarping $bX"
-	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${average} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
+	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
 	lockfile_delete ${outdir}/${base}
     fi
 done
