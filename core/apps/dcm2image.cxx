@@ -215,13 +215,18 @@ private:
 void
 ImageFile::Print() const
 {
-  cmtk::DebugOutput( 1 ) << "  File Name = [" << this->fpath << "/" << this->fname << "]\n";
-  cmtk::DebugOutput( 1 ) << "  SeriesID =    [" << this->SeriesUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  StudyID =       [" << this->StudyUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  EchoTime =        [" << this->EchoTime << "]\n";
-  cmtk::DebugOutput( 1 ) << "  RepetitionTime =    [" << this->RepetitionTime << "]\n";
-  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =   [" << this->AcquisitionNumber << "]\n";
-  cmtk::DebugOutput( 1 ) << "  ImagePositionPatient =  [" << this->ImagePositionPatient << "]\n";
+  cmtk::DebugOutput( 1 ) << "  File Name =            [" << this->fpath << "/" << this->fname << "]\n";
+  cmtk::DebugOutput( 1 ) << "  SeriesID =             [" << this->SeriesUID << "]\n";
+  cmtk::DebugOutput( 1 ) << "  StudyID =              [" << this->StudyUID << "]\n";
+  cmtk::DebugOutput( 1 ) << "  ImagePositionPatient = [" << this->ImagePositionPatient << "]\n";
+  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =    [" << this->AcquisitionNumber << "]\n";
+  cmtk::DebugOutput( 1 ) << "  Modality =             [" << this->Modality << "]\n";
+
+  if ( this->Modality == "MR" )
+    {
+    cmtk::DebugOutput( 1 ) << "  EchoTime =          [" << this->EchoTime << "]\n";
+    cmtk::DebugOutput( 1 ) << "  RepetitionTime =      [" << this->RepetitionTime << "]\n";
+    }
 }
   
 bool
