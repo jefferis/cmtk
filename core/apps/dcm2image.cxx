@@ -368,14 +368,11 @@ ImageFile::DoVendorTagsSiemens( const DiDocument& document )
   Uint16 nFrames = 0;
   const char* tmpStr = NULL;
 
-  const DcmTagKey nSlicesTag(0x0019,0x100a);
-  this->IsMultislice = document.getValue( nSlicesTag, nFrames );
+  this->IsMultislice = document.getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
   
-  const DcmTagKey directionalityTag(0x0019,0x100d);
-  if ( (this->IsDWI = (document.getValue( directionalityTag, tmpStr )!=0)) )
+  if ( (this->IsDWI = (document.getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
     {
-    const DcmTagKey bValueTag(0x0019,0x100c);
-    if ( document.getValue( bValueTag, tmpStr ) != 0 )
+    if ( document.getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
       {
       this->BValue = atoi( tmpStr );
       this->IsDWI |= (this->BValue > 0);
@@ -383,10 +380,9 @@ ImageFile::DoVendorTagsSiemens( const DiDocument& document )
     
     if ( this->BValue > 0 )
       {
-      const DcmTagKey bVectorTag(0x0019,0x100e);
       for ( int idx = 0; idx < 3; ++idx )
 	{
-	this->IsDWI |= (document.getValue( bVectorTag, this->BVector[idx], idx ) != 0);
+	this->IsDWI |= (document.getValue( DcmTagKey(0x0019,0x100e), this->BVector[idx], idx ) != 0);
 	}
       }
     }
@@ -407,22 +403,28 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
   this->RawDataType = RawDataTypeString[rawTypeIdx];
 
   // dwi information
-  const DcmTagKey bValueTag(0x0043,0x1039);
-  if ( document.getValue( bValueTag, tmpStr ) > 0 )
+  if ( document.getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
     {
-    this->IsDWI = true;
-    sscanf( tmpStr, "%d\\%*c", &this->BValue );
-
-    for ( int i = 0; i < 3; ++i )
+    const int nDirections = atoi( tmpStr );
+    if ( nDirections > 0 )
       {
-      const DcmTagKey bVecTag(0x0019,0x10bb+i);
-      if ( document.getValue( bVecTag, tmpStr ) > 0 )
+      this->IsDWI = true;
+      
+      if ( document.getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	{
-	this->BVector[i] = atof( tmpStr );
-	}
-      else
-	{
-	this->BVector[i] = 0;
+	sscanf( tmpStr, "%d\\%*c", &this->BValue );
+	
+	for ( int i = 0; i < 3; ++i )
+	  {
+	  if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
+	    {
+	    this->BVector[i] = atof( tmpStr );
+	    }
+	  else
+	    {
+	    this->BVector[i] = 0;
+	    }
+	  }
 	}
       }
     }
