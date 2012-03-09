@@ -96,8 +96,6 @@ bool Recursive = false;
 int SortFiles = 1;
 bool WriteXML = false;
 
-const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
-
 bool DisableOrientationCheck = false;
 double Tolerance = 1e-5;
 
@@ -168,7 +166,7 @@ public:
   Sint32 InstanceNumber;
 
   /// Raw data type (real, imaginary, phase, magnitude) currently supported on GE images only.
-  Sint16 RawDataType;
+  std::string RawDataType;
 
   /// Flag for diffusion-weighted images.
   bool IsDWI;
@@ -253,7 +251,7 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
 
 ImageFileDCM::ImageFileDCM( const char* filename )
   : IsMultislice( false ),
-    RawDataType( 0 )
+    RawDataType( "unknown" )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
@@ -398,9 +396,13 @@ ImageFileDCM::DoVendorTagsGE( const DiDocument& document )
 {
   const char* tmpStr = NULL;
 
-  if ( ! document.getValue( DCM_RawDataType_ImageType, this->RawDataType ) )
-    this->RawDataType = 3; // assume this is a magnitude image
-  this->RawDataType = std::min( 3, std::max( 0, (int)RawDataType ) );
+  Sint16 rawTypeIdx = 3;
+  if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
+    rawTypeIdx = 3; // assume this is a magnitude image
+  rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
+  
+  const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
+  this->RawDataType = RawDataTypeString[rawTypeIdx];
 }
 
 ImageFileDCM::~ImageFileDCM()
@@ -661,7 +663,7 @@ VolumeList::WriteImages()
       replacein( path, "%D", MakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
       replacein( path, "%R", MakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
       replacein( path, "%E", MakeLegalInPath( (*it)[0][0]->EchoTime ) );
-      replacein( path, "%T", RawDataTypeString[(*it)[0][0]->RawDataType] );
+      replacein( path, "%T", (*it)[0][0]->RawDataType );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
