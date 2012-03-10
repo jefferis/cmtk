@@ -393,3 +393,10 @@
 
 /* Hyphenation character */
 #define HYPHEN '-'
+
+/* Special arrangements for Visual C++ */
+#ifdef _MSC_VER
+/* From missing stdint.h */
+typedef unsigned long long int uint64_t;
+typedef uint64_t uintmax_t;
+#endif // #ifdef _MSC_VER
