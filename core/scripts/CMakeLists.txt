@@ -30,7 +30,7 @@
 SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
 SET(CMTK_LIBRARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
 
-SET(SCRIPTS utilities.sh iterative_shape_averaging correct_nex_motion correct_dwi_distortion)
+SET(SCRIPTS utilities.sh iterative_shape_averaging correct_nex_motion correct_dwi_distortion correct_dwi_distortion_and_motion)
 FOREACH(s ${SCRIPTS})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.in ${CMAKE_BINARY_DIR}/bin/${s} @ONLY)
 ENDFOREACH(s ${SCRIPTS})

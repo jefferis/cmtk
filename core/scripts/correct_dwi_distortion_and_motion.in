@@ -1,0 +1,119 @@
+#!/bin/sh
+
+##
+##  Copyright 2012 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+ 
+# Get the utilities.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINARY_DIR}/utilities.sh
+ 
+# Check for command line arguments, print help if none given
+if test $# -lt 2; then
+    echo "Correct distortion and subject motion in diffusion-weighted MR images."
+    echo
+    echo "For this script to be applicable, the b=0 image must have been acquired twice, "
+    echo "once with standard phase encoding direction and once with phase encoding reversed."
+    echo
+    echo "USAGE: $0 outdir b0Reverse b0Forward bX1 [bX2 ...]"
+    exit 2
+fi
+
+outdir=$1
+b0Rev=$2
+b0Fwd=$3
+
+shift 3
+bXlist="$*"
+
+#
+# First, do eddy currents by registering all bX images to forward b=0 image
+#
+for bX in ${bXlist}; do
+    base=`basename $bX`
+    pref=`echo ${base} | sed 's/\..*//g'`
+
+    xform=${outdir}/eddy/b0_${pref}.xform
+    if needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
+	echo "Computing eddy current correction for ${base}..."
+	cmtk registrationx --restrict-in-plane xy --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
+	lockfile_delete ${xform}
+    fi
+done
+ 
+b0FwdCorr=${outdir}/`basename ${b0Fwd}`
+b0RevCorr=${outdir}/`basename ${b0Rev}`
+if needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
+    echo "Computing deformation..."
+    cmtk epiunwarp --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${b0FwdCorr} ${b0RevCorr} ${outdir}/dfield_fwd.nrrd
+    lockfile_delete ${outdir}/dfield_fwd.nrrd
+fi
+
+unwarpedList=""
+for bX in ${bXlist}; do
+    base=`basename $bX`
+    pref=`echo ${base} | sed 's/\..*//g'`
+    xform=${outdir}/eddy/b0_${pref}.xform
+
+    if needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
+	echo "Unwarping $bX"
+	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
+	lockfile_delete ${outdir}/${base}
+    fi
+
+    unwarpedList="${unwarpedList} ${outdir}/${base}"
+
+done
+
+##
+## Motion correction
+##
+
+average=${outdir}/bAverage.nii.gz
+if needs_update_and_lock ${average} ${b0FwdCorr} ${b0RevCorr} ${unwarpedList}; then
+    cmtk imagemath --in ${b0FwdCorr} ${b0RevCorr} ${unwarpedList} --average --out ${average}
+    lockfile_delete ${average}
+fi
+
+for bX in ${bXlist}; do
+    base=`basename $bX`
+    bXUnwarp=${outdir}/${base}
+    pref=`echo ${base} | sed 's/\..*//g'`
+    xform=${outdir}/motion/xforms/b0Unwarp_${pref}.xform
+    if needs_update_and_lock ${xform} ${average} ${bXUnwarp} ; then
+	cmtk registrationx --linear --dofs 6 --auto-multi-levels 3 --ncc -o ${xform} ${average} ${bXUnwarp}
+	lockfile_delete ${xform}
+    fi
+
+    if needs_update_and_lock ${outdir}/motion/${base} ${bXUnwarp} ${xform}; then
+	echo "Reformatting motion-corrected $bX"
+	cmtk reformatx --sinc-cosine -o ${outdir}/motion/${base} --floating ${bXUnwarp} ${average} ${xform}
+	lockfile_delete ${outdir}/motion/${base}
+    fi
+done
+
