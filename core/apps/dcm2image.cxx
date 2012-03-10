@@ -65,6 +65,7 @@
 
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <string>
 #include <sstream>
 
