@@ -549,6 +549,12 @@ ImageStack::WhitespaceWriteMiniXML( mxml_node_t*, int where)
   return NULL;
 }
 
+// wrap tolower() - on Mac, system function is not compatible with std::transform()
+static int cmtkWrapToLower( const int c )
+{
+  return tolower( c );
+}
+
 void
 ImageStack::WriteXML( const std::string& fname ) const
 {
@@ -568,7 +574,7 @@ ImageStack::WriteXML( const std::string& fname ) const
     }
 
   std::string modality = this->front()->Modality;
-  std::transform( modality.begin(), modality.end(), modality.begin(), tolower );
+  std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
   
   mxml_node_t *x_modality = mxmlNewElement( x_stack, modality.c_str() );
   if ( modality == "mr" )
