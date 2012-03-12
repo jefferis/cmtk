@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device>
+	<manufacturer>GE MEDICAL SYSTEMS</manufacturer>
+	<model>SIGNA HDx</model>
+</device>
+<mr>
+	<tr>4000.000000</tr>
+	<te>97.900000</te>
+	<dwi>
+		<bValue>860</bValue>
+		<bVector>-0.449000 -0.277000 0.850000</bVector>
+	</dwi>
+</mr>
+<dcmPath>mr-dwi-ge/</dcmPath>
+<stack>
+	<dcmFile>I0280.dcm</dcmFile>
+	<dcmFile>I0281.dcm</dcmFile>
+	<dcmFile>I0282.dcm</dcmFile>
+</stack>
+
