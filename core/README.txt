@@ -31,17 +31,6 @@ Platform-Specific Issues
 MacOS-X
 -------
 
-- XCode gcc compiler on MacOS cannot build CMTK with OpenMP support enabled 
-  at the same time. This is due to an Apple bug and has nothing to do with 
-  CMTK per se.
-
-  http://www.nitrc.org/tracker/index.php?func=detail&aid=5451&group_id=212&atid=877
-
-  Workaround 1: use MacPorts gcc compiler.
-
-  Workaround 2: set "CMTK_USE_OPENMP" configuration option to "OFF"
-
-
 - Code coverage tests are only supported with gcc compiler and SDK 10.6. Older
   SDKs or the clang and llvm compiler front-ends do not support code coverage.
 

@@ -1,5 +1,6 @@
 Release CMTK-2.2.0:
 
+(r4004) Fixed: full OpenMP support now available on MacOS.
 (r3984) Changed: "dcm2image" tool no longer accepts "--ge-extensions" command
     line option. Instead, all supported vendor-specific extensions are now
     automatically activated based on the vendor tag in the actual input files.
