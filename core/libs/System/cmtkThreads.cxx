@@ -320,6 +320,12 @@ Threads::CheckEnvironment()
       std::cerr << "WARNING: environment variable CMTK_NUM_THREADS is set but does not seem to contain a number larger than 0.\n";
       }
     }
+
+#ifdef _OPENMP
+// this is to force Apple's gcc on MacOS to link all OpenMP libraries
+#pragma omp parallel
+  {}
+#endif
 }
 
 
