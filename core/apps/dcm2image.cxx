@@ -263,6 +263,8 @@ ImageFile::Match( const ImageFile& other ) const
     ( StudyUID == other.StudyUID ) && 
     ( EchoTime == other.EchoTime ) &&
     ( RepetitionTime == other.RepetitionTime ) && 
+    ( BValue == other.BValue ) &&
+    ( BVector == other.BVector ) &&
     (( AcquisitionNumber == other.AcquisitionNumber ) || IgnoreAcquisitionNumber) && 
     ( this->RawDataType == other.RawDataType );
 }
