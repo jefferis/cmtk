@@ -624,8 +624,8 @@ case ${RUNTEST} in
 	check_results 001.nhdr 002.nhdr 003.nhdr
 	;;
     dcm2imageMosaic)
-	run dcm2image --embed None -O ${tmpdir}/00.nii ${DATADIR}/mr-mosaic/
-	check_results 00.nii
+	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic/
+	check_results 00.nii 00.nii.xml
 	;;
     describeEmpty)
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
