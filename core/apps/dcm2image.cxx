@@ -133,8 +133,11 @@ public:
   /// Modality.
   std::string Modality;
 
-  /// Modality.
+  /// Device manufacturer.
   std::string Manufacturer;
+
+  /// Device model.
+  std::string ManufacturerModel;
 
   /// Flag for multislice images
   bool IsMultislice;
@@ -267,6 +270,7 @@ ImageFile::Match( const ImageFile& other ) const
 ImageFile::ImageFile( const char* filename )
   : Modality( "unknown" ),
     Manufacturer( "unknown" ),
+    ManufacturerModel( "unknown" ),
     IsMultislice( false ),
     RawDataType( "unknown" )
 {
@@ -360,6 +364,7 @@ ImageFile::ImageFile( const char* filename )
   if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
 
+  // check for MR modality and treat accordingly
   if ( this->Modality == "MR" )
     {
     if ( document->getValue( DCM_EchoTime, tmpStr ) )
@@ -373,7 +378,10 @@ ImageFile::ImageFile( const char* filename )
     this->EchoTime = this->RepetitionTime = "";
     }
   
-  // check if this is a Siemens mosaic image with multiple slices
+  if ( document->getValue( DCM_ManufacturerModelName, tmpStr ) != 0 )
+    this->ManufacturerModel = tmpStr;
+
+  // check for which vendor and deal with specifics elsewhere
   if ( document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
     {
     this->Manufacturer = tmpStr;
@@ -533,19 +541,53 @@ ImageStack::AddImageFile ( ImageFile *const newImage )
 }
 
 const char *
-ImageStack::WhitespaceWriteMiniXML( mxml_node_t*, int where)
+ImageStack::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 {
+  const char* name = node->value.element.name;
+  
+  typedef struct _wsLookupType
+  {
+    /// XML element name.
+    const char* name;
+    /// Table of whitespace sequences.
+    const char* ws[4];
+  } wsLookupType;
+
+  static const wsLookupType wsLookup[] = 
+  {
+    "manufacturer", { "\t", NULL, NULL, "\n" },
+    "model", { "\t", NULL, NULL, "\n" },
+    "tr", { "\t", NULL, NULL, "\n" },
+    "te", { "\t", NULL, NULL, "\n" },
+    "dwi", { "\t", "\n", "\t", "\n" },
+    "bValue", { "\t\t", NULL, NULL, "\n" },
+    "bVector", { "\t\t", NULL, NULL, "\n" },
+    "dcmPath", { NULL, NULL, NULL, "\n" },
+    "dcmFile", { "\t", NULL, NULL, "\n" },
+    NULL, {NULL, NULL, NULL, NULL} 
+  };
+
+  if ( (where >= 0) && (where < 4) )
+    {
+    for ( size_t idx = 0; wsLookup[idx].name; ++idx )
+      {
+      if ( ! strcmp( name, wsLookup[idx].name ) )
+	return wsLookup[idx].ws[where];
+      }
+    }
+
   switch ( where )
     {
     case MXML_WS_BEFORE_OPEN:
-      return "\n";
-    case MXML_WS_AFTER_OPEN:
       return NULL;
+    case MXML_WS_AFTER_OPEN:
+      return "\n";
     case MXML_WS_BEFORE_CLOSE:
       return NULL;
     case MXML_WS_AFTER_CLOSE:
       return "\n";
     }
+
   return NULL;
 }
 
@@ -558,25 +600,20 @@ static int cmtkWrapToLower( const int c )
 void
 ImageStack::WriteXML( const std::string& fname ) const
 {
-  mxml_node_t *xml = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
+  mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
 
-  mxml_node_t *x_device = mxmlNewElement( xml, "device" );
+  mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
+
   mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "manufacturer" );
   mxmlNewText( x_manufacturer, 0, this->front()->Manufacturer.c_str() );
     
-  mxml_node_t *x_stack = mxmlNewElement( xml, "stack" );
-  mxmlElementSetAttr( x_stack, "path", this->front()->fpath );
-
-  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
-    {
-    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmFile" );
-    mxmlNewText( x_dcmfile, 0, (*it)->fname );
-    }
+  mxml_node_t *x_model = mxmlNewElement( x_device, "model" );
+  mxmlNewText( x_model, 0, this->front()->ManufacturerModel.c_str() );
 
   std::string modality = this->front()->Modality;
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
   
-  mxml_node_t *x_modality = mxmlNewElement( x_stack, modality.c_str() );
+  mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
     mxml_node_t *x_tr = mxmlNewElement( x_modality, "tr");
@@ -603,10 +640,21 @@ ImageStack::WriteXML( const std::string& fname ) const
       }
     }
     
+  mxml_node_t *x_dcmpath = mxmlNewElement( x_root, "dcmPath" );
+  mxmlNewText( x_dcmpath, 0, this->front()->fpath );
+
+  mxml_node_t *x_stack = mxmlNewElement( x_root, "stack" );
+
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmFile" );
+    mxmlNewText( x_dcmfile, 0, (*it)->fname );
+    }
+
   FILE *file = fopen( fname.c_str(), "w" );
   if ( file )
     {
-    mxmlSaveFile( xml, file, Self::WhitespaceWriteMiniXML );
+    mxmlSaveFile( x_root, file, Self::WhitespaceWriteMiniXML );
     fputs( "\n", file ); // end last line
     fclose( file );
     }
@@ -615,7 +663,7 @@ ImageStack::WriteXML( const std::string& fname ) const
     cmtk::StdErr << "ERROR: could not open file " << fname << " for writing\n";
     }
   
-  mxmlDelete( xml );
+  mxmlDelete( x_root );
 }
 
 void
