@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -29,8 +29,7 @@
 ##
 
 FILE(APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
-"CMTK_DATA_ROOT:PATH=/Users/torsten/cmtk/testing/data
-CMTK_USE_OPENMP:BOOL=OFF")
+"CMTK_DATA_ROOT:PATH=/Users/torsten/cmtk/testing/data")
 
 CTEST_START(Continuous)
 CTEST_UPDATE(SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
