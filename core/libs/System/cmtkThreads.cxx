@@ -50,6 +50,11 @@
 #  include <omp.h>
 #endif // _OPENMP
 
+#if defined(_OPENMP) && defined(__APPLE__)
+#include <pthread.h>
+__attribute__((visibility("hidden"))) pthread_attr_t gomp_thread_attr;
+#endif
+
 #include <limits.h>
 #include <stdlib.h>
 #include <iostream>
