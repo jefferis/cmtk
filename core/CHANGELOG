@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r4016) Refactored: finally merged old-style SMP and non-SMP elastic voxel
+    matching functional classes.
 (r4004) Fixed: full OpenMP support now available on MacOS.
 (r3984) Changed: "dcm2image" tool no longer accepts "--ge-extensions" command
     line option. Instead, all supported vendor-specific extensions are now
