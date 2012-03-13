@@ -229,6 +229,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     } 
   else
     {
+#ifdef _OPENMP
     if ( this->m_ThreadConsistencyHistograms.size() != this->m_NumberOfThreads )
       {
       this->m_ThreadConsistencyHistograms.resize( this->m_NumberOfThreads );
@@ -250,75 +251,94 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 	this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
 	}
       }
+#else
+      const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
+      const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
+      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
 
+      const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
+      const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
+      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
+      
+      this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+      
+      this->m_ConsistencyHistogram->Resize( numBinsX, numBinsY );
+      this->m_ConsistencyHistogram->SetRangeX( rangeX );
+      this->m_ConsistencyHistogram->SetRangeY( rangeY );
+#endif
+      
 #pragma omp parallel for
-    for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
-      {
-      JointHistogram<unsigned int>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
-      threadHistogram.Reset();
-      
-      // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
-      
-      int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
-      
-      const int endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
-      const int endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
-      
-      for ( int pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
+      for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
 	{
-	for ( int pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
+#ifdef _OPENMP
+	JointHistogram<unsigned int>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
+#else
+	JointHistogram<unsigned int>& threadHistogram = *(this->m_ConsistencyHistogram);
+#endif
+	threadHistogram.Reset();
+	
+	// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+	const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
+	
+	int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
+	
+	const int endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
+	const int endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
+	
+	for ( int pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	  {
-	  for ( int pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
+	  for ( int pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	    {
-	    // Continue metric computation.
-	    if ( this->WarpedVolume[r] != unsetY ) 
+	    for ( int pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	      {
-	      threadHistogram.Increment( threadHistogram.ValueToBinX( this->Metric->GetSampleX( r ) ), threadHistogram.ValueToBinY( this->WarpedVolume[r] ) );
+	      // Continue metric computation.
+	      if ( this->WarpedVolume[r] != unsetY ) 
+		{
+		threadHistogram.Increment( threadHistogram.ValueToBinX( this->Metric->GetSampleX( r ) ), threadHistogram.ValueToBinY( this->WarpedVolume[r] ) );
+		}
 	      }
+	    r += endOfLine;
 	    }
-	  r += endOfLine;
+	  r += endOfPlane;
 	  }
-	r += endOfPlane;
+	threadHistogram.GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
 	}
-      threadHistogram.GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
-      }
-    
-    double refMin = HUGE_VAL, refMax = -HUGE_VAL;
-    double modMin = HUGE_VAL, modMax = -HUGE_VAL;
-    for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
-      {
-      if ( mapRef[ctrl] < refMin ) refMin = mapRef[ctrl];
-      if ( mapRef[ctrl] > refMax ) refMax = mapRef[ctrl];
-      if ( mapMod[ctrl] < modMin ) modMin = mapMod[ctrl];
-      if ( mapMod[ctrl] > modMax ) modMax = mapMod[ctrl];
-      }
-    
-    const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
-    const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
       
-    if ( this->m_ActiveCoordinates )
-      this->Warp->SetParametersActive( this->m_ActiveCoordinates );
-    else
-      this->Warp->SetParametersActive();
-          
-    for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
-      {
-      if (  ( mapRef[ctrl] < refThresh ) && ( mapMod[ctrl] < modThresh ) ) 
+      double refMin = HUGE_VAL, refMax = -HUGE_VAL;
+      double modMin = HUGE_VAL, modMax = -HUGE_VAL;
+      for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
 	{
-	int dim = 3 * ctrl;
-	for ( int idx=0; idx<3; ++idx, ++dim ) 
-	  {
-	  this->Warp->SetParameterInactive( dim );
-	  }
-	inactive += 3;
+	if ( mapRef[ctrl] < refMin ) refMin = mapRef[ctrl];
+	if ( mapRef[ctrl] > refMax ) refMax = mapRef[ctrl];
+	if ( mapMod[ctrl] < modMin ) modMin = mapMod[ctrl];
+	if ( mapMod[ctrl] > modMax ) modMax = mapMod[ctrl];
 	}
-      }
+      
+      const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
+      const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
+      
+      if ( this->m_ActiveCoordinates )
+	this->Warp->SetParametersActive( this->m_ActiveCoordinates );
+      else
+	this->Warp->SetParametersActive();
+      
+      for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
+	{
+	if (  ( mapRef[ctrl] < refThresh ) && ( mapMod[ctrl] < modThresh ) ) 
+	  {
+	  int dim = 3 * ctrl;
+	  for ( int idx=0; idx<3; ++idx, ++dim ) 
+	    {
+	    this->Warp->SetParameterInactive( dim );
+	    }
+	  inactive += 3;
+	  }
+	}
     }
   
   for ( size_t idx = 0; idx < this->Dim; ++idx ) 
     {
-
+    
     if ( this->Warp->GetParameterActive( idx ) )
       {
       this->StepScaleVector[idx] = this->GetParamStep( idx );

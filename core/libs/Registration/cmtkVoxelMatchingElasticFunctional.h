@@ -153,7 +153,7 @@ protected:
   bool WarpNeedsFixUpdate;
 
   /// Histogram used for consistency computation.
-  JointHistogram<unsigned int>::SmartPtr ConsistencyHistogram;
+  JointHistogram<unsigned int>::SmartPtr m_ConsistencyHistogram;
 
   /// Dimension of warp parameter vector
   size_t Dim;
