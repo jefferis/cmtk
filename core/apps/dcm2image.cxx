@@ -436,6 +436,7 @@ void
 ImageFile::DoVendorTagsGE( const DiDocument& document )
 {
   const char* tmpStr = NULL;
+  int tmpInt = 0;
 
   if ( this->Modality == "MR" )
     {
@@ -459,17 +460,20 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
 	
 	if ( document.getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	  {
-	  sscanf( tmpStr, "%d\\%*c", &this->BValue );
-	  
-	  for ( int i = 0; i < 3; ++i )
+	  if ( 1 == sscanf( tmpStr, "%d\\%*c", &tmpInt ) )
 	    {
-	    if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
+	    this->BValue = static_cast<Sint16>( tmpInt );
+
+	    for ( int i = 0; i < 3; ++i )
 	      {
-	      this->BVector[i] = atof( tmpStr );
-	      }
-	    else
-	      {
-	      this->BVector[i] = 0;
+	      if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
+		{
+		this->BVector[i] = atof( tmpStr );
+		}
+	      else
+		{
+		this->BVector[i] = 0;
+		}
 	      }
 	    }
 	  }
@@ -561,16 +565,16 @@ ImageStack::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    "manufacturer", { "\t", NULL, NULL, "\n" },
-    "model", { "\t", NULL, NULL, "\n" },
-    "tr", { "\t", NULL, NULL, "\n" },
-    "te", { "\t", NULL, NULL, "\n" },
-    "dwi", { "\t", "\n", "\t", "\n" },
-    "bValue", { "\t\t", NULL, NULL, "\n" },
-    "bVector", { "\t\t", NULL, NULL, "\n" },
-    "dcmPath", { NULL, NULL, NULL, "\n" },
-    "dcmFile", { "\t", NULL, NULL, "\n" },
-    NULL, {NULL, NULL, NULL, NULL} 
+    { "manufacturer", { "\t", NULL, NULL, "\n" } },
+    { "model", { "\t", NULL, NULL, "\n" } },
+    { "tr", { "\t", NULL, NULL, "\n" } },
+    { "te", { "\t", NULL, NULL, "\n" } },
+    { "dwi", { "\t", "\n", "\t", "\n" } },
+    { "bValue", { "\t\t", NULL, NULL, "\n" } },
+    { "bVector", { "\t\t", NULL, NULL, "\n" } },
+    { "dcmPath", { NULL, NULL, NULL, "\n" } },
+    { "dcmFile", { "\t", NULL, NULL, "\n" } },
+    { NULL, {NULL, NULL, NULL, NULL} }
   };
 
   if ( (where >= 0) && (where < 4) )
