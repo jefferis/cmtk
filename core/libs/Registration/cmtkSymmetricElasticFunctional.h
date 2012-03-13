@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,11 +38,7 @@
 #include <Base/cmtkMacros.h>
 #include <Base/cmtkFunctional.h>
 
-#ifdef CMTK_USE_SMP
-#  include <Registration/cmtkParallelElasticFunctional.h>
-#else
-#  include <Registration/cmtkVoxelMatchingElasticFunctional.h>
-#endif
+#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
 
 namespace
 cmtk
@@ -105,18 +101,10 @@ public:
   typedef SymmetricElasticFunctional Superclass;
 
   /// The forward functional.
-#ifdef CMTK_USE_SMP
-  ParallelElasticFunctional<VM> FwdFunctional;
-#else
   VoxelMatchingElasticFunctional_Template<VM> FwdFunctional;
-#endif
 
   /// The backward functional.
-#ifdef CMTK_USE_SMP
-  ParallelElasticFunctional<VM> BwdFunctional;
-#else
   VoxelMatchingElasticFunctional_Template<VM> BwdFunctional;
-#endif
 
   /// Constructor.
   SymmetricElasticFunctional_Template( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )

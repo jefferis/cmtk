@@ -32,10 +32,6 @@
 
 #include "cmtkVoxelMatchingElasticFunctional.h"
 
-#ifdef CMTK_USE_SMP
-#  include <Registration/cmtkParallelElasticFunctional.h>
-#endif
-
 #include <System/cmtkDebugOutput.h>
 
 #include <Registration/cmtkVoxelMatchingMutInf.h>
@@ -48,6 +44,10 @@
 #include <Base/cmtkSplineWarpXform.h>
 
 #include <vector>
+
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
 
 namespace
 cmtk
@@ -173,29 +173,10 @@ template<class VM>
 void
 VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters() 
 {
-  if ( !this->ConsistencyHistogram ) 
-    {
-    this->ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-    const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
-    const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
-    const unsigned int numBinsX = this->ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
-    
-    const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
-    const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
-    unsigned int numBinsY = this->ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
-    
-    this->ConsistencyHistogram->Resize( numBinsX, numBinsY );
-    this->ConsistencyHistogram->SetRangeX( rangeX );
-    this->ConsistencyHistogram->SetRangeY( rangeY );
-    }
-  
   int numCtrlPoints = this->Dim / 3;
   
   std::vector<double> mapRef( numCtrlPoints );
   std::vector<double> mapMod( numCtrlPoints );
-
-  Vector3D fromVOI, toVOI;
-  int pX, pY, pZ;
 
   int inactive = 0;
 
@@ -207,7 +188,8 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       this->Warp->SetParametersActive( this->m_ActiveCoordinates );
     else
       this->Warp->SetParametersActive();
-    
+
+#pragma omp parallel for reduction(+:inactive)
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
       /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
@@ -216,11 +198,11 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
       bool active = false;
-      for ( pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
+      for ( int pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
 	{
-	for ( pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
+	for ( int pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
 	  {
-	  for ( pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
+	  for ( int pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
 	    {
 	    if ( ( this->Metric->GetSampleX( r ) != 0 ) || ( ( this->WarpedVolume[r] != unsetY ) && ( this->WarpedVolume[r] != 0 ) ) ) 
 	      {
@@ -247,9 +229,33 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     } 
   else
     {
+    if ( this->m_ThreadConsistencyHistograms.size() != this->m_NumberOfThreads )
+      {
+      this->m_ThreadConsistencyHistograms.resize( this->m_NumberOfThreads );
+      
+      const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
+      const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
+      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
+
+      const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
+      const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
+      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
+      
+      for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
+	{
+	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+	
+	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
+	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
+	this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
+	}
+      }
+
+#pragma omp parallel for
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
-      this->ConsistencyHistogram->Reset();
+      JointHistogram<unsigned int>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
+      threadHistogram.Reset();
       
       // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
       const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
@@ -259,25 +265,23 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       const int endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
       const int endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
       
-      for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
+      for ( int pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	{
-	for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
+	for ( int pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	  {
-	  for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
+	  for ( int pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	    {
 	    // Continue metric computation.
-	    if ( WarpedVolume[r] != unsetY ) 
+	    if ( this->WarpedVolume[r] != unsetY ) 
 	      {
-	      this->ConsistencyHistogram->Increment
-		( this->ConsistencyHistogram->ValueToBinX( this->Metric->GetSampleX( r ) ), 
-		  this->ConsistencyHistogram->ValueToBinY( this->WarpedVolume[r] ) );
+	      threadHistogram.Increment( threadHistogram.ValueToBinX( this->Metric->GetSampleX( r ) ), threadHistogram.ValueToBinY( this->WarpedVolume[r] ) );
 	      }
 	    }
 	  r += endOfLine;
 	  }
 	r += endOfPlane;
 	}
-      this->ConsistencyHistogram->GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
+      threadHistogram.GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
       }
     
     double refMin = HUGE_VAL, refMax = -HUGE_VAL;
@@ -336,50 +340,6 @@ CreateElasticFunctional
   UniformVolume::SmartPtr& refVolume, 
   UniformVolume::SmartPtr& fltVolume )
 {
-#ifdef CMTK_USE_SMP
-  switch ( fltVolume->GetData()->GetDataClass() ) 
-    {
-    case DATACLASS_UNKNOWN :
-    case DATACLASS_GREY :
-      switch ( metric ) 
-	{
-	case 0:
-	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_Trilinear>( refVolume, fltVolume );
-	case 1:
-	  return new ParallelElasticFunctional<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume );
-	case 2:
-	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume );
-	case 3:
-	  return NULL; // masked nmi retired
-	case 4:
-	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
-	case 5:
-	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
-	default:
-	  return NULL;
-	}
-    case DATACLASS_LABEL:
-      switch ( metric ) 
-	{
-	case 0:
-	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_NearestNeighbor >( refVolume, fltVolume );
-	case 1:
-	  return new ParallelElasticFunctional<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
-	case 2:
-	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume );
-	case 3:
-	  return NULL; // masked nmi retired
-	case 4:
-	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
-	case 5:
-	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
-	default:
-	  return NULL;
-	}
-    }
-
-#else // single processing
-
   switch ( fltVolume->GetData()->GetDataClass() ) 
     {
     case DATACLASS_UNKNOWN :
@@ -420,7 +380,6 @@ CreateElasticFunctional
 	return NULL;
 	}
     }
-#endif
   
   return NULL;
 }
