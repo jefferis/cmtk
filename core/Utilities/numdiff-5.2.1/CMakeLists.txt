@@ -244,7 +244,7 @@ IF(HAVE_LIBINTL_H)
     # Check if we have everything we need for NLS:
     # on some systems, libintl is separate, on others part of libc.
     CHECK_FUNCTION_EXISTS(_libintl_gettext HAVE_LIBINTL_GETTEXT_STD)
-    IF(NOT HAVE_LIBINTL_GETTEXT)
+    IF(NOT HAVE_LIBINTL_GETTEXT_STD)
       FIND_LIBRARY(LIBINTL_LIBRARY intl)
       IF(LIBINTL_LIBRARY_FOUND)
 	LIST(APPEND CMAKE_REQUIRED_LIBRARIES ${LIBINTL_LIBRARY})
