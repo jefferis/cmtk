@@ -38,7 +38,6 @@ SET(cmtkRegistration_SRCS
   cmtkEchoPlanarUnwarpFunctional.cxx
   cmtkElasticRegistrationCommandLine.cxx
   cmtkElasticRegistration.cxx
-  cmtkFunctionalAffine2D.cxx
   cmtkGroupwiseRegistrationFunctionalAffineInitializer.cxx
   cmtkGroupwiseRegistrationFunctionalBase.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplate.cxx
@@ -74,7 +73,6 @@ SET(cmtkRegistration_SRCS
   cmtkMultiLevelOptimizer.cxx
   cmtkProtocolCallback.cxx
   cmtkReformatVolume.cxx
-  cmtkRegistration2d2d.cxx
   cmtkRegistrationCallback.cxx
   cmtkRegistrationJointHistogram.cxx
   cmtkScalarImageSimilarity.cxx
