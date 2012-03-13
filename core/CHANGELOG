@@ -1,5 +1,6 @@
 Release CMTK-2.2.0:
 
+(r4024) Obsolete: removed unused 2d/2d registration classes.
 (r4016) Refactored: finally merged old-style SMP and non-SMP elastic voxel
     matching functional classes.
 (r4004) Fixed: full OpenMP support now available on MacOS.
