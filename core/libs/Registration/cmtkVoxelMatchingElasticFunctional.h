@@ -503,7 +503,6 @@ public:
     return localMetric->Get();
   }
   
-#ifdef _OPENMP
   /** Using OpenMP, update set of active and passive parameters.
    * This function computes local entropies in the neighborhood of all control
    * points of the Warp transformation. Those control points for which both
@@ -513,7 +512,6 @@ public:
    * therefore save significant computation time.
    */
   virtual void UpdateWarpFixedParameters();
-#endif // #ifdef _OPENMP
 
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const typename Self::ParameterType step = 1 ) 
