@@ -8,6 +8,7 @@
 	<te>97.900000</te>
 	<dwi>
 		<bValue>0</bValue>
+		<bVector>0.000000 0.000000 0.000000</bVector>
 	</dwi>
 </mr>
 <dcmPath>mr-dwi-ge/</dcmPath>

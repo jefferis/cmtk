@@ -642,13 +642,10 @@ ImageStack::WriteXML( const std::string& fname ) const
       mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bValue");
       mxmlNewInteger( x_bval, this->front()->BValue );
       
-      if ( this->front()->BValue > 0 )
+      mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
+      for ( int idx = 0; idx < 3; ++idx )
 	{
-	mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
-	for ( int idx = 0; idx < 3; ++idx )
-	  {
-	  mxmlNewReal( x_bvec, this->front()->BVector[idx] );
-	  }
+	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
 	}
       }
     }
