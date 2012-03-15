@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4036) Added: the "dcm2image" tool now ooptionally creates an XML sidecar
+    file for each stacked image, which contains imaging parameters including
+    b-values and diffusion-weighting vectors for DW-MRI.
 (r4024) Obsolete: removed unused 2d/2d registration classes.
 (r4016) Refactored: finally merged old-style SMP and non-SMP elastic voxel
     matching functional classes.
