@@ -9,6 +9,7 @@
 	<dwi>
 		<bValue>0</bValue>
 		<bVector>0.000000 0.000000 0.000000</bVector>
+		<bVectorImage coordinateSpace="RAS">0.000000 0.000000 0.000000</bVectorImage>
 	</dwi>
 </mr>
 <dcmPath>mr-dwi-ge/</dcmPath>

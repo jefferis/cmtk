@@ -504,11 +504,11 @@ public:
   /// Match new image file against this volume stack.
   bool Match ( const ImageFile *newImage ) const;
 
-  /// Write XML sidecare file.
-  void WriteXML ( const std::string& name ) const;
+  /// Write XML sidecar file.
+  void WriteXML ( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */ ) const;
 
   /// Write to image file.
-  void WriteImage ( const std::string& name ) const;
+  cmtk::UniformVolume::SmartConstPtr WriteImage ( const std::string& name ) const;
 
   /// Print stack information.
   void print() const;
@@ -569,14 +569,15 @@ ImageStack::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
   static const wsLookupType wsLookup[] = 
   {
     { "manufacturer", { "\t", NULL, NULL, "\n" } },
-    { "model", { "\t", NULL, NULL, "\n" } },
-    { "tr", { "\t", NULL, NULL, "\n" } },
-    { "te", { "\t", NULL, NULL, "\n" } },
-    { "dwi", { "\t", "\n", "\t", "\n" } },
-    { "bValue", { "\t\t", NULL, NULL, "\n" } },
-    { "bVector", { "\t\t", NULL, NULL, "\n" } },
-    { "dcmPath", { NULL, NULL, NULL, "\n" } },
-    { "dcmFile", { "\t", NULL, NULL, "\n" } },
+    { "model",        { "\t", NULL, NULL, "\n" } },
+    { "tr",           { "\t", NULL, NULL, "\n" } },
+    { "te",           { "\t", NULL, NULL, "\n" } },
+    { "dwi",          { "\t", "\n", "\t", "\n" } },
+    { "bValue",       { "\t\t", NULL, NULL, "\n" } },
+    { "bVector",      { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorImage", { "\t\t", NULL, NULL, "\n" } },
+    { "dcmPath",      { NULL, NULL, NULL, "\n" } },
+    { "dcmFile",      { "\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
 
@@ -611,7 +612,7 @@ static int cmtkWrapToLower( const int c )
 }
 
 void
-ImageStack::WriteXML( const std::string& fname ) const
+ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volume ) const
 {
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
 
@@ -643,9 +644,24 @@ ImageStack::WriteXML( const std::string& fname ) const
       mxmlNewInteger( x_bval, this->front()->BValue );
       
       mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
-      for ( int idx = 0; idx < 3; ++idx )
+      for ( size_t idx = 0; idx < 3; ++idx )
 	{
 	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
+	}
+
+      // Determine bVector in image coordinate space:
+      // First, create copy of image grid
+      cmtk::UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
+      // Bring grid into LPS DICOM coordinate space
+      gridLPS->ChangeCoordinateSpace( "LPS" );
+      // Apply inverse of remaining image-to-space matrix to original bVector
+      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->BVector * gridLPS->GetImageToPhysicalMatrix().GetInverse().GetTopLeft3x3();
+      
+      mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
+      mxmlElementSetAttr( x_bvec_image, "coordinateSpace", volume.GetMetaInfo( cmtk::META_SPACE ).c_str() );
+      for ( size_t idx = 0; idx < 3; ++idx )
+	{
+	mxmlNewReal( x_bvec_image, bVectorImage[idx] );
 	}
       }
     }
@@ -676,7 +692,7 @@ ImageStack::WriteXML( const std::string& fname ) const
   mxmlDelete( x_root );
 }
 
-void
+cmtk::UniformVolume::SmartConstPtr
 ImageStack::WriteImage( const std::string& fname ) const
 {
   const ImageFile *first = this->front();
@@ -753,6 +769,8 @@ ImageStack::WriteImage( const std::string& fname ) const
     cmtk::DebugOutput( 1 ) << (*it)->fname << " ";
     }
   cmtk::DebugOutput( 1 ) << "\n====================================================\n";
+
+  return volume;
 }
 
 /// Class handling a list of image stacks, i.e., volumes.
@@ -851,12 +869,12 @@ VolumeList::WriteVolumes()
 
       char finalPath[PATH_MAX];
       sprintf( finalPath, uniquePath.c_str(), idx++ );
-      it->second[0]->WriteImage( finalPath );
+      cmtk::UniformVolume::SmartConstPtr volume = it->second[0]->WriteImage( finalPath );
 
       if ( WriteXML )
 	{
 	strcat( finalPath, ".xml" );
-	it->second[0]->WriteXML( finalPath );
+	it->second[0]->WriteXML( finalPath, *volume );
 	}
       }
     else
@@ -875,12 +893,12 @@ VolumeList::WriteVolumes()
 
 	char finalPath[PATH_MAX];
 	sprintf( finalPath, uniquePath.c_str(), idx++ );
-	it->second[i]->WriteImage( finalPath );
+	cmtk::UniformVolume::SmartConstPtr volume = it->second[i]->WriteImage( finalPath );
 
 	if ( WriteXML )
 	  {
 	  strcat( finalPath, ".xml" );
-	  it->second[i]->WriteXML( finalPath );
+	  it->second[i]->WriteXML( finalPath, *volume );
 	  }
 	}
       }
