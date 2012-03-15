@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -98,6 +98,16 @@ public:
 
   /// Transpose operator.
   Self GetTranspose() const;
+
+  /// Get top left 3x3 submatrix.
+  Matrix3x3<T> GetTopLeft3x3() const
+  {
+    Matrix3x3<T> result;
+
+    for ( size_t j = 0; j < 3; ++j )
+      for ( size_t i = 0; i < 3; ++i )
+	result[j][i] = this->Matrix[j][i];
+  }
 
   /// Index operator.
   T* operator[]( const size_t i ) { return &this->Matrix[i][0]; }

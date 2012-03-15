@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -131,7 +131,7 @@ public:
   /** Interpolate sub-image with affine transformation.
    */
   virtual ScalarImage* InterpolateFrom
-  ( const ScalarImage* grid, const CoordinateMatrix3x3* matrix, const cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::LINEAR )
+  ( const ScalarImage& grid, const CoordinateMatrix3x3& matrix, const cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::LINEAR )
     const;
 
   /// Set region of interest.

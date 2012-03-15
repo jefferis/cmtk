@@ -137,7 +137,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
     CoordinateMatrix3x3 J;
     this->GetJacobian( u, J );
     J.Invert3x3();
-    J.GetTranspose().Multiply( delta );
+    delta *= J.GetTranspose();
     
     // initialize line search
     (vu = u) -= (delta *= step);

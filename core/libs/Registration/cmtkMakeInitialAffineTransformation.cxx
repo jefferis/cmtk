@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -159,11 +159,9 @@ MakeInitialAffineTransformation
 
   // Now compute transformation
   pAxesRef.Invert3x3();
-  Matrix3x3<Types::Coordinate> xform3x3 = (pAxesRef * pAxesFlt);
+  const Matrix3x3<Types::Coordinate> xform3x3 = (pAxesRef * pAxesFlt);
 
-  Vector3D xlation = centerOfMassRef;
-  xform3x3.Multiply( xlation );
-  xlation = centerOfMassFlt - xlation;
+  const Vector3D xlation = centerOfMassFlt - (centerOfMassRef * xform3x3);
   
   // Assign xform3x3 as a submatrix of a 4x4
   Matrix4x4<Types::Coordinate> xform4x4 = xform3x3;

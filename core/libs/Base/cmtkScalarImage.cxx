@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -157,9 +157,9 @@ ScalarImage::ScalarImage
 
 ScalarImage*
 ScalarImage::InterpolateFrom
-( const ScalarImage* grid, const CoordinateMatrix3x3* matrix, const cmtk::Interpolators::InterpolationEnum interpolation ) const
+( const ScalarImage& grid, const CoordinateMatrix3x3& matrix, const cmtk::Interpolators::InterpolationEnum interpolation ) const
 {
-  int dimsX = grid->m_Dims[0], dimsY = grid->m_Dims[1];
+  int dimsX = grid.m_Dims[0], dimsY = grid.m_Dims[1];
   ScalarImage* result = new ScalarImage( dimsX, dimsY );
 
   // if we don;t have pixel data, don't interpolate
@@ -174,24 +174,24 @@ ScalarImage::InterpolateFrom
   origin[0] = origin[1] = 0;
 
   FixedVector<2,Types::Coordinate> deltax;
-  deltax[0] = grid->m_PixelSize[0];
+  deltax[0] = grid.m_PixelSize[0];
   deltax[1] = 0;
 
   FixedVector<2,Types::Coordinate> deltay;
   deltay[0] = 0;
-  deltay[1] = grid->m_PixelSize[1];
+  deltay[1] = grid.m_PixelSize[1];
 
-  matrix->Multiply( origin );
+  origin *= matrix;
   origin[0] /= this->m_PixelSize[0];
   origin[1] /= this->m_PixelSize[1];
 
-  matrix->Multiply( deltax );
+  deltax *= matrix;
   deltax[0] /= this->m_PixelSize[0];
   deltax[1] /= this->m_PixelSize[1];
   deltax[0] -= origin[0];
   deltax[1] -= origin[1];
 
-  matrix->Multiply( deltay );
+  deltay *= matrix;
   deltay[0] /= this->m_PixelSize[0];
   deltay[1] /= this->m_PixelSize[1];
   deltay[0] -= origin[0];

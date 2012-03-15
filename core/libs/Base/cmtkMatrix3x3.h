@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -128,44 +128,6 @@ public:
   /// Assignment operator.
   Self& operator=( const Self& other );
 
-  /* Multiply with homogeneous 3d vector (implicitly made homogeneous).
-   *\note The '&' declaration of both arguments forces the C++ compiler to
-   * maintain them as explicitly sized arrays, rather than collapsing to
-   * pointers. This is what allows us to overload this function based on the
-   * array size (!) of its arguments.
-   */
-  template<class T2> void Multiply( const FixedVector<2,T2>& u, FixedVector<2,T2>& v ) const 
-  {
-    for ( int idx=0; idx < 2; ++idx ) 
-      v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + Matrix[2][idx];
-  }
-  
-  /** Multiply with actual 3d vector.
-   *\note The '&' declaration of both arguments forces the C++ compiler to
-   * maintain them as explicitly sized arrays, rather than collapsing to
-   * pointers. This is what allows us to overload this function based on the
-   * array size (!) of its arguments.
-   */
-  template<class T2> void Multiply( const FixedVector<3,T2>& u,  FixedVector<3,T2>& v ) const 
-  {
-    for ( int idx=0; idx < 3; ++idx ) 
-      v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + u[2]*Matrix[2][idx];
-  }
-  
-  /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void Multiply( FixedVector<2,T2>& v ) const 
-  {
-    const FixedVector<2,T2> u( v );
-    this->Multiply( u, v );
-  }
-  
-  /// Multiply in place with actual 3d vector.
-  template<class T2> void Multiply( FixedVector<3,T2>& v ) const 
-  {
-    const FixedVector<3,T2> u( v );
-    this->Multiply( u, v );
-  }
-
   /// Get determinant.
   T Determinant() const 
   {
@@ -190,6 +152,44 @@ private:
 
 /// Define coordinate matrix.
 typedef Matrix3x3<Types::Coordinate> CoordinateMatrix3x3;
+
+/// In-place multiplication with 3d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<3,T2>&
+operator*=( FixedVector<3,T2>& u, const Matrix3x3<T>& M )
+{
+  return u = u*M;
+}
+
+/// Multiplication with 3d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<3,T2>
+operator*( const FixedVector<3,T2>& u, const Matrix3x3<T>& M )
+{
+  FixedVector<3,T2> v;
+  for ( int idx=0; idx<3; ++idx ) 
+    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + u[2]*M[2][idx];
+  return v;
+}
+
+/// In-place multiplication with 2d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<2,T2>&
+operator*=( FixedVector<2,T2>& u, const Matrix3x3<T>& M )
+{
+  return u = u*M;
+}
+
+/// Multiplication with 2d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<2,T2>
+operator*( const FixedVector<2,T2>& u, const Matrix3x3<T>& M )
+{
+  FixedVector<2,T2> v;
+  for ( int idx=0; idx<3; ++idx ) 
+    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + M[2][idx];
+  return v;
+}
 
 /// Output object to console.
 template<class T>
