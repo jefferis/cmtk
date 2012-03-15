@@ -107,6 +107,8 @@ public:
     for ( size_t j = 0; j < 3; ++j )
       for ( size_t i = 0; i < 3; ++i )
 	result[j][i] = this->Matrix[j][i];
+
+    return result;
   }
 
   /// Index operator.
