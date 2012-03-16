@@ -186,7 +186,7 @@ FixedVector<2,T2>
 operator*( const FixedVector<2,T2>& u, const Matrix3x3<T>& M )
 {
   FixedVector<2,T2> v;
-  for ( int idx=0; idx<3; ++idx ) 
+  for ( int idx=0; idx<2; ++idx ) 
     v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + M[2][idx];
   return v;
 }
