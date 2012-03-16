@@ -52,11 +52,11 @@ VolumeFromFile::ReadDICOM( const char *path )
 
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
 
-  const UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
+  UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
   FixedVector< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
   
   // without further information, we "guess" the image normal vector
-  UniformVolume::CoordinateVectorType sliceNormal = dicom.DemosaicAndGetNormal( imageOrientation, dims, pixelDataArray );
+  UniformVolume::CoordinateVectorType sliceNormal = dicom.DemosaicAndGetNormal( imageOrientation, dims, pixelDataArray, imageOrigin );
 
   // Construct volume and set the DICOM coordinates
   UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], pixelDataArray ) );

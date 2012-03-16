@@ -89,7 +89,8 @@ public:
   /// Demosaic (if necessary) the image and return slice normal vector.
   const FixedVector<3,double> DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imageOrientation /*!< Image orientation vectors (read-only, for default normal computation)*/, 
 						    FixedVector<3,int>& dims /*!< Image dimensions - these may be modified if the image is a mosaic */, 
-						    TypedArray::SmartPtr& pixelDataArray /*!< Pixel data array - a new array will be returned if the image is a mosaic.*/ );
+						    TypedArray::SmartPtr& pixelDataArray /*!< Pixel data array - a new array will be returned if the image is a mosaic.*/,
+						    FixedVector<3,double>& imageOrigin /*!< True image origin from CSA header if this is a mosaic file. */);
   
   /// Get const DICOM dataset.
   const DcmDataset& Dataset() const
@@ -125,6 +126,9 @@ private:
 
   /// Pointer to the DICOM document object
   std::auto_ptr<DiDocument> m_Document;
+
+  /// Parse private Siemens CSA data.
+  void ParseSiemensCSA( const DcmTagKey& tagKey, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin );
 };
 
 //@}

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -36,6 +36,7 @@
 #include <Base/cmtkSurfaceNormal.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkStrUtility.h>
 
 #include <IO/cmtkFileConstHeader.h>
 
@@ -313,7 +314,7 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 
 
 const FixedVector<3,double>
-DICOM::DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray )
+DICOM::DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
 {
   // without further information, we "guess" the image normal vector
   FixedVector<3,double> sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
@@ -372,48 +373,68 @@ DICOM::DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imag
 	    }
 	  
 // For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
-	  const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
-	  
-	  const Uint8* csaHeaderInfo = NULL;
-	  unsigned long csaHeaderLength = 0;
-	  this->Dataset().findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
-	  
-	  FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
-	  const size_t nTags = fileHeader.GetField<Uint32>( 8 );
-	  
-	  size_t tagOffset = 16; // start after header
-	  for ( size_t tag = 0; tag < nTags; ++tag )
-	    {
-	    char tagName[65];
-	    fileHeader.GetFieldString( tagOffset, tagName, 64 );
-//	  StdErr << tag << "\t" << tagName << "\n";
-	    
-	    const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
-//	  StdErr << "  nItems: " << nItems << "\n";
-	    
-	    tagOffset += 84;
-	    for ( size_t item = 0; item < nItems; ++item )
-	      {
-	      const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
-	      
-//	    StdErr << "    len: " << itemLen << "\n";
-	      
-	      if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
-		{
-		char valStr[65];
-		sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
-		
-//	      StdErr << "    " << valStr << "\n";
-		}
-	      
-	      tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
-	      }
-	    }
+	  this->ParseSiemensCSA( DcmTagKey(0x0029,0x1010), sliceNormal, imageOrigin ); // image information
+	  this->ParseSiemensCSA( DcmTagKey(0x0029,0x1020), sliceNormal, imageOrigin ); // series information
 	  }
 	}
       }  
     }
   return sliceNormal;
+}
+
+void
+DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
+{
+  const Uint8* csaHeaderInfo = NULL;
+  unsigned long csaHeaderLength = 0;
+  if ( this->Dataset().findAndGetUint8Array ( tagKey, csaHeaderInfo, &csaHeaderLength ).status() == OF_ok )
+    {
+    FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
+    const size_t nTags = fileHeader.GetField<Uint32>( 8 );
+    
+    size_t tagOffset = 16; // start after header
+    for ( size_t tag = 0; tag < nTags; ++tag )
+      {
+      char tagName[65];
+      fileHeader.GetFieldString( tagOffset, tagName, 64 );
+//      StdErr << tag << "\t" << tagName << "\n";
+      
+      const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
+//      StdErr << "  nItems: " << nItems << "\n";
+      
+      tagOffset += 84;
+      for ( size_t item = 0; item < nItems; ++item )
+	{
+	const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
+	
+//	StdErr << "    len: " << itemLen << "\n";
+	
+	if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
+	  {
+	  char valStr[65];
+	  sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
+	  
+//	  StdErr << "    " << valStr << "\n";
+	  }
+
+	// get true slice0 location from CSA header
+	if ( ! strcmp( tagName, "MrPhoenixProtocol" ) )
+	  {
+	  const char* pSliceZero = StrNStr( reinterpret_cast<const char*>( csaHeaderInfo+tagOffset+16 ), itemLen, "sSliceArray.asSlice[0].sPosition.dSag" );
+	  if ( pSliceZero )
+	    {
+	    for ( int i = 0; i < 3; ++i )
+	      {
+	      while ( *pSliceZero != '=' ) ++pSliceZero;
+	      imageOrigin[i] = atof( ++pSliceZero );
+	      }
+	    }
+	  }
+	
+	tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+	}
+      }
+    }
 }
 
 ScalarImage* 
