@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,6 +44,11 @@ cmtk
 
 /** \addtogroup System */
 //@{
+
+/** Safe search for a string within a non-null-terminated string.
+ */
+const char*
+StrNStr( const char* haystack, const size_t nBytes, const char* needle );
 
 /** Safe string comparison.
  * This function is a wrapper for the standard library's "strcmp" function.

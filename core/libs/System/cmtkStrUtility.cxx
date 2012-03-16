@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,28 @@ StrCmp( const char* s1, const char* s2 )
     if ( s2 == NULL ) return 1;
     else return strcmp( s1, s2 );
     }
+}
+
+const char*
+StrNStr( const char* haystack, const size_t nBytes, const char* needle )
+{
+  for ( size_t hofs = 0; hofs < nBytes; ++hofs )
+    {
+    size_t hidx = hofs;
+    const char* nchr = needle;
+
+    while ( (*nchr!=0) && (hidx<nBytes) && (*nchr==haystack[hidx]) ) 
+      {
+      ++nchr;
+      ++hidx;
+      }
+    
+    // found?
+    if ( *nchr == 0 )
+      return haystack+hofs;
+    }
+  
+  return NULL;
 }
 
 void

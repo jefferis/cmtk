@@ -29,25 +29,13 @@
 //  $LastChangedBy$
 //
 */
+
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
 
-#include <System/cmtkStackBacktrace.h>
-namespace cmtk { static StackBacktrace StackBacktraceInstance; }
-
-// deliberately crash to test stack trace output
-int
-testStackBacktrace()
-{
-  cmtk::StackBacktrace::SetExitCode( 0 );
-  char* nullPtr = NULL;
-  (*nullPtr) = 0;
-
-  // if we didn't catch a SEGFAULT, the test failed
-  return 1;
-}
-
+#include "testStackBacktrace.txx"
+#include "testStrNStr.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -60,6 +48,7 @@ typedef struct
 const testNameAndFunctionPointer testTable[] =
 {
   { "StackBacktrace",  &testStackBacktrace },
+  { "StrNStr",         &testStrNStr },
   { NULL, NULL }
 };
 
