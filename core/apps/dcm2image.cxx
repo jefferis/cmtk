@@ -568,16 +568,17 @@ ImageStack::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "manufacturer", { "\t", NULL, NULL, "\n" } },
-    { "model",        { "\t", NULL, NULL, "\n" } },
-    { "tr",           { "\t", NULL, NULL, "\n" } },
-    { "te",           { "\t", NULL, NULL, "\n" } },
-    { "dwi",          { "\t", "\n", "\t", "\n" } },
-    { "bValue",       { "\t\t", NULL, NULL, "\n" } },
-    { "bVector",      { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorImage", { "\t\t", NULL, NULL, "\n" } },
-    { "dcmPath",      { NULL, NULL, NULL, "\n" } },
-    { "dcmFile",      { "\t", NULL, NULL, "\n" } },
+    { "manufacturer",    { "\t", NULL, NULL, "\n" } },
+    { "model",           { "\t", NULL, NULL, "\n" } },
+    { "tr",              { "\t", NULL, NULL, "\n" } },
+    { "te",              { "\t", NULL, NULL, "\n" } },
+    { "dwi",             { "\t", "\n", "\t", "\n" } },
+    { "bValue",          { "\t\t", NULL, NULL, "\n" } },
+    { "bVector",         { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorImage",    { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorStandard", { "\t\t", NULL, NULL, "\n" } },
+    { "dcmPath",         { NULL, NULL, NULL, "\n" } },
+    { "dcmFile",         { "\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
 
@@ -614,6 +615,7 @@ static int cmtkWrapToLower( const int c )
 void
 ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volume ) const
 {
+  mxmlSetWrapMargin( 120 ); // make enough room for indented bVectorStandard
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
 
   mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
@@ -644,24 +646,38 @@ ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volum
       mxmlNewInteger( x_bval, this->front()->BValue );
       
       mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
+      mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
 	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
 	}
 
-      // Determine bVector in image coordinate space:
+      // Determine bVector in image LPS coordinate space:
       // First, create copy of image grid
       cmtk::UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
-      // Bring grid into LPS DICOM coordinate space
+      // Make sure still in LPS DICOM coordinate space
       gridLPS->ChangeCoordinateSpace( "LPS" );
       // Apply inverse of remaining image-to-space matrix to original bVector
       const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->BVector * gridLPS->GetImageToPhysicalMatrix().GetInverse().GetTopLeft3x3();
       
       mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
-      mxmlElementSetAttr( x_bvec_image, "coordinateSpace", volume.GetMetaInfo( cmtk::META_SPACE ).c_str() );
+      mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
 	mxmlNewReal( x_bvec_image, bVectorImage[idx] );
+	}
+
+      // Determine bVector in image RAS standard coordinate space:
+      // First, create copy of image grid
+      cmtk::UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
+      // Apply inverse of remaining image-to-space matrix to original bVector
+      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->BVector * gridRAS->GetImageToPhysicalMatrix().GetInverse().GetTopLeft3x3();
+      
+      mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
+      mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
+      for ( size_t idx = 0; idx < 3; ++idx )
+	{
+	mxmlNewReal( x_bvec_std, bVectorStandard[idx] );
 	}
       }
     }
