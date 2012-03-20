@@ -41,6 +41,7 @@
 #include <IO/cmtkFileConstHeader.h>
 
 #ifdef CMTK_USE_DCMTK_JPEG
+#  include <dcmtk/dcmjpeg/djdecode.h>
 #  include <dcmtk/dcmjpls/djdecode.h>
 #endif
 
