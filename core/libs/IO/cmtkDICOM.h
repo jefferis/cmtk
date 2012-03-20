@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -37,9 +37,9 @@
 
 #include <Base/cmtkScalarImage.h>
 
-#include <dcmdata/dcdeftag.h>
-#include <dcmimgle/didocu.h>
-#include <dcmimgle/diutils.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmimgle/didocu.h>
+#include <dcmtk/dcmimgle/diutils.h>
 
 #include <memory>
 
