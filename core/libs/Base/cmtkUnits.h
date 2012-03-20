@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010, 2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -146,8 +146,8 @@ public:
   inline Radians( const Degrees& degrees );
 };
 
-inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / (UnitBase::Pi() / 180) ) {};
-inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * (UnitBase::Pi() / 180) ) {};
+inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / (UnitBase::Pi() / 180) ) {}
+inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * (UnitBase::Pi() / 180) ) {}
 
 /// Forward declaration.
 class GaussianFWHM;
@@ -176,8 +176,8 @@ public:
   inline GaussianFWHM( const GaussianSigma& degrees );
 };
 
-inline GaussianSigma::GaussianSigma( const GaussianFWHM& fwhm ) : UnitBase( fwhm.Value() / 2.354820045 ) {};
-inline GaussianFWHM::GaussianFWHM( const GaussianSigma& sigma ) : UnitBase( sigma.Value() * 2.354820045 ) {};
+inline GaussianSigma::GaussianSigma( const GaussianFWHM& fwhm ) : UnitBase( fwhm.Value() / 2.354820045 ) {}
+inline GaussianFWHM::GaussianFWHM( const GaussianSigma& sigma ) : UnitBase( sigma.Value() * 2.354820045 ) {}
 
 }
 
