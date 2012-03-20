@@ -23,7 +23,7 @@
 # Copyright 2004-2009 Kitware, Inc.
 # Copyright 2009-2010 Mathieu Malaterre <mathieu.malaterre@gmail.com>
 # Copyright 2010 Thomas Sondergaard <ts@medical-insight.com>
-# Copyright 2011 SRI International
+# Copyright 2011-2012 SRI International
 #
 # CMake - Cross Platform Makefile Generator
 # Copyright 2000-2009 Kitware, Inc., Insight Software Consortium
@@ -201,10 +201,9 @@ if(WIN32)
 endif()
 
 if(DCMTK_ofstd_INCLUDE_DIR)
-  get_filename_component(DCMTK_dcmtk_INCLUDE_DIR
-    ${DCMTK_ofstd_INCLUDE_DIR}
-    PATH
-    CACHE)
+  get_filename_component(DCMTK_dcmtk_INCLUDE_DIR "${DCMTK_ofstd_INCLUDE_DIR}" PATH)
+  get_filename_component(DCMTK_dcmtk_INCLUDE_DIR "${DCMTK_dcmtk_INCLUDE_DIR}" PATH)
+  set(DCMTK_dcmtk_INCLUDE_DIR "${DCMTK_dcmtk_INCLUDE_DIR}" CACHE PATH "dcmtk root include dir")
   list(APPEND DCMTK_INCLUDE_DIRS ${DCMTK_dcmtk_INCLUDE_DIR})
   mark_as_advanced(DCMTK_dcmtk_INCLUDE_DIR)
 endif()
