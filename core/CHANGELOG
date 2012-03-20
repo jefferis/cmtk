@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r4048) Fixed: system DCMTK (from MacPorts) can now be properly configured on
+    MacOS.
 (r4041) Fixed: get correct image origin for Siemens mosaic DICOM files from
     CSA header.
 (r4036) Added: the "dcm2image" tool now ooptionally creates an XML sidecar
