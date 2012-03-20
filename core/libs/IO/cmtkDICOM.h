@@ -37,9 +37,9 @@
 
 #include <Base/cmtkScalarImage.h>
 
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmimgle/didocu.h>
-#include <dcmtk/dcmimgle/diutils.h>
+#include <dcmdata/dcdeftag.h>
+#include <dcmimgle/didocu.h>
+#include <dcmimgle/diutils.h>
 
 #include <memory>
 
