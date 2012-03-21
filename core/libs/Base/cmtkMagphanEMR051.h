@@ -73,6 +73,14 @@ typedef struct __SphereEntryType
   /// Grams of Copper Sulfate Penta Hydrate per liter
   double m_GramsPerLiterCSPH;
 
+  /** Estimated imaging T1.
+   * For the 3.0cm spheres, this value is given in the phantom manual. For the remaining
+   * spheres, we derive it from an exponential fit as T1=exp(-1.83364*CSPH+7.18582).
+   *
+   * We store only integer values because no fractional values are given in the phantom manual.
+   */
+  int m_EstimatedT1;
+
   /// Sphere color.
   SphereColorType m_Color;
 } SphereEntryType;
