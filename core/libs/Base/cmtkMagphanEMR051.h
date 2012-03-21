@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk
@@ -67,8 +68,8 @@ typedef struct __SphereEntryType
   /// Sphere radius in milimeters.
   Types::Coordinate m_Radius;
 
-  /// Sphere location in "RAS" coordinate. Phantom center is the coordinate space origin.
-  Types::Coordinate m_Location[3];
+  /// Sphere center location in "RAS" coordinate. Phantom center is the coordinate space origin.
+  Types::Coordinate m_CenterLocation[3];
 
   /// Grams of Copper Sulfate Penta Hydrate per liter
   double m_GramsPerLiterCSPH;
@@ -90,6 +91,9 @@ typedef struct __SphereEntryType
  * They can, therefore, be used without reference to ADNI publications.
  */
 extern const SphereEntryType MagphanEMR051SphereTable[165];
+
+/// Create a simulated T1-weighted image of the phantom spheres.
+UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 );
 
 //@}
 
