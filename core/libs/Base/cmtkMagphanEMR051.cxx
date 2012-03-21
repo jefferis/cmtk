@@ -36,6 +36,11 @@
  */
 const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[165] =
 {
+  // 
+  // LICENSING EXCEPTION
+  //   Unlike the remainder of this file, the table of phantom sphere coordinates
+  //   is licensed under the CC BY 3.0 license (https://creativecommons.org/licenses/by/3.0/us/)
+  //
   // 1x 6.0cm sphere
   { 60, { 0.0, 0.0, 0.0 },      0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   // 4x 3.0cm spheres
@@ -237,5 +242,8 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   { 10, {  25.0,  87.2,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -25.0,  87.2,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {   0.0,  88.6,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE }
+  // 
+  // END LICENSING EXCEPTION
+  //
 };
 
