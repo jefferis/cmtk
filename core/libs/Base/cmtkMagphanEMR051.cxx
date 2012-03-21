@@ -45,14 +45,46 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   { 30, { -60.0, -15.0, 0 },    0.295, cmtk::Phantoms::SPHERE_COLOR_YELLOW }, // y coordinate estimated - not marked in construction drawing
   // 2x 1.5cm spheres
   { 15, {  89.0, -2.9,  0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 15, {   0.0, -2.9, 60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE }
+  { 15, {   0.0, -2.9, 60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   // 158x 1.0cm spheres
   //   Plane 0
+  //     outer ring
+  { 10, {  86.4, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  86.4, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -86.4, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -86.4, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  64.7, 0.0,  64.7 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  64.7, 0.0, -64.7 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -64.7, 0.0,  64.7 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -64.7, 0.0, -64.7 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0,  86.4 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -86.4 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0,  86.4 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0, -86.4 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, 0.0,  91.5 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, 0.0, -91.5 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     middle ring
+  { 10, {  30.0, 0.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  60.0, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  60.0, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -60.0, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -60.0, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     inner ring
+  { 10, {  30.0, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     single inferior mid-sagittal sphere
+  { 10, {   0.0, 0.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 1
   //   Plane 1b
   //   Plane 2
   //   Plane 2b
   //   Plane 3
   //   Plane 3b
+  {  0, {   0.0, 0.0, 0.0 },  0.0, cmtk::Phantoms::SPHERE_COLOR_NONE }
 };
 
