@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4052) Added: "epiunwarp" tool can now initialize deformation by matching
+    centers of mass for each row. This seems to greatly improve unwarping
+    results.
 (r4050) Changed: "dcm2image" now defaults to "sort-by-instance" file ordering;
     this seems more generally useful than sorting by file names. Also changed
     names of the command line options.
