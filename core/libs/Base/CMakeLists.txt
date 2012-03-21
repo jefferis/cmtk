@@ -73,6 +73,7 @@ SET(cmtkBase_SRCS
   cmtkJointHistogramBase.cxx
   cmtkLandmark.cxx
   cmtkLandmarkList.cxx
+  cmtkMagphanEMR051.cxx
   cmtkMatchedLandmarkList.cxx
   cmtkMathFunctionWrappers.cxx
   cmtkMathUtil_LinAlg.cxx
