@@ -79,6 +79,8 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   { 10, { -30.0, 0.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //     single inferior mid-sagittal sphere
   { 10, {   0.0, 0.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     single left sphere
+  { 10, { -91.5, 0.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 1
   //     outer ring
   { 10, {  86.5, -30.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
