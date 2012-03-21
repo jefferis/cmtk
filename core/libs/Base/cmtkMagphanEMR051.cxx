@@ -82,40 +82,44 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   //     single left sphere
   { 10, { -91.5, 0.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 1
-  //     outer ring
-  { 10, {  86.5, -30.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -86.5, -30.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     mid-sagittal
+  { 10, {   0.0, -30.0,  40.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -30.0, -40.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {   0.0, -30.0,  86.5 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {   0.0, -30.0, -86.5 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {  61.0, -30.0,  61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {  61.0, -30.0, -61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -61.0, -30.0,  61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -30.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -30.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     +- 30mm lateral
   { 10, {  30.0, -30.0,  81.1 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {  30.0, -30.0, -81.1 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0,  81.1 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0, -81.1 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {  81.1, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {  81.1, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -81.1, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -81.1, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  //     middle ring
-  { 10, {  60.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {  60.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -60.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, { -60.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {  30.0, -30.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {  30.0, -30.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0, -60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  //     inner ring
   { 10, {  30.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, {  30.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -30.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {   0.0, -30.0,  40.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  { 10, {   0.0, -30.0, -40.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
-  //     single superior mid-sagittal sphere
-  { 10, {   0.0, -30.0,  60.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     +- 60mm lateral
+  { 10, {  60.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  60.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -60.0, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -60.0, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     +- 61mm lateral
+  { 10, {  61.0, -30.0,  61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  61.0, -30.0, -61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -61.0, -30.0,  61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -61.0, -30.0, -61.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     +- 81.1mm lateral
+  { 10, {  81.1, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  81.1, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -81.1, -30.0,  30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -81.1, -30.0, -30.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  //     +- 86.5mm lateral
+  { 10, {  86.5, -30.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -86.5, -30.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 1b
   //     +- 15mm lateral
   { 10, {  15.0,  29.1,  45.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
