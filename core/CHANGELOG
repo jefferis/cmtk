@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4050) Changed: "dcm2image" now defaults to "sort-by-instance" file ordering;
+    this seems more generally useful than sorting by file names. Also changed
+    names of the command line options.
 (r4048) Fixed: system DCMTK (from MacPorts) can now be properly configured on
     MacOS.
 (r4041) Fixed: get correct image origin for Siemens mosaic DICOM files from
