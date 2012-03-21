@@ -218,7 +218,24 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   { 10, { -67.3,  59.1,  15.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   { 10, { -67.3,  59.1, -15.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 3
+  { 10, {  28.3, -82.2,  28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  28.3, -82.2, -28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -28.3, -82.2,  28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -28.3, -82.2, -28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -88.0,  25.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -88.0, -25.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  25.0, -88.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -25.0, -88.0,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0, -89.5,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
   //   Plane 3b
-  {  0, {   0.0, 0.0, 0.0 },  0.0, cmtk::Phantoms::SPHERE_COLOR_NONE }
+  { 10, {  28.3,  81.4,  28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  28.3,  81.4, -28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -28.3,  81.4,  28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -28.3,  81.4, -28.3 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0,  87.2,  25.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0,  87.2, -25.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {  25.0,  87.2,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, { -25.0,  87.2,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE },
+  { 10, {   0.0,  88.6,   0.0 },  0.820, cmtk::Phantoms::SPHERE_COLOR_NONE }
 };
 

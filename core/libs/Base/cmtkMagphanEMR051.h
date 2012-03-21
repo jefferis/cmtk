@@ -67,7 +67,7 @@ typedef struct __SphereEntryType
   /// Sphere radius in milimeters.
   Types::Coordinate m_Radius;
 
-  /// Sphere location.
+  /// Sphere location in "RAS" coordinate. Phantom center is the coordinate space origin.
   Types::Coordinate m_Location[3];
 
   /// Grams of Copper Sulfate Penta Hydrate per liter
