@@ -100,7 +100,20 @@ const char progress_chars[] = "-\\|/";
 int progress = 0;
 
 bool Recursive = false;
-int SortFiles = 1;
+
+/// Enum type to select sort order key.
+typedef enum
+{
+  /// No sorting - take files in order stored in file system.
+  SORT_NONE = 0,
+  /// Sort by file name.
+  SORT_FILENAME = 1,
+  /// Sort by instance number.
+  SORT_INSTANCE_NUMBER = 2
+} SortKeyEnum;
+
+SortKeyEnum SortFiles = SORT_INSTANCE_NUMBER;
+
 bool WriteXML = false;
 
 bool DisableOrientationCheck = false;
@@ -1029,13 +1042,13 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
 
   switch ( SortFiles )
     {
-    case 0:
+    case SORT_NONE:
     default:
       break;
-    case 1:
+    case SORT_FILENAME:
       std::sort( fileList.begin(), fileList.end(), ImageFile::lessFileName );
       break;
-    case 2:
+    case SORT_INSTANCE_NUMBER:
       std::sort( fileList.begin(), fileList.end(), ImageFile::lessInstanceNumber );
       break;
     }
@@ -1113,9 +1126,9 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
-    cl.AddSwitch( Key( "no-sort" ), &SortFiles, 0, "Do NOT sort files by file name (determines order when resolving spatial collisions)" );
-    cl.AddSwitch( Key( "sort-name" ), &SortFiles, 1, "Sort files lexicographically by file name." );
-    cl.AddSwitch( Key( "sort-instance" ), &SortFiles, 2, "Sort files by image instance number. Use this when file names are different lengths, etc." );
+    cl.AddSwitch( Key( "no-sort" ), &SortFiles, SORT_NONE, "Do NOT sort files by file name (sorting determines image stack order when resolving spatial collisions)" );
+    cl.AddSwitch( Key( "sort-by-name" ), &SortFiles, SORT_FILENAME, "Sort files lexicographically by file name. Use this when instance numbers are non-unique." );
+    cl.AddSwitch( Key( "sort-by-instance" ), &SortFiles, SORT_INSTANCE_NUMBER, "Sort files by image instance number. Use this when file names are different lengths, etc." );
     cl.EndGroup();
 
     cl.BeginGroup( "Stacking", "Stacking Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
