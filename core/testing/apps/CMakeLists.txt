@@ -106,7 +106,7 @@ LIST(APPEND testList
 # ==========================================
 # Tests for "epiunwarp" tool
 IF(CMTK_BUILD_NRRD)
-  LIST(APPEND testList epiunwarp)
+  LIST(APPEND testList epiunwarp epiunwarpInitShift)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================

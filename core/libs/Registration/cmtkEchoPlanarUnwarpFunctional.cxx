@@ -46,7 +46,7 @@
 const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 2;
 
 cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
-( UniformVolume::SmartConstPtr& imageFwd, UniformVolume::SmartConstPtr& imageRev, const byte phaseEncodeDirection )
+( UniformVolume::SmartConstPtr& imageFwd, UniformVolume::SmartConstPtr& imageRev, const byte phaseEncodeDirection, const bool initShiftCentersOfMass )
   : m_ImageGrid( imageFwd->CloneGrid() ), 
     m_ImageFwd( imageFwd ), 
     m_ImageRev( imageRev ), 
@@ -62,8 +62,15 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     }
   
   this->m_Deformation.setbounds( 1, this->m_ImageGrid->GetNumberOfPixels() );
-  for ( size_t i = 1; i < 1+this->m_ImageGrid->GetNumberOfPixels(); ++i )
-    this->m_Deformation(i) = 0.0;
+  if ( initShiftCentersOfMass )
+    {
+    this->InitShiftCentersOfMass();
+    }
+  else
+    {
+    for ( size_t i = 1; i < 1+this->m_ImageGrid->GetNumberOfPixels(); ++i )
+      this->m_Deformation(i) = 0.0;
+    }
 
   this->m_UnwarpImageFwd.resize( this->m_ImageGrid->GetNumberOfPixels() );
   this->m_UnwarpImageRev.resize( this->m_ImageGrid->GetNumberOfPixels() );
@@ -75,6 +82,44 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
   DataGrid::IndexType dims = this->m_ImageGrid->GetDims();
   dims[this->m_PhaseEncodeDirection] = 0;
   this->m_ReadoutDirection = dims.MaxIndex();
+}
+
+void
+cmtk::EchoPlanarUnwarpFunctional::InitShiftCentersOfMass()
+{
+  DebugOutput( 9 ) << "Initializing by shifting rows according to centers of mass.\n";
+
+  const DataGrid::RegionType wholeImageRegion = this->m_ImageGrid->GetWholeImageRegion();
+
+  DataGrid::RegionType faceRegion = wholeImageRegion;
+  faceRegion.To()[this->m_PhaseEncodeDirection] = faceRegion.From()[this->m_PhaseEncodeDirection]+1;
+
+  for ( RegionIndexIterator<DataGrid::RegionType> it( faceRegion ); it != it.end(); ++it )
+    {
+    // for each row, compute the two centers of mass
+    double totalMassFwd = 0, centerOfMassFwd = 0, totalMassRev = 0, centerOfMassRev = 0;
+
+    DataGrid::IndexType idx = it.Index();
+    for ( idx[this->m_PhaseEncodeDirection] = wholeImageRegion.From()[this->m_PhaseEncodeDirection]; idx[this->m_PhaseEncodeDirection] < wholeImageRegion.To()[this->m_PhaseEncodeDirection]; ++idx[this->m_PhaseEncodeDirection] )
+      {
+      const Types::DataItem valueFwd = this->m_ImageFwd->GetDataAt( this->m_ImageFwd->GetOffsetFromIndex( idx ) );
+      totalMassFwd += valueFwd;
+      centerOfMassFwd += idx[this->m_PhaseEncodeDirection] * valueFwd;
+
+      const Types::DataItem valueRev = this->m_ImageRev->GetDataAt( this->m_ImageRev->GetOffsetFromIndex( idx ) );
+      totalMassRev += valueRev;
+      centerOfMassRev += idx[this->m_PhaseEncodeDirection] * valueRev;
+      }
+
+    centerOfMassFwd /= totalMassFwd;
+    centerOfMassRev /= totalMassRev;
+
+    const double delta = (centerOfMassFwd - centerOfMassRev) / 2;
+    for ( idx[this->m_PhaseEncodeDirection] = wholeImageRegion.From()[this->m_PhaseEncodeDirection]; idx[this->m_PhaseEncodeDirection] < wholeImageRegion.To()[this->m_PhaseEncodeDirection]; ++idx[this->m_PhaseEncodeDirection] )
+      {
+      this->m_Deformation( 1 + this->m_ImageFwd->GetOffsetFromIndex( idx ) ) = delta;
+      }
+    }
 }
 
 void

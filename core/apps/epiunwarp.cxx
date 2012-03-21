@@ -60,6 +60,8 @@ doMain
 
   byte phaseEncodeDirection = 1;
 
+  bool initShiftCentersOfMass = false;
+
   double smoothnessConstraintWeight = 0;
   double foldingConstraintWeight = 0;
   int iterations = 10;
@@ -84,6 +86,8 @@ doMain
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization Parameters" );    
+    cl.AddSwitch( Key( "init-shift-com" ), &initShiftCentersOfMass, true, "Initialize unwarping by shifting each row to align the centers of mass of forward and reverse acquisition." );
+
     cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
     cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (0 = no smoothing; original image scale)." );
     cl.AddOption( Key( "smooth-sigma-diff" ), &smoothSigmaDiff, "Difference between image smoothing kernel widths between two successive levels of the multi-scale computation." );
@@ -117,7 +121,7 @@ doMain
 
   inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
-  cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
+  cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection, initShiftCentersOfMass );
 
   func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
   func.SetFoldingConstraintWeight( foldingConstraintWeight );

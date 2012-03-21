@@ -63,7 +63,8 @@ public:
   /// Constructor.
   EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& imageFwd /*!< "Forward direction" EPI */, 
 			      UniformVolume::SmartConstPtr& imageRev /*!< "Reverse" direction EPI */, 
-			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ );
+			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */,
+			      const bool initShiftCentersOfMass = false /*!< When set, initialize by shifting the centers of mass of each row to match */ );
 
   /** Set image smoothing kernel width and create smoothed images.
    *\note Smoothing is applied only in phase encoding direction because the deformation field is restricted to this direction, and the optimization can thus not
@@ -135,6 +136,9 @@ private:
 
   /// 1D deformation map along phase encoding direction.
   ap::real_1d_array m_Deformation;
+
+  /// Initialize deformation by shifting each row's center of mass.
+  void InitShiftCentersOfMass();
 
   /// 1D intensity gradient of "forward" image.
   std::vector<Types::DataItem> m_GradientImageFwd;
