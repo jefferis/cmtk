@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -322,6 +322,12 @@ void
 VolumeIO::Write
 ( const UniformVolume& volume, const FileFormatID format, const char* path )
 {
+  if ( ! volume.GetData() )
+    {
+    StdErr << "ERROR: cannot write volume that does not contain any data.\n";
+    return;
+    }
+
   DebugOutput( 3 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
   
   const TypedArray *data = volume.GetData();
