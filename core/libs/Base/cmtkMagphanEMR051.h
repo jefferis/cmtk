@@ -65,8 +65,8 @@ typedef enum
 /// Data structure for phantom sphere location table.
 typedef struct __SphereEntryType
 {
-  /// Sphere radius in milimeters.
-  Types::Coordinate m_Radius;
+  /// Sphere diameter in milimeters.
+  Types::Coordinate m_Diameter;
 
   /// Sphere center location in "RAS" coordinate. Phantom center is the coordinate space origin.
   Types::Coordinate m_CenterLocation[3];

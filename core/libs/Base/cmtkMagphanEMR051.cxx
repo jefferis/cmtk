@@ -255,14 +255,15 @@ cmtk::Phantoms::GetPhantomImage( const cmtk::Types::Coordinate resolution )
   const int npx = 1 + static_cast<int>( 200.0 / resolution );
   const int dims[3] = { npx, npx, npx };
   UniformVolume::SmartPtr result( new UniformVolume( DataGrid::IndexType( dims ), resolution, resolution, resolution ) );
+  result->CreateDataArray( TYPE_SHORT );
   
-  const Types::Coordinate offset[3] = { 100, 100, 100 };
+  const Types::Coordinate offset[3] = { -100, -100, -100 };
   result->m_Offset = UniformVolume::CoordinateVectorType( offset );
   
   UniformVolumePainter painter( result, UniformVolumePainter::COORDINATES_ABSOLUTE );
   for ( int idx = 0; idx < 165; ++idx )
     {
-    painter.DrawSphere( UniformVolume::CoordinateVectorType( cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_CenterLocation ), cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_Radius, cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_EstimatedT1 );
+    painter.DrawSphere( UniformVolume::CoordinateVectorType( cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_CenterLocation ), cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_Diameter / 2, cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_EstimatedT1 );
     }
   
   return result;
