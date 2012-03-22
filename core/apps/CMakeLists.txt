@@ -66,6 +66,7 @@ SET(APPS avg_adm
   make_initial_affine
   mat2dof
   mip
+  mk_adni_phantom
   mk_analyze_hdr
   mk_nifti_hdr
   mk_phantom_3d

@@ -470,6 +470,10 @@ LIST(APPEND testList
   mip16Bit)
 
 # ==========================================
+# Tests for "mk_adni_phantom" tool
+LIST(APPEND testList mk_adni_phantom2mm)
+
+# ==========================================
 # Tests for "mk_analyze_hdr" tool
 LIST(APPEND testList
   mk_analyze_hdrDefault

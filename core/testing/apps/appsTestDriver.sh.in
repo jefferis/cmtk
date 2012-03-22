@@ -1399,6 +1399,10 @@ case ${RUNTEST} in
         run mip --write-16bit --axial spgr_3t.hdr ${tmpdir}/axial16.pgm
 	check_results axial16.pgm
 	;;
+    mk_adni_phantom2mm)
+        run mk_adni_phantom --resolution 2 ${tmpdir}/phantom.nii
+        check_results phantom.nii
+        ;;
     mk_analyze_hdrDefault)
         run mk_analyze_hdr ${tmpdir}/analyze.hdr
 	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
