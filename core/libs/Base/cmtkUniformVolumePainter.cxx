@@ -61,13 +61,14 @@ cmtk::UniformVolumePainter::DrawSphere
       break;
     }
   
-  size_t offset = 0;
   for ( int k = 0; k < this->m_Volume->m_Dims[2]; ++k )
     {
     const Types::Coordinate Z = this->m_Volume->GetPlaneCoord( 2, k );
     for ( int j = 0; j < this->m_Volume->m_Dims[1]; ++j )
       {
-    const Types::Coordinate Y = this->m_Volume->GetPlaneCoord( 1, j );
+      const Types::Coordinate Y = this->m_Volume->GetPlaneCoord( 1, j );
+
+      size_t offset = this->m_Volume->m_Dims[0] * ( j + this->m_Volume->m_Dims[1] * k );
       for ( int i = 0; i < this->m_Volume->m_Dims[0]; ++i, ++offset )
 	{
 	const Types::Coordinate X = this->m_Volume->GetPlaneCoord( 0, i );
