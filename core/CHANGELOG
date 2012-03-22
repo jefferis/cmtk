@@ -1,5 +1,9 @@
 Release CMTK-2.2.0:
 
+(r4068) Added: CMTK now comes with a built-in model of the ADNI structural
+    imaging phantom (a.k.a. Magphan EMR051). The new tool "mk_adni_phantom"
+    can be used to create a digital image of the phantom for testing and
+    potentially registration purposes.
 (r4052) Added: "epiunwarp" tool can now initialize deformation by matching
     centers of mass for each row. This seems to greatly improve unwarping
     results.
