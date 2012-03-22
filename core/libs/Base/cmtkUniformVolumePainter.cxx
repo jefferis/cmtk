@@ -64,6 +64,11 @@ cmtk::UniformVolumePainter::DrawSphere
     }
   
   DataGrid::RegionType region = volume.GetWholeImageRegion();
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    region.From()[dim] = std::max( region.From()[dim], static_cast<int>( (centerAbsolute[dim] - radiusAbsolute[dim] - volume.m_Offset[dim]) / volume.m_Delta[dim] ) - 1 );
+    region.To()[dim] = std::min( region.To()[dim], static_cast<int>( (centerAbsolute[dim] + radiusAbsolute[dim] - volume.m_Offset[dim]) / volume.m_Delta[dim] ) + 1 );
+    }
 
   for ( int k = region.From()[2]; k < region.To()[2]; ++k )
     {
