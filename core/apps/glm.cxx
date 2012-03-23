@@ -280,7 +280,7 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical modeling of pixel intensities in multiple images using a General Linear Model.\n\n"
 		       "The independent variables of the model are defined in one of more control files. Each control file is a text file with one whitespace-separated column per independent variable.\n\n"
 		       "The first line of the control file defines the variable names, i.e., the labels that identify each variable. Each following line contains one value per independent variable.\n\n"
-		       "Example:\n\nID  age  sex\n01  20   0\n02  30   1\n" );
+		       "Example:\n\n  ID  age  sex\n  01  20   0\n  02  30   1\n" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "glm [options] ctlfile imgfile_pattern [ctlfile imgfile_pattern ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
@@ -293,7 +293,10 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( 's', "select-parameter" ), CallbackSelect, "Select parameter with given NAME for model. Can be repeated." );
     cl.AddCallback( Key( 'c', "crop" ), CallbackCropImages, "To save space/time, crop images: x0,y0,z0,x1,y1,z2" );
     
-    cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output (default: 'model_%s_%02d_%s.nii') with %d for parameter number" );
+    cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output.\n\n"
+		  "  %s is replaced with image type ('fstat', 'tstat', or 'param')\n"
+		  "  %d is replaced with independent variable number (0 for entire model)\n"
+		  "  %s is replaced with independent variable name ('model' for entire model)\n" );
 
     cl.Parse( argc, argv );
 
