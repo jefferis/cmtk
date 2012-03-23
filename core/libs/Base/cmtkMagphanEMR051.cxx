@@ -20,17 +20,15 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 4052 $
+//  $Revision$
 //
-//  $LastChangedDate: 2012-03-21 10:13:42 -0700 (Wed, 21 Mar 2012) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torsten_at_home $
+//  $LastChangedBy$
 //
 */
 
 #include "cmtkMagphanEMR051.h"
-
-#include <Base/cmtkUniformVolumePainter.h>
 
 /*
  * Measurements were derived manually from the following document: http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf
@@ -248,23 +246,3 @@ const cmtk::Phantoms::SphereEntryType cmtk::Phantoms::MagphanEMR051SphereTable[1
   // END LICENSING EXCEPTION
   //
 };
-
-cmtk::UniformVolume::SmartPtr
-cmtk::Phantoms::GetPhantomImage( const cmtk::Types::Coordinate resolution )
-{
-  const int npx = 1 + static_cast<int>( 200.0 / resolution );
-  const int dims[3] = { npx, npx, npx };
-  UniformVolume::SmartPtr result( new UniformVolume( DataGrid::IndexType( dims ), resolution, resolution, resolution ) );
-  result->CreateDataArray( TYPE_SHORT );
-  
-  const Types::Coordinate offset[3] = { -100, -100, -100 };
-  result->m_Offset = UniformVolume::CoordinateVectorType( offset );
-  
-  UniformVolumePainter painter( result, UniformVolumePainter::COORDINATES_ABSOLUTE );
-  for ( int idx = 0; idx < 165; ++idx )
-    {
-    painter.DrawSphere( UniformVolume::CoordinateVectorType( cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_CenterLocation ), cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_Diameter / 2, cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_EstimatedT1 );
-    }
-  
-  return result;
-}
