@@ -280,23 +280,37 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical modeling of pixel intensities in multiple images using a General Linear Model.\n\n"
 		       "The independent variables of the model are defined in one of more control files. Each control file is a text file with one whitespace-separated column per independent variable.\n\n"
 		       "The first line of the control file defines the variable names, i.e., the labels that identify each variable. Each following line contains one value per independent variable.\n\n"
-		       "Example:\n\n  ID  age  sex\n  01  20   0\n  02  30   1\n" );
+		       "Example:\n\n  ID  age  sex\n  01  20   0\n  02  30   1\n\n"
+		       "Each control file name is followed by a file name pattern. In that pattern, a single '%s' place holder is replaced by the value found in the first column of each control file row. The resulting "
+		       "string is the path of the image read and associated with the model variables listed on that particular control file line.\n\n"
+		       "Using the above control file example, the pattern 'images/subject%s.nii' would  expand to the image file names 'images/subject01.nii' and 'images/subject02.nii'.\n\n"
+		       "Multiple control files can be used, each with a different image file pattern.");
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "glm [options] ctlfile imgfile_pattern [ctlfile imgfile_pattern ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'x', "exclude-constant" ), &ExcludeConstant, true, "Exclude automatic constant parameter from model." );
+
+    cl.BeginGroup( "Input", "Input Settings" );
+    cl.AddCallback( Key( 'c', "crop" ), CallbackCropImages, "To save space/time, crop images: x0,y0,z0,x1,y1,z2" );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Model", "Model Settings" );
     cl.AddSwitch( Key( 'n', "normalize" ), &NormalizeParameters, true, "Normalize model parameters w.r.t. data variances." );
     cl.AddSwitch( Key( 'e', "exp" ), &ExponentialModel, true, "Use exponential model rather than linear model." );
+    cl.EndGroup();
       
+    cl.BeginGroup( "Variables", "Selection of Independent Variables" );
+    cl.AddSwitch( Key( 'x', "exclude-constant" ), &ExcludeConstant, true, "Exclude automatic constant parameter from model." );
     cl.AddCallback( Key( 'i', "ignore-parameter" ), CallbackIgnore, "Ignore parameter with given NUMBER (0..n-1). Can be repeated." );
     cl.AddCallback( Key( 's', "select-parameter" ), CallbackSelect, "Select parameter with given NAME for model. Can be repeated." );
-    cl.AddCallback( Key( 'c', "crop" ), CallbackCropImages, "To save space/time, crop images: x0,y0,z0,x1,y1,z2" );
-    
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Settings" );
     cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output.\n\n"
 		  "  %s is replaced with image type ('fstat', 'tstat', or 'param')\n"
 		  "  %d is replaced with independent variable number (0 for entire model)\n"
 		  "  %s is replaced with independent variable name ('model' for entire model)\n" );
+    cl.EndGroup();
 
     cl.Parse( argc, argv );
 
