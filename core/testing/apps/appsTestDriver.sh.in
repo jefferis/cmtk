@@ -628,7 +628,7 @@ case ${RUNTEST} in
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXML)
-        run dcm2image -x --embed None -O ${tmpdir}/%d.nii mr-dwi-ge/
+        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     describeEmpty)

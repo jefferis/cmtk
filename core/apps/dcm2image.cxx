@@ -91,7 +91,7 @@
 #define DCM_PatientsName DCM_PatientName
 #endif
 
-const char* OutPathPattern = "%03d.nii";
+const char* OutPathPattern = "image%n.nii";
 std::vector<std::string> SearchRootDirVector;
 
 std::ofstream cnull( "/dev/null" );
@@ -814,8 +814,8 @@ public:
   void WriteVolumes();
 };
 
-inline std::string &
-replacein(std::string &s, const std::string &sub, const std::string &other)
+inline std::string&
+replacein(std::string& s, const std::string& sub, const std::string& other)
 {
   assert(!sub.empty());
   for ( size_t b = s.find(sub, 0); b != s.npos; b = s.find(sub, b) )
@@ -838,12 +838,18 @@ MakeLegalInPath( const std::string& s )
   return result;
 }
 
+std::string
+PutNumberAndSanitize( const std::string& path, const std::string& numberString )
+{
+  std::string result = path;
+  return replacein( replacein( result, "%n", numberString ), "%N", "-" + numberString );
+}
+
 void
 VolumeList::WriteVolumes() 
 {
   size_t cntSingleImages = 0;
 
-  int idx = 1;
   std::map< std::string,std::vector<const ImageStack*> > pathToVolumeMap;
   for ( const_iterator it = begin(); it != end(); ++it ) 
     {
@@ -892,18 +898,13 @@ VolumeList::WriteVolumes()
     if ( nVolumes == 1 )
       {					       
       // if there's a "number" tag, get rid of it.
-      std::string uniquePath = it->first;
-      replacein( uniquePath, "%n", "" );
-      replacein( uniquePath, "%N", "" );
+      std::string uniquePath = PutNumberAndSanitize( it->first, "" );
 
-      char finalPath[PATH_MAX];
-      sprintf( finalPath, uniquePath.c_str(), idx++ );
-      cmtk::UniformVolume::SmartConstPtr volume = it->second[0]->WriteImage( finalPath );
+      cmtk::UniformVolume::SmartConstPtr volume = it->second[0]->WriteImage( uniquePath.c_str() );
 
       if ( WriteXML )
 	{
-	strcat( finalPath, ".xml" );
-	it->second[0]->WriteXML( finalPath, *volume );
+	it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume );
 	}
       }
     else
@@ -916,18 +917,13 @@ VolumeList::WriteVolumes()
 	numberString.fill( '0' );
 	numberString << std::right << 1+i;
 
-	std::string uniquePath = it->first;
-	replacein( uniquePath, "%n", numberString.str() );
-	replacein( uniquePath, "%N", "-" + numberString.str() );
+	std::string uniquePath = PutNumberAndSanitize( it->first, numberString.str() );
 
-	char finalPath[PATH_MAX];
-	sprintf( finalPath, uniquePath.c_str(), idx++ );
-	cmtk::UniformVolume::SmartConstPtr volume = it->second[i]->WriteImage( finalPath );
+	cmtk::UniformVolume::SmartConstPtr volume = it->second[i]->WriteImage( uniquePath.c_str() );
 
 	if ( WriteXML )
 	  {
-	  strcat( finalPath, ".xml" );
-	  it->second[i]->WriteXML( finalPath, *volume );
+	  it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume );
 	  }
 	}
       }
