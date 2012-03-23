@@ -745,14 +745,14 @@ case ${RUNTEST} in
         ;;
     epiunwarp)
         export CMTK_NUM_THREADS=1
-        run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
+        run epiunwarp --no-init-shift-com --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
         unset CMTK_NUM_THREADS
 	check_images c1.nii c2.nii jacobian.nii
 	check_results df.nrrd
 	;;
     epiunwarpInitShift)
         export CMTK_NUM_THREADS=1
-        run epiunwarp --init-shift-com --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
+        run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
         unset CMTK_NUM_THREADS
 	check_images c1.nii c2.nii jacobian.nii
 	check_results df.nrrd

@@ -277,7 +277,10 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "General Linear Model" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical modeling of pixel intensities in multiple images using a General Linear Model." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical modeling of pixel intensities in multiple images using a General Linear Model.\n\n"
+		       "The independent variables of the model are defined in one of more control files. Each control file is a text file with one whitespace-separated column per independent variable.\n\n"
+		       "The first line of the control file defines the variable names, i.e., the labels that identify each variable. Each following line contains one value per independent variable.\n\n"
+		       "Example:\n\nID  age  sex\n01  20   0\n02  30   1\n" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "glm [options] ctlfile imgfile_pattern [ctlfile imgfile_pattern ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 

@@ -60,7 +60,7 @@ doMain
 
   byte phaseEncodeDirection = 1;
 
-  bool initShiftCentersOfMass = false;
+  bool initShiftCentersOfMass = true;
 
   double smoothnessConstraintWeight = 0;
   double foldingConstraintWeight = 0;
@@ -86,7 +86,8 @@ doMain
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization Parameters" );    
-    cl.AddSwitch( Key( "init-shift-com" ), &initShiftCentersOfMass, true, "Initialize unwarping by shifting each row to align the centers of mass of forward and reverse acquisition." );
+    cl.AddSwitch( Key( "no-init-shift-com" ), &initShiftCentersOfMass, false, "Disable initialization of unwarping by shifting each row to align the centers of mass of forward and reverse acquisition. "
+		  "Instead, use all-zero initial deformation field." );
 
     cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
     cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (0 = no smoothing; original image scale)." );
