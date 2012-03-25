@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2010 Torsten Rohlfing
+##  Copyright 1997-2012 Torsten Rohlfing
 ##
 ##  Copyright 2004-2012 SRI International
 ##
