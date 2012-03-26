@@ -151,7 +151,7 @@ public:
    */
   virtual void CreateDefaultIndexToPhysicalMatrix();
 
-  /** Get matrix that maps form image coordinates to physical space.
+  /** Get matrix that maps from current image coordinates to physical space.
    * The returned matrix is computed by removing pixel size from the one stored
    * in m_IndexToPhysicalMatrix.
    */

@@ -81,7 +81,7 @@ UniformVolume
     {
     for ( int j2 = 0; j2 < 3; ++j2 )
       {
-      if ( axesPermutation[j][j2] )
+      if ( axesPermutation[j][j2] != 0 )
 	{
 	for ( int i = 0; i < 4; ++i )
 	  {
