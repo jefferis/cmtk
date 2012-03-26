@@ -71,7 +71,7 @@ AnatomicalOrientation::PermutationMatrix::PermutationMatrix
 }
 
 AffineXform::MatrixType
-AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const
+AnatomicalOrientation::PermutationMatrix::GetMatrix() const
 {
   AffineXform::MatrixType permutation;
 
@@ -88,7 +88,13 @@ AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::
     permutation[3][j] = this->m_Offsets[j];
     }
 
-  return permutation.GetInverse() * inMatrix;
+  return permutation.GetInverse();
+}
+
+AffineXform::MatrixType
+AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const
+{
+  return this->GetMatrix() * inMatrix;
 }
 
 } // namespace cmtk

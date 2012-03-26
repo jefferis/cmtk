@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,6 +106,10 @@ public:
       return target;
     }
 
+    /** Get proper permutation matrix
+     */
+    AffineXform::MatrixType GetMatrix() const;
+    
     /** Permute index-to-physical matrix
      */
     AffineXform::MatrixType GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const;
