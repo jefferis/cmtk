@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Compute affine coordinate transformation in standard space from transformation in natrive reference and floating image coordinate spaces.
+/// Compute affine coordinate transformation in standard space from transformation in native reference and floating image coordinate spaces.
 class TransformChangeFromSpaceAffine
 {
 public:
