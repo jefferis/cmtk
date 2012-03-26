@@ -390,12 +390,12 @@ public:
   /** Get grid index corresponding (as close as possible) to coordinate.
    *\return True if given point is inside image, false if outside.
    */
-  virtual bool GetClosestGridPointIndex( const Self::CoordinateVectorType v, int *const xyz ) const 
+  virtual bool GetClosestGridPointIndex( const Self::CoordinateVectorType v, Self::IndexType& idx ) const 
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = (int) MathUtil::Round((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
-      if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
+      idx[dim] = static_cast<int>( MathUtil::Round((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
+      if ( (idx[dim] < 0) || ( idx[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
     return true;
@@ -415,12 +415,12 @@ public:
    *\return True if given point is inside image, false if outside.
    */
   virtual bool GetTruncGridPointIndex( const Self::CoordinateVectorType v /*!< Location to find in the grid. */, 
-				       int *const xyz /*!< Truncated grid point index (i.e., nearest grid point between location and grid coordinate origin. */ ) const 
+				       Self::IndexType& idx /*!< Truncated grid point index (i.e., nearest grid point between location and grid coordinate origin. */ ) const 
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = static_cast<int>((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
-      if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
+      idx[dim] = static_cast<int>((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
+      if (  (idx[dim] < 0) || (idx[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
     return true;
