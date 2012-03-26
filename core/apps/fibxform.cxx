@@ -65,11 +65,11 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
 
-    cl.AddOption( Key( "source-image" ), &sourceImagePath, "Set source image of the transformation (i.e., the image that the transformation maps points FROM) to correct for differences in orientation and coordinate space." );
-    cl.AddOption( Key( "target-image" ), &targetImagePath, "Set target image of the transformation (i.e., the image that the transformation maps points TO) to correct for differences in orientation and coordinate space." );
-
-    cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
-
+    cl.AddOption( Key( "source-image" ), &sourceImagePath, "Set source image of the transformation (i.e., an image defining the space in which fiber tracking was performed) to correct for differences in orientation and coordinate space." );
+    cl.AddOption( Key( "target-image" ), &targetImagePath, "Set target image of the transformation (i.e., the image that the fiber track points are mapped into) to correct for differences in orientation and coordinate space." );
+    
+    cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );  
+    
     cl.Parse( argc, argv );
     }
   catch ( cmtk::CommandLine::Exception ex )
@@ -81,26 +81,46 @@ doMain( const int argc, const char* argv[] )
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
 
+  // is a source image provided?
   if ( sourceImagePath )
     {
-    cmtk::UniformVolume::SmartConstPtr sourceImage( cmtk::VolumeIO::ReadOriented( sourceImagePath ) );
+    // read target image in NATIVE orientation because that's what UNC Fiber Tracking uses
+    cmtk::UniformVolume::SmartPtr sourceImage( cmtk::VolumeIO::Read( sourceImagePath ) );
     if ( ! sourceImage )
       {
       cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
       throw cmtk::ExitException( 1 );
       }
-    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
+
+    // don't need data
+    sourceImage->SetData( cmtk::TypedArray::SmartPtr( NULL ) );
+
+    // we need to transform from file-order image coordinate to physical, then to RAS space. But we can only add to front of
+    // transformation list, so let's put the second matrix first.
+    cmtk::UniformVolume::SmartPtr reorientedImage = sourceImage->GetReoriented( cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
+    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( reorientedImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
+    // now put the file-to-physical transformation in front
+    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) ) );
     }
   
   if ( targetImagePath )
     {
-    cmtk::UniformVolume::SmartConstPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
+    // read target image in RAS orientation because that's where we're at in the transformation sequence
+    cmtk::UniformVolume::SmartPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
     if ( ! targetImage )
       {
       cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
       throw cmtk::ExitException( 1 );
       }
+
+    // don't need data
+    targetImage->SetData( cmtk::TypedArray::SmartPtr( NULL ) );
+
+    // first put transformation from RAS to physical
     xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
+    // now go from physical to file-order space
+    targetImage = targetImage->GetReoriented( targetImage->GetMetaInfo(cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() );
+    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
     }
   
   cmtk::Xform::SpaceVectorType xyz;    
@@ -118,7 +138,12 @@ doMain( const int argc, const char* argv[] )
     else
       {
       const size_t npoints = atoi( line.substr( line.find( '=' )+1, std::string::npos ).c_str() );
+      outputPointLines.resize( npoints );
       outputPointLines.reserve( npoints );
+
+      // skip "Points = "
+      std::getline( std::cin, line );
+      std::cout << line << "\n";
       
       for ( size_t n = 0; n<npoints; ++n )
 	{
@@ -136,7 +161,7 @@ doMain( const int argc, const char* argv[] )
 	  {
 	  std::stringstream sout;
 	  sout << xyz[0] << " " << xyz[1] << " " << xyz[2];;
-	  outputPointLines.push_back( sout.str() + " + " + restOfLine );
+	  outputPointLines.push_back( sout.str() + " " + restOfLine );
 	  }
 	}
       
