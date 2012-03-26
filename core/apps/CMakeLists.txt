@@ -49,6 +49,7 @@ SET(APPS avg_adm
   dof2mat
   epiunwarp
   fibxform
+  fib2image
   film
   filter
   fit_affine_xform
