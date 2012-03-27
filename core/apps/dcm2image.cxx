@@ -491,6 +491,7 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
 		this->BVector[i] = 0;
 		}
 	      }
+	    this->BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
 	    }
 	  }
 	}
