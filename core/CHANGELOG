@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4090) Added: two new tools, "fibxform" and "fib2image", for applying
+    transformation sequences to UNC Fber Tracking outputs and for marking
+    fibers in discrete images.
 (r4074) Fixed: "dcm2image" no longer acceppts printf-style substitution code
     "%d" for image index. This was never safe, as format string is supplied by
     user (Issue #6203).
