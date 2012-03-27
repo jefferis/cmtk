@@ -84,25 +84,31 @@ doMain( const int argc, const char* argv[] )
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
 
-  cmtk::UniformVolume::SmartPtr sourceImage( cmtk::VolumeIO::ReadOriented( sourceImagePath ) );
-  if ( ! sourceImage )
+  if ( sourceImagePath )
     {
-    cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
-    throw cmtk::ExitException( 1 );
+    cmtk::UniformVolume::SmartPtr sourceImage( cmtk::VolumeIO::ReadOriented( sourceImagePath ) );
+    if ( ! sourceImage )
+      {
+      cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
+      throw cmtk::ExitException( 1 );
+      }
+    
+    sourceImage->ChangeCoordinateSpace( sourceImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
+    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
     }
 
-  sourceImage->ChangeCoordinateSpace( sourceImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
-  xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
-
-  cmtk::UniformVolume::SmartPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
-  if ( ! targetImage )
+  if ( targetImagePath )
     {
-    cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
-    throw cmtk::ExitException( 1 );
-    }
+    cmtk::UniformVolume::SmartPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
+    if ( ! targetImage )
+      {
+      cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
+      throw cmtk::ExitException( 1 );
+      }
 
-  targetImage->ChangeCoordinateSpace( targetImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
-  xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
+    targetImage->ChangeCoordinateSpace( targetImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
+    xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
+    }
   
   cmtk::Xform::SpaceVectorType xyz;    
   std::vector<std::string> outputPointLines;
