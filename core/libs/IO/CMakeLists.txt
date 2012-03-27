@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
@@ -40,6 +40,8 @@ SET(cmtkIO_SRCS
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageOperationApplyMask.cxx
+  cmtkLandmarkIO.cxx
+  cmtkLandmarkListIO.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx
   cmtkScalarImageIO.cxx

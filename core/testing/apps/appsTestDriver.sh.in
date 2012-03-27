@@ -801,6 +801,18 @@ case ${RUNTEST} in
 	run film --mi --coronal --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --reference-image interleave_3dspgr.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img
 	;;
+    fit_affine_xform_landmarksRigid)
+        run fit_affine_xform_landmarks landmarksSource landmarksTargetRigid ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
+    fit_affine_xform_landmarksScales)
+        run fit_affine_xform_landmarks landmarksSource landmarksTargetScales ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
+    fit_affine_xform_landmarksShear)
+        run fit_affine_xform_landmarks landmarksSource landmarksTargetShear ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
     fit_affine_xformDField)
         run fit_affine_xform vol001_mr_t0t1_dfield.nrrd ${tmpdir}/affine_fit.xform
 	check_results affine_fit.xform

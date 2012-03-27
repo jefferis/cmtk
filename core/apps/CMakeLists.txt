@@ -53,6 +53,7 @@ SET(APPS avg_adm
   film
   filter
   fit_affine_xform
+  fit_affine_xform_landmarks
   fit_spline_xform
   glm
   gmm

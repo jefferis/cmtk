@@ -308,6 +308,10 @@ LIST(APPEND testList
 
 
 # ==========================================
+# Tests for "fit_affine_xform_landmarks" tool
+LIST(APPEND testList fit_affine_xform_landmarksRigid fit_affine_xform_landmarksScales fit_affine_xform_landmarksShear)
+
+# ==========================================
 # Tests for "fit_affine_xform" tool
 LIST(APPEND testList fit_affine_xformDField fit_affine_xformFFD)
 

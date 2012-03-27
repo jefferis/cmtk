@@ -79,6 +79,7 @@ public:
   Self::SpaceVectorType m_Location;
 };
 
+
 //@}
 
 } // namespace cmtk
