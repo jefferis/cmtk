@@ -47,7 +47,7 @@
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkBitVector.h>
 
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkSmartPtr.h>
 
@@ -225,7 +225,7 @@ public:
   
   /** Return derivative of registration error with respect to one parameter.
    */
-  virtual void GetDerivativeLandmarksMSD( double& lowerMSD, double& upperMSD, const MatchedLandmarkList* ll, const unsigned int idx, const Types::Coordinate step );
+  virtual void GetDerivativeLandmarksMSD( double& lowerMSD, double& upperMSD, const LandmarkPairList& ll, const unsigned int idx, const Types::Coordinate step );
 
   /** Return inverse consistency.
    */

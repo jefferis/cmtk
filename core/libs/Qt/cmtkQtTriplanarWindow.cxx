@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,7 @@
 
 #include <Base/cmtkLandmark.h>
 #include <Base/cmtkLandmarkList.h>
+
 #include <IO/cmtkClassStream.h>
 #include <Qt/cmtkQtIcons.h>
 
@@ -439,7 +440,7 @@ QtTriplanarWindow::slotSwitchToStudy( Study::SmartPtr& study )
       LandmarkList::const_iterator ll_it = ll->begin();
       while ( ll_it != ll->end() ) 
 	{
-	LandmarkBox->addItem( (*ll_it)->GetName() );
+	LandmarkBox->addItem( (*ll_it)->m_Name.c_str() );
 	++ll_it;
 	}
       }
@@ -844,10 +845,10 @@ QtTriplanarWindow::slotGoToLandmark()
   const LandmarkList *ll = this->m_Study->GetLandmarkList();
   if ( ! ll ) return;
 
-  const Landmark* lm = ll->FindByName( LandmarkBox->currentText().toLatin1() );
+  const Landmark* lm = ll->FindByName( LandmarkBox->currentText().toStdString() );
   if ( lm ) 
     {
-    this->slotMouse3D( Qt::LeftButton, FixedVector<3,Types::Coordinate>( lm->GetLocation() ) );
+    this->slotMouse3D( Qt::LeftButton, lm->m_Location );
     }
 }
 
@@ -874,10 +875,7 @@ QtTriplanarWindow::slotExportLandmarks()
       {
       for ( LandmarkList::const_iterator it = ll->begin(); it != ll->end(); ++it )
 	{
-	FixedVector<3,Types::Coordinate> v( (*it)->GetLocation() );
-	QString n( (*it)->GetName() );
-
-	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << (const char*)(n.toLatin1()) << std::endl;
+	stream << (*it)->m_Location[0] << "\t" << (*it)->m_Location[1] << "\t" << (*it)->m_Location[2] << "\t" << (*it)->m_Name << std::endl;
 	}
       stream.close();
       } 
@@ -909,10 +907,9 @@ QtTriplanarWindow::slotImportLandmarks()
     unsigned int cnt = 0;
     if ( stream.good() ) 
       {
-      Landmark::SmartPtr lm;
       while ( ! stream.eof() )
 	{
-	Types::Coordinate xyz[3];
+	Landmark::SpaceVectorType xyz;
 	stream >> xyz[0] >> xyz[1] >> xyz[2];
 
 	char name[128];
@@ -923,16 +920,15 @@ QtTriplanarWindow::slotImportLandmarks()
 	  sprintf( name, "LM-%04d", cnt++ );
 	  }
 
-	lm = Landmark::SmartPtr( new Landmark( name, xyz ) );
-	ll->push_back( lm );
+	ll->push_back( Landmark::SmartPtr( new Landmark( name, xyz ) ) );
 	LandmarkBox->addItem( name );
 	}
-
-      lm = *(ll->begin());
+      
+      Landmark::SmartPtr lm = *(ll->begin());
       if ( lm )
 	{
-	this->LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( lm->GetName() ) );
-	this->slotMouse3D( Qt::LeftButton, FixedVector<3,Types::Coordinate>( lm->GetLocation() ) );
+	this->LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( lm->m_Name.c_str() ) );
+	this->slotMouse3D( Qt::LeftButton, lm->m_Location );
 	}
 
       LandmarkBox->setEnabled( true );
@@ -966,7 +962,7 @@ QtTriplanarWindow::slotAddLandmark()
   if ( ok && !name.isEmpty() ) 
     {
     Types::Coordinate location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
-    ll->push_back( Landmark::SmartPtr( new Landmark( name.toLatin1(), location ) ) );
+    ll->push_back( Landmark::SmartPtr( new Landmark( name.toStdString(), Landmark::SpaceVectorType( location ) ) ) );
     LandmarkBox->addItem( name );
     LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( name ) );
     

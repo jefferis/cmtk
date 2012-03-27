@@ -38,7 +38,7 @@
 #include <Registration/cmtkVoxelRegistration.h>
 
 #include <Base/cmtkSplineWarpXform.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 namespace
 cmtk
@@ -143,7 +143,7 @@ protected:
   cmtkGetSetMacro(float,LandmarkErrorWeight);
 
   /// Matched landmarks list.
-  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
+  cmtkGetSetMacro(LandmarkPairList::SmartPtr,LandmarkPairs);
 
   /// Flag to turn on deformation unfolding before each level.
   bool m_RelaxToUnfold;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,14 +44,12 @@ ClassStream::operator << ( const LandmarkList *landmarkList )
 {
   if ( ! landmarkList ) return *this;
 
-  LandmarkList::const_iterator it = landmarkList->begin();
-  
-  while ( it != landmarkList->end() ) {
+  for ( LandmarkList::const_iterator it = landmarkList->begin(); it != landmarkList->end(); ++it )
+    {
     this->Begin( "landmark" );
-    this->WriteString( "name", (*it)->GetName() );
-    this->WriteCoordinateArray( "location", (*it)->GetLocation(), 3 );
+    this->WriteString( "name", (*it)->m_Name.c_str() );
+    this->WriteCoordinateArray( "location", (*it)->m_Location.begin(), (*it)->m_Location.Size() );
     this->End();
-    ++it;
   }
 
   return *this;
@@ -60,29 +58,32 @@ ClassStream::operator << ( const LandmarkList *landmarkList )
 ClassStream& 
 ClassStream::operator >> ( LandmarkList::SmartPtr& landmarkList )
 {
-  if ( !this->IsValid() ) {
-  landmarkList = LandmarkList::SmartPtr::Null();
+  if ( !this->IsValid() ) 
+    {
+    landmarkList = LandmarkList::SmartPtr::Null();
     return *this;
-  }
-    
-  landmarkList = LandmarkList::SmartPtr( new LandmarkList );
-
-  while ( this->Seek( "landmark" ) ) {
-    Landmark::SmartPtr landmark( new Landmark );
-
-    char *tmpStr = this->ReadString( "name" );
-    if ( tmpStr ) {
-      landmark->SetName( tmpStr );
     }
-    free( tmpStr );
-
+  
+  landmarkList = LandmarkList::SmartPtr( new LandmarkList );
+  
+  while ( this->Seek( "landmark" ) ) 
+    {
+    Landmark::SmartPtr landmark( new Landmark );
+    
+    char *tmpStr = this->ReadString( "name" );
+    if ( tmpStr ) 
+      {
+      landmark->m_Name = tmpStr;
+      free( tmpStr );
+      }
+    
     Types::Coordinate location[3];
     this->ReadCoordinateArray( "location", location, 3 );
-    landmark->SetLocation( location );
-
+    landmark->m_Location = Landmark::SpaceVectorType( location );
+    
     landmarkList->insert( landmarkList->end(), landmark );
-  }
-
+    }
+  
   return *this;
 }
 

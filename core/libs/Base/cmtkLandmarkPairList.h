@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,16 +30,17 @@
 //
 */
 
-#ifndef __cmtkMatchedLandmarkList_h_included_
-#define __cmtkMatchedLandmarkList_h_included_
+#ifndef __cmtkLandmarkPairList_h_included_
+#define __cmtkLandmarkPairList_h_included_
 
 #include <cmtkconfig.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <Base/cmtkLandmarkList.h>
-#include <Base/cmtkMatchedLandmark.h>
+#include <Base/cmtkLandmarkPair.h>
 
 #include <list>
+#include <string>
 
 namespace
 cmtk
@@ -49,39 +50,41 @@ cmtk
 //@{
 
 /// List of matched landmarks in 3-D.
-class MatchedLandmarkList :
+class LandmarkPairList :
   /// Inherit STL list container.
-  public std::list<MatchedLandmark::SmartPtr>
+  public std::list<LandmarkPair::SmartPtr>
 {
 public:
   /// This class.
-  typedef MatchedLandmarkList Self;
+  typedef LandmarkPairList Self;
 
-  /// Smart pointer to MatchedLandmarkList.
+  /// Smart pointer to LandmarkPairList.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to const LandmarkPairList.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Default constructor.
-  MatchedLandmarkList() {}
+  LandmarkPairList() {}
 
   /// Initialize from two separate landmark lists.
-  MatchedLandmarkList( const LandmarkList* sourceList, const LandmarkList* targetList )
+  LandmarkPairList( const LandmarkList& sourceList, const LandmarkList& targetList )
   {
     this->AddLandmarkLists( sourceList, targetList );
   }
   
   /// Initialize from two separate landmark lists.
-  void  AddLandmarkLists( const LandmarkList* sourceList, const LandmarkList* targetList );
+  void AddLandmarkLists( const LandmarkList& sourceList, const LandmarkList& targetList );
   
   /// Find landmark by name.
-  SmartPointer<MatchedLandmark> FindByName( const char* name );
+  LandmarkPair::SmartPtr FindByName( const std::string& name );
   
   /// Find landmark by name and return constant pointer.
-  const SmartPointer<MatchedLandmark> FindByName( const char* name ) const;
-  
+  LandmarkPair::SmartConstPtr FindByName( const std::string& name ) const;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkMatchedLandmarkList_h_included_
+#endif // #ifndef __cmtkLandmarkPairList_h_included_

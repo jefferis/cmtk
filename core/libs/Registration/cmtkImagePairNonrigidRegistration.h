@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -36,6 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkLandmarkPairList.h>
+
 #include <Registration/cmtkImagePairRegistration.h>
 
 #include <string.h>
@@ -190,7 +192,7 @@ protected:
 
 private:
   /// (Optional) matched landmark list.
-  MatchedLandmarkList::SmartPtr m_MatchedLandmarks;
+  LandmarkPairList::SmartConstPtr m_LandmarkPairs;
 
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,8 +37,12 @@
 
 #include <Base/cmtkMacros.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkFixedVector.h>
 
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
+
+#include <string>
 
 namespace
 cmtk
@@ -50,23 +54,29 @@ cmtk
 class Landmark
 {
 public:
+  /// This class.
+  typedef Landmark Self;
+
   /// Smart pointer to Landmark.
-  typedef SmartPointer<Landmark> SmartPtr;
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const Landmark.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Space vector type.
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
   /// Default constructor.
-  Landmark();
+  Landmark() {};
 
   /// Explicit constructor.
-  Landmark( const char* name, const Types::Coordinate location[3] );
-
-  /// Destructor.
-  ~Landmark();
+  Landmark( const std::string& name, const Self::SpaceVectorType& location );
 
   /// Name of this landmark.
-  cmtkGetSetMacroString(Name);
+  std::string m_Name;
 
   /// Coordinates of this landmark.
-  cmtkGetSetMacro3Array(Types::Coordinate,Location);
+  Self::SpaceVectorType m_Location;
 };
 
 //@}

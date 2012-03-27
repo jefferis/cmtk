@@ -73,9 +73,9 @@ SET(cmtkBase_SRCS
   cmtkJointHistogramBase.cxx
   cmtkLandmark.cxx
   cmtkLandmarkList.cxx
+  cmtkLandmarkPairList.cxx
   cmtkMagphanEMR051.cxx
   cmtkMagphanEMR051_GetPhantomImage.cxx
-  cmtkMatchedLandmarkList.cxx
   cmtkMathFunctionWrappers.cxx
   cmtkMathUtil_LinAlg.cxx
   cmtkMathUtil_Random.cxx

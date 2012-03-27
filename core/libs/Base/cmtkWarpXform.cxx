@@ -34,6 +34,7 @@
 
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <string.h>
 #include <algorithm>
@@ -78,38 +79,33 @@ WarpXform::Update( const bool )
 
 void
 WarpXform::GetDerivativeLandmarksMSD
-( double& lowerMSD, double& upperMSD, const MatchedLandmarkList* ll,
-  const unsigned int idx, const Types::Coordinate step )
+( double& lowerMSD, double& upperMSD, const LandmarkPairList& ll, const unsigned int idx, const Types::Coordinate step )
 {
   upperMSD = lowerMSD = 0;
 
   Types::Coordinate pOld = this->m_Parameters[idx];
 
   this->m_Parameters[idx] += step;
-  MatchedLandmarkList::const_iterator it = ll->begin();
-  while ( it != ll->end() ) 
+  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source( (*it)->GetLocation() );
-    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source = (*it)->m_Location;
+    Self::SpaceVectorType target = (*it)->m_TargetLocation;
     this->ApplyInPlace( source );
     upperMSD += (source - target).SumOfSquares();
-    ++it;
     }
   
   this->m_Parameters[idx] = pOld - step;
-  it = ll->begin();
-  while ( it != ll->end() ) 
+  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source( (*it)->GetLocation() );
-    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source = (*it)->m_Location;
+    Self::SpaceVectorType target = (*it)->m_TargetLocation;
     this->ApplyInPlace( source );
     lowerMSD += (source - target).SumOfSquares();
-    ++it;
     }
   this->m_Parameters[idx] = pOld;
   
-  upperMSD /= ll->size();
-  lowerMSD /= ll->size();
+  upperMSD /= ll.size();
+  lowerMSD /= ll.size();
 }
 
 Types::Coordinate

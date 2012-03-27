@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -163,12 +163,9 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 		 (int)(idx+range.m_LowerBound), count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       totalCount += count[idx];
       
-      cmtk::Landmark* landmark = new cmtk::Landmark();
       char name[4];
       sprintf( name, "%3d", idx );
-      landmark->SetName( name );
-      landmark->SetLocation( centerOfMass[idx].begin() );
-      landmarkList.push_back( cmtk::Landmark::SmartPtr( landmark ) );
+      landmarkList.push_back( cmtk::Landmark::SmartPtr( new cmtk::Landmark( name, centerOfMass[idx] ) ) );
       }
     }
   

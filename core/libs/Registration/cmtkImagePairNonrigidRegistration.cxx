@@ -33,7 +33,7 @@
 #include "cmtkImagePairNonrigidRegistration.h"
 
 #include <Base/cmtkLandmarkList.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
@@ -92,7 +92,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
   this->m_ReferenceVolume = this->m_Volume_1;
   this->m_FloatingVolume = this->m_Volume_2;
 
-  MatchedLandmarkList::SmartPtr mll( NULL );
   if ( this->m_LandmarkErrorWeight != 0 ) 
     {
     LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
@@ -100,8 +99,8 @@ ImagePairNonrigidRegistration::InitRegistration ()
     
     if ( sourceLandmarks && targetLandmarks ) 
       {
-      this->m_MatchedLandmarks = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
-      fprintf( stderr, "Matched %d landmarks.\n", (int)this->m_MatchedLandmarks->size() );
+      this->m_LandmarkPairs = LandmarkPairList::SmartPtr( new LandmarkPairList( *sourceLandmarks, *targetLandmarks ) );
+      cmtk::StdErr << "Matched " <<this->m_LandmarkPairs->size() << "landmarks.\n";
       }
     }
   
@@ -251,10 +250,10 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( this->m_MatchedLandmarks )
+    if ( this->m_LandmarkPairs )
       {
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetMatchedLandmarkList( this->m_MatchedLandmarks );
+      newFunctional->SetLandmarkPairs( this->m_LandmarkPairs );
       }
     
     return newFunctional;

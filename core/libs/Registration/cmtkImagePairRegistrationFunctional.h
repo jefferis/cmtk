@@ -41,7 +41,7 @@
 #include <Base/cmtkVector.h>
 #include <Base/cmtkVolume.h>
 #include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkException.h>
 #include <System/cmtkLockingPtr.h>
@@ -91,7 +91,7 @@ protected:
   DataGrid::RegionType m_ReferenceCropRegion;
 
   /// Optional list of matched landmarks.
-  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
+  cmtkGetSetMacro(LandmarkPairList::SmartConstPtr,LandmarkPairs);
 
   /// Weight for the landmark registration error relative to image similarity.
   cmtkGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
@@ -104,8 +104,7 @@ public:
    *\param floating The floating (i.e. transformed) volume.
    */
   ImagePairRegistrationFunctional( UniformVolume::SmartConstPtr& reference, UniformVolume::SmartConstPtr& floating )
-    : m_MatchedLandmarkList( NULL ),
-      m_ForceOutsideFlag( false )
+    : m_ForceOutsideFlag( false )
   {
     this->InitFloating( floating );
     this->InitReference( reference );

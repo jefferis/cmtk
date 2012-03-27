@@ -41,7 +41,7 @@
 #include <Base/cmtkVector.h>
 #include <Base/cmtkVolume.h>
 #include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkException.h>
 
@@ -92,7 +92,7 @@ protected:
   DataGrid::RegionType m_ReferenceCropRegion;
 
   /// Optional list of matched landmarks.
-  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
+  cmtkGetSetMacro(LandmarkPairList::SmartPtr,LandmarkPairs);
 
   /// Weight for the landmark registration error relative to image similarity.
   cmtkGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
@@ -105,7 +105,6 @@ public:
    *\param floating The floating (i.e. transformed) volume.
    */
   VoxelMatchingFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-    : m_MatchedLandmarkList( NULL )
   {
     this->InitFloating( floating );
     this->InitReference( reference );

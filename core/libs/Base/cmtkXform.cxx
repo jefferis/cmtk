@@ -33,6 +33,7 @@
 #include "cmtkXform.h"
 
 #include <Base/cmtkVolume.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -99,21 +100,21 @@ Xform::GetParamVector
 }
 
 Types::Coordinate
-Xform::GetLandmarksMSD( const MatchedLandmarkList* ll ) const
+Xform::GetLandmarksMSD( const LandmarkPairList& ll ) const
 {
   double MSD = 0;
 
-  MatchedLandmarkList::const_iterator it = ll->begin();
-  while ( it != ll->end() )
+  LandmarkPairList::const_iterator it = ll.begin();
+  while ( it != ll.end() )
     {
-    Self::SpaceVectorType source( (*it)->GetLocation() );
-    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source = (*it)->m_Location;
+    Self::SpaceVectorType target = (*it)->m_TargetLocation;
     this->ApplyInPlace( source );
     MSD += (source - target).SumOfSquares();
     ++it;
     }
   
-  MSD /= ll->size();
+  MSD /= ll.size();
 
   return MSD;
 }

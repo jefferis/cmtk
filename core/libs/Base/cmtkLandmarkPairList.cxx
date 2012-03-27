@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,7 +30,7 @@
 //
 */
 
-#include "cmtkMatchedLandmarkList.h"
+#include "cmtkLandmarkPairList.h"
 
 namespace
 cmtk
@@ -40,55 +40,47 @@ cmtk
 //@{
 
 void
-MatchedLandmarkList::AddLandmarkLists
-( const LandmarkList* sourceList, const LandmarkList* targetList )
+LandmarkPairList::AddLandmarkLists
+( const LandmarkList& sourceList, const LandmarkList& targetList )
 {
-  LandmarkList::const_iterator it = sourceList->begin();
-  while ( it != sourceList->end() ) 
+  LandmarkList::const_iterator it = sourceList.begin();
+  while ( it != sourceList.end() ) 
     {
-    const Landmark* targetLM = targetList->FindByName( (*it)->GetName() ).GetConstPtr();
+    const Landmark* targetLM = targetList.FindByName( (*it)->m_Name ).GetConstPtr();
     if ( targetLM ) 
       {
-      SmartPointer<MatchedLandmark> newMatchedLM( new MatchedLandmark );
-      newMatchedLM->SetName( (*it)->GetName() );      
-      newMatchedLM->SetLocation( (*it)->GetLocation() );
-      newMatchedLM->SetTargetLocation( targetLM->GetLocation() );
-      this->push_back( newMatchedLM );
+      this->push_back( LandmarkPair::SmartPtr( new LandmarkPair( *(*it), targetLM->m_Location ) ) );
       }
     ++it;
     }
 }
 
-const SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name ) const
+LandmarkPair::SmartConstPtr
+LandmarkPairList::FindByName( const std::string& name ) const
 {
-  const_iterator it = this->begin();
-  while ( it != this->end() ) 
+  for ( const_iterator it = this->begin(); it != this->end(); ++it )
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
+    if ( (*it)->m_Name == name )
       {
       return *it;
       }
-    ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return SmartPointer<LandmarkPair>( NULL );
 }
 
-SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name )
+LandmarkPair::SmartPtr
+LandmarkPairList::FindByName( const std::string& name )
 {
-  iterator it = this->begin();
-  while ( it != this->end() ) 
+  for ( iterator it = this->begin(); it != this->end(); ++it )
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
+    if ( (*it)->m_Name == name )
       {
       return *it;
       }
-    ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return LandmarkPair::SmartPtr( NULL );
 }
 
 } // namespace cmtk

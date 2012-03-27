@@ -122,10 +122,10 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
     }
   else
     {
-    if ( this->m_MatchedLandmarkList.GetPtr() ) 
+    if ( this->m_LandmarkPairs ) 
       {
       double lowerMSD, upperMSD;
-      warp.GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
+      warp.GetDerivativeLandmarksMSD( lowerMSD, upperMSD, *(this->m_LandmarkPairs), param, step );
       lower -= this->m_LandmarkErrorWeight * lowerMSD;
       upper -= this->m_LandmarkErrorWeight * upperMSD;
       }

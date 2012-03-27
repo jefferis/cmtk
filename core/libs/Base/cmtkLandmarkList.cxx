@@ -39,13 +39,13 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-const SmartPointer<Landmark>
-LandmarkList::FindByName( const char* name ) const
+Landmark::SmartConstPtr
+LandmarkList::FindByName( const std::string& name ) const
 {
   const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
+    if ( (*it)->m_Name == name ) 
       {
       return *it;
       }
@@ -55,13 +55,13 @@ LandmarkList::FindByName( const char* name ) const
   return Landmark::SmartPtr( NULL );
 }
 
-SmartPointer<Landmark>
-LandmarkList::FindByName( const char* name )
+Landmark::SmartPtr
+LandmarkList::FindByName( const std::string& name )
 {
   iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
+    if ( (*it)->m_Name == name ) 
       {
       return *it;
       }

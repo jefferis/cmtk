@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// List of landmarks in 3-D.
+/// List of landmarks.
 class LandmarkList :
   /// Inherit STL list container.
   public std::list< SmartPointer<Landmark> >
@@ -59,11 +59,14 @@ public:
   /// Smart pointer to LandmarkList.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to const LandmarkList.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Find landmark by name.
-  Landmark::SmartPtr FindByName( const char* name );
+  Landmark::SmartPtr FindByName( const std::string& name );
 
   /// Find landmark by name and return constant pointer.
-  const Landmark::SmartPtr FindByName( const char* name ) const;
+  Landmark::SmartConstPtr FindByName( const std::string& name ) const;
 };
 
 //@}

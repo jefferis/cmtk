@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,20 +39,9 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-Landmark::Landmark()
-{
-  this->m_Name = NULL;
-}
-
-Landmark::Landmark( const char* name, const Types::Coordinate location[3] )
-{
-  this->m_Name = strdup( name );
-  memcpy( this->m_Location, location, sizeof( this->m_Location ) );
-}
-
-Landmark::~Landmark()
-{
-  free( this->m_Name );
-}
+Landmark::Landmark( const std::string& name, const Self::SpaceVectorType& location )
+  : m_Name( name ),
+    m_Location( location )
+{}
 
 } // namespace

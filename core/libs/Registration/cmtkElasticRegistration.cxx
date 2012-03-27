@@ -33,7 +33,7 @@
 #include "cmtkElasticRegistration.h"
 
 #include <Base/cmtkLandmarkList.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
@@ -104,8 +104,8 @@ ElasticRegistration::InitRegistration ()
     
     if ( sourceLandmarks && targetLandmarks ) 
       {
-      this->m_LandmarkList = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
-      fprintf( stderr, "Matched %d landmarks.\n", (int)this->m_LandmarkList->size() );
+      this->m_LandmarkPairs = LandmarkPairList::SmartPtr( new LandmarkPairList( *(sourceLandmarks), *(targetLandmarks) ) );
+      StdErr << "Matched " << this->m_LandmarkPairs->size() << " landmarks.\n";
       }
     }
   
@@ -242,10 +242,10 @@ ElasticRegistration::MakeFunctional
       newFunctional->SetRigidityConstraintMap( rigidityMap );
       }
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( this->m_LandmarkList )
+    if ( this->m_LandmarkPairs )
       {
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetMatchedLandmarkList( this->m_LandmarkList );
+      newFunctional->SetLandmarkPairs( this->m_LandmarkPairs );
       }
     
     return newFunctional;

@@ -270,9 +270,9 @@ protected:
     if ( !finite( result ) ) 
       return -FLT_MAX;
     
-    if ( this->m_MatchedLandmarkList ) 
+    if ( this->m_LandmarkPairs ) 
       {
-      result -= this->m_LandmarkErrorWeight * warp->GetLandmarksMSD( this->m_MatchedLandmarkList );
+      result -= this->m_LandmarkErrorWeight * warp->GetLandmarksMSD( *(this->m_LandmarkPairs) );
       }
 
     if ( InverseTransformation ) 

@@ -63,6 +63,9 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Return vector size.
+  size_t Size() const { return NDIM; }
+
   /// Zero operator.
   static const Self Zero()
   {

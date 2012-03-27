@@ -40,7 +40,7 @@
 #include <Base/cmtkVector.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkBitVector.h>
-#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkSmartPtr.h>
 
@@ -193,7 +193,7 @@ public:
    * What is actually returned is the mean squared distance of source
    * landmark after transformation and desired target landmark.
    */
-  virtual Types::Coordinate GetLandmarksMSD( const MatchedLandmarkList* ll ) const;
+  virtual Types::Coordinate GetLandmarksMSD( const LandmarkPairList& ll ) const;
   
 protected:
   /** Encapsulated representation of the transformation parameters.

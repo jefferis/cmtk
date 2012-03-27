@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkMatchedLandmark_h_included_
-#define __cmtkMatchedLandmark_h_included_
+#ifndef __cmtkLandmarkPair_h_included_
+#define __cmtkLandmarkPair_h_included_
 
 #include <cmtkconfig.h>
 
@@ -45,23 +45,32 @@ cmtk
 //@{
 
 /// Matched landmark (landmark with source and target location).
-class MatchedLandmark :
-  /// Inherit ordinary landmark.
+class LandmarkPair :
+  /// Inherit single landmark.
   public Landmark
 {
-  /// Coordinates of this landmark.
-  cmtkGetSetMacro3Array(Types::Coordinate,TargetLocation);
-
 public:
   /// This class.
-  typedef MatchedLandmark Self;
-  
-  /// Smart pointer to Landmark.
+  typedef LandmarkPair Self;
+
+  /// Smart pointer to LandmarkPair.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const LandmarkPair.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Constructor.
+  LandmarkPair( const Landmark& landmark, const Self::SpaceVectorType& target )
+    : Landmark( landmark ),
+      m_TargetLocation( target )
+  {}
+
+  /// Coordinates of this landmark.
+  Self::SpaceVectorType m_TargetLocation;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkMatchedLandmark_h_included_
+#endif // #ifndef __cmtkLandmarkPair_h_included_
