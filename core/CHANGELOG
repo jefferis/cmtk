@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4096) Added: new tool, "fit_affine_xform_landmarks" to fit affine
+    transformations to sets of landmark pairs. Also added supporting classes
+    for fitting and landmark I/O.
 (r4090) Added: two new tools, "fibxform" and "fib2image", for applying
     transformation sequences to UNC Fber Tracking outputs and for marking
     fibers in discrete images.
