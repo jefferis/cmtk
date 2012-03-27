@@ -34,8 +34,6 @@
 
 #include <System/cmtkDebugOutput.h>
 
-#include <Numerics/svd.h>
-
 cmtk::FitAffineToWarpXform::FitAffineToWarpXform( WarpXform::SmartConstPtr warp ) 
   : m_WarpXform( warp )
 {  
