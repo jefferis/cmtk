@@ -84,9 +84,13 @@ doMain( const int argc, const char* argv[] )
   
   // don't need data
   trackingImage->SetData( cmtk::TypedArray::SmartPtr( NULL ) );
+  cmtk::UniformVolume::SmartPtr outputImage( trackingImage->CloneGrid() );
+
+  trackingImage->ChangeCoordinateSpace( trackingImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
+  cmtk::AffineXform fromTrackingSpace( trackingImage->GetImageToPhysicalMatrix() );
 
   // don't need data - make new array
-  trackingImage->CreateDataArray( cmtk::TYPE_SHORT, true /*setToZero*/ );
+  outputImage->CreateDataArray( cmtk::TYPE_SHORT, true /*setToZero*/ );
   
   cmtk::Xform::SpaceVectorType xyz;
   cmtk::DataGrid::IndexType ijk;
@@ -113,17 +117,17 @@ doMain( const int argc, const char* argv[] )
 	std::getline( std::cin, restOfLine );
 
 	// transform from fib space into image space
-	xyz[0] = trackingImage->Size[0] - xyz[0];
-	if ( trackingImage->GetClosestGridPointIndex( xyz, ijk ) )
+	fromTrackingSpace.ApplyInPlace( xyz );
+	if ( outputImage->GetClosestGridPointIndex( xyz, ijk ) )
 	  {
-	  trackingImage->SetDataAt( value, trackingImage->GetOffsetFromIndex( ijk ) );
+	  outputImage->SetDataAt( value, trackingImage->GetOffsetFromIndex( ijk ) );
 	  }
 	}
       }
     }
   
   // write output image
-  cmtk::VolumeIO::Write( *trackingImage, outputImagePath );
+  cmtk::VolumeIO::Write( *outputImage, outputImagePath );
 
   // if we got here, the program probably ran
   return 0;

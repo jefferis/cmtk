@@ -65,10 +65,11 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
 
-    cl.AddParameter( &sourceImagePath, "SourceImage", "Set source image of the transformation (i.e., an image defining the space in which fiber tracking was performed) to correct for differences in orientation and coordinate space." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &targetImagePath, "TargetImage", "Set target image of the transformation (i.e., the image that the fiber track points are mapped into) to correct for differences in orientation and coordinate space." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddOption( Key( "source-image" ), &sourceImagePath, "Set source image of the transformation (i.e., an image defining the space in which fiber tracking was performed) "
+		  "to correct for differences in orientation and coordinate space." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddOption( Key( "target-image" ), &targetImagePath, "Set target image of the transformation (i.e., the image that the fiber track points are mapped into) "
+		  "to correct for differences in orientation and coordinate space." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+
     cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );  
     
@@ -89,13 +90,19 @@ doMain( const int argc, const char* argv[] )
     cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
     throw cmtk::ExitException( 1 );
     }
-  
+
+  sourceImage->ChangeCoordinateSpace( sourceImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
+  xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
+
   cmtk::UniformVolume::SmartPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
   if ( ! targetImage )
     {
     cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
     throw cmtk::ExitException( 1 );
     }
+
+  targetImage->ChangeCoordinateSpace( targetImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
+  xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
   
   cmtk::Xform::SpaceVectorType xyz;    
   std::vector<std::string> outputPointLines;
@@ -124,7 +131,6 @@ doMain( const int argc, const char* argv[] )
 	{
 	// read x,y,z from beginning of line
 	std::cin >> xyz[0] >> xyz[1] >> xyz[2];
-	xyz[0] = sourceImage->Size[0] - xyz[0];
 	
 	// read everything else on the same line
 	std::string restOfLine;
@@ -136,7 +142,6 @@ doMain( const int argc, const char* argv[] )
 	if ( valid )
 	  {
 	  std::stringstream sout;
-	  xyz[0] = targetImage->Size[0] - xyz[0];
 	  sout << xyz[0] << " " << xyz[1] << " " << xyz[2];;
 	  outputPointLines[npointsOut++] = std::string( sout.str() + " " + restOfLine );
 	  }
