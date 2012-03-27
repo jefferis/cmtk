@@ -8,7 +8,7 @@
 	<te>97.900000</te>
 	<dwi>
 		<bValue>0</bValue>
-		<bVector coordinateSpace="LPS">0.000000 0.000000 0.000000</bVector>
+		<bVector coordinateSpace="LPS">0.000000 0.000000 -0.000000</bVector>
 		<bVectorImage imageOrientation="LPI">0.000000 0.000000 0.000000</bVectorImage>
 		<bVectorStandard imageOrientation="RAS">0.000000 0.000000 0.000000</bVectorStandard>
 	</dwi>

@@ -8,9 +8,9 @@
 	<te>97.900000</te>
 	<dwi>
 		<bValue>860</bValue>
-		<bVector coordinateSpace="LPS">-0.449000 -0.277000 0.850000</bVector>
-		<bVectorImage imageOrientation="LPI">-0.449000 -0.277000 -0.850000</bVectorImage>
-		<bVectorStandard imageOrientation="RAS">0.449000 0.277000 0.850000</bVectorStandard>
+		<bVector coordinateSpace="LPS">-0.449000 -0.277000 -0.850000</bVector>
+		<bVectorImage imageOrientation="LPI">-0.449000 -0.277000 0.850000</bVectorImage>
+		<bVectorStandard imageOrientation="RAS">0.449000 0.277000 -0.850000</bVectorStandard>
 	</dwi>
 </mr>
 <dcmPath>mr-dwi-ge/</dcmPath>
