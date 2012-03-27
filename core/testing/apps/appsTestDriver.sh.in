@@ -757,6 +757,18 @@ case ${RUNTEST} in
 	check_images c1.nii c2.nii jacobian.nii
 	check_results df.nrrd
 	;;
+    fib2image)
+        run_eval "${BINDIR}/fib2image -o ${tmpdir}/fibers.nii fiber_grid.hdr < fibers.fib"
+	check_images fibers.nii
+        ;;
+    fibxform)
+        run_eval "${BINDIR}/fibxform crop-x30.xform < fibers.fib > ${tmpdir}/output.fib"
+	check_results output.fib
+        ;;
+    fibxformSourceTarget)
+        run_eval "${BINDIR}/fibxform --source-image fiber_grid.hdr --target-image fiber_grid.hdr crop-x30.xform < fibers.fib > ${tmpdir}/output.fib"
+	check_results output.fib
+        ;;
     filterGaussian)
 	run filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
 	check_results filter.img

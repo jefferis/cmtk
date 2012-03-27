@@ -70,7 +70,7 @@ b0FwdCorr=${outdir}/`basename ${b0Fwd}`
 b0RevCorr=${outdir}/`basename ${b0Rev}`
 if needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
     echo "Computing deformation..."
-    cmtk epiunwarp --init-shift-com --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${b0FwdCorr} ${b0RevCorr} ${outdir}/dfield_fwd.nrrd
+    cmtk epiunwarp --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${b0FwdCorr} ${b0RevCorr} ${outdir}/dfield_fwd.nrrd
     lockfile_delete ${outdir}/dfield_fwd.nrrd
 fi
 

@@ -110,6 +110,14 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
+# Tests for "fib2image" tool
+LIST(APPEND testList fib2image)
+
+# ==========================================
+# Tests for "fibxform" tool
+LIST(APPEND testList fibxform fibxformSourceTarget)
+
+# ==========================================
 # Tests for "groupwise_init" tool
 LIST(APPEND testList
   groupwise_initCenterFOV
