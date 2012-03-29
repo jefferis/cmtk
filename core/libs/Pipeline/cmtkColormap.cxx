@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,8 @@
 
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkSegmentationLabel.h>
+
+#include <algorithm>
 
 namespace
 cmtk
@@ -379,22 +381,22 @@ void Colormap::HSV2RGB( RGB& rgb, Types::DataItem H, Types::DataItem S, Types::D
 
   Types::DataItem R, G, B;
   // compute rgb assuming S = 1.0;
-  if (H >= 0.0 && H <= third) 
+  if (H <= third) 
     { // red -> green
-    G = H/third;
+    G = 3 * std::max<Types::DataItem>( H, 0 );
     R = 1.0 - G;
     B = 0.0;
     } 
   else
     if (H >= third && H <= 2.0*third) 
       { // green -> blue
-      B = (H - third)/third;
+      B = 3 * (H - third);
       G = 1.0 - B;
       R = 0.0;
       } 
     else
       { // blue -> red
-      R = (H - 2.0 * third)/third;
+      R = 3 * (H - 2.0 / 3);
       B = 1.0 - R;
       G = 0.0;
       }
