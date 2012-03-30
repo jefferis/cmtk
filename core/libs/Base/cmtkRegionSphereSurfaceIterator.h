@@ -54,7 +54,6 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-public:
   /// Constructor with radius only (center is zero-index).
   explicit RegionSphereSurfaceIterator( const typename Self::IndexType radius /*!< Radius of the sphere in each dimension.*/ )
   {
@@ -68,26 +67,47 @@ public:
     this->Populate( radius, center, 0, 1.0 );
   }
 
+  /// Iterator assignment.
+  const Self& operator=( const typename Self::IndexListType::const_iterator& it )
+  {
+    this->m_IndexListIterator = it;
+    return *this;
+  }
+  
 protected:
   /// Recursively populate the list of indexes.
   virtual void Populate( const typename Self::IndexType& radius /*!< Sphere radius in index steps by dimension.*/, const typename Self::IndexType& center /*!< Sphere center. */, const size_t dim /*!< Next dimension. */, 
 			 const double remainSquare /*!< Remaining proportion of total squared sphere radius. */)
   {
-    if ( remainSquare >= 0 )
+    if ( remainSquare > 0 )
       {
       typename Self::IndexType index = center;
       const int radiusThisDimension = static_cast<int>( sqrt( remainSquare ) * radius[dim] );
-      if ( dim < Self::Dimension )
+      if ( dim < Self::Dimension-1 )
 	{
-	for ( int r = -radiusThisDimension; r <= radiusThisDimension; ++r )
+	this->Populate( radius, center, dim+1, remainSquare );
+	for ( int r = 1; r <= radiusThisDimension; ++r )
 	  {
+	  const double newRemainSquare = remainSquare - MathUtil::Square(1.0 * r / radius[dim] );
+
 	  index[dim] = center[dim]+r;
-	  this->Populate( radius, index, dim+1, remainSquare - MathUtil::Square(1.0 * r / radius[dim] ) );
+	  this->Populate( radius, index, dim+1, newRemainSquare );
+
+	  index[dim] = center[dim]-r;
+	  this->Populate( radius, index, dim+1, newRemainSquare );
 	  }
 	}
       else
 	{
-	this->m_IndexList.push_back( center );
+	for ( int r = -radiusThisDimension; r <= radiusThisDimension; ++r )
+	  {
+	  const double newRemainSquare = remainSquare - MathUtil::Square(1.0 * r / radius[dim] );
+	  if ( sqrt( newRemainSquare ) * radius[dim] < 1 )
+	    {
+	    index[dim] = center[dim]+r;
+	    this->m_IndexList.push_back( index );
+	    }
+	  }
 	}
       }
   }
