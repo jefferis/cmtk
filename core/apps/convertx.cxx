@@ -55,6 +55,7 @@
 #include <Base/cmtkImageOperationConnectedComponents.h>
 #include <Base/cmtkImageOperationDownsample.h>
 #include <Base/cmtkImageOperationHistogramEqualization.h>
+#include <Base/cmtkImageOperationHoughTransformSphere.h>
 #include <Base/cmtkImageOperationCropRegion.h>
 #include <Base/cmtkImageOperationCropThreshold.h>
 #include <Base/cmtkImageOperationScaleToRange.h>
@@ -200,6 +201,11 @@ doMain( const int argc, const char* argv[] )
 		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel full width at half maximum in world units [e.g., mm]." );
     cl.EndGroup();
 
+    cl.BeginGroup( "Feature", "Feature Detection Operations" );
+    cl.AddCallback( Key( "hough-sphere" ), &cmtk::ImageOperationHoughTransformSphere::New, "Hough transform to detect sphere with a given radius. "
+		    "The radius in world units (typically mm) is provided as an argument to this operation." );
+    cl.EndGroup();
+    
     cl.BeginGroup( "Grid", "Grid Operations" );
     cl.AddCallback( Key( "downsample-select" ), &cmtk::ImageOperationDownsample::NewSelect, "Downsample image by pixel selection using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
     cl.AddCallback( Key( "downsample-average" ), &cmtk::ImageOperationDownsample::NewAverage, "Downsample image by averaging using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
