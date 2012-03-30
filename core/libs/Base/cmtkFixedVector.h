@@ -378,13 +378,24 @@ Min( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
   return result;
 }
 
-/// Less-than operator.
+/// Element-wise less-than operator.
 template<size_t NDIM,typename T>
 bool
 operator<( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
 {
   for ( size_t i = 0; i < NDIM; ++i )
     if ( ! (lhs[i] < rhs[i] ) )
+      return false;
+  return true;
+}
+
+/// Element-wise less-than-or-equal operator.
+template<size_t NDIM,typename T>
+bool
+operator<=( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    if ( lhs[i] > rhs[i] )
       return false;
   return true;
 }
