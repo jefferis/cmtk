@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -139,11 +139,12 @@ public:
    */
   TypedArray::SmartPtr RegionEntropyFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
   
-  /// Return data after median-filtering.
+  /// Return data after Sobel filtering.
   TypedArray::SmartPtr GetDataSobelFiltered() const;
-
+  
   /// Return after filtering with a separable kernel
-  TypedArray::SmartPtr GetDataKernelFiltered( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY, const std::vector<Types::DataItem>& filterZ ) const;
+  TypedArray::SmartPtr GetDataKernelFiltered( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY, const std::vector<Types::DataItem>& filterZ,
+					      const bool normalize = true /*!< Flag for normalization: if set, convolution result is divided by sum of actually used filter elements. */ ) const;
 
 private:
   /// The DataGrid object we're working on.
@@ -157,6 +158,9 @@ private:
   public:
     /// Filter kernel.
     const std::vector<Types::DataItem>* m_Filter;
+
+    /// Flag for normalization: if set, convolution result is divided by sum of actually used filter elements.
+    bool m_Normalize;
 
     /// Pointer to result pixel data
     TypedArray::SmartPtr m_Result;

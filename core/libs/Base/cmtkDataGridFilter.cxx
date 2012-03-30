@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -390,7 +390,8 @@ TypedArray::SmartPtr
 DataGridFilter::GetDataKernelFiltered
 ( const std::vector<Types::DataItem>& filterX, 
   const std::vector<Types::DataItem>& filterY,
-  const std::vector<Types::DataItem>& filterZ ) const
+  const std::vector<Types::DataItem>& filterZ,
+  const bool normalize ) const
 {
   // create and initialize result (data are copied at this point from the source array)
   TypedArray::SmartPtr result( this->m_DataGrid->GetData()->Clone() );
@@ -404,6 +405,7 @@ DataGridFilter::GetDataKernelFiltered
     {
     params[task].thisObject = this;
     params[task].m_Result = result;
+    params[task].m_Normalize = normalize;
     }
 
   // run x filter
@@ -449,6 +451,7 @@ DataGridFilter
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
+  const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
   const size_t filterSize = filter.size();
 
@@ -492,7 +495,8 @@ DataGridFilter
 	    }
 	  }
 	// correct value scaling for all missing (outside) elements
-	pixelBufferTo[x] /= correctOverlap;
+	if ( normalize && (correctOverlap != 0) )
+	  pixelBufferTo[x] /= correctOverlap;
 	}
       
       ofs = ThisConst->m_DataGrid->GetOffsetFromIndex( 0, y, z );
@@ -512,6 +516,7 @@ DataGridFilter
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
+  const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
   const size_t filterSize = filter.size();
 
@@ -546,7 +551,8 @@ DataGridFilter
 	    }
 	  }
 	// correct value scaling for all missing (outside) elements
-	pixelBufferTo[y] /= correctOverlap;
+	if ( normalize && (correctOverlap != 0) )
+	  pixelBufferTo[y] /= correctOverlap;
 	}
       
       // write back convolved data
@@ -566,6 +572,7 @@ DataGridFilter
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
+  const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
   const size_t filterSize = filter.size();
 
@@ -600,7 +607,8 @@ DataGridFilter
 	    }
 	  }
 	// correct value scaling for all missing (outside) elements
-	pixelBufferTo[z] /= correctOverlap;
+	if ( normalize && (correctOverlap != 0) )
+	  pixelBufferTo[z] /= correctOverlap;
 	}
       
       // write back convolved data
