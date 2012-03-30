@@ -46,7 +46,7 @@ UniformVolumeHoughTransformSphere::Get( const Types::Coordinate radius ) const
   TypedArray::SmartPtr result( TypedArray::Create( volume.GetData()->GetType(), volume.GetNumberOfPixels() ) );
 
   const int dRadius[3] = { MathUtil::Round( radius / volume.m_Delta[0] ), MathUtil::Round( radius / volume.m_Delta[1] ), MathUtil::Round( radius / volume.m_Delta[2] ) };
-  RegionSphereSurfacIterator<DataGrid::RegionType> sphereIterator( (DataGrid::IndexType( dRadius )) );
+  RegionSphereSurfaceIterator<DataGrid::RegionType> sphereIterator( (DataGrid::IndexType( dRadius )) );
 
   const DataGrid::RegionType wholeImageRegion = volume.GetWholeImageRegion();
 
