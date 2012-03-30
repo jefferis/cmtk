@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2012 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,7 +43,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Image operation: Gaussian smoothing filter.
+/// Image operation: grid downsampling.
 class ImageOperationGaussFilter
 /// Inherit from image operation base class.
   : public ImageOperation

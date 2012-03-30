@@ -28,13 +28,13 @@
 //
 */
 
-#ifndef __cmtkImageOperationGaussFilter_h_included_
-#define __cmtkImageOperationGaussFilter_h_included_
+#ifndef __cmtkImageOperationHoughTransformSphere_h_included_
+#define __cmtkImageOperationHoughTransformSphere_h_included_
 
 #include <cmtkconfig.h>
 
 #include <Base/cmtkImageOperation.h>
-#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUniformVolumeHoughTransformSphere.h>
 
 namespace
 cmtk
@@ -43,41 +43,35 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Image operation: Gaussian smoothing filter.
-class ImageOperationGaussFilter
+/// Image operation: grid downsampling.
+class ImageOperationHoughTransformSphere
 /// Inherit from image operation base class.
   : public ImageOperation
 {
 public:
   /// Constructor:
-  ImageOperationGaussFilter( const Units::GaussianSigma& sigma ) : m_Sigma( sigma ) {}
+  ImageOperationHoughTransformSphere( const Types::Coordinate& radius ) : m_Radius( radius ) {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume->SetData( UniformVolumeFilter( volume ).GetDataGaussFiltered( this->m_Sigma, 0.001 /* kernel truncation approximation error threshold */ ) );
+    volume->SetData( UniformVolumeHoughTransformSphere( volume ).Get( this->m_Radius ) );
     return volume;
   }
   
   /// Create a new filter based on sigma parameter.
-  static void NewSigma( const double sigma )
+  static void New( const Types::Coordinate radius )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianSigma( sigma ) ) ) );
-  }
-  
-  /// Create a new filter based on full-width-at-half-maximum parameter.
-  static void NewFWHM( const double fwhm )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianFWHM( fwhm ) ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationHoughTransformSphere( radius ) ) );
   }
   
 private:
-  /// Kernel with specified by coefficient sigma.
-  Units::GaussianSigma m_Sigma;
+  /// Radius of the spheres detected.
+  Types::Coordinate m_Radius;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationGaussFilter_h_included_
+#endif // #ifndef __cmtkImageOperationHoughTransformSphere_h_included_
