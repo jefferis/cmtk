@@ -32,7 +32,7 @@
 
 #include "cmtkUniformVolumeHoughTransformSphere.h"
 
-#include <Base/cmtkRegionSphereIterator.h>
+#include <Base/cmtkRegionSphereSurfaceIterator.h>
 #include <Base/cmtkRegionIndexIterator.h>
 
 namespace
@@ -52,6 +52,16 @@ UniformVolumeHoughTransformSphere::Get( const Types::Coordinate radius ) const
   RegionSphereIterator<DataGrid::RegionType> sphereIterator( (DataGrid::IndexType( dRadius )) );
 
   const DataGrid::RegionType wholeImageRegion = volume.GetWholeImageRegion();
+
+  const DataGrid::IndexType center = 0.5 * (wholeImageRegion.To() - wholeImageRegion.From());
+  for ( sphereIterator = sphereIterator.begin(); sphereIterator != sphereIterator.end(); ++sphereIterator )
+    {
+    const DataGrid::IndexType pt = center+sphereIterator.Index();
+    result->Set( 1, volume.GetOffsetFromIndex( pt ) );
+    }
+
+  return result;
+
 #ifndef _OPENMP
   const DataGrid::RegionType region = wholeImageRegion;
 #else // _OPENMP
