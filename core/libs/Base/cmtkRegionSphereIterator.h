@@ -76,6 +76,9 @@ protected:
   /// Internal index list type.
   typedef std::list<typename Self::IndexType> IndexListType;
 
+  /// Protected default constructor - only to be used by derived class.
+  RegionSphereIterator() {}
+  
 public:
   /// Constructor with radius only (center is zero-index).
   explicit RegionSphereIterator( const typename Self::IndexType radius /*!< Radius of the sphere in each dimension.*/ )
@@ -150,10 +153,17 @@ protected:
       const int radiusThisDimension = static_cast<int>( sqrt( remainSquare ) * radius[dim] );
       if ( dim < Self::Dimension )
 	{
-	for ( int r = -radiusThisDimension; r <= radiusThisDimension; ++r )
+	this->Populate( radius, index, dim+1, remainSquare );
+
+	for ( int r = 1; r <= radiusThisDimension; ++r )
 	  {
+	  const double newRemainSquare = remainSquare - MathUtil::Square(1.0 * r / radius[dim] );
+
 	  index[dim] = center[dim]+r;
-	  this->Populate( radius, index, dim+1, remainSquare - MathUtil::Square(1.0 * r / radius[dim] ) );
+	  this->Populate( radius, index, dim+1, newRemainSquare );
+	  
+	  index[dim] = center[dim]-r;
+	  this->Populate( radius, index, dim+1, newRemainSquare );
 	  }
 	}
       else
