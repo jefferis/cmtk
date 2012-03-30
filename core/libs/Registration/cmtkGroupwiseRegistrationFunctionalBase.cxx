@@ -41,7 +41,7 @@
 
 #include <Base/cmtkInterpolator.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
-#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUniformVolumeGaussianFilter.h>
 #include <Registration/cmtkReformatVolume.h>
 
 namespace
@@ -243,7 +243,7 @@ GroupwiseRegistrationFunctionalBase
   TypedArray::SmartPtr data;
   if ( this->m_GaussianSmoothImagesSigma > 0 )
     {
-    data = UniformVolumeFilter( image ).GetDataGaussFiltered( Units::GaussianSigma( this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta() ) );
+    data = UniformVolumeGaussianFilter( image ).GetFiltered3D( Units::GaussianSigma( this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta() ) );
     
     if ( this->m_FreeAndRereadImages )
       {

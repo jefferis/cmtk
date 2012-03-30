@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,7 +33,7 @@
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumePainter.h>
-#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUniformVolumeGaussianFilter.h>
 #include <Base/cmtkUnits.h>
 
 #include <System/cmtkProgress.h>
@@ -74,7 +74,7 @@ cmtk::SimpleLevelset
     nInside = 0;
     Types::DataItem insideSum = 0, outsideSum = 0;
 
-    this->m_Levelset->SetData( UniformVolumeFilter( this->m_Levelset ).GetDataGaussFiltered( this->m_FilterSigma ) );
+    this->m_Levelset->SetData( UniformVolumeGaussianFilter( this->m_Levelset ).GetFiltered3D( this->m_FilterSigma ) );
 #pragma omp parallel for reduction(+:nInside) reduction(+:insideSum) reduction(+:outsideSum)
     for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
       {

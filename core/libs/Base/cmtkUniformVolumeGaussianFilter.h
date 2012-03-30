@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkUniformVolumeFilter_h_included_
-#define __cmtkUniformVolumeFilter_h_included_
+#ifndef __cmtkUniformVolumeGaussianFilter_h_included_
+#define __cmtkUniformVolumeGaussianFilter_h_included_
 
 #include <cmtkconfig.h>
 
@@ -48,26 +48,26 @@ cmtk
 
 /** Filter operations for 3D uniform image data.
  */
-class UniformVolumeFilter :
+class UniformVolumeGaussianFilter :
   /// Prevent copying by inheritance.
   private DataGridFilter
 {
 public:
   /// This class.
-  typedef UniformVolumeFilter Self;
+  typedef UniformVolumeGaussianFilter Self;
 
   /// Constructor: link to UniformVolume object.
-  explicit UniformVolumeFilter( UniformVolume::SmartConstPtr& volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
+  explicit UniformVolumeGaussianFilter( UniformVolume::SmartConstPtr& volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Gaussian filter (using faster, separable filtering).
-  TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
-					     const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
-
+  TypedArray::SmartPtr GetFiltered3D( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
+				      const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
+  
   /// Gaussian 1D filter.
-  TypedArray::SmartPtr GetDataGaussFiltered1D( const int direction /*!< Coordinate direction: 0 = x, 1 = y, 2 = z */,
-					       const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
-					       const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
-
+  TypedArray::SmartPtr GetFiltered1D( const int direction /*!< Coordinate direction: 0 = x, 1 = y, 2 = z */,
+				      const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
+				      const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
+  
 private:
   /// The UniformVolume object we're working on.
   UniformVolume::SmartConstPtr m_UniformVolume;
@@ -75,4 +75,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkUniformVolumeFilter_h_included_
+#endif // #ifndef __cmtkUniformVolumeGaussianFilter_h_included_

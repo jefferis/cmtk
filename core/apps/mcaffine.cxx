@@ -43,7 +43,7 @@
 #include <Base/cmtkUniformVolumeInterpolator.h>
 #include <Base/cmtkLinearInterpolator.h>
 #include <Base/cmtkCubicInterpolator.h>
-#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUniformVolumeGaussianFilter.h>
 
 #include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 #include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
@@ -104,7 +104,7 @@ MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample
   if ( (smoothSigmaFactor > 0) && downsample )
     {
     const cmtk::Units::GaussianSigma sigma( smoothSigmaFactor * downsample * image->GetMinDelta() );
-    result->SetData( cmtk::UniformVolumeFilter( image ).GetDataGaussFiltered( sigma ) );
+    result->SetData( cmtk::UniformVolumeGaussianFilter( image ).GetFiltered3D( sigma ) );
     }
   else
     {

@@ -30,7 +30,7 @@
 //
 */
 
-#include "cmtkUniformVolumeFilter.h"
+#include "cmtkUniformVolumeGaussianFilter.h"
 
 #include <Base/cmtkDataGridFilter.h>
 #include <Base/cmtkGaussianKernel.h>
@@ -45,7 +45,7 @@ cmtk
 //@{
 
 TypedArray::SmartPtr
-UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
+UniformVolumeGaussianFilter::GetFiltered3D( const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
 {
   return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[0], maxError ),
 						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[1], maxError ),
@@ -53,7 +53,7 @@ UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma, co
 }
 
 TypedArray::SmartPtr
-UniformVolumeFilter::GetDataGaussFiltered1D( const int direction, const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
+UniformVolumeGaussianFilter::GetFiltered1D( const int direction, const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
 {
   const std::vector<Types::Coordinate> empty( 1, 1.0 );
 

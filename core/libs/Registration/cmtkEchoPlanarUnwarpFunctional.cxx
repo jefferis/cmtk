@@ -33,7 +33,7 @@
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkSincInterpolator.h>
 #include <Base/cmtkRegionIndexIterator.h>
-#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUniformVolumeGaussianFilter.h>
 
 #include <System/cmtkExitException.h>
 #include <System/cmtkDebugOutput.h>
@@ -128,16 +128,16 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
   if ( sigma.Value() > 0 )
     {
     {
-    UniformVolumeFilter filterFwd( this->m_ImageFwd );
+    UniformVolumeGaussianFilter filterFwd( this->m_ImageFwd );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    smooth->SetData( filterFwd.GetFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageFwd = smooth;
     }
 
     {
-    UniformVolumeFilter filterRev( this->m_ImageRev );
+    UniformVolumeGaussianFilter filterRev( this->m_ImageRev );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    smooth->SetData( filterRev.GetFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageRev = smooth;
     }    
     }
