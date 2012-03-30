@@ -120,7 +120,7 @@ public:
   virtual bool Get ( Types::DataItem&, const size_t ) const = 0;
 
   /// Return data or a given default value if no data exists there.
-  virtual Types::DataItem ValueAt ( const size_t idx, const Types::DataItem defaultValue = 0.0 ) const;
+  virtual Types::DataItem ValueAt ( const size_t idx, const Types::DataItem defaultValue = 0.0 ) const = 0;
   
   /** Get a sequence of items from the array.
    *\param values This must point to an allocated array of at least as many
