@@ -51,20 +51,35 @@ UniformVolumeHoughTransformSphere::Get( const Types::Coordinate radius ) const
   const int dRadius[3] = { MathUtil::Round( radius / volume.m_Delta[0] ), MathUtil::Round( radius / volume.m_Delta[1] ), MathUtil::Round( radius / volume.m_Delta[2] ) };
   RegionSphereIterator<DataGrid::RegionType> sphereIterator( (DataGrid::IndexType( dRadius )) );
 
-  const DataGrid::RegionType region = volume.GetWholeImageRegion();
-  for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+  const DataGrid::RegionType wholeImageRegion = volume.GetWholeImageRegion();
+#ifndef _OPENMP
+  const DataGrid::RegionType region = wholeImageRegion;
+#else // _OPENMP
+  const int sliceFrom = wholeImageRegion.From()[2];
+  const int sliceTo = wholeImageRegion.To()[2];
+#pragma omp parallel for
+  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
     {
-    const DataGrid::IndexType center = it.Index();
-    const size_t toOffset = volume.GetOffsetFromIndex( center );
-    for ( sphereIterator = sphereIterator.begin(); sphereIterator != sphereIterator.end(); ++sphereIterator )
+    DataGrid::RegionType region = wholeImageRegion;
+    region.From()[2] = slice;
+    region.To()[2] = slice+1;
+#endif // #ifdef _OPENMP
+    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
       {
-      const DataGrid::IndexType pt = center+sphereIterator.Index();
-      if ( region.IsInside( pt ) )
+      const DataGrid::IndexType center = it.Index();
+      const size_t toOffset = volume.GetOffsetFromIndex( center );
+      for ( sphereIterator = sphereIterator.begin(); sphereIterator != sphereIterator.end(); ++sphereIterator )
 	{
-	result->Set( result->ValueAt( toOffset ) + volume.GetDataAt( volume.GetOffsetFromIndex( pt ) ), toOffset );
+	const DataGrid::IndexType pt = center+sphereIterator.Index();
+	if ( region.IsInside( pt ) )
+	  {
+	  result->Set( result->ValueAt( toOffset ) + volume.GetDataAt( volume.GetOffsetFromIndex( pt ) ), toOffset );
+	  }
 	}
       }
+#ifdef _OPENMP
     }
+#endif // #ifdef _OPENMP
   
   return result;
 }
