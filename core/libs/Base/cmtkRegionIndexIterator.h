@@ -44,7 +44,7 @@
 namespace
 cmtk
 {
-/// Class for n-dimensional image index.
+/// Iterator for rectangular region of n-dimensional image, providing grid index of each position.
 template<typename TRegion>
 class RegionIndexIterator
 {
