@@ -52,7 +52,7 @@ UniformVolumeLaplaceFilter::Get() const
   kernel[0] = 2;
   kernel[1] = -1;
 
-  return DataGridFilter::GetDataKernelFiltered( kernel, kernel, kernel );
+  return DataGridFilter::GetDataKernelFiltered( kernel, kernel, kernel, false /*do not normalize - sum of kernel elements is zero*/ );
 }
 
 } // namespace cmtk
