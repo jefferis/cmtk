@@ -451,6 +451,20 @@ public:
     return true;
   }
 
+  /// Return data or a given default value if no data exists there.
+  virtual Types::DataItem ValueAt ( const size_t idx, const Types::DataItem defaultValue = 0.0 ) const
+  {
+    CheckBounds( idx, this->DataSize );
+    if (this->PaddingFlag && (this->Padding==this->Data[idx])) 
+      {
+      return defaultValue;
+      }
+    else
+      {
+      return static_cast<Types::DataItem>( Data[idx] );
+      }
+  }
+
   /** Get a sequence of items from the array.
    *\param values This must point to an allocated array of at least as many
    * Types::DataItem objects as given in the "length" parameter.

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -216,18 +216,18 @@ public:
     return this->m_Data->Get( data, offset );
   }
 
+  /// Return data at specified grid point.
+  bool GetDataAt ( Types::DataItem& data, const int x, const int y, const int z ) const
+  {
+    return this->m_Data->Get( data, this->GetOffsetFromIndex( x, y, z ) );
+  }
+
   /// Set data at specified offset
   void SetDataAt ( const Types::DataItem data, const size_t offset )
   {
     this->m_Data->Set( data, offset );
   }
   
-  /// Return data at specified grid point.
-  bool GetDataAt ( Types::DataItem& data, const int x, const int y, const int z ) const
-  {
-    return this->GetDataAt( data, this->GetOffsetFromIndex( x, y, z ) );
-  }
-
   /// Set data at specified grid point.
   void SetDataAt ( const Types::DataItem data, const int x, const int y, const int z )
   {
@@ -247,11 +247,7 @@ public:
   /// Return data at specified grid offset, or a given default value if no data exists there.
   Types::DataItem GetDataAt ( const size_t offset, const Types::DataItem defaultValue = 0.0 ) const
   {
-    Types::DataItem value;
-    if ( this->GetDataAt( value, offset ) )
-      return value;
-    else
-      return defaultValue;
+    return this->m_Data->ValueAt( offset, defaultValue );
   }
 
   /** Return data after mirroring.
