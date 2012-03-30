@@ -112,6 +112,12 @@ public:
     return size;
   }
 
+  /// Check if an index is inside region.
+  bool IsInside( const typename Self::IndexType idx ) const
+  {
+    return (this->m_RegionFrom <= idx) && (idx < this->m_RegionTo);
+  }
+  
   /// Get one face of the region, as a region
   const Self GetFaceRegion( const int dim /*!< Returned face is orthogonal to this index dimension */, const bool upper = false /*!< If true, upper face is returned, otherwise lower face.*/ ) const;
   
