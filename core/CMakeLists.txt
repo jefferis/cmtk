@@ -576,6 +576,11 @@ ENDIF(CMTK_USE_QT)
 OPTION(CMTK_USE_FFTW "Uswe FFTW library for fast Fourier transform (required for some specialized tools)" OFF)
 IF(CMTK_USE_FFTW)
   INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindFFTW.cmake)
+  IF(CMTK_DATA_DOUBLE)
+    SET(CMTK_FFTW_LIBRARIES ${FFTWD_LIB})
+  ELSE(CMTK_DATA_DOUBLE)
+    SET(CMTK_FFTW_LIBRARIES ${FFTWF_LIB})
+  ENDIF(CMTK_DATA_DOUBLE)
 ENDIF(CMTK_USE_FFTW)
 
 #-----------------------------------------------------------------------------

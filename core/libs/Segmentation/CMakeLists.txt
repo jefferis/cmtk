@@ -47,9 +47,15 @@ SET(cmtkSegmentation_SRCS
   cmtkSimpleLevelsetCommandLineBase.cxx
 )
 
-ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
+SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
-TARGET_LINK_LIBRARIES(cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics )
+IF(CMTK_USE_FFTW)
+##  LIST(APPEND cmtkSegmentation_SRCS cmtkDetectSpheresMatchedFilter.cxx)
+  LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
+ENDIF(CMTK_USE_FFTW)
+
+ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
+TARGET_LINK_LIBRARIES(${cmtkSegmentation_LIBS})
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkSegmentation PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
