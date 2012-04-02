@@ -99,14 +99,10 @@ protected:
 	}
       else
 	{
-	for ( int r = -radiusThisDimension; r <= radiusThisDimension; ++r )
+	for ( int r = -radiusThisDimension; r <= radiusThisDimension; r += 2*radiusThisDimension )
 	  {
-	  const double newRemainSquare = remainSquare - MathUtil::Square(1.0 * r / radius[dim] );
-	  if ( sqrt( newRemainSquare ) * radius[dim] < 1 )
-	    {
-	    index[dim] = center[dim]+r;
-	    this->m_IndexList.push_back( index );
-	    }
+	  index[dim] = center[dim]+r;
+	  this->m_IndexList.push_back( index );
 	  }
 	}
       }
