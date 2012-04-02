@@ -570,6 +570,17 @@ IF(CMTK_USE_QT)
   OPTION(BUILD_GUI "Build GUI applications" ON)
 ENDIF(CMTK_USE_QT)
 
+#-----------------------------------------------------------------------------
+# Add an option to use FFTW library
+
+OPTION(CMTK_USE_FFTW "Uswe FFTW library for fast Fourier transform (required for some specialized tools)" OFF)
+IF(CMTK_USE_FFTW)
+  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindFFTW.cmake)
+ENDIF(CMTK_USE_FFTW)
+
+#-----------------------------------------------------------------------------
+# Add an option to enable building of test code
+
 OPTION(BUILD_TESTING "Build test code" ON)
 IF (BUILD_TESTING)
   SUBDIRS(testing)
