@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -96,7 +96,7 @@ ENDIF(CMTK_USE_LZMA)
 # optional package
 IF(CMTK_USE_FFTW)
   SET(CPACK_RPM_PACKAGE_REQUIRES "fftw-devel >= 3.3")
-ENDIF(CMTK_USE_LZMA)
+ENDIF(CMTK_USE_FFTW)
 
 set(CPACK_COMPONENTS_ALL tools gui libraries headers documentation)
 INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION ${CMTK_INSTALL_DATA_DIR}/doc/ COMPONENT documentation)
