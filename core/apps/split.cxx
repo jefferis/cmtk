@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,11 +85,6 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath ) );
-  if ( ! volume || ! volume->GetData() )
-    {
-    cmtk::StdErr << "ERROR: Could not read image " << InputFilePath << "\n";
-    return 1;
-    }
 
   for ( int i = 0; i < Factor; ++i )
     {
