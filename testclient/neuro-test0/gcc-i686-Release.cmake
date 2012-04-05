@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -59,10 +59,12 @@ CMAKE_C_FLAGS:STRING=-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse
 
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON
+CMTK_USE_FFTW:BOOL=ON
 
 CMTK_USE_QT:BOOL=ON
 QT_INCLUDE_DIR:PATH=/usr/include
 QT_LIBRARY_DIR:PATH=/usr/lib/
+
 CMTK_BUILD_NRRD:BOOL=ON
 ")
 
