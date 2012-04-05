@@ -8,6 +8,10 @@ Release Notes -- CMTK 2.2.0
 
 CMTK now requires at least CMake 2.8.0 to build.
 
+A sphere detection filter based on FFT-based fast bipolar filter kernel
+convolution has been added to the library and can be used through the
+"detect_spheres_matched_filter" tool. This requires CMTK to be configured with
+FFTW support ("CMTK_USE_FFTW" CMake option).
 
 CMTK has been built and tested on the following platforms:
 

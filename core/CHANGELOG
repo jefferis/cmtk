@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r4131) Added: sphere detection filter based on FFT-based fast bipolar filter
+    kernel convolution. Requires CMTK to be configured with FFTW support.
 (r4096) Added: new tool, "fit_affine_xform_landmarks" to fit affine
     transformations to sets of landmark pairs. Also added supporting classes
     for fitting and landmark I/O.
