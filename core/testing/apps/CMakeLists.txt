@@ -104,6 +104,12 @@ LIST(APPEND testList
   destripeKernelFloat)
 
 # ==========================================
+# Tests for "detect_spheres_matched_filter" tool
+IF(CMTK_USE_FFTW)
+  LIST(APPEND testList detect_spheres_matched_filter)
+ENDIF(CMTK_USE_FFTW)
+
+# ==========================================
 # Tests for "epiunwarp" tool
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList epiunwarp epiunwarpInitShift)
