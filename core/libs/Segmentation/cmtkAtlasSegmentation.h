@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,10 @@ namespace
 cmtk
 {
 
+/** Class for integrated atlas-based segmentation.
+ * This class encapsulates the following stages of atlas-based image segmentation: 1) linear image-to-atlas registration, 2) non-linear
+ * image-to-atlas registration, 3) label map reformatting.
+ */
 class AtlasSegmentation
 {
 public:
