@@ -50,7 +50,7 @@ SET(cmtkSegmentation_SRCS
 SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
 IF(CMTK_USE_FFTW)
-##  LIST(APPEND cmtkSegmentation_SRCS cmtkDetectSpheresMatchedFilter.cxx)
+  LIST(APPEND cmtkSegmentation_SRCS cmtkSphereDetectionMatchedFilterFFT.cxx)
   LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
 ENDIF(CMTK_USE_FFTW)
 
