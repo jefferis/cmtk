@@ -52,7 +52,7 @@ public:
 
   /// Get image filtered with spherical matched filter kernel.
   cmtk::TypedArray::SmartPtr GetFilteredImageData( const Types::Coordinate sphereRadius /*!< Radius of detected spheres in world coordinate units (e.g., mm) */, 
-						   const int marginWidth /*!< Half width of the filter margin in pixels: positive filter coefficients in a band of this width inside radius, negative coeffiecients outside radius.*/ );
+						   const int marginWidth = 1 /*!< Half width of the filter margin in pixels: positive filter coefficients in a band of this width inside radius, negative coeffiecients outside radius.*/ );
 
 private:
   /// Image number of pixels.

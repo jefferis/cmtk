@@ -31,6 +31,7 @@
 # Sources of non-templated classes.
 SET(cmtkSegmentation_SRCS
   cmtkAtlasSegmentation.cxx
+  cmtkDetectPhantomMagphanEMR051.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
   cmtkLabelCombinationLocalBinaryShapeBasedAveraging.cxx
