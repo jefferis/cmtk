@@ -93,7 +93,8 @@ typedef struct __SphereEntryType
 extern const SphereEntryType MagphanEMR051SphereTable[165];
 
 /// Create a simulated T1-weighted image of the phantom spheres.
-UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 );
+UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 /*!< Pixel size of the output image - number of pixels is determined by this value and the pre-defined FOV needed to cover the entire phantom. */, 
+					 const bool labels = false /*!< If this is set, each sphere is drawn with its intensity equal to the index in the marker table; otherwise, estimated T1 is used. */ );
 
 //@}
 

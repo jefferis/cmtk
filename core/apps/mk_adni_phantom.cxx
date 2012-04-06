@@ -45,6 +45,8 @@ int
 doMain( const int argc, const char* argv[] )
 {
   cmtk::Types::Coordinate resolution = 1.0;
+  bool labels = false;
+
   const char* outputFileName = "phantom.nii";
 
   try 
@@ -55,6 +57,7 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( "resolution" ), &resolution, "Set output image resolution in [mm]" );
+    cl.AddSwitch( Key( "labels" ), &labels, true, "Draw each marker sphere with a label value defined by its index in the marker table. Otherwise, estimated T1 is used." );
 
     cl.AddParameter( &outputFileName, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
@@ -66,7 +69,7 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
-  cmtk::VolumeIO::Write( *(cmtk::Phantoms::GetPhantomImage(resolution)), outputFileName );
+  cmtk::VolumeIO::Write( *(cmtk::Phantoms::GetPhantomImage( resolution, labels )), outputFileName );
   
   return 0;
 }

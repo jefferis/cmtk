@@ -489,7 +489,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "mk_adni_phantom" tool
-LIST(APPEND testList mk_adni_phantom2mm)
+LIST(APPEND testList mk_adni_phantom2mm mk_adni_phantom2mmLabels)
 
 # ==========================================
 # Tests for "mk_analyze_hdr" tool
