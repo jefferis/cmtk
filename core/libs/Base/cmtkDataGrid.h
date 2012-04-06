@@ -210,6 +210,16 @@ public:
     x = (offset % nextK) % nextJ;
   }
 
+  /// Get index of a pixel identified by its offset.
+  Self::IndexType GetIndexFromOffset( const size_t offset ) const 
+  {
+    Self::IndexType index;
+    index[2] = offset / nextK;
+    index[1] = (offset % nextK) / nextJ;
+    index[0] = (offset % nextK) % nextJ;
+    return index;
+  }
+
   /// Return data at specified offset
   bool GetDataAt ( Types::DataItem& data, const size_t offset ) const 
   {
