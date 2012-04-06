@@ -32,10 +32,6 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-#ifdef CMTK_USE_FFTW
-#  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
-#endif
-
 #include <vector>
 
 namespace
@@ -50,6 +46,18 @@ cmtk
 class DetectPhantomMagphanEMR051
 {
 public:
+  /// This class.
+  typedef DetectPhantomMagphanEMR051 Self;
+
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const for  this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Spatial coordinate vector.
+  typedef UniformVolume::SpaceVectorType SpaceVectorType;
+  
   /// Constructor: compute registrations.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
   
@@ -60,18 +68,11 @@ private:
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 
-  /// The sphere detector.
-#ifdef CMTK_USE_FFTW
-  SphereDetectionMatchedFilterFFT m_SphereDetector;
-#endif
-
   /// Find a number of spheres of equal size.
-  void FindSpheres( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, UniformVolume::SmartPtr& excludeMask );
+  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& excludeMask );
 
-  /// Find a number of spheres of equal size within a shell at a given distance from a known location.
-  void FindSpheresAtDistance( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, 
-			      const cmtk::UniformVolume::SpaceVectorType& centerRegion, const Types::Coordinate radiusRegion, const Types::Coordinate searchMargin, 
-			      UniformVolume::SmartPtr& excludeMask );
+  /// Refine sphere position based on intensity-weighted center of mass.
+  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, UniformVolume::SmartPtr& excludeMask, const int label );
 };
 
 //@}

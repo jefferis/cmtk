@@ -33,118 +33,106 @@
 #include <Base/cmtkMagphanEMR051.h>
 #include <Base/cmtkUniformVolumePainter.h>
 
+#ifdef CMTK_USE_FFTW
+#  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
+#endif
+
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
   : m_PhantomImage( phantomImage )
-#ifdef CMTK_USE_FFTW
-  , m_SphereDetector( *phantomImage )
-#endif
 {
 }
 
-std::vector<cmtk::UniformVolume::SpaceVectorType> 
+std::vector<cmtk::DetectPhantomMagphanEMR051::SpaceVectorType> 
 cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 {
-  std::vector<cmtk::UniformVolume::SpaceVectorType> landmarks( MagphanEMR051::NumberOfSpheres );
+  std::vector<Self::SpaceVectorType> landmarks( MagphanEMR051::NumberOfSpheres );
 
   UniformVolume::SmartPtr excludeMask( this->m_PhantomImage->CloneGrid() );
   excludeMask->CreateDataArray( TYPE_BYTE, true /*setToZero*/ );
 
+#ifdef CMTK_USE_FFTW
+  SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
+#endif
+
   // Find 1x 60mm SNR sphere
-  this->FindSpheres( landmarks.begin(), 1 /*n=1*/, MagphanEMR051::SphereTable[0].m_Diameter / 2, excludeMask );
-
+  TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[0].m_Diameter / 2, 3 /*filterMargin*/ ) );
+  landmarks[0] = this->FindSphere( *filterResponse, MagphanEMR051::SphereTable[0].m_Diameter / 2, *excludeMask );
+  landmarks[0] = this->RefineSphereLocation( landmarks[0], MagphanEMR051::SphereTable[0].m_Diameter / 2, 2 /*margin*/, excludeMask, 1 /*label*/ );
+  
   // Find 4x 30mm CNR spheres
-  this->FindSpheres( landmarks.begin()+1, 4 /*n=4*/, MagphanEMR051::SphereTable[1].m_Diameter / 2, excludeMask );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[1].m_Diameter / 2, 3 /*filterMargin*/ );
+  for ( size_t i = 1; i < 5; ++i )
+    {
+    landmarks[i] = this->FindSphere( *filterResponse, MagphanEMR051::SphereTable[i].m_Diameter / 2, *excludeMask );
+    landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 2 /*margin*/, excludeMask, 1+i /*label*/ );
+    }
 
-  // Find 2x 15mm orientation spheres
-  this->FindSpheresAtDistance( landmarks.begin()+5, 1 /*n=1*/, MagphanEMR051::SphereTable[5].m_Diameter / 2, landmarks[0], 
-			       cmtk::UniformVolume::SpaceVectorType( MagphanEMR051::SphereTable[5].m_CenterLocation ).RootSumOfSquares(), 10 /*margin*/, excludeMask );
-  this->FindSpheresAtDistance( landmarks.begin()+6, 1 /*n=1*/, MagphanEMR051::SphereTable[6].m_Diameter / 2, landmarks[0], 
-			       cmtk::UniformVolume::SpaceVectorType( MagphanEMR051::SphereTable[6].m_CenterLocation ).RootSumOfSquares(), 10 /*margin*/, excludeMask );
+  // which of the CNR spheres is which?
+  Types::DataItem averageIntensity[4] = { 0,0,0,0 };
+  size_t pixelCount[4] = { 0,0,0,0 };
+
+  for ( size_t px = 0; px < this->m_PhantomImage->GetNumberOfPixels(); ++px )
+    {
+    const int maskValue = static_cast<int>( excludeMask->GetDataAt( px ) );
+    if ( (maskValue > 0) && (maskValue < 5) ) // there should be nothing larger than 4 right now anyway, but just to be safe...
+      {
+      ++pixelCount[maskValue-1];
+      averageIntensity[maskValue-1] += this->m_PhantomImage->GetDataAt( px );
+      }
+    }
+  
+  for ( size_t idx = 0; idx < 4; ++idx )
+    {
+    averageIntensity[idx] /= pixelCount[idx];
+    }
 
   return landmarks;
 }
 
-void
-cmtk::DetectPhantomMagphanEMR051::FindSpheres( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, UniformVolume::SmartPtr& excludeMask )
+cmtk::DetectPhantomMagphanEMR051::SpaceVectorType
+cmtk::DetectPhantomMagphanEMR051::FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& excludeMask )
 {
-  UniformVolumePainter maskPainter( excludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
-
-  TypedArray::SmartPtr filterResponse( this->m_SphereDetector.GetFilteredImageData( radius, 3 /*filterMargin*/ ) );
-  for ( int n = 0; n < nSpheres; ++n )
+  size_t maxIndex = 0;
+  Types::DataItem maxValue = filterResponse.ValueAt( 0 );
+  
+  for ( size_t px = 0; px < filterResponse.GetDataSize(); ++px )
     {
-    size_t maxIndex = 0;
-    Types::DataItem maxValue = filterResponse->ValueAt( 0 );
-
-    for ( size_t px = 0; px < filterResponse->GetDataSize(); ++px )
+    if ( excludeMask.GetDataAt( px ) == 0 )
       {
-      if ( excludeMask->GetDataAt( px ) == 0 )
+      const Types::DataItem value = filterResponse.ValueAt( px );
+      if ( value > maxValue )
 	{
-	const Types::DataItem value = filterResponse->ValueAt( px );
-	if ( value > maxValue )
-	  {
-	  maxValue = value;
-	  maxIndex = px;
-	  }
+	maxValue = value;
+	maxIndex = px;
 	}
       }
-    
-    cmtk::UniformVolume::SpaceVectorType location = this->m_PhantomImage->GetGridLocation( maxIndex );
-    
-    // update exclusion mask
-    maskPainter.DrawSphere( location, radius, 1 );
-    
-    // put landmark location into result
-    *dest = location;
-    ++dest;
     }
+  
+  return this->m_PhantomImage->GetGridLocation( maxIndex );
 }
 
-#include <IO/cmtkVolumeIO.h>
-
-void
-cmtk::DetectPhantomMagphanEMR051::FindSpheresAtDistance( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, 
-							 const cmtk::UniformVolume::SpaceVectorType& centerRegion, const Types::Coordinate radiusRegion, const Types::Coordinate searchMargin, 
-							 UniformVolume::SmartPtr& excludeMask )
+cmtk::DetectPhantomMagphanEMR051::SpaceVectorType 
+cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, UniformVolume::SmartPtr& excludeMask, const int label )
 {
+  DataGrid::IndexType centerPixelIndex;
+  this->m_PhantomImage->GetClosestGridPointIndex( estimate, centerPixelIndex );
+
+  const int nRadius[3] = { margin + static_cast<int>( radius / this->m_PhantomImage->m_Delta[0] ), 
+			   margin + static_cast<int>( radius / this->m_PhantomImage->m_Delta[1] ), 
+			   margin + static_cast<int>( radius / this->m_PhantomImage->m_Delta[2] ) };
+  
+  const DataGrid::RegionType region( DataGrid::IndexType( centerPixelIndex ) - DataGrid::IndexType( nRadius ), 
+				     DataGrid::IndexType( centerPixelIndex ) + DataGrid::IndexType( nRadius ) + DataGrid::IndexType( DataGrid::IndexType::Init(1) ) );
+  
+  UniformVolume::SmartConstPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
+
+  // threshold here
+  
+  const Self::SpaceVectorType refined = estimate + regionVolume->GetCenterOfMass() - regionVolume->GetCenterCropRegion();
+
+  // update exclusion mask
   UniformVolumePainter maskPainter( excludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
+  maskPainter.DrawSphere( refined, radius, label );
 
-  UniformVolume::SmartPtr includeMask = excludeMask->CloneGrid();
-  includeMask->CreateDataArray( TYPE_BYTE, true /*setToZero*/ );
-
-  VolumeIO::Write( *excludeMask, "/tmp/exclude.nii" );
-
-  UniformVolumePainter searchRegionPainter( includeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
-  searchRegionPainter.DrawSphere( centerRegion, radiusRegion+searchMargin, 1 );
-  searchRegionPainter.DrawSphere( centerRegion, radiusRegion-searchMargin, 0 );
-
-  VolumeIO::Write( *includeMask, "/tmp/include.nii" );
-
-  TypedArray::SmartPtr filterResponse( this->m_SphereDetector.GetFilteredImageData( radius, 3 /*filterMargin*/ ) );
-  for ( int n = 0; n < nSpheres; ++n )
-    {
-    size_t maxIndex = 0;
-    Types::DataItem maxValue = filterResponse->ValueAt( 0 );
-
-    for ( size_t px = 0; px < filterResponse->GetDataSize(); ++px )
-      {
-      if ( (excludeMask->GetDataAt( px ) == 0) && (includeMask->GetDataAt( px ) != 0 ) )
-	{
-	const Types::DataItem value = filterResponse->ValueAt( px );
-	if ( value > maxValue )
-	  {
-	  maxValue = value;
-	  maxIndex = px;
-	  }
-	}
-      }
-    
-    cmtk::UniformVolume::SpaceVectorType location = this->m_PhantomImage->GetGridLocation( maxIndex );
-    
-    // update exclusion mask
-    maskPainter.DrawSphere( location, radius, 1 );
-    
-    // put landmark location into result
-    *dest = location;
-    ++dest;
-    }
+  return refined;
 }
