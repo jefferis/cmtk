@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2012 SRI International
+//  Copyright 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,12 +28,14 @@
 //
 */
 
-#ifndef __cmtkLandmarkPair_h_included_
-#define __cmtkLandmarkPair_h_included_
+#ifndef __cmtkFitRigidToLandmarks_h_included_
+#define __cmtkFitRigidToLandmarks_h_included_
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkLandmark.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkLandmarkPairList.h>
+#include <Base/cmtkMatrix3x3.h>
 
 namespace
 cmtk
@@ -44,39 +44,28 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Matched landmark (landmark with source and target location).
-class LandmarkPair :
-  /// Inherit single landmark.
-  public Landmark
+/** Fit affine transformation to a set of landmark pairs.
+ */
+class FitRigidToLandmarks
 {
 public:
   /// This class.
-  typedef LandmarkPair Self;
-
-  /// Smart pointer to LandmarkPair.
-  typedef SmartPointer<Self> SmartPtr;
-
-  /// Smart pointer to const LandmarkPair.
-  typedef SmartConstPointer<Self> SmartConstPtr;
+  typedef FitRigidToLandmarks Self;
 
   /// Constructor.
-  LandmarkPair( const Landmark& landmark, const Self::SpaceVectorType& target )
-    : Landmark( landmark ),
-      m_TargetLocation( target )
-  {}
+  FitRigidToLandmarks( const LandmarkPairList& landmarkPairs );
 
-  /// Constructor.
-  LandmarkPair( const std::string& name, const Self::SpaceVectorType& source, const Self::SpaceVectorType& target )
-    : Landmark( name, source ),
-      m_TargetLocation( target )
-  {}
-
-  /// Coordinates of this landmark.
-  Self::SpaceVectorType m_TargetLocation;
+  /// Return the rigid transformation.
+  AffineXform::SmartConstPtr GetRigidXform() const
+  {
+    return this->m_RigidXform;
+  }
+  
+private:
+  /// The fitted transformation.
+  AffineXform::SmartPtr m_RigidXform;
 };
 
-//@}
+} // namespace
 
-} // namespace cmtk
-
-#endif // #ifndef __cmtkLandmarkPair_h_included_
+#endif // #ifndef __cmtkFitRigidToLandmarks_h_included_

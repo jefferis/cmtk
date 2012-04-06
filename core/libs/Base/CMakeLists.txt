@@ -50,6 +50,7 @@ SET(cmtkBase_SRCS
   cmtkDirectionSet.cxx
   cmtkFilterVolume.cxx
   cmtkFitAffineToLandmarks.cxx
+  cmtkFitRigidToLandmarks.cxx
   cmtkFitAffineToWarpXform.cxx
   cmtkFitSplineWarpToDeformationField.cxx
   cmtkFunctional.cxx

@@ -310,7 +310,7 @@ public:
   static double GammaLn( const double xx );
 
   /// Singular Value Decomposition
-  static void SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V );
+  static void SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<double>& W, Matrix2D<double>& V );
 
   /// Linear Regression using SVD results
   static void

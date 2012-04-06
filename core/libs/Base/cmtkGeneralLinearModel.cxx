@@ -88,7 +88,7 @@ GeneralLinearModel::GeneralLinearModel
     }
   
   // perform SVD of design matrix
-  MathUtil::SVD( this->U, this->NData, this->NParameters, this->W, this->V );
+  MathUtil::SVD( *(this->U), this->NData, this->NParameters, *(this->W), *(this->V) );
  
   // prepare partial regressions, each with one of the parameters omitted
   for ( size_t p=0; p < this->NParameters; ++p) 
@@ -111,7 +111,7 @@ GeneralLinearModel::GeneralLinearModel
 	}
       }
     
-    MathUtil::SVD( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
+    MathUtil::SVD( *(this->Up[p]), this->NData, this->NParameters-1, *(this->Wp[p]), *(this->Vp[p]) );
     }
   
   wmax=0.0;

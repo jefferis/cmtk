@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -143,13 +143,13 @@ template void MathUtil::ComputeEigenvalues<float>( const Matrix2D<float>& matrix
 template void MathUtil::ComputeEigenvalues<double>( const Matrix2D<double>& matrix, std::vector<double>& eigenvalues );
 
 void 
-MathUtil::SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V )
+MathUtil::SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<double>& W, Matrix2D<double>& V )
 {
   ap::real_2d_array apA;
   apA.setbounds(0, m-1, 0, n-1);
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < m; i++)
-      apA(i,j) = (double) (*U)[i][j];
+      apA(i,j) = U[i][j];
 
   ap::real_1d_array w;
   ap::real_2d_array u;
@@ -164,17 +164,16 @@ MathUtil::SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, 
   /* Put u in U */
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < m; i++)
-      (*U)[i][j] = u(i,j);
+      U[i][j] = u(i,j);
   
   /* Put w in W */
   for (size_t i = 0; i < n; i++)
-    (*W)[i] = w(i);
+    W[i] = w(i);
   
   /* Un-transpose vt and put it in V */
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < n; i++)
-      (*V)[i][j] = vt(j,i);
-
+      V[i][j] = vt(j,i);
 }
 
 /** TODO: move this someplace more logical than the linear-algebra module
