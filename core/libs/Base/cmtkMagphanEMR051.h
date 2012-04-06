@@ -40,65 +40,71 @@ namespace
 cmtk
 {
 
-namespace
-Phantoms
-{
-
 /** \addtogroup Base */
 //@{
 
-/// Enumeration type for sphere colors.
-typedef enum
+/// Description of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom).
+class MagphanEMR051
 {
-  /// No color.
-  SPHERE_COLOR_NONE,
-  /// Green sphere.
-  SPHERE_COLOR_GREEN,
-  /// Yellow sphere.
-  SPHERE_COLOR_YELLOW,
-  /// Red sphere.
-  SPHERE_COLOR_RED,
-  /// Orange sphere.
-  SPHERE_COLOR_ORANGE
-} SphereColorType;
+public:
+  /// This class.
+  typedef MagphanEMR051 Self;
 
-/// Data structure for phantom sphere location table.
-typedef struct __SphereEntryType
-{
-  /// Sphere diameter in milimeters.
-  Types::Coordinate m_Diameter;
+  /// Number of phantom spheres.
+  static const unsigned int NumberOfSpheres = 165;
 
-  /// Sphere center location in "RAS" coordinate. Phantom center is the coordinate space origin.
-  Types::Coordinate m_CenterLocation[3];
-
-  /// Grams of Copper Sulfate Penta Hydrate per liter
-  double m_GramsPerLiterCSPH;
-
-  /** Estimated imaging T1.
-   * For the 3.0cm spheres, this value is given in the phantom manual. For the remaining
-   * spheres, we derive it from an exponential fit as T1=exp(-1.83364*CSPH+7.18582).
-   *
-   * We store only integer values because no fractional values are given in the phantom manual.
+  /// Enumeration type for sphere colors.
+  typedef enum
+  {
+    /// No color.
+    SPHERE_COLOR_NONE,
+    /// Green sphere.
+    SPHERE_COLOR_GREEN,
+    /// Yellow sphere.
+    SPHERE_COLOR_YELLOW,
+    /// Red sphere.
+    SPHERE_COLOR_RED,
+    /// Orange sphere.
+    SPHERE_COLOR_ORANGE
+  } SphereColorType;
+  
+  /// Data structure for phantom sphere location table.
+  typedef struct __SphereEntryType
+  {
+    /// Sphere diameter in milimeters.
+    Types::Coordinate m_Diameter;
+    
+    /// Sphere center location in "RAS" coordinate. Phantom center is the coordinate space origin.
+    Types::Coordinate m_CenterLocation[3];
+    
+    /// Grams of Copper Sulfate Penta Hydrate per liter
+    double m_GramsPerLiterCSPH;
+    
+    /** Estimated imaging T1.
+     * For the 3.0cm spheres, this value is given in the phantom manual. For the remaining
+     * spheres, we derive it from an exponential fit as T1=exp(-1.83364*CSPH+7.18582).
+     *
+     * We store only integer values because no fractional values are given in the phantom manual.
+     */
+    int m_EstimatedT1;
+    
+    /// Sphere color.
+    SphereColorType m_Color;
+  } SphereEntryType;
+  
+  /** Table of phantom sphere locations and properties.
+   * Measurements were derived manually from the following document: http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf
+   * They can, therefore, be used without reference to ADNI publications.
    */
-  int m_EstimatedT1;
+  static const Self::SphereEntryType SphereTable[Self::NumberOfSpheres];
 
-  /// Sphere color.
-  SphereColorType m_Color;
-} SphereEntryType;
-
-/** Table of phantom sphere locations and properties.
- * Measurements were derived manually from the following document: http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf
- * They can, therefore, be used without reference to ADNI publications.
- */
-extern const SphereEntryType MagphanEMR051SphereTable[165];
-
-/// Create a simulated T1-weighted image of the phantom spheres.
-UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 /*!< Pixel size of the output image - number of pixels is determined by this value and the pre-defined FOV needed to cover the entire phantom. */, 
-					 const bool labels = false /*!< If this is set, each sphere is drawn with its intensity equal to the index in the marker table; otherwise, estimated T1 is used. */ );
+  /// Create a simulated T1-weighted image of the phantom spheres.
+  static UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 /*!< Pixel size of the output image; number of pixels is determined by this and the FOV needed to cover the entire phantom. */, 
+						  const bool labels = false /*!< If this is set, each sphere is drawn with its intensity equal to the index in the marker table; otherwise, estimated T1 is used. */ );
+  
+};
 
 //@}
-
-} // namespace Phantoms
 
 } // namespace cmtk
 

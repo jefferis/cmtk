@@ -34,7 +34,7 @@
 #include <Base/cmtkAnatomicalOrientation.h>
 
 cmtk::UniformVolume::SmartPtr
-cmtk::Phantoms::GetPhantomImage( const cmtk::Types::Coordinate resolution, const bool labels )
+cmtk::MagphanEMR051::GetPhantomImage( const cmtk::Types::Coordinate resolution, const bool labels )
 {
   const int npx = 1 + static_cast<int>( 200.0 / resolution );
   const int dims[3] = { npx, npx, npx };
@@ -49,8 +49,8 @@ cmtk::Phantoms::GetPhantomImage( const cmtk::Types::Coordinate resolution, const
   UniformVolumePainter painter( result, UniformVolumePainter::COORDINATES_ABSOLUTE );
   for ( int idx = 0; idx < 165; ++idx )
     {
-    const Types::DataItem value = ( labels ) ? (idx+1) : cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_EstimatedT1;
-    painter.DrawSphere( UniformVolume::CoordinateVectorType( cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_CenterLocation ), cmtk::Phantoms::MagphanEMR051SphereTable[idx].m_Diameter / 2, value );
+    const Types::DataItem value = ( labels ) ? (idx+1) : Self::SphereTable[idx].m_EstimatedT1;
+    painter.DrawSphere( UniformVolume::CoordinateVectorType( Self::SphereTable[idx].m_CenterLocation ), Self::SphereTable[idx].m_Diameter / 2, value );
     }
   
   return result;

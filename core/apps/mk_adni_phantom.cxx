@@ -69,7 +69,7 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
-  cmtk::VolumeIO::Write( *(cmtk::Phantoms::GetPhantomImage( resolution, labels )), outputFileName );
+  cmtk::VolumeIO::Write( *(cmtk::MagphanEMR051::GetPhantomImage( resolution, labels )), outputFileName );
   
   return 0;
 }
