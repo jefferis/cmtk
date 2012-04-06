@@ -67,6 +67,11 @@ private:
 
   /// Find a number of spheres of equal size.
   void FindSpheres( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, UniformVolume::SmartPtr& excludeMask );
+
+  /// Find a number of spheres of equal size within a shell at a given distance from a known location.
+  void FindSpheresAtDistance( std::vector<cmtk::UniformVolume::SpaceVectorType>::iterator dest, const int nSpheres, const Types::Coordinate radius, 
+			      const cmtk::UniformVolume::SpaceVectorType& centerRegion, const Types::Coordinate radiusRegion, const Types::Coordinate searchMargin, 
+			      UniformVolume::SmartPtr& excludeMask );
 };
 
 //@}
