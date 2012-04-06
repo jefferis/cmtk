@@ -49,13 +49,13 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   UniformVolume::SmartPtr excludeMask( this->m_PhantomImage->CloneGrid() );
   excludeMask->CreateDataArray( TYPE_BYTE, true /*setToZero*/ );
 
-  // Find 60mm SNR sphere
+  // Find 1x 60mm SNR sphere
   this->FindSpheres( landmarks.begin(), 1 /*n=1*/, MagphanEMR051::SphereTable[0].m_Diameter / 2, excludeMask );
 
-  // Find the four 30mm spheres
+  // Find 4x 30mm CNR spheres
   this->FindSpheres( landmarks.begin()+1, 4 /*n=4*/, MagphanEMR051::SphereTable[1].m_Diameter / 2, excludeMask );
 
-  // Find the two 15mm spheres
+  // Find 2x 15mm orientation spheres
   this->FindSpheres( landmarks.begin()+5, 2 /*n=2*/,  MagphanEMR051::SphereTable[5].m_Diameter / 2, excludeMask );
 
   return landmarks;

@@ -35,8 +35,8 @@ cmtk::SphereDetectionMatchedFilterFFT::SphereDetectionMatchedFilterFFT( const Un
       m_ImageDims( image.m_Dims ),
       m_PixelSize( image.m_Delta )
 {
-  this->m_ImageFT = static_cast<fftw_complex*>( fftw_malloc(sizeof(fftw_complex) *   this->m_NumberOfPixels ) );
-  this->m_FilterFT = static_cast<fftw_complex*>( fftw_malloc(sizeof(fftw_complex) * this->m_NumberOfPixels ) );
+  this->m_ImageFT = fftw_alloc_complex( this->m_NumberOfPixels );
+  this->m_FilterFT = fftw_alloc_complex( this->m_NumberOfPixels );
 
   this->m_PlanFilter = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_FORWARD, FFTW_ESTIMATE );
   this->m_PlanBackward = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_BACKWARD, FFTW_ESTIMATE );
@@ -65,11 +65,11 @@ cmtk::SphereDetectionMatchedFilterFFT::~SphereDetectionMatchedFilterFFT()
 cmtk::TypedArray::SmartPtr
 cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordinate sphereRadius, const int marginWidth )
 {
-  size_t cnt = 0;
-  memset( this->m_FilterFT, sizeof( *this->m_FilterFT ) * this->m_NumberOfPixels, 0 );
+  memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
 
   const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
 
+  size_t cnt = 0;
   // create a filter kernel for the sphere
   for ( int k = 0; k < nRadius[2]; ++k )
     for ( int j = 0; j < nRadius[1]; ++j )
@@ -100,7 +100,6 @@ cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordi
 	    }
 	  }
 	}
-
 
   // compute filter kernel FT
   fftw_execute( this->m_PlanFilter );
