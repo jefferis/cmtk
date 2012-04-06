@@ -40,6 +40,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Segmentation */
+//@{
+
 /** Class for integrated atlas-based segmentation.
  * This class encapsulates the following stages of atlas-based image segmentation: 1) linear image-to-atlas registration, 2) non-linear
  * image-to-atlas registration, 3) label map reformatting.
@@ -117,5 +120,7 @@ private:
   /// Compute label map.
   void ReformatLabels();
 };
+
+//@}
 
 } // namespace cmtk
