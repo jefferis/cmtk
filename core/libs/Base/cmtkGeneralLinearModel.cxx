@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -88,8 +88,6 @@ GeneralLinearModel::GeneralLinearModel
     }
   
   // perform SVD of design matrix
-  //svdcmp( this->U, this->NData, this->NParameters, this->W, this->V );
-
   MathUtil::SVD( this->U, this->NData, this->NParameters, this->W, this->V );
  
   // prepare partial regressions, each with one of the parameters omitted
@@ -113,7 +111,6 @@ GeneralLinearModel::GeneralLinearModel
 	}
       }
     
-    //svdcmp( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
     MathUtil::SVD( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
     }
   
