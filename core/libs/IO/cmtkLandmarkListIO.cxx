@@ -51,7 +51,7 @@ std::istream& operator>>( std::istream& stream, cmtk::LandmarkList& lmList )
     {
     stream >> lm;
     if ( ! stream.fail() )
-      lmList.push_back( cmtk::Landmark::SmartPtr( new cmtk::Landmark( lm ) ) );
+      lmList.push_back( lm );
     }
   return stream;
 }

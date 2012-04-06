@@ -440,7 +440,7 @@ QtTriplanarWindow::slotSwitchToStudy( Study::SmartPtr& study )
       LandmarkList::const_iterator ll_it = ll->begin();
       while ( ll_it != ll->end() ) 
 	{
-	LandmarkBox->addItem( (*ll_it)->m_Name.c_str() );
+	LandmarkBox->addItem( ll_it->m_Name.c_str() );
 	++ll_it;
 	}
       }
@@ -845,8 +845,8 @@ QtTriplanarWindow::slotGoToLandmark()
   const LandmarkList *ll = this->m_Study->GetLandmarkList();
   if ( ! ll ) return;
 
-  const Landmark* lm = ll->FindByName( LandmarkBox->currentText().toStdString() );
-  if ( lm ) 
+  LandmarkList::ConstIterator lm = ll->FindByName( LandmarkBox->currentText().toStdString() );
+  if ( lm != ll->end() ) 
     {
     this->slotMouse3D( Qt::LeftButton, lm->m_Location );
     }
@@ -873,9 +873,9 @@ QtTriplanarWindow::slotExportLandmarks()
     
     if ( stream.good() )
       {
-      for ( LandmarkList::const_iterator it = ll->begin(); it != ll->end(); ++it )
+      for ( LandmarkList::ConstIterator it = ll->begin(); it != ll->end(); ++it )
 	{
-	stream << (*it)->m_Location[0] << "\t" << (*it)->m_Location[1] << "\t" << (*it)->m_Location[2] << "\t" << (*it)->m_Name << std::endl;
+	stream << it->m_Location[0] << "\t" << it->m_Location[1] << "\t" << it->m_Location[2] << "\t" << it->m_Name << std::endl;
 	}
       stream.close();
       } 
@@ -920,17 +920,17 @@ QtTriplanarWindow::slotImportLandmarks()
 	  sprintf( name, "LM-%04d", cnt++ );
 	  }
 
-	ll->push_back( Landmark::SmartPtr( new Landmark( name, xyz ) ) );
+	ll->push_back( Landmark( name, xyz ) );
 	LandmarkBox->addItem( name );
 	}
       
-      Landmark::SmartPtr lm = *(ll->begin());
-      if ( lm )
+      LandmarkList::ConstIterator lm = ll->begin();
+      if ( lm != ll->end() )
 	{
 	this->LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( lm->m_Name.c_str() ) );
 	this->slotMouse3D( Qt::LeftButton, lm->m_Location );
 	}
-
+      
       LandmarkBox->setEnabled( true );
       GoToLandmarkButton->setEnabled( true );
       DeleteLandmarkButton->setEnabled( true );
@@ -962,7 +962,7 @@ QtTriplanarWindow::slotAddLandmark()
   if ( ok && !name.isEmpty() ) 
     {
     Types::Coordinate location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
-    ll->push_back( Landmark::SmartPtr( new Landmark( name.toStdString(), Landmark::SpaceVectorType( location ) ) ) );
+    ll->push_back( Landmark( name.toStdString(), Landmark::SpaceVectorType( location ) ) );
     LandmarkBox->addItem( name );
     LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( name ) );
     

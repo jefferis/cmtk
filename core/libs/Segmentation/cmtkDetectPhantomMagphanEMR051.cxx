@@ -61,10 +61,11 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   
   // Find 4x 30mm CNR spheres
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[1].m_Diameter / 2, 3 /*filterMargin*/ );
-  for ( size_t i = 1; i < 5; ++i )
+  std::vector<cmtk::DetectPhantomMagphanEMR051::SpaceVectorType> cnrLandmarks( 4 );
+  for ( size_t i = 0; i < 4; ++i )
     {
-    landmarks[i] = this->FindSphere( *filterResponse, MagphanEMR051::SphereTable[i].m_Diameter / 2, *excludeMask );
-    landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 2 /*margin*/, excludeMask, 1+i /*label*/ );
+    cnrLandmarks[i] = this->FindSphere( *filterResponse, MagphanEMR051::SphereTable[1+i].m_Diameter / 2, *excludeMask );
+    cnrLandmarks[i] = this->RefineSphereLocation( cnrLandmarks[i], MagphanEMR051::SphereTable[1+i].m_Diameter / 2, 2 /*margin*/, excludeMask, 2+i /*label*/ );
     }
 
   // which of the CNR spheres is which?
@@ -74,17 +75,40 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   for ( size_t px = 0; px < this->m_PhantomImage->GetNumberOfPixels(); ++px )
     {
     const int maskValue = static_cast<int>( excludeMask->GetDataAt( px ) );
-    if ( (maskValue > 0) && (maskValue < 5) ) // there should be nothing larger than 4 right now anyway, but just to be safe...
+    if ( (maskValue > 1) && (maskValue < 6) ) // there should be nothing larger than 4 right now anyway, but just to be safe...
       {
-      ++pixelCount[maskValue-1];
-      averageIntensity[maskValue-1] += this->m_PhantomImage->GetDataAt( px );
+      ++pixelCount[maskValue-2];
+      averageIntensity[maskValue-2] += this->m_PhantomImage->GetDataAt( px );
       }
     }
   
   for ( size_t idx = 0; idx < 4; ++idx )
     {
     averageIntensity[idx] /= pixelCount[idx];
+    StdErr << averageIntensity[idx] << "\n";
     }
+
+  for ( size_t idx = 0; idx < 4; ++idx )
+    {
+    size_t maxIndex = 0;
+    Types::DataItem maxValue = averageIntensity[0];
+    for ( size_t test = 1; test < 4; ++test )
+      {
+      if ( averageIntensity[test] > maxValue )
+	{
+	maxIndex = test;
+	maxValue = averageIntensity[maxIndex];
+	}
+      }
+
+    landmarks[1+idx] = cnrLandmarks[maxIndex];
+    StdErr << maxIndex << "\n";
+    averageIntensity[maxIndex] = 0;
+    }
+
+  // now use the SNR and the two extremal CNR spheres to define first intermediate coordinate system
+  LandmarkList phantomSpaceLandmarks;
+  LandmarkList imageSpaceLandmarks;
 
   return landmarks;
 }

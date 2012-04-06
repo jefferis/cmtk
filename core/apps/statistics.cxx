@@ -165,7 +165,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
       
       char name[4];
       sprintf( name, "%3d", idx );
-      landmarkList.push_back( cmtk::Landmark::SmartPtr( new cmtk::Landmark( name, centerOfMass[idx] ) ) );
+      landmarkList.push_back( cmtk::Landmark( name, centerOfMass[idx] ) );
       }
     }
   

@@ -107,8 +107,8 @@ Xform::GetLandmarksMSD( const LandmarkPairList& ll ) const
   LandmarkPairList::const_iterator it = ll.begin();
   while ( it != ll.end() )
     {
-    Self::SpaceVectorType source = (*it)->m_Location;
-    Self::SpaceVectorType target = (*it)->m_TargetLocation;
+    Self::SpaceVectorType source = it->m_Location;
+    Self::SpaceVectorType target = it->m_TargetLocation;
     this->ApplyInPlace( source );
     MSD += (source - target).SumOfSquares();
     ++it;

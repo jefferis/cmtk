@@ -50,11 +50,17 @@ cmtk
 /// List of landmarks.
 class LandmarkList :
   /// Inherit STL list container.
-  public std::list< SmartPointer<Landmark> >
+  public std::list<Landmark>
 {
 public:
   /// This class.
   typedef LandmarkList Self;
+
+  /// List iterator.
+  typedef std::list<Landmark>::iterator Iterator;
+
+  /// List const iterator.
+  typedef std::list<Landmark>::const_iterator ConstIterator;
 
   /// Smart pointer to LandmarkList.
   typedef SmartPointer<Self> SmartPtr;
@@ -63,10 +69,10 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Find landmark by name.
-  Landmark::SmartPtr FindByName( const std::string& name );
+  Self::Iterator FindByName( const std::string& name );
 
   /// Find landmark by name and return constant pointer.
-  Landmark::SmartConstPtr FindByName( const std::string& name ) const;
+  Self::ConstIterator FindByName( const std::string& name ) const;
 };
 
 //@}

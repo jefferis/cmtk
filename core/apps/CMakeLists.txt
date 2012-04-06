@@ -125,7 +125,7 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 IF(CMTK_USE_FFTW)
-  LIST(APPEND APPS detect_spheres_matched_filter)
+  LIST(APPEND APPS detect_spheres_matched_filter detect_adni_phantom)
 ENDIF(CMTK_USE_FFTW)
 
 FOREACH(APPLICATION ${APPS})

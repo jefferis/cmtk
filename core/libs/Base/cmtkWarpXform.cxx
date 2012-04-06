@@ -88,8 +88,8 @@ WarpXform::GetDerivativeLandmarksMSD
   this->m_Parameters[idx] += step;
   for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source = (*it)->m_Location;
-    Self::SpaceVectorType target = (*it)->m_TargetLocation;
+    Self::SpaceVectorType source = it->m_Location;
+    Self::SpaceVectorType target = it->m_TargetLocation;
     this->ApplyInPlace( source );
     upperMSD += (source - target).SumOfSquares();
     }
@@ -97,8 +97,8 @@ WarpXform::GetDerivativeLandmarksMSD
   this->m_Parameters[idx] = pOld - step;
   for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source = (*it)->m_Location;
-    Self::SpaceVectorType target = (*it)->m_TargetLocation;
+    Self::SpaceVectorType source = it->m_Location;
+    Self::SpaceVectorType target = it->m_TargetLocation;
     this->ApplyInPlace( source );
     lowerMSD += (source - target).SumOfSquares();
     }

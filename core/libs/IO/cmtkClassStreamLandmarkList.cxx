@@ -47,8 +47,8 @@ ClassStream::operator << ( const LandmarkList *landmarkList )
   for ( LandmarkList::const_iterator it = landmarkList->begin(); it != landmarkList->end(); ++it )
     {
     this->Begin( "landmark" );
-    this->WriteString( "name", (*it)->m_Name.c_str() );
-    this->WriteCoordinateArray( "location", (*it)->m_Location.begin(), (*it)->m_Location.Size() );
+    this->WriteString( "name", it->m_Name.c_str() );
+    this->WriteCoordinateArray( "location", it->m_Location.begin(), it->m_Location.Size() );
     this->End();
   }
 
@@ -68,18 +68,18 @@ ClassStream::operator >> ( LandmarkList::SmartPtr& landmarkList )
   
   while ( this->Seek( "landmark" ) ) 
     {
-    Landmark::SmartPtr landmark( new Landmark );
+    Landmark landmark;
     
     char *tmpStr = this->ReadString( "name" );
     if ( tmpStr ) 
       {
-      landmark->m_Name = tmpStr;
+      landmark.m_Name = tmpStr;
       free( tmpStr );
       }
     
     Types::Coordinate location[3];
     this->ReadCoordinateArray( "location", location, 3 );
-    landmark->m_Location = Landmark::SpaceVectorType( location );
+    landmark.m_Location = Landmark::SpaceVectorType( location );
     
     landmarkList->insert( landmarkList->end(), landmark );
     }

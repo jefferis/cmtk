@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,36 +39,36 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-Landmark::SmartConstPtr
-LandmarkList::FindByName( const std::string& name ) const
-{
-  const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( (*it)->m_Name == name ) 
-      {
-      return *it;
-      }
-    ++it;
-    }
-  
-  return Landmark::SmartPtr( NULL );
-}
-
-Landmark::SmartPtr
+LandmarkList::Iterator
 LandmarkList::FindByName( const std::string& name )
 {
-  iterator it = this->begin();
+  Self::Iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( (*it)->m_Name == name ) 
+    if ( it->m_Name == name ) 
       {
-      return *it;
+      return it;
       }
     ++it;
     }
   
-  return Landmark::SmartPtr( NULL );
+  return it;
+}
+
+LandmarkList::ConstIterator
+LandmarkList::FindByName( const std::string& name ) const
+{
+  Self::ConstIterator it = this->begin();
+  while ( it != this->end() ) 
+    {
+    if ( it->m_Name == name ) 
+      {
+      return it;
+      }
+    ++it;
+    }
+  
+  return it;
 }
 
 } // namespace cmtk

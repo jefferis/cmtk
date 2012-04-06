@@ -496,9 +496,13 @@ public:
     return 0.5 * ( region.From() + region.To() );
   }
   
-  /** Return cropped uniform volume.
+  /** Return cropped uniform volume with currently set crop region.
    */
   Self::SmartPtr GetCroppedVolume() const;
+
+  /** Return cropped uniform volume with explicit crop region.
+   */
+  Self::SmartPtr GetCroppedVolume( const Self::RegionType& region ) const;
 
   /** Return projection (e.g., MIP, sum) along one axis.
    * This function calls its equivalent in DataGrid and adds calibration

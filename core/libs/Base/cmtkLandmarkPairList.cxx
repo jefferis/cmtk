@@ -43,44 +43,44 @@ void
 LandmarkPairList::AddLandmarkLists
 ( const LandmarkList& sourceList, const LandmarkList& targetList )
 {
-  LandmarkList::const_iterator it = sourceList.begin();
+  LandmarkList::ConstIterator it = sourceList.begin();
   while ( it != sourceList.end() ) 
     {
-    const Landmark* targetLM = targetList.FindByName( (*it)->m_Name ).GetConstPtr();
-    if ( targetLM ) 
+    const LandmarkList::ConstIterator targetLM = targetList.FindByName( it->m_Name );
+    if ( targetLM != targetList.end() ) 
       {
-      this->push_back( LandmarkPair::SmartPtr( new LandmarkPair( *(*it), targetLM->m_Location ) ) );
+      this->push_back( LandmarkPair( *it, targetLM->m_Location ) );
       }
     ++it;
     }
 }
 
-LandmarkPair::SmartConstPtr
+LandmarkPairList::ConstIterator
 LandmarkPairList::FindByName( const std::string& name ) const
 {
   for ( const_iterator it = this->begin(); it != this->end(); ++it )
     {
-    if ( (*it)->m_Name == name )
+    if ( it->m_Name == name )
       {
-      return *it;
+      return it;
       }
     }
   
-  return SmartPointer<LandmarkPair>( NULL );
+  return this->end();
 }
 
-LandmarkPair::SmartPtr
+LandmarkPairList::Iterator
 LandmarkPairList::FindByName( const std::string& name )
 {
-  for ( iterator it = this->begin(); it != this->end(); ++it )
+  for ( Self::Iterator it = this->begin(); it != this->end(); ++it )
     {
-    if ( (*it)->m_Name == name )
+    if ( it->m_Name == name )
       {
-      return *it;
+      return it;
       }
     }
   
-  return LandmarkPair::SmartPtr( NULL );
+  return this->end();
 }
 
 } // namespace cmtk

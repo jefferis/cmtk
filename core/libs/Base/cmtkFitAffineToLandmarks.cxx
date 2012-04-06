@@ -39,8 +39,8 @@ cmtk::FitAffineToLandmarks::FitAffineToLandmarks( const LandmarkPairList& landma
   size_t nLandmarks = 0;
   for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
     {
-    cFrom += (*it)->m_Location;
-    cTo += (*it)->m_TargetLocation;
+    cFrom += it->m_Location;
+    cTo += it->m_TargetLocation;
     ++nLandmarks;
     }
   
@@ -57,8 +57,8 @@ cmtk::FitAffineToLandmarks::FitAffineToLandmarks( const LandmarkPairList& landma
   // build the two 3x3 matrices of (t*xT)(x*xT) on the fly.
   for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
     {
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = (*it)->m_Location - cFrom;
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = (*it)->m_TargetLocation - cTo;
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = it->m_Location - cFrom;
+    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = it->m_TargetLocation - cTo;
     
     for ( size_t j = 0; j < 3; ++j )
       {

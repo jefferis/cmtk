@@ -52,7 +52,7 @@ cmtk
 /// List of matched landmarks in 3-D.
 class LandmarkPairList :
   /// Inherit STL list container.
-  public std::list<LandmarkPair::SmartPtr>
+  public std::list<LandmarkPair>
 {
 public:
   /// This class.
@@ -63,6 +63,12 @@ public:
 
   /// Smart pointer to const LandmarkPairList.
   typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// List iterator.
+  typedef std::list<LandmarkPair>::iterator Iterator;
+
+  /// List const iterator.
+  typedef std::list<LandmarkPair>::const_iterator ConstIterator;
 
   /// Default constructor.
   LandmarkPairList() {}
@@ -77,10 +83,10 @@ public:
   void AddLandmarkLists( const LandmarkList& sourceList, const LandmarkList& targetList );
   
   /// Find landmark by name.
-  LandmarkPair::SmartPtr FindByName( const std::string& name );
+  Self::Iterator FindByName( const std::string& name );
   
   /// Find landmark by name and return constant pointer.
-  LandmarkPair::SmartConstPtr FindByName( const std::string& name ) const;
+  Self::ConstIterator FindByName( const std::string& name ) const;
 };
 
 //@}

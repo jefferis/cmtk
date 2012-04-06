@@ -57,12 +57,6 @@ public:
   /// This class.
   typedef Landmark Self;
 
-  /// Smart pointer to Landmark.
-  typedef SmartPointer<Self> SmartPtr;
-
-  /// Smart pointer to const Landmark.
-  typedef SmartConstPointer<Self> SmartConstPtr;
-
   /// Space vector type.
   typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
