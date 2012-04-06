@@ -61,6 +61,7 @@
 #cmakedefine CMTK_USE_LZMA 1
 #cmakedefine CMTK_USE_DCMTK 1
 #cmakedefine CMTK_USE_SQLITE 1
+#cmakedefine CMTK_USE_FFTW 1
 
 #cmakedefine CMTK_COORDINATES_DOUBLE 1
 #ifndef CMTK_COORDINATES_DOUBLE
