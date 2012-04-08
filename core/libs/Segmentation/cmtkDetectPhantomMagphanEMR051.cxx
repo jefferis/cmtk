@@ -52,7 +52,6 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 
 #ifdef CMTK_USE_FFTW
   SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
-#endif
 
   // Find 1x 60mm SNR sphere
   TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[0].m_Diameter / 2, 3 /*filterMargin*/ ) );
@@ -109,6 +108,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   // now use the SNR and the two extremal CNR spheres to define first intermediate coordinate system
   LandmarkList phantomSpaceLandmarks;
   LandmarkList imageSpaceLandmarks;
+#endif
 
   return landmarks;
 }
