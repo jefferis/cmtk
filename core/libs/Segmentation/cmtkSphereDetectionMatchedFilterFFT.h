@@ -75,6 +75,11 @@ private:
 
   /// The backward (filtered data to space domain) FFT plan.
   fftw_plan m_PlanBackward;
+
+  /** Make the filter kernel.
+   *\return Number of non-zero elements in the filter kernel.
+   */
+  size_t MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth );
 };
 
 } // namespace cmtk

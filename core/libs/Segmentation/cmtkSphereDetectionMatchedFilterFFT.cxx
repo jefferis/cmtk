@@ -67,9 +67,39 @@ cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordi
 {
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
 
-  const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
+  const size_t cnt = this->MakeFilter( sphereRadius, marginWidth );
 
+  // compute filter kernel FT
+  fftw_execute( this->m_PlanFilter );
+
+  // apply FT'ed filter to FT'ed image
+  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+    {
+    this->m_FilterFT[n][0] *=   this->m_ImageFT[n][0] / cnt;
+    this->m_FilterFT[n][1] *= -(this->m_ImageFT[n][1] / cnt); // correlation is multiplication with complex conjugate of filter, but we can also just conjugate the image
+    }
+  
+  // transform filtered spectral data back into space domain
+  fftw_execute( this->m_PlanBackward );
+
+  // return filtered magnitude image
+  TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
+  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+    {
+    result->Set( sqrt( this->m_FilterFT[n][0]*this->m_FilterFT[n][0] + this->m_FilterFT[n][1]*this->m_FilterFT[n][1] ) / this->m_NumberOfPixels, n );
+    }
+
+  return result;
+}
+
+size_t
+cmtk::SphereDetectionMatchedFilterFFT::MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth )
+{
+  const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
+  
+  // count number of non-zero filter elements for rough normalization
   size_t cnt = 0;
+
   // create a filter kernel for the sphere
   for ( int k = 0; k < nRadius[2]; ++k )
     for ( int j = 0; j < nRadius[1]; ++j )
@@ -100,26 +130,6 @@ cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordi
 	    }
 	  }
 	}
-
-  // compute filter kernel FT
-  fftw_execute( this->m_PlanFilter );
-
-  // apply FT'ed filter to FT'ed image
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
-    {
-    this->m_FilterFT[n][0] *=   this->m_ImageFT[n][0] / cnt;
-    this->m_FilterFT[n][1] *= -(this->m_ImageFT[n][1] / cnt); // correlation is multiplication with complex conjugate of filter, but we can also just conjugate the image
-    }
   
-  // transform filtered spectral data back into space domain
-  fftw_execute( this->m_PlanBackward );
-
-  // return filtered magnitude image
-  TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
-    {
-    result->Set( sqrt( this->m_FilterFT[n][0]*this->m_FilterFT[n][0] + this->m_FilterFT[n][1]*this->m_FilterFT[n][1] ) / this->m_NumberOfPixels, n );
-    }
-
-  return result;
+  return cnt;
 }
