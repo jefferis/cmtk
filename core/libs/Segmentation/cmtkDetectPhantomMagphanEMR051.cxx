@@ -32,6 +32,7 @@
 
 #include <Base/cmtkMagphanEMR051.h>
 #include <Base/cmtkUniformVolumePainter.h>
+#include <Base/cmtkFitRigidToLandmarks.h>
 
 #ifdef CMTK_USE_FFTW
 #  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
@@ -84,7 +85,6 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   for ( size_t idx = 0; idx < 4; ++idx )
     {
     averageIntensity[idx] /= pixelCount[idx];
-    StdErr << averageIntensity[idx] << "\n";
     }
 
   for ( size_t idx = 0; idx < 4; ++idx )
@@ -101,14 +101,24 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
       }
 
     landmarks[1+idx] = cnrLandmarks[maxIndex];
-    StdErr << maxIndex << "\n";
     averageIntensity[maxIndex] = 0;
     }
 
   // now use the SNR and the two extremal CNR spheres to define first intermediate coordinate system
-  LandmarkList phantomSpaceLandmarks;
-  LandmarkList imageSpaceLandmarks;
+  LandmarkPairList landmarkList;
+  landmarkList.push_back( LandmarkPair( "SNR", Self::SpaceVectorType( MagphanEMR051::SphereTable[0].m_CenterLocation ), landmarks[0] ) );
+  landmarkList.push_back( LandmarkPair( "CNR-Orange", Self::SpaceVectorType( MagphanEMR051::SphereTable[1].m_CenterLocation ), landmarks[1] ) );
+  landmarkList.push_back( LandmarkPair( "CNR-Green", Self::SpaceVectorType( MagphanEMR051::SphereTable[4].m_CenterLocation ), landmarks[4] ) );
 #endif
+
+  AffineXform::SmartConstPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+
+  // find the two 15mm spheres near estimated position
+  for ( size_t i = 5; i < 7; ++i )
+    {
+    landmarks[i] = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
+    landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, excludeMask, 1+i /*label*/ );
+    }
 
   return landmarks;
 }
@@ -122,6 +132,28 @@ cmtk::DetectPhantomMagphanEMR051::FindSphere( const TypedArray& filterResponse, 
   for ( size_t px = 0; px < filterResponse.GetDataSize(); ++px )
     {
     if ( excludeMask.GetDataAt( px ) == 0 )
+      {
+      const Types::DataItem value = filterResponse.ValueAt( px );
+      if ( value > maxValue )
+	{
+	maxValue = value;
+	maxIndex = px;
+	}
+      }
+    }
+  
+  return this->m_PhantomImage->GetGridLocation( maxIndex );
+}
+
+cmtk::DetectPhantomMagphanEMR051::SpaceVectorType
+cmtk::DetectPhantomMagphanEMR051::FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& includeMask, const UniformVolume& excludeMask )
+{
+  size_t maxIndex = 0;
+  Types::DataItem maxValue = filterResponse.ValueAt( 0 );
+  
+  for ( size_t px = 0; px < filterResponse.GetDataSize(); ++px )
+    {
+    if ( (excludeMask.GetDataAt( px ) == 0) && (includeMask.GetDataAt( px ) != 0) )
       {
       const Types::DataItem value = filterResponse.ValueAt( px );
       if ( value > maxValue )

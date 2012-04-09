@@ -68,9 +68,12 @@ private:
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 
-  /// Find a number of spheres of equal size.
+  /// Find a sphere of given radius.
   Self::SpaceVectorType FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& excludeMask );
 
+  /// Find a sphere of given radius in an inclusion region.
+  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& includeMask, const UniformVolume& excludeMask )
+{
   /// Refine sphere position based on intensity-weighted center of mass.
   Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, UniformVolume::SmartPtr& excludeMask, const int label );
 };
