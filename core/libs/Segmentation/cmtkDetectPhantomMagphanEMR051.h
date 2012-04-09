@@ -68,14 +68,24 @@ private:
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 
-  /// Find a sphere of given radius.
-  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& excludeMask );
+  /** Evolving exclusion mask.
+   * When a sphere is detected, its volume is marked as off-limits herein so other spheres are not incorrectly detected in the same place.
+   */
+  UniformVolume::SmartPtr m_ExcludeMask;
 
-  /// Find a sphere of given radius in an inclusion region.
-  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse, const Types::Coordinate radius, const UniformVolume& includeMask, const UniformVolume& excludeMask )
-{
+  /** Temporary inclusion mask.
+   * When we detect a sphere in a specific pre-determined area, this mask contains as non-zero the candidate pixels.
+   */
+  UniformVolume::SmartPtr m_IncludeMask;
+
+  /// Find a sphere of given radius.
+  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse );
+
+  /// Find a sphere in a band of given radius.
+  Self::SpaceVectorType FindSphereAtDistance( const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth );
+
   /// Refine sphere position based on intensity-weighted center of mass.
-  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, UniformVolume::SmartPtr& excludeMask, const int label );
+  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, const int label );
 };
 
 //@}
