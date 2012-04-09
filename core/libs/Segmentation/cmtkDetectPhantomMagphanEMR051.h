@@ -70,6 +70,12 @@ public:
     return this->m_ExcludeMask;
   }
 
+  /// Get phantom-to-image transformation.
+  AffineXform::SmartConstPtr GetPhantomToImageTransformation() const
+  {
+    return this->m_PhantomToImageTransformation;
+  }
+
 private:
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
@@ -83,6 +89,9 @@ private:
    * When we detect a sphere in a specific pre-determined area, this mask contains as non-zero the candidate pixels.
    */
   UniformVolume::SmartPtr m_IncludeMask;
+
+  /// Fitted affine transformation from phantom to image coordinates.
+  AffineXform::SmartConstPtr m_PhantomToImageTransformation;
 
   /// Find a sphere of given radius.
   Self::SpaceVectorType FindSphere( const TypedArray& filterResponse );

@@ -37,6 +37,7 @@
 #include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
 #include <Segmentation/cmtkDetectPhantomMagphanEMR051.h>
 
@@ -47,6 +48,7 @@ doMain( const int argc, const char* argv[] )
 {
   const char* inputPath = NULL;
   const char* outputPath = NULL;
+  const char* outputXform = NULL;
 
   try
     {
@@ -58,8 +60,10 @@ doMain( const int argc, const char* argv[] )
     
     cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outputPath, "OutputImage", "Output image path. This image contains the magnitude filter response of the input image with respect to a matched, bipolar spherical correlation filter." )
+    cl.AddParameter( &outputPath, "OutputImage", "Output image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table.." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputXform, "OutputXform", "Output transformation path. This is the affine phantom-to-image coordinate transformation fitted to the detected landmark spheres." )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
     }
@@ -80,6 +84,7 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresMask()), outputPath );
+  cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformation(), outputXform );
 
   return 0;
 }

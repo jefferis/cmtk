@@ -33,6 +33,7 @@
 #include <Base/cmtkMagphanEMR051.h>
 #include <Base/cmtkUniformVolumePainter.h>
 #include <Base/cmtkFitRigidToLandmarks.h>
+#include <Base/cmtkFitAffineToLandmarks.h>
 
 #ifdef CMTK_USE_FFTW
 #  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
@@ -113,7 +114,30 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 
   landmarks[6] = this->FindSphereAtDistance( *filterResponse, landmarks[0], 60, 10 );
   landmarks[6] = this->RefineSphereLocation( landmarks[6], MagphanEMR051::SphereTable[6].m_Diameter / 2, 5 /*margin*/, 7 /*label*/ );
+
+  // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
+  LandmarkPairList landmarkList;
+  landmarkList.push_back( LandmarkPair( "SNR", Self::SpaceVectorType( MagphanEMR051::SphereTable[0].m_CenterLocation ), landmarks[0] ) );
+  landmarkList.push_back( LandmarkPair( "15mm@90mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[5].m_CenterLocation ), landmarks[5] ) );
+  landmarkList.push_back( LandmarkPair( "15mm@60mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[6].m_CenterLocation ), landmarks[6] ) );
+
+  AffineXform::SmartConstPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+
+  // Find 10mm spheres in order near projected locations
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[5].m_Diameter / 2, 3 /*filterMargin*/ );
+  for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
+    {
+    landmarks[i] = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
+    landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, 1+i /*label*/ );
+    
+    char name[10];
+    sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
+    landmarkList.push_back( LandmarkPair( name, Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ), landmarks[i] ) );
+    }
 #endif
+
+  landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
+  this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
   
   return landmarks;
 }
