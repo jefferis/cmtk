@@ -64,6 +64,12 @@ public:
   /// Get landmark coordinates.
   std::vector<UniformVolume::SpaceVectorType> GetLandmarks();
 
+  /// Get mask of detected sphere locations.
+  UniformVolume::SmartConstPtr GetDetectedSpheresMask() const
+  {
+    return this->m_ExcludeMask;
+  }
+
 private:
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;

@@ -79,7 +79,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::StdOut << landmarks[i] << "\n";
     }
 
-//  cmtk::VolumeIO::Write( *volume, outputPath );
+  cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresMask()), outputPath );
 
   return 0;
 }
