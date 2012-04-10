@@ -49,42 +49,42 @@ const cmtk::MagphanEMR051::SphereEntryType cmtk::MagphanEMR051::SphereTable[165]
   { 30, { -60.0, -15.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW }, // y coordinate estimated - not marked in construction drawing
   { 30, {  60.0, -15.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN },  // y coordinate estimated - not marked in construction drawing
   // 2x 1.5cm spheres
-  { 15, {  89.0, -2.9,  0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 15, {   0.0, -2.9, 60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 15, {  89.0, -2.9,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 15, {   0.0, -2.9, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   // 158x 1.0cm spheres
   //   Plane 0
   //     outer ring
-  { 10, {  86.4, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  86.4, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -86.4, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, { -86.4, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE }, //#010
-  { 10, {  64.7, 0.0,  64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  64.7, 0.0, -64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, { -86.4, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  86.4, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  86.4, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE }, //#010
   { 10, { -64.7, 0.0,  64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -64.7, 0.0, -64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  30.0, 0.0,  86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  30.0, 0.0, -86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  64.7, 0.0,  64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  64.7, 0.0, -64.7 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -30.0, 0.0,  86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -30.0, 0.0, -86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0,  86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -86.4 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, {   0.0, 0.0,  91.5 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, {   0.0, 0.0, -91.5 },  0.820, 282, Self::SPHERE_COLOR_NONE }, //#020
   //     middle ring
-  { 10, {  30.0, 0.0,  60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  30.0, 0.0, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -30.0, 0.0,  60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -30.0, 0.0, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  60.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  60.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0,  60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -60.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -60.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  60.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  60.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   //     inner ring
-  { 10, {  30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE }, //#030
   { 10, { -30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, { -30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE }, //#030
+  { 10, {  30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   //     single inferior mid-sagittal sphere
-  { 10, {   0.0, 0.0, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  //     single left sphere
+  { 10, {   0.0, 0.0,  60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  //     single right sphere
   { 10, { -91.5, 0.0,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   //   Plane 1
   //     mid-sagittal
