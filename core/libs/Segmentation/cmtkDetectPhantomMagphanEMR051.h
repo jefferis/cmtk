@@ -28,6 +28,9 @@
 //
 */
 
+#ifndef __cmtkDetectPhantomMagphanEMR051_h_included_
+#define __cmtkDetectPhantomMagphanEMR051_h_included_
+
 #include <cmtkconfig.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -106,3 +109,5 @@ private:
 //@}
 
 } // namespace cmtk
+
+#endif // #ifndef __cmtkDetectPhantomMagphanEMR051_h_included_

@@ -270,6 +270,14 @@ case ${RUNTEST} in
         run convertx --binarize-thresh 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
 	check_results thresh.img
 	;;
+    convertxBinarizeOtsu)
+        run convertx --otsu-thresh --byte phantom_ax.nii ${tmpdir}/binary.nii
+	check_results binary.nii
+	;;
+    convertxBinarizeOtsuNBins)
+        run convertx --otsu-thresh-nbins 128 --byte phantom_ax.nii ${tmpdir}/binary.nii
+	check_results binary.nii
+	;;
     convertxPruneHighLow)
         run convertx --prune-histogram 16 pat001_pet.hdr ${tmpdir}/prune.nii
 	check_results prune.nii
@@ -816,6 +824,18 @@ case ${RUNTEST} in
 	;;
     fit_affine_xform_landmarksShear)
         run fit_affine_xform_landmarks landmarksSource landmarksTargetShear ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
+    fit_affine_xform_landmarksRigidRigid)
+        run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetRigid ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
+    fit_affine_xform_landmarksRigidScales)
+        run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetScales ${tmpdir}/affine.xform
+	check_results affine.xform
+	;;
+    fit_affine_xform_landmarksRigidShear)
+        run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetShear ${tmpdir}/affine.xform
 	check_results affine.xform
 	;;
     fit_affine_xformDField)

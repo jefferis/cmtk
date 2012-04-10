@@ -35,6 +35,8 @@
 #include <Base/cmtkFitRigidToLandmarks.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
 
+#include <System/cmtkDebugOutput.h>
+
 #ifdef CMTK_USE_FFTW
 #  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
 #endif
@@ -124,10 +126,11 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   AffineXform::SmartConstPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
   // Find 10mm spheres in order near projected locations
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[5].m_Diameter / 2, 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[7].m_Diameter / 2, 3 /*filterMargin*/ );
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    landmarks[i] = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
+    const Self::SpaceVectorType candidate = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
+    landmarks[i] = this->FindSphereAtDistance( *filterResponse, candidate, 0, 5 );
     landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, 1+i /*label*/ );
     
     char name[10];
@@ -138,7 +141,21 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
   this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
-  
+
+  // compute fitting residuals
+  Types::Coordinate averageFittingError = 0;
+  Types::Coordinate maximumFittingError = 0;
+  for ( size_t i = 5; i < MagphanEMR051::NumberOfSpheres; ++i ) // exclude unreliable SNR and CNR spheres
+    {
+    const Types::Coordinate error =
+      (landmarks[i] - this->m_PhantomToImageTransformation->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) ) ).RootSumOfSquares();
+    averageFittingError += error;
+    maximumFittingError = std::max( maximumFittingError, error );
+    }
+  averageFittingError /= (MagphanEMR051::NumberOfSpheres-5);
+
+  DebugOutput( 5 ) << "INFO: landmark fitting error average = " << averageFittingError << ", maximum = " << maximumFittingError << "\n";
+    
   return landmarks;
 }
 
@@ -169,8 +186,11 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance( const TypedArray& filter
 {
   UniformVolumePainter maskPainter( this->m_IncludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
   this->m_IncludeMask->GetData()->Fill( 0.0 );
-  maskPainter.DrawSphere( bandCenter, bandRadius+bandWidth, 1 );  
-  maskPainter.DrawSphere( bandCenter, bandRadius-bandWidth, 0 );  
+  maskPainter.DrawSphere( bandCenter, bandRadius+bandWidth, 1 );
+  if ( bandRadius > bandWidth )
+    {
+    maskPainter.DrawSphere( bandCenter, bandRadius-bandWidth, 0 );  
+    }
 
   size_t maxIndex = 0;
   Types::DataItem maxValue = filterResponse.ValueAt( 0 );

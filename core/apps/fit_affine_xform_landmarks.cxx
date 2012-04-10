@@ -41,6 +41,7 @@
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
+#include <Base/cmtkFitRigidToLandmarks.h>
 
 #include <IO/cmtkLandmarkListIO.h>
 #include <IO/cmtkXformIO.h>
@@ -54,6 +55,8 @@ doMain ( const int argc, const char *argv[] )
   const char* lmTargetPath = NULL;
   const char *outputPath = NULL;
 
+  bool rigid = false;
+
   try
     {
     cmtk::CommandLine cl;
@@ -63,6 +66,9 @@ doMain ( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddParameter( &lmSourcePath, "SourcePath", "Path to file with source-space landmarks." );
     cl.AddParameter( &lmTargetPath, "TargetPath", "Path to file with target-space landmarks." );
+
+    cl.AddSwitch( Key( "rigid" ), &rigid, true, "Fit only a rigid, 6 degree-of-freedom transformation rather than full affine. This requires fewer landmarks and makes less trict assumptions about their location "
+		  "(i.e., three non-collinear landmarks are sufficient to obtain a rigid transformation." );
     
     cl.AddParameter( &outputPath, "OutputXform", "Path for output fitted affine transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
@@ -99,7 +105,10 @@ doMain ( const int argc, const char *argv[] )
   cmtk::DebugOutput( 5 ) << "Read " << targetLandmarks.size() << " target landmarks\n";
 
   cmtk::LandmarkPairList landmarkPairs( sourceLandmarks, targetLandmarks );
-  cmtk::XformIO::Write( cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform(), outputPath );
+  if ( rigid )
+    cmtk::XformIO::Write( cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform(), outputPath );
+  else
+    cmtk::XformIO::Write( cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform(), outputPath );
   
   return 0;
 }
