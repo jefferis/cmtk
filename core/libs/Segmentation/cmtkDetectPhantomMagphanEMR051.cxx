@@ -34,6 +34,7 @@
 #include <Base/cmtkUniformVolumePainter.h>
 #include <Base/cmtkFitRigidToLandmarks.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
+#include <Base/cmtkHistogramOtsuThreshold.h>
 
 #include <System/cmtkDebugOutput.h>
 
@@ -224,9 +225,16 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   const DataGrid::RegionType region( DataGrid::IndexType( centerPixelIndex ) - DataGrid::IndexType( nSphereRadius ), 
 				     DataGrid::IndexType( centerPixelIndex ) + DataGrid::IndexType( nSphereRadius ) + DataGrid::IndexType( DataGrid::IndexType::Init(1) ) );
   
-  UniformVolume::SmartConstPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
+  UniformVolume::SmartPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
+  TypedArray& regionData = *(regionVolume->GetData());
 
-  // threshold here
+  // threshold background to zero (taking it out of center-of-mass computation)
+  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();
+  for ( size_t i = 0; i < regionData.GetDataSize(); ++i )
+    {
+    if ( regionData.ValueAt( i ) < threshold )
+      regionData.Set( 0.0, i );
+    }
   
   const Self::SpaceVectorType refined = estimate + regionVolume->GetCenterOfMass() - regionVolume->GetCenterCropRegion();
 
