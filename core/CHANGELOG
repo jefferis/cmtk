@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r4158) Added: Otsu single-threshold binarization in library as well as
+    "convertx" tool.
 (r4131) Added: sphere detection filter based on FFT-based fast bipolar filter
     kernel convolution. Requires CMTK to be configured with FFTW support.
 (r4096) Added: new tool, "fit_affine_xform_landmarks" to fit affine
