@@ -124,7 +124,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   landmarkList.push_back( LandmarkPair( "15mm@90mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[5].m_CenterLocation ), landmarks[5] ) );
   landmarkList.push_back( LandmarkPair( "15mm@60mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[6].m_CenterLocation ), landmarks[6] ) );
 
-  AffineXform::SmartConstPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+  AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
   // Find 10mm spheres in order near projected locations
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[7].m_Diameter / 2, 3 /*filterMargin*/ );
@@ -133,7 +133,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
     const Self::SpaceVectorType candidate = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
     landmarks[i] = this->FindSphereAtDistance( *filterResponse, candidate, 0, 5 );
     landmarks[i] = this->RefineSphereLocation( landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, 1+i /*label*/ );
-    
+
     char name[10];
     sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
     landmarkList.push_back( LandmarkPair( name, Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ), landmarks[i] ) );
@@ -142,20 +142,26 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
   this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+  this->m_PhantomToImageTransformation->ChangeCenter( Self::SpaceVectorType( MagphanEMR051::SphereTable[0].m_CenterLocation ) ); // SNR sphere center as center of rotation
 
   // compute fitting residuals
   Types::Coordinate averageFittingError = 0;
   Types::Coordinate maximumFittingError = 0;
+  size_t maxErrorLabel = 0;
   for ( size_t i = 5; i < MagphanEMR051::NumberOfSpheres; ++i ) // exclude unreliable SNR and CNR spheres
     {
     const Types::Coordinate error =
       (landmarks[i] - this->m_PhantomToImageTransformation->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) ) ).RootSumOfSquares();
     averageFittingError += error;
-    maximumFittingError = std::max( maximumFittingError, error );
+    if ( error > maximumFittingError )
+      {
+      maximumFittingError = error;
+      maxErrorLabel = i+1;
+      }
     }
   averageFittingError /= (MagphanEMR051::NumberOfSpheres-5);
 
-  DebugOutput( 5 ) << "INFO: landmark fitting error average = " << averageFittingError << ", maximum = " << maximumFittingError << "\n";
+  DebugOutput( 5 ) << "INFO: landmark fitting error average = " << averageFittingError << ", maximum = " << maximumFittingError << " maxErrLabel = " << maxErrorLabel << "\n";
     
   return landmarks;
 }
@@ -240,7 +246,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 
   // update exclusion mask
   UniformVolumePainter maskPainter( this->m_ExcludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
-  maskPainter.DrawSphere( refined, sphereRadius, label );
+  maskPainter.DrawSphere( refined, sphereRadius+15, label );
 
   return refined;
 }

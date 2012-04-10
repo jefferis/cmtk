@@ -94,7 +94,7 @@ private:
   UniformVolume::SmartPtr m_IncludeMask;
 
   /// Fitted affine transformation from phantom to image coordinates.
-  AffineXform::SmartConstPtr m_PhantomToImageTransformation;
+  AffineXform::SmartPtr m_PhantomToImageTransformation;
 
   /// Find a sphere of given radius.
   Self::SpaceVectorType FindSphere( const TypedArray& filterResponse );
