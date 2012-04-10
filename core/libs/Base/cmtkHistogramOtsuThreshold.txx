@@ -41,12 +41,12 @@ cmtk::HistogramOtsuThreshold<THistogram>::HistogramOtsuThreshold( const Self::Hi
   std::vector<Types::DataItem> cumulativeMean( nBins );
 
   // create cumulative mean and probability tables
-  const typename HistogramType::BinType total = histogram.SampleCount();
-  cumulativeProb[0] = histogram[0] / total;
+  const Types::DataItem invTotal = 1.0 / histogram.SampleCount();
+  cumulativeProb[0] = invTotal * histogram[0];
   cumulativeMean[0] = cumulativeProb[0] * histogram.BinToValue( 0 );
   for ( size_t i = 1; i < nBins; ++i )
     {
-    const Types::DataItem p = (histogram[i] / total);
+    const Types::DataItem p = invTotal * histogram[i];
     cumulativeProb[i] = cumulativeProb[i-1] + p;
     cumulativeMean[i] = cumulativeMean[i-1] + (p * i);
     }
