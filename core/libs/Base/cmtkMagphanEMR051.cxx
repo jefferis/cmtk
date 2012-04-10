@@ -79,8 +79,8 @@ const cmtk::MagphanEMR051::SphereEntryType cmtk::MagphanEMR051::SphereTable[165]
   { 10, { -60.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   //     inner ring
   { 10, {  30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, {  30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 10, { -30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, {  30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 10, { -30.0, 0.0,  30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { 10, { -30.0, 0.0, -30.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   //     single inferior mid-sagittal sphere
   { 10, {   0.0, 0.0, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
