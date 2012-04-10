@@ -56,6 +56,12 @@ public:
   FitAffineToLandmarks( const LandmarkPairList& landmarkPairs );
 
   /// Return the affine transformation.
+  AffineXform::SmartPtr GetAffineXform()
+  {
+    return this->m_AffineXform;
+  }
+  
+  /// Return the constant affine transformation.
   AffineXform::SmartConstPtr GetAffineXform() const
   {
     return this->m_AffineXform;

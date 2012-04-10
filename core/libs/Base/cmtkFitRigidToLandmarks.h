@@ -56,6 +56,12 @@ public:
   FitRigidToLandmarks( const LandmarkPairList& landmarkPairs );
 
   /// Return the rigid transformation.
+  AffineXform::SmartPtr GetRigidXform()
+  {
+    return this->m_RigidXform;
+  }
+  
+  /// Return the constant rigid transformation.
   AffineXform::SmartConstPtr GetRigidXform() const
   {
     return this->m_RigidXform;
