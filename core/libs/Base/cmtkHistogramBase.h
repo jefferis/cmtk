@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -101,7 +101,7 @@ public:
   virtual ~HistogramBase() {}
 
   /// Return number of histogram bins.
-  virtual size_t GetNumBins() const = 0;
+  virtual size_t GetNumberOfBins() const = 0;
 
   /** Set data range corresponding to this histogram.
    */
@@ -109,14 +109,14 @@ public:
   {
     this->m_BinsLowerBound = range.m_LowerBound;
     this->m_BinsUpperBound = range.m_UpperBound;
-    this->m_BinWidth = range.Width() / (this->GetNumBins() - 1);
+    this->m_BinWidth = range.Width() / (this->GetNumberOfBins() - 1);
   }
   
   /** Set data range corresponding to this histogram with upper and lower bound centered in first and last bin.
    */
   void SetRangeCentered( const Types::DataItemRange& range ) 
   {
-    this->m_BinWidth = range.Width() / (this->GetNumBins() - 1);
+    this->m_BinWidth = range.Width() / (this->GetNumberOfBins() - 1);
     this->m_BinsLowerBound = static_cast<Types::DataItem>( range.m_LowerBound - 0.5 * this->m_BinWidth );
     this->m_BinsUpperBound = static_cast<Types::DataItem>( range.m_UpperBound + 0.5 * this->m_BinWidth );
   }
@@ -149,7 +149,7 @@ public:
   virtual size_t ValueToBin ( const Types::DataItem value ) const 
   {
     const size_t binIndex = static_cast<size_t>( (value - this->m_BinsLowerBound) / this->m_BinWidth );
-    return std::max<size_t>( 0, std::min( this->GetNumBins()-1, binIndex ) );
+    return std::max<size_t>( 0, std::min( this->GetNumberOfBins()-1, binIndex ) );
   }
   
   /** Return fractional bin corresponding to a value of the distribution.
@@ -161,7 +161,7 @@ public:
   virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
   {
     const Types::DataItem binIndex = (value - this->m_BinsLowerBound) / this->m_BinWidth;
-    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( static_cast<Types::DataItem>( this->GetNumBins()-1 ), binIndex));
+    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( static_cast<Types::DataItem>( this->GetNumberOfBins()-1 ), binIndex));
   }
   
   /** Return center of values represented by a certain bin.

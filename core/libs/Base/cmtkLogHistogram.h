@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,7 +104,7 @@ public:
   virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
   {
     const Types::DataItem binIndex = this->Superclass::ValueToBinFractional( value );
-    return (this->GetNumBins()-1) * std::max<Types::DataItem>( 0.0, std::min<Types::DataItem>( 1.0, log( 1+binIndex ) / this->m_LogNumBins ) );
+    return (this->GetNumberOfBins()-1) * std::max<Types::DataItem>( 0.0, std::min<Types::DataItem>( 1.0, log( 1+binIndex ) / this->m_LogNumBins ) );
   }
   
   /** Get value range of a given bin.
@@ -120,7 +120,7 @@ public:
    */
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {
-    return this->Superclass::BinToValue( static_cast<size_t>( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumBins()-1) * this->m_LogNumBins ) - 1 ) );
+    return this->Superclass::BinToValue( static_cast<size_t>( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumberOfBins()-1) * this->m_LogNumBins ) - 1 ) );
   }
 
 protected:

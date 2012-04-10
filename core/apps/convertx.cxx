@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,7 @@
 #include <Base/cmtkImageOperationCropThreshold.h>
 #include <Base/cmtkImageOperationScaleToRange.h>
 #include <Base/cmtkImageOperationThreshold.h>
+#include <Base/cmtkImageOperationOtsuThreshold.h>
 #include <Base/cmtkImageOperationPruneHistogram.h>
 #include <Base/cmtkImageOperationSetPadding.h>
 #include <Base/cmtkImageOperationMapValues.h>
@@ -148,6 +149,10 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "thresh-below-to-padding" ), &cmtk::ImageOperationThreshold::NewBelowToPadding, "Set all values below threshold to padding value." );
     cl.AddCallback( Key( "thresh-above-to-padding" ), &cmtk::ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
     cl.AddCallback( Key( "binarize-thresh" ), &cmtk::ImageOperationThreshold::NewBinarize, "Set all values below threshold to 0, all values equal or above to 1." );
+    cl.AddCallback( Key( "otsu-thresh" ), &cmtk::ImageOperationOtsuThreshold::New, "Binarize image to 0/1 using threshold computed with Otsu's method. "
+		    "Argument is number of histogram bins for threshold computation." );
+    cl.AddCallback( Key( "otsu-thresh-nbins" ), &cmtk::ImageOperationOtsuThreshold::NewBins, "Binarization using Otsu's method with user-defined number of histogram bins "
+		    "for threshold computation." );
     cl.AddCallback( Key( "prune-histogram" ), &cmtk::ImageOperationPruneHistogram::New, "Threshold image by 'intensity histogram pruning', i.e., for given argument n [histogram bins] "
 		    "determine thresholds such that the 1/n-th fraction of highest and lowest voxels are thresholded." );
     cl.AddCallback( Key( "prune-histogram-high" ), &cmtk::ImageOperationPruneHistogram::NewHigh, "Like '--prune-histograms', but only remove high intensities." );

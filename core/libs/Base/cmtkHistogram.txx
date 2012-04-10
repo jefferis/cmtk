@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,7 @@ Histogram<T>
   for ( size_t idx = 1; idx < kernelRadius; ++idx )
     {
     const T increment = factor * kernel[idx];
-    if ( (bin + idx) < this->GetNumBins() )
+    if ( (bin + idx) < this->GetNumberOfBins() )
       this->m_Bins[bin + idx] += increment;
     if ( bin >= idx )
       this->m_Bins[bin - idx] += increment;
@@ -65,7 +65,7 @@ Histogram<T>
   const T relative = static_cast<T>( bin - floor(bin) );
   const size_t binIdx = static_cast<size_t>( bin );
   
-  if ( (binIdx > 0) && (binIdx+1 < this->GetNumBins()) )
+  if ( (binIdx > 0) && (binIdx+1 < this->GetNumberOfBins()) )
     {
     this->m_Bins[binIdx] += (1-relative) * factor * kernel[0];
     this->m_Bins[binIdx+1] += relative * factor * kernel[0];
@@ -76,7 +76,7 @@ Histogram<T>
     const T increment = factor * kernel[idx];
     
     const size_t upIdx = binIdx+idx+1;
-    if ( upIdx < this->GetNumBins() )
+    if ( upIdx < this->GetNumberOfBins() )
       {
       this->m_Bins[upIdx-1] += (1-relative) * increment;
       this->m_Bins[upIdx  ] += relative * increment;
@@ -96,13 +96,13 @@ double
 Histogram<T>
 ::GetKullbackLeiblerDivergence( const Self& other ) const 
 {
-  assert( this->GetNumBins() == other.GetNumBins() );
+  assert( this->GetNumberOfBins() == other.GetNumberOfBins() );
 
   const T sampleCount = this->SampleCount();
   const T sampleCountOther = other.SampleCount();
 
   double dKL = 0;
-  for ( size_t i=0; i<this->GetNumBins(); ++i ) 
+  for ( size_t i=0; i<this->GetNumberOfBins(); ++i ) 
     {
     if ( this->m_Bins[i] ) 
       {

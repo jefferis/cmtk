@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,9 +56,6 @@ cmtk
  * hold integer or real-valued bins, depending on the template parameter.
  *\param T Template parameter: the type of the histogram bins. Can be integral,
  * or double in case of fractional bins.
- *\param FF Template parameter: boolean double flag. Instantiations need to make
- * sure that this parameter is true whenever the instatiated class implements
- * fractional bins, ie., when T is either double or double, and false otherwise.
  */
 template<class T>
 class Histogram : 
@@ -102,7 +99,7 @@ public:
   }
 
   /// Return number of histogram bins.
-  virtual size_t GetNumBins() const
+  virtual size_t GetNumberOfBins() const
   {
     return this->m_Bins.size();
   }
@@ -121,14 +118,14 @@ public:
   /// Return number of values in a given bin using [] operator.
   const T operator[] ( const size_t index ) const 
   {
-    assert( index < this->GetNumBins() );
+    assert( index < this->GetNumberOfBins() );
     return this->m_Bins[index];
   }
 
   /// Return reference to given bin.
   T& operator[] ( const size_t index ) 
   {
-    assert( index < this->GetNumBins() );
+    assert( index < this->GetNumberOfBins() );
     return this->m_Bins[index];
   }
   
@@ -200,7 +197,7 @@ public:
   {
     const T relative = static_cast<T>( bin - floor(bin) );
     this->m_Bins[static_cast<size_t>(bin)] += (1 - relative);
-    if ( bin<(this->GetNumBins()-1) )
+    if ( bin<(this->GetNumberOfBins()-1) )
       this->m_Bins[static_cast<size_t>(bin+1)] += relative;
   }
   
@@ -242,7 +239,7 @@ public:
   {
     T relative = static_cast<T>( bin - floor(bin) );
     this->m_Bins[static_cast<size_t>(bin)] -= (1 - relative);
-    if ( bin<(this->GetNumBins()-1) )
+    if ( bin<(this->GetNumberOfBins()-1) )
       this->m_Bins[static_cast<size_t>(bin+1)] -= relative;
   }
 
@@ -287,7 +284,7 @@ public:
   /// Convert this histogram to a cumulative histogram (in place).
   void ConvertToCumulative()
   {
-    for ( size_t idx = 1; idx < this->GetNumBins(); ++idx )
+    for ( size_t idx = 1; idx < this->GetNumberOfBins(); ++idx )
       {
       this->m_Bins[idx] += this->m_Bins[idx-1];
       }

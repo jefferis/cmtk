@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2011 SRI International
+//  Copyright 2008-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -190,7 +190,7 @@ TypedArrayNoiseEstimatorBrummer::SijbersBiasHat
   /* 
    *  Second sum for lambdaStar
    */
-  for ( size_t i = static_cast<size_t>( K ); i < histogram->GetNumBins(); i++ )
+  for ( size_t i = static_cast<size_t>( K ); i < histogram->GetNumberOfBins(); i++ )
     {
     const double quotient = 
       ( exp( -1 * ( log( pow( (double)histogram->BinToValue(i-1), 2 ) ) ) / twoSigmaSquared ) 
@@ -208,7 +208,7 @@ TypedArrayNoiseEstimatorBrummer::SijbersBiasHat
    *  Compute M (variable name same as in Sijbers)
    */
   int M = 0;
-  for ( size_t i = static_cast<size_t>( K ); i < histogram->GetNumBins(); i++ )
+  for ( size_t i = static_cast<size_t>( K ); i < histogram->GetNumberOfBins(); i++ )
     {
     const double quotient = 
       ( exp( -1 * ( log( pow( (double)histogram->BinToValue(i-1), 2 ) ) / twoSigmaSquared ) ) 
@@ -294,7 +294,7 @@ TypedArrayNoiseEstimatorBrummer::EstimateNumBinsToUse
   double curKMinimizer;
   double minKMinimizer = std::numeric_limits<double>::max(); 
  
-  double maxK = histogram->GetNumBins() / 2;
+  double maxK = histogram->GetNumberOfBins() / 2;
   
   for ( int curK = 1; curK < maxK; curK++ )
     {

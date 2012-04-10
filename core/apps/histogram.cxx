@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -125,7 +125,7 @@ WriteHistogram( const cmtk::Histogram<double>& histogram, const char* outfile )
   if ( outfile ) 
     {
     std::ofstream stream( outfile );
-    for ( unsigned int bin = 0; bin < histogram.GetNumBins(); ++bin ) 
+    for ( unsigned int bin = 0; bin < histogram.GetNumberOfBins(); ++bin ) 
       {
       cumulative += histogram[bin];
       stream << bin << "\t"
@@ -136,7 +136,7 @@ WriteHistogram( const cmtk::Histogram<double>& histogram, const char* outfile )
     } 
   else
     {
-    for ( unsigned int bin = 0; bin < histogram.GetNumBins(); ++bin ) 
+    for ( unsigned int bin = 0; bin < histogram.GetNumberOfBins(); ++bin ) 
       {
       cumulative += histogram[bin];
       std::cout << bin << "\t"

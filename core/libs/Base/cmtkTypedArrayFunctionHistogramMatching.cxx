@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -50,7 +50,7 @@ cmtk::TypedArrayFunctionHistogramMatching
 
 cmtk::TypedArrayFunctionHistogramMatching
 ::TypedArrayFunctionHistogramMatching( const Self::HistogramType& variableHistogram, const Self::HistogramType& fixedHistogram )
-  : m_Lookup( variableHistogram.GetNumBins() )
+  : m_Lookup( variableHistogram.GetNumberOfBins() )
 {
   this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedHistogram.Clone() );
   this->m_FixedArrayHistogram->ConvertToCumulative();
@@ -65,14 +65,14 @@ void
 cmtk::TypedArrayFunctionHistogramMatching
 ::CreateLookup()
 {
-  const size_t variableNumBins = this->m_VariableArrayHistogram->GetNumBins();
+  const size_t variableNumBins = this->m_VariableArrayHistogram->GetNumberOfBins();
   std::vector<double> normalizedVariableHistogram( variableNumBins );
   for ( size_t l = 0; l < variableNumBins; ++l )
     {
     normalizedVariableHistogram[l] =  1.0 * (*(this->m_VariableArrayHistogram))[l] / (*(this->m_VariableArrayHistogram))[variableNumBins-1];
     }
   
-  const size_t fixedNumBins = this->m_FixedArrayHistogram->GetNumBins();
+  const size_t fixedNumBins = this->m_FixedArrayHistogram->GetNumberOfBins();
   std::vector<double> normalizedFixedHistogram( fixedNumBins );
   for ( size_t l = 0; l < fixedNumBins; ++l )
     {
