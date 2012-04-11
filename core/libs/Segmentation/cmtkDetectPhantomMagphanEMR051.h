@@ -44,7 +44,8 @@ cmtk
 /** \addtogroup Segmentation */
 //@{
 
-/** Class for detecting landmark locations of the Magphan EMR051 structural imaging phantom.
+/** Class for detecting landmark locations of the Magphan EMR051 structural imaging phantom
+ * (a.k.a The ADNI Phantom).
  */
 class DetectPhantomMagphanEMR051
 {
@@ -67,17 +68,14 @@ public:
   /// Get landmark coordinates.
   std::vector<UniformVolume::SpaceVectorType> GetLandmarks();
 
-  /// Get mask of detected sphere locations.
-  UniformVolume::SmartConstPtr GetDetectedSpheresMask() const
-  {
-    return this->m_ExcludeMask;
-  }
-
   /// Get phantom-to-image transformation.
   AffineXform::SmartConstPtr GetPhantomToImageTransformation() const
   {
     return this->m_PhantomToImageTransformation;
   }
+  
+  /// Get the image-space label map of detected spheres.
+  UniformVolume::SmartPtr GetDetectedSpheresLabelMap();
 
 private:
   /// Image of the phantom.
@@ -92,6 +90,9 @@ private:
    * When we detect a sphere in a specific pre-determined area, this mask contains as non-zero the candidate pixels.
    */
   UniformVolume::SmartPtr m_IncludeMask;
+
+  /// The detected sphere centroid landmarks in image space.
+  std::vector<Self::SpaceVectorType> m_Landmarks;
 
   /// Fitted affine transformation from phantom to image coordinates.
   AffineXform::SmartPtr m_PhantomToImageTransformation;
