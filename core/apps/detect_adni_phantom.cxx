@@ -78,7 +78,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::DetectPhantomMagphanEMR051 detectionFilter( volume );
   std::vector<cmtk::UniformVolume::SpaceVectorType> landmarks = detectionFilter.GetLandmarks();
 
-  cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMask()), outputPath );
+  cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputPath );
   cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformation(), outputXform );
 
   return 0;

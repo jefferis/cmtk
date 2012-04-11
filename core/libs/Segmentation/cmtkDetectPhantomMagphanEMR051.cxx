@@ -142,6 +142,8 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedSpheresLabelMap()
     {
     maskPainter.DrawSphere( this->m_Landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 1+i );
     }
+
+  return this->m_ExcludeMask;
 }
     
 
