@@ -43,14 +43,14 @@ const cmtk::MagphanEMR051::SphereEntryType cmtk::MagphanEMR051::SphereTable[165]
   //
   // 1x 6.0cm sphere
   { 60, { 0.0, 0.0, 0.0 },      0.820, 282, Self::SPHERE_COLOR_NONE }, //#000
+  // 2x 1.5cm spheres
+  { 15, {  89.0, -2.9,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
+  { 15, {   0.0, -2.9, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   // 4x 3.0cm spheres
   { 30, {  60.0,  15.0, 0 },    0.590, 450, Self::SPHERE_COLOR_ORANGE }, // y coordinate estimated - not marked in construction drawing
   { 30, { -60.0,  15.0, 0 },    0.430, 600, Self::SPHERE_COLOR_RED },    // y coordinate estimated - not marked in construction drawing
   { 30, { -60.0, -15.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW }, // y coordinate estimated - not marked in construction drawing
   { 30, {  60.0, -15.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN },  // y coordinate estimated - not marked in construction drawing
-  // 2x 1.5cm spheres
-  { 15, {  89.0, -2.9,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
-  { 15, {   0.0, -2.9, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   // 158x 1.0cm spheres
   //   Plane 0
   //     outer ring
