@@ -38,17 +38,23 @@ namespace
 cmtk
 {
 
-/** Detect spheres in an image using FFT-based matched filter.
+/** Detect spheres in an image using FFT-based matched bipolar filter.
+ * An object of this class can be used to detect spheres of different sizes with only a single FFT applied to the test image (each sphere size 
+ * does require a different filter kernel and thus a repeated FFT of the kernel).
+ *
+ * The filter kernel is bipolar, i.e., +1 inside the sphere and -1 outside the sphere, each within a user-provided margin inside and outside the
+ * sphere surface. This makes the filter robust to intensity differences across the images, although probably not to the same degree as a truely
+ * self-normalizing filter (e.g., Padberg's FFT-based NCC).
  *\note This class requires CMTK to be configured with FFTW3 support ("CMTK_USE_FFTW" CMake option).
  */
-class SphereDetectionMatchedFilterFFT
+class SphereDetectionBipolarMatchedFilterFFT
 {
 public:
   /// Constructor: initialize FFTW plans and compute image FT.
-  SphereDetectionMatchedFilterFFT( const UniformVolume& image );
+  SphereDetectionBipolarMatchedFilterFFT( const UniformVolume& image );
 
   /// Destructor: destroy FFTW plans and de-allocate transformed image memories.
-  virtual ~SphereDetectionMatchedFilterFFT();
+  virtual ~SphereDetectionBipolarMatchedFilterFFT();
 
   /// Get image filtered with spherical matched filter kernel.
   cmtk::TypedArray::SmartPtr GetFilteredImageData( const Types::Coordinate sphereRadius /*!< Radius of detected spheres in world coordinate units (e.g., mm) */, 

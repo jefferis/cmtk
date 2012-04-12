@@ -28,9 +28,9 @@
 //
 */
 
-#include "cmtkSphereDetectionMatchedFilterFFT.h"
+#include "cmtkSphereDetectionBipolarMatchedFilterFFT.h"
 
-cmtk::SphereDetectionMatchedFilterFFT::SphereDetectionMatchedFilterFFT( const UniformVolume& image )
+cmtk::SphereDetectionBipolarMatchedFilterFFT::SphereDetectionBipolarMatchedFilterFFT( const UniformVolume& image )
   :   m_NumberOfPixels( image.GetNumberOfPixels() ),
       m_ImageDims( image.m_Dims ),
       m_PixelSize( image.m_Delta )
@@ -53,7 +53,7 @@ cmtk::SphereDetectionMatchedFilterFFT::SphereDetectionMatchedFilterFFT( const Un
   fftw_destroy_plan( plan_image );
 }
 
-cmtk::SphereDetectionMatchedFilterFFT::~SphereDetectionMatchedFilterFFT()
+cmtk::SphereDetectionBipolarMatchedFilterFFT::~SphereDetectionBipolarMatchedFilterFFT()
 {
   fftw_destroy_plan( this->m_PlanBackward );
   fftw_destroy_plan( this->m_PlanFilter );
@@ -73,7 +73,7 @@ inline void multiply( fftw_complex& lhs, const fftw_complex& rhs )
 }
 
 cmtk::TypedArray::SmartPtr
-cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordinate sphereRadius, const int marginWidth )
+cmtk::SphereDetectionBipolarMatchedFilterFFT::GetFilteredImageData( const Types::Coordinate sphereRadius, const int marginWidth )
 {
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
 
@@ -106,7 +106,7 @@ cmtk::SphereDetectionMatchedFilterFFT::GetFilteredImageData( const Types::Coordi
 }
 
 size_t
-cmtk::SphereDetectionMatchedFilterFFT::MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth )
+cmtk::SphereDetectionBipolarMatchedFilterFFT::MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth )
 {
   const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
   

@@ -55,7 +55,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
   // create sphere detection filter based on bipolar FFT matched filtering
-  SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
+  SphereDetectionBipolarMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
 
   // Find 1x 60mm SNR sphere
   TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), 3 /*filterMargin*/ ) );
