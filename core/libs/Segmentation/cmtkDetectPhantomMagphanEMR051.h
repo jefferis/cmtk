@@ -146,6 +146,12 @@ private:
    * determine whether refinement of outliers is necessary.
    */
   Types::Coordinate ComputeLandmarkFitResiduals( const AffineXform& xform /*!< Linear transformation fitted to the landmarks.*/ );
+
+  /// Try to refine outlier (by current fitted linear transformation) landmarks.
+  void RefineOutlierLandmarks( const TypedArray& filterResponse /*!< Existing filter response map. */ );
+
+  /// Exclude outlier landmarks and re-fit linear transformation.
+  void ExcludeOutlierLandmarks();
 };
 
 //@}
