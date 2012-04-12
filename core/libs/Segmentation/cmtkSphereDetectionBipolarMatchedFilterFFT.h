@@ -46,6 +46,9 @@ cmtk
  * sphere surface. This makes the filter robust to intensity differences across the images, although probably not to the same degree as a truely
  * self-normalizing filter (e.g., Padberg's FFT-based NCC).
  *\note This class requires CMTK to be configured with FFTW3 support ("CMTK_USE_FFTW" CMake option).
+ *\todo The current implementation does not take advantage of the real-valued image and filter data, which could be used to reduce the storage
+ * requirement of the FT data (and probably the computational cost of the transform) by almost 50%. On the other hand, capitalizing on these
+ * savings would either require out-of-place, rather than in-place, transforms, or substantially complicate memory layout of the input data.
  */
 class SphereDetectionBipolarMatchedFilterFFT
 {
