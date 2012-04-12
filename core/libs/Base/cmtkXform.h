@@ -67,8 +67,11 @@ public:
   /// Smart pointer-to-const for this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Region type.
+  typedef Region<3,Types::Coordinate> SpaceRegionType;
+
   /// Three-dimensional vector type.
-  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
+  typedef SpaceRegionType::IndexType SpaceVectorType;
 
   /// Pointer to warp parameter array.
   Types::Coordinate *m_Parameters;
