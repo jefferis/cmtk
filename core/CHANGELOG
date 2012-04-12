@@ -1,5 +1,8 @@
 Release CMTK-2.2.0:
 
+(r4180) Added: detection of the landmarks in the Magphan EMR051 structural
+    imaging phantom (a.k.a. "ADNI Phantom"). Both as a library class and as a
+    command line tool ("detect_adni_phantom").
 (r4158) Added: Otsu single-threshold binarization in library as well as
     "convertx" tool.
 (r4131) Added: sphere detection filter based on FFT-based fast bipolar filter
