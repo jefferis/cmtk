@@ -38,9 +38,7 @@
 
 #include <System/cmtkDebugOutput.h>
 
-#ifdef CMTK_USE_FFTW
-#  include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
-#endif
+#include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
   : m_PhantomImage( phantomImage ),
@@ -56,7 +54,6 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 {
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
-#ifdef CMTK_USE_FFTW
   SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
 
   // Find 1x 60mm SNR sphere
@@ -103,7 +100,6 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
     sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
     landmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
     }
-#endif
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
   this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();

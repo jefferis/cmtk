@@ -31,7 +31,6 @@
 # Sources of non-templated classes.
 SET(cmtkSegmentation_SRCS
   cmtkAtlasSegmentation.cxx
-  cmtkDetectPhantomMagphanEMR051.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
   cmtkLabelCombinationLocalBinaryShapeBasedAveraging.cxx
@@ -52,6 +51,7 @@ SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem 
 
 IF(CMTK_USE_FFTW)
   LIST(APPEND cmtkSegmentation_SRCS 
+    cmtkDetectPhantomMagphanEMR051.cxx
     cmtkSphereDetectionMatchedFilterFFT.cxx)
   LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
 ENDIF(CMTK_USE_FFTW)
