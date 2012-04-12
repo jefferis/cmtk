@@ -176,7 +176,6 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
       {
       if ( weight[cp] != 0 )
 	{
-//	delta[cp] /= (1.45455*weight[cp]);
 	delta[cp] /= weight[cp];
 	splineWarp.SetShiftedControlPointPositionByOffset( splineWarp.GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
 	}
