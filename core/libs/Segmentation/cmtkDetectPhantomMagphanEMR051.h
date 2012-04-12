@@ -97,6 +97,9 @@ private:
   /// Fitted affine transformation from phantom to image coordinates.
   AffineXform::SmartPtr m_PhantomToImageTransformation;
 
+  /// Residuals of landmark locations after linear transformation fit.
+  std::vector<Types::Coordinate> m_LandmarkFitResiduals;
+
   /// Find a sphere of given radius.
   Self::SpaceVectorType FindSphere( const TypedArray& filterResponse );
 
@@ -105,6 +108,12 @@ private:
 
   /// Refine sphere position based on intensity-weighted center of mass.
   Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int label );
+
+  /// Get margin (in pixels) for the bipolar sphere detection matched filter.
+  int GetBipolarFilterMargin() const
+  {
+    return 3;
+  }
 
   /// Get safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.
   Types::Coordinate GetSphereExcludeSafetyMargin() const

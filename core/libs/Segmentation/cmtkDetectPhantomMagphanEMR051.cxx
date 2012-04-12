@@ -38,7 +38,7 @@
 
 #include <System/cmtkDebugOutput.h>
 
-#include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
+#include <Segmentation/cmtkSphereDetectionBipolarMatchedFilterFFT.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
   : m_PhantomImage( phantomImage ),
@@ -54,6 +54,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 {
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
+  // create sphere detection filter based on bipolar FFT matched filtering
   SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
 
   // Find 1x 60mm SNR sphere
@@ -62,7 +63,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   this->m_Landmarks[0] = this->RefineSphereLocation( this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
   
   // find the two 15mm spheres near estimated position
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
   
   this->m_Landmarks[1] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 90, 10 );
   this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
@@ -75,11 +76,12 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   landmarkList.push_back( LandmarkPair( "SNR", MagphanEMR051::SphereCenter( 0 ), this->m_Landmarks[0] ) );
   landmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
   landmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
-  
+
+  // create initial rigid transformation to find approximate 10mm landmark sphere locations
   AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
-  // Find 4x 30mm CNR spheres
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), 3 /*filterMargin*/ );
+  // Find 4x 30mm CNR spheres in the right order.
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
   for ( size_t i = 3; i < 7; ++i )
     {
     const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
@@ -87,9 +89,8 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
     this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
     }
 
-
   // Find 10mm spheres in order near projected locations
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 7 ), 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 7 ), this->GetBipolarFilterMargin() );
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
@@ -102,6 +103,7 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
     }
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
+  // create linear, not necessarily rigid, transformation based on all detected landmarks.
   this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
   this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
 

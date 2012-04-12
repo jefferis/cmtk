@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,7 +37,7 @@
 
 #include <IO/cmtkVolumeIO.h>
 
-#include <Segmentation/cmtkSphereDetectionMatchedFilterFFT.h>
+#include <Segmentation/cmtkSphereDetectionBipolarMatchedFilterFFT.h>
 
 int
 doMain( const int argc, const char* argv[] )
@@ -73,7 +73,7 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inputPath ) );
 
-  cmtk::SphereDetectionMatchedFilterFFT detectionFilter( *volume );
+  cmtk::SphereDetectionBipolarMatchedFilterFFT detectionFilter( *volume );
   volume->SetData( detectionFilter.GetFilteredImageData( sphereRadius, filterMargin ) );
   cmtk::VolumeIO::Write( *volume, outputPath );
 
