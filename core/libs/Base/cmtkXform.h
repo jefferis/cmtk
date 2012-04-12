@@ -39,6 +39,7 @@
 #include <Base/cmtkAnatomicalOrientationBase.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkFixedVector.h>
+#include <Base/cmtkRegion.h>
 #include <Base/cmtkBitVector.h>
 #include <Base/cmtkLandmarkPairList.h>
 
