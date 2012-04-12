@@ -238,22 +238,20 @@ public:
   /// Replace existing vector with transformed location.
   virtual void ApplyInPlace( Self::SpaceVectorType& v ) const 
   {
-    Types::Coordinate r[3], f[3];
+    Types::Coordinate f[3];
     int grid[3];
     
     // Do some precomputations.
-    { 
     for ( int dim = 0; dim<3; ++dim ) 
       {
       // This is the (real-valued) index of the control point grid cell the
       // given location is in.
-      r[dim] = this->m_InverseSpacing[dim] * v[dim];
+      const Types::Coordinate r = this->m_InverseSpacing[dim] * v[dim];
       // This is the actual cell index.
-      grid[dim] = std::min<int>( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
+      grid[dim] = std::min<int>( static_cast<int>( r ), this->m_Dims[dim]-4 );
       // And here's the relative position within the cell.
-      f[dim] = r[dim] - grid[dim];
+      f[dim] = r - grid[dim];
       }
-    }
 
     // Create a pointer to the front-lower-left corner of the c.p.g. cell.
     const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
@@ -290,6 +288,25 @@ public:
       ++coeff;
       }
   }
+  
+  /// Precompute spline parameters for one point.
+  void PrecomputeLocationSpline( const Self::SpaceVectorType& v, FixedVector<3,int>& grid, FixedVector< 3, FixedVector<4,Types::Coordinate> >& spline  ) const
+  {
+    for ( int dim = 0; dim<3; ++dim ) 
+      {
+      // This is the (real-valued) index of the control point grid cell the given location is in.
+      const Types::Coordinate r = this->m_InverseSpacing[dim] * v[dim];
+      // This is the actual cell index.
+      grid[dim] = std::min<int>( static_cast<int>( r ), this->m_Dims[dim]-4 );
+      // And here's the relative position within the cell.
+      const Types::Coordinate fractional = r - grid[dim];
+      for ( int k = 0; k < 4; ++k )
+	{
+	spline[dim][k] = CubicSpline::ApproxSpline( k, fractional );
+	}
+      }
+  }
+
 
   /// Get volume influenced by one parameter.
   virtual UniformVolume::CoordinateRegionType GetVolumeOfInfluence( const size_t idx /*!< Parameter point index */, 
@@ -447,6 +464,9 @@ protected:
 
   /// Fitting class is a friend.
   friend class FitSplineWarpToDeformationField;
+
+  /// Fitting class is a friend.
+  friend class FitSplineWarpToLandmarks;
 };
 
 } // namespace
