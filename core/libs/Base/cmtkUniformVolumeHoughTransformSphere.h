@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -56,7 +56,7 @@ public:
   /// Constructor: link to UniformVolume object.
   explicit UniformVolumeHoughTransformSphere( UniformVolume::SmartConstPtr& volume ) : m_UniformVolume( volume ) {}
 
-  /// Get Hough transformed data for a specific radius in world units.
+  /// Get Hough-transformed data for a specific radius in world units.
   TypedArray::SmartPtr Get( const Types::Coordinate radius /*!< Radius of detected spheres */ ) const;
   
 private:
