@@ -100,12 +100,20 @@ private:
   /// Residuals of landmark locations after linear transformation fit.
   std::vector<Types::Coordinate> m_LandmarkFitResiduals;
 
-  /// Find a sphere of given radius.
-  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse );
+  /** Find a sphere of given radius.
+   *\return Location of the sphere center - this is the point where the filter response is maximal.
+   */
+  Self::SpaceVectorType FindSphere( const TypedArray& filterResponse /*!< Response of the matched filter used for sphere finding. */ );
 
-  /// Find a sphere in a band of given radius.
-  Self::SpaceVectorType FindSphereAtDistance( const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth );
-
+  /** Find a sphere in a band of given radius.
+   *\return True if a valid location was found. False if all pixels in the given band are already excluded by the exclusion mask.
+   */
+  bool FindSphereAtDistance( Self::SpaceVectorType& result /*!< Output: found location of the sphere center (unchanged if function returns false). Location of maximum filter response in the search band, minus exclusion. */, 
+			     const TypedArray& filterResponse /*!< Response of the matched filter used for sphere finding. */, 
+			     const Self::SpaceVectorType& bandCenter /*!< Center of the band to search in. */, 
+			     const Types::Coordinate bandRadius /*!< Radius of the band to search in. If this is zero, the search region is a sphere around bandCenter.*/, 
+			     const Types::Coordinate bandWidth /*!< Width of the band to search in.*/ );
+  
   /// Refine sphere position based on intensity-weighted center of mass.
   Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int label );
 

@@ -65,11 +65,15 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   // find the two 15mm spheres near estimated position
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
   
-  this->m_Landmarks[1] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 90, 10 );
-  this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
+  if ( this->FindSphereAtDistance( this->m_Landmarks[1], *filterResponse, this->m_Landmarks[0], 90, 10 ) )
+    {
+    this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
+    }
 
-  this->m_Landmarks[2] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 60, 10 );
-  this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 1 ), 3 /*label*/ );
+  if ( this->FindSphereAtDistance( this->m_Landmarks[2], *filterResponse, this->m_Landmarks[0], 60, 10 ) )
+    {
+    this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 1 ), 3 /*label*/ );
+    }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
@@ -85,8 +89,10 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   for ( size_t i = 3; i < 7; ++i )
     {
     const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, candidate, 0, 5 );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, candidate, 0, 5 ) )
+      {
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      }
     }
 
   // Find 10mm spheres in order near projected locations
@@ -94,8 +100,10 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0, 5 );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, this->m_Landmarks[i], 0, 5 ) )
+      {
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      }
 
     char name[10];
     sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
@@ -116,26 +124,26 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
 	this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-	this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() );
-	this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ) )
+	  this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
 	}
       }
     
-    LandmarkPairList landmarkList;
-    landmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
-    landmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+    LandmarkPairList refinedLandmarkList;
+    refinedLandmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
+    refinedLandmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {
       char name[10];
       sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
-      landmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+      refinedLandmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
       }
     
-    this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+    this->m_PhantomToImageTransformation = FitAffineToLandmarks( refinedLandmarkList ).GetAffineXform();
     this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
     }
-
+  
   Types::Coordinate averageFittingError = 0;
   Types::Coordinate maximumFittingError = 0;
   size_t maxErrorLabel = 0;
@@ -211,8 +219,9 @@ cmtk::DetectPhantomMagphanEMR051::FindSphere( const TypedArray& filterResponse )
   return this->m_PhantomImage->GetGridLocation( maxIndex );
 }
 
-cmtk::DetectPhantomMagphanEMR051::SpaceVectorType
-cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance( const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth )
+bool
+cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance
+( cmtk::DetectPhantomMagphanEMR051::SpaceVectorType& result, const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth )
 {
   UniformVolumePainter maskPainter( this->m_IncludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
   this->m_IncludeMask->GetData()->Fill( 0.0 );
@@ -238,7 +247,13 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance( const TypedArray& filter
       }
     }
 
-  return this->m_PhantomImage->GetGridLocation( maxIndex );
+  if ( maxIndex >= 0 )
+    {
+    result = this->m_PhantomImage->GetGridLocation( maxIndex );
+    return true;
+    }
+
+  return false;
 }
 
 cmtk::DetectPhantomMagphanEMR051::SpaceVectorType 
