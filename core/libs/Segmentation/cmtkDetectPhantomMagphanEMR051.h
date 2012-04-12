@@ -126,6 +126,18 @@ private:
   {
     return 2;
   }
+
+  /// Get threshold for detecting outliers based on landmark fitting residuals.
+  Types::Coordinate GetLandmarkFitResidualThreshold() const
+  {
+    return 5.0; // if we're off bymore than 5mm, that's probably not due to actual distortion
+  }
+
+  /** Compute landmark fitting residuals under given linear transformation
+   *\return The maximum residual over all landmarks. This can be compared with a threshold to
+   * determine whether refinement of outliers is necessary.
+   */
+  Types::Coordinate ComputeLandmarkFitResiduals( const AffineXform& xform /*!< Linear transformation fitted to the landmarks.*/ );
 };
 
 //@}
