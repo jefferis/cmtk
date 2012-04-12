@@ -60,63 +60,63 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   SphereDetectionMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
 
   // Find 1x 60mm SNR sphere
-  TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[0].m_Diameter / 2, 3 /*filterMargin*/ ) );
+  TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), 3 /*filterMargin*/ ) );
   this->m_Landmarks[0] = this->FindSphere( *filterResponse );
-  this->m_Landmarks[0] = this->RefineSphereLocation( this->m_Landmarks[0], MagphanEMR051::SphereTable[0].m_Diameter / 2, 2 /*margin*/, 1 /*label*/ );
+  this->m_Landmarks[0] = this->RefineSphereLocation( this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
   
   // find the two 15mm spheres near estimated position
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[1].m_Diameter / 2, 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), 3 /*filterMargin*/ );
   
   this->m_Landmarks[1] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 90, 10 );
-  this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereTable[1].m_Diameter / 2, 5 /*margin*/, 2 /*label*/ );
+  this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
 
   this->m_Landmarks[2] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 60, 10 );
-  this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereTable[2].m_Diameter / 2, 5 /*margin*/, 3 /*label*/ );
+  this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 1 ), 3 /*label*/ );
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
-  landmarkList.push_back( LandmarkPair( "SNR", Self::SpaceVectorType( MagphanEMR051::SphereTable[0].m_CenterLocation ), this->m_Landmarks[0] ) );
-  landmarkList.push_back( LandmarkPair( "15mm@90mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[1].m_CenterLocation ), this->m_Landmarks[1] ) );
-  landmarkList.push_back( LandmarkPair( "15mm@60mm", Self::SpaceVectorType( MagphanEMR051::SphereTable[2].m_CenterLocation ), this->m_Landmarks[2] ) );
-
+  landmarkList.push_back( LandmarkPair( "SNR", MagphanEMR051::SphereCenter( 0 ), this->m_Landmarks[0] ) );
+  landmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
+  landmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+  
   AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
   // Find 4x 30mm CNR spheres
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[1].m_Diameter / 2, 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), 3 /*filterMargin*/ );
   for ( size_t i = 3; i < 7; ++i )
     {
-    const Self::SpaceVectorType candidate = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
+    const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
     this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, candidate, 0, 5 );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, 1+i /*label*/ );
+    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
     }
 
 
   // Find 10mm spheres in order near projected locations
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereTable[7].m_Diameter / 2, 3 /*filterMargin*/ );
+  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 7 ), 3 /*filterMargin*/ );
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    const Self::SpaceVectorType candidate = intermediateXform->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) );
-    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, candidate, 0, 5 );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 5 /*margin*/, 1+i /*label*/ );
+    this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
+    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0, 5 );
+    this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
 
     char name[10];
     sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
-    landmarkList.push_back( LandmarkPair( name, Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ), this->m_Landmarks[i] ) );
+    landmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
     }
 #endif
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
   this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
-  this->m_PhantomToImageTransformation->ChangeCenter( Self::SpaceVectorType( MagphanEMR051::SphereTable[0].m_CenterLocation ) ); // SNR sphere center as center of rotation
+  this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
 
   // compute fitting residuals
   Types::Coordinate averageFittingError = 0;
   Types::Coordinate maximumFittingError = 0;
   size_t maxErrorLabel = 0;
-  for ( size_t i = 5; i < MagphanEMR051::NumberOfSpheres; ++i ) // exclude unreliable SNR and CNR spheres
+  for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i ) // exclude unreliable SNR and CNR spheres
     {
     const Types::Coordinate error =
-      (this->m_Landmarks[i] - this->m_PhantomToImageTransformation->Apply( Self::SpaceVectorType( MagphanEMR051::SphereTable[i].m_CenterLocation ) ) ).RootSumOfSquares();
+      (this->m_Landmarks[i] - this->m_PhantomToImageTransformation->Apply( MagphanEMR051::SphereCenter( i ) ) ).RootSumOfSquares();
     averageFittingError += error;
     if ( error > maximumFittingError )
       {
@@ -180,28 +180,30 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance( const TypedArray& filter
     maskPainter.DrawSphere( bandCenter, bandRadius-bandWidth, 0 );  
     }
 
-  size_t maxIndex = 0;
-  Types::DataItem maxValue = filterResponse.ValueAt( 0 );
+  int maxIndex = -1;
+  Types::DataItem maxValue = 0;
   
   for ( size_t px = 0; px < filterResponse.GetDataSize(); ++px )
     {
     if ( (this->m_ExcludeMask->GetDataAt( px ) == 0) && (this->m_IncludeMask->GetDataAt( px ) != 0) )
       {
       const Types::DataItem value = filterResponse.ValueAt( px );
-      if ( value > maxValue )
+      if ( (maxIndex < 0) || (value > maxValue) )
 	{
 	maxValue = value;
 	maxIndex = px;
 	}
       }
     }
-  
+
   return this->m_PhantomImage->GetGridLocation( maxIndex );
 }
 
 cmtk::DetectPhantomMagphanEMR051::SpaceVectorType 
-cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate sphereRadius, const int margin, const int label )
+cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate sphereRadius, const int label )
 {
+  const int margin = this->GetRefineMarginPixels();
+
   DataGrid::IndexType centerPixelIndex;
   this->m_PhantomImage->GetClosestGridPointIndex( estimate, centerPixelIndex );
 
@@ -227,7 +229,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 
   // update exclusion mask
   UniformVolumePainter maskPainter( this->m_ExcludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
-  maskPainter.DrawSphere( refined, sphereRadius+15, label );
+  maskPainter.DrawSphere( refined, sphereRadius+this->GetSphereExcludeSafetyMargin(), label );
 
   return refined;
 }

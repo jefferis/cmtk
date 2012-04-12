@@ -104,7 +104,19 @@ private:
   Self::SpaceVectorType FindSphereAtDistance( const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth );
 
   /// Refine sphere position based on intensity-weighted center of mass.
-  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int margin, const int label );
+  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int label );
+
+  /// Get safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.
+  Types::Coordinate GetSphereExcludeSafetyMargin() const
+  {
+    return 10.0;
+  }
+
+  /// Get margin in pixels for center-of-mass-based refinement.
+  int GetRefineMarginPixels() const
+  {
+    return 2;
+  }
 };
 
 //@}
