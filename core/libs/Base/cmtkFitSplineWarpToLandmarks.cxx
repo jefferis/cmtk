@@ -37,10 +37,8 @@
 #include <algorithm>
 
 cmtk::FitSplineWarpToLandmarks::FitSplineWarpToLandmarks( const LandmarkPairList& landmarkList )
+  : m_Landmarks( landmarkList.begin(), landmarkList.end() )
 {
-  // convert from list to vector for easier access
-  for ( LandmarkPairList::ConstIterator it = landmarkList.begin(); it != landmarkList.end(); ++it )
-    this->m_Landmarks.push_back( *it );
 }
 
 void
