@@ -71,11 +71,17 @@ public:
   /// Get phantom-to-image transformation.
   AffineXform::SmartConstPtr GetPhantomToImageTransformation() const
   {
-    return this->m_PhantomToImageTransformation;
+    return this->m_PhantomToImageTransformationRigid;
   }
   
   /// Get the image-space label map of detected spheres.
   UniformVolume::SmartPtr GetDetectedSpheresLabelMap();
+
+  /// Get expected landmark locations given rigid phantom-to-image transformation.
+  LandmarkList GetExpectedLandmarks() const;
+
+  /// Get actual, detected landmark locations.
+  LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< Include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
 private:
   /// Image of the phantom.
@@ -94,8 +100,11 @@ private:
   /// The detected sphere centroid landmarks in image space.
   std::vector<Self::SpaceVectorType> m_Landmarks;
 
+  /// Fitted rigid transformation from phantom to image coordinates.
+  AffineXform::SmartPtr m_PhantomToImageTransformationRigid;
+
   /// Fitted affine transformation from phantom to image coordinates.
-  AffineXform::SmartPtr m_PhantomToImageTransformation;
+  AffineXform::SmartPtr m_PhantomToImageTransformationAffine;
 
   /// Residuals of landmark locations after linear transformation fit.
   std::vector<Types::Coordinate> m_LandmarkFitResiduals;

@@ -77,9 +77,8 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
-  landmarkList.push_back( LandmarkPair( "SNR", MagphanEMR051::SphereCenter( 0 ), this->m_Landmarks[0] ) );
-  landmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
-  landmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+  for ( size_t i = 0; i < 3; ++i )
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
 
   // create initial rigid transformation to find approximate 10mm landmark sphere locations
   AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
@@ -105,15 +104,16 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
       this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
       }
 
-    char name[10];
-    sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
-    landmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
     }
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
   // create linear, not necessarily rigid, transformation based on all detected landmarks.
-  this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
-  this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+  this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+  this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+
+  this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+  this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
 
   this->RefineOutlierLandmarks( *filterResponse );
   this->ExcludeOutlierLandmarks();
@@ -141,14 +141,14 @@ void
 cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filterResponse )
 {
   // compute residuals with current transformation
-  if ( this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformation) ) > this->GetLandmarkFitResidualThreshold() )
+  if ( this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformationAffine) ) > this->GetLandmarkFitResidualThreshold() )
     {  
     // try to refine outliers, which probably were not properly located.
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i ) // we only care for the 10mm spheres.
       {
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
-	this->m_Landmarks[i] = this->m_PhantomToImageTransformation->Apply( MagphanEMR051::SphereCenter( i ) );
+	this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
 	if ( this->FindSphereAtDistance( this->m_Landmarks[i], filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ) )
 	  this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
 	}
@@ -160,13 +160,8 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {
-      char name[10];
-      sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
-      refinedLandmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+      refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
       }
-    
-    this->m_PhantomToImageTransformation = FitAffineToLandmarks( refinedLandmarkList ).GetAffineXform();
-    this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
     }
 }
 
@@ -174,24 +169,26 @@ void
 cmtk::DetectPhantomMagphanEMR051::ExcludeOutlierLandmarks()
 {
   // compute residuals with current transformation
-  if ( this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformation) ) > this->GetLandmarkFitResidualThreshold() )
+  if ( this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformationAffine) ) > this->GetLandmarkFitResidualThreshold() )
     {  
     LandmarkPairList landmarkList;
-    landmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
-    landmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+    // add two 15mm spheres
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 1 ), MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 2 ), MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {
       if ( this->m_LandmarkFitResiduals[i] < this->GetLandmarkFitResidualThreshold() )
 	{
-	char name[10];
-	sprintf( name, "10mm#%03d", static_cast<int>( i+1 ) );
-	landmarkList.push_back( LandmarkPair( name, MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
 	}
       }
     
-    this->m_PhantomToImageTransformation = FitAffineToLandmarks( landmarkList ).GetAffineXform();
-    this->m_PhantomToImageTransformation->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+    this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+    this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+
+    this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+    this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation    
     }
 }
 
@@ -222,7 +219,7 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedSpheresLabelMap()
 
   for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    maskPainter.DrawSphere( this->m_Landmarks[i], MagphanEMR051::SphereTable[i].m_Diameter / 2, 1+i );
+    maskPainter.DrawSphere( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i );
     }
 
   return this->m_ExcludeMask;
@@ -322,3 +319,31 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 
   return refined;
 }
+
+cmtk::LandmarkList
+cmtk::DetectPhantomMagphanEMR051::GetExpectedLandmarks() const
+{
+  cmtk::LandmarkList list;
+
+  for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
+    {
+    list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ) );
+    }
+  
+  return list;
+}
+
+cmtk::LandmarkList
+cmtk::DetectPhantomMagphanEMR051::GetDetectedLandmarks( const bool includeOutliers ) const
+{
+  cmtk::LandmarkList list;
+
+  for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
+    {
+    if ( includeOutliers || (this->m_LandmarkFitResiduals[i] < this->GetLandmarkFitResidualThreshold()) )    
+      list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_Landmarks[i] ) );
+    }
+  
+  return list;
+}
+

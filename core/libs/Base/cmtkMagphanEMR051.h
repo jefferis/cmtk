@@ -71,6 +71,9 @@ public:
   /// Data structure for phantom sphere location table.
   typedef struct __SphereEntryType
   {
+    /// Sphere name (this has been "arbitrarily" assigned for CMTK).
+    const char* m_Name;
+
     /// Sphere diameter in milimeters.
     Types::Coordinate m_Diameter;
     
@@ -102,6 +105,12 @@ public:
   static Types::Coordinate SphereRadius( const size_t i )
   {
     return 0.5 * Self::SphereTable[i].m_Diameter;
+  }
+
+  /// Convenience access function - get sphere radius.
+  static const char* SphereName( const size_t i )
+  {
+    return Self::SphereTable[i].m_Name;
   }
 
   /// Convenience access function - get sphere center as 3D vector.

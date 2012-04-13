@@ -41,6 +41,8 @@
 
 #include <IO/cmtkVolumeIO.h>
 
+#include <fstream>
+
 int
 doMain( const int argc, const char* argv[] )
 {
@@ -48,6 +50,8 @@ doMain( const int argc, const char* argv[] )
   bool labels = false;
 
   const char* outputFileName = "phantom.nii";
+  const char* outputLabelsName = NULL;
+  const char* outputLandmarksName = NULL;
 
   try 
     {
@@ -58,6 +62,8 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( "resolution" ), &resolution, "Set output image resolution in [mm]" );
     cl.AddSwitch( Key( "labels" ), &labels, true, "Draw each marker sphere with a label value defined by its index in the marker table. Otherwise, estimated T1 is used." );
+    cl.AddOption( Key( "write-labels" ), &outputLabelsName, "Optional path to write text file with label names." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-landmarks" ), &outputLandmarksName, "Optional path to write text file with landmark locations." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.AddParameter( &outputFileName, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
@@ -70,6 +76,33 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::VolumeIO::Write( *(cmtk::MagphanEMR051::GetPhantomImage( resolution, labels )), outputFileName );
+
+  // write optional labels file
+  if ( outputLabelsName )
+    {
+    std::ofstream stream( outputLabelsName );
+    if ( stream.good() )
+      {
+      for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )
+	{
+	stream << i+1 << "\t" << cmtk::MagphanEMR051::SphereName( i ) << std::endl;
+	}
+      }
+    }
+  
+  // write optional landmarks file
+  if ( outputLandmarksName )
+    {
+    std::ofstream stream( outputLandmarksName );
+    if ( stream.good() )
+      {
+      for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )
+	{
+	stream << cmtk::MagphanEMR051::SphereCenter( i )[0] << "\t" << cmtk::MagphanEMR051::SphereCenter( i )[1] << "\t" << cmtk::MagphanEMR051::SphereCenter( i )[2] << "\t" 
+	       << cmtk::MagphanEMR051::SphereName( i ) << "\t" << std::endl;
+	}
+      }
+    }
   
   return 0;
 }
