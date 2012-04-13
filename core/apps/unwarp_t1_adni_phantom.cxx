@@ -104,7 +104,9 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::UniformVolume::SmartConstPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPhantomPath ) );
-  cmtk::UniformVolume::SmartConstPtr unwarpImage( cmtk::VolumeIO::ReadOriented( inputImagePath ) );
+  cmtk::UniformVolume::SmartConstPtr unwarpImage = phantomImage;
+  if ( strcmp( inputPhantomPath, inputImagePath ) )
+    unwarpImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
 
   const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
   const cmtk::AffineXform physicalToImage( unwarpImage->GetImageToPhysicalMatrix().GetInverse() );
