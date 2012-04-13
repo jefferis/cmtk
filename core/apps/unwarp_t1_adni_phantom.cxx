@@ -97,51 +97,64 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
+  // check for inconsistent parameters
   if ( gridDims && gridSpacing )
     {
     cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
     throw cmtk::ExitException( 1 );
     }
 
+  // read phantom image
   cmtk::UniformVolume::SmartConstPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPhantomPath ) );
+  // if different from phantom image, then also read unwarp image
   cmtk::UniformVolume::SmartConstPtr unwarpImage = phantomImage;
   if ( strcmp( inputPhantomPath, inputImagePath ) )
     unwarpImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
 
   const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
   const cmtk::AffineXform physicalToImage( unwarpImage->GetImageToPhysicalMatrix().GetInverse() );
-  
+
+  // detect the ADNI phantom landmarks
   cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
+
+  // get expected landmark locations
   cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
+  // bring expected landmark locations from phantom image via physical to unwarping image space
   for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
     {
     phantomToPhysical.ApplyInPlace( it->m_Location );
     physicalToImage.ApplyInPlace( it->m_Location );
     }
 
+  // get detected landmark locations
   cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
+  // bring detected landmark locations from phantom image via physical to unwarping image space
   for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
     {
     phantomToPhysical.ApplyInPlace( it->m_Location );
     physicalToImage.ApplyInPlace( it->m_Location );
     }
-
+  
+  // match expected and detected landmarks
   cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
   cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
 
+  // fit spline warp, potentially preceded by linear transformation, to landmark pairs.
   cmtk::SplineWarpXform::SmartConstPtr splineWarp;
   cmtk::AffineXform::SmartConstPtr affineXform;
   if ( affineFirst )
     {
     affineXform = cmtk::FitAffineToLandmarks( pairList ).GetAffineXform();
     }
-  
+
+  // fit by final spacing
   if ( gridSpacing )
     {
     splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->Size, gridSpacing, levels, affineXform.GetPtr() );
     }
   else
     {
+    // or fit by final control point grid dimension
     if ( gridDims )
       {
       double dims[3];
@@ -159,7 +172,8 @@ doMain( const int argc, const char* argv[] )
       throw cmtk::ExitException( 1 );
       }
     }
-  
+
+  // writing resulting transformation
   cmtk::XformIO::Write( splineWarp, outputXform );
 
   return 0;
