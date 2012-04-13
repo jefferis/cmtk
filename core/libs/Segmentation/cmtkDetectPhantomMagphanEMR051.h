@@ -62,12 +62,9 @@ public:
   /// Spatial coordinate vector.
   typedef UniformVolume::SpaceVectorType SpaceVectorType;
   
-  /// Constructor: compute registrations.
+  /// Constructor: detect all landmark spheres.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
   
-  /// Get landmark coordinates.
-  std::vector<UniformVolume::SpaceVectorType> GetLandmarks();
-
   /// Get phantom-to-image transformation.
   AffineXform::SmartConstPtr GetPhantomToImageTransformation() const
   {

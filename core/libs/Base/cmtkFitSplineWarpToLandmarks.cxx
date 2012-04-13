@@ -59,7 +59,7 @@ cmtk::FitSplineWarpToLandmarks::ComputeResiduals( const SplineWarpXform& splineW
 }
 
 cmtk::SplineWarpXform::SmartPtr 
-cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceRegionType& domain, const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels, const AffineXform* affineXform )
+cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceVectorType& domain, const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels, const AffineXform* affineXform )
 {
   // we may have to adjust nLevels downwards
   int numberOfLevels = nLevels;
@@ -84,7 +84,7 @@ cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceRegionType& dom
 
   // initialize B-spline transformation
   AffineXform::SmartPtr initialAffine( affineXform ? new AffineXform( *affineXform ) : new AffineXform );
-  SplineWarpXform* splineWarp = new SplineWarpXform( domain.To() - domain.From(), initialDims, CoordinateVector::SmartPtr::Null(), initialAffine );
+  SplineWarpXform* splineWarp = new SplineWarpXform( domain, initialDims, CoordinateVector::SmartPtr::Null(), initialAffine );
   
   this->FitSpline( *splineWarp, numberOfLevels );
   
@@ -92,14 +92,14 @@ cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceRegionType& dom
 }
 
 cmtk::SplineWarpXform::SmartPtr 
-cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceRegionType& domain, const Types::Coordinate finalSpacing, const int nLevels, const AffineXform* affineXform )
+cmtk::FitSplineWarpToLandmarks::Fit( const SplineWarpXform::SpaceVectorType& domain, const Types::Coordinate finalSpacing, const int nLevels, const AffineXform* affineXform )
 {
   // compute the start spacing of multi-level approximation by doubling final spacing until user-defined initial spacing is exceeded.
   Types::Coordinate spacing = finalSpacing * (1 << (nLevels-1));
 
   // initialize B-spline transformation
   AffineXform::SmartPtr initialAffine( affineXform ? new AffineXform( *affineXform ) : new AffineXform );
-  SplineWarpXform* splineWarp = new SplineWarpXform( domain.To() - domain.From(), spacing, initialAffine );
+  SplineWarpXform* splineWarp = new SplineWarpXform( domain, spacing, initialAffine );
   
   this->FitSpline( *splineWarp, nLevels );
   

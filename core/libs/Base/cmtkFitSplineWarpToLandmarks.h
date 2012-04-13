@@ -61,13 +61,13 @@ public:
   FitSplineWarpToLandmarks( const LandmarkPairList& landmarkList );
 
   /// Fit spline warp based on final grid dimensions.
-  SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceRegionType& domain /*!< Domain of the deformation field. This should be the field of view of the fixed image grid to be used with the resulting deformation */,
+  SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceVectorType& domain /*!< Domain of the deformation field. This should be the size of the fixed image grid to be used with the resulting deformation */,
   				 const SplineWarpXform::ControlPointIndexType& finalDims /*!< Final spline control point grid dimensions.*/, 
 				 const int nLevels /*!< Number of levels in the multi-resolution fitting.*/,
 				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/ );
 
   /// Fit spline warp based on final grid spacing.
-  SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceRegionType& domain /*!< Domain of the deformation field. This should be the field of view of the fixed image grid to be used with the resulting deformation */,
+  SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceVectorType& domain /*!< Domain of the deformation field. This should be the size of the fixed image grid to be used with the resulting deformation */,
 				 const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
 				 const int nLevels = 1 /*!< Number of levels for optional multi-resolution fit (default: single-resolution fit)*/,
 				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/  );

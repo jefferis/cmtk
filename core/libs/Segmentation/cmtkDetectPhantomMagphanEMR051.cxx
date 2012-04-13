@@ -47,11 +47,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 {
   this->m_ExcludeMask->CreateDataArray( TYPE_BYTE, true /*setToZero*/ );
   this->m_IncludeMask->CreateDataArray( TYPE_BYTE );
-}
 
-std::vector<cmtk::DetectPhantomMagphanEMR051::SpaceVectorType> 
-cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
-{
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
   // create sphere detection filter based on bipolar FFT matched filtering
@@ -133,8 +129,6 @@ cmtk::DetectPhantomMagphanEMR051::GetLandmarks()
   averageFittingError /= (MagphanEMR051::NumberOfSpheres-7);
 
   DebugOutput( 5 ) << "INFO: landmark fitting error average = " << averageFittingError << " maximum = " <<  maximumFittingError << " maxErrLabel = " << maxErrorLabel << "\n";
-
-  return this->m_Landmarks;
 }
 
 void
