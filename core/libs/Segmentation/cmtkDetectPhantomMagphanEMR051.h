@@ -78,10 +78,10 @@ public:
   UniformVolume::SmartPtr GetDetectedSpheresLabelMap();
 
   /// Get expected landmark locations given rigid phantom-to-image transformation.
-  LandmarkList GetExpectedLandmarks() const;
+  LandmarkList GetExpectedLandmarks( const bool includeUnreliable = false /*!< If true, include unreliable landmarks, i.e., SNR and CNR spheres. */ ) const;
 
   /// Get actual, detected landmark locations.
-  LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< Include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
+  LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
 private:
   /// Image of the phantom.

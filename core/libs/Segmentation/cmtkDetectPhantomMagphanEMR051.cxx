@@ -321,11 +321,25 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 }
 
 cmtk::LandmarkList
-cmtk::DetectPhantomMagphanEMR051::GetExpectedLandmarks() const
+cmtk::DetectPhantomMagphanEMR051::GetExpectedLandmarks( const bool includeUnreliable ) const
 {
   cmtk::LandmarkList list;
 
-  for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
+  if ( includeUnreliable )
+    {
+    for ( size_t i = 0; i < 7; ++i )
+      {
+      list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ) );
+      }
+    }
+  else
+    {
+    // Always include 15mm spheres
+    list.push_back( Landmark( MagphanEMR051::SphereName( 0 ), this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( 0 ) ) ) );
+    list.push_back( Landmark( MagphanEMR051::SphereName( 1 ), this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( 1 ) ) ) );
+    }
+  
+  for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ) );
     }
