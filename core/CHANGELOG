@@ -1,5 +1,7 @@
 Release CMTK-2.2.0:
 
+(r4195) Added: tool for unwarping images using B-spline free-form deformation
+    computed from a reference scan of the ADNI phantom.
 (r4180) Added: detection of the landmarks in the Magphan EMR051 structural
     imaging phantom (a.k.a. "ADNI Phantom"). Both as a library class and as a
     command line tool ("detect_adni_phantom").
