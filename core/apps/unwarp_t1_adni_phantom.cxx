@@ -106,9 +106,23 @@ doMain( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartConstPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPhantomPath ) );
   cmtk::UniformVolume::SmartConstPtr unwarpImage( cmtk::VolumeIO::ReadOriented( inputImagePath ) );
 
+  const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
+  const cmtk::AffineXform physicalToImage( unwarpImage->GetImageToPhysicalMatrix().GetInverse() );
+  
   cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
   cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
+  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    {
+    phantomToPhysical.ApplyInPlace( it->m_Location );
+    physicalToImage.ApplyInPlace( it->m_Location );
+    }
+
   cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
+  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    {
+    phantomToPhysical.ApplyInPlace( it->m_Location );
+    physicalToImage.ApplyInPlace( it->m_Location );
+    }
 
   cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
   cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
