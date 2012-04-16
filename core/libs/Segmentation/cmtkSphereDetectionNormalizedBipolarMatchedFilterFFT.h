@@ -42,8 +42,8 @@ cmtk
 {
 
 /** Detect spheres in an image using FFT-based matched bipolar filter.
- * An object of this class can be used to detect spheres of different sizes with only a single FFT applied to the test image (each sphere size 
- * does require a different filter kernel and thus a repeated FFT of the kernel).
+ * An object of this class can be used to detect spheres of different sizes with only a two FFTs applied to the test image and its square. 
+ * Each detected sphere size does require a different filter kernel and thus three repeated FFTs of the kernel, its mask, and its square.
  *
  * The filter kernel is bipolar, i.e., +1 inside the sphere and -1 outside the sphere, each within a user-provided margin inside and outside the
  * sphere surface. This makes the filter robust to intensity differences across the images.
