@@ -28,8 +28,8 @@
 //
 */
 
-#ifndef __cmtkSphereDetectionBipolarMatchedFilterFFT_h_included_
-#define __cmtkSphereDetectionBipolarMatchedFilterFFT_h_included_
+#ifndef __cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT_h_included_
+#define __cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT_h_included_
 
 #include <cmtkconfig.h>
 
@@ -46,21 +46,24 @@ cmtk
  * does require a different filter kernel and thus a repeated FFT of the kernel).
  *
  * The filter kernel is bipolar, i.e., +1 inside the sphere and -1 outside the sphere, each within a user-provided margin inside and outside the
- * sphere surface. This makes the filter robust to intensity differences across the images, although probably not to the same degree as a truely
- * self-normalizing filter (e.g., Padberg's FFT-based NCC).
+ * sphere surface. This makes the filter robust to intensity differences across the images.
+ *
+ *\see D. Padfield, "Masked Object Registration in the Fourier Domain," IEEE Transactions on Image Processing, in press. doi: 10.1109/TIP.2011.2181402
+ * http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6111478&isnumber=4358840
+ *
  *\note This class requires CMTK to be configured with FFTW3 support ("CMTK_USE_FFTW" CMake option).
  *\todo The current implementation does not take advantage of the real-valued image and filter data, which could be used to reduce the storage
  * requirement of the FT data (and probably the computational cost of the transform) by almost 50%. On the other hand, capitalizing on these
  * savings would either require out-of-place, rather than in-place, transforms, or substantially complicate memory layout of the input data.
  */
-class SphereDetectionBipolarMatchedFilterFFT
+class SphereDetectionNormalizedBipolarMatchedFilterFFT
 {
 public:
   /// Constructor: initialize FFTW plans and compute image FT.
-  SphereDetectionBipolarMatchedFilterFFT( const UniformVolume& image );
+  SphereDetectionNormalizedBipolarMatchedFilterFFT( const UniformVolume& image );
 
   /// Destructor: destroy FFTW plans and de-allocate transformed image memories.
-  virtual ~SphereDetectionBipolarMatchedFilterFFT();
+  virtual ~SphereDetectionNormalizedBipolarMatchedFilterFFT();
 
   /// Get image filtered with spherical matched filter kernel.
   cmtk::TypedArray::SmartPtr GetFilteredImageData( const Types::Coordinate sphereRadius /*!< Radius of detected spheres in world coordinate units (e.g., mm) */, 
@@ -79,21 +82,53 @@ private:
   /// The Fourier-transformed image.
   fftw_complex* m_ImageFT;
 
+  /// The Fourier-transformed squared image.
+  fftw_complex* m_ImageSquareFT;
+
   /// The Fourier-transformed matched filter.
   fftw_complex* m_FilterFT;
+
+  /// The Fourier-transformed squared matched filter.
+  fftw_complex* m_FilterSquareFT;
+
+  /// The Fourier-transformed matched filter mask.
+  fftw_complex* m_FilterMaskFT;
+
+  /// Copy of the Fourier-transformed matched filter mask for computing a separate product.
+  fftw_complex* m_FilterMaskFT2;
 
   /// The filter FFT plan.
   fftw_plan m_PlanFilter;
 
+  /// The squared filter FFT plan.
+  fftw_plan m_PlanFilterSquare;
+
+  /// The filter mask FFT plan.
+  fftw_plan m_PlanFilterMask;
+
   /// The backward (filtered data to space domain) FFT plan.
   fftw_plan m_PlanBackward;
 
+  /// The backward FFT plan for the mask.
+  fftw_plan m_PlanBackwardMask;
+
+  /// The backward FFT plan for the copy of the multiplied mask.
+  fftw_plan m_PlanBackwardMask2;
+
+  /// Sum of filter elements.
+  Types::DataItem m_SumFilter;
+
+  /// Sum of filter element squares.
+  Types::DataItem m_SumFilterSquare;
+  
+  /// Sum of filter mask elements (number of non-zero elements).
+  Types::DataItem m_SumFilterMask;
+
   /** Make the filter kernel.
-   *\return Number of non-zero elements in the filter kernel.
    */
-  size_t MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth );
+  void MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth );
 };
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkSphereDetectionBipolarMatchedFilterFFT_h_included_
+#endif // #ifndef __cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT_h_included_

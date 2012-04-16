@@ -52,7 +52,8 @@ SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem 
 IF(CMTK_USE_FFTW)
   LIST(APPEND cmtkSegmentation_SRCS 
     cmtkDetectPhantomMagphanEMR051.cxx
-    cmtkSphereDetectionBipolarMatchedFilterFFT.cxx)
+    cmtkSphereDetectionBipolarMatchedFilterFFT.cxx
+    cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.cxx)
   LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
 ENDIF(CMTK_USE_FFTW)
 
