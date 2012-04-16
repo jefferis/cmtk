@@ -38,6 +38,7 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <Segmentation/cmtkSphereDetectionBipolarMatchedFilterFFT.h>
+#include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 
 int
 doMain( const int argc, const char* argv[] )
@@ -47,6 +48,7 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::Types::Coordinate sphereRadius = 1;
   int filterMargin = 2;
+  bool normalized = false;
 
   try
     {
@@ -57,6 +59,7 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'r', "radius" ), &sphereRadius, "Radius of spheres to detect in physical length units (typically mm)." );
     cl.AddOption( Key( "filter-margin" ), &filterMargin, "Half of filter margin width in pixels. This determines the extent of the region around the surface or the sphere where the detection filter is non-zero." );
+    cl.AddSwitch( Key( "normalized" ), &normalized, true, "Use intensity-normalized filter, effectively computing Normalized Cross Correlation between filter and image." );
     
     cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -73,8 +76,17 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inputPath ) );
 
-  cmtk::SphereDetectionBipolarMatchedFilterFFT detectionFilter( *volume );
-  volume->SetData( detectionFilter.GetFilteredImageData( sphereRadius, filterMargin ) );
+  if ( normalized )
+    {
+    cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT detectionFilter( *volume );
+    volume->SetData( detectionFilter.GetFilteredImageData( sphereRadius, filterMargin ) );
+    }
+  else
+    {
+    cmtk::SphereDetectionBipolarMatchedFilterFFT detectionFilter( *volume );
+    volume->SetData( detectionFilter.GetFilteredImageData( sphereRadius, filterMargin ) );
+    }
+
   cmtk::VolumeIO::Write( *volume, outputPath );
 
   return 0;
