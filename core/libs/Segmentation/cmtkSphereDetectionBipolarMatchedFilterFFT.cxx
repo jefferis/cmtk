@@ -108,8 +108,10 @@ cmtk::SphereDetectionBipolarMatchedFilterFFT::GetFilteredImageData( const Types:
 size_t
 cmtk::SphereDetectionBipolarMatchedFilterFFT::MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth )
 {
-  const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
-  
+  const int nRadius[3] = { 1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 
+			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 
+			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
+
   // count number of non-zero filter elements for rough normalization
   size_t cnt = 0;
 

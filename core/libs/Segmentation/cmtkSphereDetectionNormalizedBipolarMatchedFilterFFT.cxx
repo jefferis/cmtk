@@ -111,6 +111,8 @@ cmtk::TypedArray::SmartPtr
 cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( const Types::Coordinate sphereRadius, const int marginWidth )
 {
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
+  memset( this->m_FilterSquareFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
+  memset( this->m_FilterMaskFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
 
   this->MakeFilter( sphereRadius, marginWidth );
 
@@ -163,7 +165,9 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
 void
 cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types::Coordinate sphereRadius, const int marginWidth )
 {
-  const int nRadius[3] = { 1 + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 1 + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
+  const int nRadius[3] = { 1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[0] ), 
+			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 
+			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
 
   this->m_SumFilter = this->m_SumFilterMask = this->m_SumFilterSquare = 0;
   
@@ -175,11 +179,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 	const cmtk::Types::Coordinate distance = sqrt( cmtk::MathUtil::Square( k * this->m_PixelSize[2] ) + cmtk::MathUtil::Square( j * this->m_PixelSize[1] ) + cmtk::MathUtil::Square( i * this->m_PixelSize[0] ) );
 	if ( distance <= sphereRadius+marginWidth )
 	  {
-	  cmtk::Types::DataItem value = 0;
-	  if ( distance >= sphereRadius-marginWidth )
-	    {
-	    value = 1;
-	    }
+	  cmtk::Types::DataItem value = 1;
 	  if ( (distance > sphereRadius) )
 	    {
 	    value = -1;
