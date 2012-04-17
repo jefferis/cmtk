@@ -400,7 +400,7 @@ operator<=( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
   return true;
 }
 
-/// Stream input operator.
+/// Stream output operator.
 template<size_t NDIM,typename T>
 std::ostream& operator<<( std::ostream& stream, const FixedVector<NDIM,T>& index )
 {
@@ -410,7 +410,7 @@ std::ostream& operator<<( std::ostream& stream, const FixedVector<NDIM,T>& index
   return stream;
 }
 
-/// Stream output operator.
+/// Stream input operator.
 template<size_t NDIM,typename T>
 std::istream& operator>>( std::istream& stream, FixedVector<NDIM,T>& index )
 {
