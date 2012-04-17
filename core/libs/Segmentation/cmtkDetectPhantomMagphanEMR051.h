@@ -65,10 +65,16 @@ public:
   /// Constructor: detect all landmark spheres.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
   
-  /// Get phantom-to-image transformation.
-  AffineXform::SmartConstPtr GetPhantomToImageTransformation() const
+  /// Get rigid phantom-to-image transformation.
+  AffineXform::SmartConstPtr GetPhantomToImageTransformationRigid() const
   {
     return this->m_PhantomToImageTransformationRigid;
+  }
+  
+  /// Get affine phantom-to-image transformation.
+  AffineXform::SmartConstPtr GetPhantomToImageTransformationAffine() const
+  {
+    return this->m_PhantomToImageTransformationAffine;
   }
   
   /// Get the image-space label map of detected spheres.
@@ -126,7 +132,7 @@ private:
   /// Get margin (in pixels) for the bipolar sphere detection matched filter.
   int GetBipolarFilterMargin() const
   {
-    return 3;
+    return 1;
   }
 
   /// Get safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.

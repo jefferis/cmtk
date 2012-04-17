@@ -38,7 +38,7 @@
 
 #include <System/cmtkDebugOutput.h>
 
-#include <Segmentation/cmtkSphereDetectionBipolarMatchedFilterFFT.h>
+#include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
   : m_PhantomImage( phantomImage ),
@@ -51,16 +51,16 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
   // create sphere detection filter based on bipolar FFT matched filtering
-  SphereDetectionBipolarMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
+  SphereDetectionNormalizedBipolarMatchedFilterFFT sphereDetector( *(this->m_PhantomImage) );
 
   // Find 1x 60mm SNR sphere
-  TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), 3 /*filterMargin*/ ) );
+  TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), this->GetBipolarFilterMargin() ) );
   this->m_Landmarks[0] = this->FindSphere( *filterResponse );
   this->m_Landmarks[0] = this->RefineSphereLocation( this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
   
   // find the two 15mm spheres near estimated position
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
-  
+
   if ( this->FindSphereAtDistance( this->m_Landmarks[1], *filterResponse, this->m_Landmarks[0], 90, 10 ) )
     {
     this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
@@ -68,7 +68,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 
   if ( this->FindSphereAtDistance( this->m_Landmarks[2], *filterResponse, this->m_Landmarks[0], 60, 10 ) )
     {
-    this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 1 ), 3 /*label*/ );
+    this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 2 ), 3 /*label*/ );
     }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
