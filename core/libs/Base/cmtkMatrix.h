@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,11 +63,6 @@ public:
   Matrix( const size_t (&dims)[NDim] )
     : m_SubMatrixArray( dims[0] )
   {
-    size_t nItems = dims[0];
-    for ( size_t i = 1; i < NDim; ++i )
-      nItems *= dims[i];
-
-    TElement* data = Memory::ArrayC::Allocate<TElement>( nItems );
   }
 
   /// Destructor.
