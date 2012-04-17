@@ -35,6 +35,7 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
@@ -47,8 +48,10 @@ int
 doMain( const int argc, const char* argv[] )
 {
   const char* inputPath = NULL;
-  const char* outputPath = NULL;
-  const char* outputXform = NULL;
+
+  const char* outputLabelPath = NULL;
+  const char* outputRigidPath = NULL;
+  const char* outputAffinePath = NULL;
 
   try
     {
@@ -57,13 +60,17 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a 3D image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom)." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-rigid" ), &outputRigidPath, "Output path for the fitted rigid transformation from phantom space into RAS image standard space. This transformation defines where each sphere should be in the image." )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-affine" ), &outputAffinePath, "Output path for the fitted affine transformation from phantom space into RAS image standard space. This is the closest linear-fit transformation, "
+		  "and as such it includes scale and shear components not present in the fitted rigid transformations. Since these components are due to scanner miscalibration and distortion, this transformation DOES NOT "
+		  "specify the correct spehre locations in the image, but rather, allows for quantification of scale miscalibration.")
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outputPath, "OutputImage", "Output image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table.." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddParameter( &outputXform, "OutputXform", "Output transformation path. This is the affine phantom-to-image coordinate transformation fitted to the detected landmark spheres." )
-      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
     }
@@ -73,12 +80,39 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inputPath ) );
+  cmtk::UniformVolume::SmartPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPath ) );
+  const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
 
-  cmtk::DetectPhantomMagphanEMR051 detectionFilter( volume );
+  cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
 
-  cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputPath );
-  cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformation(), outputXform );
+  // get expected landmark locations
+  cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
+  // bring expected landmark locations from phantom image into physical space
+  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    {
+    phantomToPhysical.ApplyInPlace( it->m_Location );
+    }
+
+  // get detected landmark locations
+  cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
+  // bring detected landmark locations from phantom image into physical space
+  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    {
+    phantomToPhysical.ApplyInPlace( it->m_Location );
+    }
+  
+  // match expected and detected landmarks
+  cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
+  cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
+
+  if ( outputLabelPath )
+    cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputLabelPath );
+
+  if ( outputAffinePath )
+    cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationAffine(), outputAffinePath );
+
+  if ( outputRigidPath )
+    cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationRigid(), outputRigidPath );
 
   return 0;
 }
