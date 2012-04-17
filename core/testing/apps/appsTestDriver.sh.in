@@ -830,6 +830,10 @@ case ${RUNTEST} in
         run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetRigid ${tmpdir}/affine.xform
 	check_results affine.xform
 	;;
+    fit_affine_xform_landmarksRigidRigidFlip)
+        run fit_affine_xform_landmarks --rigid landmarksSource2 landmarksTarget2 ${tmpdir}/rigid.xform
+	check_results rigid.xform
+	;;
     fit_affine_xform_landmarksRigidScales)
         run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetScales ${tmpdir}/affine.xform
 	check_results affine.xform

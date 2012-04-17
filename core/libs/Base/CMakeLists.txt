@@ -76,6 +76,7 @@ SET(cmtkBase_SRCS
   cmtkJointHistogram.cxx
   cmtkJointHistogramBase.cxx
   cmtkLandmark.cxx
+  cmtkLandmarkPair.cxx
   cmtkLandmarkList.cxx
   cmtkLandmarkPairList.cxx
   cmtkMagphanEMR051.cxx

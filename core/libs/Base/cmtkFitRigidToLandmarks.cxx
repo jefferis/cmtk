@@ -69,64 +69,72 @@ cmtk::FitRigidToLandmarks::FitRigidToLandmarks( const LandmarkPairList& landmark
       }
     }  
 
-  const Types::Coordinate oneOverN = 1.0 / landmarkPairs.size();
+  // use SVD to solve orthogonal procrustes problem
+  Matrix2D<double> V( 3, 3 );
+  std::vector<double> W( 3 );
+  MathUtil::SVD( U, 3, 3, W, V );
+
+  Matrix3x3<Types::Coordinate> matrix;
   for ( size_t j = 0; j < 3; ++j )
     {
     for ( size_t i = 0; i < 3; ++i )
       {
-      U[i][j] *= oneOverN;
+      matrix[j][i] = 0;
+      for ( size_t k = 0; k < 3; ++k )
+	{
+	matrix[j][i] += V[i][k] * U[j][k];
+	}
       }
     }
 
-  const Types::Coordinate traceU = U[0][0] + U[1][1] + U[2][2];
-  const Types::Coordinate delta[3] = { U[1][2] - U[2][1], U[2][0] - U[0][2], U[0][1] - U[1][0] };
-
-  ap::real_2d_array a;
-  a.setbounds( 0, 3, 0, 3 );
-  a(0,0) = traceU;
-
-  a(0,1) = a(1,0) = delta[0];
-  a(0,2) = a(2,0) = delta[1];
-  a(0,3) = a(3,0) = delta[2];
-
-  for ( size_t j = 0; j < 3; ++j )
+  // if there is a flip, find zero singular value and flip its singular vector.
+  if ( matrix.Determinant() < 0 )
     {
-    for ( size_t i = 0; i < 3; ++i )
+    int minSV = -1;
+    if (W[0] < W[1]) 
       {
-      a(1+i,1+j)=a(1+j,1+i) = U[i][j]+U[j][i];
+      if (W[0] < W[2]) 
+	{
+	minSV = 0;
+	}
+      else
+	{
+	minSV = 2;
+	}
       }
-    a(1+j,1+j) -= traceU;
-    }
-  
-  ap::real_1d_array eVals;
-  eVals.setbounds( 0, 3 );
+    else
+      {
+      if (W[1] < W[2]) 
+	{
+	minSV = 1;
+	}
+      else
+	{
+	minSV = 2;
+	}
+      }
 
-  ap::real_2d_array eVecs;
-  eVecs.setbounds( 0, 3, 0, 3 );
-
-  if ( smatrixevd( a, 4, true /*ZNeeded*/, true /*isUpper*/, eVals, eVecs ) )
-    {
-    // eVals/eVecs are sorted in ascending order; use last
-    const Types::Coordinate q[4] = { eVecs(3,0),  eVecs(3,1),  eVecs(3,2),  eVecs(3,3) };
+    for ( size_t j = 0; j < 3; ++j )
+      {
+      V[j][minSV] *= -1;
+      }
     
-    // put everything together
-    AffineXform::MatrixType matrix;
-    matrix[0][0] = q[0]*q[0]+q[1]*q[1]-q[2]*q[2]-q[3]*q[3];
-    matrix[0][1] = 2*(q[1]*q[2]-q[0]*q[3]);
-    matrix[0][2] = 2*(q[1]*q[3]+q[0]*q[2]);
-    matrix[1][0] = 2*(q[1]*q[2]+q[0]*q[3]);
-    matrix[1][1] = q[0]*q[0]+q[2]*q[2]-q[1]*q[1]-q[3]*q[3];
-    matrix[1][2] = 2*(q[2]*q[3]-q[0]*q[1]);
-    matrix[2][0] = 2*(q[1]*q[3]-q[0]*q[2]);
-    matrix[2][1] = 2*(q[2]*q[3]+q[0]*q[1]);
-    matrix[2][2] = q[0]*q[0]+q[3]*q[3]-q[1]*q[1]-q[2]*q[2];
-    matrix[3][3] = 1;
-    matrix[3][0] = matrix[3][1] = matrix[3][2] = 0;
-    matrix[0][3] = matrix[0][3] = matrix[0][3] = 0;
-
-    this->m_RigidXform = AffineXform::SmartPtr( new AffineXform( matrix ) );
-    const AffineXform::SpaceVectorType cFromR = this->m_RigidXform->Apply( cFrom );
-    this->m_RigidXform->SetTranslation( (cTo - cFromR) );
-    this->m_RigidXform->SetCenter( cFrom );
+    for ( size_t j = 0; j < 3; ++j )
+      {
+      for ( size_t i = 0; i < 3; ++i )
+	{
+	matrix[j][i] = 0;
+	for ( size_t k = 0; k < 3; ++k )
+	  {
+	  matrix[j][i] += V[i][k] * U[j][k];
+	  }
+	}
+      }
     }
+
+  // put everything together
+  AffineXform::MatrixType matrix4x4( matrix );
+  this->m_RigidXform = AffineXform::SmartPtr( new AffineXform( matrix4x4 ) );
+  this->m_RigidXform->SetTranslation( (cTo - cFrom) );
+  this->m_RigidXform->SetCenter( cFrom );
 }

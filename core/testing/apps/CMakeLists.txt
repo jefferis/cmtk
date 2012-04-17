@@ -318,7 +318,7 @@ LIST(APPEND testList
 # ==========================================
 # Tests for "fit_affine_xform_landmarks" tool
 LIST(APPEND testList fit_affine_xform_landmarksRigid fit_affine_xform_landmarksScales fit_affine_xform_landmarksShear
-  fit_affine_xform_landmarksRigidRigid fit_affine_xform_landmarksRigidScales fit_affine_xform_landmarksRigidShear)
+  fit_affine_xform_landmarksRigidRigid fit_affine_xform_landmarksRigidRigidFlip fit_affine_xform_landmarksRigidScales fit_affine_xform_landmarksRigidShear)
 
 # ==========================================
 # Tests for "fit_affine_xform" tool
