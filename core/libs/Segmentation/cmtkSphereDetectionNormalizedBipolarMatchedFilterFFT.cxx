@@ -154,9 +154,12 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     const Types::DataItem num = magnitude( this->m_FilterFT[n] ) - (magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
-    const Types::DataItem denom1 = sqrt( magnitude( this->m_FilterMaskFT2[n] ) - square( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask );
+    const Types::DataItem denom1 = sqrt( std::max<Types::DataItem>( 0, magnitude( this->m_FilterMaskFT2[n] ) - square( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask ) );
     
-    result->Set( num / (denom1*denom2), n );
+    if ( (num == 0) || (denom1 ==0) )
+      result->Set( 0, n );
+    else
+      result->Set( num / (denom1*denom2), n );
     }
 
   return result;

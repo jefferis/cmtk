@@ -748,6 +748,11 @@ case ${RUNTEST} in
 	run convertx --float --downsample-select 4,4,4 ${tmpdir}/filtered.nii ${tmpdir}/filtered.nii
 	check_images filtered.nii
 	;;
+    detect_spheres_matched_filterNormalized)
+        run detect_spheres_matched_filter --normalized --radius 15 --filter-margin 1 adni_phantom2mm.nii ${tmpdir}/filtered.nii
+	run convertx --float --downsample-select 4,4,4 ${tmpdir}/filtered.nii ${tmpdir}/filtered.nii
+	check_images filtered.nii
+	;;
     dof2mat)
         run_eval "${BINDIR}/dof2mat parc1_parc2_9dof.xform > ${tmpdir}/matrix"
 	check_results matrix

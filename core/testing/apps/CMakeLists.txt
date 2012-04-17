@@ -106,7 +106,9 @@ LIST(APPEND testList
 # ==========================================
 # Tests for "detect_spheres_matched_filter" tool
 IF(CMTK_USE_FFTW)
-  LIST(APPEND testList detect_spheres_matched_filter)
+  LIST(APPEND testList 
+    detect_spheres_matched_filter
+    detect_spheres_matched_filterNormalized)
 ENDIF(CMTK_USE_FFTW)
 
 # ==========================================
