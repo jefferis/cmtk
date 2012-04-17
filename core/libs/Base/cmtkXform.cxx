@@ -102,21 +102,14 @@ Xform::GetParamVector
 Types::Coordinate
 Xform::GetLandmarksMSD( const LandmarkPairList& ll ) const
 {
-  double MSD = 0;
+  Types::Coordinate msd = 0;
 
-  LandmarkPairList::const_iterator it = ll.begin();
-  while ( it != ll.end() )
+  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source = it->m_Location;
-    Self::SpaceVectorType target = it->m_TargetLocation;
-    this->ApplyInPlace( source );
-    MSD += (source - target).SumOfSquares();
-    ++it;
+    msd += ( this->Apply( it->m_Location ) - it->m_TargetLocation ).SumOfSquares();
     }
   
-  MSD /= ll.size();
-
-  return MSD;
+  return msd / ll.size();
 }
 
 } // namespace cmtk
