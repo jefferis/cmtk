@@ -105,10 +105,15 @@ doMain ( const int argc, const char *argv[] )
   cmtk::DebugOutput( 5 ) << "Read " << targetLandmarks.size() << " target landmarks\n";
 
   cmtk::LandmarkPairList landmarkPairs( sourceLandmarks, targetLandmarks );
-  if ( rigid )
-    cmtk::XformIO::Write( cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform(), outputPath );
-  else
-    cmtk::XformIO::Write( cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform(), outputPath );
+  cmtk::DebugOutput( 5 ) << "Matched " << landmarkPairs.size() << " landmark pairs\n";
+
+  cmtk::AffineXform::SmartConstPtr xform = rigid ? cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform() : cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform();
+  cmtk::XformIO::Write( xform, outputPath );
+
+  if ( cmtk::DebugOutput::GetGlobalLevel() >= 5 )
+    {
+    cmtk::DebugOutput( 5 ) << "INFO: RMS fitting residual = " << sqrt( xform->GetLandmarksMSD( landmarkPairs ) ) << "\n";
+    }
   
   return 0;
 }
