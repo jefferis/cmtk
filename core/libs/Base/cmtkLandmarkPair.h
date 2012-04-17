@@ -75,6 +75,20 @@ public:
   Self::SpaceVectorType m_TargetLocation;
 };
 
+/// Stream output operator.
+std::ostream& operator<<( std::ostream& stream, const LandmarkPair& pair )
+{
+  stream << pair.m_Location << "\t" << pair.m_TargetLocation << "\t" << pair.m_Name << std::endl;
+  return stream;
+}
+
+/// Stream input operator.
+std::istream& operator>>( std::istream& stream, LandmarkPair& pair )
+{
+  stream >> pair.m_Location >> pair.m_TargetLocation >> pair.m_Name;
+  return stream;
+}
+
 //@}
 
 } // namespace cmtk
