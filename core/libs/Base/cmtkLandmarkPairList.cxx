@@ -83,4 +83,12 @@ LandmarkPairList::FindByName( const std::string& name )
   return this->end();
 }
 
+std::ostream& 
+operator<<( std::ostream& stream, const LandmarkPairList& pairList )
+{
+  for ( LandmarkPairList::ConstIterator it = pairList.begin(); it != pairList.end(); ++it )
+    stream << it->m_Location << "\t" << it->m_TargetLocation << "\t" << it->m_Name << std::endl;
+  return stream;
+}
+
 } // namespace cmtk
