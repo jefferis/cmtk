@@ -38,6 +38,8 @@
 
 #include <System/cmtkDebugOutput.h>
 
+#include <IO/cmtkVolumeIO.h>
+
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
@@ -84,7 +86,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   for ( size_t i = 3; i < 7; ++i )
     {
     const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, candidate, 0, 5 ) )
+    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, candidate, 0, 15 ) )
       {
       this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
       }
@@ -142,9 +144,14 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       {
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
-	this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
+	const Self::SpaceVectorType predicted = this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
 	if ( this->FindSphereAtDistance( this->m_Landmarks[i], filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ) )
-	  this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	  {
+	  const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	  // some spheres are darker than background - only accept refinements that improve residual fit error
+	  if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i] - predicted).RootSumOfSquares() )
+	    this->m_Landmarks[i] = refined;
+	  }
 	}
       }
     
@@ -304,7 +311,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
     if ( regionData.ValueAt( i ) < threshold )
       regionData.Set( 0.0, i );
     }
-  
+
   const Self::SpaceVectorType refined = estimate + regionVolume->GetCenterOfMass() - regionVolume->GetCenterCropRegion();
 
   // update exclusion mask
