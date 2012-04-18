@@ -125,6 +125,9 @@ public:
   }
 
 private:
+  /// Solve least-squares problem.
+  void LeastSquares();
+
   /// Initialize results arrays with the correct number of pixels.
   void InitResults( const size_t nPixels );
 

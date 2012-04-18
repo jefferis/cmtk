@@ -63,6 +63,12 @@ GeneralLinearModel::GeneralLinearModel
   VariableMean( nParameters ),
   VariableSD( nParameters )
 {
+  this->LeastSquares();
+}
+
+void
+GeneralLinearModel::LeastSquares()
+{
   U = new Matrix2D<double>( NData, NParameters );
   V = new Matrix2D<double>( NParameters, NParameters );
   W = new std::vector<double>( NParameters );
