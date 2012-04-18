@@ -237,7 +237,7 @@ GeneralLinearModel::FitModel
     else 
       {
       // use SVD of design matrix to compute model parameters lm_params[] from data b[]
-      MathUtil::SVDLinearRegression( this->U, this->NData, this->NParameters, this->W, this->V, &b[0], lm_params );
+      MathUtil::SVDLinearRegression( *(this->U), this->NData, this->NParameters, *(this->W), *(this->V), &b[0], lm_params );
 
       // compute variance of data
       double varY, avgY;
@@ -280,24 +280,20 @@ GeneralLinearModel::FitModel
       // for each parameter, evaluate R^2_i for model without parameter Xi
       for (size_t p = 0; p < this->NParameters; ++p ) 
 	{
-	// exclude constant parameter
-//	if ( this->VariableSD[p] > 0 )
-	  {
-//	  // use SVD of partial design matrix to compute partial regression
-          MathUtil::SVDLinearRegression( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p], &b[0], lm_params_P );
-
-	  // compute variance of data
-	  for (size_t i = 0; i < this->NData; i++) 
-	    { 
-	    valueYhatp[i] = 0.0;
-	    size_t pip = 0;
-	    for (size_t pi = 0; pi < this->NParameters; ++pi ) 
+	// use SVD of partial design matrix to compute partial regression
+	MathUtil::SVDLinearRegression( *(this->Up[p]), this->NData, this->NParameters-1, *(this->Wp[p]), *(this->Vp[p]), &b[0], lm_params_P );
+	
+	// compute variance of data
+	for (size_t i = 0; i < this->NData; i++) 
+	  { 
+	  valueYhatp[i] = 0.0;
+	  size_t pip = 0;
+	  for (size_t pi = 0; pi < this->NParameters; ++pi ) 
+	    {
+	    if ( p != pi ) 
 	      {
-	      if ( p != pi ) 
-		{
-		valueYhatp[i] += lm_params_P[pip] * this->DesignMatrix[i][pi];
-		++pip;
-		}
+	      valueYhatp[i] += lm_params_P[pip] * this->DesignMatrix[i][pi];
+	      ++pip;
 	      }
 	    }
 	  

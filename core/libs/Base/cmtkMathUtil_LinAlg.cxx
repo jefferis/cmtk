@@ -179,7 +179,7 @@ MathUtil::SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<
 /** TODO: move this someplace more logical than the linear-algebra module
  */
 void
-MathUtil::SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params )
+MathUtil::SVDLinearRegression( Matrix2D<double>& U, size_t m, size_t n, std::vector<double>& W, Matrix2D<double>& V, double *b, std::vector<double>& lm_params )
 {
     // From alglib linear regression:
     // Take the inverses of the singular values, setting the inverse 
@@ -188,8 +188,8 @@ MathUtil::SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vec
     ap::real_1d_array svi;
     svi.setbounds( 0, n-1 );
     for( size_t i = 0; i < n; i++ )
-      if( (*W)[i] > epstol*ap::machineepsilon * (*W)[0] )
-        svi(i) = 1 / (*W)[i];
+      if( W[i] > epstol*ap::machineepsilon * W[0] )
+        svi(i) = 1 / W[i];
       else
         svi(i) = 0;
 
@@ -203,10 +203,10 @@ MathUtil::SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vec
       {
       ut_times_b = 0.0;
       for ( size_t j = 0; j < m; j++ )
-        ut_times_b += (*U)[j][i] * b[j];
+        ut_times_b += U[j][i] * b[j];
       ut_times_b *= svi(i);
       for ( size_t j = 0; j < n; j++ )
-        lm_params[j] += ut_times_b * (*V)[j][i]; 
+        lm_params[j] += ut_times_b * V[j][i]; 
       }
 }
 
