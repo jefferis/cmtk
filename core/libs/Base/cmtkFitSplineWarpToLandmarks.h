@@ -51,7 +51,7 @@ cmtk
  *\see The implementation itself is more closely following S. Lee, G. Wolberg, and S. Y. Shin, “Scattered data interpolation with multilevel B-splines,” IEEE Transactions on Visualization and Computer Graphics, 
  * vol. 3, no. 3, pp. 228-244, 1997. http://dx.doi.org/10.1109/2945.620490
  *
- *\note This class does not compile with Solaris Studio, unless STLport support is activated via the "-library=stlport4" compiler command line option.
+ *\attention This class does not compile with Solaris Studio, unless STLport support is activated via the "-library=stlport4" compiler command line option.
  */
 class FitSplineWarpToLandmarks
 {
