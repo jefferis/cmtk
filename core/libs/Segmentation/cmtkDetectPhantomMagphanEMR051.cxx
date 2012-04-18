@@ -314,6 +314,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
     }
 
   regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMask, 2 /* polynomial degree */ ).GetCorrectedData() );
+  regionData = *(regionVolume->GetData()); // need to update reference
 
   // repeat thresholding to mask out background in bias-corrected region
   const Types::DataItem threshold2 = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();

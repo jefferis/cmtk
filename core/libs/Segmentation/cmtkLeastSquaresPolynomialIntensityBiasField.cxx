@@ -45,7 +45,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
 
   // first, compute average intensity over masked region
   Types::DataItem avg = 0;
-  size_t cnt = 0;
+  size_t nPixelsMask = 0;
 
   const DataGrid::RegionType region = image.GetWholeImageRegion();
   for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
@@ -54,11 +54,11 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     if ( mask[ofs] )
       {
       avg += fabs( image.GetDataAt( ofs ) );
-      ++cnt;
+      ++nPixelsMask;
       }
     }
   
-  avg /= cnt;
+  avg /= nPixelsMask;
 
   // set up least-squares problem
   size_t nVars = 0;
@@ -70,9 +70,10 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     case 4: nVars = Polynomial<4,Types::DataItem>::NumberOfMonomials; break;
     }
 
-  std::vector<Types::DataItem> dataVector( cnt );
-  Matrix2D<Types::DataItem> uMatrix( cnt, nVars );
+  std::vector<Types::DataItem> dataVector( nPixelsMask );
+  Matrix2D<Types::DataItem> uMatrix( nPixelsMask, nVars );
 
+  size_t cntPx = 0;
   for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
     {
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
@@ -81,21 +82,22 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     
     if ( mask[ofs] )
       {
-      dataVector[ofs] = image.GetDataAt( ofs ) / avg;
+      dataVector[cntPx] = image.GetDataAt( ofs ) / avg;
       for ( size_t n = 0; n < nVars; ++n )
 	{
-	uMatrix[ofs][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, 2.0 * xyz[0] / image.Size[0], 2.0 * xyz[1] / image.Size[1], 2.0 * xyz[2] / image.Size[2] );
+	uMatrix[cntPx][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, 2.0 * xyz[0] / image.Size[0], 2.0 * xyz[1] / image.Size[1], 2.0 * xyz[2] / image.Size[2] );
 	}
+      ++cntPx;
       }
     }
   
   // solve least-squares problem
   Matrix2D<Types::DataItem> vMatrix( nVars, nVars );
   std::vector<Types::DataItem> wVector( nVars );
-  MathUtil::SVD( uMatrix, cnt, nVars, wVector, vMatrix );
+  MathUtil::SVD( uMatrix, nPixelsMask, nVars, wVector, vMatrix );
 
   std::vector<Types::DataItem> params( nVars );
-  MathUtil::SVDLinearRegression( uMatrix, cnt, nVars, wVector, vMatrix, &dataVector[0], params );
+  MathUtil::SVDLinearRegression( uMatrix, nPixelsMask, nVars, wVector, vMatrix, &dataVector[0], params );
 
   // apply solution
   this->m_CorrectedData = TypedArray::Create( image.GetData()->GetType(), image.GetNumberOfPixels() );
