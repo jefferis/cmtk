@@ -41,6 +41,7 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
+#include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
   : m_PhantomImage( phantomImage ),
@@ -306,9 +307,19 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 
   // threshold background to zero (taking it out of center-of-mass computation)
   const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();
+  std::vector<bool> regionMask( regionVolume->GetNumberOfPixels() );
   for ( size_t i = 0; i < regionData.GetDataSize(); ++i )
     {
-    if ( regionData.ValueAt( i ) < threshold )
+    regionMask[i] = ( regionData.ValueAt( i ) >= threshold );
+    }
+
+  regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMask, 2 /* polynomial degree */ ).GetCorrectedData() );
+
+  // repeat thresholding to mask out background in bias-corrected region
+  const Types::DataItem threshold2 = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();
+  for ( size_t i = 0; i < regionData.GetDataSize(); ++i )
+    {
+    if ( regionData.ValueAt( i ) < threshold2 )
       regionData.Set( 0.0, i );
     }
 
