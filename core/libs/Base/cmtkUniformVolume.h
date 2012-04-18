@@ -437,6 +437,14 @@ public:
     return Self::CoordinateVectorType( loc );
   }
   
+  /** Get a grid location in image coordinates.
+   *\return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
+   */
+  virtual const Self::CoordinateVectorType GetGridLocation( const Self::CoordinateVectorType& xyz /*!< Grid index (possibly fractional) */ ) const 
+  {
+    return this->m_Offset + ComponentMultiply( xyz, this->m_Delta );
+  }
+  
   /** Get a grid location in physical coordinates.
    *\param idxV The index of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1. Fractional coordinates are permitted.
