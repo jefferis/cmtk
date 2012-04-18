@@ -30,26 +30,6 @@
 
 #include "cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h"
 
-inline void multiply( fftw_complex& lhs, const fftw_complex& rhs )
-{
-  fftw_complex product;
-  product[0] = lhs[0]*rhs[0] - lhs[1]*rhs[1];
-  product[1] = lhs[1]*rhs[0] + lhs[0]*rhs[1];
-
-  lhs[0] = product[0];
-  lhs[1] = product[1];
-}
-
-inline cmtk::Types::DataItem square( const fftw_complex& c )
-{
-  return c[0]*c[0] + c[1]*c[1];
-}
-
-inline cmtk::Types::DataItem magnitude( const fftw_complex& c )
-{
-  return sqrt( square( c ) );
-}
-
 cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalizedBipolarMatchedFilterFFT( const UniformVolume& image )
   :   m_NumberOfPixels( image.GetNumberOfPixels() ),
       m_ImageDims( image.m_Dims ),
@@ -129,9 +109,9 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
     this->m_FilterMaskFT2[n][0] = this->m_FilterMaskFT[n][0];
     this->m_FilterMaskFT2[n][1] = this->m_FilterMaskFT[n][1];
 
-    multiply( this->m_FilterMaskFT[n], this->m_ImageFT[n] );
-    multiply( this->m_FilterMaskFT2[n], this->m_ImageSquareFT[n] );
-    multiply( this->m_FilterFT[n], this->m_ImageFT[n] );
+    FFTW::MultiplyInPlace( this->m_FilterMaskFT[n], this->m_ImageFT[n] );
+    FFTW::MultiplyInPlace( this->m_FilterMaskFT2[n], this->m_ImageSquareFT[n] );
+    FFTW::MultiplyInPlace( this->m_FilterFT[n], this->m_ImageFT[n] );
     }
   
   // transform filtered spectral data back into space domain
@@ -153,8 +133,8 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
-    const Types::DataItem num = magnitude( this->m_FilterFT[n] ) - (magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
-    const Types::DataItem denom1 = sqrt( std::max<Types::DataItem>( 0, magnitude( this->m_FilterMaskFT2[n] ) - square( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask ) );
+    const Types::DataItem num = FFTW::Magnitude( this->m_FilterFT[n] ) - (FFTW::Magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
+    const Types::DataItem denom1 = sqrt( std::max<Types::DataItem>( 0, FFTW::Magnitude( this->m_FilterMaskFT2[n] ) - FFTW::SumOfSquares( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask ) );
     
     if ( (num == 0) || (denom1 ==0) )
       result->Set( 0, n );

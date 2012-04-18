@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,6 +69,10 @@ __attribute__((visibility("hidden"))) pthread_attr_t gomp_thread_attr;
 #  ifdef _SC_NPROC_ONLN
 #    define _SC_NPROCESSORS_ONLN _SC_NPROC_ONLN
 #  endif
+#endif
+
+#ifdef CMTK_USE_FFTW
+#  include <System/cmtkFFTW.h>
 #endif
 
 namespace
@@ -149,6 +153,10 @@ Threads
 
 #ifdef _OPENMP
   omp_set_num_threads( NumberOfThreads );
+#endif
+
+#ifdef CMTK_USE_FFTW
+  FFTW::GetStatic().SetNumberOfThreads( NumberOfThreads );
 #endif
 
   return NumberOfThreads;

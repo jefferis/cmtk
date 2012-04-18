@@ -35,7 +35,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-#include <fftw3.h>
+#include <System/cmtkFFTW.h>
 
 namespace
 cmtk

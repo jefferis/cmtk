@@ -99,9 +99,9 @@ cmtk::SphereDetectionBipolarMatchedFilterFFT::GetFilteredImageData( const Types:
   TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
-    result->Set( sqrt( this->m_FilterFT[n][0]*this->m_FilterFT[n][0] + this->m_FilterFT[n][1]*this->m_FilterFT[n][1] ) / this->m_NumberOfPixels, n );
+    result->Set( FFTW::Magnitude( this->m_FilterFT[n] ) / this->m_NumberOfPixels, n );
     }
-
+  
   return result;
 }
 
