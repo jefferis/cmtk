@@ -159,17 +159,31 @@ check_image()
 	exit 1
     fi
     
+    abs_threshold=1e-5 ## if this is made much smaller, need to adjust "scale=" on next line:
+
     # see if maximum relative difference between images exceeds 1e-6
-    difference=`${BINDIR}/similarity $baseline $result | fgrep SIMval | cut -f4`
-    threshold=1e-5 ## if this is made much smaller, need to adjust "scale=" on next line:
-    compare=`echo "SCALE; $difference > $threshold" | sed 's/e/*10^/g;s/SCALE/scale=10/' | bc`
+    difference=`${BINDIR}/similarity $baseline $result | fgrep SIMval | cut -f3`
+    compare=`echo "SCALE; $difference > $abs_threshold" | sed 's/e/*10^/g;s/SCALE/scale=10/' | bc`
 
     echo difference=$difference compare=$compare
 
     if [ "${compare}" = "0" ]; then
 	return
     else
-	echo "Relative image difference $difference exceeds threshold $threshold"
+	echo "Absolute image difference $difference exceeds threshold $abs_threshold"
+    fi
+
+    rel_threshold=1e-5 ## if this is made much smaller, need to adjust "scale=" on next line:
+
+    difference=`${BINDIR}/similarity $baseline $result | fgrep SIMval | cut -f4`
+    compare=`echo "SCALE; $difference > $rel_threshold" | sed 's/e/*10^/g;s/SCALE/scale=10/' | bc`
+
+    echo difference=$difference compare=$compare
+
+    if [ "${compare}" = "0" ]; then
+	return
+    else
+	echo "Relative image difference $difference exceeds threshold $rel_threshold"
 	exit 1
     fi
 }
