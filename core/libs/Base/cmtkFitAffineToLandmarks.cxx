@@ -70,7 +70,7 @@ cmtk::FitAffineToLandmarks::FitAffineToLandmarks( const LandmarkPairList& landma
       }
     }  
   
-  Matrix3x3<Types::Coordinate> matrix = (xxT.Invert3x3()*txT);
+  Matrix3x3<Types::Coordinate> matrix = (xxT.GetInverse()*txT);
   
   // put everything together
   AffineXform::MatrixType matrix4x4( matrix );

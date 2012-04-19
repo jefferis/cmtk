@@ -493,9 +493,6 @@ public:
   /// Assignment operator.
   AffineXform& operator=( const AffineXform& other );
 
-  /// Print object.
-  virtual void Print() const;
-
 protected:
   /// Clone this object.
   virtual Self* CloneVirtual() const

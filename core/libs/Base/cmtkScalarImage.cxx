@@ -176,7 +176,7 @@ ScalarImage::InterpolateFrom
   FixedVector<2,Types::Coordinate> deltax;
   deltax[0] = grid.m_PixelSize[0];
   deltax[1] = 0;
-
+  
   FixedVector<2,Types::Coordinate> deltay;
   deltay[0] = 0;
   deltay[1] = grid.m_PixelSize[1];

@@ -42,55 +42,21 @@ namespace
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
-
-template<class T>
-Matrix3x3<T>::Matrix3x3()
-{
-  memset( Matrix, 0, sizeof( Matrix ) );
-  Matrix[0][0] = Matrix[1][1] = Matrix[2][2] = 1.0;
-}
-
-template<class T>
-Matrix3x3<T>::Matrix3x3( const Self& other )
-{
-  memcpy( this->Matrix, other.Matrix, sizeof( this->Matrix ) );
-}
-
-template<class T>
-Matrix3x3<T>&
-Matrix3x3<T>::Set( const T *const values )
-{
-  memcpy( this->Matrix, values, sizeof( this->Matrix ) );
-  return *this;
-}
-
-template<class T>
-Matrix3x3<T>&
-Matrix3x3<T>::Fill( const T value )
-{
-  for ( int i = 0; i < 3; ++i )
-    for ( int j = 0; j < 3; ++j )
-      this->Matrix[i][j] = value;
-  return *this;
-}
-
 template<class T>
 Matrix3x3<T>&
 Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
 {
   const Units::Radians alpha = Units::Degrees( params[2] );
 
-  this->Matrix[0][0] = static_cast<T>(  MathUtil::Cos( alpha ) * params[3] );
-  this->Matrix[0][1] = static_cast<T>( -MathUtil::Sin( alpha ) * params[3] );
-  this->Matrix[0][2] = static_cast<T>( 0.0 );
-  this->Matrix[1][0] = static_cast<T>(  MathUtil::Sin( alpha ) * params[4] );
-  this->Matrix[1][1] = static_cast<T>(  MathUtil::Cos( alpha ) * params[4] );
-  this->Matrix[1][2] = static_cast<T>( 0.0 );
-  this->Matrix[2][0] = static_cast<T>( 0.0 );
-  this->Matrix[2][1] = static_cast<T>( 0.0 );
-  this->Matrix[2][2] = static_cast<T>( 1.0 );
+  (*this)[0][0] = static_cast<T>(  MathUtil::Cos( alpha ) * params[3] );
+  (*this)[0][1] = static_cast<T>( -MathUtil::Sin( alpha ) * params[3] );
+  (*this)[0][2] = static_cast<T>( 0.0 );
+  (*this)[1][0] = static_cast<T>(  MathUtil::Sin( alpha ) * params[4] );
+  (*this)[1][1] = static_cast<T>(  MathUtil::Cos( alpha ) * params[4] );
+  (*this)[1][2] = static_cast<T>( 0.0 );
+  (*this)[2][0] = static_cast<T>( 0.0 );
+  (*this)[2][1] = static_cast<T>( 0.0 );
+  (*this)[2][2] = static_cast<T>( 1.0 );
 
   // generate shears
   Self shearMatrix;
@@ -100,13 +66,13 @@ Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
   // transform rotation center
   Types::Coordinate cM[2] = 
     {
-      params[6]*this->Matrix[0][0] + params[7]*this->Matrix[1][0],
-      params[6]*this->Matrix[0][1] + params[7]*this->Matrix[1][1],
+      params[6]*(*this)[0][0] + params[7]*(*this)[1][0],
+      params[6]*(*this)[0][1] + params[7]*(*this)[1][1],
     };
   
   // set translations
-  this->Matrix[2][0] = static_cast<T>( params[0] - cM[0] + params[6] );
-  this->Matrix[2][1] = static_cast<T>( params[1] - cM[1] + params[7] );
+  (*this)[2][0] = static_cast<T>( params[0] - cM[0] + params[6] );
+  (*this)[2][1] = static_cast<T>( params[1] - cM[1] + params[7] );
 
   return *this;
 }
@@ -124,7 +90,7 @@ Matrix3x3<T>::Decompose
 {
   // make a working copy of the matrix for step-by-step decomposition
   Types::Coordinate matrix[3][3];
-  memcpy( matrix, Matrix, sizeof( matrix ) );
+  memcpy( matrix, this->m_Matrix, sizeof( matrix ) );
 
   // translation entries
   params[0] = matrix[2][0];
@@ -185,148 +151,15 @@ Matrix3x3<T>::Decompose
 }
 
 template<class T>
-Matrix3x3<T>
-Matrix3x3<T>::GetTranspose() const
-{
-  Self transpose;
-  for ( int i = 0; i < 3; ++i ) 
-    {
-    for ( int j = 0; j < 3; ++j )
-      transpose[i][j] = this->Matrix[j][i];
-    }
-  return transpose;
-}
-  
-template<class T>
-Matrix3x3<T>&
-Matrix3x3<T>::Invert3x3()
-{
-  Self inverse;
-  
-  T rowBuff[3];
-  for ( int col = 0; col<3; ++col ) {
-
-    int pivIdx = col;
-    T pivAbs = fabs( this->Matrix[col][col] );
-
-    for ( int row = col+1; row<3; ++row ) {
-      T nextAbs = fabs( this->Matrix[row][col] );
-      if (nextAbs > pivAbs ) {
-	pivIdx = row;
-	pivAbs = nextAbs;
-      }
-    }
-
-    if ( col != pivIdx )
-      {
-      memcpy( rowBuff, this->Matrix[col], sizeof(rowBuff) );
-      memcpy( this->Matrix[col], this->Matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( this->Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
-
-      memcpy( rowBuff, inverse[col],sizeof(rowBuff));
-      memcpy( inverse[col], inverse[pivIdx], sizeof(rowBuff) );
-      memcpy( inverse[pivIdx], rowBuff, sizeof(rowBuff) );
-      }
-    
-    for ( int c=0; c<3; ++c ) 
-      {
-      if (c>col )
-	this->Matrix[col][c] /= this->Matrix[col][col];
-      inverse[col][c] /= this->Matrix[col][col];
-      }
-    this->Matrix[col][col] = 1.0;
-    
-    for ( int row = 0; row<3; ++row ) 
-      {
-      if (row != col ) 
-	{
-	for ( int c=0; c<3; ++c ) 
-	  {
-	  if ( c>col ) 
-	    this->Matrix[row][c] -= this->Matrix[row][col] * this->Matrix[col][c];
-	  inverse[row][c] -= this->Matrix[row][col] * inverse[col][c];
-	  }
-	this->Matrix[row][col] = 0;
-	}
-      }
-  }
-  
-  // finally copy inverse into this object.
-  return (*this = inverse);
-}
-
-template<class T>
-Matrix3x3<T>& 
-Matrix3x3<T>::operator*=( const Self& other )
-{
-  return (*this = ((*this) * other));
-}
-
-template<class T>
-Matrix3x3<T>& 
-Matrix3x3<T>::operator*=( const T scalar )
-{
-  for ( int j=0; j<3; ++j ) 
-    {
-    for ( int i=0; i<3; ++i ) 
-      {
-      this->Matrix[i][j] *= scalar;
-      }
-    }
-  return *this;
-}
-
-template<class T>
-const Matrix3x3<T>
-Matrix3x3<T>::operator*
-( const Self& other ) const
-{
-  Self result( NULL );
-
-  for ( int j=0; j<3; ++j ) 
-    {
-    for ( int i=0; i<3; ++i ) 
-      {
-      result[i][j] = 0;
-      for ( int k=0; k<3; ++k )
-	result[i][j] += this->Matrix[i][k] * other.Matrix[k][j];
-      }
-    }
-  
-  return result;
-}
-
-template<class T>
-Matrix3x3<T>& 
-Matrix3x3<T>::operator=( const Self& other )
-{
-  memcpy( this->Matrix, other.Matrix, sizeof( this->Matrix ) );
-  return *this;
-}
-
-template<class T>
-T
-Matrix3x3<T>::FrobeniusNorm() const
-{
-  T norm = 0.0;
-  for ( int i = 0; i < 3; ++i ) 
-    {
-    for ( int j = 0; j < 3; ++j )
-      norm += MathUtil::Square( this->Matrix[i][j] );
-    }
-  return sqrt( norm );
-}
-
-template<class T>
 void
 Matrix3x3<T>::ComputeEigenvalues( T (&lambda)[3] ) const
 {
-  const double M11 = this->Matrix[0][0];
-  const double M12 = this->Matrix[0][1];
-  const double M13 = this->Matrix[0][2];
-  const double M22 = this->Matrix[1][1];
-  const double M23 = this->Matrix[1][2];
-  const double M33 = this->Matrix[2][2];
+  const double M11 = (*this)[0][0];
+  const double M12 = (*this)[0][1];
+  const double M13 = (*this)[0][2];
+  const double M22 = (*this)[1][1];
+  const double M23 = (*this)[1][2];
+  const double M33 = (*this)[2][2];
 
 // <begin copyright notice>
 // ---------------------------------------------------------------------------

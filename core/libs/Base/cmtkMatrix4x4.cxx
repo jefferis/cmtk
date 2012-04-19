@@ -46,16 +46,6 @@ namespace
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
-
-template<class T>
-Matrix4x4<T>::Matrix4x4()
-{
-  memset( Matrix, 0, sizeof( Matrix ) );
-  Matrix[0][0] = Matrix[1][1] = Matrix[2][2] = Matrix[3][3] = 1.0;
-}
-
 template<class T>
 Matrix4x4<T>::Matrix4x4( const Matrix3x3<T>& other )
 {
@@ -63,38 +53,17 @@ Matrix4x4<T>::Matrix4x4( const Matrix3x3<T>& other )
     {
     for ( int i=0; i<3; ++i ) 
       {
-      this->Matrix[i][j] = other[i][j];
+      this->m_Matrix[i][j] = other[i][j];
       }
     }
 
   for ( int j=0; j<3; ++j ) 
     {
-    this->Matrix[3][j] = this->Matrix[j][3] = 0.0;
+    this->m_Matrix[3][j] = this->m_Matrix[j][3] = 0.0;
     }
-  this->Matrix[3][3] = 1.0;
+  this->m_Matrix[3][3] = 1.0;
 }
 
-template<class T>
-Matrix4x4<T>&
-Matrix4x4<T>::Set( const T *const values )
-{
-  memcpy( this->Matrix, values, sizeof( this->Matrix ) );
-  return *this;
-}
-
-template<class T>
-Matrix4x4<T>
-Matrix4x4<T>::GetTranspose() const
-{
-  Self transpose;
-  for ( int i = 0; i < 4; ++i ) 
-    {
-    for ( int j = 0; j < 4; ++j )
-      transpose[i][j] = this->Matrix[j][i];
-    }
-  return transpose;
-}
-  
 template<class T>
 Matrix4x4<T>&
 Matrix4x4<T>::Compose
@@ -115,21 +84,21 @@ Matrix4x4<T>::Compose
   const double scaleY = (logScaleFactors) ? exp( params[7] ) : params[7];
   const double scaleZ = (logScaleFactors) ? exp( params[8] ) : params[8];
 
-  Matrix[0][0] = static_cast<T>( cos1*cos2 * scaleX );
-  Matrix[0][1] = static_cast<T>( -cos1*sin2 * scaleX );                     
-  Matrix[0][2] = static_cast<T>( -sin1 * scaleX );
-  Matrix[0][3] = static_cast<T>( 0 );
-  Matrix[1][0] = static_cast<T>(  (sin0xsin1*cos2 + cos0*sin2) * scaleY );
-  Matrix[1][1] = static_cast<T>( (-sin0xsin1*sin2 + cos0*cos2) * scaleY ); 
-  Matrix[1][2] = static_cast<T>(  sin0*cos1 * scaleY );
-  Matrix[1][3] = static_cast<T>( 0 );
-  Matrix[2][0] = static_cast<T>(  (cos0xsin1*cos2 - sin0*sin2) * scaleZ );
-  Matrix[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) * scaleZ );
-  Matrix[2][2] = static_cast<T>(  cos0*cos1 * scaleZ );
-  Matrix[2][3] = static_cast<T>( 0 );
+  this->m_Matrix[0][0] = static_cast<T>( cos1*cos2 * scaleX );
+  this->m_Matrix[0][1] = static_cast<T>( -cos1*sin2 * scaleX );                     
+  this->m_Matrix[0][2] = static_cast<T>( -sin1 * scaleX );
+  this->m_Matrix[0][3] = static_cast<T>( 0 );
+  this->m_Matrix[1][0] = static_cast<T>(  (sin0xsin1*cos2 + cos0*sin2) * scaleY );
+  this->m_Matrix[1][1] = static_cast<T>( (-sin0xsin1*sin2 + cos0*cos2) * scaleY ); 
+  this->m_Matrix[1][2] = static_cast<T>(  sin0*cos1 * scaleY );
+  this->m_Matrix[1][3] = static_cast<T>( 0 );
+  this->m_Matrix[2][0] = static_cast<T>(  (cos0xsin1*cos2 - sin0*sin2) * scaleZ );
+  this->m_Matrix[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) * scaleZ );
+  this->m_Matrix[2][2] = static_cast<T>(  cos0*cos1 * scaleZ );
+  this->m_Matrix[2][3] = static_cast<T>( 0 );
 
-  Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = static_cast<T>( 0 );
-  Matrix[3][3] = static_cast<T>( 1.0 );
+  this->m_Matrix[3][0] = this->m_Matrix[3][1] = this->m_Matrix[3][2] = static_cast<T>( 0 );
+  this->m_Matrix[3][3] = static_cast<T>( 1.0 );
 
   // generate shears
   for ( int i = 2; i >= 0; --i )
@@ -142,15 +111,15 @@ Matrix4x4<T>::Compose
   // transform rotation center
   const Types::Coordinate cM[3] = 
     {
-      params[12]*Matrix[0][0] + params[13]*Matrix[1][0] + params[14]*Matrix[2][0],
-      params[12]*Matrix[0][1] + params[13]*Matrix[1][1] + params[14]*Matrix[2][1],
-      params[12]*Matrix[0][2] + params[13]*Matrix[1][2] + params[14]*Matrix[2][2]
+      params[12]*this->m_Matrix[0][0] + params[13]*this->m_Matrix[1][0] + params[14]*this->m_Matrix[2][0],
+      params[12]*this->m_Matrix[0][1] + params[13]*this->m_Matrix[1][1] + params[14]*this->m_Matrix[2][1],
+      params[12]*this->m_Matrix[0][2] + params[13]*this->m_Matrix[1][2] + params[14]*this->m_Matrix[2][2]
     };
   
   // set translations
-  Matrix[3][0] = params[0] - cM[0] + params[12];
-  Matrix[3][1] = params[1] - cM[1] + params[13];
-  Matrix[3][2] = params[2] - cM[2] + params[14];
+  this->m_Matrix[3][0] = params[0] - cM[0] + params[12];
+  this->m_Matrix[3][1] = params[1] - cM[1] + params[13];
+  this->m_Matrix[3][2] = params[2] - cM[2] + params[14];
   
   return *this;
 }
@@ -284,12 +253,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   // if negative determinant, negate x scale
   const Types::Coordinate determinant = 
-    this->Matrix[0][0]*this->Matrix[1][1]*this->Matrix[2][2] + 
-    this->Matrix[0][1]*this->Matrix[1][2]*this->Matrix[2][0] + 
-    this->Matrix[0][2]*this->Matrix[1][0]*this->Matrix[2][1] - 
-    this->Matrix[0][2]*this->Matrix[1][1]*this->Matrix[2][0] - 
-    this->Matrix[0][0]*this->Matrix[1][2]*this->Matrix[2][1] - 
-    this->Matrix[0][1]*this->Matrix[1][0]*this->Matrix[2][2];
+    this->m_Matrix[0][0]*this->m_Matrix[1][1]*this->m_Matrix[2][2] + 
+    this->m_Matrix[0][1]*this->m_Matrix[1][2]*this->m_Matrix[2][0] + 
+    this->m_Matrix[0][2]*this->m_Matrix[1][0]*this->m_Matrix[2][1] - 
+    this->m_Matrix[0][2]*this->m_Matrix[1][1]*this->m_Matrix[2][0] - 
+    this->m_Matrix[0][0]*this->m_Matrix[1][2]*this->m_Matrix[2][1] - 
+    this->m_Matrix[0][1]*this->m_Matrix[1][0]*this->m_Matrix[2][2];
 
   if ( determinant < 0 )
     params[6] = -params[6];
@@ -374,114 +343,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 template<class T>
-const Matrix4x4<T>
-Matrix4x4<T>::GetInverse() const
-{
-  Self inverse;
-  Self temp = *this;
-  
-  T rowBuff[4];
-  for ( int col = 0; col<4; ++col ) 
-    {    
-    int pivIdx = col;
-    T pivAbs = fabs( temp.Matrix[col][col] );
-
-    for ( int row = col+1; row<3; ++row )  // 3 to exclude last row!
-      {
-      T nextAbs = fabs( temp.Matrix[row][col] );
-      if (nextAbs > pivAbs ) 
-	{
-	pivIdx = row;
-	pivAbs = nextAbs;
-	}
-      }
-    
-    if ( col != pivIdx )
-      {
-      memcpy( rowBuff, temp.Matrix[col], sizeof(rowBuff) );
-      memcpy( temp.Matrix[col], temp.Matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( temp.Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
-      
-      memcpy( rowBuff, inverse.Matrix[col],sizeof(rowBuff));
-      memcpy( inverse.Matrix[col], inverse.Matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( inverse.Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
-      }
-    
-    for ( int c=0; c<4; ++c ) 
-      {
-      if (c>col )
-	temp.Matrix[col][c] /= temp.Matrix[col][col];
-      inverse.Matrix[col][c] /= temp.Matrix[col][col];
-      }
-    temp.Matrix[col][col] = 1.0;
-    
-    for ( int row = 0; row<4; ++row ) 
-      {
-      if (row != col ) 
-	{
-	for ( int c=0; c<4; ++c ) 
-	  {
-	  if ( c>col ) 
-	    temp.Matrix[row][c] -= temp.Matrix[row][col] * temp.Matrix[col][c];
-	  inverse.Matrix[row][c] -= temp.Matrix[row][col] * inverse.Matrix[col][c];
-	  }
-	temp.Matrix[row][col] = 0;
-	}
-      }
-    }
-  
-  return inverse;
-}
-
-template<class T>
-Matrix4x4<T>& 
-Matrix4x4<T>::operator*=( const Self& other )
-{
-  return (*this = ((*this) * other));
-}
-
-template<class T>
-const Matrix4x4<T>
-Matrix4x4<T>::operator*
-( const Self& other ) const
-{
-  Self result( NULL );
-
-  for ( int j=0; j<4; ++j ) 
-    {
-    for ( int i=0; i<4; ++i ) 
-      {
-      result[i][j] = 0;
-      for ( int k=0; k<4; ++k )
-	result[i][j] += this->Matrix[i][k] * other.Matrix[k][j];
-      }
-    }
-
-  return result;
-}
-
-template<class T>
-Matrix4x4<T>& 
-Matrix4x4<T>::operator=( const Matrix3x3<T>& other )
-{
-  for ( int j=0; j<3; ++j ) 
-    {
-    for ( int i=0; i<3; ++i ) 
-      {
-      this->Matrix[i][j] = other[i][j];
-      }
-    }
-
-  for ( int j=0; j<3; ++j ) 
-    {
-    this->Matrix[3][j] = this->Matrix[j][3] = 0.0;
-    }
-  this->Matrix[3][3] = 1.0;
-  
-  return *this;
-}
-
-template<class T>
 Matrix4x4<T>& 
 Matrix4x4<T>::ChangeCoordinateSystem
 ( const FixedVector<3,T>& newX, const FixedVector<3,T>& newY )
@@ -536,19 +397,6 @@ Matrix4x4<T>::RotateZ( const T angle )
   rot[0][1] = -1.0 * (rot[1][0] = sin( angle ) );
 
   return rot;
-}
-
-template<class T>
-T
-Matrix4x4<T>::FrobeniusNorm() const
-{
-  T norm = 0.0;
-  for ( int i = 0; i < 4; ++i ) 
-    {
-    for ( int j = 0; j < 4; ++j )
-      norm += MathUtil::Square( this->Matrix[i][j] );
-    }
-  return sqrt( norm );
 }
 
 template class Matrix4x4<Types::Coordinate>;

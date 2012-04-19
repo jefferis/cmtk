@@ -35,6 +35,7 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkFixedSquareMatrix.h>
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMatrix3x3.h>
@@ -51,11 +52,15 @@ cmtk
 
 /// Homogeneous 4x4 transformation matrix.
 template<class T=Types::Coordinate>
-class Matrix4x4
+class Matrix4x4 :
+    public FixedSquareMatrix<4,T>
 {
 public:
   /// This type instance.
   typedef Matrix4x4<T> Self;
+
+  /// Base class..
+  typedef FixedSquareMatrix<4,T> Superclass;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -63,11 +68,11 @@ public:
   /// Identity transformation matrix.
   static const Self IdentityMatrix;
 
-  /** Default constructor: make identity matrix.
-   *\note In order to create an uninitialized matrix (for speed), use
-   * Matrix4x4<>( NULL ).
-   */
-  Matrix4x4();
+  /// Default constructor.
+  Matrix4x4() {}
+
+  /// Copy-from-baseclass constructor.
+  Matrix4x4( const Superclass& other ) : Superclass( other ) {}
 
   /// Top left submatrix copy constructor.
   Matrix4x4( const Matrix3x3<T>& other );
@@ -76,61 +81,16 @@ public:
    * If a NULL parameter is given, an uninitialized matrix is generated. This
    * is intended behaviour.
    */
-  Matrix4x4( const T *const values ) 
-  {
-    if ( values ) this->Set( values );
-  }
+  Matrix4x4( const T *const values ) : Superclass( values ) {}
 
   /// 2D array constructor.
-  template<class T2>
-  Matrix4x4( const T2 (&matrix)[4][4] ) 
-  {
-    for ( size_t j = 0; j < 4; ++j )
-      for ( size_t i = 0; i < 4; ++i )
-	this->Matrix[j][i] = matrix[j][i];
-  }
-  
-  /// Set from array of entries.
-  Self& Set( const T *const values );
-
-  /// Inversion operator.
-  const Self GetInverse() const;
-
-  /// Transpose operator.
-  Self GetTranspose() const;
-
-  /// Get top left 3x3 submatrix.
-  Matrix3x3<T> GetTopLeft3x3() const
-  {
-    Matrix3x3<T> result;
-
-    for ( size_t j = 0; j < 3; ++j )
-      for ( size_t i = 0; i < 3; ++i )
-	result[j][i] = this->Matrix[j][i];
-
-    return result;
-  }
-
-  /// Index operator.
-  T* operator[]( const size_t i ) { return &this->Matrix[i][0]; }
-
-  /// Constant index operator.
-  const T* operator[]( const size_t i ) const { return &this->Matrix[i][0]; }
+  template<class T2> Matrix4x4( const T2 (&matrix)[4][4] ) : Superclass( matrix ) {}
 
   /// Compose from canonical parameters.
   Self& Compose( const Types::Coordinate params[15], const bool logScaleFactors = false );
   
   /// Decompose into affine parameters.
   bool Decompose( Types::Coordinate params[12], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
-
-  /// In-place multiplication operator.
-  Self& operator*=( const Self& other );
-  
-  /// Multiplication operator.
-  const Self operator*( const Self& other ) const;
-
-  /// 3x3 submatrix assignment operator.
-  Self& operator=( const Matrix3x3<T>& other );
 
   /** Change reference coordinate system.
    */
@@ -144,61 +104,9 @@ public:
   
   /// Return rotation around z axis.
   static Self RotateZ( const T angle );
-  
-  /// Get Frobenius norm.
-  T FrobeniusNorm() const;
-
-  /// Print this matrix.
-  void Print( Console& console ) const
-  {
-    for ( int j = 0; j < 4; ++j )
-      {
-      for ( int i = 0; i < 4; ++i )
-	console.printf( "%f\t", (float)this->Matrix[j][i] );
-      console << "\n";
-      }
-  }
-
-private:
-  /// The actual matrix.
-  T Matrix[4][4];
 };
 
 template<typename T> const Matrix4x4<T> Matrix4x4<T>::IdentityMatrix;
-
-/// In-place multiplication with 3d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<3,T2>&
-operator*=( FixedVector<3,T2>& u, const Matrix4x4<T>& M )
-{
-  return u = u*M;
-}
-
-/// Multiplication with 3d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<3,T2>
-operator*( const FixedVector<3,T2>& u, const Matrix4x4<T>& M )
-{
-  FixedVector<3,T2> v;
-  for ( int idx=0; idx<3; ++idx ) 
-    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + u[2]*M[2][idx] + M[3][idx];
-  return v;
-}
-
-/// Output object to console.
-template<class T>
-inline
-Console& operator<< ( Console& stream, const Matrix4x4<T>& m )
-{
-  stream << "4x4 Matrix:\n";
-  for ( int i = 0; i < 4; ++i ) 
-    {
-    for ( int j = 0; j < 4; ++j )
-      stream << "[" << i << "][" << j << "]=" << m[i][j] << "\t";
-    stream << "\n";
-    }
-  return stream;
-}
 
 //@}
 

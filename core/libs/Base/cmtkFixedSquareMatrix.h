@@ -96,6 +96,20 @@ public:
   /// Set to constant value.
   Self& Fill( const typename Self::ScalarType& value );
 
+  /// Get submatrix at given offset.
+  template<size_t SZ> FixedSquareMatrix<SZ,TSCALAR> GetSubmatrix( const size_t iOfs = 0, const size_t jOfs = 0 ) const 
+  {
+    FixedSquareMatrix<SZ,TSCALAR> matrix;
+    for ( size_t j = 0; j < SZ; ++j )
+      {
+      for ( size_t i = 0; i < SZ; ++i )
+	{
+	matrix[i][j] = this->m_Matrix[i+iOfs][j+jOfs];
+	}
+      }
+    return matrix;
+  }
+
   /// Get inverse matrix.
   Self GetInverse() const;
 
@@ -134,10 +148,10 @@ protected:
   typename Self::ScalarType m_Matrix[NDIM][NDIM];
 };
 
-/// Multiplication with vector operator.
+/// In-place vector-matrix multiplication operation.
 template<size_t NDIM,class T> 
-FixedVector<NDIM,T>
-operator*( const FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM,T>& M )
+FixedVector<NDIM,T>&
+operator*=( FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM,T>& M )
 {
   FixedVector<NDIM,T> v;
   for ( size_t i = 0; i<NDIM; ++i ) 
@@ -148,21 +162,21 @@ operator*( const FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM,T>& M )
       v[i] += u[j]*M[j][i];
       }
     }
-  return v;
+  return u = v;
 }
 
-/// In-place vector-matrix multiplication operation.
-template<size_t NDIM,class T> 
-FixedVector<NDIM,T>&
-operator*=( FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM,T>& M )
-{
-  return u = u*M;
-}
-
-/// Multiplication with homogeneous vector operator.
+/// Multiplication with vector operator.
 template<size_t NDIM,class T> 
 FixedVector<NDIM,T>
-operator*( const FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM+1,T>& M )
+operator*( FixedVector<NDIM,T> u, const FixedSquareMatrix<NDIM,T>& M )
+{
+  return u *= M;
+}
+
+/// In-place homogeneous multiplication with vector operation.
+template<size_t NDIM,class T> 
+FixedVector<NDIM,T>&
+operator*=( FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM+1,T>& M )
 {
   FixedVector<NDIM,T> v;
   for ( size_t i = 0; i<NDIM; ++i ) 
@@ -175,15 +189,15 @@ operator*( const FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM+1,T>& M )
     // add 1x last column element for implicitly homogeneous vector.
     v[i] += M[NDIM][i];
     }
-  return v;
+  return u = v;
 }
 
-/// In-place homogeneous multiplication with vector operation.
+/// Multiplication with homogeneous vector operator.
 template<size_t NDIM,class T> 
-FixedVector<NDIM,T>&
-operator*=( FixedVector<NDIM,T>& u, const FixedSquareMatrix<NDIM+1,T>& M )
+FixedVector<NDIM,T>
+operator*( FixedVector<NDIM,T> u, const FixedSquareMatrix<NDIM+1,T>& M )
 {
-  return u = u*M;
+  return u *= M;
 }
 
 /// Output object to console.

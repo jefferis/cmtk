@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -511,21 +511,6 @@ AffineXform::CanonicalRotationRange()
     while ( this->m_Parameters[3+rotIdx] < -180 ) 
       this->m_Parameters[3+rotIdx] += 360;
     }
-}
-
-void
-AffineXform::Print() const
-{
-  StdErr.printf( "AffineXform at %p:\n", this );
-  StdErr.printf( "\tNumber DOFs: %d\n", NumberDOFs );
-  StdErr.printf( "\tTranslation: [%f,%f,%f]\n", this->m_Parameters[0], this->m_Parameters[1], this->m_Parameters[2] );
-  StdErr.printf( "\tRotation: [%f,%f,%f] around [%f,%f,%f]\n", 
-		    this->m_Parameters[3], this->m_Parameters[4], this->m_Parameters[5], 
-		    this->m_Parameters[12], this->m_Parameters[13], this->m_Parameters[14] );
-  StdErr.printf( "\tScale: [%f,%f,%f]\n", this->m_Parameters[6], this->m_Parameters[7], this->m_Parameters[8] );
-  StdErr.printf( "\tShear: [%f,%f,%f]\n", this->m_Parameters[9], this->m_Parameters[10], this->m_Parameters[11] );
-
-  this->Matrix.Print( StdErr );
 }
 
 } // namespace

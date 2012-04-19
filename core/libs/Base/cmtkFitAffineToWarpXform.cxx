@@ -95,5 +95,5 @@ cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::F
       }
     }  
   
-  return (xxT.Invert3x3()*txT);
+  return (xxT.GetInverse()*txT);
 }

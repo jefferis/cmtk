@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypes.h>
+#include <Base/cmtkFixedSquareMatrix.h>
 #include <Base/cmtkFixedVector.h>
 
 #include <System/cmtkConsole.h>
@@ -49,159 +49,54 @@ cmtk
 
 /// Homogeneous 3x3 transformation matrix.
 template<class T=Types::Coordinate>
-class Matrix3x3
+class Matrix3x3 :
+    public FixedSquareMatrix<3,T>
 {
 public:
   /// This class.
   typedef Matrix3x3<T> Self;
 
-  /** Default constructor: make identity matrix.
-   *\note In order to create an uninitialized matrix (for speed), use
-   * Matrix3x3<>( NULL ).
-   *\todo We do not actually support shear yet.
-   */
-  Matrix3x3();
+  /// Parent class.
+  typedef FixedSquareMatrix<3,T> Superclass;
+
+  /// Default constructor.
+  Matrix3x3() {}
 
   /// Copy constructor.
-  Matrix3x3( const Self& other );
+  Matrix3x3( const Superclass& other ) : Superclass( other ) {}
 
   /** Array constructor.
    * If a NULL parameter is given, an uninitialized matrix is generated. This
    * is intended behaviour.
    */
-  Matrix3x3( const T *const values ) 
-  {
-    if ( values ) this->Set( values );
-  }
-
-  /// 2D array constructor.
-  template<class T2>
-  Matrix3x3( const T2 (&matrix)[3][3] ) 
-  {
-    for ( size_t j = 0; j < 3; ++j )
-      for ( size_t i = 0; i < 3; ++i )
-	this->Matrix[j][i] = matrix[j][i];
-  }
-
-  /// Set from array of entries.
-  Self& Set( const T *const values );
-
-  /// Set to constant value.
-  Self& Fill( const T value );
-
-  /// Inversion operator (in place) as a 3D non-homogeneous matrix.
-  Self& Invert3x3();
-
-  /// Transpose operator.
-  Self GetTranspose() const;
-
-  /// Index operator.
-  T* operator[]( const size_t i )
-  { 
-    return this->Matrix[i]; 
-  }
-
-  /// Constant index operator.
-  const T* operator[]( const size_t i ) const
-  { 
-    return this->Matrix[i]; 
-  }
+  Matrix3x3( const T *const values ) : Superclass( values ) {}
   
+  /// 2D array constructor.
+  template<class T2> Matrix3x3( const T2 (&matrix)[3][3] ) : Superclass( matrix ) {}
+
   /// Compose from canonical parameters.
   Self& Compose( const Types::Coordinate params[8] );
   
   /// Decompose into affine parameters.
   bool Decompose( Types::Coordinate params[8], const Types::Coordinate *center = NULL ) const;
 
-  /// In-place multiplication operator.
-  Self& operator*=( const Self& other );
-  
-  /// In-place scalar multiplication operator.
-  Self& operator*=( const T scalar );
-  
-  /// Multiplication operator.
-  const Self operator*( const Self& other ) const;
-
-  /// Assignment operator.
-  Self& operator=( const Self& other );
-
   /// Get determinant.
   T Determinant() const 
   {
-    return ( this->Matrix[0][0]*this->Matrix[1][1]*this->Matrix[2][2] + 
-	     this->Matrix[0][1]*this->Matrix[1][2]*this->Matrix[2][0] + 
-	     this->Matrix[0][2]*this->Matrix[1][0]*this->Matrix[2][1] - 
-	     this->Matrix[0][2]*this->Matrix[1][1]*this->Matrix[2][0] - 
-	     this->Matrix[0][0]*this->Matrix[1][2]*this->Matrix[2][1] - 
-	     this->Matrix[0][1]*this->Matrix[1][0]*this->Matrix[2][2] );
+    return ( (*this)[0][0]*(*this)[1][1]*(*this)[2][2] + 
+	     (*this)[0][1]*(*this)[1][2]*(*this)[2][0] + 
+	     (*this)[0][2]*(*this)[1][0]*(*this)[2][1] - 
+	     (*this)[0][2]*(*this)[1][1]*(*this)[2][0] - 
+	     (*this)[0][0]*(*this)[1][2]*(*this)[2][1] - 
+	     (*this)[0][1]*(*this)[1][0]*(*this)[2][2] );
   }
-
-  /// Get Frobenius norm.
-  T FrobeniusNorm() const;
 
   /// Compute eigenvalues.
   void ComputeEigenvalues( T (&lambda)[3] ) const;
-
-private:
-  /// The actual matrix.
-  T Matrix[3][3];
 };
 
 /// Define coordinate matrix.
 typedef Matrix3x3<Types::Coordinate> CoordinateMatrix3x3;
-
-/// In-place multiplication with 3d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<3,T2>&
-operator*=( FixedVector<3,T2>& u, const Matrix3x3<T>& M )
-{
-  return u = u*M;
-}
-
-/// Multiplication with 3d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<3,T2>
-operator*( const FixedVector<3,T2>& u, const Matrix3x3<T>& M )
-{
-  FixedVector<3,T2> v;
-  for ( int idx=0; idx<3; ++idx ) 
-    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + u[2]*M[2][idx];
-  return v;
-}
-
-/// In-place multiplication with 2d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<2,T2>&
-operator*=( FixedVector<2,T2>& u, const Matrix3x3<T>& M )
-{
-  return u = u*M;
-}
-
-/// Multiplication with 2d vector operation (will implicitly be made homogeneous).
-template<class T,class T2> 
-FixedVector<2,T2>
-operator*( const FixedVector<2,T2>& u, const Matrix3x3<T>& M )
-{
-  FixedVector<2,T2> v;
-  for ( int idx=0; idx<2; ++idx ) 
-    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + M[2][idx];
-  return v;
-}
-
-/// Output object to console.
-template<class T>
-inline
-Console& operator<< ( Console& stream, const Matrix3x3<T>& m )
-{
-  stream << "3x3 Matrix:\n";
-  for ( int i = 0; i < 3; ++i ) 
-    {
-    for ( int j = 0; j < 3; ++j )
-      stream << m[i][j] << "\t";
-    stream << "\n";
-    }
-  return stream;
-}
 
 //@}
 
