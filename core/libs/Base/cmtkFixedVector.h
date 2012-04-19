@@ -35,6 +35,8 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkDataTypeTraits.h>
+
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
 
@@ -46,7 +48,7 @@
 namespace
 cmtk
 {
-/// Class for n-dimensional image index.
+/// Class for fixed-size n-dimensional vector.
 template<size_t NDIM,typename T=int>
 class FixedVector
 {
@@ -70,7 +72,7 @@ public:
   static const Self Zero()
   {
     Self v;
-    std::fill( v.begin(), v.end(), 0 );
+    std::fill( v.begin(), v.end(), DataTypeTraits<T>::Zero() );
     return v;
   }
 
