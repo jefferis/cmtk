@@ -85,8 +85,8 @@ public:
   template<class T2>
   FixedSquareMatrix( const T2 (&matrix)[NDIM][NDIM] ) 
   {
-    for ( size_t j = 0; j < 3; ++j )
-      for ( size_t i = 0; i < 3; ++i )
+    for ( size_t j = 0; j < NDIM; ++j )
+      for ( size_t i = 0; i < NDIM; ++i )
 	this->m_Matrix[j][i] = matrix[j][i];
   }
 
@@ -96,10 +96,10 @@ public:
   /// Set to constant value.
   Self& Fill( const typename Self::ScalarType& value );
 
-  /// Inversion operator (in place) as a 3D non-homogeneous matrix.
+  /// Get inverse matrix.
   Self GetInverse() const;
 
-  /// Transpose operator.
+  /// Get transpose matrix.
   Self GetTranspose() const;
 
   /// Index operator.
