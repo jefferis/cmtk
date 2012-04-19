@@ -89,9 +89,6 @@ public:
   /// Set to constant value.
   Self& Fill( const T value );
 
-  /// Inversion operator (in place).
-  Self& Invert2x2();
-
   /// Inversion operator (in place) as a 3D non-homogeneous matrix.
   Self& Invert3x3();
 

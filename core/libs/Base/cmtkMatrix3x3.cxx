@@ -199,67 +199,6 @@ Matrix3x3<T>::GetTranspose() const
   
 template<class T>
 Matrix3x3<T>&
-Matrix3x3<T>::Invert2x2()
-{
-  Self inverse;
-  
-  T rowBuff[3];
-  for ( int col = 0; col<3; ++col ) 
-    {    
-    int pivIdx = col;
-    T pivAbs = fabs( this->Matrix[col][col] );
-
-    for ( int row = col+1; row<2; ++row ) // 2 to exclude last row!
-      {
-      T nextAbs = fabs( this->Matrix[row][col] );
-      if (nextAbs > pivAbs ) 
-	{
-	pivIdx = row;
-	pivAbs = nextAbs;
-	}
-      }
-    
-    if ( col != pivIdx )
-      {
-      memcpy( rowBuff, this->Matrix[col], sizeof(rowBuff) );
-      memcpy( this->Matrix[col], this->Matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( this->Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
-      
-      memcpy( rowBuff, inverse[col],sizeof(rowBuff));
-      memcpy( inverse[col], inverse[pivIdx], sizeof(rowBuff) );
-      memcpy( inverse[pivIdx], rowBuff, sizeof(rowBuff) );
-      }
-    
-    for ( int c=0; c<3; ++c ) 
-      {
-      if (c>col )
-	this->Matrix[col][c] /= this->Matrix[col][col];
-      inverse[col][c] /= this->Matrix[col][col];
-      }
-    this->Matrix[col][col] = 1.0;
-    
-    for ( int row = 0; row<3; ++row ) 
-      {
-      if (row != col ) 
-	{
-	for ( int c=0; c<3; ++c ) 
-	  {
-	  if ( c>col ) 
-	    this->Matrix[row][c] -= 
-	      this->Matrix[row][col] * this->Matrix[col][c];
-	  inverse[row][c] -= this->Matrix[row][col] * inverse[col][c];
-	  }
-	this->Matrix[row][col] = 0;
-	}
-      }
-    }
-  
-  // finally copy inverse into this object.
-  return (*this = inverse);
-}
-
-template<class T>
-Matrix3x3<T>&
 Matrix3x3<T>::Invert3x3()
 {
   Self inverse;
