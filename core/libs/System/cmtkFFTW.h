@@ -82,16 +82,16 @@ public:
     return sqrt( Self::SumOfSquares( c ) );
   }
 
-#ifdef CMTK_USE_SMP
   /** Set number of threads for FFTW plans.
    * The number of threads applies only to subsequently created plans. Previously created plans
    * retain their original number of threads when executed.
    */
   void SetNumberOfThreads( const int nThreads )
   {
+#ifdef CMTK_USE_SMP
     fftw_plan_with_nthreads( nThreads );
-  }
 #endif
+  }
 
 protected:
   /// Constructor.
