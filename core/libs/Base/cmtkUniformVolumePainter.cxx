@@ -50,14 +50,14 @@ cmtk::UniformVolumePainter::DrawSphere
     case Self::COORDINATES_RELATIVE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	centerAbsolute[dim] *= volume.Size[dim];
+	(centerAbsolute[dim] *= volume.Size[dim]) += volume.m_Offset[dim];
 	radiusAbsolute[dim] *= volume.Size[dim];
 	}
       break;
     case Self::COORDINATES_INDEXED:
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	centerAbsolute[dim] *= volume.m_Delta[dim];
+	(centerAbsolute[dim] *= volume.m_Delta[dim]) += volume.m_Offset[dim];
 	radiusAbsolute[dim] *= volume.m_Delta[dim];
 	}
       break;
