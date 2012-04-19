@@ -57,7 +57,10 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
       ++nPixelsMask;
       }
     }
-  
+
+  if ( !nPixelsMask )
+    throw Self::EmptyMaskException();
+
   avg /= nPixelsMask;
 
   // set up least-squares problem

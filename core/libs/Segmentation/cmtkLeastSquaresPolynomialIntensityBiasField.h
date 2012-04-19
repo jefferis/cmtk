@@ -36,6 +36,8 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkDataGrid.h>
 
+#include <System/cmtkException.h>
+
 namespace
 cmtk
 {
@@ -56,6 +58,9 @@ public:
 
   /// Smart const pointer to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Exception thrown if there are no non-zero mask pixels.
+  class EmptyMaskException : public Exception {};
 
   /// Constructor.
   LeastSquaresPolynomialIntensityBiasField( const UniformVolume& image /*!< Image for which bias field is estimated.*/, 
