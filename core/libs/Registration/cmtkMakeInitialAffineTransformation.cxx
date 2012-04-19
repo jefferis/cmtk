@@ -158,8 +158,7 @@ MakeInitialAffineTransformation
   pAxesFlt = pAxesFlt.GetTranspose();
 
   // Now compute transformation
-  pAxesRef.Invert3x3();
-  const Matrix3x3<Types::Coordinate> xform3x3 = (pAxesRef * pAxesFlt);
+  const Matrix3x3<Types::Coordinate> xform3x3 = (pAxesRef.GetInverse() * pAxesFlt);
 
   const Vector3D xlation = centerOfMassFlt - (centerOfMassRef * xform3x3);
   
