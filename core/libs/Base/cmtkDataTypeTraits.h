@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -91,6 +91,18 @@ public:
   { 
     return std::numeric_limits<float>::infinity();
   }
+
+  /// Return zero value for this type.
+  static inline float Zero()
+  {
+    return 0.0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline float One()
+  {
+    return 1.0;
+  }
 };
 
 /** Data type traits for double-precision floating point. */
@@ -123,6 +135,18 @@ public:
   static inline double ChoosePaddingValue () 
   { 
     return std::numeric_limits<double>::infinity();
+  }
+
+  /// Return zero value for this type.
+  static inline double Zero()
+  {
+    return 0.0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline double One()
+  {
+    return 1.0;
   }
 };
 
@@ -174,6 +198,18 @@ public:
   { 
     return 255;
   }
+
+  /// Return zero value for this type.
+  static inline byte Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline byte One()
+  {
+    return 1;
+  }
 };
 
 /** Data type traits for signed char. */
@@ -223,6 +259,18 @@ public:
   static inline char ChoosePaddingValue () 
   { 
     return -1;
+  }
+
+  /// Return zero value for this type.
+  static inline char Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline char One()
+  {
+    return 1;
   }
 };
 
@@ -274,6 +322,18 @@ public:
   { 
     return -1;
   }
+
+  /// Return zero value for this type.
+  static inline signed short Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline signed short One()
+  {
+    return 1;
+  }
 };
 
 /** Data type traits for unsigned short. */
@@ -323,6 +383,18 @@ public:
   static inline unsigned short ChoosePaddingValue () 
   { 
     return USHRT_MAX;
+  }
+
+  /// Return zero value for this type.
+  static inline unsigned short Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline unsigned short One()
+  {
+    return 1;
   }
 };
 
@@ -374,6 +446,18 @@ public:
   { 
     return -1;
   }
+
+  /// Return zero value for this type.
+  static inline int Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline int One()
+  {
+    return 1;
+  }
 };
 
 /** Data type traits for unsigned int. */
@@ -424,6 +508,18 @@ public:
   static inline unsigned int ChoosePaddingValue () 
   { 
     return static_cast<unsigned int>( -1 );
+  }
+
+  /// Return zero value for this type.
+  static inline unsigned int Zero()
+  {
+    return 0;
+  }
+
+  /// Return one value (multiplicative identity) for this type.
+  static inline unsigned int One()
+  {
+    return 1;
   }
 };
 
