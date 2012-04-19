@@ -79,13 +79,15 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
 
     UniformVolume::CoordinateVectorType xyz = image.GetGridLocation( it.Index() ) - center;
+    xyz *= 2.0;
+    xyz = ComponentDivide( xyz, image.Size );
     
     if ( mask[ofs] )
       {
       dataVector[cntPx] = image.GetDataAt( ofs ) / avg;
       for ( size_t n = 0; n < nVars; ++n )
 	{
-	uMatrix[cntPx][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, 2.0 * xyz[0] / image.Size[0], 2.0 * xyz[1] / image.Size[1], 2.0 * xyz[2] / image.Size[2] );
+	uMatrix[cntPx][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
 	}
       ++cntPx;
       }
@@ -108,11 +110,13 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
 
     UniformVolume::CoordinateVectorType xyz = image.GetGridLocation( it.Index() ) - center;
+    xyz *= 2.0;
+    xyz = ComponentDivide( xyz, image.Size );
     
     Types::DataItem bias = 0;
     for ( size_t n = 0; n < nVars; ++n )
       {
-      bias += params[n] * Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, 2.0 * xyz[0] / image.Size[0], 2.0 * xyz[1] / image.Size[1], 2.0 * xyz[2] / image.Size[2] );
+      bias += params[n] * Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
       }
     
     this->m_BiasData->Set( bias, ofs );
