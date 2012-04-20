@@ -672,7 +672,7 @@ ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volum
       // Make sure still in LPS DICOM coordinate space
       gridLPS->ChangeCoordinateSpace( "LPS" );
       // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->BVector * gridLPS->GetImageToPhysicalMatrix().GetInverse().GetSubmatrix<3>( 0, 0 );
+      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
       
       mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
       mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
@@ -685,7 +685,7 @@ ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volum
       // First, create copy of image grid
       cmtk::UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
       // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->BVector * gridRAS->GetImageToPhysicalMatrix().GetInverse().GetSubmatrix<3>( 0, 0 );
+      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
       
       mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
       mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );

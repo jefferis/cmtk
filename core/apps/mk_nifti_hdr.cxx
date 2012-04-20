@@ -183,7 +183,7 @@ doMain( const int argc, const char* argv[] )
     header.qform_code = 0;
     header.sform_code = 1;
     
-    cmtk::AffineXform::MatrixType m4 = cmtk::AffineXform::MatrixType::IdentityMatrix;
+    cmtk::AffineXform::MatrixType m4 = cmtk::AffineXform::MatrixType::Identity();
     for ( int i = 0; i < 4; ++i )
       {
       header.srow_x[i] = header.pixdim[1+i] * static_cast<float>( m4[i][0] );
