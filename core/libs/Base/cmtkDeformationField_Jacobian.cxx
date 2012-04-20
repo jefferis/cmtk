@@ -41,9 +41,9 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-void
+CoordinateMatrix3x3
 DeformationField::GetJacobian
-( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const
+( const Self::SpaceVectorType& v ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
@@ -54,12 +54,12 @@ DeformationField::GetJacobian
     grid[dim] = static_cast<int>( r[dim]-1 );
     if ( (grid[dim] < 0) || (grid[dim] >= this->m_Dims[dim]-3) )
       {
-      J.Fill( 0.0 );
-      return;
+      return CoordinateMatrix3x3::Zero();
       }
     f[dim] = r[dim] - grid[dim] - 1;
     }
 
+  CoordinateMatrix3x3 J = CoordinateMatrix3x3::Identity(); // note that deformation field is offset vector field, thus start with identity matrix, not zero matrix
   const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   // loop over the three components of the coordinate transformation function,
@@ -105,6 +105,8 @@ DeformationField::GetJacobian
       J[dim][2] += CubicSpline::DerivInterpSpline( m, f[2] ) * ll[2];
       }
     }
+
+  return J;
 }
 
 } // namespace cmtk

@@ -451,8 +451,6 @@ UniformVolume
   const Types::Coordinate yg = centerOfMass[1];
   const Types::Coordinate zg = centerOfMass[2];
 
-  Matrix3x3<Types::Coordinate> inertiaMatrix;
-
   Types::DataItem ixx = 0, iyy = 0, izz = 0, ixy = 0, iyz = 0, izx = 0;
   for ( int k = 0; k < this->m_Dims[2]; ++k )
     {
@@ -481,6 +479,8 @@ UniformVolume
 	}
       }
     }
+
+  Matrix3x3<Types::Coordinate> inertiaMatrix;
   inertiaMatrix[0][0] = ixx;
   inertiaMatrix[0][1] = -ixy;
   inertiaMatrix[0][2] = -izx;

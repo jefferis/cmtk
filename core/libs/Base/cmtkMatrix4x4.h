@@ -65,9 +65,6 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Identity transformation matrix.
-  static const Self IdentityMatrix;
-
   /// Default constructor.
   Matrix4x4() {}
 
@@ -105,8 +102,6 @@ public:
   /// Return rotation around z axis.
   static Self RotateZ( const T angle );
 };
-
-template<typename T> const Matrix4x4<T> Matrix4x4<T>::IdentityMatrix;
 
 //@}
 

@@ -39,6 +39,7 @@
 #include <Base/cmtkFixedVector.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkException.h>
 
 namespace
 cmtk
@@ -61,15 +62,20 @@ public:
   /// The matrix dimension.
   static const size_t Dimension = NDIM;
 
-  /** Default constructor: make identity matrix.
-   *\note In order to create an uninitialized matrix (for speed), use
-   * FixedSquareMatrix<>( NULL ).
-   *\todo We do not actually support shear yet.
+protected:
+  /** Default constructor. 
+   *\attention This creates an uninitialized matrix.
    */
-  FixedSquareMatrix();
+  FixedSquareMatrix() {}
 
-  /// Copy constructor.
-  FixedSquareMatrix( const Self& other );
+public:
+  /** Construc matrix and set all elements to given constant value.
+   */
+  FixedSquareMatrix( const Self::ScalarType& value );
+
+  /// Copy and submatrix constructor.
+  template<size_t N2,class T2> FixedSquareMatrix( const FixedSquareMatrix<N2,T2>& other /*!< Source matrix object */, 
+						  const size_t iOfs = 0 /*!< Sub-matrix offset in i index */, const size_t jOfs = 0  /*!< Sub-matrix offset in i index */ );
 
   /** Array constructor.
    * If a NULL parameter is given, an uninitialized matrix is generated. This
@@ -96,20 +102,15 @@ public:
   /// Set to constant value.
   Self& Fill( const typename Self::ScalarType& value );
 
-  /// Get submatrix at given offset.
-  template<size_t SZ> FixedSquareMatrix<SZ,TSCALAR> GetSubmatrix( const size_t iOfs = 0, const size_t jOfs = 0 ) const 
-  {
-    FixedSquareMatrix<SZ,TSCALAR> matrix;
-    for ( size_t j = 0; j < SZ; ++j )
-      {
-      for ( size_t i = 0; i < SZ; ++i )
-	{
-	matrix[i][j] = this->m_Matrix[i+iOfs][j+jOfs];
-	}
-      }
-    return matrix;
-  }
+  /// Get multiplicative identity matrix.
+  static const Self& Identity();
 
+  /// Get all-zero matrix.
+  static const Self& Zero();
+
+  /// Exception thrown when trying to invert singular matrix.
+  class SingularMatrixException : public Exception {};
+  
   /// Get inverse matrix.
   Self GetInverse() const;
 

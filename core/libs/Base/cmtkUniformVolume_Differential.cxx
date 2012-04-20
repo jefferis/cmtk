@@ -41,10 +41,11 @@ cmtk::UniformVolume
   return g;
 }
 
-void
+cmtk::Matrix3x3<cmtk::Types::DataItem>
 cmtk::UniformVolume
-::GetHessianAt( Matrix3x3<Types::DataItem>& H, const int i, const int j, const int k )
+::GetHessianAt( const int i, const int j, const int k )
 {
+  cmtk::Matrix3x3<Types::DataItem> H;
 // implementation following central differences formulas from http://www.technion.ac.il/docs/sas/ormp/chap5/sect28.htm
 
   const Types::DataItem central = 30 * this->GetDataAt( i, j, k );
@@ -58,4 +59,6 @@ cmtk::UniformVolume
   H[0][1] = H[1][0] = (this->GetDataAt( i+1, j+1, k ) - this->GetDataAt( i+1, j-1, k ) - this->GetDataAt( i-1, j+1, k ) + this->GetDataAt( i-1, j-1, k )) / ( 4 * this->m_Delta[0] * this->m_Delta[1] );
   H[0][2] = H[2][0] = (this->GetDataAt( i+1, j, k+1 ) - this->GetDataAt( i+1, j, k-1 ) - this->GetDataAt( i-1, j, k+1 ) + this->GetDataAt( i-1, j, k-1 )) / ( 4 * this->m_Delta[0] * this->m_Delta[2] );
   H[1][2] = H[2][1] = (this->GetDataAt( i, j+1, k+1 ) - this->GetDataAt( i, j+1, k-1 ) - this->GetDataAt( i, j-1, k+1 ) + this->GetDataAt( i, j-1, k-1 )) / ( 4 * this->m_Delta[1] * this->m_Delta[2] );
+
+  return H;
 }

@@ -47,15 +47,13 @@ Types::Coordinate
 SplineWarpXform::GetRigidityConstraintSparse () const
 {
   double Constraint = 0;
-  CoordinateMatrix3x3 J;
 
   const Types::Coordinate* coeff = this->m_Parameters + nextI + nextJ + nextK;
   for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
     for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
       for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
 	{
-	this->GetJacobian( Self::SpaceVectorType( coeff ), J );
-	Constraint += this->GetRigidityConstraint( J );
+	Constraint += this->GetRigidityConstraint( this->GetJacobian( Self::SpaceVectorType( coeff ) ) );
 	}
   
   // Divide by number of control points to normalize with respect to the
@@ -189,13 +187,11 @@ SplineWarpXform::GetRigidityConstraintDerivative
   const int jTo = std::min( 1, this->m_Dims[1]-2-y );
   const int kTo = std::min( 1, this->m_Dims[2]-2-z );
 
-  CoordinateMatrix3x3 J;
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
 	{
-	this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK, J );
-	ground += this->GetRigidityConstraint( J );
+	ground += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
 	}
   
   upper = -ground;
@@ -207,8 +203,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
 	{
-	this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK, J );
-	upper += this->GetRigidityConstraint( J );
+	upper += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
 	}
 
   this->m_Parameters[param] = oldCoeff - step;
@@ -216,8 +211,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
 	{
-	this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK, J );
-	lower += this->GetRigidityConstraint( J );
+	lower += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
 	}
   this->m_Parameters[param] = oldCoeff;
 

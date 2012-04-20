@@ -73,7 +73,7 @@ AnatomicalOrientation::PermutationMatrix::PermutationMatrix
 AffineXform::MatrixType
 AnatomicalOrientation::PermutationMatrix::GetMatrix() const
 {
-  AffineXform::MatrixType permutation;
+  AffineXform::MatrixType permutation = AffineXform::MatrixType::Identity();
 
   for ( int j = 0; j < 3; ++j )
     {

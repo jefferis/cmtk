@@ -138,7 +138,7 @@ AffineXform::MatrixType
 ParametricPlane::GetMirrorXformMatrix() const
 {
   // put together zero-offset mirror matrix
-  AffineXform::MatrixType M = AffineXform::MatrixType::IdentityMatrix;
+  AffineXform::MatrixType M = AffineXform::MatrixType::Identity();
 
   for ( int i = 0; i < 3; ++i ) 
     {

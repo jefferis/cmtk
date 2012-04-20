@@ -74,12 +74,11 @@ cmtk::FitRigidToLandmarks::FitRigidToLandmarks( const LandmarkPairList& landmark
   std::vector<double> W( 3 );
   MathUtil::SVD( U, 3, 3, W, V );
 
-  Matrix3x3<Types::Coordinate> matrix;
+  Matrix3x3<Types::Coordinate> matrix = Matrix3x3<Types::Coordinate>::Zero();
   for ( size_t j = 0; j < 3; ++j )
     {
     for ( size_t i = 0; i < 3; ++i )
       {
-      matrix[j][i] = 0;
       for ( size_t k = 0; k < 3; ++k )
 	{
 	matrix[j][i] += V[i][k] * U[j][k];

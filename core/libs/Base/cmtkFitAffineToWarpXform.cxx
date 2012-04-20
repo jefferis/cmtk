@@ -73,12 +73,9 @@ cmtk::FitAffineToWarpXform::Fit()
 cmtk::Matrix3x3<cmtk::Types::Coordinate> 
 cmtk::FitAffineToWarpXform::GetMatrix( const WarpXform& warpXform, const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom, const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo )
 {
-  Matrix3x3<Types::Coordinate> txT; // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
-  Matrix3x3<Types::Coordinate> xxT; // "x" is the 3xN matrix of control point grid coordinates
+  Matrix3x3<Types::Coordinate> txT = Matrix3x3<Types::Coordinate>::Zero(); // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
+  Matrix3x3<Types::Coordinate> xxT = Matrix3x3<Types::Coordinate>::Zero(); // "x" is the 3xN matrix of control point grid coordinates
   
-  txT.Fill( 0.0 );
-  xxT.Fill( 0.0 );
-
   // build the two 3x3 matrices of (t*xT)(x*xT) on the fly.
   for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {

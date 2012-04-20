@@ -102,8 +102,8 @@ Matrix4x4<T>::Compose
 
   // generate shears
   for ( int i = 2; i >= 0; --i )
-    {
-    Self shear;
+    { 
+    Self shear = Self::Identity();
     shear[i/2][(i/2)+(i%2)+1] = params[9+i];
     *this *= shear;
     }
@@ -179,7 +179,7 @@ Matrix4x4<T>::Decompose
     params[9+k] = R[i][j] / R[i][i];
 
     // remove contribution from transformation matrix
-    Self shear;
+    Self shear = Self::Identity();
     shear[i][j] = params[9+k];
     matrix *= shear.GetInverse();
     }
@@ -370,7 +370,7 @@ template<class T>
 Matrix4x4<T>
 Matrix4x4<T>::RotateX( const T angle )
 {
-  Self rot;
+  Self rot = Self::Identity();
   rot[1][1] = rot[2][2] = cos( angle );
   rot[1][2] = -1.0 * (rot[2][1] = sin( angle ) );
 
@@ -381,7 +381,7 @@ template<class T>
 Matrix4x4<T> 
 Matrix4x4<T>::RotateY( const T angle )
 {
-  Self rot;
+  Self rot = Self::Identity();
   rot[0][0] = rot[2][2] = cos( angle );
   rot[0][2] = -1.0 * (rot[2][0] = sin( angle ) );
 
@@ -392,7 +392,7 @@ template<class T>
 Matrix4x4<T> 
 Matrix4x4<T>::RotateZ( const T angle )
 {
-  Self rot;
+  Self rot = Self::Identity();
   rot[0][0] = rot[1][1] = cos( angle );
   rot[0][1] = -1.0 * (rot[1][0] = sin( angle ) );
 

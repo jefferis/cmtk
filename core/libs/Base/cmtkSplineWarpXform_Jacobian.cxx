@@ -46,14 +46,6 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-CoordinateMatrix3x3
-SplineWarpXform::GetJacobian( const Self::SpaceVectorType& v ) const
-{
-  CoordinateMatrix3x3 J;
-  this->GetJacobian( v, J );
-  return J;
-}
-
 void
 SplineWarpXform::GetJacobianRow
 ( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) 
@@ -165,11 +157,11 @@ SplineWarpXform::GetJacobianRow
   }
 }
 
-void
+CoordinateMatrix3x3
 SplineWarpXform::GetJacobianAtControlPoint
-( const Types::Coordinate* cp, CoordinateMatrix3x3& J ) const
+( const Types::Coordinate* cp ) const
 {
-  J.Fill( 0.0 );
+  CoordinateMatrix3x3 J = CoordinateMatrix3x3::Zero();
   
   const double  sp[3] = {  1.0/6, 2.0/3, 1.0/6 };
   const double dsp[3] = { -1.0/2,     0, 1.0/2 };
@@ -205,11 +197,13 @@ SplineWarpXform::GetJacobianAtControlPoint
     for ( int j = 0; j<3; ++j )
       J[i][j] *= this->m_InverseSpacing[i];
     }
+
+  return J;
 }
 
-void
+CoordinateMatrix3x3
 SplineWarpXform::GetJacobian
-( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const
+( const Self::SpaceVectorType& v ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
@@ -221,6 +215,7 @@ SplineWarpXform::GetJacobian
     f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
 
+  CoordinateMatrix3x3 J = CoordinateMatrix3x3::Zero();
   const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   // loop over the three components of the coordinate transformation function,
@@ -273,6 +268,8 @@ SplineWarpXform::GetJacobian
     for ( int j = 0; j<3; ++j )
       J[i][j] *= this->m_InverseSpacing[i];
     }
+
+  return J;
 }
 
 Types::Coordinate
@@ -497,8 +494,7 @@ SplineWarpXform::GetJacobianDeterminantRow
 Types::Coordinate
 SplineWarpXform::JacobianDeterminant ( const Types::Coordinate *cp ) const
 {
-  CoordinateMatrix3x3 J;
-  this->GetJacobianAtControlPoint( cp, J );
+  const CoordinateMatrix3x3 J = this->GetJacobianAtControlPoint( cp );
   
   return this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2] * 
     ( J[0][0] * (J[1][1]*J[2][2] - J[1][2]*J[2][1]) + 

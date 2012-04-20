@@ -36,18 +36,28 @@ namespace
 cmtk
 {
 
+/// Copy and submatrix constructor.
 template<size_t NDIM,class TSCALAR>
-FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix()
+template<size_t N2,class T2> 
+FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const FixedSquareMatrix<N2,T2>& other, const size_t iOfs, const size_t jOfs )
 {
-  memset( this->m_Matrix, 0, sizeof( this->m_Matrix ) );
-  for ( size_t i = 0; i < Self::Dimension; ++i )
-    this->m_Matrix[i][i] = 1.0;
+  assert( NDIM+iOfs <= N2 );
+  assert( NDIM+jOfs <= N2 );
+  for ( size_t j = 0; j < Self::Dimension; ++j )
+    {
+    for ( size_t i = 0; i < Self::Dimension; ++i )
+      {
+      this->m_Matrix[i][j] = other[i+iOfs][j+jOfs];
+      }
+    }
 }
 
 template<size_t NDIM,class TSCALAR>
-FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const Self& other )
+FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const Self::ScalarType& value )
 {
-  memcpy( this->m_Matrix, other.m_Matrix, sizeof( this->m_Matrix ) );
+  for ( size_t i = 0; i < Self::Dimension; ++i )
+    for ( size_t j = 0; j < Self::Dimension; ++j )
+      this->m_Matrix[i][j] = value;
 }
 
 template<size_t NDIM,class TSCALAR>
@@ -69,6 +79,45 @@ FixedSquareMatrix<NDIM,TSCALAR>::Fill( const typename Self::ScalarType& value )
 }
 
 template<size_t NDIM,class TSCALAR>
+const FixedSquareMatrix<NDIM,TSCALAR>&
+FixedSquareMatrix<NDIM,TSCALAR>::Identity() 
+{
+  static Self identity;
+
+  static bool initialized = false;
+  if ( ! initialized )
+    {
+    for ( size_t i = 0; i < Self::Dimension; ++i )
+      for ( size_t j = 0; j < Self::Dimension; ++j )
+	identity[i][j] = DataTypeTraits<TSCALAR>::Zero();
+    
+    for ( size_t i = 0; i < Self::Dimension; ++i )
+      identity[i][i] = DataTypeTraits<TSCALAR>::One();
+    initialized = true;
+    }
+
+  return identity;
+}
+
+template<size_t NDIM,class TSCALAR>
+const FixedSquareMatrix<NDIM,TSCALAR>&
+FixedSquareMatrix<NDIM,TSCALAR>::Zero()
+{
+  static Self zero;
+
+  static bool initialized = false;
+  if ( ! initialized )
+    {
+    for ( size_t i = 0; i < Self::Dimension; ++i )
+      for ( size_t j = 0; j < Self::Dimension; ++j )
+	zero[i][j] = DataTypeTraits<TSCALAR>::Zero();
+    initialized = true;
+    }
+  
+  return zero;
+}
+
+template<size_t NDIM,class TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>::GetTranspose() const
 {
@@ -85,7 +134,7 @@ template<size_t NDIM,class TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
 {
-  Self inverse;
+  Self inverse = Self::Identity();
 
   typename Self::ScalarType matrix[NDIM][NDIM];
   memcpy( matrix, this->m_Matrix, sizeof( matrix ) );
@@ -105,6 +154,9 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
 	pivAbs = nextAbs;
 	}
       }
+
+    if ( pivAbs == 0 )
+      throw Self::SingularMatrixException();
     
     if ( col != pivIdx )
       {
@@ -169,7 +221,7 @@ const FixedSquareMatrix<NDIM,TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>::operator*
 ( const Self& other ) const
 {
-  Self result( NULL );
+  Self result;
 
   for ( size_t j=0; j < Self::Dimension; ++j ) 
     {

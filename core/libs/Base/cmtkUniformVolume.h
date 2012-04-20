@@ -306,7 +306,7 @@ public:
    *
    *\warning No parameter range checking is currently performed!
    */
-  virtual void GetHessianAt( Matrix3x3<Types::DataItem>& H, const int i, const int j, const int k );
+  virtual Matrix3x3<Types::DataItem> GetHessianAt( const int i, const int j, const int k );
 
   /// Get data value at specified coordinate.
   template<class TData> inline bool ProbeData( TData& result, const TData* dataPtr, const Self::CoordinateVectorType& location ) const;

@@ -48,11 +48,8 @@ cmtk::FitAffineToLandmarks::FitAffineToLandmarks( const LandmarkPairList& landma
   cTo /= nLandmarks;
   
   // now compute the transformation matrix for rotation, scale, shear, using the previously computed centroids for reference
-  Matrix3x3<Types::Coordinate> txT; // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
-  Matrix3x3<Types::Coordinate> xxT; // "x" is the 3xN matrix of control point grid coordinates
-  
-  txT.Fill( 0.0 );
-  xxT.Fill( 0.0 );
+  Matrix3x3<Types::Coordinate> txT = Matrix3x3<Types::Coordinate>::Zero(); // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
+  Matrix3x3<Types::Coordinate> xxT = Matrix3x3<Types::Coordinate>::Zero(); // "x" is the 3xN matrix of control point grid coordinates
   
   // build the two 3x3 matrices of (t*xT)(x*xT) on the fly.
   for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )

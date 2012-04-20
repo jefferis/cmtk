@@ -58,9 +58,7 @@ AffineXform::MakeIdentityXform ()
 
 AffineXform::AffineXform ( const AffineXform& other ) :
   Xform( other ),
-  Matrix( NULL ), 
-  m_LogScaleFactors( false ),
-  InverseXform( NULL )
+  m_LogScaleFactors( false )
 { 
   this->AllocateParameterVector( TotalNumberOfParameters );
   (*this->m_ParameterVector) = (*other.m_ParameterVector);

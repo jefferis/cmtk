@@ -370,11 +370,8 @@ public:
   /// Get local Jacobian.
   virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
-  /// Get local Jacobian into existing matrix.
-  virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;
-
   /// Get local Jacobian at control point into existing matrix.
-  virtual void GetJacobianAtControlPoint( const Types::Coordinate* cp, CoordinateMatrix3x3& J ) const;
+  virtual CoordinateMatrix3x3 GetJacobianAtControlPoint( const Types::Coordinate* cp ) const;
 
   /// Get sequence of Jacobians for pixel row.
   virtual void GetJacobianRow( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;

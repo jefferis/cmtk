@@ -147,14 +147,12 @@ public:
   virtual void GetTransformedGridRow( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get Jacobian matrix.
-  virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;
+  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const
   {
-    CoordinateMatrix3x3 J;
-    this->GetJacobian( v, J );
-    return J.Determinant();
+    return this->GetJacobian( v ).Determinant();
   }
   
   /// Return 1.0 since deformation field DOFs are always direct deformations in space units.

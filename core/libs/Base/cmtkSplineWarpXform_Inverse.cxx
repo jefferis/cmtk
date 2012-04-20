@@ -134,9 +134,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
   while ( ( error > accuracy) && (step > 0.001) ) 
     {
     // transform difference vector into original coordinate system using inverse Jacobian.
-    CoordinateMatrix3x3 J;
-    this->GetJacobian( u, J );
-    delta *= J.GetInverse().GetTranspose();
+    delta *= this->GetJacobian( u ).GetInverse().GetTranspose();
     
     // initialize line search
     (vu = u) -= (delta *= step);

@@ -59,7 +59,7 @@ Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
   (*this)[2][2] = static_cast<T>( 1.0 );
 
   // generate shears
-  Self shearMatrix;
+  Self shearMatrix = Self::Identity();
   shearMatrix[0][1] = static_cast<T>( params[5] );
   *this *= shearMatrix;
 

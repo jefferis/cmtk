@@ -42,7 +42,7 @@ cmtk
 void
 UniformVolume::CreateDefaultIndexToPhysicalMatrix()
 {
-  this->m_IndexToPhysicalMatrix = AffineXform::MatrixType::IdentityMatrix;
+  this->m_IndexToPhysicalMatrix = AffineXform::MatrixType::Identity();
   for ( int axis = 0; axis < 3; ++axis )
     for ( int i = 0; i < 3; ++i )
       this->m_IndexToPhysicalMatrix[axis][i] *= this->m_Delta[axis];
@@ -76,7 +76,7 @@ UniformVolume
   int axesPermutation[3][3];
   AnatomicalOrientation::GetImageToSpaceAxesPermutation( axesPermutation, newSpace.c_str(), currentSpace.c_str() );
 
-  AffineXform::MatrixType newMatrix;
+  AffineXform::MatrixType newMatrix = AffineXform::MatrixType::Identity();
   for ( int j = 0; j < 3; ++j )
     {
     for ( int j2 = 0; j2 < 3; ++j2 )
