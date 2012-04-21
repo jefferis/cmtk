@@ -52,7 +52,8 @@ SET(cmtkSystem_SRCS
   cmtkMemory.cxx
   cmtkMountPoints.cxx
   cmtkProgress.cxx	
-  cmtkProgressConsole.cxx	
+  cmtkProgressConsole.cxx
+  cmtkRegressionTracker.cxx
   cmtkStackBacktrace
   cmtkStrUtility.cxx
   cmtkThreads.cxx
@@ -60,10 +61,6 @@ SET(cmtkSystem_SRCS
   cmtkThreadSemaphore.cxx
   cmtkTimers.cxx
 )
-
-IF(CMTK_BUILD_RTRACKER)
-  LIST(APPEND cmtkSystem_SRCS cmtkRegressionTracker.cxx)
-ENDIF(CMTK_BUILD_RTRACKER)
 
 IF(CMTK_USE_BZIP2)
   LIST(APPEND cmtkSystem_SRCS cmtkCompressedStreamBZip2.cxx)

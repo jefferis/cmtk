@@ -192,9 +192,6 @@ MARK_AS_ADVANCED(CMTK_BUILD_UNSTABLE)
 OPTION(CMTK_BUILD_STACKTRACE "Build tools with stack trace printing in case of crash (increases build time)" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_STACKTRACE)
 
-OPTION(CMTK_BUILD_RTRACKER "Build tools with regression tracker support" OFF)
-MARK_AS_ADVANCED(CMTK_BUILD_RTRACKER)
-
 OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
 IF(CMTK_BUILD_DEMO)
