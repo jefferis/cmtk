@@ -140,12 +140,12 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
   memcpy( matrix, this->m_Matrix, sizeof( matrix ) );
   
   typename Self::ScalarType rowBuff[Self::Dimension];
-  for ( size_t col = 0; col< Self::Dimension; ++col ) 
+  for ( size_t col = 0; col < Self::Dimension; ++col ) 
     {
     size_t pivIdx = col;
     typename Self::ScalarType pivAbs = fabs( matrix[col][col] );
     
-    for ( size_t row = col+1; row< Self::Dimension; ++row ) 
+    for ( size_t row = col+1; row < Self::Dimension; ++row ) 
       {
       const typename Self::ScalarType nextAbs = fabs( matrix[row][col] );
       if (nextAbs > pivAbs ) 
@@ -169,7 +169,7 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
       memcpy( inverse[pivIdx], rowBuff, sizeof(rowBuff) );
       }
     
-    for ( size_t c=0; c< Self::Dimension; ++c ) 
+    for ( size_t c=0; c < Self::Dimension; ++c ) 
       {
       if (c>col )
 	matrix[col][c] /= matrix[col][col];
@@ -177,11 +177,11 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
       }
     matrix[col][col] = DataTypeTraits<TSCALAR>::One();
     
-    for ( size_t row = 0; row< Self::Dimension; ++row ) 
+    for ( size_t row = 0; row < Self::Dimension; ++row ) 
       {
       if (row != col ) 
 	{
-	for ( size_t c=0; c< Self::Dimension; ++c ) 
+	for ( size_t c=0; c < Self::Dimension; ++c ) 
 	  {
 	  if ( c>col ) 
 	    matrix[row][c] -= matrix[row][col] * matrix[col][c];
