@@ -156,7 +156,7 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
       }
 
     if ( pivAbs == 0 )
-      throw Self::SingularMatrixException();
+      throw typename Self::SingularMatrixException();
     
     if ( col != pivIdx )
       {
