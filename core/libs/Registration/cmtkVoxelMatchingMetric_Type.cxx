@@ -57,11 +57,11 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
 
   if ( srcArray->GetPaddingFlag() )
     {
-    Padding = NumericTraits<T>::ConvertFromDataItem( srcArray->GetPaddingValue() );
+    Padding = DataTypeTraits<T>::Convert( srcArray->GetPaddingValue() );
     }
   else
     {
-    Padding = NumericTraits<T>::DefaultPaddingValue;
+    Padding = DataTypeTraits<T>::ChoosePaddingValue();
     }
 }
 

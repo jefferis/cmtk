@@ -36,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkTypes.h>
-#include <Base/cmtkNumericTraits.h>
+#include <Base/cmtkDataTypeTraits.h>
 #include <Base/cmtkInterpolator.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkTypedArray.h>
@@ -107,7 +107,7 @@ public:
     }
     
     /// Default constructor.
-    ImageData() : Padding( NumericTraits<T>::DefaultPaddingValue ), Data( NULL ), DataArray( NULL )
+    ImageData() : Padding( DataTypeTraits<T>::ChoosePaddingValue() ), Data( NULL ), DataArray( NULL )
     {
       nextJ = nextK = nextIJ = nextJK = nextIK = nextIJK = 0;
     }
