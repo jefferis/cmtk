@@ -1,5 +1,10 @@
 Release CMTK-2.2.0:
 
+(r4240) Fixed: one of the functions computing Jacobian matrices for B-spline
+    FFD transformations was broken, leading to slightly skewed inverse
+    transformations in various tools. Due to direct optimization of the
+    inversion error, the actual inversion results were still accurate within
+    the given tolerance.
 (r4195) Added: tool for unwarping images using B-spline free-form deformation
     computed from a reference scan of the ADNI phantom.
 (r4180) Added: detection of the landmarks in the Magphan EMR051 structural
