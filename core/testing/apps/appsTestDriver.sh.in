@@ -146,18 +146,8 @@ check_results()
 
 check_image()
 {
-    baseline=`get_unzipped ${BASELINE}/$1`
-    result=`get_unzipped ${tmpdir}/$1`
-
-    if test ! -f ${result}; then
-	echo "Results image ${result} does not exist"
-	exit 1
-    fi
-
-    if test ! -f ${baseline}; then
-	echo "Baseline image ${baseline} does not exist"
-	exit 1
-    fi
+    baseline=${BASELINE}/$1
+    result=${tmpdir}/$1
     
     abs_threshold=1e-5 ## if this is made much smaller, need to adjust "scale=" on next line:
 
