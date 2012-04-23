@@ -32,6 +32,8 @@
 
 #include <Base/cmtkDataTypeTraits.h>
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -139,15 +141,14 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
   typename Self::ScalarType matrix[NDIM][NDIM];
   memcpy( matrix, this->m_Matrix, sizeof( matrix ) );
   
-  typename Self::ScalarType rowBuff[Self::Dimension];
-  for ( size_t col = 0; col < Self::Dimension; ++col ) 
+  for ( size_t eliminate = 0; eliminate < Self::Dimension; ++eliminate ) 
     {
-    size_t pivIdx = col;
-    typename Self::ScalarType pivAbs = fabs( matrix[col][col] );
+    size_t pivIdx = eliminate;
+    typename Self::ScalarType pivAbs = fabs( matrix[eliminate][eliminate] );
     
-    for ( size_t row = col+1; row < Self::Dimension; ++row ) 
+    for ( size_t row = eliminate+1; row < Self::Dimension; ++row ) 
       {
-      const typename Self::ScalarType nextAbs = fabs( matrix[row][col] );
+      const typename Self::ScalarType nextAbs = fabs( matrix[row][eliminate] );
       if (nextAbs > pivAbs ) 
 	{
 	pivIdx = row;
@@ -158,36 +159,34 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
     if ( pivAbs == 0 )
       throw typename Self::SingularMatrixException();
     
-    if ( col != pivIdx )
+    if ( eliminate != pivIdx )
       {
-      memcpy( rowBuff, matrix[col], sizeof(rowBuff) );
-      memcpy( matrix[col], matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( matrix[pivIdx], rowBuff, sizeof(rowBuff) );
-
-      memcpy( rowBuff, inverse[col], sizeof(rowBuff) );
-      memcpy( inverse[col], inverse[pivIdx], sizeof(rowBuff) );
-      memcpy( inverse[pivIdx], rowBuff, sizeof(rowBuff) );
+      for ( size_t col = 0; col < Self::Dimension; ++col )
+	{
+	std::swap( matrix[eliminate][col], matrix[pivIdx][col] );
+	std::swap( inverse[eliminate][col], inverse[pivIdx][col] );
+	}
       }
     
-    for ( size_t c=0; c < Self::Dimension; ++c ) 
+    for ( size_t col = 0; col < Self::Dimension; ++col ) 
       {
-      if (c>col )
-	matrix[col][c] /= matrix[col][col];
-      inverse[col][c] /= matrix[col][col];
+      if ( col > eliminate )
+	matrix[eliminate][col] /= matrix[eliminate][eliminate];
+      inverse[eliminate][col] /= matrix[eliminate][eliminate];
       }
-    matrix[col][col] = DataTypeTraits<TSCALAR>::One();
+    matrix[eliminate][eliminate] = DataTypeTraits<TSCALAR>::One();
     
     for ( size_t row = 0; row < Self::Dimension; ++row ) 
       {
-      if (row != col ) 
+      if (row != eliminate ) 
 	{
-	for ( size_t c=0; c < Self::Dimension; ++c ) 
+	for ( size_t col = 0; col < Self::Dimension; ++col ) 
 	  {
-	  if ( c>col ) 
-	    matrix[row][c] -= matrix[row][col] * matrix[col][c];
-	  inverse[row][c] -= matrix[row][col] * inverse[col][c];
+	  if ( col > eliminate ) 
+	    matrix[row][col] -= matrix[row][eliminate] * matrix[eliminate][col];
+	  inverse[row][col] -= matrix[row][eliminate] * inverse[eliminate][col];
 	  }
-	matrix[row][col] = 0;
+	matrix[row][eliminate] = DataTypeTraits<TSCALAR>::Zero();
 	}
       }
     }
