@@ -33,7 +33,6 @@ SET(cmtkIO_SRCS
   cmtkAffineXformITKIO.cxx
   cmtkSplineWarpXformITKIO.cxx
   cmtkClassStreamAffineXform.cxx
-  cmtkClassStreamLandmarkList.cxx
   cmtkClassStreamParametricPlane.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx

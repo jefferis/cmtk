@@ -37,14 +37,11 @@
 #include <System/cmtkCommandLine.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkClassStream.h>
 #include <IO/cmtkTypedStreamStudylist.h>
 
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkHistogram.h>
 #include <Base/cmtkValueSequence.h>
-#include <Base/cmtkLandmark.h>
-#include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkMathFunctionWrappers.h>
 
 #include <Registration/cmtkReformatVolume.h>
@@ -65,7 +62,6 @@ bool ExpData = false;
 bool WriteAsColumn = false;
 bool OutputExpNotation = false;
 
-const char *LandmarksFileName = NULL;
 const char *MaskFileName = NULL;
 bool MaskIsBinary = false;
 int MaskOutputAllUpTo = 0;
@@ -141,8 +137,6 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
       }
     }
   
-  cmtk::LandmarkList landmarkList;
-  
   cmtk::DebugOutput( 1 ) << "idx\t\tcount\t\tsurface\t\tvolume\tCenterOfMass\n";
 
   const cmtk::Types::Coordinate voxelVolume = volume->m_Delta[0] * volume->m_Delta[1] * volume->m_Delta[2];
@@ -162,18 +156,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4f\t(%f,%f,%f)\n", 
 		 (int)(idx+range.m_LowerBound), count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       totalCount += count[idx];
-      
-      char name[4];
-      sprintf( name, "%3d", idx );
-      landmarkList.push_back( cmtk::Landmark( name, centerOfMass[idx] ) );
       }
-    }
-  
-  if ( LandmarksFileName ) 
-    {
-    cmtk::ClassStream stream( LandmarksFileName, cmtk::ClassStream::MODE_WRITE );
-    stream << landmarkList;
-    stream.Close();
     }
   
   cmtk::Types::DataItem entropy = 0;
@@ -348,7 +331,6 @@ doMain ( const int argc, const char* argv[] )
     
     cl.AddSwitch( Key( 'C', "column" ), &WriteAsColumn, true, "Write statistics in column format rather than line format." );
     cl.AddSwitch( Key( 'E', "e-notation" ), &OutputExpNotation, true, "Write floating point numbers in #e# notation (i.e., 1e-3 instead of 0.001)" ); 
-    cl.AddOption( Key( 'c', "com" ), &LandmarksFileName, "Write centers of mass of labeled regions to landmarks file." );
     
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Analyze region based on binary mask file", &MaskIsBinary );
     cl.AddOption( Key( 'M', "Mask" ), &MaskFileName, "Analyze regions separately based on mask file (label field)." );

@@ -42,8 +42,6 @@
 #include <Base/cmtkWarpXform.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkParametricPlane.h>
-#include <Base/cmtkLandmark.h>
-#include <Base/cmtkLandmarkList.h>
 
 namespace
 cmtk
@@ -141,20 +139,6 @@ public:
   
   /// Read parametric plane.
   ClassStream& operator >> ( ParametricPlane*& parametricPlane );
-
-  /** Write landmark list.
-   */
-  ClassStream& operator << ( const LandmarkList *landmarkList );
-
-  /** Write landmark list.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const LandmarkList& landmarkList )
-  { return (*this) << &landmarkList; }
-  
-  /// Read landmark list.
-  ClassStream& operator >> ( LandmarkList::SmartPtr& landmarkList );
 };
 
 //@}
