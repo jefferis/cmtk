@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,6 +80,9 @@ public:
    *\return A pointer to a static buffer holding the path after all substitions
    * have been done. The buffer is guaranteed to remain unchanged until and 
    * only until the next time Translate() is called.
+   *\todo There is really no reason why we parse the environment variable every time a
+   * substitution is (potentially) performed. Instead, it should be parsed once and then
+   * simply re-applied.
    *\see CMTK_MOUNTPOINTSVAR
    */
   static const char* Translate ( const char* path );
