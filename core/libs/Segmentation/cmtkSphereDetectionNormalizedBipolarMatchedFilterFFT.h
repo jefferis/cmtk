@@ -42,13 +42,14 @@ cmtk
 {
 
 /** Detect spheres in an image using FFT-based matched bipolar filter.
- * An object of this class can be used to detect spheres of different sizes with only a two FFTs applied to the test image and its square. 
+ * An object of this class can be used to detect spheres of different sizes with only two FFTs applied to the test image and its square. 
  * Each detected sphere size does require a different filter kernel and thus three repeated FFTs of the kernel, its mask, and its square.
  *
  * The filter kernel is bipolar, i.e., +1 inside the sphere and -1 outside the sphere, each within a user-provided margin inside and outside the
  * sphere surface. This makes the filter robust to intensity differences across the images.
  *
- *\see D. Padfield, "Masked Object Registration in the Fourier Domain," IEEE Transactions on Image Processing, in press. doi: 10.1109/TIP.2011.2181402
+ *\see D. Padfield, "Masked object registration in the Fourier domain," IEEE Transactions on Image Processing, vol. 21, no. 5, pp. 2706-2718, 2012.
+ * http://dx.doi.org/10.1109/TIP.2011.2181402
  * http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6111478&isnumber=4358840
  *
  *\note This class requires CMTK to be configured with FFTW3 support ("CMTK_USE_FFTW" CMake option).
