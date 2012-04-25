@@ -57,7 +57,7 @@ MountPoints::Translate( const char* path )
   if ( ! mountpoints ) return path;
   strcpy( Buffer, path );
 
-  char target[256], source[256];
+  char searchStr[256], replaceStr[256];
   const char *delim;
 
   const char *nextRule = mountpoints;
@@ -68,26 +68,26 @@ MountPoints::Translate( const char* path )
     if ( delim ) 
       {
       int cplen = delim - nextRule;
-      strncpy( target, nextRule, cplen );
-      target[cplen] = 0;
+      strncpy( searchStr, nextRule, cplen );
+      searchStr[cplen] = 0;
       
       nextRule = strchr( delim, ',' );
       if ( nextRule ) 
 	{
 	int cplen = nextRule - delim - 1;
-	strncpy( source, delim+1, cplen );
-	source[cplen] = 0;
+	strncpy( replaceStr, delim+1, cplen );
+	replaceStr[cplen] = 0;
 	nextRule++;
 	} 
       else
 	{
-	strcpy( source, delim+1 );
+	strcpy( replaceStr, delim+1 );
 	nextRule = NULL;
 	}
       
       // check for beginning-of-line token
       bool checkPrefixOnly = false;
-      if ( target[0] == '^' ) 
+      if ( searchStr[0] == '^' ) 
 	{
 	checkPrefixOnly = true;
 	}
@@ -95,11 +95,11 @@ MountPoints::Translate( const char* path )
       if ( checkPrefixOnly ) 
 	{
 	// Check if rule applies to given path.
-	if ( !strncmp( path, target+1, strlen( target ) - 1 ) ) 
+	if ( !strncmp( path, searchStr+1, strlen( searchStr ) - 1 ) ) 
 	  {
 	  // Yes, it does: Substitute prefix accordingly and return pointer
 	  // to buffer containing modified path.
-	  strcat( strcpy( Buffer, source ), path+strlen(target)-1 );
+	  strcat( strcpy( Buffer, replaceStr ), path+strlen(searchStr)-1 );
 	  return Buffer;
 	  }
 	} 
@@ -107,13 +107,13 @@ MountPoints::Translate( const char* path )
 	{
 	// Substitute non-prefix occurences as well
 	char *found = NULL;
-	if ( ( found = strstr( Buffer, target ) ) ) 
+	if ( ( found = strstr( Buffer, searchStr ) ) ) 
 	  {
 	  // Yes, it does: Substitute accordingly and return pointer
 	  // to buffer containing modified path.
 	  char tmpPath[PATH_MAX];
 	  memset( tmpPath, 0, sizeof( tmpPath ) );
-	  strcat( strcat( strncpy( tmpPath, Buffer, found-Buffer ), source ), found + strlen(target) );
+	  strcat( strcat( strncpy( tmpPath, Buffer, found-Buffer ), replaceStr ), found + strlen(searchStr) );
 	  strcpy( Buffer, tmpPath );
 	  }
 	}
