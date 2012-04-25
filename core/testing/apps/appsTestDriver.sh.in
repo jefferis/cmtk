@@ -1846,6 +1846,10 @@ case ${RUNTEST} in
         run registrationx -v --init fov --auto-multi-levels 2 --ncc -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
 	check_results registration
 	;;
+    registrationxAutoLevelsRatToRatRMS)
+        run registrationx -v --init fov --auto-multi-levels 2 --rms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
     registrationxAutoLevelsRatToRatCR)
         run registrationx -v --init fov --auto-multi-levels 2 --cr -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
 	check_results registration

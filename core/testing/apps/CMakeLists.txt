@@ -626,6 +626,7 @@ LIST(APPEND testList
   registrationxAutoLevelsRat2NN
   registrationxAutoLevelsRatToRat
   registrationxAutoLevelsRatToRatDeltaFThreshold
+  registrationxAutoLevelsRatToRatRMS
   registrationxAutoLevelsRatToRatNCC
   registrationxAutoLevelsRatToRatCR
   registrationxAutoLevelsRatToRatMI
