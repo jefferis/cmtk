@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,7 +76,7 @@ CompressedStream::ArchiveLookup[] = {
   { NULL,   NULL} 
 };
 
-CompressedStream::CompressedStream ( const char *filename ) 
+CompressedStream::CompressedStream ( const std::string& filename ) 
   : m_Reader( NULL ),
     m_Compressed( false )
 {
@@ -89,23 +89,26 @@ CompressedStream::~CompressedStream ()
 }
 
 bool
-CompressedStream::Open ( const char *filename ) 
+CompressedStream::Open ( const std::string& filename ) 
 {
   this->Close();
 
-  if ( Self::Stat( filename ) == 2 )
+  if ( Self::Stat( filename.c_str() ) == 2 )
     {
     StdErr << "WARNING: file '" << filename << "' exists both compressed and uncompressed!\n";
     }
   
-  const char *suffix = strrchr( filename, '.' );
-  
   this->m_Compressed = false;
   
-  if ( suffix )
+  std::string suffix = "";
+  const size_t period = filename.rfind( '.' );
+  if ( period != std::string::npos )
+    {
+    suffix = filename.substr( period, std::string::npos );
     for ( int i=0; ArchiveLookup[i].suffix && !this->m_Compressed; ++i )
-      this->m_Compressed = this->m_Compressed || ! strcmp( ArchiveLookup[i].suffix, suffix );
-
+      this->m_Compressed = this->m_Compressed || ( suffix == ArchiveLookup[i].suffix );
+    }
+  
   try
     {
     if ( !this->m_Compressed )
@@ -147,13 +150,11 @@ CompressedStream::Close()
 
 bool
 CompressedStream::OpenDecompressionPipe
-( const char* filename, const char* suffix, const char* command, const char* compressedSuffix )
+( const std::string& filename, const std::string& suffix, const char* command, const char* compressedSuffix )
 {
-  char fname[PATH_MAX];
-
-  strcpy( fname, filename );
-  if ( !suffix || strcmp( compressedSuffix, suffix ) )
-    strcat( fname, compressedSuffix );
+  std::string fname = filename;
+  if ( suffix != compressedSuffix )
+    fname = fname + compressedSuffix;
 
 #ifdef _MSC_VER 
   for ( char *p=fname; *p; ++p )
@@ -161,7 +162,7 @@ CompressedStream::OpenDecompressionPipe
 #endif
 
   struct stat buf;
-  if ( (! stat( fname, &buf )) && ( (buf.st_mode & S_IFREG) == S_IFREG ) ) 
+  if ( (! stat( fname.c_str(), &buf )) && ( (buf.st_mode & S_IFREG) == S_IFREG ) ) 
     {
     if ( !strcmp( compressedSuffix, ".gz" ) ) 
       {
@@ -207,9 +208,9 @@ CompressedStream::GetBaseName( const std::string& path )
 }
 
 int 
-CompressedStream::Stat( const char *path, struct stat* buf )
+CompressedStream::Stat( const std::string& path, struct stat* buf )
 {
-  std::string baseName = CompressedStream::GetBaseName( path );
+  const std::string baseName = CompressedStream::GetBaseName( path );
 
   struct stat statbuf;
   if ( ! buf )

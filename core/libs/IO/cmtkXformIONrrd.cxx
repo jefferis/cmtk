@@ -52,13 +52,13 @@ cmtk
 //@{
 
 Xform::SmartPtr
-XformIO::ReadNrrd( const char* path )
+XformIO::ReadNrrd( const std::string& path )
 {
   DeformationField::SmartPtr dfield( NULL );
   try 
     {
     Nrrd *nrrd = nrrdNew();
-    if ( nrrdLoad( nrrd, path, NULL ) )
+    if ( nrrdLoad( nrrd, path.c_str(), NULL ) )
       throw biffGetDone(NRRD);
 
     if ( nrrd->dim != 4 )
@@ -196,7 +196,7 @@ XformIO::ReadNrrd( const char* path )
 
 void 
 XformIO::WriteNrrd
-( const Xform* xform, const char *path )
+( const Xform* xform, const std::string& path )
 {
   const DeformationField* dfield = dynamic_cast<const DeformationField*>( xform );
   if ( ! dfield )
@@ -268,7 +268,7 @@ XformIO::WriteNrrd
       }
     nrrdAxisInfoSet_nva( nval, nrrdAxisInfoSpaceDirection, spaceDir );
     
-    if ( nrrdSave( path, nval, nios ) )
+    if ( nrrdSave( path.c_str(), nval, nios ) )
       {
       throw( biffGetDone(NRRD) );
       }

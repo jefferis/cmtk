@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,15 +49,15 @@ cmtk
 
 void
 VolumeFromFile::WriteMetaImage
-( const char* pathHdr, const UniformVolume& volume )
+( const std::string& pathHdr, const UniformVolume& volume )
 {
   const TypedArray* data = volume.GetData();
   if ( ! data ) return;
 
 #ifdef _MSC_VER
-  FILE *outfile = fopen( pathHdr, "wb" );
+  FILE *outfile = fopen( pathHdr.c_str(), "wb" );
 #else
-  FILE *outfile = fopen( pathHdr, "w" );
+  FILE *outfile = fopen( pathHdr.c_str(), "w" );
 #endif
 
   if ( ! outfile )

@@ -41,9 +41,9 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CompressedStream::Zlib::Zlib( const char* filename )
+CompressedStream::Zlib::Zlib( const std::string& filename )
 {
-  this->m_GzFile = gzopen( filename, CMTK_FILE_MODE );
+  this->m_GzFile = gzopen( filename.c_str(), CMTK_FILE_MODE );
   if ( !this->m_GzFile ) 
     {
     throw 0;

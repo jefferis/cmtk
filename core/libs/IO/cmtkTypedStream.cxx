@@ -65,14 +65,14 @@ TypedStream::TypedStream()
 }
 
 TypedStream::TypedStream
-( const char *filename, const Self::Mode mode )
+( const std::string& filename, const Self::Mode mode )
 {
   this->InitInternals();
   this->Open( filename, mode );
 }
 
 TypedStream::TypedStream
-( const char *dir, const char *archive, const Self::Mode mode )
+( const std::string& dir, const std::string& archive, const Self::Mode mode )
 {
   this->InitInternals();
   this->Open( dir, archive, mode );
@@ -106,21 +106,21 @@ TypedStream
 void 
 TypedStream
 ::Open
-( const char *dir, const char *archive, const Self::Mode mode )
+( const std::string& dir, const std::string& archive, const Self::Mode mode )
 {
   static char fname[PATH_MAX];
   
-  // If "dir" parameter is NULL or empty, use current directory instead.
-  if ( dir && *dir ) 
+  // If "dir" parameter is empty, use current directory instead.
+  if ( dir != "" ) 
     {
-    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s%c%s", dir, CMTK_PATH_SEPARATOR, archive ) ) >= sizeof( fname ) )
+    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s%c%s", dir.c_str(), CMTK_PATH_SEPARATOR, archive.c_str() ) ) >= sizeof( fname ) )
       {
       StdErr << "WARNING: length of path exceeds system PATH_MAX in TypedStream::Open and will be truncated.\n";
       }
     } 
   else 
     {
-    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s", archive ) ) >= sizeof( fname ) )
+    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s", archive.c_str() ) ) >= sizeof( fname ) )
       {
       StdErr << "WARNING: length of path exceeds system PATH_MAX in TypedStream::Open and will be truncated.\n";
       }
@@ -132,9 +132,9 @@ TypedStream
     // check if this is an existing directory; if it is, set access/modification time.
     // this is useful for dependency checking using file system timestamps.
     struct stat buf;
-    if ( !stat( dir, &buf ) && S_ISDIR( buf.st_mode ) )
+    if ( !stat( dir.c_str(), &buf ) && S_ISDIR( buf.st_mode ) )
       {
-      utimes( dir, NULL );
+      utimes( dir.c_str(), NULL );
       }
 #endif
     }    
@@ -145,17 +145,11 @@ TypedStream
 void 
 TypedStream
 ::Open
-( const char *filename, const Self::Mode mode )
+( const std::string& filename, const Self::Mode mode )
 {
   this->m_Status = Self::ERROR_NONE;
 
   this->Close();
-  
-  if ( !filename) 
-    {
-    this->m_Status = Self::ERROR_ARG;
-    return;
-    }
   
   if ( mode != Self::MODE_READ && mode != Self::MODE_WRITE && mode != Self::MODE_WRITE_ZLIB && mode != Self::MODE_APPEND ) 
     {
@@ -190,11 +184,10 @@ TypedStream
     default: modestr = ""; break;
     }
   
-  if ( ! ( File = fopen( filename, modestr ) ) ) 
+  if ( ! ( File = fopen( filename.c_str(), modestr ) ) ) 
     {
-    char gzName[PATH_MAX];
-    snprintf( gzName, sizeof( gzName ), "%s.gz", filename );
-    GzFile = gzopen( gzName, modestr );
+    const std::string gzName = filename + ".gz";
+    GzFile = gzopen( gzName.c_str(), modestr );
     if ( ! GzFile ) 
       {
       StdErr << "ERROR: could not open file \"" << filename << "\" with mode \"" << modestr << "\"\n";

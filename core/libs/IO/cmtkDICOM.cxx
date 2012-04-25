@@ -60,7 +60,7 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-DICOM::DICOM( const char* path )
+DICOM::DICOM( const std::string& path )
 {
 #ifdef CMTK_USE_DCMTK_JPEG
   // register global decompression codecs
@@ -79,7 +79,7 @@ DICOM::DICOM( const char* path )
     }
   
   fileformat->transferInit();
-  OFCondition status = fileformat->loadFile( path );
+  OFCondition status = fileformat->loadFile( path.c_str() );
   fileformat->transferEnd();
 
   if ( !status.good() ) 

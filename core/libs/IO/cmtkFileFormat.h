@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,8 @@
 #define __cmtkFileFormat_h_included_
 
 #include <cmtkconfig.h>
+
+#include <string>
 
 namespace 
 cmtk
@@ -103,19 +105,19 @@ public:
    * an uncompressed and a compressed file exist for the same path prefix, then
    * the uncompressed file has precedence.
    */
-  static FileFormatID Identify( const char* path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
+  static FileFormatID Identify( const std::string& path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
 
   /** Return ID for given file format name.
    */
-  static FileFormatID GetID( const char* name );
+  static FileFormatID GetID( const std::string& name );
 
   /** Return textual description of identified file format.
    */
-  static const char* Describe( const FileFormatID id );
+  static std::string Describe( const FileFormatID id );
 
   /** Return textual description of a file's format.
    */
-  static const char* Describe( const char* path ) 
+  static std::string Describe( const std::string& path ) 
   {
     return Describe( Identify( path ) );
   }
@@ -123,11 +125,11 @@ public:
 private:
   /** Identify directory with given path.
    */
-  static FileFormatID IdentifyDirectory( const char* path );
+  static FileFormatID IdentifyDirectory( const std::string& path );
 
   /** Identify regular file with given path.
    */
-  static FileFormatID IdentifyFile( const char* path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
+  static FileFormatID IdentifyFile( const std::string& path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
 };
 
 //@}

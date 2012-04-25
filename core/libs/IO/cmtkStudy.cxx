@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,6 @@ cmtk
 Study::Study()
   : m_FileSystemPath( NULL ),
     m_Name( NULL ),
-    m_Description( NULL ),
     m_Modality( NULL ),
     m_Volume( NULL ),
     m_MinimumValue( 0.0 ),
@@ -64,7 +63,6 @@ Study::Study()
 Study::Study( const char* fileSystemPath, const char *name )
   : m_FileSystemPath( NULL ),
     m_Name( NULL ),
-    m_Description( NULL ),
     m_Modality( NULL ),
     m_Volume( NULL ),
     m_MinimumValue( 0.0 ),
@@ -77,7 +75,7 @@ Study::Study( const char* fileSystemPath, const char *name )
   if ( fileSystemPath ) 
     {
     this->m_FileSystemPath = strdup( fileSystemPath );
-    this->m_Description = strdup( FileFormat::Describe( this->m_FileSystemPath ) );
+    this->m_Description = FileFormat::Describe( this->m_FileSystemPath );
 
     // cut trailing '/'s off the study path.
     char *endp = this->m_FileSystemPath + strlen( this->m_FileSystemPath ) - 1;
@@ -167,7 +165,6 @@ Study::SetMakeName( const char* name, const int suffix )
 Study::~Study() 
 {
   free( this->m_FileSystemPath );
-  free( this->m_Description );
   free( this->m_Name );
 }
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,23 +69,23 @@ const char* const IGS_LEGACY_ANALYZE_IO = "IGS_LEGACY_ANALYZE_IO";
 //@{
 
 const UniformVolume::SmartPtr
-VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const bool readData )
+VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian, const bool readData )
 {
 #ifdef _MSC_VER
-  FILE *hdrFile = fopen( pathHdr, "rb" );
+  FILE *hdrFile = fopen( pathHdr.c_str(), "rb" );
 #else
-  FILE *hdrFile = fopen( pathHdr, "r" );
+  FILE *hdrFile = fopen( pathHdr.c_str(), "r" );
 #endif
   if ( !hdrFile ) 
     {
-    StdErr.printf( "ERROR: could not open Analyze header file %s\n", pathHdr );
+    StdErr << "ERROR: could not open Analyze header file " << pathHdr << "\n";
     return UniformVolume::SmartPtr( NULL );
     }
   
   char buffer[348];
   if ( 348 != fread( buffer, 1, 348, hdrFile ) ) 
     {
-    StdErr.printf( "ERROR: could not read 348 bytes from header file %s\n", pathHdr );
+    StdErr << "ERROR: could not read 348 bytes from header file " << pathHdr << "\n";
     fclose( hdrFile );
     return UniformVolume::SmartPtr( NULL );
     }
@@ -96,7 +96,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   short ndims = header.GetField<short>( 40 );
   if ( ndims < 3 ) 
     {
-    StdErr.printf( "ERROR: image dimension %d is smaller than 3 in file %s\n", ndims, pathHdr );
+    StdErr.printf( "ERROR: image dimension %d is smaller than 3 in file %s\n", ndims, pathHdr.c_str() );
     return UniformVolume::SmartPtr( NULL );
     }
   
@@ -108,7 +108,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
 
   if ( (ndims > 3) && (dims3 > 1) ) 
     {
-    StdErr.printf( "WARNING: dimension %d is greater than 3 in file %s\n", ndims, pathHdr );
+    StdErr.printf( "WARNING: dimension %d is greater than 3 in file %s\n", ndims, pathHdr.c_str() );
     }
   
   float pixelDim[3];
@@ -136,7 +136,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     switch ( orient ) 
       {
       default:
-	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr );
+	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr.c_str() );
       case cmtk::ANALYZE_AXIAL:
 	orientString = "RAS"; // INCORRECT LEGACY ORIENTATION
 	break;
@@ -163,7 +163,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     switch ( orient ) 
       {
       default:
-	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr );
+	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr.c_str() );
       case cmtk::ANALYZE_AXIAL:
 	orientString = "LAS";
 	break;
@@ -215,7 +215,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     case cmtk::ANALYZE_TYPE_RGB:
     case cmtk::ANALYZE_TYPE_ALL:
     default:
-      StdErr.printf( "ERROR: unsupported data type %d in Analyze file %s\n", header.GetField<short>( 70 ), pathHdr );
+      StdErr.printf( "ERROR: unsupported data type %d in Analyze file %s\n", header.GetField<short>( 70 ), pathHdr.c_str() );
       return volume;
     case cmtk::ANALYZE_TYPE_UNSIGNED_CHAR:
       dtype = TYPE_BYTE;
@@ -242,11 +242,10 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   
   size_t offset = static_cast<size_t>( header.GetField<float>( 108 ) );
   
-  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
-  strcpy( pathImg, pathHdr );
-  char* suffix = strstr( pathImg, ".hdr" );
-  if ( suffix ) *suffix = 0;
-  strcat( pathImg, ".img" );
+  std::string pathImg = pathHdr;
+  const size_t period = pathImg.rfind( ".hdr" );
+  if ( period != std::string::npos ) 
+    pathImg.replace( period, 4, ".img" );
   
   CompressedStream stream( pathImg );
   if ( stream.IsValid() ) 
@@ -274,14 +273,12 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     StdErr << "ERROR: could not open Analyze image file " << pathImg << "\n";
     }
   
-  Memory::ArrayC::Delete( pathImg );
-
   return volume;
 }
 
 void
 VolumeFromFile::WriteAnalyzeHdr
-( const char* pathHdr, const UniformVolume& volume )
+( const std::string& pathHdr, const UniformVolume& volume )
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
@@ -423,16 +420,15 @@ VolumeFromFile::WriteAnalyzeHdr
     }
 
   // write binary data
-  char* pathImg = Memory::ArrayC::Allocate<char>(  4 + strlen( pathHdr )  );
-  strcpy( pathImg, pathHdr );
-  char* suffix = strstr( pathImg, ".hdr" );
-  if ( suffix ) *suffix = 0;
-  strcat( pathImg, ".img" );
+  std::string pathImg = pathHdr;
+  const size_t period = pathImg.rfind( ".hdr" );
+  if ( period != std::string::npos ) 
+    pathImg.replace( period, 4, ".img" );
   
   if ( VolumeIO::GetWriteCompressed() )
     {
     struct stat buf;
-    if ( ! stat( pathImg, &buf ) )
+    if ( ! stat( pathImg.c_str(), &buf ) )
       {
       StdErr << "WARNING: Analyze img file '" << pathImg << "' will be written compressed, but uncompressed file exists!\n";
       }
@@ -443,7 +439,7 @@ VolumeFromFile::WriteAnalyzeHdr
     const char *const modestr = "w9";
 #endif
     
-    gzFile imgFile = gzopen( strcat( pathImg, ".gz" ), modestr );
+    gzFile imgFile = gzopen( (pathImg + ".gz").c_str(), modestr );
     if ( imgFile ) 
       {
       const size_t dataSize = data->GetItemSize() * data->GetDataSize();
@@ -462,7 +458,7 @@ VolumeFromFile::WriteAnalyzeHdr
     const char *const modestr = "w";
 #endif
 
-    FILE *imgFile = fopen( pathImg, modestr );
+    FILE *imgFile = fopen( pathImg.c_str(), modestr );
     if ( imgFile ) 
       {
       fwrite( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(), imgFile );
@@ -476,15 +472,15 @@ VolumeFromFile::WriteAnalyzeHdr
 
   // write header info
 #ifdef _MSC_VER
-  FILE *hdrFile = fopen( pathHdr, "wb" );
+  FILE *hdrFile = fopen( pathHdr.c_str(), "wb" );
 #else
-  FILE *hdrFile = fopen( pathHdr, "w" );
+  FILE *hdrFile = fopen( pathHdr.c_str(), "w" );
 #endif
   if ( hdrFile ) 
     {
     if ( 348 != fwrite( buffer, 1, 348, hdrFile ) ) 
       {
-      StdErr.printf( "ERROR: could not write 348 bytes to header file %s\n", pathHdr );
+      StdErr << "ERROR: could not write 348 bytes to header file " << pathHdr << "\n";
       }
     fclose( hdrFile );
     }
@@ -492,8 +488,6 @@ VolumeFromFile::WriteAnalyzeHdr
     {
     StdErr << "ERROR: could not open file '" << pathHdr << "' for writing\n";
     }
-
-  Memory::ArrayC::Delete( pathImg );
 }
 
 } // namespace cmtk

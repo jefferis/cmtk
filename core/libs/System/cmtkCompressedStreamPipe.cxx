@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,12 +47,12 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CompressedStream::Pipe::Pipe( const char* filename, const char* command )
+CompressedStream::Pipe::Pipe( const std::string& filename, const char* command )
 {
   char cmd[PATH_MAX];
 
 #ifndef _MSC_VER  
-  if ( static_cast<size_t>( snprintf( cmd, sizeof( cmd ), command, filename ) ) >= sizeof( cmd ) )
+  if ( static_cast<size_t>( snprintf( cmd, sizeof( cmd ), command, filename.c_str() ) ) >= sizeof( cmd ) )
     {
     StdErr << "WARNING: length of path exceeds system PATH_MAX in CompressedStream::OpenDecompressionPipe and will be truncated.\n";
     }

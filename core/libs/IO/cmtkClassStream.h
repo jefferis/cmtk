@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,6 +43,8 @@
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkParametricPlane.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -72,7 +74,7 @@ public:
    *\param filename Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const char *filename, const Self::Mode mode )
+  ClassStream( const std::string& filename, const Self::Mode mode )
     : TypedStream( filename,  mode ) {}
 
   /** Open constructor for separate path and archive names.
@@ -80,18 +82,20 @@ public:
    *\param archive Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const char *dir, const char *archive, const Self::Mode mode )
+  ClassStream( const std::string& dir, const std::string& archive, const Self::Mode mode )
     : TypedStream( dir, archive, mode ) {}
 
   /** Open another archive without constructing a new object.
    */
-  void Open( const char *filename, const Self::Mode mode ) {
+  void Open( const std::string& filename, const Self::Mode mode ) 
+  {
     this->TypedStream::Open( filename, mode );
   }
 
   /** Open another archive in explicit directory.
    */
-  void Open( const char *dir, const char *archive, const Self::Mode mode ) {
+  void Open( const std::string& dir, const std::string& archive, const Self::Mode mode ) 
+  {
     this->TypedStream::Open( dir, archive, mode );
   }
 

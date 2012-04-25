@@ -36,6 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <limits.h>
+#include <string>
 
 namespace
 cmtk
@@ -87,7 +88,7 @@ public:
    * simply re-applied.
    *\see CMTK_MOUNTPOINTSVAR
    */
-  static const char* Translate ( const char* path );
+  static std::string Translate ( const std::string& path );
 
 private:
   /// Static buffer holding paths after pattern substitution.

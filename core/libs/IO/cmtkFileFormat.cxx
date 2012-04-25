@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -138,7 +138,7 @@ const char* FileFormatName[] =
 };
 
 FileFormatID 
-FileFormat::Identify( const char* path, const bool decompress )
+FileFormat::Identify( const std::string& path, const bool decompress )
 {
   struct stat buf;
   if ( CompressedStream::Stat( path, &buf ) < 0 ) 
@@ -153,20 +153,18 @@ FileFormat::Identify( const char* path, const bool decompress )
 }
 
 FileFormatID 
-FileFormat::GetID( const char* name )
+FileFormat::GetID( const std::string& name )
 {
-  if ( name ) 
+  for ( unsigned int idx = 0; FileFormatName[idx]; ++idx ) 
     {
-    for ( unsigned int idx = 0; FileFormatName[idx]; ++idx ) 
-      {
-      if ( ! strcmp( FileFormatName[idx], name ) )
-	return static_cast<FileFormatID>( idx );
-      }
+    if ( name == std::string( FileFormatName[idx] ) )
+      return static_cast<FileFormatID>( idx );
     }
+  
   return FILEFORMAT_UNKNOWN;
 }
 
-const char* 
+std::string
 FileFormat::Describe( const FileFormatID id )
 {
   switch ( id ) 
@@ -209,24 +207,24 @@ FileFormat::Describe( const FileFormatID id )
 }
 
 FileFormatID 
-FileFormat::IdentifyDirectory( const char* path )
+FileFormat::IdentifyDirectory( const std::string& path )
 {
   char filename[PATH_MAX];
   struct stat buf;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages", path, (int)CMTK_PATH_SEPARATOR );
+  snprintf( filename, sizeof( filename ), "%s%cimages", path.c_str(), (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages.gz", path, (int)CMTK_PATH_SEPARATOR );
+  snprintf( filename, sizeof( filename ), "%s%cimages.gz", path.c_str(), (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist", path, (int)CMTK_PATH_SEPARATOR );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist", path.c_str(), (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", path, (int)CMTK_PATH_SEPARATOR );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", path.c_str(), (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 
@@ -234,7 +232,7 @@ FileFormat::IdentifyDirectory( const char* path )
 }
 
 FileFormatID 
-FileFormat::IdentifyFile( const char* path, const bool decompress )
+FileFormat::IdentifyFile( const std::string& path, const bool decompress )
 {
   CompressedStream stream( path );
   if ( ! stream.IsValid() )

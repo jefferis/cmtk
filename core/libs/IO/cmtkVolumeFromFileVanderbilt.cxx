@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,10 +39,10 @@ cmtk
 {
 
 const UniformVolume::SmartPtr
-VolumeFromFile::ReadVanderbilt( const char *path )
+VolumeFromFile::ReadVanderbilt( const std::string& path )
 {
-  FILE *fp = NULL;
-  if ( ! (fp = fopen( path, "r" )) ) 
+  FILE *fp = fopen( path.c_str(), "r" );
+  if ( !fp ) 
     return UniformVolume::SmartPtr( NULL );
   
   int dims[3] = { 1, 1, 1 };
@@ -105,7 +105,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 
   // generate image filename from header file path.
   char imageFilename[PATH_MAX], *lastSlash;
-  strcpy( imageFilename, path );
+  strcpy( imageFilename, path.c_str() );
   if ( (lastSlash = strrchr( imageFilename, '/' ) ) )
     ++lastSlash;
   else

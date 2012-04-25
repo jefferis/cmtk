@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,9 +32,9 @@
 
 #include "cmtkFileUtils.h"
 
-#include <string.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -65,20 +65,22 @@ FileUtils
 {
 
 int 
-RecursiveMkDir( const char *filename, const int permissions )
+RecursiveMkDir( const std::string& filename, const int permissions )
 {
-  int result = RecursiveMkPrefixDir( filename, permissions );
-  if ( result) return result;
+  const int result = RecursiveMkPrefixDir( filename, permissions );
+  if ( result) 
+    return result;
+
 #ifdef _MSC_VER
-  return _mkdir( filename );
+  return _mkdir( filename.c_str() );
 #else
-  return mkdir( filename, permissions );
+  return mkdir( filename.c_str(), permissions );
 #endif
 }
 
 int
 RecursiveMkPrefixDir
-( const char *filename, const int permissions )
+( const std::string& filename, const int permissions )
 {
   char prefix[PATH_MAX];
   struct stat buf;
@@ -113,27 +115,28 @@ RecursiveMkPrefixDir
   return 0;
 }
 
-char* 
-GetAbsolutePath( char *absPath, const char* relPath )
+std::string
+GetAbsolutePath( const std::string& relPath )
 {
 #ifdef _MSC_VER
-  GetFullPathName( relPath, PATH_MAX, absPath, NULL );
+  const char* absPath;
+  GetFullPathName( relPath.c_str(), PATH_MAX, absPath, NULL );
+  return std::string( absPath );
 #else
   if ( relPath[0] == CMTK_PATH_SEPARATOR )
     {
-    strcpy( absPath, relPath );
+    return relPath;
     }
   else
     {
+    char absPath[PATH_MAX];
     getcwd( absPath, PATH_MAX );
     if ( absPath[ strlen( absPath )-1 ] != CMTK_PATH_SEPARATOR )
       strcat( absPath, CMTK_PATH_SEPARATOR_STR );
     
-    strcat( absPath, relPath );
+    return std::string( absPath ) + relPath;
     }
 #endif
-  
-  return absPath;
 }
 
 } // namespace FileUtils

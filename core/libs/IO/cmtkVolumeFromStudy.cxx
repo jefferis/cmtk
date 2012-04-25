@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -87,9 +87,11 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
   if ( study->size() < 2 ) 
     return Result;
   
+  const std::string imageDir = MountPoints::Translate( study->GetImageDirectory() );
+
   try
     {
-    DebugOutput( 2 ).GetStream().printf( "Reading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
+    DebugOutput( 2 ) << "Reading images from path " << imageDir << "\n";
     
     Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
     
@@ -100,7 +102,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
       DebugOutput( 2 ) << "\r" << *it;
       
       char fullpath[PATH_MAX];
-      snprintf( fullpath, sizeof( fullpath ), "%s%c%s", MountPoints::Translate( study->GetImageDirectory() ), (int)CMTK_PATH_SEPARATOR, it->c_str() );
+      snprintf( fullpath, sizeof( fullpath ), "%s%c%s", imageDir.c_str(), (int)CMTK_PATH_SEPARATOR, it->c_str() );
       
       ScalarImage::SmartPtr image = ScalarImage::SmartPtr( DICOM::Read( fullpath ) );
 

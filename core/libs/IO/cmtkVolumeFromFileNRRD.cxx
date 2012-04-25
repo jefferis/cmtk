@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,13 +58,13 @@ cmtk
 //@{
 
 const UniformVolume::SmartPtr
-VolumeFromFile::ReadNRRD( const char* pathHdr )
+VolumeFromFile::ReadNRRD( const std::string& pathHdr )
 {
   UniformVolume::SmartPtr volume( NULL );
   try 
     {
     Nrrd *nrrd = nrrdNew();
-    if ( nrrdLoad( nrrd, pathHdr, NULL ) )
+    if ( nrrdLoad( nrrd, pathHdr.c_str(), NULL ) )
       throw biffGetDone(NRRD);
 
     if ( nrrd->dim > 3 )
@@ -220,7 +220,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
 
 void
 VolumeFromFile::WriteNRRD
-( const char* pathHdr, const UniformVolume& volume )
+( const std::string& pathHdr, const UniformVolume& volume )
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
@@ -336,7 +336,7 @@ VolumeFromFile::WriteNRRD
   
     nrrdAxisInfoSet_va( nval, nrrdAxisInfoLabel, "x", "y", "z" );
 
-    if ( nrrdSave( pathHdr, nval, nios ) )
+    if ( nrrdSave( pathHdr.c_str(), nval, nios ) )
       {
       throw( biffGetDone(NRRD) );
       }

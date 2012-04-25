@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -41,7 +41,7 @@ cmtk
 {
 
 const UniformVolume::SmartPtr
-VolumeFromFile::ReadDICOM( const char *path )
+VolumeFromFile::ReadDICOM( const std::string& path )
 {
   DICOM dicom( path );
 

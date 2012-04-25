@@ -43,19 +43,24 @@ cmtk
 /** \addtogroup System */
 //@{
 
-char MountPoints::Buffer[PATH_MAX];
-
-const char* 
-MountPoints::Translate( const char* path )
+std::string
+MountPoints::Translate( const std::string& path )
 {
+  char buffer[PATH_MAX];
+
   // Get environment variable defining mount points.
   const char *mountpoints = getenv( CMTK_MOUNTPOINTSVAR );
   if ( ! mountpoints )
+    {
     mountpoints = getenv( IGS_MOUNTPOINTSVAR );
+    
+    // Not defined: Return path unmodified
+    if ( ! mountpoints ) 
+      return path;
+    }
 
-  // Not defined: Return path unmodified
-  if ( ! mountpoints ) return path;
-  strcpy( Buffer, path );
+  const char* pathStr = path.c_str();
+  strcpy( buffer, pathStr );
 
   char searchStr[256], replaceStr[256];
   const char *delim;
@@ -95,32 +100,32 @@ MountPoints::Translate( const char* path )
       if ( checkPrefixOnly ) 
 	{
 	// Check if rule applies to given path.
-	if ( !strncmp( path, searchStr+1, strlen( searchStr ) - 1 ) ) 
+	if ( !strncmp( pathStr, searchStr+1, strlen( searchStr ) - 1 ) ) 
 	  {
 	  // Yes, it does: Substitute prefix accordingly and return pointer
 	  // to buffer containing modified path.
-	  strcat( strcpy( Buffer, replaceStr ), path+strlen(searchStr)-1 );
-	  return Buffer;
+	  strcat( strcpy( buffer, replaceStr ), pathStr+strlen(searchStr)-1 );
+	  return buffer;
 	  }
 	} 
       else
 	{
 	// Substitute non-prefix occurences as well
 	char *found = NULL;
-	if ( ( found = strstr( Buffer, searchStr ) ) ) 
+	if ( ( found = strstr( buffer, searchStr ) ) ) 
 	  {
 	  // Yes, it does: Substitute accordingly and return pointer
 	  // to buffer containing modified path.
 	  char tmpPath[PATH_MAX];
 	  memset( tmpPath, 0, sizeof( tmpPath ) );
-	  strcat( strcat( strncpy( tmpPath, Buffer, found-Buffer ), replaceStr ), found + strlen(searchStr) );
-	  strcpy( Buffer, tmpPath );
+	  strcat( strcat( strncpy( tmpPath, buffer, found-buffer ), replaceStr ), found + strlen(searchStr) );
+	  strcpy( buffer, tmpPath );
 	  }
 	}
       }
     }
   
-  return Buffer;
+  return std::string( buffer );
 }
 
 } // namespace cmtk

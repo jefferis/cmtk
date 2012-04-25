@@ -44,6 +44,8 @@
 #include <IO/cmtkTypedStreamStudylist.h>
 #include <IO/cmtkAffineXformITKIO.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -52,9 +54,9 @@ cmtk
 //@{
 
 Xform::SmartPtr 
-XformIO::Read( const char* path )
+XformIO::Read( const std::string& path )
 {
-  const char* realPath = MountPoints::Translate( path );
+  const std::string realPath = MountPoints::Translate( path );
   
   switch ( FileFormat::Identify( realPath ) ) 
     {
@@ -108,28 +110,28 @@ XformIO::Read( const char* path )
 
 void 
 XformIO::Write
-( const Xform* xform, const char *path )
+( const Xform* xform, const std::string& path )
 {
   FileFormatID fileFormat = FILEFORMAT_TYPEDSTREAM;
 
-  const char* suffix = strrchr( path, '.' );
-  if ( suffix )
+  const size_t period = path.rfind( '.' );
+  if ( period )
     {
-    if ( ! strcmp( ".nrrd", suffix ) || ! strcmp( ".nhdr", suffix ) )
+    const std::string suffix = path.substr( period );
+    if ( (suffix == ".nrrd") || (suffix == ".nhdr") )
       {
       fileFormat = FILEFORMAT_NRRD;
       }
     else
       {
-      if ( ! strcmp( ".tfm", suffix ) || ! strcmp( ".txt", suffix ) )
+      if ( (suffix == ".tfm") || (suffix == ".txt") )
 	{
 	fileFormat = FILEFORMAT_ITK_TFM;
 	}      
       }
     }
   
-  char absolutePath[PATH_MAX];
-  FileUtils::GetAbsolutePath( absolutePath, path );
+  const std::string absolutePath = FileUtils::GetAbsolutePath( path );
   
   switch ( fileFormat )
     {

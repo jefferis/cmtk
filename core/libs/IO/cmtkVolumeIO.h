@@ -78,16 +78,16 @@ public:
   typedef VolumeIO Self;
 
   /// Read volume data from filesystem.
-  static UniformVolume::SmartPtr Read( const char *path );
+  static UniformVolume::SmartPtr Read( const std::string& path );
 
   /// Read grid only from filesystem.
-  static UniformVolume::SmartPtr ReadGrid( const char *path );
+  static UniformVolume::SmartPtr ReadGrid( const std::string& path );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const char* orientation );
+  static UniformVolume::SmartPtr ReadGridOriented( const std::string& path, const char* orientation );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented( const char *path )
+  static UniformVolume::SmartPtr ReadGridOriented( const std::string& path )
   {
     return Self::ReadGridOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }
@@ -115,7 +115,7 @@ public:
    *\param format Selector for output file format.
    *\param path Filesystem path of the image to write.
    */   
-  static void Write( const UniformVolume& volume, const FileFormatID format, const char *path );
+  static void Write( const UniformVolume& volume, const FileFormatID format, const std::string& path );
 
   /** Write volume data to filesystem with automatic format parsing.
    * The output file format is determined automatically from the output name suffix.
@@ -126,7 +126,7 @@ public:
    *\param volume Image object that is written to disk.
    *\param pathAndFormat Filesystem path of the image to write.
    */
-  static void Write( const UniformVolume& volume, const char *pathAndFormat );
+  static void Write( const UniformVolume& volume, const std::string& pathAndFormat );
 
   /// Set flag for writing compressed images.
   static void SetWriteCompressedOn()

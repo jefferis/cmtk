@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,6 +45,8 @@
 
 #include <IO/cmtkFileFormat.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -81,7 +83,7 @@ class Study
   cmtkGetSetMacroString(Name);
 
   /// Textual description of study file type.
-  cmtkGetSetMacroString(Description);
+  cmtkGetSetMacro(std::string,Description);
 
   /// Textual description of study file type.
   cmtkGetSetMacroString(Modality);

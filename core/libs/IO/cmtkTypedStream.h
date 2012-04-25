@@ -189,14 +189,14 @@ public:
    *\param filename Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char* filename, const Self::Mode mode );
+  TypedStream( const std::string& filename, const Self::Mode mode );
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char* dir, const char* archive, const Self::Mode mode );
+  TypedStream( const std::string& dir, const std::string& archive, const Self::Mode mode );
 
   /** Destructor.
    * Close() is called to close a possibly open archive.
@@ -205,11 +205,11 @@ public:
 
   /** Open another archive without constructing a new object.
    */
-  void Open( const char* filename, const Self::Mode mode );
+  void Open( const std::string& filename, const Self::Mode mode );
 
   /** Open another archive in explicit directory.
    */
-  void Open( const char* dir, const char* archive, const Self::Mode mode );
+  void Open( const std::string& dir, const std::string& archive, const Self::Mode mode );
 
   /** Close an open archive.
    */

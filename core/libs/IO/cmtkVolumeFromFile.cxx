@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -46,7 +46,7 @@ cmtk
 //@{
 
 const UniformVolume::SmartPtr
-VolumeFromFile::Read( const char *path )
+VolumeFromFile::Read( const std::string& path )
 {
   FileFormatID id = FileFormat::Identify( path );
   switch ( id )

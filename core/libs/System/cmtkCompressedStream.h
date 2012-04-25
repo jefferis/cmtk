@@ -84,7 +84,7 @@ public:
   CompressedStream() : m_Reader( NULL ) {};
   
   /// Create stream from filename.
-  CompressedStream ( const char *filename );
+  CompressedStream ( const std::string& filename );
   
   /// Dispose stream object.
   ~CompressedStream ();
@@ -102,7 +102,7 @@ public:
   }
   
   /// Open new stream from filename.
-  bool Open( const char *filename );
+  bool Open( const std::string& filename );
   
   /// Close current file stream.
   void Close();
@@ -161,7 +161,7 @@ public:
    * the file exists with both its plain name AND at least one compressed suffix. The last case indicates a
    * potential consistency problem because it is not clear, which file should be read.
    */
-  static int Stat( const char *path, struct stat *const buf = NULL );
+  static int Stat( const std::string& path, struct stat *const buf = NULL );
 
 private:
   /** Open decompressing pipe.
@@ -176,7 +176,7 @@ private:
    *\param compressedSuffix The file suffix corresponding to input files for the given
    * pipe command, e.g. ".gz" for gzip.
    */
-  bool OpenDecompressionPipe ( const char* filename, const char* suffix, const char* command, const char* compressedSuffix );
+  bool OpenDecompressionPipe ( const std::string& filename, const std::string& suffix, const char* command, const char* compressedSuffix );
 
   /** Entry for the suffix-to-archiver assignment table.
    */
@@ -263,7 +263,7 @@ private:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Open new stream from filename.
-    File( const char *filename );
+    File( const std::string& filename );
     
     /// Virtual destructor.
     virtual ~File() {}
@@ -313,7 +313,7 @@ private:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Open new pipe from filename.
-    Pipe( const char* filename, const char* command );
+    Pipe( const std::string& filename, const char* command );
     
     /// Virtual destructor.
     virtual ~Pipe() {}
@@ -363,7 +363,7 @@ private:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Open new stream from filename.
-    BZip2( const char *filename );
+    BZip2( const std::string& filename );
     
     /// Virtual destructor.
     virtual ~BZip2() {}
@@ -408,7 +408,7 @@ private:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Open new stream from filename.
-    LZMA( const char *filename );
+    LZMA( const std::string& filename );
     
     /// Virtual destructor.
     virtual ~LZMA() {}
@@ -456,7 +456,7 @@ public:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Open new stream from filename.
-    Zlib( const char *filename );
+    Zlib( const std::string& filename );
     
     /// Virtual destructor.
     virtual ~Zlib() {}

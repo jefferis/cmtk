@@ -41,9 +41,9 @@ namespace
 cmtk
 {
 
-CompressedStream::BZip2::BZip2( const char* filename ) 
+CompressedStream::BZip2::BZip2( const std::string& filename ) 
 {
-  this->m_BzFile = BZ2_bzopen( filename, CMTK_FILE_MODE );
+  this->m_BzFile = BZ2_bzopen( filename.c_str(), CMTK_FILE_MODE );
   if ( !this->m_BzFile ) 
     {
     StdErr << "ERROR: CompressedStream::BZip2 could not open file '" << filename << "'\n";

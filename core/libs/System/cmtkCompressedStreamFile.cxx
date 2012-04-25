@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 2011 Greg Jefferis
 //
@@ -45,9 +45,9 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CompressedStream::File::File( const char* filename )
+CompressedStream::File::File( const std::string& filename )
 {
-  this->m_File = fopen( filename, CMTK_FILE_MODE );
+  this->m_File = fopen( filename.c_str(), CMTK_FILE_MODE );
   if ( !this->m_File ) 
     {
     throw 0;

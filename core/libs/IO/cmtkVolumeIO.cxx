@@ -58,6 +58,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -72,11 +74,11 @@ const char* const CMTK_LEGACY_WRITE_IMAGES_RAS = "CMTK_LEGACY_WRITE_IMAGES_RAS";
 bool VolumeIO::WriteCompressedOn = true;
 
 UniformVolume::SmartPtr
-VolumeIO::Read( const char* path )
+VolumeIO::Read( const std::string& path )
 {
   UniformVolume::SmartPtr volume( NULL );
 
-  const char *translatedPath = MountPoints::Translate( path );
+  const std::string translatedPath = MountPoints::Translate( path );
 
   const FileFormatID formatID = FileFormat::Identify( translatedPath );
   switch ( formatID ) 
@@ -116,7 +118,8 @@ VolumeIO::Read( const char* path )
   
   volume->SetMetaInfo( META_FS_PATH, path );
   volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
-  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
+				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
   
   const TypedArray* dataArray = volume->GetData();
   if ( ! dataArray )
@@ -132,11 +135,11 @@ VolumeIO::Read( const char* path )
 }
 
 UniformVolume::SmartPtr
-VolumeIO::ReadGrid( const char* path )
+VolumeIO::ReadGrid( const std::string& path )
 {
   UniformVolume::SmartPtr volume( NULL );
 
-  const char *translatedPath = MountPoints::Translate( path );
+  const std::string translatedPath = MountPoints::Translate( path );
 
   const FileFormatID formatID = FileFormat::Identify( translatedPath );
   try
@@ -169,7 +172,8 @@ VolumeIO::ReadGrid( const char* path )
     throw ExitException( 1 );
     }
   
-  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
+				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
 
   volume->SetMetaInfo( META_FS_PATH, path );
   volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
@@ -179,7 +183,7 @@ VolumeIO::ReadGrid( const char* path )
 
 UniformVolume::SmartPtr
 VolumeIO
-::ReadGridOriented( const char *path, const char* orientation )
+::ReadGridOriented( const std::string& path, const char* orientation )
 {
   UniformVolume::SmartPtr volume( Self::ReadGrid( path ) );
   
@@ -226,51 +230,49 @@ VolumeIO
 
 void 
 VolumeIO::Write
-( const UniformVolume& volume, const char *pathAndFormat )
+( const UniformVolume& volume, const std::string& pathAndFormat )
 {
-  const char* actualPath = pathAndFormat;
+  std::string actualPath = pathAndFormat;
   FileFormatID fileFormat = FILEFORMAT_UNKNOWN;
 
-  const char* suffix = strrchr( pathAndFormat, '.' );  
-  if ( suffix )
+  const size_t period = pathAndFormat.rfind( '.' );
+  if ( period != std::string::npos )
     {
+    std::string suffix = pathAndFormat.substr( period );  
+
     // check whether we have a compression-related suffix
-    if ( ! strcmp( suffix, ".gz" ) )
+    if ( suffix == ".gz" )
       {
       // include actual suffix
-      while ( suffix != pathAndFormat )
-	{
-	--suffix;
-	if ( *suffix == '.' )
-	  break;
-	}
+      const size_t period2 = pathAndFormat.rfind( '.', period-1 );
+      suffix = pathAndFormat.substr( period2, period-period2 );
       }
 
-    if ( ! strcmp( ".hdr", suffix ) )
+    if ( suffix == ".hdr" )
       {
       fileFormat = FILEFORMAT_ANALYZE_HDR;
       }
     else
       {
-      if ( ! strcmp( ".img", suffix ) || ! strcmp( ".img.gz", suffix ) )
+      if ( suffix == ".img" )
 	{
 	fileFormat = FILEFORMAT_NIFTI_DETACHED;
 	}
       else
 	{
-	if ( ! strcmp( ".nii", suffix ) || ! strcmp( ".nii.gz", suffix ) )
+	if ( suffix == ".nii" )
 	  {
 	  fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
 	  }
 	else
 	  {
-	  if ( ! strcmp( ".mha", suffix ) )
+	  if ( suffix == ".mha" )
 	    {
 	    fileFormat = FILEFORMAT_METAIMAGE;
 	    }
 	  else 
 	    {
-	    if ( ! strcmp( ".nrrd", suffix ) || ! strcmp( ".nhdr", suffix ) )
+	    if ( ( suffix == ".nrrd") || (suffix == ".nhdr") )
 	      {
 	      fileFormat = FILEFORMAT_NRRD;
 	      }
@@ -279,27 +281,27 @@ VolumeIO::Write
 	}
       }
     }
- 
+  
 #ifndef _MSC_VER
-  const char* colon = strchr( pathAndFormat, ':' );
-  if ( colon != NULL ) 
+  const size_t colon = pathAndFormat.find( ':' );
+  if ( colon != std::string::npos ) 
     {
-    actualPath = colon+1;
-    unsigned int formatLength = colon - pathAndFormat - 1;
+    actualPath = pathAndFormat.substr( colon+1 );
+    const std::string format = pathAndFormat.substr( colon-1 );
     
-    if ( ! strncmp( "ANALYZE", pathAndFormat, formatLength ) ) 
+    if ( format == "ANALYZE" ) 
       {
       fileFormat = FILEFORMAT_ANALYZE_HDR;
       } 
-    else if ( ! strncmp( "NIFTI", pathAndFormat, formatLength ) ) 
+    else if ( format == "NIFTI" ) 
       {
       fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
       } 
-    else if ( ! strncmp( "NRRD", pathAndFormat, formatLength ) ) 
+    else if ( format == "NRRD" ) 
       {
       fileFormat = FILEFORMAT_NRRD;
       } 
-    else if ( ! strncmp( "METAIMAGE", pathAndFormat, formatLength ) ) 
+    else if ( format == "METAIMAGE" ) 
       {
       fileFormat = FILEFORMAT_METAIMAGE;
       } 
@@ -312,15 +314,13 @@ VolumeIO::Write
     fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
     }
   
-  char absolutePath[PATH_MAX];
-  FileUtils::GetAbsolutePath( absolutePath, actualPath );
-  
+  const std::string absolutePath = FileUtils::GetAbsolutePath( actualPath );
   Write( volume, fileFormat, absolutePath );
 }
 
 void
 VolumeIO::Write
-( const UniformVolume& volume, const FileFormatID format, const char* path )
+( const UniformVolume& volume, const FileFormatID format, const std::string& path )
 {
   if ( ! volume.GetData() )
     {
@@ -328,7 +328,8 @@ VolumeIO::Write
     return;
     }
 
-  DebugOutput( 3 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
+  DebugOutput( 3 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
+				       volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
   
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;

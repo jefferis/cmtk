@@ -60,7 +60,7 @@ public:
 
   /** Constructor.
    */
-  DICOM( const char* path );
+  DICOM( const std::string& path );
 
   /// Get image dimensions (number of pixels per axis).
   const FixedVector<3,int> GetDims() const;

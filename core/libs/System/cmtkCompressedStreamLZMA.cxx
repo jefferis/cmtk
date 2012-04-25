@@ -41,9 +41,9 @@ namespace
 cmtk
 {
 
-CompressedStream::LZMA::LZMA( const char* filename )
+CompressedStream::LZMA::LZMA( const std::string& filename )
 {
-  this->m_File = lzmadec_open( filename );
+  this->m_File = lzmadec_open( filename.c_str() );
   if ( !this->m_File ) 
     {
     StdErr << "ERROR: lzmadec_open() failed for file '" << filename << "'\n";

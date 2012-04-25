@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,8 @@
 
 #include <System/cmtkSmartPtr.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -65,14 +67,14 @@ public:
 
   /** Read constructor.
    */
-  TypedStreamStudylist ( const char *studylistpath /*!<  The typedstream archive to read the object from. */) 
+  TypedStreamStudylist ( const std::string& studylistpath /*!<  The typedstream archive to read the object from. */) 
   { 
     this->Clear();
     this->Read( studylistpath );
   }
 
   /// Read object from disk.
-  bool Read( const char* studylistpath );
+  bool Read( const std::string& studylistpath );
 
   /// Return affine transformation as stored in the studylist.
   AffineXform::SmartPtr& GetAffineXform() 

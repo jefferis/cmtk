@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,19 +64,19 @@ cmtk
 //@{
 
 const UniformVolume::SmartPtr
-VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool readData )
+VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, const bool readData )
 {
   CompressedStream hdrStream( pathHdr );
   if ( !hdrStream.IsValid() ) 
     {
-    StdErr.printf( "ERROR: could not open Nifti header file %s\n", pathHdr );
+    StdErr << "ERROR: could not open Nifti header file " << pathHdr << "\n";
     return UniformVolume::SmartPtr( NULL );
     }
   
   nifti_1_header buffer;
   if ( sizeof(buffer) != hdrStream.Read( &buffer, 1, sizeof(buffer) ) ) 
     {
-    StdErr.printf( "ERROR: could not read %d bytes from header file %s\n", int( sizeof( buffer ) ), pathHdr );
+    StdErr << "ERROR: could not read " << sizeof( buffer ) << " bytes from header file " << pathHdr << "\n";
     return UniformVolume::SmartPtr( NULL );
     }
   hdrStream.Close();
@@ -94,7 +94,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   short ndims = header.GetField<short>( 40 );
   if ( ndims < 3 ) 
     {
-    StdErr.printf( "ERROR: image dimension %d is smaller than 3 in file %s\n", ndims, pathHdr );
+    StdErr << "ERROR: image dimension " << ndims << " is smaller than 3 in file " << pathHdr << "\n";
     return UniformVolume::SmartPtr( NULL );
     }
   
@@ -103,7 +103,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
 
   if ( (ndims > 3) && (dims3 > 1) ) 
     {
-    StdErr.printf( "WARNING: dimension %d is greater than 3 in file %s\n", ndims, pathHdr );
+    StdErr << "WARNING: dimension " << ndims << " is greater than 3 in file " << pathHdr << "\n";
     }
   
   float pixelDim[3];
@@ -207,7 +207,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     case DT_RGB:
     case DT_ALL:
     default:
-      StdErr.printf( "ERROR: unsupported data type %d in Nifti file %s\n", header.GetField<short>( 70 ), pathHdr );
+      StdErr << "ERROR: unsupported data type " << header.GetField<short>( 70 ) << " in Nifti file " << pathHdr << "\n";
       return volume;
     case DT_UNSIGNED_CHAR:
       dtype = TYPE_BYTE;
@@ -236,14 +236,14 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     }  
   
   size_t offset = static_cast<size_t>( header.GetField<float>( 108 ) );
-  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
-  strcpy( pathImg, pathHdr );
 
+  std::string pathImg = pathHdr;
   if ( detached )
     {
-    char* suffix = strstr( pathImg, ".hdr" );
-    if ( suffix ) *suffix = 0;
-    strcat( pathImg, ".img" );
+    const size_t period = pathImg.rfind( ".hdr" );
+    if ( period != std::string::npos ) 
+      pathImg.replace( period, 4, ".img" );
+    
     offset = 0;
     }
   
@@ -270,14 +270,12 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     StdErr << "ERROR: could not open Nifti image file " << pathImg << "\n";
     }
   
-  Memory::ArrayC::Delete( pathImg );
-
   return volume;
 }
 
 void
 VolumeFromFile::WriteNifti
-( const char* path, const UniformVolume& volume )
+( const std::string& path, const UniformVolume& volume )
 {
   bool detachedHeader = false;
   bool forceCompressed = false;
@@ -285,7 +283,7 @@ VolumeFromFile::WriteNifti
   std::string pathImg( path );
 
   // first, look for .gz
-  size_t suffixPosGz = pathImg.rfind( ".gz" );
+  size_t suffixPosGz = pathImg.rfind( std::string( ".gz" ) );
   if ( suffixPosGz != std::string::npos )
     {
     // found: set force compression flag and remove .gz from path
