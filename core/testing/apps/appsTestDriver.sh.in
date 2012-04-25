@@ -647,6 +647,22 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    describeMountPoints)
+        run_eval "CMTK_MOUNTPOINTS=INPUTS=${DATADIR} ${BINDIR}/describe -m INPUTS/spgr_brain_1.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMountPointsMulti)
+        run_eval "CMTK_MOUNTPOINTS=DUMMY=/fs/dummy,INPUTS=${DATADIR} ${BINDIR}/describe -m INPUTS/spgr_brain_1.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMountPointsPrefix)
+        run_eval "CMTK_MOUNTPOINTS=^INPUTS=${DATADIR} ${BINDIR}/describe -m INPUTS/spgr_brain_1.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMountPointsPrefixInvalid)
+        run_eval "CMTK_MOUNTPOINTS=^NPUTS=INVALID,^INPUTS=${DATADIR} ${BINDIR}/describe -m INPUTS/spgr_brain_1.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     describeDICOM)
 	run_eval "${BINDIR}/describe -m dcm/I0007.dcm > ${tmpdir}/describe.txt"
 	check_results describe.txt

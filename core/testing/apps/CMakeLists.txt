@@ -68,6 +68,10 @@ ENDIF(CMTK_USE_SQLITE)
 # ==========================================
 # Tests for "describe" tool
 LIST(APPEND testList
+  describeMountPoints
+  describeMountPointsMulti
+  describeMountPointsPrefix
+  describeMountPointsPrefixInvalid
   describeBZip2a
   describeBZip2b
   describeLZMAa 

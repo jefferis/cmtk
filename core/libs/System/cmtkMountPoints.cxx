@@ -87,7 +87,7 @@ MountPoints::Translate( const char* path )
       
       // check for beginning-of-line token
       bool checkPrefixOnly = false;
-      if ( source[0] == '^' ) 
+      if ( target[0] == '^' ) 
 	{
 	checkPrefixOnly = true;
 	}
@@ -95,11 +95,11 @@ MountPoints::Translate( const char* path )
       if ( checkPrefixOnly ) 
 	{
 	// Check if rule applies to given path.
-	if ( !strncmp( path, source+1, strlen( source ) - 1 ) ) 
+	if ( !strncmp( path, target+1, strlen( target ) - 1 ) ) 
 	  {
 	  // Yes, it does: Substitute prefix accordingly and return pointer
 	  // to buffer containing modified path.
-	  strcat( strcpy( Buffer, target ), path+strlen(source)-1 );
+	  strcat( strcpy( Buffer, source ), path+strlen(target)-1 );
 	  return Buffer;
 	  }
 	} 
@@ -107,13 +107,13 @@ MountPoints::Translate( const char* path )
 	{
 	// Substitute non-prefix occurences as well
 	char *found = NULL;
-	if ( ( found = strstr( Buffer, source ) ) ) 
+	if ( ( found = strstr( Buffer, target ) ) ) 
 	  {
 	  // Yes, it does: Substitute accordingly and return pointer
 	  // to buffer containing modified path.
 	  char tmpPath[PATH_MAX];
 	  memset( tmpPath, 0, sizeof( tmpPath ) );
-	  strcat( strcat( strncpy( tmpPath, Buffer, found-Buffer ), target ), found + strlen(source) );
+	  strcat( strcat( strncpy( tmpPath, Buffer, found-Buffer ), source ), found + strlen(target) );
 	  strcpy( Buffer, tmpPath );
 	  }
 	}
