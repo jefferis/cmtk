@@ -46,13 +46,15 @@ cmtk
 
 /** Name of the shell variable defining the directory translation.
  * This variable can be set to contain a list of substitution rules. Every
- * ruls has the form "target=source", where all appearances of "source" are
- * to be replaced by "target" in all filesystem paths. Several of these rules
- * may be concatenated by "," -- an example is "j:=/cdrom,k:=/home". This 
+ * rule has the form "search=replace", where all appearances of "search" are
+ * to be replaced by "replace" in all filesystem paths. 
+ *
+ * Several of these rules may be concatenated by ",". An example is "/cdrom=j:,/home=k:". This 
  * results in all paths relative to "/cdrom" being relative to "j:" after
  * substituion. The same holds for "k:" and "/home". This example could be
  * used to read data on a PC mounting Unix filesystems to network drives.
- * Conversely, the Unix box would define "/cdrom=j:,/home=k:" in order to be
+ *
+ * Conversely, the Unix box would define "j:=/cdrom,k:=/home" in order to be
  * able to read data written by this PC.
  *\see MountPoints
  */
