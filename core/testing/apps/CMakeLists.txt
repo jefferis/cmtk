@@ -324,7 +324,10 @@ LIST(APPEND testList fit_affine_xform_landmarksRigid fit_affine_xform_landmarksS
 
 # ==========================================
 # Tests for "fit_affine_xform" tool
-LIST(APPEND testList fit_affine_xformDField fit_affine_xformFFD)
+LIST(APPEND testList fit_affine_xformFFD)
+IF(CMTK_BUILD_NRRD)
+  LIST(APPEND testList fit_affine_xformDField)
+ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "fit_spline_xform" tool
