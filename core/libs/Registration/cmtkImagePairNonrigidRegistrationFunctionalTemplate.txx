@@ -129,11 +129,11 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 	{
 	if ( ! this->m_ThreadConsistencyHistograms[thread] )
 	  {
-	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-	
-	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
-	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
-	this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
+	  this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+	  
+	  this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
+	  this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
+	  this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
           }
 	}
       }
