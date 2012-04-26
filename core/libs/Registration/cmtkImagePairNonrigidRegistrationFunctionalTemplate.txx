@@ -113,9 +113,9 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
   else
     {
 #ifdef _OPENMP
-    if ( this->m_ThreadConsistencyHistograms.size() != this->m_NumberOfThreads )
+    if ( this->m_ThreadConsistencyHistograms.size() < omp_get_max_threads() )
       {
-      this->m_ThreadConsistencyHistograms.resize( this->m_NumberOfThreads );
+      this->m_ThreadConsistencyHistograms.resize( omp_get_max_threads() );
       
       const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
       const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
@@ -125,13 +125,16 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
       const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
 
-      for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
+      for ( size_t thread = 0; thread < omp_get_max_threads(); ++thread )
 	{
+	if ( ! this->m_ThreadConsistencyHistograms[thread] )
+	  {
 	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
 	
 	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
 	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
 	this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
+          }
 	}
       }
 #else
