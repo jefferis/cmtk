@@ -230,7 +230,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
   else
     {
 #ifdef _OPENMP
-    if ( this->m_ThreadConsistencyHistograms.size() < omp_get_max_threads() )
+    if ( this->m_ThreadConsistencyHistograms.size() < static_cast<size_t>( omp_get_max_threads() ) )
       {
       this->m_ThreadConsistencyHistograms.resize( omp_get_max_threads() );
       
@@ -242,7 +242,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
       const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
-      for ( size_t thread = 0; thread < omp_get_max_threads(); ++thread )
+      for ( size_t thread = 0; thread < static_cast<size_t>( omp_get_max_threads() ); ++thread )
 	{
 	if ( ! this->m_ThreadConsistencyHistograms[thread] )
 	  {
