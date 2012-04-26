@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,6 @@
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkClassStream.h>
-#include <IO/cmtkClassStreamXform.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
 #include <algorithm>
@@ -146,7 +145,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
       cmtk::DebugOutput( 2 ) << "Exporting transformations between passes to " << ExportXformsPath << "\n";
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
-	stream << *xformsToPassImages[pass];
+	stream << dynamic_cast<cmtk::AffineXform&>( *xformsToPassImages[pass] );
 	}
       }
     else
