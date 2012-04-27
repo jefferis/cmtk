@@ -94,7 +94,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     }
 
   // solve least-squares problem
-  std::vector<Types::DataItem> params = LeastSquares<Types::DataItem>( uMatrix ).Solve( dataVector );
+  const std::vector<Types::DataItem> params = LeastSquares<Types::DataItem>( uMatrix ).Solve( dataVector );
 
   // apply solution
   this->m_CorrectedData = TypedArray::Create( image.GetData()->GetType(), image.GetNumberOfPixels() );

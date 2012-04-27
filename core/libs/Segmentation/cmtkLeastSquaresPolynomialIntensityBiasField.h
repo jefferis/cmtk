@@ -73,8 +73,20 @@ public:
     return this->m_BiasData;
   }
 
+  /// Get estimated bias field data.
+  TypedArray::SmartConstPtr GetBiasData() const
+  {
+    return this->m_BiasData;
+  }
+
   /// Get estimated bias field-corrected data.
   TypedArray::SmartPtr GetCorrectedData()
+  {
+    return this->m_CorrectedData;
+  }
+
+  /// Get estimated bias field-corrected data.
+  TypedArray::SmartConstPtr GetCorrectedData() const
   {
     return this->m_CorrectedData;
   }
