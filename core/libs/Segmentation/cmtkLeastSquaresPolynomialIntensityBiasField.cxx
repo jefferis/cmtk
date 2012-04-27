@@ -33,7 +33,7 @@
 #include <Base/cmtkPolynomial.h>
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkMatrix.h>
-#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkLeastSquares.h>
 
 namespace
 cmtk
@@ -81,12 +81,9 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     {
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
 
-    UniformVolume::CoordinateVectorType xyz = image.GetGridLocation( it.Index() ) - center;
-    xyz *= 2.0;
-    xyz = ComponentDivide( xyz, image.Size );
-    
     if ( mask[ofs] )
       {
+      const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.Size );    
       dataVector[cntPx] = image.GetDataAt( ofs ) / avg - 1.0;
       for ( size_t n = 0; n < nVars; ++n )
 	{
@@ -95,14 +92,9 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
       ++cntPx;
       }
     }
-  
-  // solve least-squares problem
-  Matrix2D<Types::DataItem> vMatrix( nVars, nVars );
-  std::vector<Types::DataItem> wVector( nVars );
-  MathUtil::SVD( uMatrix, nPixelsMask, nVars, wVector, vMatrix );
 
-  std::vector<Types::DataItem> params( nVars );
-  MathUtil::SVDLinearRegression( uMatrix, nPixelsMask, nVars, wVector, vMatrix, &dataVector[0], params );
+  // solve least-squares problem
+  std::vector<Types::DataItem> params = LeastSquares<Types::DataItem>( uMatrix ).Solve( dataVector );
 
   // apply solution
   this->m_CorrectedData = TypedArray::Create( image.GetData()->GetType(), image.GetNumberOfPixels() );
@@ -112,9 +104,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     {
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
 
-    UniformVolume::CoordinateVectorType xyz = image.GetGridLocation( it.Index() ) - center;
-    xyz *= 2.0;
-    xyz = ComponentDivide( xyz, image.Size );
+    const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.Size );    
     
     Types::DataItem bias = 1.0;
     for ( size_t n = 0; n < nVars; ++n )

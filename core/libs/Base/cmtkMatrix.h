@@ -167,7 +167,7 @@ public:
   }
 
   /// Get number of rows.
-  size_t GetNumberOfRows() const 
+  size_t NumberOfRows() const 
   { 
     return this->m_NumberOfRows;
   }
@@ -175,7 +175,7 @@ public:
   /** Get number of columns.
    * Get this from underlying Array.
    */
-  size_t GetNumberOfColumns() const 
+  size_t NumberOfColumns() const 
   { 
     return this->m_NumberOfColumns; 
   }
@@ -221,7 +221,7 @@ public:
   /// Copy another matrix.
   Matrix2D<T>& operator= ( const Matrix2D<T>& other ) 
   {
-    this->Resize( other.GetNumberOfColumns(), other.GetNumberOfRows() );
+    this->Resize( other.NumberOfColumns(), other.NumberOfRows() );
     memcpy( (*this)[0], other[0], this->m_NumberOfElements * sizeof( T ) );
     return *this;
   }
@@ -262,16 +262,16 @@ public:
     this->m_NumberOfElements = dims0 * dims1 * dims2;
     (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
 
-    for ( size_t j = 0; j < this->GetNumberOfRows(); ++j )
-      for ( size_t i = 0; i < this->GetNumberOfColumns(); ++i )
+    for ( size_t j = 0; j < this->NumberOfRows(); ++j )
+      for ( size_t i = 0; i < this->NumberOfColumns(); ++i )
 	if ( i && j )
 	  {
-	  (*this)[i][j] = (*this)[0][0] + this->GetNumberOfRows() * ( i + this->GetNumberOfColumns() * j );
+	  (*this)[i][j] = (*this)[0][0] + this->NumberOfRows() * ( i + this->NumberOfColumns() * j );
 	  }
   }
 
   /// Return number of planes
-  size_t GetNumberOfPlanes() const
+  size_t NumberOfPlanes() const
   {
     return this->m_NumberOfPlanes;
   }
@@ -279,9 +279,9 @@ public:
   /// Resize the matrix.
   void Resize( const size_t numberOfRows, const size_t numberOfColumns, const size_t numberOfPlanes )
   {
-    if ( ( numberOfColumns != this->GetNumberOfColumns() ) ||
-	 ( numberOfRows != this->GetNumberOfRows() ) ||
-	 ( numberOfPlanes != this->GetNumberOfPlanes() ) )
+    if ( ( numberOfColumns != this->NumberOfColumns() ) ||
+	 ( numberOfRows != this->NumberOfRows() ) ||
+	 ( numberOfPlanes != this->NumberOfPlanes() ) )
       {
       if ( (*this)[0][0] )
 	{
@@ -295,11 +295,11 @@ public:
       this->Superclass::Resize( numberOfRows, numberOfColumns );
       (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
       
-      for ( size_t j = 0; j < this->GetNumberOfRows(); ++j )
-	for ( size_t i = 0; i < this->GetNumberOfColumns(); ++i )
+      for ( size_t j = 0; j < this->NumberOfRows(); ++j )
+	for ( size_t i = 0; i < this->NumberOfColumns(); ++i )
 	  if ( i && j )
 	    {
-	    (*this)[i][j] = (*this)[0][0] + this->GetNumberOfPlanes() * ( i + this->GetNumberOfColumns() * j );
+	    (*this)[i][j] = (*this)[0][0] + this->NumberOfPlanes() * ( i + this->NumberOfColumns() * j );
 	    }
       }
   }
@@ -322,7 +322,7 @@ public:
   /// Copy another matrix.
   Matrix2D<T>& operator= ( const Matrix2D<T>& other ) 
   {
-    this->Resize( other.GetNumberOfColumns(), other.GetNumberOfRows(), other.GetNumberOfPlanes() );
+    this->Resize( other.NumberOfColumns(), other.NumberOfRows(), other.NumberOfPlanes() );
     memcpy( (*this)[0], other[0], this->m_NumberOfElements * sizeof( T ) );
     return *this;
   }

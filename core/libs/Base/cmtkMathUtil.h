@@ -310,11 +310,11 @@ public:
   static double GammaLn( const double xx );
 
   /// Singular Value Decomposition
-  static void SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<double>& W, Matrix2D<double>& V );
+  static void SVD( Matrix2D<double>& U, std::vector<double>& W, Matrix2D<double>& V );
 
   /// Linear Regression using SVD results
   static void
-  SVDLinearRegression( Matrix2D<double>& U, size_t m, size_t n, std::vector<double>& W, Matrix2D<double>& V, double *b, std::vector<double>& lm_params );
+  SVDLinearRegression( const Matrix2D<double>& U, const std::vector<double>& W, const Matrix2D<double>& V, const std::vector<double>& b, std::vector<double>& lm_params );
   
   /// Function that compares two floats; to be used in qsort().
   static inline int CompareFloat( const void *a, const void *b ) 

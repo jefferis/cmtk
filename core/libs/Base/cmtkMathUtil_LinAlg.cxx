@@ -55,13 +55,13 @@ void
 MathUtil::ComputeEigensystem
 ( const Matrix2D<T>& matrix, Matrix2D<T>& eigenvectors,  std::vector<T>& eigenvalues )
 {
-  const size_t n = matrix.GetNumberOfColumns();
+  const size_t n = matrix.NumberOfColumns();
 
   /*  Convert Matrix2D to ap::real_2d_array
    *  and Array to ap::real_1d_array
    */
   ap::real_2d_array apMatrix;
-  apMatrix.setbounds(0, (int)matrix.GetNumberOfRows(), 0, (int)matrix.GetNumberOfColumns());
+  apMatrix.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < n; i++)
       apMatrix(i,j) = (double)(1.0 * matrix[i][j]);
@@ -73,7 +73,7 @@ MathUtil::ComputeEigensystem
 
 
   ap::real_2d_array apEigenvectors;
-  apEigenvectors.setbounds(0, (int)matrix.GetNumberOfRows(), 0, (int)matrix.GetNumberOfColumns());
+  apEigenvectors.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
 
   /*  Run AlgLib eigensystem computation
    */
@@ -102,13 +102,13 @@ void
 MathUtil::ComputeEigenvalues
 ( const Matrix2D<T>& matrix, std::vector<T>& eigenvalues )
 {
-  const size_t n = matrix.GetNumberOfColumns();
+  const size_t n = matrix.NumberOfColumns();
 
   /*  Convert Matrix2D to ap::real_2d_array
    *  and Array to ap::real_1d_array
    */
   ap::real_2d_array apMatrix;
-  apMatrix.setbounds(0, (int)matrix.GetNumberOfRows(), 0, (int)matrix.GetNumberOfColumns());
+  apMatrix.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < n; i++)
       apMatrix(i,j) = (double)(1.0 * matrix[i][j]);
@@ -143,8 +143,14 @@ template void MathUtil::ComputeEigenvalues<float>( const Matrix2D<float>& matrix
 template void MathUtil::ComputeEigenvalues<double>( const Matrix2D<double>& matrix, std::vector<double>& eigenvalues );
 
 void 
-MathUtil::SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<double>& W, Matrix2D<double>& V )
+MathUtil::SVD( Matrix2D<double>& U, std::vector<double>& W, Matrix2D<double>& V )
 {
+  const size_t m = U.NumberOfRows();
+  const size_t n = U.NumberOfColumns();
+
+  W.resize( n );
+  V.Resize( n, n );
+
   ap::real_2d_array apA;
   apA.setbounds(0, m-1, 0, n-1);
   for (size_t j = 0; j < n; j++)
@@ -179,35 +185,40 @@ MathUtil::SVD( Matrix2D<double>& U, const size_t m, const size_t n, std::vector<
 /** TODO: move this someplace more logical than the linear-algebra module
  */
 void
-MathUtil::SVDLinearRegression( Matrix2D<double>& U, size_t m, size_t n, std::vector<double>& W, Matrix2D<double>& V, double *b, std::vector<double>& lm_params )
+MathUtil::SVDLinearRegression( const Matrix2D<double>& U, const std::vector<double>& W, const Matrix2D<double>& V, const std::vector<double>& b, std::vector<double>& lm_params )
 {
-    // From alglib linear regression:
-    // Take the inverses of the singular values, setting the inverse 
-    // to 0 if the sv is close to 0 (tolerance controlled by epstol)
-    double epstol = 1000;
-    ap::real_1d_array svi;
-    svi.setbounds( 0, n-1 );
-    for( size_t i = 0; i < n; i++ )
-      if( W[i] > epstol*ap::machineepsilon * W[0] )
-        svi(i) = 1 / W[i];
-      else
-        svi(i) = 0;
+  const size_t m = U.NumberOfRows();
+  const size_t n = U.NumberOfColumns();
+  
+  lm_params.resize( n );
 
-    // Calculate linear model parameters following Heath, Ch. 3.6
-    // (Scientific Computing: An Introductory Survey, 2nd Ed., 2002)
-    for ( size_t i = 0; i < n; i++ )
-      lm_params[i] = 0.0;
-    double ut_times_b; 
-    
-    for ( size_t i = 0; i < n; i++ )
-      {
-      ut_times_b = 0.0;
-      for ( size_t j = 0; j < m; j++ )
-        ut_times_b += U[j][i] * b[j];
-      ut_times_b *= svi(i);
-      for ( size_t j = 0; j < n; j++ )
-        lm_params[j] += ut_times_b * V[j][i]; 
-      }
+  // From alglib linear regression:
+  // Take the inverses of the singular values, setting the inverse 
+  // to 0 if the sv is close to 0 (tolerance controlled by epstol)
+  double epstol = 1000;
+  ap::real_1d_array svi;
+  svi.setbounds( 0, n-1 );
+  for( size_t i = 0; i < n; i++ )
+    if( W[i] > epstol*ap::machineepsilon * W[0] )
+      svi(i) = 1 / W[i];
+    else
+      svi(i) = 0;
+  
+  // Calculate linear model parameters following Heath, Ch. 3.6
+  // (Scientific Computing: An Introductory Survey, 2nd Ed., 2002)
+  for ( size_t i = 0; i < n; i++ )
+    lm_params[i] = 0.0;
+  double ut_times_b; 
+  
+  for ( size_t i = 0; i < n; i++ )
+    {
+    ut_times_b = 0.0;
+    for ( size_t j = 0; j < m; j++ )
+      ut_times_b += U[j][i] * b[j];
+    ut_times_b *= svi(i);
+    for ( size_t j = 0; j < n; j++ )
+      lm_params[j] += ut_times_b * V[j][i]; 
+    }
 }
 
 /////////////////////////////////////////////////////////////////////

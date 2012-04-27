@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,13 +44,13 @@ template<class TFloat>
 QRDecomposition<TFloat>
 ::QRDecomposition( const Matrix2D<TFloat>& matrix )
 {
-  m = matrix.GetNumberOfRows();
-  n = matrix.GetNumberOfColumns();
+  m = matrix.NumberOfRows();
+  n = matrix.NumberOfColumns();
 
   /* Copy matrix into compactQR
    */
 
-  compactQR.setbounds(0, (int)matrix.GetNumberOfRows(), 0, (int)matrix.GetNumberOfColumns());
+  compactQR.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
   for ( int j = 0; j < m; j++ )
     for ( int i = 0; i < n; i++ )
       compactQR(i,j) = (double)(1.0 * matrix[i][j]);

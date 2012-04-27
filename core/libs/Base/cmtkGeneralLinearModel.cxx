@@ -94,7 +94,7 @@ GeneralLinearModel::LeastSquares()
     }
   
   // perform SVD of design matrix
-  MathUtil::SVD( *(this->U), this->NData, this->NParameters, *(this->W), *(this->V) );
+  MathUtil::SVD( *(this->U), *(this->W), *(this->V) );
  
   // prepare partial regressions, each with one of the parameters omitted
   for ( size_t p=0; p < this->NParameters; ++p) 
@@ -117,7 +117,7 @@ GeneralLinearModel::LeastSquares()
 	}
       }
     
-    MathUtil::SVD( *(this->Up[p]), this->NData, this->NParameters-1, *(this->Wp[p]), *(this->Vp[p]) );
+    MathUtil::SVD( *(this->Up[p]), *(this->Wp[p]), *(this->Vp[p]) );
     }
   
   wmax=0.0;
@@ -237,7 +237,7 @@ GeneralLinearModel::FitModel
     else 
       {
       // use SVD of design matrix to compute model parameters lm_params[] from data b[]
-      MathUtil::SVDLinearRegression( *(this->U), this->NData, this->NParameters, *(this->W), *(this->V), &b[0], lm_params );
+      MathUtil::SVDLinearRegression( *(this->U), *(this->W), *(this->V), b, lm_params );
 
       // compute variance of data
       double varY, avgY;
@@ -281,7 +281,7 @@ GeneralLinearModel::FitModel
       for (size_t p = 0; p < this->NParameters; ++p ) 
 	{
 	// use SVD of partial design matrix to compute partial regression
-	MathUtil::SVDLinearRegression( *(this->Up[p]), this->NData, this->NParameters-1, *(this->Wp[p]), *(this->Vp[p]), &b[0], lm_params_P );
+	MathUtil::SVDLinearRegression( *(this->Up[p]), *(this->Wp[p]), *(this->Vp[p]), b, lm_params_P );
 	
 	// compute variance of data
 	for (size_t i = 0; i < this->NData; i++) 

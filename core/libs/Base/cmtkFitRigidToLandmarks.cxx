@@ -72,7 +72,7 @@ cmtk::FitRigidToLandmarks::FitRigidToLandmarks( const LandmarkPairList& landmark
   // use SVD to solve orthogonal procrustes problem
   Matrix2D<double> V( 3, 3 );
   std::vector<double> W( 3 );
-  MathUtil::SVD( U, 3, 3, W, V );
+  MathUtil::SVD( U, W, V );
 
   Matrix3x3<Types::Coordinate> matrix = Matrix3x3<Types::Coordinate>::Zero();
   for ( size_t j = 0; j < 3; ++j )
