@@ -96,6 +96,9 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   if ( (sphereRadius == this->m_SphereRadius) && (marginWidth == this->m_MarginWidth ) )
     return this->m_FilterResponse;
 
+  this->m_SphereRadius = sphereRadius;
+  this->m_MarginWidth = marginWidth;
+
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
   memset( this->m_FilterSquareFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
   memset( this->m_FilterMaskFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
