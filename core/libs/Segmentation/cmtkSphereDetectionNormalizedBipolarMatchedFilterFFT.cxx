@@ -33,7 +33,9 @@
 cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalizedBipolarMatchedFilterFFT( const UniformVolume& image )
   :   m_NumberOfPixels( image.GetNumberOfPixels() ),
       m_ImageDims( image.m_Dims ),
-      m_PixelSize( image.m_Delta )
+      m_PixelSize( image.m_Delta ),
+      m_SphereRadius( 0 ),
+      m_MarginWidth( -1 )
 {
   this->m_ImageFT = fftw_alloc_complex( this->m_NumberOfPixels );
   this->m_ImageSquareFT = fftw_alloc_complex( this->m_NumberOfPixels );
@@ -90,6 +92,10 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::~SphereDetectionNormaliz
 cmtk::TypedArray::SmartPtr
 cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( const Types::Coordinate sphereRadius, const int marginWidth )
 {
+  // check if the requested kernel parameters are the same we previously used.
+  if ( (sphereRadius == this->m_SphereRadius) && (marginWidth == this->m_MarginWidth ) )
+    return this->m_FilterResponse;
+
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
   memset( this->m_FilterSquareFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
   memset( this->m_FilterMaskFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
@@ -129,20 +135,22 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
       }
     }
   
-  // return filtered magnitude image
-  TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
+  // return filter response data
+  if ( !this->m_FilterResponse )
+    this->m_FilterResponse = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
+  
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     const Types::DataItem num = FFTW::Magnitude( this->m_FilterFT[n] ) - (FFTW::Magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
     const Types::DataItem denom1 = sqrt( std::max<Types::DataItem>( 0, FFTW::Magnitude( this->m_FilterMaskFT2[n] ) - FFTW::SumOfSquares( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask ) );
     
     if ( (num == 0) || (denom1 ==0) )
-      result->Set( 0, n );
+      this->m_FilterResponse->Set( 0, n );
     else
-      result->Set( num / (denom1*denom2), n );
+      this->m_FilterResponse->Set( num / (denom1*denom2), n );
     }
 
-  return result;
+  return this->m_FilterResponse;
 }
 
 void

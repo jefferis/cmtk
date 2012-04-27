@@ -80,6 +80,15 @@ private:
   /// Image pixel size.
   UniformVolume::SpaceVectorType m_PixelSize;
 
+  /// Store previous sphere radius to avoid unnecessary recomputation.
+  Types::Coordinate m_SphereRadius;
+
+  /// Store previous filter margin to avoid unnecessary recomputation.
+  int m_MarginWidth;
+
+  /// Store computed filter response.
+  TypedArray::SmartPtr m_FilterResponse;
+
   /// The Fourier-transformed image.
   fftw_complex* m_ImageFT;
 
