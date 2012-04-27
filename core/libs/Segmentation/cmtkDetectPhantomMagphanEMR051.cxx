@@ -58,21 +58,13 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 
   // Find 1x 60mm SNR sphere
   TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), this->GetBipolarFilterMargin() ) );
-  this->m_Landmarks[0] = this->FindSphere( *filterResponse );
-  this->m_Landmarks[0] = this->RefineSphereLocation( this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
+  this->m_Landmarks[0] = this->RefineSphereLocation( this->FindSphere( *filterResponse ), MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
   
   // find the two 15mm spheres near estimated position
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
 
-  if ( this->FindSphereAtDistance( this->m_Landmarks[1], *filterResponse, this->m_Landmarks[0], 90, 10 ) )
-    {
-    this->m_Landmarks[1] = this->RefineSphereLocation( this->m_Landmarks[1], MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
-    }
-
-  if ( this->FindSphereAtDistance( this->m_Landmarks[2], *filterResponse, this->m_Landmarks[0], 60, 10 ) )
-    {
-    this->m_Landmarks[2] = this->RefineSphereLocation( this->m_Landmarks[2], MagphanEMR051::SphereRadius( 2 ), 3 /*label*/ );
-    }
+  this->m_Landmarks[1] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 90, 10 ), MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
+  this->m_Landmarks[2] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 60, 10 ), MagphanEMR051::SphereRadius( 2 ), 3 /*label*/ );
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
@@ -87,22 +79,16 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   for ( size_t i = 3; i < 7; ++i )
     {
     const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, candidate, 0, 15 ) )
-      {
-      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
-      }
+    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0, 15 ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
     }
-
+  
   // Find 10mm spheres in order near projected locations
   filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 7 ), this->GetBipolarFilterMargin() );
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    if ( this->FindSphereAtDistance( this->m_Landmarks[i], *filterResponse, this->m_Landmarks[i], 0, 5 ) )
-      {
-      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
-      }
-
+    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0, 5 ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    
     landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
     }
 
@@ -146,13 +132,10 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
 	const Self::SpaceVectorType predicted = this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
-	if ( this->FindSphereAtDistance( this->m_Landmarks[i], filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ) )
-	  {
-	  const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
-	  // some spheres are darker than background - only accept refinements that improve residual fit error
-	  if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i] - predicted).RootSumOfSquares() )
-	    this->m_Landmarks[i] = refined;
-	  }
+	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->FindSphereAtDistance( filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	// some spheres are darker than background - only accept refinements that improve residual fit error
+	if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i] - predicted).RootSumOfSquares() )
+	  this->m_Landmarks[i] = refined;
 	}
       }
     
@@ -250,9 +233,9 @@ cmtk::DetectPhantomMagphanEMR051::FindSphere( const TypedArray& filterResponse )
   return this->m_PhantomImage->GetGridLocation( maxIndex );
 }
 
-bool
+cmtk::DetectPhantomMagphanEMR051::SpaceVectorType
 cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance
-( cmtk::DetectPhantomMagphanEMR051::SpaceVectorType& result, const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth )
+( const TypedArray& filterResponse, const Self::SpaceVectorType& bandCenter, const Types::Coordinate bandRadius, const Types::Coordinate bandWidth )
 {
   UniformVolumePainter maskPainter( this->m_IncludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
   this->m_IncludeMask->GetData()->Fill( 0.0 );
@@ -278,13 +261,12 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance
       }
     }
 
-  if ( maxIndex >= 0 )
+  if ( maxIndex < 0 )
     {
-    result = this->m_PhantomImage->GetGridLocation( maxIndex );
-    return true;
+    throw( Self::NoSphereInSearchRegion() );
     }
-
-  return false;
+  
+  return this->m_PhantomImage->GetGridLocation( maxIndex );
 }
 
 cmtk::DetectPhantomMagphanEMR051::SpaceVectorType 
@@ -303,29 +285,34 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 				     DataGrid::IndexType( centerPixelIndex ) + DataGrid::IndexType( nSphereRadius ) + DataGrid::IndexType( DataGrid::IndexType::Init(1) ) );
   
   UniformVolume::SmartPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
-  TypedArray& regionData = *(regionVolume->GetData());
 
-  // threshold background to zero (taking it out of center-of-mass computation)
-  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();
-  std::vector<bool> regionMask( regionVolume->GetNumberOfPixels() );
-  for ( size_t i = 0; i < regionData.GetDataSize(); ++i )
+  UniformVolume::SmartPtr regionMask = regionVolume->CloneGrid();
+  regionMask->CreateDataArray( TYPE_BYTE );
+  regionMask->GetData()->Fill( 0.0 );
+  
+  UniformVolumePainter regionMaskPainter( regionMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
+  regionMaskPainter.DrawSphere( regionVolume->GetCenterCropRegion(), sphereRadius , 1 );  
+  
+  const size_t nPixels = regionVolume->GetNumberOfPixels();
+  
+  std::vector<bool> regionMaskVector( regionMask->GetNumberOfPixels() );
+  for ( size_t i = 0; i < nPixels; ++i )
     {
-    regionMask[i] = ( regionData.ValueAt( i ) >= threshold );
+    regionMaskVector[i] = ( regionMask->GetDataAt( i ) != 0 );
     }
-
-  regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMask, 2 /* polynomial degree */ ).GetCorrectedData() );
-  regionData = *(regionVolume->GetData()); // need to update reference
-
+  
+//  regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVector, 2 /* polynomial degree */ ).GetCorrectedData() );
+  
   // repeat thresholding to mask out background in bias-corrected region
-  const Types::DataItem threshold2 = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionData.GetHistogram( 1024 )) ).Get();
-  for ( size_t i = 0; i < regionData.GetDataSize(); ++i )
+  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionVolume->GetData()->GetHistogram( 1024 )) ).Get();
+  for ( size_t i = 0; i < nPixels; ++i )
     {
-    if ( regionData.ValueAt( i ) < threshold2 )
-      regionData.Set( 0.0, i );
+    if ( !regionMaskVector[i] || (regionVolume->GetDataAt( i ) < threshold) )
+      regionVolume->SetDataAt( 0.0, i );
     }
-
+  
   const Self::SpaceVectorType refined = estimate + regionVolume->GetCenterOfMass() - regionVolume->GetCenterCropRegion();
-
+  
   // update exclusion mask
   UniformVolumePainter maskPainter( this->m_ExcludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
   maskPainter.DrawSphere( refined, sphereRadius+this->GetSphereExcludeSafetyMargin(), label );
