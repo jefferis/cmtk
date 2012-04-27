@@ -230,6 +230,7 @@ LIST(APPEND testList
   convertxGaussianFilterFWHM
   convertxHistogramEqualization
   convertxHistogramEqualizationNBins
+  convertxLaplace
   convertxMapValues
   convertxMapValues2
   convertxMapValues3
