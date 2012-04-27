@@ -87,7 +87,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     
     if ( mask[ofs] )
       {
-      dataVector[cntPx] = image.GetDataAt( ofs ) / avg;
+      dataVector[cntPx] = image.GetDataAt( ofs ) / avg - 1.0;
       for ( size_t n = 0; n < nVars; ++n )
 	{
 	uMatrix[cntPx][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
@@ -116,7 +116,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     xyz *= 2.0;
     xyz = ComponentDivide( xyz, image.Size );
     
-    Types::DataItem bias = 0;
+    Types::DataItem bias = 1.0;
     for ( size_t n = 0; n < nVars; ++n )
       {
       bias += params[n] * Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
