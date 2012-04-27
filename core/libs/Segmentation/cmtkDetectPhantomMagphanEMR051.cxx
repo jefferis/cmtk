@@ -61,10 +61,13 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   this->m_Landmarks[0] = this->RefineSphereLocation( this->FindSphere( *filterResponse ), MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
   
   // find the two 15mm spheres near estimated position
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
+  for ( size_t i = 1; i < 3; ++i )
+    {
+    filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
 
-  this->m_Landmarks[1] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 90, 10 ), MagphanEMR051::SphereRadius( 1 ), 2 /*label*/ );
-  this->m_Landmarks[2] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], 60, 10 ), MagphanEMR051::SphereRadius( 2 ), 3 /*label*/ );
+    const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares();
+    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], distanceFromCenter , 10 ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
@@ -75,17 +78,17 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
   // Find 4x 30mm CNR spheres in the right order.
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 1 ), this->GetBipolarFilterMargin() );
   for ( size_t i = 3; i < 7; ++i )
     {
+    filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
     const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
     this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0, 15 ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
     }
   
   // Find 10mm spheres in order near projected locations
-  filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 7 ), this->GetBipolarFilterMargin() );
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
+    filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
     this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
     this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0, 5 ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
     
