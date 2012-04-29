@@ -42,19 +42,19 @@ cmtk
 
 template<class TFloat>
 QRDecomposition<TFloat>
-::QRDecomposition( const Matrix2D<TFloat>& matrix )
+::QRDecomposition( const typename Self::MatrixType& matrix )
 {
   this->m_Rows = matrix.NumberOfRows();
   this->m_Cols = matrix.NumberOfColumns();
 
-  /* Copy matrix into compactQR */
-  compactQR.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
+  /* Copy matrix into this->m_CompactQR */
+  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows ), 0, static_cast<int>( this->m_Cols ) );
   for ( size_t j = 0; j < this->m_Rows; j++ )
     for ( size_t i = 0; i < this->m_Cols; i++ )
-      compactQR(i,j) = static_cast<double>( matrix[i][j] );
+      this->m_CompactQR(i,j) = static_cast<double>( matrix[i][j] );
   
   /* Run AlgLib QR decomposition */
-  rmatrixqr( compactQR, this->m_Rows, this->m_Cols, tau );
+  rmatrixqr( this->m_CompactQR, this->m_Rows, this->m_Cols, this->m_Tau );
 }
 
 template<class TFloat> template<size_t NDIM> 
@@ -63,14 +63,14 @@ QRDecomposition<TFloat>
 {
   this->m_Rows = this->m_Cols = NDIM;
 
-  /* Copy matrix into compactQR */
-  compactQR.setbounds(0, (int)NDIM, 0, (int)NDIM);
+  /* Copy matrix into this->m_CompactQR */
+  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows ), 0, static_cast<int>( this->m_Cols ) );
   for ( size_t j = 0; j < this->m_Rows; j++ )
     for ( size_t i = 0; i < this->m_Cols; i++ )
-      compactQR(i,j) = static_cast<double>( matrix[i][j] );
+      this->m_CompactQR(i,j) = static_cast<double>( matrix[i][j] );
   
   /* Run AlgLib QR decomposition */
-  rmatrixqr( compactQR, this->m_Rows, this->m_Cols, tau );
+  rmatrixqr( this->m_CompactQR, this->m_Rows, this->m_Cols, this->m_Tau );
 }
 
 /// Get the Q factor 
@@ -81,11 +81,11 @@ QRDecomposition<TFloat>
 {
   if ( ! this->m_Q ) 
     {
-    this->m_Q = matrixPtr ( new matrix2D( this->m_Rows, this->m_Cols ) );
+    this->m_Q = typename Self::MatrixType::SmartPtr ( new typename Self::MatrixType( this->m_Rows, this->m_Cols ) );
 
-    /* Extract Q from compactQR */
+    /* Extract Q from this->m_CompactQR */
     ap::real_2d_array tmp_ap_matrix;
-    rmatrixqrunpackq( compactQR, this->m_Rows, this->m_Cols, tau, this->m_Cols, tmp_ap_matrix );
+    rmatrixqrunpackq( this->m_CompactQR, this->m_Rows, this->m_Cols, this->m_Tau, this->m_Cols, tmp_ap_matrix );
 
     for ( int j = 0; j < this->m_Rows; j++ )
       for ( int i = 0; i < this->m_Cols; i++ )
@@ -102,11 +102,11 @@ QRDecomposition<TFloat>
 {
   if ( ! this->m_R ) 
     {
-    this->m_R = matrixPtr ( new matrix2D( this->m_Rows, this->m_Cols ) );
+    this->m_R = typename Self::MatrixType::SmartPtr ( new typename Self::MatrixType( this->m_Rows, this->m_Cols ) );
     
-    /* Extract R from compactQR */ 
+    /* Extract R from this->m_CompactQR */ 
     ap::real_2d_array tmp_ap_matrix;
-    rmatrixqrunpackr( compactQR, this->m_Rows, this->m_Cols, tmp_ap_matrix );
+    rmatrixqrunpackr( this->m_CompactQR, this->m_Rows, this->m_Cols, tmp_ap_matrix );
     for ( size_t j = 0; j < this->m_Rows; j++ )
       for ( size_t i = 0; i < this->m_Cols; i++ )
         (*this->m_R)[i][j] = tmp_ap_matrix(i,j);
