@@ -48,7 +48,7 @@ QRDecomposition<TFloat>
   this->m_Cols = matrix.NumberOfColumns();
 
   /* Copy matrix into this->m_CompactQR */
-  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows ), 0, static_cast<int>( this->m_Cols ) );
+  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows-1 ), 0, static_cast<int>( this->m_Cols-1 ) );
   for ( size_t j = 0; j < this->m_Rows; j++ )
     for ( size_t i = 0; i < this->m_Cols; i++ )
       this->m_CompactQR(i,j) = static_cast<double>( matrix[i][j] );
@@ -64,7 +64,7 @@ QRDecomposition<TFloat>
   this->m_Rows = this->m_Cols = NDIM;
 
   /* Copy matrix into this->m_CompactQR */
-  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows ), 0, static_cast<int>( this->m_Cols ) );
+  this->m_CompactQR.setbounds(0, static_cast<int>( this->m_Rows-1 ), 0, static_cast<int>( this->m_Cols-1 ) );
   for ( size_t j = 0; j < this->m_Rows; j++ )
     for ( size_t i = 0; i < this->m_Cols; i++ )
       this->m_CompactQR(i,j) = static_cast<double>( matrix[i][j] );
