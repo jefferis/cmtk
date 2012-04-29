@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2012 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -36,6 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkMatrix.h>
+#include <Base/cmtkFixedSquareMatrix.h>
+
 #include "Numerics/ap.h"
 
 namespace
@@ -60,13 +62,22 @@ public:
   /// Constructor: compute QR decomposition of given matrix.
   QRDecomposition( const Matrix2D<TFloat>& matrix );
 
+  /// Constructor: compute QR decomposition of given matrix.
+  template<size_t NDIM> QRDecomposition( const FixedSquareMatrix<NDIM,TFloat>& matrix );
+
   /// Get the Q factor 
   matrix2D& GetQ();
   
   /// Get the R factor 
   matrix2D& GetR(); 
 
-protected:
+private:
+  /// Number of rows in the input matrix
+  size_t m_Rows; 
+
+  /// Number of columns in the input matrix
+  size_t m_Cols;
+
   /// Alglib compact QR representation
   ap::real_2d_array compactQR;
 
@@ -74,22 +85,10 @@ protected:
   ap::real_1d_array tau;
 
   /// Q matrix.
-  matrixPtr Q;
+  matrixPtr m_Q;
   
   /// R matrix.
-  matrixPtr R;
-
-private:
-   
-  /// Number of rows in the input matrix
-  int m; 
-  /// Number of columns in the input matrix
-  int n;
-  /// True iff the Q extraction has been performed
-  bool extractedQ; 
-  /// True iff the R extraction has been performed
-  bool extractedR;
-
+  matrixPtr m_R;
 };
 
 //@}

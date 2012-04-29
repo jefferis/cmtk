@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2012 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
 //
@@ -44,32 +44,33 @@ template<class TFloat>
 QRDecomposition<TFloat>
 ::QRDecomposition( const Matrix2D<TFloat>& matrix )
 {
-  m = matrix.NumberOfRows();
-  n = matrix.NumberOfColumns();
+  this->m_Rows = matrix.NumberOfRows();
+  this->m_Cols = matrix.NumberOfColumns();
 
-  /* Copy matrix into compactQR
-   */
-
+  /* Copy matrix into compactQR */
   compactQR.setbounds(0, (int)matrix.NumberOfRows(), 0, (int)matrix.NumberOfColumns());
-  for ( int j = 0; j < m; j++ )
-    for ( int i = 0; i < n; i++ )
-      compactQR(i,j) = (double)(1.0 * matrix[i][j]);
+  for ( size_t j = 0; j < this->m_Rows; j++ )
+    for ( size_t i = 0; i < this->m_Cols; i++ )
+      compactQR(i,j) = static_cast<double>( matrix[i][j] );
   
-  /* Run AlgLib QR decomposition
-   */
-  rmatrixqr( compactQR, m, n, tau );
+  /* Run AlgLib QR decomposition */
+  rmatrixqr( compactQR, this->m_Rows, this->m_Cols, tau );
+}
 
-  /* Initialized Q and R objects
-   */
-  Q = matrixPtr ( new matrix2D( m, n ) );
-  R = matrixPtr ( new matrix2D( m, n ) );
+template<class TFloat> template<size_t NDIM> 
+QRDecomposition<TFloat>
+::QRDecomposition( const FixedSquareMatrix<NDIM,TFloat>& matrix )
+{
+  this->m_Rows = this->m_Cols = NDIM;
 
-  /* Set these to true once the Q or R 
-   * matrix has been extracted from the compact
-   * alglib representation
-   */ 
-  extractedQ = extractedR = false;
-
+  /* Copy matrix into compactQR */
+  compactQR.setbounds(0, (int)NDIM, 0, (int)NDIM);
+  for ( size_t j = 0; j < this->m_Rows; j++ )
+    for ( size_t i = 0; i < this->m_Cols; i++ )
+      compactQR(i,j) = static_cast<double>( matrix[i][j] );
+  
+  /* Run AlgLib QR decomposition */
+  rmatrixqr( compactQR, this->m_Rows, this->m_Cols, tau );
 }
 
 /// Get the Q factor 
@@ -78,20 +79,19 @@ Matrix2D<TFloat>&
 QRDecomposition<TFloat>
 ::GetQ() 
 {
-  if ( ! extractedQ ) 
+  if ( ! this->m_Q ) 
     {
-    /* Extract Q from compactQR
-      */
+    this->m_Q = matrixPtr ( new matrix2D( this->m_Rows, this->m_Cols ) );
+
+    /* Extract Q from compactQR */
     ap::real_2d_array tmp_ap_matrix;
-    rmatrixqrunpackq( compactQR, m, n, tau, n, tmp_ap_matrix );
+    rmatrixqrunpackq( compactQR, this->m_Rows, this->m_Cols, tau, this->m_Cols, tmp_ap_matrix );
 
-    for ( int j = 0; j < m; j++ )
-      for ( int i = 0; i < n; i++ )
-        (*Q)[i][j] = tmp_ap_matrix(i,j);
-
-    extractedQ = true;
+    for ( int j = 0; j < this->m_Rows; j++ )
+      for ( int i = 0; i < this->m_Cols; i++ )
+        (*this->m_Q)[i][j] = tmp_ap_matrix(i,j);
     }
-  return *(this->Q);
+  return *(this->m_Q);
 }
 
 /// Get the R factor 
@@ -100,20 +100,19 @@ Matrix2D<TFloat>&
 QRDecomposition<TFloat>
 ::GetR()
 {
-  if ( ! extractedR ) 
+  if ( ! this->m_R ) 
     {
-    /* Extract R from compactQR
-      */ 
+    this->m_R = matrixPtr ( new matrix2D( this->m_Rows, this->m_Cols ) );
+    
+    /* Extract R from compactQR */ 
     ap::real_2d_array tmp_ap_matrix;
-    rmatrixqrunpackr( compactQR, m, n, tmp_ap_matrix );
-    for ( int j = 0; j < m; j++ )
-      for ( int i = 0; i < n; i++ )
-        (*R)[i][j] = tmp_ap_matrix(i,j);
-
-    extractedR = true;
+    rmatrixqrunpackr( compactQR, this->m_Rows, this->m_Cols, tmp_ap_matrix );
+    for ( size_t j = 0; j < this->m_Rows; j++ )
+      for ( size_t i = 0; i < this->m_Cols; i++ )
+        (*this->m_R)[i][j] = tmp_ap_matrix(i,j);
     }
 
-  return *(this->R);
+  return *(this->m_R);
 }
 
 } // namespace cmtk

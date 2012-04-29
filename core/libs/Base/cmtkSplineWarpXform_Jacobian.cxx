@@ -566,22 +566,6 @@ SplineWarpXform::GetJacobianConstraint () const
   return constraint / ( VolumeDims[0] * VolumeDims[1] * VolumeDims[2] );
 }
 
-Types::Coordinate
-SplineWarpXform::GetJacobianConstraintSparse () const
-{
-  double Constraint = 0;
-
-  const Types::Coordinate* coeff = this->m_Parameters + nextI + nextJ + nextK;
-  for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
-    for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
-      for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
-	Constraint += fabs( log ( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff ) ) / this->m_GlobalScaling ) );
-  
-  // Divide by number of control points to normalize with respect to the
-  // number of local Jacobians in the computation.
-  return (double)(Constraint / this->m_NumberOfControlPoints);
-}
-
 void 
 SplineWarpXform::GetJacobianConstraintDerivative
 ( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const

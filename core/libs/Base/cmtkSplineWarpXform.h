@@ -166,19 +166,6 @@ public:
   /// Return rigidity constraint of the current transformation grid with local weights.
   virtual Types::Coordinate GetRigidityConstraint( const DataGrid* weightMap ) const;
 
-  /** Return sparse Jacobian constraint of the current transformation grid.
-   * Unlike GetJacobianConstraint(), this function does not evaluate the
-   * Jacobian constraint at each voxel of the registered reference image; it
-   * merely performs the evaluation at the control points of the deformation,
-   * thereby greatly increasing computational performance at the cost of less
-   * accurate and stable computation.
-   */
-  virtual Types::Coordinate GetJacobianConstraintSparse() const;
-
-  /** Return sparse rigidity constraint of the current transformation grid.
-   */
-  virtual Types::Coordinate GetRigidityConstraintSparse() const;
-
   /// Return derivative of Jacobian constraint with respect to one parameter.
   virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
 

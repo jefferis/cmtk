@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2012 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
 //
@@ -42,24 +42,6 @@ cmtk
 
 /** \addtogroup Base */
 //@{
-
-Types::Coordinate
-SplineWarpXform::GetRigidityConstraintSparse () const
-{
-  double Constraint = 0;
-
-  const Types::Coordinate* coeff = this->m_Parameters + nextI + nextJ + nextK;
-  for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
-    for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
-      for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
-	{
-	Constraint += this->GetRigidityConstraint( this->GetJacobian( Self::SpaceVectorType( coeff ) ) );
-	}
-  
-  // Divide by number of control points to normalize with respect to the
-  // number of local Jacobians in the computation.
-  return (Types::Coordinate)(Constraint / this->m_NumberOfControlPoints);
-}
 
 void 
 SplineWarpXform::GetRigidityConstraintDerivative
@@ -267,14 +249,7 @@ Types::Coordinate
 SplineWarpXform::GetRigidityConstraint( const CoordinateMatrix3x3& J ) 
   const
 {
-  Matrix2D<Types::Coordinate> matrix2d( 3, 3 );
-  for ( int i = 0; i < 3; ++i )
-    for ( int j = 0; j < 3; ++j )
-      matrix2d[i][j] = J[i][j];
-
-  QRDecomposition<Types::Coordinate> qr( matrix2d );
-  const Matrix2D<Types::Coordinate> R = qr.GetR();
-  
+  const Matrix2D<Types::Coordinate> R = QRDecomposition<Types::Coordinate>( J ).GetR();  
   return MathUtil::Square( R[0][1] / R[0][0] ) + MathUtil::Square( R[0][2] / R[0][0] ) + MathUtil::Square( R[1][2] / R[1][1] );
 }
 
