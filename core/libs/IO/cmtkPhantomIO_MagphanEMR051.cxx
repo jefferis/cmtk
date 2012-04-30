@@ -168,15 +168,19 @@ cmtk::PhantomIO::Read( const std::string& fpath )
 
     mxml_node_t* x_expected = mxmlFindElement( x_fiducial, x_root, "expected", NULL, NULL, MXML_DESCEND );
     if ( ! x_expected || ! x_expected->child ) continue;
-    
-    double expected[3];
-    if ( 3 != sscanf( x_expected->child->value.text.string, "%lf %lf %lf", expected, expected+1, expected+2 ) ) continue;
+
+    Landmark::SpaceVectorType expected;
+    mxml_node_t* x_expected_it = x_expected->child;
+    for ( size_t i = 0; i < 3; ++i, x_expected_it = x_expected_it->next )
+      expected[i] = atof( x_expected_it->value.text.string );
 
     mxml_node_t* x_detected = mxmlFindElement( x_fiducial, x_root, "detected", NULL, NULL, MXML_DESCEND );
     if ( ! x_detected || ! x_detected->child ) continue;
 
-    double detected[3];
-    if ( 3 != sscanf( x_detected->child->value.text.string, "%lf %lf %lf", detected, detected+1, detected+2 ) ) continue;
+    Landmark::SpaceVectorType detected;
+    mxml_node_t* x_detected_it = x_detected->child;
+    for ( size_t i = 0; i < 3; ++i, x_detected_it = x_detected_it->next )
+      detected[i] = atof( x_detected_it->value.text.string );
     
     mxml_node_t* x_precise = mxmlFindElement( x_fiducial, x_root, "precise", NULL, NULL, MXML_DESCEND );
     if ( ! x_precise || ! x_precise->child ) continue;
@@ -186,9 +190,7 @@ cmtk::PhantomIO::Read( const std::string& fpath )
     if ( ! x_residual || ! x_residual->child ) continue;
     const Types::Coordinate residual = static_cast<Types::Coordinate>( atof( x_residual->child->value.text.string ) );
 
-    StdErr << name << "\t" << residual << "\n";
-
-    result->AddLandmarkPair( name, Landmark::SpaceVectorType( expected ), Landmark::SpaceVectorType( detected ), residual, precise );
+    result->AddLandmarkPair( name, expected, detected, residual, precise );
     }
   
   mxmlDelete( x_root );
