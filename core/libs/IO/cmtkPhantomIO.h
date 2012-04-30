@@ -50,8 +50,11 @@ class PhantomIO
 public:
   /// This class.
   typedef PhantomIO Self;
+
+  /// Read detected Magphan EMR051 description.
+  static DetectedPhantomMagphanEMR051::SmartPtr Read( const std::string& path );
   
-  /// Write Magphan EMR051 description.
+  /// Write detected Magphan EMR051 description.
   static void Write( const DetectedPhantomMagphanEMR051& phantom, const std::string& fpath );
 
 private:

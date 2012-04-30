@@ -134,5 +134,64 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
     }
   
   mxmlDelete( x_root );
+}
+
+cmtk::DetectedPhantomMagphanEMR051::SmartPtr
+cmtk::PhantomIO::Read( const std::string& fpath )
+{
+  FILE *file = fopen( fpath.c_str(), "r" );
+  if ( !file )
+    {
+    cmtk::StdErr << "ERROR: could not open file " << fpath << " for reading\n";
+    return DetectedPhantomMagphanEMR051::SmartPtr( NULL );
+    }
+
+  mxml_node_t *x_root = mxmlLoadFile( NULL, file, MXML_TEXT_CALLBACK );
+  fclose( file );
+
+  mxml_node_t *x_landmarks = mxmlFindElement( x_root, x_root, "landmarks", NULL, NULL, MXML_DESCEND );
+  if ( ! x_landmarks )
+    {
+    cmtk::StdErr << "ERROR: could not file 'landmarks' XML element in file " << fpath << "\n";
+    mxmlDelete( x_root );
+    return DetectedPhantomMagphanEMR051::SmartPtr( NULL );
+    }
+
+  AffineXform xform;
+  DetectedPhantomMagphanEMR051::SmartPtr result( new DetectedPhantomMagphanEMR051( 0, 0, xform ) );
   
+  for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "fiducial", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "fiducial", NULL, NULL, MXML_DESCEND ) )
+    {
+    mxml_node_t* x_name = mxmlFindElement( x_fiducial, x_root, "name", NULL, NULL, MXML_DESCEND );
+    if ( ! x_name || ! x_name->child ) continue;
+    const std::string name = x_name->child->value.text.string;
+
+    mxml_node_t* x_expected = mxmlFindElement( x_fiducial, x_root, "expected", NULL, NULL, MXML_DESCEND );
+    if ( ! x_expected || ! x_expected->child ) continue;
+    
+    double expected[3];
+    if ( 3 != sscanf( x_expected->child->value.text.string, "%lf %lf %lf", expected, expected+1, expected+2 ) ) continue;
+
+    mxml_node_t* x_detected = mxmlFindElement( x_fiducial, x_root, "detected", NULL, NULL, MXML_DESCEND );
+    if ( ! x_detected || ! x_detected->child ) continue;
+
+    double detected[3];
+    if ( 3 != sscanf( x_detected->child->value.text.string, "%lf %lf %lf", detected, detected+1, detected+2 ) ) continue;
+    
+    mxml_node_t* x_precise = mxmlFindElement( x_fiducial, x_root, "precise", NULL, NULL, MXML_DESCEND );
+    if ( ! x_precise || ! x_precise->child ) continue;
+    const bool precise = !strcmp( x_precise->child->value.text.string, "yes" );
+
+    mxml_node_t* x_residual = mxmlFindElement( x_fiducial, x_root, "residual", NULL, NULL, MXML_DESCEND );
+    if ( ! x_residual || ! x_residual->child ) continue;
+    const Types::Coordinate residual = static_cast<Types::Coordinate>( atof( x_residual->child->value.text.string ) );
+
+    StdErr << name << "\t" << residual << "\n";
+
+    result->AddLandmarkPair( name, Landmark::SpaceVectorType( expected ), Landmark::SpaceVectorType( detected ), residual, precise );
+    }
+  
+  mxmlDelete( x_root );
+  
+  return result;
 }
