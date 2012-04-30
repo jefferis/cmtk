@@ -41,6 +41,7 @@ SET(cmtkIO_SRCS
   cmtkImageOperationApplyMask.cxx
   cmtkLandmarkIO.cxx
   cmtkLandmarkListIO.cxx
+  cmtkPhantomIO_MagphanEMR051.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx
   cmtkScalarImageIO.cxx

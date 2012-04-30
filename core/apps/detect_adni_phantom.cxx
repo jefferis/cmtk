@@ -37,6 +37,7 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkDebugOutput.h>
 
+#include <IO/cmtkPhantomIO.h>
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 
@@ -48,6 +49,7 @@ int
 doMain( const int argc, const char* argv[] )
 {
   const char* inputPath = NULL;
+  const char* outputPath = NULL;
 
   const char* outputLabelPath = NULL;
   const char* outputRigidPath = NULL;
@@ -69,8 +71,8 @@ doMain( const int argc, const char* argv[] )
 		  "specify the correct spehre locations in the image, but rather, allows for quantification of scale miscalibration.")
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
-    cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outputPath, "OutputXML", "Output path for the XML file describing the dected phantom." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
     }
@@ -104,6 +106,9 @@ doMain( const int argc, const char* argv[] )
   // match expected and detected landmarks
   cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
   cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
+
+  if ( outputPath )
+    cmtk::PhantomIO::Write( *(detectionFilter.GetDetectedPhantom()), outputPath );
 
   if ( outputLabelPath )
     cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputLabelPath );

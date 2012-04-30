@@ -36,6 +36,7 @@
 #include <System/cmtkException.h>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkDetectedPhantomMagphanEMR051.h>
 
 #include <vector>
 
@@ -69,6 +70,9 @@ public:
   
   /// Constructor: detect all landmark spheres.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
+
+  /// Get comprehensive description of phantom as detected in image.
+  DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();
   
   /// Get rigid phantom-to-image transformation.
   AffineXform::SmartConstPtr GetPhantomToImageTransformationRigid() const

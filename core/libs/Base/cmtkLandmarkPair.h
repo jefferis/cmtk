@@ -62,19 +62,33 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  LandmarkPair( const Landmark& landmark, const Self::SpaceVectorType& target )
+  LandmarkPair( const Landmark& landmark, const Self::SpaceVectorType& target,
+		const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, 
+		const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */ )
     : Landmark( landmark ),
-      m_TargetLocation( target )
+      m_TargetLocation( target ),
+      m_Residual( residual ),
+      m_Precise( precise )
   {}
 
   /// Constructor.
-  LandmarkPair( const std::string& name, const Self::SpaceVectorType& source, const Self::SpaceVectorType& target )
+  LandmarkPair( const std::string& name, const Self::SpaceVectorType& source, const Self::SpaceVectorType& target,
+    		const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, 
+		const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */ )
     : Landmark( name, source ),
-      m_TargetLocation( target )
+      m_TargetLocation( target ),
+      m_Residual( residual ),
+      m_Precise( precise )
   {}
 
   /// Coordinates of this landmark.
   Self::SpaceVectorType m_TargetLocation;
+
+  /// Fitting residual (negative if unknown).
+  Types::Coordinate m_Residual;
+
+  /// Precision flag. Only landmarks with this flag set should be used for registration.
+  bool m_Precise;
 };
 
 /// Stream output operator.

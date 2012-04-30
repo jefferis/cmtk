@@ -82,7 +82,7 @@ doMain( const int argc, const char* argv[] )
 
     cl.AddParameter( &inputPhantomPath, "InputPhantom", "Phantom image path. This is the image of the ADNI phantom, which is used to compute the unwarping transformation." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &inputImagePath, "InputPhantom", "Input image path. This is the image that is unwarped. It is important that this image be acquired on the same scanner (not only the same model but the very machine) "
+    cl.AddParameter( &inputImagePath, "InputImage", "Input image path. This is the image that is unwarped. It is important that this image be acquired on the same scanner (not only the same model but the very machine) "
 		     "on which the phantom image was also acquired, preferably in close temporal proximity. Also, both this and the phantom image must share and specify the same physical image coordinates, i.e., only images in "
 		     "NIFTI or NRRD format can be used." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );

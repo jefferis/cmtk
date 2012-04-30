@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2012 SRI International
+//  Copyright 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,52 +28,39 @@
 //
 */
 
-#ifndef __cmtkLandmark_h_included_
-#define __cmtkLandmark_h_included_
+#ifndef __cmtkPhantomIO_h_included_
+#define __cmtkPhantomIO_h_included_
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkMacros.h>
-#include <Base/cmtkTypes.h>
-#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkDetectedPhantomMagphanEMR051.h>
 
-#include <System/cmtkSmartPtr.h>
-#include <System/cmtkSmartConstPtr.h>
-
-#include <string>
+#include <mxml.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup IO */
 //@{
-/// Coordinates of an (anatomical) landmark.
-class Landmark
+
+/// Read and write imaging phantom descriptions to and from XML files.
+class PhantomIO
 {
 public:
   /// This class.
-  typedef Landmark Self;
+  typedef PhantomIO Self;
+  
+  /// Write Magphan EMR051 description.
+  static void Write( const DetectedPhantomMagphanEMR051& phantom, const std::string& fpath );
 
-  /// Space vector type.
-  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
-
-  /// Default constructor.
-  Landmark() {};
-
-  /// Explicit constructor.
-  Landmark( const std::string& name /*!< Name of this landmark */, const Self::SpaceVectorType& location /*!< Location of this landmark */ );
-
-  /// Name of this landmark.
-  std::string m_Name;
-
-  /// Coordinates of this landmark.
-  Self::SpaceVectorType m_Location;
+private:
+  /// Whitespace callback function for MiniXML.
+  static const char* WhitespaceWriteMiniXML( mxml_node_t* node, int where);
 };
-
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkLandmarks_h_included_
+#endif // #ifndef __cmtkPhantomIO_h_included_

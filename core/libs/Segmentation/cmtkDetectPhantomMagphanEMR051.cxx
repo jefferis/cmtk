@@ -378,3 +378,17 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedLandmarks( const bool includeOutlie
   return list;
 }
 
+cmtk::DetectedPhantomMagphanEMR051::SmartPtr 
+cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
+{
+  DetectedPhantomMagphanEMR051* detected = new DetectedPhantomMagphanEMR051( 0, 0, *(this->m_PhantomToImageTransformationAffine) );
+
+  const cmtk::AffineXform phantomToPhysical( this->m_PhantomImage->GetImageToPhysicalMatrix() );
+    for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
+    {
+    detected->AddLandmarkPair( MagphanEMR051::SphereName( i ), phantomToPhysical.Apply( this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ), phantomToPhysical.Apply( this->m_Landmarks[i] ), 
+			       this->m_LandmarkFitResiduals[i], (i>=7) /*only the 10mm spheres #7 and above are considered precise enough for registration*/ );
+    }
+    
+  return DetectedPhantomMagphanEMR051::SmartPtr( detected );
+}
