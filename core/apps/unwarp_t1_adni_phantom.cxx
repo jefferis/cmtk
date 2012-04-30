@@ -37,6 +37,7 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkDebugOutput.h>
 
+#include <IO/cmtkPhantomIO.h>
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 
@@ -54,6 +55,8 @@ doMain( const int argc, const char* argv[] )
 {
   const char* inputPhantomPath = NULL;
   const char* inputImagePath = NULL;
+
+  cmtk::Types::Coordinate residualThreshold = 5.0;
 
   const char* gridDims = NULL;
   cmtk::Types::Coordinate gridSpacing = 0;
@@ -80,8 +83,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddOption( Key( "final-cp-dims" ), &gridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
     cl.EndGroup();
 
-    cl.AddParameter( &inputPhantomPath, "InputPhantom", "Phantom image path. This is the image of the ADNI phantom, which is used to compute the unwarping transformation." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &inputPhantomPath, "InputPhantom", "Input path of the XML file describing a phantom previously detected in an image." );
     cl.AddParameter( &inputImagePath, "InputImage", "Input image path. This is the image that is unwarped. It is important that this image be acquired on the same scanner (not only the same model but the very machine) "
 		     "on which the phantom image was also acquired, preferably in close temporal proximity. Also, both this and the phantom image must share and specify the same physical image coordinates, i.e., only images in "
 		     "NIFTI or NRRD format can be used." )
@@ -104,41 +106,26 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  // read phantom image
-  cmtk::UniformVolume::SmartConstPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPhantomPath ) );
-  // if different from phantom image, then also read unwarp image
-  cmtk::UniformVolume::SmartConstPtr unwarpImage = phantomImage;
-  if ( strcmp( inputPhantomPath, inputImagePath ) )
-    unwarpImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
+  // read phantom description
+  cmtk::DetectedPhantomMagphanEMR051::SmartPtr phantom( cmtk::PhantomIO::Read( inputPhantomPath ) );
 
-  const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
-  const cmtk::AffineXform physicalToImage( unwarpImage->GetImageToPhysicalMatrix().GetInverse() );
+  cmtk::UniformVolume::SmartConstPtr unwarpImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
+  phantom->ApplyXformToLandmarks( cmtk::AffineXform( unwarpImage->GetImageToPhysicalMatrix().GetInverse() ) );
 
-  // detect the ADNI phantom landmarks
-  cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
-
-  // get expected landmark locations
-  cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
-  // bring expected landmark locations from phantom image via physical to unwarping image space
-  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+  cmtk::LandmarkPairList pairList;
+  for ( std::list<cmtk::LandmarkPair>::const_iterator it = phantom->LandmarkPairsList().begin(); it != phantom->LandmarkPairsList().end(); ++it )
     {
-    phantomToPhysical.ApplyInPlace( it->m_Location );
-    physicalToImage.ApplyInPlace( it->m_Location );
+    if ( it->m_Precise ) // exclude all unprecise landmarks
+      {
+      if ( it->m_Residual < residualThreshold ) // exclude outliers based on residual
+	{
+	pairList.push_back( *it );
+	}
+      }
     }
 
-  // get detected landmark locations
-  cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
-  // bring detected landmark locations from phantom image via physical to unwarping image space
-  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
-    {
-    phantomToPhysical.ApplyInPlace( it->m_Location );
-    physicalToImage.ApplyInPlace( it->m_Location );
-    }
+  cmtk::DebugOutput( 2 ) << "INFO: using " << pairList.size() << " out of " << phantom->LandmarkPairsList().size() << " total phantom landmarks as fiducials.\n";
   
-  // match expected and detected landmarks
-  cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
-  cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
-
   // fit spline warp, potentially preceded by linear transformation, to landmark pairs.
   cmtk::SplineWarpXform::SmartConstPtr splineWarp;
   cmtk::AffineXform::SmartConstPtr affineXform;

@@ -79,6 +79,19 @@ public:
     this->m_LandmarkPairs.push_back( LandmarkPair( name, expected, actual, residual, reliable ) );
   }
 
+  /** Apply a transformation to all landmarks.
+   * The purpose of this function is mainly to bring all landmark images into a new image space, e.g.,
+   * to transform them from phantom image physical space to unwarp image standard space.
+   */
+  void ApplyXformToLandmarks( const Xform& xform )
+  {
+    for ( std::list<LandmarkPair>::iterator it = this->m_LandmarkPairs.begin(); it != this->m_LandmarkPairs.end(); ++it )
+      {
+      xform.ApplyInPlace( it->m_Location );
+      xform.ApplyInPlace( it->m_TargetLocation );
+      }
+  }
+
   /// Get list of landmark pairs.
   const std::list<LandmarkPair>& LandmarkPairsList() const
   {
