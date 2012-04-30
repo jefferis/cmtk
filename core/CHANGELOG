@@ -1,5 +1,6 @@
 Release CMTK-2.2.0:
 
+(r4280) Updated: bundled MiniXML (mxml) library is now version 2.7
 (r4256) Changed: the "search" and "replace" parts of the CMTK_MOUNTPOINTS
     variable have been switched. The new order is far more intuitive.
 (r4240) Fixed: one of the functions computing Jacobian matrices for B-spline
