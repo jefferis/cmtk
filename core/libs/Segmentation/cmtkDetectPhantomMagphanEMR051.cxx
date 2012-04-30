@@ -35,6 +35,7 @@
 #include <Base/cmtkFitRigidToLandmarks.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
 #include <Base/cmtkHistogramOtsuThreshold.h>
+#include <Base/cmtkDataGridMorphologicalOperators.h>
 
 #include <System/cmtkDebugOutput.h>
 
@@ -44,7 +45,8 @@
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
-  : m_PhantomImage( phantomImage ),
+  : m_CorrectSphereBiasField( true ),
+    m_PhantomImage( phantomImage ),
     m_ExcludeMask( phantomImage->CloneGrid() ),
     m_IncludeMask( phantomImage->CloneGrid() )
 {
@@ -266,6 +268,7 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance
 
   if ( maxIndex < 0 )
     {
+    VolumeIO::Write( *this->m_ExcludeMask, "/tmp/exclude_mask.nii" );
     throw( Self::NoSphereInSearchRegion() );
     }
   
@@ -298,15 +301,26 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   
   const size_t nPixels = regionVolume->GetNumberOfPixels();
   
-  std::vector<bool> regionMaskVector( regionMask->GetNumberOfPixels() );
+  std::vector<bool> regionMaskVector( nPixels );
   for ( size_t i = 0; i < nPixels; ++i )
     {
     regionMaskVector[i] = ( regionMask->GetDataAt( i ) != 0 );
     }
+
+  if ( this->m_CorrectSphereBiasField )
+    {
+    regionMask->SetData( DataGridMorphologicalOperators( regionMask ).GetEroded( 1 /*erode by 1 pixel*/ ) );
+    
+    std::vector<bool> regionMaskVectorErode( nPixels );
+    for ( size_t i = 0; i < nPixels; ++i )
+      {
+      regionMaskVectorErode[i] = ( regionMask->GetDataAt( i ) != 0 );
+      }
+    
+    regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVectorErode, 1 /* polynomial degree */ ).GetCorrectedData() );
+    }
   
-//  regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVector, 2 /* polynomial degree */ ).GetCorrectedData() );
-  
-  // repeat thresholding to mask out background in bias-corrected region
+  // threshold to mask out background in bias-corrected region
   const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionVolume->GetData()->GetHistogram( 1024 )) ).Get();
   for ( size_t i = 0; i < nPixels; ++i )
     {

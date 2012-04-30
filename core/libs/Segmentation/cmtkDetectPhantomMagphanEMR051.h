@@ -92,6 +92,9 @@ public:
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
 private:
+  /// Flag for correction of (linear) bias field for each sphere.
+  bool m_CorrectSphereBiasField;
+  
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 
@@ -150,7 +153,7 @@ private:
   /// Get margin in pixels for center-of-mass-based refinement.
   int GetRefineMarginPixels() const
   {
-    return 2;
+    return 1;
   }
 
   /// Get threshold for detecting outliers based on landmark fitting residuals.
