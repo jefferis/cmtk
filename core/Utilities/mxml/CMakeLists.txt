@@ -37,6 +37,7 @@ SET(mxml_SRCS mxml-attr.c
 	      mxml-entity.c
 	      mxml-index.c
 	      mxml-private.c
+	      mxml-get.c
 	      mxml-set.c
 	      mxml-file.c
 	      mxml-node.c
@@ -72,4 +73,3 @@ INSTALL(FILES ${files} ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMTK_I
 
 SET(MXML_LIBRARIES "cmtkMxml" CACHE INTERNAL "Libraries for the mxml library")
 SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Include directory for the mxml library headers.")
-
