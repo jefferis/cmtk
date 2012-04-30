@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -142,13 +142,13 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
     size_t offset = 0;
     for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
+      const int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
       for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
+	const int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
 	for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
+	  const int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
 	  if ( eroded[offset] ) 
 	    {
 	    bool erodePixel = false;
@@ -199,13 +199,13 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
     size_t offset = 0;
     for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
+      const int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
       for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
+	const int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
 	for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
+	  const int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
 	  if ( ! dilated[offset] ) 
 	    {
 	    byte dilatePixel = 0;
