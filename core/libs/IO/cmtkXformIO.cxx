@@ -115,7 +115,7 @@ XformIO::Write
   FileFormatID fileFormat = FILEFORMAT_TYPEDSTREAM;
 
   const size_t period = path.rfind( '.' );
-  if ( period )
+  if ( period != std::string::npos )
     {
     const std::string suffix = path.substr( period );
     if ( (suffix == ".nrrd") || (suffix == ".nhdr") )
