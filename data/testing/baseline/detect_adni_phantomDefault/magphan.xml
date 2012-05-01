@@ -3,7 +3,7 @@
 <phantomType>MagphanEMR051</phantomType>
 <snr>0.000000</snr>
 <cnr>0.000000</cnr>
-<landmarkList coordinates="Physical" space="RAS">
+<landmarkList coordinates="physical" space="RAS">
 	<landmark>
 		<name>SNR</name>
 		<expected>-2.079426 29.680737 -4.654028</expected>
