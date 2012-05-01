@@ -160,7 +160,7 @@ cmtk::PhantomIO::Read( const std::string& fpath )
   AffineXform xform;
   DetectedPhantomMagphanEMR051::SmartPtr result( new DetectedPhantomMagphanEMR051( 0, 0, xform ) );
   
-  for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "landmark", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "fiducial", NULL, NULL, MXML_DESCEND ) )
+  for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "landmark", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "landmark", NULL, NULL, MXML_DESCEND ) )
     {
     mxml_node_t* x_name = mxmlFindElement( x_fiducial, x_root, "name", NULL, NULL, MXML_DESCEND );
     if ( ! x_name || ! x_name->child ) continue;
