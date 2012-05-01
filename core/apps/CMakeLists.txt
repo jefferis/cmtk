@@ -91,6 +91,7 @@ SET(APPS avg_adm
   symplx
   ttest
   unsplit
+  unwarp_image_phantom
   volume_injection
   volume_reconstruction
   vtkxform
@@ -127,8 +128,7 @@ ENDIF(CMTK_USE_DCMTK)
 IF(CMTK_USE_FFTW)
   LIST(APPEND APPS
     detect_spheres_matched_filter
-    detect_adni_phantom 
-    unwarp_t1_adni_phantom)
+    detect_adni_phantom)
 ENDIF(CMTK_USE_FFTW)
 
 FOREACH(APPLICATION ${APPS})
