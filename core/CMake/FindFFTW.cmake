@@ -70,6 +70,7 @@ set(FFTW_LIB_SEARCHPATH
 mark_as_advanced(FFTWD_LIB)
 find_library(FFTWD_LIB fftw3 ${FFTW_LIB_SEARCHPATH}) #Double Precision Lib
 find_library(FFTWD_THREADS_LIB fftw3_threads ${FFTW_LIB_SEARCHPATH}) #Double Precision Lib only if compiled with threads support
+find_library(FFTWD_OMP_LIB fftw3_omp ${FFTW_LIB_SEARCHPATH}) #Double Precision Lib only if compiled with OpenMP support
 
 if(FFTWD_LIB)
   set(FFTWD_FOUND 1)
@@ -82,6 +83,7 @@ endif(FFTWD_LIB)
 mark_as_advanced(FFTWF_LIB)
 find_library(FFTWF_LIB fftw3f ${FFTW_LIB_SEARCHPATH}) #Single Precision Lib
 find_library(FFTWF_THREADS_LIB fftw3f_threads ${FFTW_LIB_SEARCHPATH}) #Single Precision Lib only if compiled with threads support
+find_library(FFTWF_OMP_LIB fftw3f_omp ${FFTW_LIB_SEARCHPATH}) #Single Precision Lib only if compiled with OpenMP support
 
 if(FFTWF_LIB)
   set(FFTWF_FOUND 1)

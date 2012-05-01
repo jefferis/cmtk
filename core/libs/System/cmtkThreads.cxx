@@ -90,14 +90,7 @@ Threads::GetNumberOfThreads()
   if ( !Threads::NumberOfThreads ) 
     Threads::CheckEnvironment();
   
-  if ( Threads::NumberOfThreads ) 
-    {
-    return Threads::NumberOfThreads;
-    } 
-  else
-    {
-    return std::min( Threads::GetNumberOfProcessors(), Threads::GetMaxThreads() );
-    }
+  return Threads::NumberOfThreads;
 }
 
 bool
@@ -153,10 +146,6 @@ Threads
 
 #ifdef _OPENMP
   omp_set_num_threads( NumberOfThreads );
-#endif
-
-#ifdef CMTK_USE_FFTW
-  FFTW::GetStatic().SetNumberOfThreads( NumberOfThreads );
 #endif
 
   return NumberOfThreads;
@@ -333,6 +322,15 @@ Threads::CheckEnvironment()
       std::cerr << "WARNING: environment variable CMTK_NUM_THREADS is set but does not seem to contain a number larger than 0.\n";
       }
     }
+
+  if ( ! NumberOfThreads )
+    {
+    SetNumberOfThreads( std::min( Threads::GetNumberOfProcessors(), Threads::GetMaxThreads() ) );
+    }
+
+#ifdef CMTK_USE_FFTW
+  FFTW::GetStatic().SetNumberOfThreads( Threads::GetNumberOfThreads() );
+#endif
 
 #ifdef _OPENMP
 // this is to force Apple's gcc on MacOS to link all OpenMP libraries
