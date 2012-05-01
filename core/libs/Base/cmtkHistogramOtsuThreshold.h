@@ -65,7 +65,7 @@ public:
   /// The histogram template parameter type.
   typedef THistogram HistogramType;
 
-  /// Constructor: compute registrations.
+  /// Constructor: compute and store threshold.
   HistogramOtsuThreshold( const Self::HistogramType& histogram );
 
   /// Get the computed threshold.
