@@ -757,6 +757,15 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
+# Tests for "unwarp_image_phantom" tool
+LIST(APPEND testList
+  unwarp_image_phantomSpacing
+  unwarp_image_phantomSpacingLevels
+  unwarp_image_phantomSpacingDirect
+  unwarp_image_phantomDims
+  unwarp_image_phantomDimsLevels)
+
+# ==========================================
 # Tests for "volume_injection" tool
 LIST(APPEND testList
   volume_injection 
