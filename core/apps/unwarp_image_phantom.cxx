@@ -41,8 +41,7 @@
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 
-#include <Segmentation/cmtkDetectPhantomMagphanEMR051.h>
-
+#include <Base/cmtkDetectedPhantomMagphanEMR051.h>
 #include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
@@ -61,26 +60,26 @@ doMain( const int argc, const char* argv[] )
   const char* gridDims = NULL;
   cmtk::Types::Coordinate gridSpacing = 0;
   int levels = 1;  
-  bool affineFirst = false;
+  bool affineFirst = true;
 
   const char* outputXform = NULL;
 
   try
     {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unwarp T1-weighted MR image using ADNI phantom image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a T1-weighted MR image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom) and computes a "
-		       "B-spline free-form deformation to unwarp another T1-weighted image acquired on the same scanner." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unwarp T1-weighted MR image using a phantom description" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes a  B-spline free-form deformation to unwarp an image. The transformation is based on expected and detected landmarks in an image of a structural phantom "
+		       "acquired on the same scanner. Use the 'detect_adni_phantom' tool to detect landmarks of the ADNI Phantom in an image and generate a phantom description file suitable for use with this tool." );
 
     typedef cmtk::CommandLine::Key Key;    
     cl.BeginGroup( "Fitting", "Fitting Options" );
     cl.AddOption( Key( "levels" ), &levels, "Number of levels in the multi-level B-spline approximation procedure." );
-    cl.AddSwitch( Key( "fit-affine-first" ), &affineFirst, true, "Fit affine transformation first, then initialize spline with it." );
+    cl.AddSwitch( Key( "no-fit-affine" ), &affineFirst, false, "Disable fitting of affine transformation to initialize spline. Instead, fit spline directly. This usually gives worse results and is discouraged." );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( "final-cp-spacing" ), &gridSpacing, "Final control point grid spacing of the output B-spline transformation." );
-    cl.AddOption( Key( "final-cp-dims" ), &gridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
+    cl.AddOption( Key( "final-cp-dims" ), &gridDims, "Final control point grid dimensions (i.e., number of control points) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
     cl.EndGroup();
 
     cl.AddParameter( &inputPhantomPath, "InputPhantom", "Input path of the XML file describing a phantom previously detected in an image." );
