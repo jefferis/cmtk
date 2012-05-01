@@ -47,16 +47,16 @@ cmtk::PhantomIO::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "type",   { NULL, NULL, NULL, "\n" } },
-    { "snr",       { NULL, NULL, NULL, "\n" } },
-    { "cnr",       { NULL, NULL, NULL, "\n" } },
-    { "landmarks", { NULL, "\n", NULL, "\n" } },
-    { "fiducial",  { "\t", "\n", "\t", "\n" } },
-    { "name",      { "\t\t", NULL, NULL, "\n" } },
-    { "detected",  { "\t\t", NULL, NULL, "\n" } },
-    { "expected",  { "\t\t", NULL, NULL, "\n" } },
-    { "precise",   { "\t\t", NULL, NULL, "\n" } },
-    { "residual",  { "\t\t", NULL, NULL, "\n" } },
+    { "phantomType",  { NULL, NULL, NULL, "\n" } },
+    { "snr",          { NULL, NULL, NULL, "\n" } },
+    { "cnr",          { NULL, NULL, NULL, "\n" } },
+    { "landmarkList", { NULL, "\n", NULL, "\n" } },
+    { "landmark",     { "\t", "\n", "\t", "\n" } },
+    { "name",         { "\t\t", NULL, NULL, "\n" } },
+    { "detected",     { "\t\t", NULL, NULL, "\n" } },
+    { "expected",     { "\t\t", NULL, NULL, "\n" } },
+    { "isPrecise",    { "\t\t", NULL, NULL, "\n" } },
+    { "fitResidual",  { "\t\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
   
@@ -91,18 +91,18 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
   
   mxml_node_t *x_phantom = mxmlNewElement( x_root, "phantom" );
-  mxmlNewText( mxmlNewElement( x_phantom, "type" ), 0, "MagphanEMR051" );
+  mxmlNewText( mxmlNewElement( x_phantom, "phantomType" ), 0, "MagphanEMR051" );
   mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR );    
   mxmlNewReal( mxmlNewElement( x_phantom, "cnr" ), phantom.m_EstimatedCNR );    
     
-  mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarks" );
-  mxmlElementSetAttr( x_lmpairs, "coordinates", "Physical" );
+  mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarkList" );
+  mxmlElementSetAttr( x_lmpairs, "coordinates", "physical" );
   mxmlElementSetAttr( x_lmpairs, "space", "RAS" );
 
   const std::list<LandmarkPair>& lmPairs = phantom.LandmarkPairsList();
   for ( std::list<LandmarkPair>::const_iterator it = lmPairs.begin(); it != lmPairs.end(); ++it )
     {
-    mxml_node_t *x_lm = mxmlNewElement( x_lmpairs, "fiducial");
+    mxml_node_t *x_lm = mxmlNewElement( x_lmpairs, "landmark");
     
     mxmlNewText( mxmlNewElement( x_lm, "name" ), 0, it->m_Name.c_str() ); 
     mxml_node_t *x_expected = mxmlNewElement( x_lm, "expected");
@@ -117,10 +117,10 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
       mxmlNewReal( x_detected, it->m_TargetLocation[idx] );
       }
     
-    mxmlNewText( mxmlNewElement( x_lm, "precise" ), 0, it->m_Precise ? "yes" : "no" );
-    mxmlNewReal( mxmlNewElement( x_lm, "residual" ), it->m_Residual );    
+    mxmlNewText( mxmlNewElement( x_lm, "isPrecise" ), 0, it->m_Precise ? "yes" : "no" );
+    mxmlNewReal( mxmlNewElement( x_lm, "fitResidual" ), it->m_Residual );    
     }
-
+  
   FILE *file = fopen( fpath.c_str(), "w" );
   if ( file )
     {
@@ -149,7 +149,7 @@ cmtk::PhantomIO::Read( const std::string& fpath )
   mxml_node_t *x_root = mxmlLoadFile( NULL, file, MXML_TEXT_CALLBACK );
   fclose( file );
 
-  mxml_node_t *x_landmarks = mxmlFindElement( x_root, x_root, "landmarks", NULL, NULL, MXML_DESCEND );
+  mxml_node_t *x_landmarks = mxmlFindElement( x_root, x_root, "landmarkList", NULL, NULL, MXML_DESCEND );
   if ( ! x_landmarks )
     {
     cmtk::StdErr << "ERROR: could not file 'landmarks' XML element in file " << fpath << "\n";
@@ -160,7 +160,7 @@ cmtk::PhantomIO::Read( const std::string& fpath )
   AffineXform xform;
   DetectedPhantomMagphanEMR051::SmartPtr result( new DetectedPhantomMagphanEMR051( 0, 0, xform ) );
   
-  for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "fiducial", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "fiducial", NULL, NULL, MXML_DESCEND ) )
+  for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "landmark", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "fiducial", NULL, NULL, MXML_DESCEND ) )
     {
     mxml_node_t* x_name = mxmlFindElement( x_fiducial, x_root, "name", NULL, NULL, MXML_DESCEND );
     if ( ! x_name || ! x_name->child ) continue;
@@ -182,11 +182,11 @@ cmtk::PhantomIO::Read( const std::string& fpath )
     for ( size_t i = 0; i < 3; ++i, x_detected_it = x_detected_it->next )
       detected[i] = atof( x_detected_it->value.text.string );
     
-    mxml_node_t* x_precise = mxmlFindElement( x_fiducial, x_root, "precise", NULL, NULL, MXML_DESCEND );
+    mxml_node_t* x_precise = mxmlFindElement( x_fiducial, x_root, "isPrecise", NULL, NULL, MXML_DESCEND );
     if ( ! x_precise || ! x_precise->child ) continue;
     const bool precise = !strcmp( x_precise->child->value.text.string, "yes" );
 
-    mxml_node_t* x_residual = mxmlFindElement( x_fiducial, x_root, "residual", NULL, NULL, MXML_DESCEND );
+    mxml_node_t* x_residual = mxmlFindElement( x_fiducial, x_root, "fitResidual", NULL, NULL, MXML_DESCEND );
     if ( ! x_residual || ! x_residual->child ) continue;
     const Types::Coordinate residual = static_cast<Types::Coordinate>( atof( x_residual->child->value.text.string ) );
 
