@@ -303,12 +303,9 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   const size_t nPixels = regionVolume->GetNumberOfPixels();
   
   std::vector<bool> regionMaskVector( nPixels );
-  size_t sphereVolumePixels = 0;
   for ( size_t i = 0; i < nPixels; ++i )
     {
     regionMaskVector[i] = ( regionMask->GetDataAt( i ) != 0 );
-    if ( regionMaskVector[i] )
-      ++sphereVolumePixels;
     }
 
   if ( this->m_CorrectSphereBiasField )
@@ -325,8 +322,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
     }
   
   // threshold to mask out background in bias-corrected region
-//  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionVolume->GetData()->GetHistogram( 1024 )) ).Get();
-  const Types::DataItem threshold = HistogramThresholdByVolume< Histogram<unsigned int> >( *(regionVolume->GetData()->GetHistogram( 1024 )), 0.85 * sphereVolumePixels ).Get();
+  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(regionVolume->GetData()->GetHistogram( 1024 )) ).Get();
   for ( size_t i = 0; i < nPixels; ++i )
     {
     if ( !regionMaskVector[i] || (regionVolume->GetDataAt( i ) < threshold) )
