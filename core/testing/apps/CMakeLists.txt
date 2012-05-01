@@ -108,6 +108,13 @@ LIST(APPEND testList
   destripeKernelFloat)
 
 # ==========================================
+# Tests for "detect_adni_phantom" tool
+IF(CMTK_USE_FFTW)
+  LIST(APPEND testList 
+    detect_adni_phantomDefault)
+ENDIF(CMTK_USE_FFTW)
+
+# ==========================================
 # Tests for "detect_spheres_matched_filter" tool
 IF(CMTK_USE_FFTW)
   LIST(APPEND testList 
