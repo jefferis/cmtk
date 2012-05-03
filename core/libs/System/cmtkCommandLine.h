@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -891,7 +891,7 @@ public:
     typedef SmartPointer<EnumGroupBase> SmartPtr;
 
     /// Constructor.
-    EnumGroupBase() : m_Properties( 0 ) {};
+    EnumGroupBase() : m_Properties( PROPS_XML ) {};
 
     /// Get key for the default value.
     std::string GetDefaultKey() const
@@ -1135,7 +1135,7 @@ public:
     typedef SmartPointer<KeyActionGroupType> SmartPtr;
     
     /// Constructor: set name and description.
-    KeyActionGroupType( const std::string& name, const std::string& description ) : m_Name( name ), m_Description( description ) {};
+    KeyActionGroupType( const std::string& name, const std::string& description ) : m_Name( name ), m_Description( description ), m_Properties( PROPS_XML ) {};
 
     /// Virtual destructor.
     virtual ~KeyActionGroupType() {}
