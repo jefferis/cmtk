@@ -48,11 +48,17 @@ public:
   /// This class.
   typedef RegionSphereSurfaceIterator<TRegion> Self;
 
+  /// Parent class.
+  typedef RegionSphereIterator<TRegion> Superclass;
+
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Re-declare index list type.
+  typedef typename Superclass::IndexListType IndexListType;
 
   /// Constructor with radius only (center is zero-index).
   explicit RegionSphereSurfaceIterator( const typename Self::IndexType radius /*!< Radius of the sphere in each dimension.*/ )

@@ -354,7 +354,7 @@ operator*( const T2 lhs, const FixedVector<NDIM,T>& rhs )
 {
   FixedVector<NDIM,T> result( rhs );
   for ( size_t i = 0; i<NDIM; ++i )
-    result[i] *= lhs;
+    result[i] *= static_cast<T>( lhs );
   return result;
 }
 

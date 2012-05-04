@@ -72,10 +72,10 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-protected:
   /// Internal index list type.
   typedef std::list<typename Self::IndexType> IndexListType;
 
+protected:
   /// Protected default constructor - only to be used by derived class.
   RegionSphereIterator() {}
   
