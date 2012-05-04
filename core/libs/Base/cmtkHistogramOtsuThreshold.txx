@@ -33,7 +33,7 @@
 #include <vector>
 
 template<class THistogram>
-cmtk::HistogramOtsuThreshold<THistogram>::HistogramOtsuThreshold( const Self::HistogramType& histogram )
+cmtk::HistogramOtsuThreshold<THistogram>::HistogramOtsuThreshold( const typename Self::HistogramType& histogram )
 {
   const size_t nBins = histogram.GetNumberOfBins();
 

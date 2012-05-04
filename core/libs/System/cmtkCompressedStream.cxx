@@ -157,8 +157,7 @@ CompressedStream::OpenDecompressionPipe
     fname = fname + compressedSuffix;
 
 #ifdef _MSC_VER 
-  for ( char *p=fname; *p; ++p )
-    if ( *p == '/' ) *p = '\\';
+  std::replace( fname.begin(), fname.end(), '/', '\\' );
 #endif
 
   struct stat buf;

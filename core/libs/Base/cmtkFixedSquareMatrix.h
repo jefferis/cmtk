@@ -71,7 +71,7 @@ protected:
 public:
   /** Construc matrix and set all elements to given constant value.
    */
-  FixedSquareMatrix( const Self::ScalarType& value );
+  FixedSquareMatrix( const typename Self::ScalarType& value );
 
   /// Copy and submatrix constructor.
   template<size_t N2,class T2> FixedSquareMatrix( const FixedSquareMatrix<N2,T2>& other /*!< Source matrix object */, 

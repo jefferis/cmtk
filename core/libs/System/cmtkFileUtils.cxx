@@ -119,7 +119,7 @@ std::string
 GetAbsolutePath( const std::string& relPath )
 {
 #ifdef _MSC_VER
-  const char* absPath;
+  char absPath[PATH_MAX];
   GetFullPathName( relPath.c_str(), PATH_MAX, absPath, NULL );
   return std::string( absPath );
 #else

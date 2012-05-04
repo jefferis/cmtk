@@ -55,7 +55,7 @@ FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const FixedSquareMatrix<N2,T
 }
 
 template<size_t NDIM,class TSCALAR>
-FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const Self::ScalarType& value )
+FixedSquareMatrix<NDIM,TSCALAR>::FixedSquareMatrix( const typename Self::ScalarType& value )
 {
   for ( size_t i = 0; i < Self::Dimension; ++i )
     for ( size_t j = 0; j < Self::Dimension; ++j )

@@ -66,7 +66,7 @@ public:
   typedef THistogram HistogramType;
 
   /// Constructor: compute and store threshold.
-  HistogramOtsuThreshold( const Self::HistogramType& histogram );
+  HistogramOtsuThreshold( const typename Self::HistogramType& histogram );
 
   /// Get the computed threshold.
   Types::DataItem Get() const 
