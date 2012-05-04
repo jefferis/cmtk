@@ -1,4 +1,4 @@
-Release CMTK-2.2.0:
+Release CMTK-2.2.0 (2012-05-04):
 
 (r4280) Updated: bundled MiniXML (mxml) library is now version 2.7
 (r4256) Changed: the "search" and "replace" parts of the CMTK_MOUNTPOINTS

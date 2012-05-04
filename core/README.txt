@@ -6,12 +6,22 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.0
 ===========================
 
-CMTK now requires at least CMake 2.8.0 to build.
+This release adds significant new functionality to CMTK. The library now
+supports fitting transformations (linear and B-spline) to landmark sets. This
+is used to support image unwarping based on structural phantom scans. In
+particular, CMTK now supports detection and use of the Magphan(R) EMR051
+Quantitative imaging Phantom (a.k.a. "ADNI Phantom").
 
-A sphere detection filter based on FFT-based fast bipolar filter kernel
-convolution has been added to the library and can be used through the
-"detect_spheres_matched_filter" tool. This requires CMTK to be configured with
-FFTW support ("CMTK_USE_FFTW" CMake option).
+Numerous new classes have been added to the CMTK libraries in the process,
+such as a fast FFT-based NCC sphere finding filter, Otsu thresholding, and
+regression-based polynomial bias field estimation.
+
+CMTK now requires at least CMake 2.8.0 to build. For FFT-based functions
+(including phantom landmark detection) CMTK must be build with FFTW support
+(new option CMTK_USE_FFTW).
+
+For a complete list of changes, fixes, and additions, consult the CHANGELOG
+file.
 
 CMTK has been built and tested on the following platforms:
 
@@ -75,7 +85,7 @@ Open64 Compiler
 ---------------
 
 - CMTK does not build in Release mode with the Open64 compiler due to internal
-  compilar errors.
+  compiler errors.
 
 
 ==========================================================================
