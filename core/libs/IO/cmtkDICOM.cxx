@@ -42,7 +42,6 @@
 
 #ifdef CMTK_USE_DCMTK_JPEG
 #  include <dcmtk/dcmjpeg/djdecode.h>
-#  include <dcmtk/dcmjpls/djdecode.h>
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
