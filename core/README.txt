@@ -6,6 +6,29 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.1
 ===========================
 
+This is a service release that fixes a single bug - CMTK 2.2.0 installed (and
+packaged) the entire source code tree, rather than just the Licenses/
+directory as intended. This problem has been fixed.
+
+
+Release Notes -- CMTK 2.2.0
+===========================
+
+This release adds significant new functionality to CMTK. The library now
+supports fitting transformations (linear and B-spline) to landmark sets. This
+is used to support image unwarping based on structural phantom scans. In
+particular, CMTK now supports detection (via "detect_adni_phantom") and use
+(via "unwarp_image_phantom") of the Magphan(R) EMR051 Quantitative imaging
+Phantom (a.k.a. "ADNI Phantom").
+
+Numerous new classes have also been added to the CMTK libraries in the process,
+such as a fast FFT-based NCC sphere finding filter, Otsu thresholding, and
+regression-based polynomial bias field estimation.
+
+Also new in CMTK are two tools, "fibxform" and "fib2image", to spatially
+transform and visualize, respectively, DTI fiber tracts stored in .fib
+produced by the UNC Fiber Tracker.
+
 CMTK now requires at least CMake 2.8.0 to build. For FFT-based functions
 (including phantom landmark detection) CMTK must be build with FFTW support
 (new option CMTK_USE_FFTW).

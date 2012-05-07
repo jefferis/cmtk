@@ -1,6 +1,7 @@
-Release CMTK-2.2.1:
+Release CMTK-2.2.1 (2012-05-07):
 
-
+(r4313) Fixed: previous release accidentally installed and packaged the entire
+    source tree, rather than just the Licenses/ directory. This has been fixed.
 
 
 Release CMTK-2.2.0 (2012-05-04):
