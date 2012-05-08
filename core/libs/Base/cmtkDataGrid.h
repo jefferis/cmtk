@@ -295,7 +295,7 @@ public:
   }
 
   /// Get whole image region.
-  const RegionType GetWholeImageRegion() const;
+  const Self::RegionType GetWholeImageRegion() const;
 
   /// Get index increments for crop region.
   const Self::IndexType GetCropRegionIncrements() const;
@@ -306,8 +306,9 @@ public:
    * inside an already existing cropping region. If this flag is false 
    * (default), then any pre-set crop region is ignored.
    *\param margin Width of additional margin added around the threshold-cropped region.
+   *\return The crop region that was applied.
    */
-  void AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
+  Self::RegionType AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
 
   /// Fill volume outside current crop region with constant value.
   void FillCropBackground( const Types::DataItem value );

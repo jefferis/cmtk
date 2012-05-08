@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,7 +68,7 @@ DataGrid::GetCropRegionIncrements
   return increments;
 }
 
-void
+DataGrid::RegionType
 DataGrid::AutoCrop
 ( const Types::DataItem threshold, const bool recrop, const int margin )
 {
@@ -120,7 +120,7 @@ DataGrid::AutoCrop
       }
     }
   
-  this->m_CropRegion = Self::RegionType( newCropFrom, newCropTo );
+  return (this->m_CropRegion = Self::RegionType( newCropFrom, newCropTo ));
 }
 
 void
