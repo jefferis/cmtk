@@ -3,7 +3,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -31,7 +31,6 @@
 ##
 
 export LC_ALL=POSIX
-export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib
 
 lockfile=${HOME}/testcycle.lock
 if test -f ${lockfile}; then
