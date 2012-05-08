@@ -1,5 +1,8 @@
 Release CMTK-2.2.2:
 
+(r4326) Added: ADNI phantom detector now also computes SNR and four CNR
+    estimates. These are all also written to the XML phantom description
+    file.
 (r4317) Fixed: older versions of DCMTK do not provide lossless-JPEG header
     file <dcmtk/dcmjpls/djdecode.h>, but it isn't needed anyway.
 
