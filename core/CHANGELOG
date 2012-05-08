@@ -1,6 +1,7 @@
 Release CMTK-2.2.2:
 
-
+(r4317) Fixed: older versions of DCMTK do not provide lossless-JPEG header
+    file <dcmtk/dcmjpls/djdecode.h>, but it isn't needed anyway.
 
 
 Release CMTK-2.2.1 (2012-05-07):
