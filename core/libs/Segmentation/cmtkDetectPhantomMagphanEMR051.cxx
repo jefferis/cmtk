@@ -37,6 +37,7 @@
 #include <Base/cmtkHistogramOtsuThreshold.h>
 #include <Base/cmtkHistogramThresholdByVolume.h>
 #include <Base/cmtkDataGridMorphologicalOperators.h>
+#include <Base/cmtkValueSequence.h>
 
 #include <System/cmtkDebugOutput.h>
 
@@ -382,14 +383,74 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedLandmarks( const bool includeOutlie
 cmtk::DetectedPhantomMagphanEMR051::SmartPtr 
 cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
 {
-  DetectedPhantomMagphanEMR051* detected = new DetectedPhantomMagphanEMR051( 0, 0, *(this->m_PhantomToImageTransformationAffine) );
+  DetectedPhantomMagphanEMR051* detected = new DetectedPhantomMagphanEMR051( *(this->m_PhantomToImageTransformationAffine) );
 
   const cmtk::AffineXform phantomToPhysical( this->m_PhantomImage->GetImageToPhysicalMatrix() );
-    for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
+  for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     detected->AddLandmarkPair( MagphanEMR051::SphereName( i ), phantomToPhysical.Apply( this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ), phantomToPhysical.Apply( this->m_Landmarks[i] ), 
 			       this->m_LandmarkFitResiduals[i], (i>=7) /*only the 10mm spheres #7 and above are considered precise enough for registration*/ );
     }
-    
+
+  // get SNR estimate
+  Types::DataItem mean, stdev;
+  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+  detected->m_EstimatedSNR = mean / stdev;
+  
+  // get four CNR estimates
+  for ( size_t i = 3; i < 7; ++i )
+    {
+    // we compute CNR per CNR sphere using formula from http://www.mr-tip.com/serv1.php?type=db1&dbs=Contrast%20to%20Noise%20Ratio (plus "fabs")
+    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+    detected->m_EstimatedCNR[i-3] = fabs( detected->m_EstimatedSNR - mean / stdev );
+    }
+
   return DetectedPhantomMagphanEMR051::SmartPtr( detected );
+}
+
+void
+cmtk::DetectPhantomMagphanEMR051::GetSphereMeanStdDeviation( Types::DataItem& mean, Types::DataItem& stdev, const Self::SpaceVectorType& center, const Types::Coordinate radius, const int erodeBy, const int biasFieldDegree )
+{
+  UniformVolume::SmartPtr maskVolume( this->m_PhantomImage->CloneGrid() );
+  maskVolume->CreateDataArray( TYPE_BYTE );
+  maskVolume->GetData()->Fill( 0 );
+  
+  UniformVolumePainter maskPainter( maskVolume, UniformVolumePainter::COORDINATES_ABSOLUTE );
+  maskPainter.DrawSphere( center, radius, 1 );
+
+  if ( erodeBy )
+    {
+    maskVolume->SetData( DataGridMorphologicalOperators( maskVolume ).GetEroded( erodeBy ) );
+    }
+
+  // crop both mask and phantom to sphere bounding box
+  UniformVolume::SmartPtr dataVolume = this->m_PhantomImage->GetCroppedVolume( maskVolume->AutoCrop( 0.5 ) );
+  maskVolume = maskVolume->GetCroppedVolume();
+
+  // make bool vector of foreground pixels
+  const size_t nPixels = maskVolume->GetNumberOfPixels();
+  std::vector<bool> regionMaskVector( nPixels );
+  for ( size_t i = 0; i < nPixels; ++i )
+    {
+    regionMaskVector[i] = ( maskVolume->GetDataAt( i ) != 0 );
+    }
+  
+  TypedArray::SmartConstPtr dataArray = dataVolume->GetData();
+
+  // if bias correction is requested by caller, replace data with corrected data
+  if ( biasFieldDegree )
+    {
+    dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
+    }
+
+  // compute summary statistics
+  ValueSequence<Types::DataItem> vs;
+  for ( size_t i = 0; i < nPixels; ++i )
+    {
+    if ( regionMaskVector[i] )
+      vs.Proceed( dataArray->ValueAt( i ) );
+    }
+
+  mean = vs.GetAverage();
+  stdev = sqrt( vs.GetVariance() );
 }

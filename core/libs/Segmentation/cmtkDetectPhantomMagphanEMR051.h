@@ -177,6 +177,12 @@ private:
 
   /// Exclude outlier landmarks and re-fit linear transformation.
   void ExcludeOutlierLandmarks();
+
+  /// Get the mean and standard deviation of intensities within a sphere of given location and radius.
+  void GetSphereMeanStdDeviation( Types::DataItem& mean /*!< Reference to return mean intensity */, Types::DataItem& stdev /*!< Reference to return intensity standard deviation */, 
+				  const Self::SpaceVectorType& center /*!< Center coordinate of the sphere. */, const Types::Coordinate radius /*!< Radius of the sphere */, 
+				  const int erodeBy /*!< Number of pixels to erode the sphere by before computing mean and standard deviation. */,
+				  const int biasFieldDegree /*!< Polynomial degree of the estimated bias field before computing mean and standard deviation (0 = no bias field correction) */ );
 };
 
 //@}

@@ -64,9 +64,7 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  DetectedPhantomMagphanEMR051( const Types::DataItem snr /*!< Estimated image signal-to-noise ratio. */, const Types::DataItem cnr /*!< Estimated image contrast-to-noise ratio */,
-				const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ )
-    : m_EstimatedSNR( snr ), m_EstimatedCNR( cnr ), m_LinearFitXform( linearFitXform ) {}
+  DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : m_LinearFitXform( linearFitXform ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.
@@ -102,7 +100,7 @@ public:
   Types::DataItem m_EstimatedSNR;
 
   /// Estimated image contrast-to-noise ratio.
-  Types::DataItem m_EstimatedCNR;
+  FixedVector<4,Types::DataItem> m_EstimatedCNR;
 
   /// Estimated linear transformation fitted to landmarks.
   AffineXform m_LinearFitXform;

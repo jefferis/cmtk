@@ -92,8 +92,11 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   
   mxml_node_t *x_phantom = mxmlNewElement( x_root, "phantom" );
   mxmlNewText( mxmlNewElement( x_phantom, "phantomType" ), 0, "MagphanEMR051" );
-  mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR );    
-  mxmlNewReal( mxmlNewElement( x_phantom, "cnr" ), phantom.m_EstimatedCNR );    
+  mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR ); 
+
+  mxml_node_t *x_cnr = mxmlNewElement( x_phantom, "cnr" );
+  for ( size_t i=0; i < phantom.m_EstimatedCNR.Size(); ++i )
+    mxmlNewReal( x_cnr, phantom.m_EstimatedCNR[i] ); 
     
   mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarkList" );
   mxmlElementSetAttr( x_lmpairs, "coordinates", "physical" );
@@ -158,7 +161,7 @@ cmtk::PhantomIO::Read( const std::string& fpath )
     }
 
   AffineXform xform;
-  DetectedPhantomMagphanEMR051::SmartPtr result( new DetectedPhantomMagphanEMR051( 0, 0, xform ) );
+  DetectedPhantomMagphanEMR051::SmartPtr result( new DetectedPhantomMagphanEMR051( xform ) );
   
   for ( mxml_node_t* x_fiducial = mxmlFindElement( x_landmarks, x_root, "landmark", NULL, NULL, MXML_DESCEND ); x_fiducial != NULL; x_fiducial = mxmlFindElement( x_fiducial, x_root, "landmark", NULL, NULL, MXML_DESCEND ) )
     {
