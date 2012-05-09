@@ -104,7 +104,13 @@ const char *StrFName( const char *path );
  *\todo This is highly unsafe, since we're not checking for infinite loops and
  * the likes. We should really work on this sometimes... or be REALLY carefull.
  */
-std::string StrReplace( const std::string& str, const std::map<std::string,std::string>& rules, const bool multiple = false );
+std::string StrReplaceByRules( const std::string& str, const std::map<std::string,std::string>& rules, const bool multiple = false );
+
+/// Replace a search string with a replacement string.
+std::string StrReplace( const std::string& str /*!< The string to replace in */, const std::string& search /*!< Substring to replace */, const std::string& replace /*!< String to replace search string with */ );
+  
+/// Make a string legal in a path by replacing spaces and colons with "_".
+std::string StrMakeLegalInPath( const std::string& s );
 
 //@}
 

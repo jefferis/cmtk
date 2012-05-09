@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -194,7 +194,7 @@ doMain( int argc, const char* argv[] )
     cmtk::SplineWarpXform::SmartPtr splineWarp = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( studylist.GetWarpXform() );
     if ( splineWarp ) 
       {
-      std::string actualPath = cmtk::StrReplace( studylist.GetFloatingStudyPath(), ReplaceMap );
+      std::string actualPath = cmtk::StrReplaceByRules( studylist.GetFloatingStudyPath(), ReplaceMap );
       
       cmtk::UniformVolume::SmartPtr nextVolume;
 
@@ -233,7 +233,7 @@ doMain( int argc, const char* argv[] )
       }
     }
   
-  std::string actualPath = cmtk::StrReplace( studylist.GetReferenceStudyPath(), ReplaceMap );
+  std::string actualPath = cmtk::StrReplaceByRules( studylist.GetReferenceStudyPath(), ReplaceMap );
   cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
   
   if ( ! refVolume ) 

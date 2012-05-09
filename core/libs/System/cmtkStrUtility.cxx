@@ -142,7 +142,7 @@ StrFName( const char *path )
 }
 
 std::string
-StrReplace
+StrReplaceByRules
 ( const std::string& str, const std::map<std::string,std::string>& rules, const bool multiple )
 {
   std::string result = str;
@@ -169,5 +169,34 @@ StrReplace
     }
   return result;
 }
+
+std::string
+StrReplace( const std::string& str, const std::string& search, const std::string& replace )
+{
+  std::string result = str;
+
+  if ( ! search.empty() )
+    {
+    for ( size_t b = result.find(search, 0); b != result.npos; b = result.find(search, b) )
+      {
+      result.replace( b, search.size(), replace );
+      b += (replace.size() - search.size());
+      }
+    }
+
+  return result;
+}
+
+std::string
+StrMakeLegalInPath( const std::string& s )
+{
+  std::string result = s;
+  
+  result = StrReplace( result, " ", "_" );      
+  result = StrReplace( result, ":", "_" );  
+  
+  return result;
+}
+
 
 } // namespace cmtk

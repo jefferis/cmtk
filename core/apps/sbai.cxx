@@ -92,7 +92,7 @@ AddVolumeStudyVector
 
   if ( ! referenceVolume )
     {
-    const std::string actualPath = cmtk::StrReplace( studylist.GetReferenceStudyPath(), ReplaceMap );
+    const std::string actualPath = cmtk::StrReplaceByRules( studylist.GetReferenceStudyPath(), ReplaceMap );
     referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str() ) );
     if ( ! referenceVolume )
       {
@@ -101,7 +101,7 @@ AddVolumeStudyVector
       }
     }
 
-  const std::string actualPath = cmtk::StrReplace( studylist.GetFloatingStudyPath(), ReplaceMap );
+  const std::string actualPath = cmtk::StrReplaceByRules( studylist.GetFloatingStudyPath(), ReplaceMap );
   cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
 
   if ( PaddingFlag )

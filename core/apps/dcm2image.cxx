@@ -35,6 +35,7 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkStrUtility.h>
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkMetaInformationObject.h>
@@ -889,35 +890,11 @@ public:
   void WriteVolumes();
 };
 
-inline std::string&
-replacein(std::string& s, const std::string& sub, const std::string& other)
-{
-  assert(!sub.empty());
-  for ( size_t b = s.find(sub, 0); b != s.npos; b = s.find(sub, b) )
-    {
-    s.replace(b, sub.size(), other);
-    b += other.size();
-    }
-  return s;
-}
-
-/// Make a string legal in a path by replacing spaces and colons with "_".
-std::string
-MakeLegalInPath( const std::string& s )
-{
-  std::string result = s;
-
-  result = replacein( result, " ", "_" );      
-  result = replacein( result, ":", "_" );  
-
-  return result;
-}
-
 std::string
 PutNumberAndSanitize( const std::string& path, const std::string& numberString )
 {
   std::string result = path;
-  return replacein( replacein( result, "%n", numberString ), "%N", "-" + numberString );
+  return cmtk::StrReplace( cmtk::StrReplace( result, "%n", numberString ), "%N", "-" + numberString );
 }
 
 void
@@ -932,10 +909,10 @@ VolumeList::WriteVolumes()
       {
       // replace place holders
       std::string path( OutPathPattern );
-      replacein( path, "%D", MakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
-      replacein( path, "%R", MakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
-      replacein( path, "%E", MakeLegalInPath( (*it)[0][0]->EchoTime ) );
-      replacein( path, "%T", (*it)[0][0]->RawDataType );
+      cmtk::StrReplace( path, "%D", cmtk::StrMakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
+      cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
+      cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->EchoTime ) );
+      cmtk::StrReplace( path, "%T", (*it)[0][0]->RawDataType );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
