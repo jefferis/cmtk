@@ -620,7 +620,7 @@ case ${RUNTEST} in
 	check_results 001.hdr 002.hdr 003.hdr
 	;;
     dcm2imageEmbedPatientNameNifti)
-	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nii $dcm/
+	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nii dcm/
 	check_results 001.nii 002.nii 003.nii
 	;;
     dcm2imageEmbedSeriesDescriptionNifti)
