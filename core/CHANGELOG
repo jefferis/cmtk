@@ -1,5 +1,8 @@
 Release CMTK-2.2.2:
 
+(r4328) Added: "dcm2image" tool has two new options, "--include" and
+    "--exclude", to include or exclude DICOM files selectively based on
+    matching a provided text to values of user-specified DICOM tags.
 (r4326) Added: ADNI phantom detector now also computes SNR and four CNR
     estimates. These are all also written to the XML phantom description
     file.
