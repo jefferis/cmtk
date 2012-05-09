@@ -299,7 +299,9 @@ IF(CMTK_USE_DCMTK)
     dcm2imageEmbedStudyIDDateNifti
     dcm2imageEmbedDefaultNifti
     dcm2imageMosaic
-    dcm2imageDiffusionGEXML)
+    dcm2imageDiffusionGEXML
+    dcm2imageExclude
+    dcm2imageInclude)
   
   IF(CMTK_BUILD_NRRD)
     LIST(APPEND testList

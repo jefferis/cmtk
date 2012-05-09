@@ -91,6 +91,46 @@
 #define DCM_PatientsName DCM_PatientName
 #endif
 
+void
+AddPatternToMap( std::map<DcmTagKey,std::string>& map, const char* pattern )
+{
+  const char* equals = strchr( pattern, '=' );
+  if ( equals )
+    {
+    const std::string tagName( pattern, static_cast<size_t>( equals-pattern ) );
+
+    const DcmDictEntry* dictEntry = dcmDataDict.rdlock().findEntry( tagName.c_str() );
+    dcmDataDict.unlock();
+
+    if ( dictEntry )
+      {
+      map.insert( std::pair<DcmTagKey,std::string>( dictEntry->getKey(), equals+1 ) );      
+      }
+    else
+      {
+      cmtk::StdErr << "WARNING: DCMTK data dictionary does not have a tag entry named '" << tagName << "' - ignoring this\n";
+      }
+    }
+}
+
+// Map of file includion patterns
+std::map<DcmTagKey,std::string> IncludePatterns;
+
+void
+CallbackAddInclude( const char* pattern )
+{
+  AddPatternToMap( IncludePatterns, pattern );
+}
+
+// Map of file exclusion patterns
+std::map<DcmTagKey,std::string> ExcludePatterns;
+
+void
+CallbackAddExclude( const char* pattern )
+{
+  AddPatternToMap( ExcludePatterns, pattern );
+}
+
 const char* OutPathPattern = "image%n.nii";
 std::vector<std::string> SearchRootDirVector;
 
@@ -346,6 +386,40 @@ ImageFile::ImageFile( const char* filename )
     }
 
   const char* tmpStr = NULL;
+
+  // check for positive include list
+  if ( !IncludePatterns.empty() )
+    {
+    for ( std::map<DcmTagKey,std::string>::const_iterator it = IncludePatterns.begin(); it != IncludePatterns.end(); ++it )
+      {
+      // if tag not found, do not include
+      if ( document->getValue( it->first, tmpStr ) )
+	{
+	// if tag value matches, then include
+	if ( strstr( tmpStr, it->second.c_str() ) )
+	  continue;
+	}
+
+      // no match - exclude
+      throw( 3 );
+      }
+    }
+
+  // check for exclude list
+  if ( !ExcludePatterns.empty() )
+    {
+    for ( std::map<DcmTagKey,std::string>::const_iterator it = ExcludePatterns.begin(); it != ExcludePatterns.end(); ++it )
+      {
+      // only check tags that exist
+      if ( document->getValue( it->first, tmpStr ) )
+	{
+	// if tag value matches, exclude
+	if ( strstr( tmpStr, it->second.c_str() ) )
+	  throw( 4 );
+	}
+      }
+    }
+
   if ( document->getValue( DCM_Modality, tmpStr ) )
     this->Modality = tmpStr;
 
@@ -1120,6 +1194,13 @@ doMain ( const int argc, const char *argv[] )
     embedGroup->AddSwitch( Key( "PatientName" ), EMBED_PATIENTNAME, "Patient name, tag (0010,0010)" );
     embedGroup->AddSwitch( Key( "SeriesDescription" ), EMBED_SERIESDESCR, "Series description, tag (0008,103e)" );
     embedGroup->AddSwitch( Key( "None" ), EMBED_NONE, "Embed no information - leave 'description' field empty." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Filtering", "Filtering Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.AddCallback( Key( "include" ), &CallbackAddInclude, "Include only DICOM files matching the given pattern of the form 'TagName=text', such that the value of the DICOM tag with the given name contains the given text. "
+      "If multiple inclusion patterns are provided, only files that match ALL patterns are included." );
+    cl.AddCallback( Key( "exclude" ), &CallbackAddExclude, "Exclude all DICOM files matching the given pattern of the form 'TagName=text', such that the value of the DICOM tag with the given name contains the given text. "
+      "If multiple exclusion patterns are provided, all files are excluded that match ANY of the patterns." );
     cl.EndGroup();
 
     cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
