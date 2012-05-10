@@ -172,7 +172,8 @@ cmtk detect_adni_phantom phantom.nii phantom.xml
 This will produce an XML file, ``\texttt{phantom.xml}'' containing, among
 other information, the expected as well as detected locations of the centers
 of all landmark spheres in the phantom. These locations provide the basis for
-image unwarping.
+image unwarping. (An example of a generated XML file with a detailed
+description of its contents can be found in Appendix~\ref{sec:ExampleXML})
 
 To verify landmark locations, the phantom detection tool can optionally write
 a label image matching the input image, in which the volume of each detected
@@ -308,8 +309,9 @@ documentation, other than a cursory inspection of
 Ref.~\cite{GuntBernBoro:2009}. In particular, the geometric specifications of
 the phantom itself were derived from the phantom manual, available from
 \url{http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf} The table
-representing the geometry in CMTK's source code is included in the Appendix
-and can be re-used under the terms of the CC-BY-3.0 license. 
+representing the geometry in CMTK's source code is included in
+Appendix~\ref{sec:PhantomGeometry} and can be re-used under the terms of the
+CC-BY-3.0 license.
 
 {\bf Use of the materials and software tools described in this article does not
 establish a requirement to acknowledge ADNI on the author list of subsequent
@@ -321,7 +323,167 @@ publications~\cite{RohlPoli:2012}.}
 \clearpage
 \appendix
 
-\section{ADNI Phantom Geometry}
+\section{Example Data}
+
+This article is provided with an example image (``\texttt{phantom.nii.gz}'')
+of an actual phantom. Running CMTK's phantom detection tool on this image
+(with increased verbosity level for some intersting statistics) yields:
+\begin{verbatim}
+> cmtk detect_adni_phantom --verbose-level 2 --write-labels labels.nii \
+    phantom.nii.gz phantom.xml
+INFO: landmark fitting error average = 0.725241 maximum = 1.77297 
+    maxErrName = 10mm_0_12 maxErrLabel = 19
+INFO: detected and matched 160 out of 160 expected landmarks.
+\end{verbatim}
+This produces the phantom description file, ``\texttt{phantom.xml}.'' The
+contents of this file are explained below in Appendix~\ref{sec:ExampleXML}.
+
+We also see that all landmarks were successfully detected and the average
+linear transformation fitting residual over all landmarks was 0.72\,mm. The
+sphere with the maximum residual is ``\texttt{10mm\_0\_12},'' i.e., the 12th
+of the 10\,mm spheres in Plane~0 of the phantom. (This sphere is labeled as
+ROI~\#19 in the phantom label file, ``\texttt{labels.nii}.''
+
+Using the XML phantom description, we can generate a nonrigid transformation
+for phantom unwarping:
+\begin{verbatim}
+> cmtk unwarp_image_phantom --final-cp-spacing 40 --levels 2 phantom.xml \
+    phantom.nii.gz phantom.xform
+\end{verbatim}
+Finally, we can use this transformation, ``\texttt{phantom.xform},'' to create
+the unwarped phantom image:
+\begin{verbatim}
+cmtk reformatx -o unwarped.nii --floating phantom.nii.gz phantom.nii.gz \
+    phantom.xform
+\end{verbatim}
+
+\section{Example Phantom Detection Results}
+\label{sec:ExampleXML}
+
+The \texttt{detect\_adni\_phantom} tool creates an XML file that contains a
+description of the phantom detected in a given image. An example of the
+contents of this file is shown below.
+
+First, the file contains the XML header and the name of the represented
+phantom:
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<phantom>
+<phantomType>MagphanEMR051</phantomType>
+\end{verbatim}
+Next, the file contains the estimated signal-to-noise ratio (based on the
+phantom's SNR sphere) and four estimates of contrast-to-noise ratio (each
+based on one of the four CNR spheres and its contrast relative to the SNR
+sphere):
+\begin{verbatim}
+<snr>18.304893</snr>
+<cnr>14.469221 35.670155 29.324328 28.170110</cnr>
+\end{verbatim}
+Following is the list of detected landmarks -- all coordinates are given in
+physical image coordinates, derived ultimately from the DICOM headers but
+represented in ``RAS'' coordinates (which means that $x$ and $y$ coordinates
+are negative relative to DICOM's ``LPS'' coordinates):
+\begin{verbatim}
+<landmarkList coordinates="physical" space="RAS">
+\end{verbatim} 
+For each landmark, its unique name, expected location, detected
+location, precision flag, and fitting residual are stored. The landmark name
+is essentially arbitrary and based on the table of phantom landmarks as shown
+in Appendix~\ref{sec:PhantomGeometry}.
+
+The {\em expected location\/} is where the sphere center should be located in
+the phantom image if the transformation between ideal phantom and image was
+rigid (i.e., no scale, no shear, no nonlinearity). 
+
+The {\em detected location\/} is where the sphere center was actually detected
+in the image.
+
+The {\em precision flag\/} specifies whether the ideal location of this sphere
+should be considered as precise based on the phantom construction (e.g., the
+SNR and CNR spheres have manufacturing tolerances that make their locations
+unprecise). Only landmarks with this flag set to ``yes'' should be used for
+regstration.
+
+The {\em fitting residual\/} is the Euclidean distance between the detected
+landmark location and the expected location according to a {\em linear fit\/}
+of all landmarks. Note that here, the linear fit may include anisotropic scale
+and shears, i.e., the residual is {\em not\/} simply the distance between
+expected and detected location as stored in the file. The purpose of this
+residual is to allow the transformation fitting tool to exclude outliers based
+on a threshold of allowable residual.
+\begin{verbatim}
+        <landmark>
+                <name>SNR</name>
+                <expected>-2.081532 29.672649 -4.689435</expected>
+                <detected>-4.846132 28.367746 -4.338875</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>3.078036</fitResidual>
+        </landmark>
+        <landmark>
+                <name>15mm@90mm</name>
+                <expected>86.924671 28.899446 -7.279399</expected>
+                <detected>87.598368 29.497402 -7.207202</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>1.000909</fitResidual>
+        </landmark>
+        <landmark>
+                <name>15mm@60mm</name>
+                <expected>-3.739912 29.019053 -64.733024</expected>
+                <detected>-3.855809 30.500179 -65.321349</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>1.687546</fitResidual>
+        </landmark>
+        <landmark>
+                <name>CNR-Orange</name>
+                <expected>57.536139 46.089755 -5.790284</expected>
+                <detected>58.235312 51.039218 -6.136547</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>4.948012</fitResidual>
+        </landmark>
+        <landmark>
+                <name>CNR-Red</name>
+                <expected>-62.383089 43.226012 -2.446989</expected>
+                <detected>-63.540399 48.950964 -2.568987</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>5.653304</fitResidual>
+        </landmark>
+        <landmark>
+                <name>CNR-Yellow</name>
+                <expected>-61.699203 13.255542 -3.588586</expected>
+                <detected>-62.273718 6.096574 -3.753603</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>7.112524</fitResidual>
+        </landmark>
+        <landmark>
+                <name>CNR-Green</name>
+                <expected>58.220025 16.119286 -6.931881</expected>
+                <detected>58.497813 9.654831 -7.491801</detected>
+                <isPrecise>no</isPrecise>
+                <fitResidual>6.319076</fitResidual>
+        </landmark>
+        <landmark>
+                <name>10mm_0_01</name>
+                <expected>-89.285621 28.732528 -32.248880</expected>
+                <detected>-90.196775 29.579927 -32.380159</detected>
+                <isPrecise>yes</isPrecise>
+                <fitResidual>1.186873</fitResidual>
+        </landmark>
+        <landmark>
+                <name>10mm_0_02</name>
+                <expected>-87.561132 26.488978 27.684355</expected>
+                <detected>-87.875622 26.872772 26.667286</detected>
+                <isPrecise>yes</isPrecise>
+                <fitResidual>0.919448</fitResidual>
+        </landmark>
+
+[more landmarks]
+
+</landmarkList>
+</phantom>
+\end{verbatim}
+
+\section{Phantom Geometry}
+\label{sec:PhantomGeometry}
 
 {\small
 \begin{verbatim}
