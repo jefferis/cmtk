@@ -893,8 +893,7 @@ public:
 std::string
 PutNumberAndSanitize( const std::string& path, const std::string& numberString )
 {
-  std::string result = path;
-  return cmtk::StrReplace( cmtk::StrReplace( result, "%n", numberString ), "%N", "-" + numberString );
+  return cmtk::StrReplace( cmtk::StrReplace( path, "%n", numberString ), "%N", "-" + numberString );
 }
 
 void
@@ -909,10 +908,10 @@ VolumeList::WriteVolumes()
       {
       // replace place holders
       std::string path( OutPathPattern );
-      cmtk::StrReplace( path, "%D", cmtk::StrMakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
-      cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
-      cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->EchoTime ) );
-      cmtk::StrReplace( path, "%T", (*it)[0][0]->RawDataType );
+      path = cmtk::StrReplace( path, "%D", cmtk::StrMakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
+      path = cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
+      path = cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->EchoTime ) );
+      path = cmtk::StrReplace( path, "%T", (*it)[0][0]->RawDataType );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
