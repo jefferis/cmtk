@@ -62,10 +62,10 @@ GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
       {
       char completePath[PATH_MAX];
       snprintf( completePath, sizeof( completePath ), "%s%c%s", this->m_OutputRootDirectory, (int)CMTK_PATH_SEPARATOR, path );
-      stream.Open( completePath, ClassStream::MODE_WRITE );
+      stream.Open( completePath, ClassStream::MODE_WRITE_ZLIB );
       }
     else
-      stream.Open( path, ClassStream::MODE_WRITE );
+      stream.Open( path, ClassStream::MODE_WRITE_ZLIB );
     
     if ( ! stream.IsValid() ) return false;
     stream << *this->m_Functional;

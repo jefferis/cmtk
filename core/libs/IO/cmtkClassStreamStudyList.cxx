@@ -159,7 +159,7 @@ ClassStreamStudyList::Write
     StdErr << "ERROR: could not open archive " << path << "/studylist\n";
     }  
   
-  stream.Open( path, "registration", ClassStream::MODE_WRITE );
+  stream.Open( path, "registration", ClassStream::MODE_WRITE_ZLIB );
   if ( stream.IsValid() ) 
     {
     StudyList::const_iterator it = studyList->begin();
