@@ -1,5 +1,7 @@
 Release CMTK-2.2.2:
 
+(r4338) Changed: all transformation files, "registration," are now written
+    gzip-compressed.
 (r4328) Added: "dcm2image" tool has two new options, "--include" and
     "--exclude", to include or exclude DICOM files selectively based on
     matching a provided text to values of user-specified DICOM tags.
