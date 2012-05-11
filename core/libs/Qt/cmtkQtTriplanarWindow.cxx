@@ -35,7 +35,6 @@
 #include <Base/cmtkLandmark.h>
 #include <Base/cmtkLandmarkList.h>
 
-#include <IO/cmtkClassStream.h>
 #include <Qt/cmtkQtIcons.h>
 
 #include <qapplication.h>

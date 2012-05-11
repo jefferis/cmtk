@@ -34,6 +34,10 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
+
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
+
 #include <IO/cmtkClassStreamAffineXform.h>
 
 namespace
@@ -43,9 +47,9 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-ClassStream& 
+ClassStreamOutput& 
 operator<<
-  ( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
+  ( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
 {
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
@@ -63,9 +67,9 @@ operator<<
   return stream;
 }
 
-ClassStream& 
+ClassStreamInput& 
 operator>>
-( ClassStream& stream,  GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
+( ClassStreamInput& stream,  GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
 {
   if ( ! stream.Seek( "template" ) )
     {

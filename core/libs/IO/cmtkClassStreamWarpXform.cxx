@@ -30,7 +30,8 @@
 //
 */
 
-#include "cmtkClassStream.h"
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 
 #include <IO/cmtkClassStreamAffineXform.h>
 
@@ -38,17 +39,14 @@ namespace
 cmtk
 {
 
-/** \addtogroup IO */
-//@{
-
-ClassStream& 
-ClassStream::operator << ( const WarpXform *warpXform )
+ClassStreamOutput& 
+ClassStreamOutput::operator << ( const WarpXform *warpXform )
 {
   return this->PutWarp( warpXform );
 }
 
-ClassStream& 
-ClassStream::PutWarp
+ClassStreamOutput& 
+ClassStreamOutput::PutWarp
 ( const WarpXform *warpXform )
 {
   const Types::Coordinate *nCoeff = warpXform->m_Parameters;
@@ -77,8 +75,8 @@ ClassStream::PutWarp
   return *this;
 }
 
-ClassStream&
-ClassStream::Get
+ClassStreamInput&
+ClassStreamInput::Get
 ( WarpXform::SmartPtr& warpXform, const AffineXform* initialXform )
 {
   WarpXform* warp;
@@ -87,8 +85,8 @@ ClassStream::Get
   return *this;
 }
 
-ClassStream&
-ClassStream::Get
+ClassStreamInput&
+ClassStreamInput::Get
 ( WarpXform*& warpXform, const AffineXform* initialXform )
 {
   warpXform = NULL;
@@ -201,15 +199,15 @@ ClassStream::Get
   return *this;
 }
 
-ClassStream& 
-ClassStream::operator >> ( WarpXform::SmartPtr& warpXform )
+ClassStreamInput& 
+ClassStreamInput::operator >> ( WarpXform::SmartPtr& warpXform )
 {
   this->Get( warpXform );
   return *this; 
 }
 
-ClassStream& 
-ClassStream::operator >> ( WarpXform*& warpXform )
+ClassStreamInput& 
+ClassStreamInput::operator >> ( WarpXform*& warpXform )
 {
   this->Get( warpXform );
   return *this; 

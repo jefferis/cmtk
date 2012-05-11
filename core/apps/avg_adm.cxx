@@ -41,7 +41,8 @@
 #include <System/cmtkTimers.h>
 #include <System/cmtkStrUtility.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkTypedStreamStudylist.h>
 #include <IO/cmtkVolumeIO.h>
 
@@ -295,7 +296,7 @@ doMain( int argc, const char* argv[] )
   cmtk::WarpXform::SmartPtr warpXform;
   if ( InWarpName ) 
     {
-    cmtk::ClassStream stream( InWarpName, cmtk::ClassStream::MODE_READ );
+    cmtk::ClassStreamInput stream( InWarpName );
     stream >> warpXform;
     } 
   else
@@ -312,7 +313,7 @@ doMain( int argc, const char* argv[] )
       warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
       }
       
-    cmtk::ClassStream stream( OutWarpName, cmtk::ClassStream::MODE_WRITE );
+    cmtk::ClassStreamOutput stream( OutWarpName, cmtk::ClassStreamOutput::MODE_WRITE );
     stream << warpXform;
     }
 

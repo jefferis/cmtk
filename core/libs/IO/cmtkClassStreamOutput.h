@@ -30,12 +30,12 @@
 //
 */
 
-#ifndef __cmtkClassStream_h_included_
-#define __cmtkClassStream_h_included_
+#ifndef __cmtkClassStreamOutput_h_included_
+#define __cmtkClassStreamOutput_h_included_
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkTypedStream.h>
+#include <IO/cmtkTypedStreamOutput.h>
 #include <IO/cmtkStudy.h>
 
 #include <Base/cmtkAffineXform.h>
@@ -52,101 +52,65 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-/** Class for writing and reading various library classes to and from disk.
- * For all relevant objects in the Base library, input and output operators (>>
- * and <<) are defined , much like std::iostream does for basic data types.
+/** Class for writing various library classes to and from disk.
  */
-class ClassStream : 
+class ClassStreamOutput : 
   /// Inherit basic functionality from typed stream.
-  public TypedStream 
+  public TypedStreamOutput
 {
 public:
   /// This class.
-  typedef ClassStream Self;
+  typedef ClassStreamOutput Self;
 
   /// Parent class.
-  typedef TypedStream Superclass;
+  typedef TypedStreamOutput Superclass;
 
   /// Default constructor.
-  ClassStream() : TypedStream() {}
+  ClassStreamOutput() : TypedStreamOutput() {}
 
   /** Open constructor.
    *\param filename Name of the archive to open.
-   *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const std::string& filename, const Self::Mode mode )
-    : TypedStream( filename,  mode ) {}
+  ClassStreamOutput( const std::string& filename, const Superclass::Mode mode ) : TypedStreamOutput( filename, mode ) {}
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
-   *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const std::string& dir, const std::string& archive, const Self::Mode mode )
-    : TypedStream( dir, archive, mode ) {}
-
-  /** Open another archive without constructing a new object.
-   */
-  void Open( const std::string& filename, const Self::Mode mode ) 
-  {
-    this->TypedStream::Open( filename, mode );
-  }
-
-  /** Open another archive in explicit directory.
-   */
-  void Open( const std::string& dir, const std::string& archive, const Self::Mode mode ) 
-  {
-    this->TypedStream::Open( dir, archive, mode );
-  }
+  ClassStreamOutput( const std::string& dir, const std::string& archive, const Superclass::Mode mode ) : TypedStreamOutput( dir, archive, mode ) {}
 
   /** Write generic transformation object.
    * This function determines the virtual type of the transformation object
    * (spline or linear deformation) using a dynamic_cast. It then calls the
    * appropriate specialized output function.
    */
-  ClassStream& operator << ( const WarpXform *warpXform );
+  ClassStreamOutput& operator << ( const WarpXform *warpXform );
 
   /** Write spline transformation object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStream& operator << ( const SplineWarpXform& splineWarpXform )
+  ClassStreamOutput& operator << ( const SplineWarpXform& splineWarpXform )
   { return (*this) << &splineWarpXform; }
   
-  /// Read (spline or linear) warp transformation.
-  ClassStream& operator >> ( WarpXform::SmartPtr& warpXform );
-
-  /// Read (spline or linear) warp transformation.
-  ClassStream& operator >> ( WarpXform*& warpXform );
-
-  /// Actually read warp transformation object.
-  ClassStream& Get ( WarpXform::SmartPtr& warpXform, const AffineXform* affineXform = NULL  );
-
-  /// Actually read warp transformation object.
-  ClassStream& Get ( WarpXform*& warpXform, const AffineXform* affineXform = NULL  );
-
-private:
-  /// Write actual warp transformation object.
-  ClassStream& PutWarp( const WarpXform* warpXform  );
-
-public:
   /** Write parametric plane object.
    */
-  ClassStream& operator << ( const ParametricPlane *parametricPlane );
+  ClassStreamOutput& operator << ( const ParametricPlane *parametricPlane );
 
   /** Write parametric plane object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStream& operator << ( const ParametricPlane& parametricPlane )
+  ClassStreamOutput& operator << ( const ParametricPlane& parametricPlane )
   { return (*this) << &parametricPlane; }
-  
-  /// Read parametric plane.
-  ClassStream& operator >> ( ParametricPlane*& parametricPlane );
+
+private:
+  /// Write actual warp transformation object.
+  ClassStreamOutput& PutWarp( const WarpXform* warpXform  );
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkClassStream_h_included_
+#endif // #ifndef __cmtkClassStreamOutput_h_included_

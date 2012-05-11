@@ -45,8 +45,6 @@
 
 #include <vector>
 
-#include <IO/cmtkClassStream.h>
-
 namespace
 cmtk
 {

@@ -40,8 +40,8 @@
 #include <System/cmtkCompressedStream.h>
 #include <System/cmtkMountPoints.h>
 
-#include <IO/cmtkTypedStream.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkTypedStreamInput.h>
+#include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
 namespace
@@ -76,7 +76,7 @@ TypedStreamStudylist::Read( const std::string& studylistpath )
   char archive[PATH_MAX];
 
   snprintf( archive, sizeof( archive ), "%s%cstudylist", MountPoints::Translate( studylistpath ).c_str(), (int)CMTK_PATH_SEPARATOR );
-  ClassStream classStream( archive, ClassStream::MODE_READ );
+  ClassStreamInput classStream( archive );
   if ( ! classStream.IsValid() ) 
     {
     StdErr.printf( "Could not open studylist archive %s.\n", archive );
@@ -93,7 +93,7 @@ TypedStreamStudylist::Read( const std::string& studylistpath )
   classStream.Close();
   
   snprintf( archive, sizeof( archive ), "%s%cregistration", MountPoints::Translate(studylistpath).c_str(), (int)CMTK_PATH_SEPARATOR  );
-  classStream.Open( archive, ClassStream::MODE_READ );
+  classStream.Open( archive );
   if ( ! classStream.IsValid() ) 
     {
     StdErr.printf( "Could not open studylist archive %s.\n", archive );

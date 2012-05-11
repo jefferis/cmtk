@@ -41,7 +41,8 @@
 #include <System/cmtkMountPoints.h>
 
 #include <IO/cmtkXformIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkSplineWarpXformITKIO.h>
@@ -248,7 +249,7 @@ ElasticRegistrationCommandLine
     
     DebugOutput( 1 ) << "Reading input studylist " << InputStudylist << "\n";
   
-    ClassStream classStream( MountPoints::Translate(InputStudylist),"registration", ClassStream::MODE_READ );
+    ClassStreamInput classStream( MountPoints::Translate(InputStudylist),"registration" );
     if ( ! classStream.IsValid() ) 
       {
       StdErr << "ERROR: Could not open studylist archive " << InputStudylist << ".\n";
@@ -458,7 +459,7 @@ ElasticRegistrationCommandLine::DoneResolution
 void
 ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 {
-  ClassStream classStream( path, "studylist", ClassStream::MODE_WRITE );
+  ClassStreamOutput classStream( path, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( ! classStream.IsValid() ) return;
 
   classStream.Begin( "studylist" );
@@ -475,7 +476,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 
   classStream.Close();
 
-  classStream.Open( path, "settings", ClassStream::MODE_WRITE );
+  classStream.Open( path, "settings", ClassStreamOutput::MODE_WRITE );
   classStream.WriteInt( "algorithm", this->m_Algorithm );
   classStream.WriteBool( "use_maxnorm", UseMaxNorm );
   classStream.WriteDouble( "exploration", this->m_Exploration );
@@ -509,7 +510,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 
   classStream.Close();
       
-  classStream.Open( path, "statistics", ClassStream::MODE_WRITE );
+  classStream.Open( path, "statistics", ClassStreamOutput::MODE_WRITE );
   classStream.WriteDouble( "time_level", this->GetLevelElapsedTime() );
   classStream.WriteDouble( "time_total", this->GetTotalElapsedTime() );
   classStream.WriteDouble( "walltime_level", this->GetLevelElapsedWalltime() );
@@ -532,7 +533,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   const WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( warp ) 
     {
-    classStream.Open( path, "registration", ClassStream::MODE_WRITE_ZLIB );
+    classStream.Open( path, "registration", ClassStreamOutput::MODE_WRITE_ZLIB );
     if ( classStream.IsValid() ) 
       {
       classStream.Begin( "registration" );

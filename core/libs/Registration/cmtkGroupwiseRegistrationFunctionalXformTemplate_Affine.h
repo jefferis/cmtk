@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,7 +34,9 @@
 #define __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 
 #include <Base/cmtkTransformedVolumeAxes.h>
-#include <IO/cmtkClassStream.h>
+
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 
 namespace
 cmtk
@@ -247,12 +249,12 @@ private:
     const Vector3D* m_HashZ;
   };
 
-  friend ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
-  friend ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+  friend ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+  friend ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
 };
 
-ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
-ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
 
 } // namespace cmtk
 

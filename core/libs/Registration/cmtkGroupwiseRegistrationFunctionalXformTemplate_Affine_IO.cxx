@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,9 +42,9 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-ClassStream& 
+ClassStreamOutput& 
 operator<<
-  ( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
+  ( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
 {
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
@@ -62,9 +62,9 @@ operator<<
   return stream;
 }
 
-ClassStream& 
+ClassStreamInput& 
 operator>>
-  ( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
+  ( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
 {
   if ( ! stream.Seek( "template" ) )
     {

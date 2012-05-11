@@ -35,7 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
+
 #include <Base/cmtkAffineXform.h>
 
 namespace
@@ -46,13 +48,13 @@ cmtk
 //@{
 
 /// Write affine transformation object.
-ClassStream& operator << ( ClassStream& stream, const AffineXform& affineXform );
+ClassStreamOutput& operator << ( ClassStreamOutput& stream, const AffineXform& affineXform );
 
 /// Read affine transformation.
-ClassStream& operator >> ( ClassStream& stream, AffineXform::SmartPtr& affineXform );
+ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineXform::SmartPtr& affineXform );
 
 /// Read affine transformation.
-ClassStream& operator >> ( ClassStream& stream, AffineXform& affineXform );
+ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineXform& affineXform );
 
 //@}
 

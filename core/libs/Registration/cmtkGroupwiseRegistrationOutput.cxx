@@ -35,7 +35,7 @@
 #include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkGroupwiseRegistrationFunctionalIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkStudyList.h>
 #include <IO/cmtkClassStreamStudyList.h>
 #include <IO/cmtkVolumeIO.h>
@@ -56,16 +56,16 @@ GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
   // create class stream archive.
   if ( path )
     {
-    ClassStream stream;
+    ClassStreamOutput stream;
     
     if ( this->m_OutputRootDirectory )
       {
       char completePath[PATH_MAX];
       snprintf( completePath, sizeof( completePath ), "%s%c%s", this->m_OutputRootDirectory, (int)CMTK_PATH_SEPARATOR, path );
-      stream.Open( completePath, ClassStream::MODE_WRITE_ZLIB );
+      stream.Open( completePath, ClassStreamOutput::MODE_WRITE_ZLIB );
       }
     else
-      stream.Open( path, ClassStream::MODE_WRITE_ZLIB );
+      stream.Open( path, ClassStreamOutput::MODE_WRITE_ZLIB );
     
     if ( ! stream.IsValid() ) return false;
     stream << *this->m_Functional;

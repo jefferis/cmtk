@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,7 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
+
 #include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
 namespace
@@ -45,9 +47,9 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalBase& func );
+ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalBase& func );
 
-ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalBase& func );
+ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalBase& func );
 
 //@}
 

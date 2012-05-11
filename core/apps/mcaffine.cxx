@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,6 +51,7 @@
 #include <Registration/cmtkBestNeighbourOptimizer.h>
 #include <Registration/cmtkRegistrationCallback.h>
 
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamMultiChannelRegistration.h>
 #include <IO/cmtkXformIO.h>
 
@@ -196,7 +197,7 @@ DoRegistration()
 
   if ( outArchive )
     {
-    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::MODE_WRITE );
+    cmtk::ClassStreamOutput stream( outArchive, cmtk::ClassStreamOutput::MODE_WRITE );
     if ( stream.IsValid() )
       {
       stream << *functional;

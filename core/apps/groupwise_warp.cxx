@@ -49,7 +49,7 @@
 #include <Registration/cmtkGroupwiseRegistrationOutput.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
 
 #include <vector>
 
@@ -223,7 +223,7 @@ doMain( int argc, const char* argv[] )
   functional->SetPartialGradientMode( (PartialGradientThreshold > 0) , PartialGradientThreshold );
   functional->SetDeactivateUninformativeMode( DeactivateUninformative );
 
-  cmtk::ClassStream stream( AffineGroupRegistration, cmtk::ClassStream::MODE_READ );
+  cmtk::ClassStreamInput stream( AffineGroupRegistration );
   if ( ! stream.IsValid() )
     {
     cmtk::StdErr << "Input archive " << AffineGroupRegistration << " could not be opened for reading.\n";

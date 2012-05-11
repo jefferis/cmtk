@@ -49,7 +49,8 @@
 
 #include <Recon/cmtkInverseInterpolationVolumeReconstruction.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
 
@@ -139,7 +140,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
   
   if ( ExportXformsPath )
     {
-    cmtk::ClassStream stream( ExportXformsPath, cmtk::ClassStream::MODE_WRITE );
+    cmtk::ClassStreamOutput stream( ExportXformsPath, cmtk::ClassStreamOutput::MODE_WRITE );
     if ( stream.IsValid() )
       {
       cmtk::DebugOutput( 2 ) << "Exporting transformations between passes to " << ExportXformsPath << "\n";
@@ -292,7 +293,7 @@ doMain( const int argc, const char* argv[] )
   std::vector<cmtk::Xform::SmartPtr> xformsToPassImages;
   if ( ImportXformsPath )
     {
-    cmtk::ClassStream stream( ImportXformsPath, cmtk::ClassStream::MODE_READ );
+    cmtk::ClassStreamInput stream( ImportXformsPath );
     if ( stream.IsValid() )
       {
       cmtk::DebugOutput( 1 ) << "Importing transformations between passes from " << ImportXformsPath << "\n";

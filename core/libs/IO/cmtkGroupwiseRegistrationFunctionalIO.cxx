@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,9 +43,9 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-ClassStream& 
+ClassStreamOutput&
 operator<<
-  ( ClassStream& stream, const GroupwiseRegistrationFunctionalBase& func )
+  ( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalBase& func )
 {
   const UniformVolume* templateGrid = func.GetTemplateGrid();
   stream.Begin( "template" );

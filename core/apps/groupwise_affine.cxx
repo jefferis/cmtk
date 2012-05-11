@@ -43,7 +43,7 @@
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
 
 #include <Registration/cmtkAffineGroupwiseRegistrationRMIFunctional.h>
 #include <Registration/cmtkAffineCongealingFunctional.h>
@@ -226,7 +226,7 @@ doMain( int argc, const char* argv[] )
       throw cmtk::ExitException( 1 );
       }
     
-    cmtk::ClassStream inStream( fileNameList[0], cmtk::ClassStream::MODE_READ );
+    cmtk::ClassStreamInput inStream( fileNameList[0] );
     if ( inStream.IsValid() )
       {
       inStream >> *functional;

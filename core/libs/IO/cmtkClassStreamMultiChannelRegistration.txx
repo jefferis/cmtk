@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,8 +42,8 @@ cmtk
 //@{
 
 template<class TMetricFunctionalType>
-ClassStream& operator << 
-  ( ClassStream& stream, const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
+ClassStreamOutput& operator << 
+  ( ClassStreamOutput& stream, const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
 {
   stream.Begin( "registration" );
 
@@ -66,8 +66,8 @@ ClassStream& operator <<
 }
 
 template<class TMetricFunctionalType>
-ClassStream& operator >>
-  ( ClassStream& stream, AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
+ClassStreamInput& operator >>
+  ( ClassStreamInput& stream, AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
 {
   stream.Seek( "registration" );
   
@@ -110,8 +110,8 @@ ClassStream& operator >>
 }
 
 template<class TMetricFunctionalType>
-ClassStream& operator << 
-  ( ClassStream& stream, const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
+ClassStreamOutput& operator << 
+  ( ClassStreamOutput& stream, const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional )
 {
   stream.Begin( "registration" );
   

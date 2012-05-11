@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,7 @@
 #include <Base/cmtkMatrix4x4.h>
 
 #include <IO/cmtkStudyList.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkClassStreamStudyList.h>
 
@@ -190,7 +190,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( AppendToOutput )
       {
-      cmtk::ClassStream outStream( OutList, cmtk::ClassStream::MODE_APPEND );
+      cmtk::ClassStreamOutput outStream( OutList, cmtk::ClassStreamOutput::MODE_APPEND );
       if ( Inverse )
 	outStream << *xform->GetInverse();
       else

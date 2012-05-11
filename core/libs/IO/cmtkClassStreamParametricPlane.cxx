@@ -30,17 +30,15 @@
 //
 */
 
-#include "cmtkClassStream.h"
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup IO */
-//@{
-
-ClassStream& 
-ClassStream::operator>>( ParametricPlane*& parametricPlane )
+ClassStreamInput& 
+ClassStreamInput::operator>>( ParametricPlane*& parametricPlane )
 {
   parametricPlane = NULL;
 
@@ -60,8 +58,8 @@ ClassStream::operator>>( ParametricPlane*& parametricPlane )
   return *this;
 }
 
-ClassStream&
-ClassStream::operator<<( const ParametricPlane* parametricPlane )
+ClassStreamOutput&
+ClassStreamOutput::operator<<( const ParametricPlane* parametricPlane )
 {  
   this->Begin( "plane" );
   this->WriteCoordinateArray( "origin", parametricPlane->GetOrigin().begin(), 3 );

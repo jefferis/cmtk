@@ -49,6 +49,8 @@ SET(cmtkIO_SRCS
   cmtkStudy.cxx
   cmtkStudyList.cxx
   cmtkTypedStream.cxx
+  cmtkTypedStreamInput.cxx
+  cmtkTypedStreamOutput.cxx
   cmtkTypedStreamStudylist.cxx
   cmtkVolumeFromFile.cxx
   cmtkVolumeFromFileAnalyze.cxx

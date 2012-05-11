@@ -47,7 +47,8 @@
 #include <Base/cmtkTransformChangeFromSpaceAffine.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkAffineXformITKIO.h>
@@ -220,7 +221,7 @@ AffineRegistrationCommandLine
     
     DebugOutput( 1 ) << "Reading input studylist " << this->m_InitialXformPath << ".\n";
     
-    ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::MODE_READ );
+    ClassStreamInput typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration" );
     if ( ! typedStream.IsValid() ) 
       {
       StdErr << "ERROR: could not open studylist archive " << this->m_InitialXformPath << ".\n";
@@ -372,7 +373,7 @@ AffineRegistrationCommandLine::OutputResultParameters
 void
 AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 {
-  ClassStream classStream( studyList, "studylist", ClassStream::MODE_WRITE );
+  ClassStreamOutput classStream( studyList, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( !classStream.IsValid() ) return;
   
   classStream.Begin( "studylist" );
@@ -389,7 +390,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
     
   classStream.Close();
     
-  classStream.Open( studyList, "registration", ClassStream::MODE_WRITE );
+  classStream.Open( studyList, "registration", ClassStreamOutput::MODE_WRITE );
     
   classStream.Begin( "registration" );
   classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study1 ) );
@@ -400,7 +401,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.End();
   classStream.Close();
     
-  classStream.Open( studyList, "settings", ClassStream::MODE_WRITE );
+  classStream.Open( studyList, "settings", ClassStreamOutput::MODE_WRITE );
   classStream.WriteDouble( "exploration", this->m_Exploration );
   classStream.WriteDouble( "accuracy", this->m_Accuracy );
   classStream.WriteDouble( "min_sampling", this->m_Sampling );
@@ -414,7 +415,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 
   classStream.Close();
     
-  classStream.Open( studyList, "statistics", ClassStream::MODE_WRITE );
+  classStream.Open( studyList, "statistics", ClassStreamOutput::MODE_WRITE );
   classStream.WriteDouble( "time", this->GetTotalElapsedTime() );
   classStream.WriteDouble( "walltime", this->GetTotalElapsedWalltime() );
 #ifdef CMTK_USE_PTHREADS

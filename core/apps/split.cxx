@@ -36,7 +36,7 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -111,7 +111,7 @@ doMain( const int argc, const char* argv[] )
       xlate[Axis] = -i * volume->m_Delta[Axis];
       xform.SetXlate( xlate );
 
-      cmtk::ClassStream stream( path, cmtk::ClassStream::MODE_WRITE );
+      cmtk::ClassStreamOutput stream( path, cmtk::ClassStreamOutput::MODE_WRITE );
       if ( stream.IsValid() )
 	{
 	stream << xform;

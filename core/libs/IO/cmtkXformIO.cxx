@@ -39,7 +39,8 @@
 #include <System/cmtkExitException.h>
 
 #include <IO/cmtkFileFormat.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkTypedStreamStudylist.h>
 #include <IO/cmtkAffineXformITKIO.h>
@@ -86,14 +87,14 @@ XformIO::Read( const std::string& path )
     {
     DebugOutput( 1 ) << "Reading transformation from typedstream file " << realPath << "\n";
     
-    ClassStream stream( realPath, ClassStream::MODE_READ );
+    ClassStreamInput stream( realPath );
     WarpXform* warpXform;
     stream >> warpXform;
     
     if ( warpXform ) 
       return Xform::SmartPtr( warpXform );
     
-    stream.Open( realPath, ClassStream::MODE_READ );
+    stream.Open( realPath );
 
     AffineXform affineXform;
     stream >> affineXform;
@@ -151,7 +152,7 @@ XformIO::Write
     }
     case FILEFORMAT_TYPEDSTREAM:
     {
-    ClassStream stream( absolutePath, ClassStream::MODE_WRITE );
+    ClassStreamOutput stream( absolutePath, ClassStreamOutput::MODE_WRITE );
     
     const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
     if ( affineXform )

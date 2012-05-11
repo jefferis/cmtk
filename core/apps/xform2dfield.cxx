@@ -43,8 +43,6 @@
 
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkXformListIO.h>
-#include <IO/cmtkClassStream.h>
-#include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>

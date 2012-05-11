@@ -52,6 +52,8 @@
 #include <Registration/cmtkBestDirectionOptimizer.h>
 #include <Registration/cmtkRegistrationCallback.h>
 
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamMultiChannelRegistration.h>
 #include <IO/cmtkVolumeIO.h>
 
@@ -153,7 +155,7 @@ DoRegistration()
   if ( mcaffineOutput )
     {
     cmtk::AffineMultiChannelRegistrationFunctional<TMetricFunctional> affineFunctional;
-    cmtk::ClassStream inStream( mcaffineOutput, cmtk::ClassStream::MODE_READ );
+    cmtk::ClassStreamInput inStream( mcaffineOutput );
     if ( !inStream.IsValid() )
       {
       cmtk::StdErr << "ERROR: could not open '" << mcaffineOutput << "' for reading.\n";
@@ -279,7 +281,7 @@ DoRegistration()
   
   if ( outArchive )
     {
-    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::MODE_WRITE );
+    cmtk::ClassStreamOutput stream( outArchive, cmtk::ClassStreamOutput::MODE_WRITE_ZLIB );
     stream << *functional;
     stream.Close();
     }

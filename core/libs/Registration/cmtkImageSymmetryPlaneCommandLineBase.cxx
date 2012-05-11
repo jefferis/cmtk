@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,7 +32,8 @@
 
 #include "cmtkImageSymmetryPlaneCommandLineBase.h"
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 
@@ -233,7 +234,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   
   if ( this->m_SymmetryOutFileName )
     {
-    ClassStream stream( this->m_SymmetryOutFileName, ClassStream::MODE_WRITE );
+    ClassStreamOutput stream( this->m_SymmetryOutFileName, ClassStreamOutput::MODE_WRITE );
     stream << this->m_SymmetryPlane;
     stream.Close();
     }
@@ -280,7 +281,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     
     if ( this->m_SymmetryParametersFile ) 
       {
-      ClassStream inStream( this->m_SymmetryParametersFile, ClassStream::MODE_READ );
+      ClassStreamInput inStream( this->m_SymmetryParametersFile );
       if ( inStream.IsValid() ) 
 	{
 	ParametricPlane *plane = NULL;

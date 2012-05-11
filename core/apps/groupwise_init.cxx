@@ -42,7 +42,6 @@
 #include <Base/cmtkFilterVolume.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkClassStream.h>
 
 #include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 #include <Registration/cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>

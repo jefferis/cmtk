@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +50,8 @@
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 
 #include <Registration/cmtkSymmetryPlaneFunctional.h>
 #include <Registration/cmtkBestNeighbourOptimizer.h>
@@ -201,7 +202,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
     
     if ( SymmetryParametersFile ) 
       {
-      cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::MODE_READ );
+      cmtk::ClassStreamInput inStream( SymmetryParametersFile );
       if ( inStream.IsValid() ) 
 	{
 	cmtk::ParametricPlane *plane = NULL;
@@ -479,7 +480,7 @@ doMain ( const int argc, const char* argv[] )
   
   if ( SymmetryOutFileName )
     {
-    cmtk::ClassStream stream( SymmetryOutFileName, cmtk::ClassStream::MODE_WRITE );
+    cmtk::ClassStreamOutput stream( SymmetryOutFileName, cmtk::ClassStreamOutput::MODE_WRITE );
     stream << parametricPlane;
     stream.Close();
     }

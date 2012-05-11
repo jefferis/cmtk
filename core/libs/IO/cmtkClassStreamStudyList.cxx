@@ -34,7 +34,7 @@
 
 #include <System/cmtkMountPoints.h>
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
 namespace
@@ -48,9 +48,9 @@ void
 ClassStreamStudyList::Write
 ( const char *path, const StudyList* studyList )
 {
-  ClassStream stream;
+  ClassStreamOutput stream;
 
-  stream.Open( path, "studylist", ClassStream::MODE_WRITE );
+  stream.Open( path, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( stream.IsValid() ) 
     {
     StudyList::const_iterator it = studyList->begin();
@@ -68,7 +68,7 @@ ClassStreamStudyList::Write
     StdErr << "ERROR: could not open archive " << path << "/studylist\n";
     }  
   
-  stream.Open( path, "registration", ClassStream::MODE_WRITE_ZLIB );
+  stream.Open( path, "registration", ClassStreamOutput::MODE_WRITE_ZLIB );
   if ( stream.IsValid() ) 
     {
     StudyList::const_iterator it = studyList->begin();

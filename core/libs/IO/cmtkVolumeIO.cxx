@@ -40,7 +40,8 @@
 #include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkStudy.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkVolumeFromFile.h>
 #include <IO/cmtkPGM.h>
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,7 +38,7 @@
 
 #include <Base/cmtkAffineXform.h>
 #include <IO/cmtkXformIO.h>
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
 #include <list>
@@ -149,11 +149,11 @@ doMain( const int argc, const char* argv[] )
     average.SetParamVector( v );
     }
 
-  cmtk::ClassStream outStream;
+  cmtk::ClassStreamOutput outStream;
   if ( AppendToOutput )
-    outStream.Open( OutputName, cmtk::ClassStream::MODE_APPEND );
+    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_APPEND );
   else
-    outStream.Open( OutputName, cmtk::ClassStream::MODE_WRITE );
+    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_WRITE );
   
   if ( InvertOutput )
     outStream << (*average.GetInverse());

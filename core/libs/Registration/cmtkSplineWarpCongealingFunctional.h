@@ -46,8 +46,6 @@
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkHistogram.h>
 
-#include <IO/cmtkClassStream.h>
-
 #include <vector>
 
 namespace

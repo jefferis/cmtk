@@ -50,7 +50,8 @@
 
 #include <System/cmtkTimers.h>
 #include <System/cmtkCommandLine.h>
-#include <IO/cmtkClassStream.h>
+
+#include <IO/cmtkClassStreamOutput.h>
 
 #include <stack>
 #include <string.h>
@@ -188,7 +189,7 @@ protected:
     UniformVolume::SmartPtr GetProcessedImage( const UniformVolume* original );
     
     /// Write settings of this object to class stream for archiving.
-    void WriteSettings( ClassStream& stream ) const;
+    void WriteSettings( ClassStreamOutput& stream ) const;
 
   private:
     /// Store the name that identifies this instance ("Reference" or "Floating")

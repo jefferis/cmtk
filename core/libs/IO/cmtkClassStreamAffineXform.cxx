@@ -39,8 +39,8 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-ClassStream& 
-operator << ( ClassStream& stream, const AffineXform& affineXform )
+ClassStreamOutput& 
+operator << ( ClassStreamOutput& stream, const AffineXform& affineXform )
 {
   stream.Begin( "affine_xform" );
   stream.WriteCoordinateArray( "xlate", affineXform.RetXlate(), 3 );
@@ -56,8 +56,8 @@ operator << ( ClassStream& stream, const AffineXform& affineXform )
   return stream;
 }
  
-ClassStream& 
-operator >> ( ClassStream& stream, AffineXform::SmartPtr& affineXform )
+ClassStreamInput& 
+operator >> ( ClassStreamInput& stream, AffineXform::SmartPtr& affineXform )
 {
   try
     {
@@ -71,8 +71,8 @@ operator >> ( ClassStream& stream, AffineXform::SmartPtr& affineXform )
   return stream;
 }
 
-ClassStream& 
-operator >> ( ClassStream& stream, AffineXform& affineXform )
+ClassStreamInput& 
+operator >> ( ClassStreamInput& stream, AffineXform& affineXform )
 {
   CoordinateVector pVector( 15 );
   Types::Coordinate* parameters = pVector.Elements;

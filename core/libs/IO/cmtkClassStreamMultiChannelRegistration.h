@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,7 +33,8 @@
 #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_
 #define __cmtkClassStreamMultiChannelRegistration_h_included_
 
-#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamOutput.h>
 
 #include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 #include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
@@ -47,15 +48,15 @@ cmtk
 
 /** Write file names and transformations from affine multi-channel registration functional. */
 template<class TMetricFunctionalType>
-ClassStream& operator << ( ClassStream& stream, const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+ClassStreamOutput& operator << ( ClassStreamOutput& stream, const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
 
 /** Read file names and transformations from archive to multi-channel affine registration functional. */
 template<class TMetricFunctionalType>
-ClassStream& operator >> ( ClassStream& stream, AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
 
 /** Write file names and transformations from spline warp multi-channel registration functional. */
 template<class TMetricFunctionalType>
-ClassStream& operator << ( ClassStream& stream, const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+ClassStreamOutput& operator << ( ClassStreamOutput& stream, const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
 
 //@}
 
