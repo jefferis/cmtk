@@ -832,69 +832,6 @@ TypedStream
   return Self::CONDITION_OK;
 }
 
-TypedStream::Condition 
-TypedStream
-::WriteComment( const char* fmt, ... )
-{
-  if ( this->m_Mode != Self::MODE_WRITE ) 
-    {
-    this->m_Status = Self::ERROR_MODE;
-    return Self::CONDITION_ERROR;
-    }
-
-  static char buffer[1024];
-
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf( buffer, sizeof( buffer ), fmt, args );
-  va_end(args);
-
-  if ( this->GzFile )
-    gzprintf( GzFile, "! %s\n", buffer );
-  else
-    fprintf( File, "! %s\n", buffer );
-
-  return Self::CONDITION_OK;
-}
-
-TypedStream::Condition 
-TypedStream
-::WriteComment( int argc, char* argv[] )
-{
-  return this->WriteComment( argc, const_cast<const char**>( argv ) );
-}
-
-TypedStream::Condition 
-TypedStream
-::WriteComment( const int argc, const char* argv[] )
-{
-  if ( this->m_Mode != Self::MODE_WRITE ) 
-    {
-    this->m_Status = Self::ERROR_MODE;
-    return Self::CONDITION_ERROR;
-    }
-
-  if ( this->GzFile )
-    gzprintf( GzFile, "! " );
-  else
-    fprintf( File, "! " );
-
-  for ( int i = 0; i < argc; ++i )
-    {
-  if ( this->GzFile )
-    gzprintf( GzFile, "%s ", argv[i] );
-  else
-    fprintf( File, "%s ", argv[i] );
-    }
-
-  if ( this->GzFile )
-    gzputs( GzFile, "\n" );
-  else
-    fputs( "\n", File );
-
-  return Self::CONDITION_OK;
-}
-
 TypedStream::Condition
 TypedStream
 ::WriteIntArray( const char* key, const int* array, const int size, const int valuesPerLine )

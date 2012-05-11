@@ -462,15 +462,6 @@ public:
   Self::Condition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
 				    const std::string& value /*!< String to write to the archive under the given key. */ );
 
-  /// Write a formated comment to an open archive.
-  Self::Condition WriteComment( const char* fmt /*!< printf-style format string for the remaining variable number of parameters */, ... );
-
-  /// Write string array as comment to an open archive.
-  Self::Condition WriteComment( const int argc /*!< Number of strings in the array. */, const char* argv[] /*!< Array of string pointers. */ );
-
-  /// Write string array as comment to an open archive.
-  Self::Condition WriteComment( int argc /*!< Number of strings in the array. */, char* argv[] /*!< Array of string pointers. */ );
-
   /** Write array of integer values to an open archive.
    */
   Self::Condition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
