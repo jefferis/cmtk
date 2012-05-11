@@ -37,19 +37,10 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <cstdarg>
 #include <limits.h>
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>
-#endif
-
-#ifdef HAVE_SYS_TIME_H
-#  include <sys/time.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
-#  include <sys/stat.h>
 #endif
 
 namespace
