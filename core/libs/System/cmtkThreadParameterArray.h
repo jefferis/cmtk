@@ -59,7 +59,6 @@ public:
   ThreadParameterArray
   ( TClass *const thisObject, const size_t numberOfThreads )
   {
-    this->m_AsynchronousThreadsRunning = false;
     this->m_NumberOfThreads = numberOfThreads;
     this->m_Ptr = Memory::ArrayC::Allocate<TParam>( numberOfThreads );
     for ( size_t i = 0; i < numberOfThreads; ++i )
@@ -74,8 +73,6 @@ public:
   /// Destructor.
   ~ThreadParameterArray()
   {
-    if ( this->m_AsynchronousThreadsRunning )
-      this->CancelAsynchronousThreads();
     Memory::ArrayC::Delete( this->m_Ptr );
   }
 
@@ -100,21 +97,6 @@ public:
     Threads::RunThreads( threadCall, this->GetNumberOfThreads(), this->GetPtr(), sizeof( TParam ) );
   }
 
-  /// Run thread function in parallel without joining.
-  void RunInParallelAsynchronous( ThreadFunction threadCall );
-
-  /// Collect (join) threads previously started by RunInParallelAsynchronous.
-  void JoinAsynchronousThreads();
-
-  /// Cancel (terminate) threads previously started by RunInParallelAsynchronous.
-  void CancelAsynchronousThreads();
-
-  /// Check if a given thread is running.
-  bool IsRunning( const size_t idx )
-  {
-    return this->m_Ptr[idx].m_ThreadID;
-  }
-
   /// Run thread functions using a static FIFO scheduler.
   void RunInParallelFIFO(ThreadFunction threadCall, const size_t numberOfThreadsTotal, const size_t firstThreadIdx = 0 );
     
@@ -124,9 +106,6 @@ private:
   
   /// Pointer to parameter block array.
   TParam* m_Ptr;
- 
-  /// Flag for running asynchronous threads.
-  bool m_AsynchronousThreadsRunning;
 };
 
 //@}
