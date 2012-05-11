@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -532,7 +532,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   const WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( warp ) 
     {
-    classStream.Open( path, "registration", ClassStream::MODE_WRITE );
+    classStream.Open( path, "registration", ClassStream::MODE_WRITE_ZLIB );
     if ( classStream.IsValid() ) 
       {
       classStream.Begin( "registration" );
