@@ -252,32 +252,6 @@ TypedStream
 	  }
 	return;
 	}
-      if ( releaseMajor == 1 && releaseMinor == 0) 
-	{
-	/* Release 1.0 */
-	} 
-      else
-	if (releaseMajor == 1 && releaseMinor == 1) 
-	  {
-	  /* Release 1.1 */
-	  } 
-	else 
-	  {
-	  /* Unknown Release */
-	  this->m_Status = Self::ERROR_FORMAT;
-	  if ( GzFile )
-	    {
-	    gzclose( GzFile );
-	    GzFile = NULL;
-	    }
-	  
-	  if ( File )
-	    {
-	    fclose( File );
-	    File = NULL;
-	    }
-	  return;
-	  }
       break;
       
     case Self::MODE_WRITE:
