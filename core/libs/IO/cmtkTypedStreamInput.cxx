@@ -207,8 +207,7 @@ TypedStreamInput
 
 TypedStreamInput::Condition 
 TypedStreamInput
-::Begin
-( const char* section )
+::Begin()
 {
   if ( !File && !GzFile)
     {
@@ -225,8 +224,7 @@ TypedStreamInput
 
 TypedStreamInput::Condition
 TypedStreamInput
-::End
-( const bool flush )
+::End()
 {
   if ( ! File && ! GzFile )
     {
@@ -259,11 +257,6 @@ TypedStreamInput
       }
   
   LevelStack.pop();
-  
-  if ( flush ) 
-    {
-    fflush( File );
-    }
   
   return Self::CONDITION_OK;
 }

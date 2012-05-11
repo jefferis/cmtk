@@ -119,21 +119,17 @@ public:
    */
   Self::Condition Rewind();
 
-  /** Begin a section.
-   * This function will set the file read pointer to the beginning of the named section
-   *\param section Name of the section.
+  /** Move to beginning of section.
+   * This function will set the file read pointer to the beginning of the current section
    *\return Error condition.
    */
-  Self::Condition Begin( const char* section = NULL );
+  Self::Condition Begin();
 
-  /** End a section.
-   * In the open archive, this function will close the last section and 
-   * decrease the nesting level by one.
-   *\param flush If this flag is set, the output file buffer will be flushed
-   * after closing the section.
+  /** Close current section.
+   * In the open archive, this function will close the last section and decrease the nesting level by one.
    *\return Error condition.
    */
-  Self::Condition End( const bool flush = false );
+  Self::Condition End();
 
   /** Read boolean value from an open archive.
    * This function recognizes both yes/no and 0/1 entries in the archive.
