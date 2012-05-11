@@ -112,9 +112,6 @@ public:
 	return NULL;
   }
   
-  /// Create studylist archive.
-  static void Write( const char *path, const char* referenceStudy, const char* floatingStudy, const Xform* xform );
-
 private:
   /// The names of the two studies referenced in the studylist.
   char *StudyPath[2];
