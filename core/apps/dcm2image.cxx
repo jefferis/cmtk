@@ -1173,8 +1173,8 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filtering Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
-    cl.AddCallback( Key( "include" ), &CallbackAddInclude, "Include only DICOM files matching the given pattern of the form 'TagName=text', such that the value of the DICOM tag with the given name contains the given text. "
-      "If multiple inclusion patterns are provided, only files that match ALL patterns are included." );
+    cl.AddCallback( Key( "filter" ), &CallbackAddInclude, "Filter DICOM files and include only those matching the given pattern of the form 'TagName=text', such that the value of the DICOM tag with the given name contains the given "
+		    "text. If multiple filter patterns are provided via repeated use of this option, only files that match ALL patterns are included." );
     cl.AddCallback( Key( "exclude" ), &CallbackAddExclude, "Exclude all DICOM files matching the given pattern of the form 'TagName=text', such that the value of the DICOM tag with the given name contains the given text. "
       "If multiple exclusion patterns are provided, all files are excluded that match ANY of the patterns." );
     cl.EndGroup();

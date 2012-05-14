@@ -652,7 +652,7 @@ case ${RUNTEST} in
 	check_results image1.nii image2.nii
 	;;
     dcm2imageInclude)
-        run dcm2image --exclude ImageOrientationPatient=1\\-0\\0\\-0\\1\\0 -O ${tmpdir}/image.nii dcm/
+        run dcm2image --filter ImageOrientationPatient=1\\-0\\0\\-0\\1\\0 -O ${tmpdir}/image%n.nii dcm/
 	check_results image.nii
 	;;
     describeEmpty)
