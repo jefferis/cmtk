@@ -348,12 +348,10 @@ CallbackSqrt()
 }
         
 void
-CallbackThreshBelow( const char* argv )
+CallbackThreshBelow( const double threshold )
 {
   CheckStackOneImage( "ThreshBelow" );
 
-  const cmtk::Types::DataItem threshold = static_cast<cmtk::Types::DataItem>( atof( argv ) );
-  
   ImageStackType::iterator it = ImageStack.begin();
   while ( it != ImageStack.end() )
     {
@@ -371,12 +369,10 @@ CallbackThreshBelow( const char* argv )
 }
     
 void
-CallbackThreshAbove( const char* argv )
+CallbackThreshAbove( const double threshold )
 {
   CheckStackOneImage( "ThreshAbove" );
 
-  const cmtk::Types::DataItem threshold = static_cast<cmtk::Types::DataItem>( atof( argv ) );
-  
   ImageStackType::iterator it = ImageStack.begin();
   while ( it != ImageStack.end() )
     {
