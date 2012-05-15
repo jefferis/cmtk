@@ -1158,8 +1158,8 @@ doMain ( const int argc, const char *argv[] )
 		  "%n (image number with automatic number of digits); "
 		  "%N (like %n, but with a hyphen '-' before number if there is more than one image); "
 		  "%D (DICOM SeriesDescription); "
-		  "%R (DICOM RepetitionTime - MRI only)"
-		  "%E (DICOM EchoTime - MRI only)"
+		  "%R (DICOM RepetitionTime - MRI only); "
+		  "%E (DICOM EchoTime - MRI only); "
 		  "%T (RawDataType - vendor-specific, currently GE MRI only)" );
 
     cl.AddSwitch( Key( 'x', "xml" ), &WriteXML, true, "Write XML sidecar file for each created image." );
