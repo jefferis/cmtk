@@ -1,10 +1,11 @@
 Release CMTK-2.2.2:
 
+(r4351) Changed: all nonrigid transformation files, "registration," are now
+    written gzip-compressed. (Linear transformation files are generally much
+    smaller and continue to be written as plain uncompressed files.)
 (r4347) Added: "dcm2image" tool has two new options, "--filter" and
     "--exclude", to include or exclude DICOM files selectively based on
     matching a provided text to values of user-specified DICOM tags.
-(r4338) Changed: all transformation files, "registration," are now written
-    gzip-compressed.
 (r4326) Added: ADNI phantom detector now also computes SNR and four CNR
     estimates. These are all also written to the XML phantom description
     file.
