@@ -148,11 +148,21 @@ TypedStreamOutput
     default: modestr = ""; break;
     }
   
-  if ( ! ( File = fopen( filename.c_str(), modestr ) ) ) 
+  if ( mode == Self::MODE_WRITE_ZLIB )
     {
     const std::string gzName = filename + ".gz";
     GzFile = gzopen( gzName.c_str(), modestr );
     if ( ! GzFile ) 
+      {
+      StdErr << "ERROR: could not open gz file \"" << gzName << "\" with mode \"" << modestr << "\"\n";
+      this->m_Status = Self::ERROR_SYSTEM;
+      return;
+      }
+    }
+  else
+    {
+    File = fopen( filename.c_str(), modestr );
+    if ( ! File ) 
       {
       StdErr << "ERROR: could not open file \"" << filename << "\" with mode \"" << modestr << "\"\n";
       this->m_Status = Self::ERROR_SYSTEM;
@@ -209,6 +219,18 @@ TypedStreamOutput
 	}
       }
     } 
+
+  if ( this->GzFile )
+    {
+    gzclose( this->GzFile );
+    this->GzFile = NULL;
+    }
+  
+  if ( this->File )
+    {
+    fclose( this->File );
+    this->File = NULL;
+    }
   
   this->m_Status = Self::ERROR_NONE;
   SplitPosition = NULL;
