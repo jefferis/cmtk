@@ -86,6 +86,23 @@ public:
 					     Offsets[4]*(Offsets[0]*Values[6]+Offsets[3]*Values[7]) ) );
   }
 
+  /// Return relative weight of given index.
+  Types::Coordinate GetWeight( const int index ) const 
+  {
+    switch ( index ) 
+      {
+      case 0: return Offsets[2] * Offsets[1] * Offsets[0];
+      case 1: return Offsets[2] * Offsets[1] * Offsets[3];
+      case 2: return Offsets[2] * Offsets[4] * Offsets[0];
+      case 3: return Offsets[2] * Offsets[4] * Offsets[3];
+      case 4: return Offsets[5] * Offsets[1] * Offsets[0];
+      case 5: return Offsets[5] * Offsets[1] * Offsets[3];
+      case 6: return Offsets[5] * Offsets[4] * Offsets[0];
+      case 7: return Offsets[5] * Offsets[4] * Offsets[3];
+      }
+    return 0;
+  }
+
 };
 
 //@}
