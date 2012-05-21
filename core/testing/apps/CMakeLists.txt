@@ -179,7 +179,7 @@ LIST(APPEND testList
 # ==========================================
 # Tests for xml, wiki, man, and help markups
 IF(CMTK_USE_SQLITE)
-  FOREACH(t film levelset mrbias registration)
+  FOREACH(t film gmm levelset mrbias registration)
     LIST(APPEND testList xml_${t} wiki_${t} man_${t})
   ENDFOREACH(t film levelset mrbias registration)
 ENDIF(CMTK_USE_SQLITE)

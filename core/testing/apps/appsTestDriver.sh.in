@@ -2453,6 +2453,10 @@ case ${RUNTEST} in
 	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_results film.xml
 	;;
+    xml_gmm)
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/gmm --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/gmm.xml"
+	check_results gmm.xml
+	;;
     xml_levelset)
         run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/levelset --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
 	check_results levelset.xml
