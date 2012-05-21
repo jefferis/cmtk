@@ -63,7 +63,7 @@ doMain
 
   try
     {
-    cmtk::CommandLine cl;
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Gaussian mixture model segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Segment an image into c classes using the EM algorithm for Gaussian mixtures with optional priors." );
 
