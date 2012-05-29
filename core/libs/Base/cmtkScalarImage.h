@@ -231,58 +231,11 @@ public:
   /// Create downsampled copy of this image.
   ScalarImage* Downsample( const int factorX, int factorY = 0, ScalarImage *const target = NULL ) const;
 
-  /** Apply binary mask to image.
-   *\param maskImage Binary mask image.
-   *\param invert If this flag is set, then all pixels are set to NULL where
-   * the mask image is zero. Otherwise (default) the pixels are set to NULL
-   * where the mask image is non-zero.
-   */
-  virtual void ApplyBinaryMask( const ScalarImage* maskImage, const bool invert = false );
-
-  /**\name Image filter operators.
-   * These functions perform various filter operations on the image data. For
-   * each filter, two functions are implemented: GetXXXFiltered and
-   * ApplyXXXFilter. The former returns a pointer to a newly allocated pixel
-   * data array that contains the filtered data. The latter replaces the 
-   * current object's pixel data with the filtered data.
-   *\note A complete new ScalarImage object with filtered pixel data can
-   * easily and efficiently be created by calling
-   * object->Clone( false )->ApplyXXXFilter().
-   */
-  //@{
-  /** Return median-filtered image data.
-   *\param range Field of view of the median operator.
-   */
-  TypedArray::SmartPtr GetMedianFiltered( const byte range ) const;
-
-  /// Replace pixel data with median-filtered data.
-  ScalarImage* ApplyMedianFilter( const byte range ) 
-  {
-    this->SetPixelData( TypedArray::SmartPtr( this->GetMedianFiltered( range ) ) );
-    return this;
-  }
-  
-  /** Return Gauss-filtered (smoothed) image data.
-   *\param stdDev Standard deviation of the smoothing kernel in world
-   * coordinates. This value is internally converted to the effective kernel
-   * size in pixels.
-   */
-  TypedArray::SmartPtr GetGaussFiltered( const Types::Coordinate stdDev ) const;
-
-  /// Replace pixel data with Gauss-filtered data.
-  ScalarImage* ApplyGaussFilter( const Types::Coordinate stdDev ) 
-  {
-    this->SetPixelData( TypedArray::SmartPtr( this->GetGaussFiltered( stdDev ) ) );
-    return this;
-  }
-
   /** Return Sobel-filtered (edge-enhanced) image data.
    * This function implements the 1-D Sobel edge operator.
    */
   TypedArray::SmartPtr GetSobelFiltered( const bool horizontal, const bool absolute = false ) const;
   
-  //@}
-
   /// Mirror image horizontally and/or vertically.
   void Mirror( const bool horizontal, const bool vertical );
 
