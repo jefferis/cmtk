@@ -43,7 +43,6 @@
 #include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkVolumeFromFile.h>
-#include <IO/cmtkPGM.h>
 
 #include <Base/cmtkTypes.h>
 
