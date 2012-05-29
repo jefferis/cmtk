@@ -44,7 +44,6 @@ SET(cmtkIO_SRCS
   cmtkPhantomIO_MagphanEMR051.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx
-  cmtkScalarImageIO.cxx
   cmtkSegmentationLabelIO.cxx
   cmtkStudy.cxx
   cmtkStudyList.cxx
