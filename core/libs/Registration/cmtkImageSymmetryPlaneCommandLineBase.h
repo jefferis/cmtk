@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <Registration/cmtkImageSymmetryPlaneFunctionalBase.h>
+
+#include <Base/cmtkInterpolator.h>
 
 #include <System/cmtkCannotBeCopied.h>
 #include <System/cmtkCommandLine.h>
