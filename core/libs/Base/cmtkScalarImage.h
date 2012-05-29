@@ -41,7 +41,6 @@
 #include <Base/cmtkRegion.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMatrix3x3.h>
-#include <Base/cmtkInterpolator.h>
 
 #include <cassert>
 #include <vector>
@@ -128,12 +127,6 @@ public:
     return this->m_Dims;
   }
 
-  /** Interpolate sub-image with affine transformation.
-   */
-  virtual ScalarImage* InterpolateFrom
-  ( const ScalarImage& grid, const CoordinateMatrix3x3& matrix, const cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::LINEAR )
-    const;
-
   /// Set region of interest.
   void SetROI( const Self::RegionType& roi ) 
   {
@@ -214,12 +207,6 @@ public:
    * pixels was invalid or outside the image.
    */
   bool GetPixelAt( Types::DataItem& value, const Types::Coordinate i, const Types::Coordinate j ) const;
-
-  /** Get pixel at fractional 2-D index by bicubic interpolation.
-   *\return True if value is valid; false if at least one of the source
-   * pixels was invalid or outside the image.
-   */
-  bool GetPixelAtCubic( Types::DataItem& value, const Types::Coordinate i, const Types::Coordinate j ) const;
 
   /// Set pixel at 2-D index.
   void SetPixelAt( const int i, const int j, const Types::DataItem data ) 
