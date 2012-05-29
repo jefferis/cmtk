@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -32,7 +32,6 @@
 
 #include <string.h>
 
-#include "cmtkScalarImageSimilarityTests.txx"
 #include "cmtkTypedArraySimilarityTests.txx"
 
 /** Set up table of test names and function pointers */
@@ -47,8 +46,6 @@ struct __testNameAndFunctionPointer
 
 const testNameAndFunctionPointer testTable[] =
 {
-  { "ScalarImageSimilarity",               &testScalarImageSimilarity },
-  { "ScalarImageSimilarityMemory",         &testScalarImageSimilarityMemory },
   { "TypedArraySimilarity",                &testTypedArraySimilarity },
   { NULL, NULL }
 };

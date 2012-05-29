@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
@@ -42,12 +42,6 @@ FOREACH(D ${DRIVERS})
   ADD_EXECUTABLE(${D} ${D}.cxx)
   TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 ENDFOREACH(D ${DRIVERS})
-
-# ==========================================
-# Tests for "cmtk::ScalarImageSimilarity" class
-SET(Tests ${Tests}
-  ScalarImageSimilarity
-  ScalarImageSimilarityMemory)
 
 # ==========================================
 # Tests for "cmtk::TypedArraySimilarity" class

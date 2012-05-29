@@ -75,8 +75,6 @@ SET(cmtkRegistration_SRCS
   cmtkReformatVolume.cxx
   cmtkRegistrationCallback.cxx
   cmtkRegistrationJointHistogram.cxx
-  cmtkScalarImageSimilarity.cxx
-  cmtkScalarImageSimilarityRMI.cxx
   cmtkSplineWarpCongealingFunctional.cxx
   cmtkSplineWarpCongealingFunctionalStaticThreadStorage.cxx
   cmtkSplineWarpGroupwiseRegistrationRMIFunctional.cxx
