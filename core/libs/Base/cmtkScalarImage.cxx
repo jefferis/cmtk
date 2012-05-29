@@ -607,37 +607,6 @@ ScalarImage::GetFilteredData
 }
 
 TypedArray::SmartPtr
-ScalarImage::GetSobel2DFiltered() const
-{
-  if ( !this->m_PixelData )
-    throw( Exception( "No image data in ScalarImage::GetSobel2DFiltered()" ) );
-
-  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
-  
-  Types::DataItem fov[3][3];
-  size_t offset = 0;
-
-  for ( int y = 0; y < this->m_Dims[1]; ++y )
-    for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
-      {
-      Types::DataItem value = 0;
-      if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
-	{
-	for ( int dy=0; dy<3; ++dy )
-	  for ( int dx=0; dx<3; ++dx )
-	    this->m_PixelData->Get( fov[dx][dy], x-1+dx+ this->m_Dims[0] * ( y-1+dy ) );
-	
-	value = 
-	  sqrt( MathUtil::Square( fov[0][0] - fov[2][0] + 2 * ( fov[0][1] - fov[2][1] ) + fov[0][2] - fov[2][2] ) +
-		MathUtil::Square( fov[0][0] - fov[0][2] + 2 * ( fov[1][0] - fov[1][2] ) + fov[2][0] - fov[2][2] ) );
-	}
-      result->Set( value, offset );
-      }
-  
-  return result;
-}
-
-TypedArray::SmartPtr
 ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute ) 
   const
 {
@@ -685,35 +654,6 @@ ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute )
 	  }
 	result->Set( value, offset );
 	}
-  
-  return result;
-}
-
-TypedArray::SmartPtr
-ScalarImage::GetLaplace2DFiltered() const
-{
-  if ( !this->m_PixelData )
-    throw( Exception( "No image data in ScalarImage::GetLaplace2DFiltered()" ) );
-
-  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
-  
-  Types::DataItem fov[3][3];
-  size_t offset = 0;
-
-  for ( int y = 0; y < this->m_Dims[1]; ++y )
-    for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
-      {
-      Types::DataItem value = 0;
-      if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
-	{
-	for ( int dy=0; dy<3; ++dy )
-	  for ( int dx=0; dx<3; ++dx )
-	    this->m_PixelData->Get( fov[dx][dy], x-1+dx+ this->m_Dims[0] * ( y-1+dy ) );
-	
-	value = fov[0][1] + fov[2][1] + fov[1][0] + fov[1][2] + fov[0][0] + fov[0][2] + fov[2][0] + fov[2][2] - 8 * fov[1][1];
-	}
-      result->Set( value, offset );
-      }
   
   return result;
 }

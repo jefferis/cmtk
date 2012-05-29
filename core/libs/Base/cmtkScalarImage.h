@@ -290,42 +290,10 @@ public:
   }
 
   /** Return Sobel-filtered (edge-enhanced) image data.
-   * This function implements the 2-D Sobel edge operator. In particular, it
-   * computed the gradient magnitude at a certian location as the square root
-   * of the squared horizontal and vertical Sobel operators.
-   */
-  TypedArray::SmartPtr GetSobel2DFiltered() const;
-
-  /// Replace pixel data with Sobel-filtered data.
-  ScalarImage* ApplySobel2DFilter() 
-  {
-    this->SetPixelData( TypedArray::SmartPtr( this->GetSobel2DFiltered() ) );
-    return this;
-  }
-
-  /** Return Laplace-filtered (edge-enhanced) image data.
-   * This function implements the 2-D Laplace edge operator.
-   */
-  TypedArray::SmartPtr GetLaplace2DFiltered() const;
-
-  /// Replace pixel data with Laplace-filtered data.
-  ScalarImage* ApplyLaplace2DFilter() 
-  {
-    this->SetPixelData( TypedArray::SmartPtr( this->GetLaplace2DFiltered() ) );
-    return this;
-  }
-  
-  /** Return Sobel-filtered (edge-enhanced) image data.
    * This function implements the 1-D Sobel edge operator.
    */
   TypedArray::SmartPtr GetSobelFiltered( const bool horizontal, const bool absolute = false ) const;
   
-  /// Replace pixel data with 1-D Sobel-filtered data.
-  ScalarImage* ApplySobelFilter( const bool horizontal, const bool absolute = false ) 
-  {
-    this->SetPixelData( TypedArray::SmartPtr( this->GetSobelFiltered( horizontal, absolute ) ) );
-    return this;
-  }
   //@}
 
   /// Mirror image horizontally and/or vertically.
