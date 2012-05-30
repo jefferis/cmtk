@@ -345,16 +345,16 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
-# Tests for "fit_spline_xform" tool
+# Tests for "fit_spline_dfield" tool
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList
-    fit_spline_xformSpacing
-    fit_spline_xformSpacingMultiLevel
-    fit_spline_xformDims
-    fit_spline_xformDimsRelative
-    fit_spline_xformDimsMultiLevel
-    fit_spline_xformDimsMultiLevelSafe
-    fit_spline_xformDimsWithAffine)
+    fit_spline_dfieldSpacing
+    fit_spline_dfieldSpacingMultiLevel
+    fit_spline_dfieldDims
+    fit_spline_dfieldDimsRelative
+    fit_spline_dfieldDimsMultiLevel
+    fit_spline_dfieldDimsMultiLevelSafe
+    fit_spline_dfieldDimsWithAffine)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================

@@ -52,6 +52,7 @@ SET(APPS avg_adm
   fib2image
   film
   filter
+  fit_spline_dfield
   fit_affine_xform
   fit_affine_xform_landmarks
   fit_spline_xform

@@ -891,32 +891,32 @@ case ${RUNTEST} in
         run fit_affine_xform vol001_mr_t0t1_warp.xform ${tmpdir}/affine_fit.xform
 	check_results affine_fit.xform
 	;;
-    fit_spline_xformSpacing)
-        run fit_spline_xform --final-cp-spacing 40 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldSpacing)
+        run fit_spline_dfield --final-cp-spacing 40 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformSpacingMultiLevel)
-        run fit_spline_xform --final-cp-spacing 40 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldSpacingMultiLevel)
+        run fit_spline_dfield --final-cp-spacing 40 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformDims)
-        run fit_spline_xform --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldDims)
+        run fit_spline_dfield --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformDimsRelative)
-        run fit_spline_xform --relative --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldDimsRelative)
+        run fit_spline_dfield --relative --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformDimsMultiLevel)
-        run fit_spline_xform --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldDimsMultiLevel)
+        run fit_spline_dfield --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformDimsMultiLevelSafe)
-        run fit_spline_xform --final-cp-dims 10,10,5 --levels 400 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldDimsMultiLevelSafe)
+        run fit_spline_dfield --final-cp-dims 10,10,5 --levels 400 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
-    fit_spline_xformDimsWithAffine)
-        run fit_spline_xform --fit-affine-first --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+    fit_spline_dfieldDimsWithAffine)
+        run fit_spline_dfield --fit-affine-first --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
     glmDefault)
