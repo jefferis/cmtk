@@ -135,7 +135,7 @@ public:
     return Units::Radians( acos( value ) );
   }
   
-  /// Unit-safe aten() function.
+  /// Unit-safe atan() function.
   static const Units::Radians ArcTan( const double value )
   {
     return Units::Radians( atan( value ) );
