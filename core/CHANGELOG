@@ -1,5 +1,8 @@
 Release CMTK-2.2.2:
 
+(r4369) Added: new "streamxform" tool to apply sequences of transformations to
+    point coordinates read from standard input. The old tool, "gregxform", has
+    been deprecated and may be removed in a future release of CMTK.
 (r4351) Changed: all nonrigid transformation files, "registration," are now
     written gzip-compressed. (Linear transformation files are generally much
     smaller and continue to be written as plain uncompressed files.)
