@@ -318,17 +318,19 @@ public:
     static bool secondNumberReady = false;
     static double secondNumber = 0;
     
-    if ( secondNumberReady ) {
-    secondNumberReady = false;
-    return secondNumber;
-    }
+    if ( secondNumberReady ) 
+      {
+      secondNumberReady = false;
+      return secondNumber;
+      }
     
     double x1, x2, w;
-    do {
-    x1 = 2.0 * (random()&0xffffff)/0x1000000 - 1.0;
-    x2 = 2.0 * (random()&0xffffff)/0x1000000 - 1.0;
-    w = x1 * x1 + x2 * x2;
-    } while ( w >= 1.0 );
+    do 
+      {
+      x1 = 2.0 * (random()&0xffffff)/0x1000000 - 1.0;
+      x2 = 2.0 * (random()&0xffffff)/0x1000000 - 1.0;
+      w = x1 * x1 + x2 * x2;
+      } while ( w >= 1.0 );
     
     w = sqrt( (-2.0 * log( w ) ) / w );
     secondNumber = x1 * w * sigma;
