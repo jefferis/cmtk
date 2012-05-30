@@ -87,8 +87,10 @@ private:
   /// Deformation field residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
   std::vector< SplineWarpXform::SpaceVectorType > m_Residuals;
 
-  /// Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
-  void ComputeResiduals( const SplineWarpXform& splineWarp );
+  /** Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
+   *\return Maximum residual over all landmarks.
+   */
+  Types::Coordinate ComputeResiduals( const SplineWarpXform& splineWarp );
 
   /// Fit spline warp based on initial warp object.
   void FitSpline( SplineWarpXform& splineWarp, const int nLevels );

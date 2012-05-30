@@ -41,7 +41,7 @@ cmtk::FitSplineWarpToLandmarks::FitSplineWarpToLandmarks( const LandmarkPairList
 {
 }
 
-void
+cmtk::Types::Coordinate
 cmtk::FitSplineWarpToLandmarks::ComputeResiduals( const SplineWarpXform& splineWarp )
 {
   this->m_LandmarksGrid.resize( this->m_Landmarks.size() );
@@ -49,12 +49,18 @@ cmtk::FitSplineWarpToLandmarks::ComputeResiduals( const SplineWarpXform& splineW
 
   this->m_Residuals.resize( this->m_Landmarks.size() );
 
+  Types::Coordinate maxResidual = 0;
+
 #pragma omp parallel for
   for ( size_t i = 0; i < this->m_Landmarks.size(); ++i )
     {
     splineWarp.PrecomputeLocationSpline( this->m_Landmarks[i].m_Location, this->m_LandmarksGrid[i], this->m_LandmarksSpline[i] );
     this->m_Residuals[i] = this->m_Landmarks[i].m_TargetLocation - splineWarp.Apply( this->m_Landmarks[i].m_Location );
+
+    maxResidual = std::max( this->m_Residuals[i].SumOfSquares(), maxResidual );
     }
+
+  return sqrt( maxResidual );
 }
 
 cmtk::SplineWarpXform::SmartPtr 
