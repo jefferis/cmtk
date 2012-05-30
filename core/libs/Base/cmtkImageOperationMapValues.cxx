@@ -2,7 +2,7 @@
 //
 //  Copyright 2010 Torsten Rohlfing
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include "cmtkImageOperationMapValues.h"
+
+#include <limits>
 
 cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, const bool exclusive )
   : m_Exclusive( exclusive )
@@ -70,7 +72,7 @@ cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, con
 	
 	for ( size_t i = 0; i < fromValues.size(); ++i )
 	  {
-	  this->m_Mapping[fromValues[i]] = MathUtil::GetDoubleNaN();
+	  this->m_Mapping[fromValues[i]] = std::numeric_limits<double>::quiet_NaN();
 	  }
 	}
       else

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +49,7 @@
 #include <math.h>
 #include <list>
 #include <vector>
+#include <limits>
 
 double MaxThreshold = 0;
 bool UseMaxThreshold = false;
@@ -99,7 +100,7 @@ doMain( const int argc, const char* argv[] )
       list.push_back( f );
       }
     
-    f = cmtk::MathUtil::GetDoubleNaN();
+    f = std::numeric_limits<double>::quiet_NaN();
     }
   
   const size_t totalNumberOfValues = seq.GetNValues() + countOverThreshold;

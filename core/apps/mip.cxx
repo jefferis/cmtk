@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -45,9 +45,10 @@
 #include <Base/cmtkMathUtil.h>
 
 #include <iostream>
+#include <limits>
 
-double Black = cmtk::MathUtil::GetDoubleNaN();
-double White = cmtk::MathUtil::GetDoubleNaN();
+double Black = std::numeric_limits<double>::quiet_NaN();
+double White = std::numeric_limits<double>::quiet_NaN();
 
 int Axis = 2;
 

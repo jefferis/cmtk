@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,7 +30,7 @@
 //
 */
 
-#include <Base/cmtkMathUtil.h>
+#include <limits>
 
 namespace
 cmtk
@@ -102,7 +102,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f )
-	this->m_ReformattedFloatingChannels[f][rindex] = MathUtil::GetFloatNaN();
+	this->m_ReformattedFloatingChannels[f][rindex] = std::numeric_limits<float>::quiet_NaN();
       return;
       }
 

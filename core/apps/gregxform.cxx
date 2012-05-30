@@ -47,6 +47,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <limits>
+
 cmtk::Types::Coordinate Accuracy = 0.01;
 bool NoCheck = false;
 bool Forward = false;
@@ -284,7 +286,7 @@ doMain( const int argc, const char *argv[] )
 	{
 	if(Binary)
 	  {
-	  const float nan3[3] = { cmtk::MathUtil::GetFloatNaN(), cmtk::MathUtil::GetFloatNaN(), cmtk::MathUtil::GetFloatNaN()};
+	  const float nan3[3] = { std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()};
 	  fwrite( nan3, sizeof(float), 3, outfile );
 	  }
 	else

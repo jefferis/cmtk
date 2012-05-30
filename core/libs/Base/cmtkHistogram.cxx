@@ -32,6 +32,8 @@
 
 #include "cmtkHistogram.h"
 
+#include <limits>
+
 namespace
 cmtk
 {
@@ -67,7 +69,7 @@ Histogram<T>
   
   const T sampleCount = this->SampleCount();
   if ( ! sampleCount ) 
-    return MathUtil::GetDoubleNaN();
+    return std::numeric_limits<double>::quiet_NaN();
   
   for ( size_t i=0; i<this->GetNumberOfBins(); ++i ) 
     {

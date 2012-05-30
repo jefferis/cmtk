@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,8 @@
 #include <Base/cmtkVolumeGridToGridLookup.h>
 
 #include <System/cmtkThreadPool.h>
+
+#include <limits>
 
 namespace
 cmtk
@@ -155,7 +157,7 @@ UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t ta
 	if ( maxLabelWeight > 0 )
 	  dest[offset] = maxLabelIndex;
 	else 
-	  dest[offset] = MathUtil::GetDoubleNaN();
+	  dest[offset] = std::numeric_limits<double>::quiet_NaN();
 	}
       }
     }
@@ -223,7 +225,7 @@ UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t task
 	  } 
 	else
 	  {
-	  dest[offset] = MathUtil::GetDoubleNaN();
+	  dest[offset] = std::numeric_limits<double>::quiet_NaN();
 	  }
 	}
       }

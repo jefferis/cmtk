@@ -105,38 +105,6 @@ public:
     return finite( value ) != 0;
   }
 
-  /// Get double-precision not-a-number (NaN) value.
-  static double GetDoubleNaN()
-  {
-    return Self::GetInternalNaN().m_Union.d;
-  }
-  
-  /// Get single-precision not-a-number (NaN) value.
-  static float GetFloatNaN()
-  {
-#if WORDS_BIGENDIAN
-    return Self::GetInternalNaN().m_Union.f[0];
-#else
-    return Self::GetInternalNaN().m_Union.f[1];
-#endif
-  }
-  
-  /// Get double-precision infinite (Inf) value.
-  static double GetDoubleInf()
-  {
-    return Self::GetInternalInf().m_Union.d;
-  }
-
-  /// Get single-precision infinite (Inf) value.
-  static float GetFloatInf()
-  {
-#if WORDS_BIGENDIAN
-    return Self::GetInternalInf().m_Union.f[0];
-#else
-    return Self::GetInternalInf().m_Union.f[1];
-#endif
-  }
-
   /// Unit-safe sin() function.
   static double Sin( const Units::Radians& radians )
   {
@@ -390,56 +358,6 @@ public:
 
   /// Determinant of an n x n square matrix.
   template<class T> static T CholeskyDeterminant( const Matrix2D<T>& matrix, int n);
-
-private:
-  /// Helper class to initialize a constant 64bit field.
-  class BitInitializer
-  {
-  public:
-    /// Union that is used for initializing variables of different types with bitfield values.
-    typedef union
-    {
-      /// Write bit pattern for special values here.
-      uint32_t i[2];
-      /// Read out for single-precision special value.
-      float f[2];
-      /// Read out for double-precision special value.
-      double d;
-    } InitializeUnion;
-    
-    /// The actual initializer memory.
-    InitializeUnion m_Union;
-    
-  public:
-    /// Initialize 64bit field with two given 32bit integers.
-    BitInitializer( const uint32_t i0, const uint32_t i1 )
-    {
-      this->m_Union.i[0] = i0;
-      this->m_Union.i[1] = i1;
-    }
-  };
-  
-  /// Get reference to internal representation of NaN.
-  static const Self::BitInitializer& GetInternalNaN()
-  {
-#if WORDS_BIGENDIAN
-    static const Self::BitInitializer bits( 0x7fffffff, 0xffffffff );
-#else
-    static const Self::BitInitializer bits( 0xffffffff, 0x7fffffff );
-#endif
-    return bits;
-  }
-  
-  /// Get reference to internal representation of Inf.
-  static const Self::BitInitializer& GetInternalInf()
-  {
-#if WORDS_BIGENDIAN
-    static const Self::BitInitializer bits( 0x7f800000, 0x00000000 );
-#else
-    static const Self::BitInitializer bits( 0x00000000, 0x7f800000 );
-#endif
-    return bits;
-  }
 };
 
 //@}

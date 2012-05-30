@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +49,7 @@
 #include <math.h>
 #include <list>
 #include <algorithm>
+#include <limits>
 
 const char* OutputFileName = "average.nii";
 
@@ -217,7 +218,7 @@ doMain( const int argc, const char* argv[] )
   if ( ! outputData ) 
     {
     outputData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
-    outputData->SetPaddingValue( cmtk::MathUtil::GetFloatNaN() );
+    outputData->SetPaddingValue( std::numeric_limits<float>::quiet_NaN() );
     } 
   
   cmtk::ProgressConsole progressIndicator;
