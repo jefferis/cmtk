@@ -77,7 +77,8 @@ doMain( const int argc, const char *argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformations to lists of point coordinates" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool reads a list of 3D coordinates and applies a coordimnate transformation to them. The transformation can optionally be inverted. The transformed coordinates are then written to standard output." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "THIS TOOL IS DEPRECATED. PLEASE USE streamxform INSTEAD.\n\n"
+		       "This tool reads a list of 3D coordinates and applies a coordimnate transformation to them. The transformation can optionally be inverted. The transformed coordinates are then written to standard output." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "gregxform [options] transformation" );      
 
     typedef cmtk::CommandLine::Key Key;
