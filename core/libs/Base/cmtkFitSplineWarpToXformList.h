@@ -33,11 +33,12 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkFitToXformListBase.h>
+
 #include <Base/cmtkXformList.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkCubicSpline.h>
 #include <Base/cmtkRegion.h>
-#include <Base/cmtkImageTemplate.h>
 
 namespace
 cmtk
@@ -53,15 +54,19 @@ cmtk
  * vol. 3, no. 3, pp. 228-244, 1997. http://dx.doi.org/10.1109/2945.620490
  */
 class FitSplineWarpToXformList
+  : private FitToXformListBase
 {
 public:
   /// This class.
   typedef FitSplineWarpToXformList Self;
 
+  /// Base class.
+  typedef FitToXformListBase Superclass;
+
   /// Constructor.
   FitSplineWarpToXformList( const UniformVolume& sampleGrid /*!< Discrete pixel grid where the spline transformation is sampled and residuals are minimized.*/,
 			    const XformList& xformList /*!< List of concatenated transformation that the spline transformation is fitted to.*/, 
-			    const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ );
+			    const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ ) : Superclass( sampleGrid, xformList, absolute ) {}
 
   /// Fit spline warp based on final grid dimensions.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::ControlPointIndexType& finalDims /*!< Final spline control point grid dimensions.*/, 
@@ -74,18 +79,6 @@ public:
 				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/  );
   
 private:
-  /** Flag for absolute vs. relative deformation fields.
-   * If this is true, the spline is fitted to the absolute transformation defined by the deformation field.
-   * If this is false, the spline is fitted to the relative deformation field itself.
-   */
-  bool m_FitAbsolute;
-
-  /// Sampled transformation field.
-  ImageTemplate<Xform::SpaceVectorType> m_XformField;
-
-  /// Bit flags to mark pixels where the transformation is valid or not (e.g., due to failed numerical inversion).
-  std::vector<bool> m_XformValidAt;
-
   /// Deformation field residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
   std::vector< FixedVector<3,Types::Coordinate> > m_Residuals;
 

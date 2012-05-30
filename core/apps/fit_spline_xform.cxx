@@ -38,7 +38,7 @@
 
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkDeformationField.h>
-#include <Base/cmtkFitAffineToWarpXform.h>
+#include <Base/cmtkFitAffineToXformList.h>
 #include <Base/cmtkFitSplineWarpToXformList.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -110,7 +110,7 @@ doMain ( const int argc, const char *argv[] )
   cmtk::AffineXform::SmartPtr affineXform;
   if ( affineFirst )
     {
-//    affineXform = cmtk::FitAffineToWarpXform( dfield ).Fit();
+    affineXform = cmtk::FitAffineToXformList( *imageGrid, xformList ).Fit();
     }
 
   if ( gridSpacing )

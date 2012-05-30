@@ -49,11 +49,13 @@ SET(cmtkBase_SRCS
   cmtkDirectionSet.cxx
   cmtkFilterVolume.cxx
   cmtkFitAffineToLandmarks.cxx
-  cmtkFitRigidToLandmarks.cxx
   cmtkFitAffineToWarpXform.cxx
+  cmtkFitAffineToXformList.cxx
+  cmtkFitRigidToLandmarks.cxx
   cmtkFitSplineWarpToDeformationField.cxx
   cmtkFitSplineWarpToLandmarks.cxx
   cmtkFitSplineWarpToXformList.cxx
+  cmtkFitToXformListBase.cxx
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx

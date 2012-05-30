@@ -34,31 +34,6 @@
 
 #include <System/cmtkDebugOutput.h>
 
-cmtk::FitSplineWarpToXformList::FitSplineWarpToXformList( const UniformVolume& sampleGrid, const XformList& xformList, const bool absolute )
-  : m_XformField( sampleGrid )
-{
-  this->m_XformValidAt.resize( this->m_XformField.GetNumberOfPixels() );
-  std::fill( this->m_XformValidAt.begin(), this->m_XformValidAt.end(), true );
-
-  size_t ofs = 0;
-  for ( RegionIndexIterator<DataGrid::RegionType> voxelIt( this->m_XformField.GetWholeImageRegion() ); voxelIt != voxelIt.end(); ++voxelIt, ++ofs )
-    {
-    const Xform::SpaceVectorType v = this->m_XformField.GetGridLocation( voxelIt.Index() );
-    
-    Xform::SpaceVectorType u = v;
-    if ( xformList.ApplyInPlace( u ) )
-      {
-      if ( !absolute )
-	u -= v;
-      this->m_XformField[ofs] = u;
-      }
-    else
-      {
-      this->m_XformValidAt[ofs] = false;
-      }
-    }
-}
-
 void
 cmtk::FitSplineWarpToXformList::ComputeResiduals( const SplineWarpXform& splineWarp )
 {
