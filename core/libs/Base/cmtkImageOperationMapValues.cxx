@@ -72,7 +72,7 @@ cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, con
 	
 	for ( size_t i = 0; i < fromValues.size(); ++i )
 	  {
-	  this->m_Mapping[fromValues[i]] = std::numeric_limits<double>::quiet_NaN();
+	  this->m_Mapping[fromValues[i]] = std::numeric_limits<double>::signaling_NaN();
 	  }
 	}
       else

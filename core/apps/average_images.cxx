@@ -218,7 +218,7 @@ doMain( const int argc, const char* argv[] )
   if ( ! outputData ) 
     {
     outputData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
-    outputData->SetPaddingValue( std::numeric_limits<float>::quiet_NaN() );
+    outputData->SetPaddingValue( std::numeric_limits<float>::signaling_NaN() );
     } 
   
   cmtk::ProgressConsole progressIndicator;

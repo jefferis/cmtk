@@ -286,7 +286,7 @@ doMain( const int argc, const char *argv[] )
 	{
 	if(Binary)
 	  {
-	  const float nan3[3] = { std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()};
+	  const float nan3[3] = { std::numeric_limits<float>::signaling_NaN(), std::numeric_limits<float>::signaling_NaN(), std::numeric_limits<float>::signaling_NaN()};
 	  fwrite( nan3, sizeof(float), 3, outfile );
 	  }
 	else

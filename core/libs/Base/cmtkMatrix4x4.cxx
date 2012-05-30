@@ -226,7 +226,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
 
-#define VTK_AXIS_EPSILON 0.001
   double   d;
   double   d1;
   double   d2;
@@ -244,10 +243,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     params[6 + i] = sqrt( MathUtil::Square( matrix[i][0] ) + MathUtil::Square( matrix[i][1] ) + MathUtil::Square( matrix[i][2] ) );
     
     // report error on singular matrices.
-    if ( fabs(params[6+i]) < VTK_AXIS_EPSILON ) 
+    if ( fabs(params[6+i]) < std::numeric_limits<T>::epsilon() ) 
       {
-      StdErr <<"Matrxi4x4::Decompose encountered singular matrix.";
-      return false;
+      throw typename Self::SingularMatrixException();
       }
     }
 
@@ -276,7 +274,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x2 * x2 + z2 * z2;
   d1 = sqrt (dot);
     
-  if (d1 < VTK_AXIS_EPSILON) 
+  if (d1 < std::numeric_limits<T>::epsilon()) 
     {
     cosTheta = 1.0;
     sinTheta = 0.0;
@@ -293,13 +291,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x2 * x2 + y2 * y2 + z2 * z2;
   d = sqrt (dot);
     
-  if (d < VTK_AXIS_EPSILON) 
+  if (d < std::numeric_limits<T>::epsilon()) 
     {    
     sinPhi = 0.0;
     cosPhi = 1.0;
     } 
   else 
-    if (d1 < VTK_AXIS_EPSILON) 
+    if (d1 < std::numeric_limits<T>::epsilon()) 
       {
       sinPhi = y2 / d;
       cosPhi = z2 / d;
@@ -318,7 +316,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x3p * x3p + y3p * y3p;
   
   d2 = sqrt (dot);
-  if (d2 < VTK_AXIS_EPSILON) 
+  if (d2 < std::numeric_limits<T>::epsilon()) 
     {
     cosAlpha = 1.0;
     sinAlpha = 0.0;

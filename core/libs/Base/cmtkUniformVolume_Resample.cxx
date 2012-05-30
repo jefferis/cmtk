@@ -157,7 +157,7 @@ UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t ta
 	if ( maxLabelWeight > 0 )
 	  dest[offset] = maxLabelIndex;
 	else 
-	  dest[offset] = std::numeric_limits<double>::quiet_NaN();
+	  dest[offset] = std::numeric_limits<double>::signaling_NaN();
 	}
       }
     }
@@ -225,7 +225,7 @@ UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t task
 	  } 
 	else
 	  {
-	  dest[offset] = std::numeric_limits<double>::quiet_NaN();
+	  dest[offset] = std::numeric_limits<double>::signaling_NaN();
 	  }
 	}
       }

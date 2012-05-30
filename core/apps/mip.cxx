@@ -47,8 +47,8 @@
 #include <iostream>
 #include <limits>
 
-double Black = std::numeric_limits<double>::quiet_NaN();
-double White = std::numeric_limits<double>::quiet_NaN();
+double Black = std::numeric_limits<double>::signaling_NaN();
+double White = std::numeric_limits<double>::signaling_NaN();
 
 int Axis = 2;
 

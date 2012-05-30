@@ -50,7 +50,7 @@ TypedArraySimilarity::GetMutualInformation
   TypedArraySimilarityMemory *const memory )
 {
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
 
   size_t dataSize = array0->GetDataSize();
 
@@ -87,7 +87,7 @@ TypedArraySimilarity::GetCorrelationRatio
 {
   // check if both images have same number of pixels.
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
 
   // determine reference image value range.
   const Types::DataItemRange range = array0->GetRange();
@@ -170,7 +170,7 @@ TypedArraySimilarity::GetNormalizedMutualInformation
   TypedArraySimilarityMemory *const memory )
 {
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
 
   size_t dataSize = array0->GetDataSize();
 
@@ -203,7 +203,7 @@ TypedArraySimilarity::GetMinusMeanSquaredDifference
 ( const TypedArray* array0, const TypedArray* array1 )
 {
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
 
   unsigned int countPixels = 0;
   Types::DataItem pixel0, pixel1;
@@ -220,7 +220,7 @@ TypedArraySimilarity::GetMinusMeanSquaredDifference
     }
   
   if ( !countPixels )
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
   else
     return static_cast<TypedArraySimilarity::ReturnType>( -(sumOfSquares / (float)countPixels) );
 }
@@ -237,7 +237,7 @@ TypedArraySimilarity::GetCrossCorrelation
 ( const TypedArray* array0, const TypedArray* array1 )
 {
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
-    return std::numeric_limits<float>::quiet_NaN();
+    return std::numeric_limits<float>::signaling_NaN();
 
   const size_t numberOfPixels = array0->GetDataSize();
   Types::DataItem sumOfProducts = 0, sumOfSquares0 = 0, sumOfSquares1 = 0;

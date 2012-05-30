@@ -100,7 +100,7 @@ doMain( const int argc, const char* argv[] )
       list.push_back( f );
       }
     
-    f = std::numeric_limits<double>::quiet_NaN();
+    f = std::numeric_limits<double>::signaling_NaN();
     }
   
   const size_t totalNumberOfValues = seq.GetNValues() + countOverThreshold;

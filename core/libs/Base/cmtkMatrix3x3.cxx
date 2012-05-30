@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,6 +37,7 @@
 
 #include <string.h>
 #include <math.h>
+#include <limits>
 
 namespace
 cmtk
@@ -110,17 +111,15 @@ Matrix3x3<T>::Decompose
     memset( params+6, 0, 2*sizeof( Types::Coordinate ) );
     }
 
-#define IGS_EPSILON 0.001
   for ( int i=0; i<2; ++i ) 
     {
     // scale
     params[3+i] = sqrt( MathUtil::Square( matrix[i][0] ) + MathUtil::Square( matrix[i][1] ) );
 
     // report error on singular matrices.
-    if ( fabs(params[3+i]) < IGS_EPSILON ) 
+    if ( fabs(params[3+i]) < std::numeric_limits<T>::epsilon() ) 
       {
-      StdErr <<"igsMatrxi3x3::Decompose encountered singular matrix.";
-      return false;
+      throw typename Self::SingularMatrixException();
       }
     }
 
@@ -133,7 +132,7 @@ Matrix3x3<T>::Decompose
   double d1 = sqrt (dot);
 
   double cosTheta, sinTheta;
-  if (d1 < IGS_EPSILON) 
+  if (d1 < std::numeric_limits<T>::epsilon() ) 
     {
     cosTheta = 1.0;
     sinTheta = 0.0;
@@ -147,7 +146,6 @@ Matrix3x3<T>::Decompose
   params[2] = static_cast<T>( Units::Degrees( MathUtil::ArcTan2 (sinTheta, cosTheta) ).Value() );
     
   return true;
-#undef IGS_EPSILON
 }
 
 template<class T>

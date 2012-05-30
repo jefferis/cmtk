@@ -379,7 +379,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f ) 
-	this->m_ReformattedFloatingChannels[f][rindex] = std::numeric_limits<float>::quiet_NaN();
+	this->m_ReformattedFloatingChannels[f][rindex] = std::numeric_limits<float>::signaling_NaN();
       return;
       }
     }
