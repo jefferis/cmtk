@@ -297,10 +297,10 @@ public:
   /// Function that compares two doubles; to be used in qsort().
   static inline int CompareDouble( const void *a, const void *b ) 
   {
-    const double* A = static_cast<const double*>( a );
-    const double* B = static_cast<const double*>( b );
-    if ( *A > *B ) return +1;
-    if ( *A < *B ) return -11;
+    const double A = *(static_cast<const double*>( a ));
+    const double B = *(static_cast<const double*>( b ));
+    if ( A > B ) return +1;
+    if ( A < B ) return -1;
     return 0;
   }
   
