@@ -87,6 +87,7 @@ SET(APPS avg_adm
   similarity
   split
   statistics
+  streamxform
   sympl
   symplx
   ttest

@@ -714,6 +714,10 @@ LIST(APPEND testList sequenceDefault sequenceFormat sequenceThresh sequenceAbs s
 LIST(APPEND testList similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
 
 # ==========================================
+# Tests for "streamxform" tool
+LIST(APPEND testList streamxformFordwardBackward streamxformFordwardBackwardTolerance streamxformAffine streamxformAffineFromTo)
+
+# ==========================================
 # Tests for "sympl" tool
 LIST(APPEND testList symmetry_plane symmetry_planeThresh)
 

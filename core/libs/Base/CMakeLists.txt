@@ -90,6 +90,7 @@ SET(cmtkBase_SRCS
   cmtkMetaInformationObject.cxx
   cmtkParametricPlane.cxx
   cmtkScalarImage.cxx
+  cmtkScalarImageGradientField.cxx
   cmtkSegmentationLabel.cxx
   cmtkSplineWarpXform.cxx
   cmtkSplineWarpXform_Inverse.cxx

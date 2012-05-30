@@ -2105,6 +2105,22 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/statistics --mask-output-all-up-to 2 -l parc1.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
+    streamxformFordwardBackward)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformFordwardBackwardTolerance)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform --inversion-tolerance 0.1 vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformAffine)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform vol001_mr_t0t1.list > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformAffineFromTo)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform --source-image vol001_mr_t0.hdr --target-image vol001_mr_t1.hdr vol001_mr_t0t1.list > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
     symmetry_plane)
 	run sympl --sampling 1 --levels 4 --accuracy 0.1 --write-xform ${tmpdir}/xform --sinc --write-subtract ${tmpdir}/subtract.hdr --write-marked ${tmpdir}/marked.nii --write-mirror ${tmpdir}/mirror.nii -o ${tmpdir}/parameters cad001_ct.hdr
 	check_results parameters xform subtract.img marked.nii mirror.nii
