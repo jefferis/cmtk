@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,7 +72,7 @@ SymmetryPlaneFunctional::GetParamStep
       // the other two parameters are rotations
     case 1:
     case 2:
-      return mmStep / sqrt( MathUtil::Square( 0.5 * m_Volume->Size[0] ) + MathUtil::Square( 0.5 * m_Volume->Size[1] ) + MathUtil::Square( 0.5 * m_Volume->Size[2] ) ) * 90/M_PI;
+      return mmStep / sqrt( MathUtil::Square( 0.5 * m_Volume->m_Size[0] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[1] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[2] ) ) * 90/M_PI;
     }
   return mmStep;
 }

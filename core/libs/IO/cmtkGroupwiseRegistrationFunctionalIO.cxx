@@ -51,7 +51,7 @@ operator<<
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", templateGrid->GetDims().begin(), 3 );
   stream.WriteCoordinateArray( "delta", templateGrid->Deltas().begin(), 3 );
-  stream.WriteCoordinateArray( "size", templateGrid->Size.begin(), 3 );
+  stream.WriteCoordinateArray( "size", templateGrid->m_Size.begin(), 3 );
   stream.WriteCoordinateArray( "origin", templateGrid->m_Offset.begin(), 3 );
   stream.End();
   

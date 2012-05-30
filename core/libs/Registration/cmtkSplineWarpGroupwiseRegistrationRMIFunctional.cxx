@@ -133,7 +133,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateActiveControlPoints()
     const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
 
     const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
-    const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+    const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->m_Size );
     Vector3D fromVOI, toVOI;
     
     std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();

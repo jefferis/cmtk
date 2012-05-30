@@ -177,7 +177,7 @@ DoRegistration()
       }
     }
 
-  const cmtk::Vector3D referenceImageDomain = (*refChannelList.begin())->Size;
+  const cmtk::Vector3D referenceImageDomain = (*refChannelList.begin())->m_Size;
 
   cmtk::Types::Coordinate minPixelSize = FLT_MAX;
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )

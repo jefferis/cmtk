@@ -91,6 +91,14 @@ public:
     this->m_DataArray.resize( this->GetNumberOfPixels );
   }
 
+  /** Create volume from base class instance.
+   *\param dims Number of grid elements for the three spatial dimensions.
+   *\param size Size of the volume in real-world coordinates.
+   */
+  ImageTemplate( const Superclass& from ) : Superclass( from ) 
+  {
+  }
+
   /// Access operator.
   PixelType& operator[]( const size_t idx )
   {

@@ -308,9 +308,9 @@ public:
 								    const bool fastMode /*!< Fast mode selector. When 0, "slow", accurate mode is forced. */ ) const;
   
   /// Register the grid points of the deformed uniform or non-uniform volume.
-  void RegisterVolume( const UniformVolume* volume )
+  void RegisterVolume( const UniformVolume& volume )
   {
-    this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset );
+    this->RegisterVolumePoints( volume.m_Dims, volume.m_Delta, volume.m_Offset );
   }
 
   /// Register axes points of the volume to be deformed.
@@ -448,6 +448,9 @@ protected:
 
   /// Fitting class is a friend.
   friend class FitSplineWarpToDeformationField;
+
+  /// Fitting class is a friend.
+  friend class FitSplineWarpToXformList;
 
   /// Fitting class is a friend.
   friend class FitSplineWarpToLandmarks;

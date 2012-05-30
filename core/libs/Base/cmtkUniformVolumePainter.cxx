@@ -50,8 +50,8 @@ cmtk::UniformVolumePainter::DrawSphere
     case Self::COORDINATES_RELATIVE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	(centerAbsolute[dim] *= volume.Size[dim]) += volume.m_Offset[dim];
-	radiusAbsolute[dim] *= volume.Size[dim];
+	(centerAbsolute[dim] *= volume.m_Size[dim]) += volume.m_Offset[dim];
+	radiusAbsolute[dim] *= volume.m_Size[dim];
 	}
       break;
     case Self::COORDINATES_INDEXED:
@@ -118,8 +118,8 @@ cmtk::UniformVolumePainter::DrawBox
     case Self::COORDINATES_RELATIVE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] * volume.Size[dim] / volume.m_Delta[dim] ) );
-	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] * volume.Size[dim] / volume.m_Delta[dim] ) );
+	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] * volume.m_Size[dim] / volume.m_Delta[dim] ) );
+	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] * volume.m_Size[dim] / volume.m_Delta[dim] ) );
 	}
       break;
     case Self::COORDINATES_INDEXED:

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -99,7 +99,7 @@ doMain( int argc, const char *argv[] )
       
 	fprintf( stdout, "GRID\tUniform\nXPIX\t%f\nYPIX\t%f\nZPIX\t%f\nXFOV\t%f\nYFOV\t%f\nZFOV\t%f\n",
 		 volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2],
-		 volume->Size[0], volume->Size[1], volume->Size[2] );
+		 volume->m_Size[0], volume->m_Size[1], volume->m_Size[2] );
 
 	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
@@ -140,7 +140,7 @@ doMain( int argc, const char *argv[] )
 	
 	fprintf( stdout, "Uniform volume\n%f x %f x %f [%s] voxel size\n%f x %f x %f [%s] volume size\n",
 		 volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2], spaceUnits,
-		 volume->Size[0], volume->Size[1], volume->Size[2], spaceUnits );
+		 volume->m_Size[0], volume->m_Size[1], volume->m_Size[2], spaceUnits );
 	
 	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 

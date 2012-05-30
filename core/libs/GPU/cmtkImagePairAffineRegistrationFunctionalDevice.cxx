@@ -79,7 +79,7 @@ ImagePairAffineRegistrationFunctionalDevice::Evaluate()
     {
     for ( size_t i = 0; i < 3; ++i )
       {
-      matrix[j][i] /= static_cast<float>( this->m_FloatingGrid->Size[i] );
+      matrix[j][i] /= static_cast<float>( this->m_FloatingGrid->m_Size[i] );
       }
     }
   

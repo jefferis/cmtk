@@ -494,11 +494,11 @@ QtTriplanarWindow::UpdateDialog()
       ScrollRenderViewCo->slotSetNumberOfSlices( VolumeDims[AXIS_Y] );
       
       LocationValidatorX->setBottom( 0 );
-      LocationValidatorX->setTop( volume->Size[AXIS_X] );
+      LocationValidatorX->setTop( volume->m_Size[AXIS_X] );
       LocationValidatorY->setBottom( 0 );
-      LocationValidatorY->setTop( volume->Size[AXIS_Y] );
+      LocationValidatorY->setTop( volume->m_Size[AXIS_Y] );
       LocationValidatorZ->setBottom( 0 );
-      LocationValidatorZ->setTop( volume->Size[AXIS_Z] );
+      LocationValidatorZ->setTop( volume->m_Size[AXIS_Z] );
       } 
     else
       {

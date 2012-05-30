@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,7 +55,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
   AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, curOrientation, newOrientation );
-  FixedVector<3,Types::Coordinate> newSize = pmatrix.GetPermutedArray( this->Size );
+  FixedVector<3,Types::Coordinate> newSize = pmatrix.GetPermutedArray( this->m_Size );
   
   UniformVolume::SmartPtr result( new UniformVolume( temp->GetDims(), newSize, temp->GetData() ) );
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );

@@ -67,7 +67,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
     {
     for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
       {
-      dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( this->m_TemplateGrid );	
+      dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( *(this->m_TemplateGrid) );	
       }      
     this->UpdateVolumesOfInfluence();
     }
@@ -85,8 +85,8 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 
   for ( size_t i = 0; i < this->m_ImageVector.size(); ++i )
     {
-    SplineWarpXform::SmartPtr xform( new SplineWarpXform( this->m_TemplateGrid->Size, gridSpacing, initialAffineXformsVector[i], exactSpacing ) );
-    xform->RegisterVolume( this->m_TemplateGrid );
+    SplineWarpXform::SmartPtr xform( new SplineWarpXform( this->m_TemplateGrid->m_Size, gridSpacing, initialAffineXformsVector[i], exactSpacing ) );
+    xform->RegisterVolume( *(this->m_TemplateGrid) );
     this->m_XformVector[i] = xform;
 
     this->m_InitialRotationsVector[i] = AffineXform::SmartPtr( initialAffineXformsVector[i] );
@@ -112,7 +112,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
   for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
     {
     this->GetXformByIndex(i)->Refine();
-    dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( this->m_TemplateGrid );
+    dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( *(this->m_TemplateGrid) );
     }
 
   this->m_ParametersPerXform = this->m_XformVector[0]->VariableParamVectorDim();
@@ -124,7 +124,7 @@ void
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::UpdateVolumesOfInfluence()
 {
-  const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+  const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->m_Size );
   
   this->m_VolumeOfInfluenceArray.resize( this->m_ParametersPerXform / 3 );
   
@@ -331,7 +331,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>::UpdateActiveContr
     {
     size_t cntDisabled = 0;
 
-    const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+    const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->m_Size );
     const SplineWarpXform& xform0 = *(this->GetXformByIndex(0));
     for ( size_t cp = 0; cp < numberOfControlPoints; ++cp )
       {

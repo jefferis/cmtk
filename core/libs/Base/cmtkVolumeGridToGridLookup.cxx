@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,17 +61,17 @@ VolumeGridToGridLookup
     for ( int toIdx = 0; toIdx < toVolume.m_Dims[dim]; ++toIdx ) 
       {
       const Types::Coordinate toGridLo = std::max<Types::Coordinate>( 0.0, (toIdx-0.5) * toGridDelta );
-      const Types::Coordinate toGridHi = std::min<Types::Coordinate>( toVolume.Size[dim], (0.5+toIdx) * toGridDelta );
+      const Types::Coordinate toGridHi = std::min<Types::Coordinate>( toVolume.m_Size[dim], (0.5+toIdx) * toGridDelta );
       this->m_Length[dim][toIdx] = toGridHi - toGridLo;
 
-      Types::Coordinate fromGridHi = std::min<Types::Coordinate>( toVolume.Size[dim], (0.5+fromIdx) * fromGridDelta );
+      Types::Coordinate fromGridHi = std::min<Types::Coordinate>( toVolume.m_Size[dim], (0.5+fromIdx) * fromGridDelta );
       while ( toGridLo>=fromGridHi )
 	{
 	++fromIdx;
 	fromGridHi += fromGridDelta;
 	}
       this->m_FromIndex[dim][toIdx] = fromIdx;
-      fromGridHi = std::min<Types::Coordinate>( fromVolume.Size[dim], fromGridHi );
+      fromGridHi = std::min<Types::Coordinate>( fromVolume.m_Size[dim], fromGridHi );
       
       int idx = 0;
       Types::Coordinate fromGridLo = std::max<Types::Coordinate>( 0.0, (fromIdx-0.5) * fromGridDelta );

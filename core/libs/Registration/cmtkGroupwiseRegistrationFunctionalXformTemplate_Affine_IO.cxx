@@ -49,7 +49,7 @@ operator<<
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
   stream.WriteCoordinateArray( "delta", func.m_TemplateGrid->Deltas().begin(), 3 );
-  stream.WriteCoordinateArray( "size", func.m_TemplateGrid->Size.begin(), 3 );
+  stream.WriteCoordinateArray( "size", func.m_TemplateGrid->m_Size.begin(), 3 );
   stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.begin(), 3 );
   stream.End();
   

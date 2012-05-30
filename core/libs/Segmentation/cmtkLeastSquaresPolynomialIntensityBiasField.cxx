@@ -83,7 +83,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
 
     if ( mask[ofs] )
       {
-      const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.Size );    
+      const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.m_Size );
       dataVector[cntPx] = image.GetDataAt( ofs ) / avg - 1.0;
       for ( size_t n = 0; n < nVars; ++n )
 	{
@@ -104,7 +104,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     {
     const size_t ofs = image.GetOffsetFromIndex( it.Index() );
 
-    const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.Size );    
+    const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.m_Size );    
     
     Types::DataItem bias = 1.0;
     for ( size_t n = 0; n < nVars; ++n )

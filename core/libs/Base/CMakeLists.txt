@@ -53,6 +53,7 @@ SET(cmtkBase_SRCS
   cmtkFitAffineToWarpXform.cxx
   cmtkFitSplineWarpToDeformationField.cxx
   cmtkFitSplineWarpToLandmarks.cxx
+  cmtkFitSplineWarpToXformList.cxx
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx

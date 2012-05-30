@@ -430,7 +430,7 @@ public:
 	if ( thread ) 
 	  {
 	  ThreadWarp[thread] = SplineWarpXform::SmartPtr( this->Warp->Clone() );
-	  ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
+	  ThreadWarp[thread]->RegisterVolume( *(this->ReferenceGrid) );
 	  } 
 	else 
 	  {

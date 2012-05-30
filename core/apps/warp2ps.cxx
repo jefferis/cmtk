@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -195,8 +195,8 @@ doMain ( const int argc, const char* argv[] )
   if ( SliceIndex < 0 )
     SliceIndex = volume->GetDims()[Axis] / 2;
   
-  const cmtk::Types::Coordinate pixelSizeX = volume->Size[axisX] / (volume->GetDims()[axisX]-1);
-  const cmtk::Types::Coordinate pixelSizeY = volume->Size[axisY] / (volume->GetDims()[axisY]-1);
+  const cmtk::Types::Coordinate pixelSizeX = volume->m_Size[axisX] / (volume->GetDims()[axisX]-1);
+  const cmtk::Types::Coordinate pixelSizeY = volume->m_Size[axisY] / (volume->GetDims()[axisY]-1);
 
   const cmtk::Types::Coordinate xmin = CropRegion[0] * pixelSizeX * ScaleFactor;
   const cmtk::Types::Coordinate ymin = CropRegion[1] * pixelSizeY * ScaleFactor;

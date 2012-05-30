@@ -130,10 +130,10 @@ ElasticRegistration::InitRegistration ()
     } 
   else
     {
-    SplineWarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, affineXform ) );
+    SplineWarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->m_Size, affineXform ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
-      InverseWarpXform = SplineWarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, initialInverse ) );
+      InverseWarpXform = SplineWarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->m_Size, initialInverse ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 

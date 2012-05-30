@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -101,7 +101,7 @@ GroupwiseRegistrationFunctionalBase::CreateTemplateGridFromTargets
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      templateSize[dim] = std::max( templateSize[dim], targets[i]->Size[dim] );
+      templateSize[dim] = std::max( templateSize[dim], targets[i]->m_Size[dim] );
       }
     templateDelta = std::min( templateDelta, targets[i]->GetMinDelta() );
     }

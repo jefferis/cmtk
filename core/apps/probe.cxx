@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -228,7 +228,7 @@ doMain( const int argc, const char *argv[] )
 	  break;
 	case COORDINATES_RELATIVE:
 	  // absolute image coordinate is relative times volume size
-	  v *= volume->Size;
+	  v *= volume->m_Size;
 	  break;
 	case COORDINATES_PHYSICAL:
 	  // absolute image coordinate is physical transformed by inverse image-to-physical matrix

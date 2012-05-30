@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,7 +64,7 @@ MultiChannelRegistrationFunctionalBase
   else
     {
     this->m_ReferenceDims = channel->GetDims();
-    this->m_ReferenceSize = channel->Size;
+    this->m_ReferenceSize = channel->m_Size;
     this->m_ReferenceCropRegion = channel->CropRegion();
     }
   this->m_ReferenceChannels.push_back( channel );
@@ -87,7 +87,7 @@ MultiChannelRegistrationFunctionalBase
   else
     {
     this->m_FloatingDims = channel->GetDims();
-    this->m_FloatingSize = channel->Size;
+    this->m_FloatingSize = channel->m_Size;
     this->m_FloatingCropRegion = channel->GetHighResCropRegion();
     for ( int dim = 0; dim < 3; ++dim ) 
       {
@@ -108,7 +108,7 @@ MultiChannelRegistrationFunctionalBase
       {
       throw Exception( "MultiChannelRegistrationFunctionalBase::VerifyImageSize(): Image dimension mismatch" );
       }
-    if ( fabs( imgA->Size[dim] - imgB->Size[dim] ) > 1e-6 )
+    if ( fabs( imgA->m_Size[dim] - imgB->m_Size[dim] ) > 1e-6 )
       {
       throw Exception( "MultiChannelRegistrationFunctionalBase::VerifyImageSize(): Image size mismatch" );
       }

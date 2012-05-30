@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -299,7 +299,7 @@ public:
     const size_t xformIdx = idx / this->m_ParametersPerXform;
     if ( (xformIdx >= this->m_ActiveXformsFrom) && (xformIdx < this->m_ActiveXformsTo) )
       {
-      return this->m_XformVector[xformIdx]->GetParamStep( idx % this->m_ParametersPerXform, this->m_ImageVector[xformIdx]->Size, mmStep );
+      return this->m_XformVector[xformIdx]->GetParamStep( idx % this->m_ParametersPerXform, this->m_ImageVector[xformIdx]->m_Size, mmStep );
       }
     else
       {

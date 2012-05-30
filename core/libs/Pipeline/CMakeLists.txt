@@ -37,7 +37,6 @@ SET(cmtkPipeline_SRCS
   cmtkObject.cxx
   cmtkPipelineObject.cxx
   cmtkPlane.cxx
-  cmtkPlaneSource.cxx
   cmtkRenderer.cxx
   cmtkSlicer.cxx
   cmtkVolumeWrapper.cxx

@@ -119,7 +119,7 @@ VolumeIO::Read( const std::string& path )
   volume->SetMetaInfo( META_FS_PATH, path );
   volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
   DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
-				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->m_Size[0], volume->m_Size[1], volume->m_Size[2] );
   
   const TypedArray* dataArray = volume->GetData();
   if ( ! dataArray )
@@ -173,7 +173,7 @@ VolumeIO::ReadGrid( const std::string& path )
     }
   
   DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
-				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+				       volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->m_Size[0], volume->m_Size[1], volume->m_Size[2] );
 
   volume->SetMetaInfo( META_FS_PATH, path );
   volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
@@ -329,7 +329,7 @@ VolumeIO::Write
     }
 
   DebugOutput( 3 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path.c_str(), 
-				       volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
+				       volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.m_Size[0], volume.m_Size[1], volume.m_Size[2] );
   
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;

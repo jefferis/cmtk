@@ -49,7 +49,7 @@ VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
   FloatingGrid = floating;
   
   this->FloatingDims = this->FloatingGrid->GetDims();
-  this->FloatingSize = this->FloatingGrid->Size;
+  this->FloatingSize = this->FloatingGrid->m_Size;
 
   this->m_FloatingCropRegionCoordinates = FloatingGrid->GetHighResCropRegion();
   for ( int dim = 0; dim < 3; ++dim ) 
@@ -68,7 +68,7 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
   ReferenceGrid = reference;
 
   this->ReferenceDims = this->ReferenceGrid->GetDims();
-  this->ReferenceSize = this->ReferenceGrid->Size;
+  this->ReferenceSize = this->ReferenceGrid->m_Size;
   this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
 
   for ( int dim = 0; dim < 3; ++dim )

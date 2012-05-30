@@ -81,7 +81,7 @@ UniformDistanceMap<TDistanceDataType>
 ::BuildDistanceMap
 ( const UniformVolume& volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
 {
-  this->m_DistanceMap = UniformVolume::SmartPtr( new UniformVolume( volume.m_Dims, volume.Size ) );
+  this->m_DistanceMap = UniformVolume::SmartPtr( new UniformVolume( volume.m_Dims, volume.m_Size ) );
     
   TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume.GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );

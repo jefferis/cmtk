@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -537,7 +537,7 @@ ReformatVolume::CreateTransformedReference
   for ( unsigned int axis = 0; axis < 3; ++axis ) 
     {
     bbFrom[axis] = 0;
-    bbTo[axis] = this->ReferenceVolume->Size[axis];
+    bbTo[axis] = this->ReferenceVolume->m_Size[axis];
     }
   
   if ( volumeOffset ) 
@@ -546,20 +546,20 @@ ReformatVolume::CreateTransformedReference
     for ( unsigned int z = 0; z < 2; ++z ) 
       {
       if ( z )
-	u[AXIS_Z] = this->ReferenceVolume->Size[AXIS_Z];
+	u[AXIS_Z] = this->ReferenceVolume->m_Size[AXIS_Z];
       else
 	u[AXIS_Z] = 0;
       
       for ( unsigned int y = 0; y < 2; ++y ) 
 	{
 	if ( y )
-	  u[AXIS_Y] = this->ReferenceVolume->Size[AXIS_Y];
+	  u[AXIS_Y] = this->ReferenceVolume->m_Size[AXIS_Y];
 	else
 	  u[AXIS_Y] = 0;
 	for ( unsigned int x = 0; x < 2; ++x ) 
 	  {
 	  if ( x )
-	    u[AXIS_X] = this->ReferenceVolume->Size[AXIS_X];
+	    u[AXIS_X] = this->ReferenceVolume->m_Size[AXIS_X];
 	  else
 	    u[AXIS_X] = 0;
 	  

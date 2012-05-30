@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -105,7 +105,7 @@ public:
    * this field, because the volume size as the product of pixel size times number of pixels
    * per dimension minus one remains unaffected.
    */
-  FixedVector<3,Types::Coordinate> Size;
+  FixedVector<3,Types::Coordinate> m_Size;
 
   /// Default constructor.
   Volume() : m_Offset( CoordinateVectorType::Init( 0.0 ) ) {}
@@ -115,34 +115,18 @@ public:
    */
   virtual ~Volume () {};
 
-  /** Get minumum extent.
-   *\return Minimum volume extent among the three spatial dimensions.
-   */
-  virtual Types::Coordinate MinSize () const 
-  {
-    return std::min<Types::Coordinate>( Size[0], std::min<Types::Coordinate>( Size[1], Size[2] ) );
-  }
-  
-  /** Get maximum extent.
-   *\return Maximum volume extent among the three spatial dimensions.
-   */
-  virtual Types::Coordinate MaxSize () const 
-  {
-    return std::max<Types::Coordinate>( Size[0], std::max<Types::Coordinate>( Size[1], Size[2] ) );
-  }
-  
   /** Get total volume.
    *\return Product of the spatial extents in all three coordinate directions.
    */
   virtual Types::Coordinate TotalVolume () const 
   {
-    return Size[0] * Size[1] * Size[2];
+    return m_Size[0] * m_Size[1] * m_Size[2];
   }
   
   /// Return average volume of all voxels.
   virtual Types::Coordinate AverageVoxelVolume () const 
   {
-    return ( (Size[0]*Size[1]*Size[2]) / ((this->m_Dims[0]-1)*(this->m_Dims[1]-1)*(this->m_Dims[2]-1)) );
+    return ( (m_Size[0]*m_Size[1]*m_Size[2]) / ((this->m_Dims[0]-1)*(this->m_Dims[1]-1)*(this->m_Dims[2]-1)) );
   }
   
   /** Calculate volume center.

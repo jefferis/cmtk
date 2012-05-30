@@ -46,8 +46,8 @@ UniformVolume::UniformVolume
   this->SetDims( dims );
   
   for ( int i=0; i<3; ++i ) {
-    Size[i] = static_cast<Types::Coordinate>( size[i] );
-    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
+    this->m_Size[i] = static_cast<Types::Coordinate>( size[i] );
+    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : this->m_Size[i] / (this->m_Dims[i] - 1);
   }
 
   this->CropRegion() = this->GetWholeImageRegion();
@@ -65,7 +65,7 @@ UniformVolume::UniformVolume
   this->m_Delta[2] = deltaZ;
 
   for ( int i=0; i<3; ++i )
-    Size[i] = this->m_Delta[i] * (this->m_Dims[i]-1);
+    this->m_Size[i] = this->m_Delta[i] * (this->m_Dims[i]-1);
 
   this->CropRegion() = this->GetWholeImageRegion();
   this->CreateDefaultIndexToPhysicalMatrix();
@@ -78,25 +78,25 @@ UniformVolume::UniformVolume
   Self::IndexType newDims;
   for ( int dim=0; dim<3; ++dim ) 
     {
-    Size[dim] = other.Size[dim];
-    int new_dims=(int) (Size[dim]/resolution)+1;
+    this->m_Size[dim] = other.m_Size[dim];
+    const int new_dims=(int) (this->m_Size[dim]/resolution)+1;
     if ( allowUpsampling || (new_dims<=other.m_Dims[dim]) ) 
       {
       newDims[dim]=new_dims;
-      this->m_Delta[dim]=Size[dim]/(new_dims-1);
+      this->m_Delta[dim] = this->m_Size[dim]/(new_dims-1);
       } 
     else
       {
       if ( other.m_Dims[dim] == 1 ) 
 	{
-	this->m_Delta[dim] = Size[dim];
+	this->m_Delta[dim] = this->m_Size[dim];
 	newDims[dim] = 1;
 	} 
       else 
 	{
 	this->m_Delta[dim] = other.m_Delta[dim];
-	newDims[dim] = ((int)(Size[dim]/this->m_Delta[dim])) + 1;
-	Size[dim] = (newDims[dim]-1) * this->m_Delta[dim];
+	newDims[dim] = ((int)(this->m_Size[dim]/this->m_Delta[dim])) + 1;
+	this->m_Size[dim] = (newDims[dim]-1) * this->m_Delta[dim];
 	}
       }
     }
@@ -149,7 +149,7 @@ UniformVolume::CloneVirtual() const
 UniformVolume*
 UniformVolume::CloneGridVirtual() const
 {
-  UniformVolume* clone = new UniformVolume( this->m_Dims, Size );
+  UniformVolume* clone = new UniformVolume( this->m_Dims, this->m_Size );
   clone->SetOffset( this->m_Offset );
   clone->CopyMetaInfo( *this );
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
@@ -255,7 +255,7 @@ UniformVolume::GetInterleavedSubVolume
   for ( int dim = 0; dim < 3; ++dim )
     {
     dims[dim] = this->m_Dims[dim];
-    size[dim] = this->Size[ dim ];
+    size[dim] = this->m_Size[ dim ];
     }
   dims[axis] = this->m_Dims[axis] / factor;
   if ( this->m_Dims[axis] % factor > idx )
@@ -299,7 +299,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
   if ( this->m_Dims[axis] % factor > idx )
     ++sDims;
 
-  UniformVolume* volume = new UniformVolume( this->m_Dims, this->Size );
+  UniformVolume* volume = new UniformVolume( this->m_Dims, this->m_Size );
   (volume->CreateDataArray( this->GetData()->GetType() ))->Fill( 0.0 );
   volume->SetOffset( this->m_Offset );
   for ( int i = 0; i < sDims; ++i )

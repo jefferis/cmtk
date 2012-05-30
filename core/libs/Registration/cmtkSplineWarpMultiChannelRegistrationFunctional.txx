@@ -114,10 +114,10 @@ void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 ::UpdateTransformationData()
 {
-  this->m_Transformation.RegisterVolume( this->m_ReferenceChannels[0] );
+  this->m_Transformation.RegisterVolume( *(this->m_ReferenceChannels[0]) );
   for ( size_t thread = 0; thread < this->m_ThreadTransformations.size(); ++thread )
     {
-    this->m_ThreadTransformations[thread]->RegisterVolume( this->m_ReferenceChannels[0] );
+    this->m_ThreadTransformations[thread]->RegisterVolume( *(this->m_ReferenceChannels[0]) );
     }
   
   this->m_StepScaleVector.resize( this->m_Transformation.VariableParamVectorDim() );
@@ -129,7 +129,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
   this->m_VolumeOfInfluenceVector.resize( numberOfControlPoints );
   
-  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->Size );
+  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->m_Size );
   
   for ( size_t idx = 0; idx < numberOfControlPoints; ++idx ) 
     {
@@ -160,7 +160,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
 
-  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->Size );
+  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->m_Size );
 
   std::vector<bool> active( numberOfControlPoints );
   std::fill( active.begin(), active.end(), true );

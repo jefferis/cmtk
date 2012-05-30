@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,7 @@ Volume::GetTrilinear
 Vector3D
 Volume::GetCenter () const 
 {
-  return this->m_Offset + 0.5 * Vector3D(Size);
+  return this->m_Offset + 0.5 * this->m_Size;
 }
 
 } // namespace cmtk

@@ -157,7 +157,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
       realCropFrom[dim] = crop[dim];
       if ( crop[3+dim] < 0 ) 
 	{
-	realCropTo[dim] = volume->Size[dim] + crop[3+dim];
+	realCropTo[dim] = volume->m_Size[dim] + crop[3+dim];
 	}
       else
 	{

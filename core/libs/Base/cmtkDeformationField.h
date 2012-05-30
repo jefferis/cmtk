@@ -75,7 +75,7 @@ public:
   /// Constructor.
   DeformationField( const UniformVolume* volume ) 
   {
-    this->InitGrid( volume->Size, volume->m_Dims );
+    this->InitGrid( volume->m_Size, volume->m_Dims );
     this->m_Offset = volume->m_Offset;
   }
   

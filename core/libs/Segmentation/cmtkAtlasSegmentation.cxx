@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,7 +87,7 @@ cmtk::AtlasSegmentation
   er.SetUseOriginalData( !this->m_Fast );
   er.SetFastMode( this->m_Fast );
 
-  const Types::Coordinate minSize = std::min( std::min( this->m_TargetImage->Size[0], this->m_TargetImage->Size[1] ), this->m_TargetImage->Size[2] );
+  const Types::Coordinate minSize = std::min( std::min( this->m_TargetImage->m_Size[0], this->m_TargetImage->m_Size[1] ), this->m_TargetImage->m_Size[2] );
   er.SetGridSpacing( minSize / 2 );
   er.SetRefineGrid( std::max<int>( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMaxDelta() ) / log(2.0)) - 3 ) ) );
   er.SetDelayRefineGrid( !this->m_Fast );

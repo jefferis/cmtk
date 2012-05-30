@@ -86,7 +86,7 @@ ImageSymmetryPlaneFunctionalDevice::Evaluate()
     {
     for ( size_t i = 0; i < 3; ++i )
       {
-      matrix[j][i] /= static_cast<float>( this->m_Volume->Size[i] );
+      matrix[j][i] /= static_cast<float>( this->m_Volume->m_Size[i] );
       }
     }
   

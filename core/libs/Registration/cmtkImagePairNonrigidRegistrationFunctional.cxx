@@ -61,7 +61,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
     
   Dim = 0;
 
-  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) ), reference->Size );
+  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) ), reference->m_Size );
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
@@ -144,7 +144,7 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
   this->m_Warp = warp;
   if ( this->m_Warp )
     {
-    this->m_Warp->RegisterVolume( this->m_ReferenceGrid );
+    this->m_Warp->RegisterVolume( *(this->m_ReferenceGrid) );
     if ( Dim != this->m_Warp->VariableParamVectorDim() ) 
       {
       Dim = this->m_Warp->VariableParamVectorDim();
@@ -164,7 +164,7 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       if ( thread ) 
 	{
 	this->m_ThreadWarp[thread] = this->m_Warp->Clone();
-	this->m_ThreadWarp[thread]->RegisterVolume( this->m_ReferenceGrid );
+	this->m_ThreadWarp[thread]->RegisterVolume( *(this->m_ReferenceGrid) );
 	} 
       else 
 	{

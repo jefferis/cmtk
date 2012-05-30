@@ -137,7 +137,7 @@ doMain( const int argc, const char* argv[] )
   // fit by final spacing
   if ( gridSpacing )
     {
-    splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->Size, gridSpacing, levels, affineXform.GetPtr() );
+    splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, gridSpacing, levels, affineXform.GetPtr() );
     }
   else
     {
@@ -151,7 +151,7 @@ doMain( const int argc, const char* argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->Size, cmtk::FixedVector<3,double>( dims ), levels, affineXform.GetPtr() );
+      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>( dims ), levels, affineXform.GetPtr() );
       }
     else
       {
