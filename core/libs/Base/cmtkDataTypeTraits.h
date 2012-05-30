@@ -68,6 +68,9 @@ public:
   /** This class. */
   typedef DataTypeTraits<float> Self;
 
+  /// The template value type.
+  typedef float ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_FLOAT; }
 
@@ -112,6 +115,9 @@ class DataTypeTraits<double>
 public:
   /** This class. */
   typedef DataTypeTraits<double> Self;
+
+  /// The template value type.
+  typedef double ValueType;
 
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_DOUBLE; }
@@ -158,16 +164,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<byte> Self;
 
+  /// The template value type.
+  typedef byte ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_BYTE; }
 
   static const ScalarDataType DataTypeID = TYPE_BYTE;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline byte Abs( const byte value ) 
@@ -182,7 +185,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (byte) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      return (byte) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -220,16 +223,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<char> Self;
 
+  /// The template value type.
+  typedef char ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_CHAR; }
 
   static const ScalarDataType DataTypeID = TYPE_CHAR;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline char Abs( const char value ) 
@@ -244,7 +244,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (char) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      return (char) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -282,16 +282,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<signed short> Self;
 
+  /// The template value type.
+  typedef signed short ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_SHORT; }
 
   static const ScalarDataType DataTypeID = TYPE_SHORT;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline signed short Abs( const signed short value ) 
@@ -306,7 +303,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (signed short) (((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5)));
+      return (signed short) (((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5)));
       }
     else
       {
@@ -344,16 +341,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<unsigned short> Self;
 
+  /// The template value type.
+  typedef unsigned short ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_USHORT; }
 
   static const ScalarDataType DataTypeID = TYPE_USHORT;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline unsigned short Abs( const unsigned short value ) 
@@ -368,7 +362,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (unsigned short) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      return (unsigned short) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -406,16 +400,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<int> Self;
 
+  /// The template value type.
+  typedef int ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_INT; }
 
   static const ScalarDataType DataTypeID = TYPE_INT;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline int Abs( const int value ) 
@@ -430,7 +421,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      return (int) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -468,16 +459,13 @@ public:
   /** This class. */
   typedef DataTypeTraits<unsigned int> Self;
 
+  /// The template value type.
+  typedef unsigned int ValueType;
+
   /** Get the scalar type ID constant for this type. */
   static ScalarDataType GetScalarDataType() { return TYPE_UINT; }
 
   static const ScalarDataType DataTypeID = TYPE_UINT;
-
-  /** Minimum value in this type. */
-  static const Types::DataItem Min;
-
-  /** Maximum value in this type. */
-  static const Types::DataItem Max;
 
   /** Get absolute value. */
   static inline unsigned int Abs( const unsigned int value ) 
@@ -493,7 +481,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (unsigned int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      return (unsigned int) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {

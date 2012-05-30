@@ -44,7 +44,6 @@ SET(cmtkBase_SRCS
   cmtkDataGridConnectedComponents.cxx
   cmtkDataGridLocalCorrelation.cxx
   cmtkDataGridMorphologicalOperators.cxx
-  cmtkDataTypeTraits.cxx
   cmtkDeformationField.cxx
   cmtkDeformationField_Jacobian.cxx
   cmtkDirectionSet.cxx
