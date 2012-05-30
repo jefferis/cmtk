@@ -61,7 +61,7 @@ public:
   /// Constructor.
   FitSplineWarpToXformList( const UniformVolume& sampleGrid /*!< Discrete pixel grid where the spline transformation is sampled and residuals are minimized.*/,
 			    const XformList& xformList /*!< List of concatenated transformation that the spline transformation is fitted to.*/, 
-			    const bool absolute /*!< Flag fitting absolute transformation vs. relative deformation field */ );
+			    const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ );
 
   /// Fit spline warp based on final grid dimensions.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::ControlPointIndexType& finalDims /*!< Final spline control point grid dimensions.*/, 
