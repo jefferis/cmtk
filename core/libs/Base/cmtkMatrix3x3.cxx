@@ -132,7 +132,8 @@ Matrix3x3<T>::Decompose
   double d1 = sqrt (dot);
 
   double cosTheta, sinTheta;
-  if (d1 < std::numeric_limits<T>::epsilon() ) 
+//  if (d1 < std::numeric_limits<T>::epsilon() ) 
+  if (d1 < 1e-8 ) 
     {
     cosTheta = 1.0;
     sinTheta = 0.0;

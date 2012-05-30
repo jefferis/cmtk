@@ -274,7 +274,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x2 * x2 + z2 * z2;
   d1 = sqrt (dot);
     
-  if (d1 < std::numeric_limits<T>::epsilon()) 
+//  if (d1 < std::numeric_limits<T>::epsilon()) 
+  if (d1 < 1e-8) 
     {
     cosTheta = 1.0;
     sinTheta = 0.0;
@@ -291,7 +292,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x2 * x2 + y2 * y2 + z2 * z2;
   d = sqrt (dot);
     
-  if (d < std::numeric_limits<T>::epsilon()) 
+//  if (d < std::numeric_limits<T>::epsilon()) 
+  if (d < 1e-8) 
     {    
     sinPhi = 0.0;
     cosPhi = 1.0;
@@ -316,7 +318,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   dot = x3p * x3p + y3p * y3p;
   
   d2 = sqrt (dot);
-  if (d2 < std::numeric_limits<T>::epsilon()) 
+//  if (d2 < std::numeric_limits<T>::epsilon()) 
+  if (d2 < 1e-8) 
     {
     cosAlpha = 1.0;
     sinAlpha = 0.0;
