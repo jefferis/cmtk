@@ -1,6 +1,6 @@
 Release CMTK-2.2.2:
 
-(r4383) Changed: the "fit_spline_xform" tool has been renamed to
+(r4385) Changed: the "fit_spline_xform" tool has been renamed to
     "fit_spline_dfield" to make room for a new tool which will fit splines to
     arbitrary transformation sequences.
 (r4369) Added: new "streamxform" tool to apply sequences of transformations to
