@@ -54,9 +54,7 @@ template<class TType>
 class DataTypeTraits
 {
 public:
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_NONE; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_NONE;
 };
 
@@ -71,9 +69,7 @@ public:
   /// The template value type.
   typedef float ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_FLOAT; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_FLOAT;
 
   /** Get absolute value. */
@@ -119,9 +115,7 @@ public:
   /// The template value type.
   typedef double ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_DOUBLE; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_DOUBLE;
 
   /** Get absolute value. */
@@ -167,9 +161,7 @@ public:
   /// The template value type.
   typedef byte ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_BYTE; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_BYTE;
 
   /** Get absolute value. */
@@ -226,9 +218,7 @@ public:
   /// The template value type.
   typedef char ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_CHAR; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_CHAR;
 
   /** Get absolute value. */
@@ -285,9 +275,7 @@ public:
   /// The template value type.
   typedef signed short ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_SHORT; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_SHORT;
 
   /** Get absolute value. */
@@ -344,9 +332,7 @@ public:
   /// The template value type.
   typedef unsigned short ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_USHORT; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_USHORT;
 
   /** Get absolute value. */
@@ -403,9 +389,7 @@ public:
   /// The template value type.
   typedef int ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_INT; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_INT;
 
   /** Get absolute value. */
@@ -462,9 +446,7 @@ public:
   /// The template value type.
   typedef unsigned int ValueType;
 
-  /** Get the scalar type ID constant for this type. */
-  static ScalarDataType GetScalarDataType() { return TYPE_UINT; }
-
+  /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_UINT;
 
   /** Get absolute value. */
@@ -481,7 +463,7 @@ public:
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (unsigned int) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (unsigned int) ((static_cast<Self::ValueType>( value ) < std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {

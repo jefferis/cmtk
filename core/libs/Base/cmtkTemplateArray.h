@@ -101,7 +101,7 @@ public:
   TemplateArray ( void *const data, const size_t datasize, const bool paddingflag, const void* paddingData, const Memory::DeallocatorFunctionPointer deallocator = NULL ) 
   {
     this->m_Deallocator = deallocator;
-    m_DataType = TypeTraits::GetScalarDataType();
+    m_DataType = TypeTraits::DataTypeID;
     Data = static_cast<T*>( data );
     DataSize = datasize;
     PaddingFlag = paddingflag;
@@ -116,7 +116,7 @@ public:
    */
   TemplateArray ( const size_t datasize = 0 ) 
   {
-    m_DataType = TypeTraits::GetScalarDataType();
+    m_DataType = TypeTraits::DataTypeID;
     Data = NULL;
     this->Alloc( datasize ); 
   }
@@ -181,7 +181,7 @@ public:
   }
   
   /// Return id of primitive data type handled by this object.
-  virtual ScalarDataType GetType () const { return TypeTraits::GetScalarDataType(); }
+  virtual ScalarDataType GetType () const { return TypeTraits::DataTypeID; }
 
   /// Return size in bytes of the primitive data type handled by this object.
   virtual size_t GetItemSize () const { return sizeof(T); }
