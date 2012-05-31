@@ -61,19 +61,6 @@ StrNStr( const char* haystack, const size_t nBytes, const char* needle );
  */
 int StrCmp( const char *s1, const char* s2 );
 
-/** Replace a string.
- * The null-terminated string "s2" is duplicated and replaces the string "s1".
- * If "s1" is non-NULL when this function is called, the memory pointed to by
- * it is freed first. If "s2" is NULL, "s1" is set to NULL, too.
- */
-void StrReplace( char*& s1, const char* s2 );
-
-/** Safe deallocation of strings.
- * The memory pointed to by "s" is freed if "s" is non-NULL. Otherwise, nothing
- * is done.
- */
-void StrFree( char *const s );
-
 /** Compare string prefix.
  * This function tests whether a given string contains another string as its
  * intial character sequence.
@@ -83,22 +70,6 @@ void StrFree( char *const s );
  * with the string 'prefix'.
  */
 int StrPrefixCmp( const char *s, const char* prefix );
-
-/** Extract directory component from a complete filesystem path.
- *\param path A complete filesystem path.
- *\return A pointer to a buffer containing the directory component of 'path' as
- * a null-terminated string. This is a static buffer that is only guaranteed to
- * remain unchanged until the next call to one of the functions in the library.
- */
-const char *StrDir( const char *path );
-
-/** Extract filename component from a complete filesystem path.
- *\param path A complete filesystem path.
- *\return A pointer to a buffer containing the filename component of 'path' as
- * a null-terminated string. This is a static buffer that is only guaranteed to
- * remain unchanged until the next call to one of the functions in the library.
- */
-const char *StrFName( const char *path );
 
 /** Replace string components.
  *\todo This is highly unsafe, since we're not checking for infinite loops and

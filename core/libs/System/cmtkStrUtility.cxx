@@ -33,12 +33,6 @@
 #include "cmtkStrUtility.h"
 
 #include <string.h>
-#include <stdlib.h>
-#include <limits.h>
-
-#ifdef _MSC_VER
-#  include <direct.h>
-#endif
 
 namespace
 cmtk
@@ -84,61 +78,9 @@ StrNStr( const char* haystack, const size_t nBytes, const char* needle )
   return NULL;
 }
 
-void
-StrReplace( char*& s1, const char* s2 )
-{
-  StrFree( s1 );
-  if ( s2 )
-    s1 = strdup( s2 );
-  else
-    s1 = NULL;
-}
-
-void StrFree( char *const s )
-{
-  free( s );
-}
-
 int StrPrefixCmp( const char *s, const char* prefix )
 {
   return (0 == strncmp( s, prefix, strlen( prefix ) ));
-}
-
-static char StrBuffer[PATH_MAX];
-
-const char*
-StrDir( const char *path )
-{
-  const char *slash = strrchr( path, CMTK_PATH_SEPARATOR );
-  if ( slash && (slash != path) ) 
-    {
-    int dirLen = (slash-path);
-    strncpy( StrBuffer, path, dirLen );
-    StrBuffer[dirLen] = 0;
-    } 
-  else
-    {
-    if ( slash )
-      strcpy( StrBuffer, CMTK_PATH_SEPARATOR_STR );
-    else
-      strcpy( StrBuffer, path );
-    }
-  return StrBuffer;
-}
-
-const char*
-StrFName( const char *path )
-{
-  const char *slash = strrchr( path, CMTK_PATH_SEPARATOR );
-  if ( slash )
-    {
-    strcpy( StrBuffer, slash+1 );
-    } 
-  else
-    {
-    StrBuffer[0] = 0;
-    }
-  return StrBuffer;
 }
 
 std::string
