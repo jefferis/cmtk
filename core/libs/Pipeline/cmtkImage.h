@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,14 +73,7 @@ public:
 
   /** Copy non-pipelined scalar image.
    */
-  void SetFromScalarImage( ScalarImage *const scalarImage, const bool copyPixelData );
-
-  /** Copy non-pipelined scalar image.
-   */
   void SetFromScalarImage( const ScalarImage* scalarImage );
-
-  /// Create copy as non-pipelined scalar image.
-  ScalarImage* GetScalarImage() const;
 
   /** Return data at a certain grid location (pixel).
    *\param x Index of requested pixel in x-direction. Valid range is 

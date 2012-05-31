@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,25 +81,6 @@ Image::SetData( TypedArray::SmartPtr& data )
 
 void
 Image::SetFromScalarImage
-( ScalarImage *const scalarImage, const bool copyPixelData )
-{
-  if ( scalarImage ) 
-    {
-    this->SetDims( scalarImage->GetDims()[0], scalarImage->GetDims()[1] );
-    TypedArray::SmartPtr pixelData = scalarImage->GetPixelData();
-    if ( copyPixelData )
-      pixelData = TypedArray::SmartPtr( pixelData->Clone() );
-    this->SetData( pixelData );
-    this->SetSpacing( scalarImage->GetPixelSize() );
-    this->SetOrigin( scalarImage->GetImageOrigin().begin() );
-    this->SetDirectionX( scalarImage->GetImageDirectionX().begin() );
-    this->SetDirectionY( scalarImage->GetImageDirectionY().begin() );
-    this->UpdateModifiedTime();
-    }
-}
-
-void
-Image::SetFromScalarImage
 ( const ScalarImage* scalarImage )
 {
   if ( scalarImage )
@@ -115,20 +96,6 @@ Image::SetFromScalarImage
     this->SetDirectionY( scalarImage->GetImageDirectionY().begin() );
     this->UpdateModifiedTime();
     }
-}
-
-ScalarImage* 
-Image::GetScalarImage() const
-{
-  ScalarImage* scalarImage = new ScalarImage( Dims[0], Dims[1] );
-
-  scalarImage->SetPixelData( Data );
-  scalarImage->SetPixelSize( Spacing );
-  scalarImage->SetImageOrigin( FixedVector<3,Types::Coordinate>( Origin ) );
-  scalarImage->SetImageDirectionX( FixedVector<3,Types::Coordinate>( DirectionX ) );
-  scalarImage->SetImageDirectionY( FixedVector<3,Types::Coordinate>( DirectionY ) );
-
-  return scalarImage;
 }
 
 double
