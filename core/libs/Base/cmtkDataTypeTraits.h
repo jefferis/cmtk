@@ -73,32 +73,32 @@ public:
   static const ScalarDataType DataTypeID = TYPE_FLOAT;
 
   /** Get absolute value. */
-  static inline float Abs( const float value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return fabsf( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline float Convert ( const T value, const bool = false, const float = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool = false, const Self::ValueType = 0 ) 
   { 
-    return static_cast<float>( value );
+    return static_cast<Self::ValueType>( value );
   }
 
   /** Return padding data value (i.e. Inf) for the given type. */
-  static inline float ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
-    return std::numeric_limits<float>::infinity();
+    return std::numeric_limits<Self::ValueType>::infinity();
   }
 
   /// Return zero value for this type.
-  static inline float Zero()
+  static inline Self::ValueType Zero()
   {
     return 0.0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline float One()
+  static inline Self::ValueType One()
   {
     return 1.0;
   }
@@ -119,32 +119,32 @@ public:
   static const ScalarDataType DataTypeID = TYPE_DOUBLE;
 
   /** Get absolute value. */
-  static inline double Abs( const double value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return fabs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline double Convert ( const T value, const bool = false, const double = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool = false, const Self::ValueType = 0 ) 
   { 
-    return static_cast<double>( value );
+    return static_cast<Self::ValueType>( value );
   }
   
   /** Return padding data value (i.e. Inf) for the given type. */
-  static inline double ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
-    return std::numeric_limits<double>::infinity();
+    return std::numeric_limits<Self::ValueType>::infinity();
   }
 
   /// Return zero value for this type.
-  static inline double Zero()
+  static inline Self::ValueType Zero()
   {
     return 0.0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline double One()
+  static inline Self::ValueType One()
   {
     return 1.0;
   }
@@ -165,19 +165,19 @@ public:
   static const ScalarDataType DataTypeID = TYPE_BYTE;
 
   /** Get absolute value. */
-  static inline byte Abs( const byte value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return abs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline byte Convert ( const T value, const bool paddingFlag = false, const byte paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (byte) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (Self::ValueType) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -189,19 +189,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline byte ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
     return 255;
   }
 
   /// Return zero value for this type.
-  static inline byte Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline byte One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
@@ -222,19 +222,19 @@ public:
   static const ScalarDataType DataTypeID = TYPE_CHAR;
 
   /** Get absolute value. */
-  static inline char Abs( const char value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return abs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline char Convert ( const T value, const bool paddingFlag = false, const char paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (char) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (Self::ValueType) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -246,19 +246,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline char ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
     return -1;
   }
 
   /// Return zero value for this type.
-  static inline char Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline char One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
@@ -279,19 +279,19 @@ public:
   static const ScalarDataType DataTypeID = TYPE_SHORT;
 
   /** Get absolute value. */
-  static inline signed short Abs( const signed short value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return abs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline signed short Convert ( const T value, const bool paddingFlag = false, const signed short paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (signed short) (((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5)));
+      return (Self::ValueType) (((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5)));
       }
     else
       {
@@ -303,19 +303,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline signed short ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
     return -1;
   }
 
   /// Return zero value for this type.
-  static inline signed short Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline signed short One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
@@ -336,19 +336,19 @@ public:
   static const ScalarDataType DataTypeID = TYPE_USHORT;
 
   /** Get absolute value. */
-  static inline unsigned short Abs( const unsigned short value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return abs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline unsigned short Convert ( const T value, const bool paddingFlag = false, const unsigned short paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (unsigned short) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (Self::ValueType) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -360,19 +360,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline unsigned short ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
     return USHRT_MAX;
   }
 
   /// Return zero value for this type.
-  static inline unsigned short Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline unsigned short One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
@@ -393,19 +393,19 @@ public:
   static const ScalarDataType DataTypeID = TYPE_INT;
 
   /** Get absolute value. */
-  static inline int Abs( const int value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     return abs( value );
   }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline int Convert ( const T value, const bool paddingFlag = false, const int paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (int) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (Self::ValueType) ((value<std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -417,19 +417,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline int ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
     return -1;
   }
 
   /// Return zero value for this type.
-  static inline int Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline int One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
@@ -450,7 +450,7 @@ public:
   static const ScalarDataType DataTypeID = TYPE_UINT;
 
   /** Get absolute value. */
-  static inline unsigned int Abs( const unsigned int value ) 
+  static inline Self::ValueType Abs( const Self::ValueType value ) 
   {
     // usigned is always positive
     return value;
@@ -458,12 +458,12 @@ public:
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline unsigned int Convert ( const T value, const bool paddingFlag = false, const unsigned int paddingData = 0 ) 
+  static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
   { 
     using namespace std;
     if ( MathUtil::IsFinite( value ) )
       {
-      return (unsigned int) ((static_cast<Self::ValueType>( value ) < std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
+      return (Self::ValueType) ((static_cast<Self::ValueType>( value ) < std::numeric_limits<Self::ValueType>::min()) ? std::numeric_limits<Self::ValueType>::min() : (value+0.5>std::numeric_limits<Self::ValueType>::max()) ? std::numeric_limits<Self::ValueType>::max() : floor(value+0.5));
       }
     else
       {
@@ -475,19 +475,19 @@ public:
   }
   
   /** Return padding data value for the given type. */
-  static inline unsigned int ChoosePaddingValue () 
+  static inline Self::ValueType ChoosePaddingValue () 
   { 
-    return static_cast<unsigned int>( -1 );
+    return static_cast<Self::ValueType>( -1 );
   }
 
   /// Return zero value for this type.
-  static inline unsigned int Zero()
+  static inline Self::ValueType Zero()
   {
     return 0;
   }
 
   /// Return one value (multiplicative identity) for this type.
-  static inline unsigned int One()
+  static inline Self::ValueType One()
   {
     return 1;
   }
