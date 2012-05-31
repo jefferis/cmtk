@@ -152,18 +152,6 @@ FileFormat::Identify( const std::string& path, const bool decompress )
   return FILEFORMAT_NEXIST;
 }
 
-FileFormatID 
-FileFormat::GetID( const std::string& name )
-{
-  for ( unsigned int idx = 0; FileFormatName[idx]; ++idx ) 
-    {
-    if ( name == std::string( FileFormatName[idx] ) )
-      return static_cast<FileFormatID>( idx );
-    }
-  
-  return FILEFORMAT_UNKNOWN;
-}
-
 std::string
 FileFormat::Describe( const FileFormatID id )
 {

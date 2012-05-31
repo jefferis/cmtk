@@ -107,10 +107,6 @@ public:
    */
   static FileFormatID Identify( const std::string& path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
 
-  /** Return ID for given file format name.
-   */
-  static FileFormatID GetID( const std::string& name );
-
   /** Return textual description of identified file format.
    */
   static std::string Describe( const FileFormatID id );
