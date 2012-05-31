@@ -39,7 +39,6 @@
 #include <Base/cmtkMathUtil.h>
 
 #include <math.h>
-#include <stdlib.h>
 #include <limits>
 
 namespace
@@ -362,7 +361,7 @@ public:
   /** Return padding data value for the given type. */
   static inline Self::ValueType ChoosePaddingValue () 
   { 
-    return USHRT_MAX;
+    return std::numeric_limits<Self::ValueType>::max();
   }
 
   /// Return zero value for this type.
