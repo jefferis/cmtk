@@ -124,7 +124,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
      }
   averageFittingError /= (MagphanEMR051::NumberOfSpheres-7);
 
-  DebugOutput( 5 ) << "INFO: landmark fitting error average = " << averageFittingError << " maximum = " <<  maximumFittingError << " maxErrLabel = " << maxErrorLabel << "\n";
+  DebugOutput( 2 ) << "INFO: landmark fitting error average = " << averageFittingError << " maximum = " <<  maximumFittingError << " maxErrName = " << MagphanEMR051::SphereName( maxErrorLabel-1 ) << " maxErrLabel = " << maxErrorLabel << "\n";
 }
 
 void
