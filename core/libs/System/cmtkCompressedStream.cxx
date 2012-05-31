@@ -63,14 +63,14 @@ CompressedStream::ArchiveLookup[] = {
   {".gz",   "gzip -cd %s > %s"},
   {".bz",   "bzip -Q -cd %s > %s"},
   {".bz2",  "bzip2 -cd %s > %s"},
-  {".lzma", "lzma -cd %s > %s"},
+  {".lzma", "xz -cd %s > %s"},
   {".xz",   "xz -cd %s > %s"},
 #else
   {".Z",    "gunzip -c %s"},
   {".gz",   "gzip -cd %s"},
   {".bz",   "bzip -Q -cd %s"},
   {".bz2",  "bzip2 -cd %s"},
-  {".lzma", "lzma -cd %s"},
+  {".lzma", "xz -cd %s"},
   {".xz",   "xz -cd %s"},
 #endif
   { NULL,   NULL} 
