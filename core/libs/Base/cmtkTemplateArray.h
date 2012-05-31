@@ -40,6 +40,9 @@
 
 #include <System/cmtkConsole.h>
 
+#include <cmath> // for float abs()
+#include <cstdlib> // for int abs()
+
 namespace
 cmtk
 {
@@ -427,7 +430,7 @@ public:
 #pragma omp parallel for    
     for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) )
-	Data[i] = TypeTraits::Abs( Data[i] );
+	Data[i] = std::abs( Data[i] );
   }
   
   /** Get an item from the array.

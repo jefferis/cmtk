@@ -38,7 +38,6 @@
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkMathUtil.h>
 
-#include <math.h>
 #include <limits>
 
 namespace
@@ -70,12 +69,6 @@ public:
 
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_FLOAT;
-
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return fabsf( value );
-  }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
@@ -117,12 +110,6 @@ public:
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_DOUBLE;
 
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return fabs( value );
-  }
-
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
   static inline Self::ValueType Convert ( const T value, const bool = false, const Self::ValueType = 0 ) 
@@ -162,12 +149,6 @@ public:
 
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_BYTE;
-
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return abs( value );
-  }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
@@ -220,12 +201,6 @@ public:
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_CHAR;
 
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return abs( value );
-  }
-
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
   static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
@@ -276,12 +251,6 @@ public:
 
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_SHORT;
-
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return abs( value );
-  }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
@@ -334,12 +303,6 @@ public:
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_USHORT;
 
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return abs( value );
-  }
-
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
   static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
@@ -391,12 +354,6 @@ public:
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_INT;
 
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    return abs( value );
-  }
-
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
   static inline Self::ValueType Convert ( const T value, const bool paddingFlag = false, const Self::ValueType paddingData = 0 ) 
@@ -447,13 +404,6 @@ public:
 
   /** Scalar type ID constant for this type. */
   static const ScalarDataType DataTypeID = TYPE_UINT;
-
-  /** Get absolute value. */
-  static inline Self::ValueType Abs( const Self::ValueType value ) 
-  {
-    // usigned is always positive
-    return value;
-  }
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
