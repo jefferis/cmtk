@@ -106,11 +106,7 @@ public:
    * cropped image. The cropped image dimension is therefore
    * (1+roiTo[0]-roiFrom[0],1+roiTo[0]-roiFrom[0]).
    */
-  ScalarImage( const ScalarImage& source, const int* roiFrom = NULL, const int* roiTo = NULL );
-
-  /** Get ROI as sub-image.
-   */
-  ScalarImage( const ScalarImage& other, const Self::RegionType& roi );  
+  ScalarImage( const ScalarImage& source );
 
   /// Virtual destructor.
   virtual ~ScalarImage() {}
@@ -127,28 +123,6 @@ public:
     return this->m_Dims;
   }
 
-  /// Set region of interest.
-  void SetROI( const Self::RegionType& roi ) 
-  {
-    ROI = roi;
-    HasROI = true;
-  }
-
-  /// Clear region of interest.
-  void UnsetROI() 
-  {
-    HasROI = false;
-  }
-
-  /// Return cropped copy of this image.
-  virtual ScalarImage* GetCropped() const 
-  { 
-    if ( HasROI )
-      return new ScalarImage( *this, ROI );
-    else
-      return new ScalarImage( *this );
-  }
-  
   /// Create pixel data array with given data type.
   void CreatePixelData( const ScalarDataType dtype ) 
   {
@@ -214,28 +188,6 @@ public:
     this->m_PixelData->Set( data, i + this->m_Dims[0] * j );
   }
 
-  /// Clone (duplicate) this object.
-  virtual ScalarImage* Clone() const;
-
-  /** Clone (duplicate) this object.
-   * This function optionally allows to reference the original pixel data 
-   * rather than duplicating it. This is useful when the cloned object is only
-   * generated as an intermediate object before the application of an in-place
-   * image filter. In this case, not cloning the pixel data saves significant
-   * heap operations. 
-   *\note Note that this function is not a const member since referencing the
-   * original image data requires modifying its reference counter.
-   */
-  virtual ScalarImage* Clone( const bool clonePixelData );
-
-  /// Create downsampled copy of this image.
-  ScalarImage* Downsample( const int factorX, int factorY = 0, ScalarImage *const target = NULL ) const;
-
-  /** Return Sobel-filtered (edge-enhanced) image data.
-   * This function implements the 1-D Sobel edge operator.
-   */
-  TypedArray::SmartPtr GetSobelFiltered( const bool horizontal, const bool absolute = false ) const;
-  
   /// Mirror image horizontally and/or vertically.
   void Mirror( const bool horizontal, const bool vertical );
 
@@ -252,9 +204,6 @@ public:
    */
   void ProjectPixel( const Self::SpaceVectorType& v, int& i, int& j ) const;
   
-  /// Subtract one image from another in place.
-  ScalarImage& operator-=( const ScalarImage& );
-
   /// Print object information.
   virtual void Print() const;
 
@@ -262,23 +211,11 @@ private:
   /// Image dimensions
   Self::IndexType m_Dims;
 
-  /// Cropping region of interest.
-  Self::RegionType ROI;
-
-  /// Flag for validity of ROI.
-  bool HasROI;
-
-  // Return filtered image data using client-provided symmetric kernels.
-  TypedArray::SmartPtr GetFilteredData( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY ) const;
-
   /// Adjust aspect ratio by stretching in Y-direction.
   void AdjustAspectY( const bool interpolate = false );
 
   /// Adjust aspect ratio by stretching in X-direction.
   void AdjustAspectX( const bool interpolate = false );
-
-  /// Subtract one image from another.
-  friend ScalarImage* operator- ( const ScalarImage&, const ScalarImage& );
 };
 
 //@{

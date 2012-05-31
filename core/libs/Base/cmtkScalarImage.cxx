@@ -49,9 +49,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-ScalarImage::ScalarImage() :
-  m_PixelData( NULL ),
-  HasROI( false )
+ScalarImage::ScalarImage()
 {
   this->m_Dims[0] = this->m_Dims[1] = 0;
   this->m_NumberOfFrames = 1;
@@ -60,8 +58,7 @@ ScalarImage::ScalarImage() :
 }
 
 ScalarImage::ScalarImage
-( const int dimsx, const int dimsy, const int numberOfFrames ) :
-  HasROI( false )
+( const int dimsx, const int dimsy, const int numberOfFrames )
 {
   this->m_Dims[0] = dimsx;
   this->m_Dims[1] = dimsy;
@@ -74,9 +71,7 @@ ScalarImage::ScalarImage
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage& source, 
-  const int* roiFrom, const int* roiTo ) :
-  HasROI( false )
+( const ScalarImage& source )
 {
   this->SetDims( source.m_Dims );
   this->SetPixelSize( source.GetPixelSize() );
@@ -89,70 +84,8 @@ ScalarImage::ScalarImage
   this->SetImageDirectionY( source.GetImageDirectionY() );
   this->SetImageSlicePosition( source.GetImageSlicePosition() );
 
-  if ( roiFrom && roiTo ) 
-    {
-    const Self::IndexType::ValueType dims[2] = { roiTo[0] - roiFrom[0], roiTo[1] - roiFrom[1] };
-    this->SetDims( Self::IndexType( dims ) );
-    
-    this->m_ImageOrigin += ( roiFrom[0] * source.GetPixelSize( AXIS_X ) * source.GetImageDirectionX() );
-    this->m_ImageOrigin += ( roiFrom[1] * source.GetPixelSize( AXIS_Y ) * source.GetImageDirectionY() );
-    
-    const TypedArray* sourceData = source.GetPixelData();
-    if ( sourceData ) 
-      {
-      this->CreatePixelData( sourceData->GetType() );
-      if ( sourceData->GetPaddingFlag() )
-	this->m_PixelData->SetPaddingPtr( sourceData->GetPaddingPtr() );
-      
-      size_t offset = 0;
-      for ( int y = roiFrom[1]; y < roiTo[1]; ++y ) 
-	{
-	sourceData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * source.m_Dims[AXIS_X], this->m_Dims[AXIS_X] );
-	offset += this->m_Dims[AXIS_X];
-	}
-      }
-    } 
-  else
-    { // if we're not cropping, preserve ROI.
-    HasROI = source.HasROI;
-    ROI = source.ROI;
-    if ( source.GetPixelData() )
-      this->SetPixelData( TypedArray::SmartPtr( source.GetPixelData()->Clone() ) );
-    }
-}
-
-ScalarImage::ScalarImage
-( const ScalarImage& source, const Self::RegionType& roi ) :
-  HasROI( false )
-{
-  this->SetDims( roi.To() - roi.From() );
-  this->SetPixelSize( source.GetPixelSize() );
-
-  this->SetNumberOfFrames( source.GetNumberOfFrames() );
-  this->SetFrameToFrameSpacing( source.GetFrameToFrameSpacing() );
-
-  this->SetImageOrigin( source.GetImageOrigin() );
-  this->SetImageDirectionX( source.GetImageDirectionX() );
-  this->SetImageDirectionY( source.GetImageDirectionY() );
-  this->SetImageSlicePosition( source.GetImageSlicePosition() );
-
-  this->m_ImageOrigin += ( roi.From()[0] * source.GetPixelSize( AXIS_X ) * source.GetImageDirectionX() );
-  this->m_ImageOrigin += ( roi.From()[1] * source.GetPixelSize( AXIS_Y ) * source.GetImageDirectionY() );
-  
-  const TypedArray* sourceData = source.GetPixelData();
-  if ( sourceData ) 
-    {
-    this->CreatePixelData( sourceData->GetType() );
-    if ( sourceData->GetPaddingFlag() )
-      this->m_PixelData->SetPaddingPtr( sourceData->GetPaddingPtr() );
-    
-    size_t offset = 0;
-    for ( int y = roi.From()[1]; y < roi.To()[1]; ++y ) 
-      {
-      sourceData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From()[0] + y * source.m_Dims[AXIS_X], this->m_Dims[0] );
-      offset += this->m_Dims[0];
-      }
-    }
+  if ( source.GetPixelData() )
+    this->SetPixelData( TypedArray::SmartPtr( source.GetPixelData()->Clone() ) );
 }
 
 bool 
@@ -205,195 +138,6 @@ ScalarImage::GetImageOrigin( const int frame ) const
     origin = this->m_ImageOrigin;
     }
   return origin;
-}
-
-ScalarImage* 
-ScalarImage::Clone() const
-{
-  ScalarImage *newScalarImage = new ScalarImage( this->m_Dims[0], this->m_Dims[1] );
-
-  newScalarImage->SetPixelSize( this->m_PixelSize );
-  newScalarImage->SetImageOrigin( this->m_ImageOrigin );
-  newScalarImage->SetImageDirectionX( this->m_ImageDirectionX );
-  newScalarImage->SetImageDirectionY( this->m_ImageDirectionY );
-  newScalarImage->SetImageSlicePosition( this->m_ImageSlicePosition );
-
-  newScalarImage->SetPixelData( TypedArray::SmartPtr( this->m_PixelData->Clone() ) );
-  
-  return newScalarImage;
-}
-
-ScalarImage* 
-ScalarImage::Clone( const bool clonePixelData )
-{
-  ScalarImage *newScalarImage = new ScalarImage( this->m_Dims[0], this->m_Dims[1] );
-
-  newScalarImage->SetPixelSize( this->m_PixelSize );
-  newScalarImage->SetImageOrigin( this->m_ImageOrigin );
-  newScalarImage->SetImageDirectionX( this->m_ImageDirectionX );
-  newScalarImage->SetImageDirectionY( this->m_ImageDirectionY );
-  newScalarImage->SetImageSlicePosition( this->m_ImageSlicePosition );
-  
-  if ( clonePixelData )
-    newScalarImage->SetPixelData( TypedArray::SmartPtr( this->m_PixelData->Clone() ) );
-  else
-    newScalarImage->SetPixelData( this->m_PixelData );
-
-  return newScalarImage;
-}
-
-ScalarImage* 
-ScalarImage::Downsample
-( const int factorX, int factorY, ScalarImage *const target ) const
-{
-  if ( ! factorY ) factorY = factorX;
-
-  assert( this->m_NumberOfFrames == 1 );
-
-  ScalarImage *newScalarImage = target;
-  if ( ! newScalarImage )
-    newScalarImage = new ScalarImage( this->m_Dims[0] / factorX, this->m_Dims[1] / factorY );
-  
-  newScalarImage->SetPixelSize( this->m_PixelSize[0] * factorX, this->m_PixelSize[1] * factorY );
-  
-  Self::SpaceVectorType imageOrigin( this->m_ImageOrigin );
-  imageOrigin += (0.5 * this->m_PixelSize[0] / this->m_ImageDirectionX.RootSumOfSquares()) * this->m_ImageDirectionX;
-  imageOrigin += (0.5 * this->m_PixelSize[1] / this->m_ImageDirectionY.RootSumOfSquares()) * this->m_ImageDirectionY;
-
-  newScalarImage->SetImageOrigin( imageOrigin );
-  newScalarImage->SetImageDirectionX( this->m_ImageDirectionX );
-  newScalarImage->SetImageDirectionY( this->m_ImageDirectionY );
-  newScalarImage->SetImageSlicePosition( this->m_ImageSlicePosition );
-  
-  newScalarImage->CreatePixelData( this->m_PixelData->GetType() );
-
-  // compensate for dimensions that connot be evenly divided by downsampling 
-  // factor.
-  const int dimsY = (this->m_Dims[1] / factorY) * factorY;
-  const int dimsX = (this->m_Dims[0] / factorX) * factorX;
-  const Types::DataItem factorXY = 1.0 / (factorX * factorY);
-
-  int j = 0;
-  for ( int y = 0; y < dimsY; y += factorY, ++j ) 
-    {
-    int i = 0;
-    for ( int x = 0; x < dimsX; x += factorX, ++i ) 
-      {
-      Types::DataItem pixel = 0;
-      for ( int yy = 0; yy < factorY; ++yy )
-	for ( int xx = 0; xx < factorX; ++xx )
-	  pixel += this->GetPixelAt( x + xx, y + yy );
-      
-      newScalarImage->SetPixelAt( i, j, pixel * factorXY );
-      }
-    }
-  return newScalarImage;  
-}
-
-TypedArray::SmartPtr
-ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute ) 
-  const
-{
-  if ( !this->m_PixelData )
-    throw( Exception( "No image data in ScalarImage::GetSobelFiltered()" ) );
-
-  TypedArray::SmartPtr result = ( absolute ) ?
-    TypedArray::Create( GetUnsignedDataType( this->m_PixelData->GetType() ), this->m_PixelData->GetDataSize() ) :
-    TypedArray::Create( GetSignedDataType( this->m_PixelData->GetType() ), this->m_PixelData->GetDataSize() );
-  
-  Types::DataItem fov[3][3];
-  size_t offset = 0;
-
-  if ( horizontal )
-    for ( int y = 0; y < this->m_Dims[1]; ++y )
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
-	{
-	Types::DataItem value = 0;
-	if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
-	  {
-	  for ( byte dy=0; dy<3; ++dy )
-	    for ( byte dx=0; dx<3; ++dx )
-	      this->m_PixelData->Get( fov[dx][dy], x-1+dx+ this->m_Dims[0] * ( y-1+dy ) );
-	  
-	  value = fov[2][0] - fov[0][0] + 2 * ( fov[2][1] - fov[0][1] ) + fov[2][2] - fov[0][2];
-	  
-	  if ( absolute ) value = fabs( value );
-	  }
-	result->Set( value, offset );
-	}
-  else
-    for ( int y = 0; y < this->m_Dims[1]; ++y )
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
-	{
-	Types::DataItem value = 0;
-	if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
-	  {
-	  for ( byte dy=0; dy<3; ++dy )
-	    for ( byte dx=0; dx<3; ++dx )
-	      this->m_PixelData->Get( fov[dx][dy], x-1+dx+ this->m_Dims[0] * ( y-1+dy ) );
-	  
-	  value = fov[0][0] - fov[0][2] + 2 * ( fov[1][0] - fov[1][2] ) + fov[2][0] - fov[2][2];
-	  
-	  if ( absolute ) value = fabs( value );
-	  }
-	result->Set( value, offset );
-	}
-  
-  return result;
-}
-
-ScalarImage* operator- 
-( const ScalarImage& image0, const ScalarImage& image1 )
-{
-  ScalarImage *result = new ScalarImage( image0.m_Dims[0], image0.m_Dims[1] );
-
-  const TypedArray *data0 = image0.GetPixelData();
-  const TypedArray *data1 = image1.GetPixelData();
-
-  size_t numberOfPixels = image0.GetNumberOfPixels();
-
-  TypedArray::SmartPtr pixelData( TypedArray::Create( GetSignedDataType( data0->GetType() ), numberOfPixels ) );
-
-  Types::DataItem pixel0, pixel1;
-  for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
-    {
-    if ( data0->Get( pixel0, idx ) && data1->Get( pixel1, idx ) ) 
-      {
-      pixelData->Set( pixel0 - pixel1, idx );
-      } 
-    else
-      {
-      pixelData->SetPaddingAt( idx );
-      }
-    }
-  
-  result->SetPixelData( pixelData );
-  
-  return result;
-}
-
-ScalarImage&
-ScalarImage::operator-=
-( const ScalarImage& source )
-{
-  TypedArray *data0 = this->GetPixelData().GetPtr();
-  const TypedArray *data1 = source.GetPixelData();
-
-  size_t numberOfPixels = this->GetNumberOfPixels();
-  Types::DataItem pixel0, pixel1;
-  for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
-    {
-    if ( data0->Get( pixel0, idx ) && data1->Get( pixel1, idx ) ) 
-      {
-      data0->Set( pixel0 - pixel1, idx );
-      } 
-    else
-      {
-      data0->SetPaddingAt( idx );
-      }
-    }
-  
-  return *this;
 }
 
 void ScalarImage::Mirror( const bool horizontal, const bool vertical )
