@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,9 @@ public:
 
   /// Smart pointer.
   typedef cmtk::SmartPointer<Self> SmartPtr;
+
+  /// Virtual destructor.
+  virtual ~ImageOperation() {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume ) 
