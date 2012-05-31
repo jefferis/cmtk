@@ -162,16 +162,6 @@ public:
    */
   AffineXform ( const MatrixType& matrix, const Types::Coordinate* center = NULL );
 
-  /** Create transformation from transformation matrix.
-   * Translation vector and rotation center are given in addition to the
-   * 4x4 transformation matrix..
-   *\param matrix The homogeneous 4x4 affine transformation matrix. If a
-   * translation is defined by this matrix, it is ignored.
-   *\param xlate Translation of the constructed transformation.
-   *\param center Rotation center of the constructed transformation.
-   */
-  AffineXform ( const Types::Coordinate matrix[4][4], const Types::Coordinate xlate[3], const Types::Coordinate center[3] );
-  
   /// Copy transform by reference.
   AffineXform ( const AffineXform& other );
   
@@ -434,12 +424,7 @@ public:
   Types::Coordinate* RetMatrix () { return &Matrix[0][0]; }
 
   /// Set transformation matrix.
-  void SetMatrix( const float matrix[4][4] );
-  void SetMatrix( const double matrix[4][4] );
   void SetMatrix( const MatrixType& matrix );
-
-  /// Get transformation matrix.
-  template<class T> void GetMatrix( T (&matrix)[4][4] ) const;
   //@}
 
   /** Create equivalent transformation with different rotational center.

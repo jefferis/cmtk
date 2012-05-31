@@ -362,15 +362,14 @@ ImagePairAffineRegistrationCommandLine::InitRegistration ()
 void
 ImagePairAffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) const
 {
-  Types::Coordinate matrix[4][4];
-  this->GetTransformation()->GetMatrix( matrix );
-
+  const AffineXform::MatrixType& matrix = this->GetTransformation()->Matrix;
+  
   FILE* mfile = fopen( matrixName, "w" );
   if ( mfile )
     {
     for ( int i = 0; i < 4; ++i )
       {
-      fprintf( mfile, "%e\t%e\t%e\t%e\n", matrix[0][i], matrix[1][i], matrix[2][i], matrix[3][i] );
+      fprintf( mfile, "%e\t%e\t%e\t%e\n", static_cast<float>( matrix[0][i] ), static_cast<float>( matrix[1][i] ), static_cast<float>( matrix[2][i] ), static_cast<float>( matrix[3][i] ) );
       }
     fclose( mfile );
     }

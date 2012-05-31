@@ -97,29 +97,6 @@ AffineXform::AffineXform
   this->DecomposeMatrix();
 }
 
-AffineXform::AffineXform
-( const Types::Coordinate matrix[4][4], const Types::Coordinate xlate[3],
-  const Types::Coordinate center[3] ) :
-  Matrix( &matrix[0][0] ), 
-  m_LogScaleFactors( false ),
-  InverseXform( NULL )
-{
-  this->AllocateParameterVector( TotalNumberOfParameters );
-  this->NumberDOFs = this->DefaultNumberOfDOFs();
-  Types::Coordinate cM[3] = 
-    {
-      center[0]*Matrix[0][0] + center[1]*Matrix[1][0] + center[2]*Matrix[2][0],
-      center[0]*Matrix[0][1] + center[1]*Matrix[1][1] + center[2]*Matrix[2][1],
-      center[0]*Matrix[0][2] + center[1]*Matrix[1][2] + center[2]*Matrix[2][2]
-    };
-  
-  Matrix[3][0] = xlate[0] + center[0] - cM[0];
-  Matrix[3][1] = xlate[1] + center[1] - cM[1];
-  Matrix[3][2] = xlate[2] + center[2] - cM[2];
-
-  this->Matrix.Decompose( this->m_Parameters, center, this->m_LogScaleFactors );
-}
-
 AffineXform& 
 AffineXform::operator=( const AffineXform& other )
 {
@@ -241,44 +218,6 @@ AffineXform::SetMatrix( const MatrixType& matrix )
   this->Matrix = matrix;
   this->DecomposeMatrix();
   this->UpdateInverse();
-}
-
-void
-AffineXform::SetMatrix( const float matrix[4][4] ) 
-{
-  for ( unsigned int j = 0; j < 4; ++j )
-    for ( unsigned int i = 0; i < 4; ++i )
-      Matrix[j][i] = matrix[j][i];
-  this->DecomposeMatrix();
-  this->UpdateInverse();
-}
-
-void
-AffineXform::SetMatrix( const double matrix[4][4] ) 
-{
-  for ( unsigned int j = 0; j < 4; ++j )
-    for ( unsigned int i = 0; i < 4; ++i )
-      Matrix[j][i] = matrix[j][i];
-  this->DecomposeMatrix();
-  this->UpdateInverse();
-}
-
-template<> 
-void
-AffineXform::GetMatrix( float (&matrix)[4][4] ) const
-{
-  for ( unsigned int j = 0; j < 4; ++j )
-    for ( unsigned int i = 0; i < 4; ++i )
-      matrix[j][i] = static_cast<float>( Matrix[j][i] );
-}
-
-template<> 
-void 
-AffineXform::GetMatrix( double (&matrix)[4][4] ) const
-{
-  for ( unsigned int j = 0; j < 4; ++j )
-    for ( unsigned int i = 0; i < 4; ++i )
-      matrix[j][i] = static_cast<double>( Matrix[j][i] );
 }
 
 void
