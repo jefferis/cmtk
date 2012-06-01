@@ -59,8 +59,8 @@ DeblurringVolumeReconstruction<TPSF>
     
     const DataGrid::IndexType& passImageDims = passImage->GetDims();
     const int passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
-    const size_t passImageDimsXY = passImageDimsX*passImageDimsY;
-    const size_t passImageDimsXYZ = passImageDimsXY*passImageDimsZ;
+    const int passImageDimsXY = passImageDimsX*passImageDimsY;
+    const int passImageDimsXYZ = passImageDimsXY*passImageDimsZ;
 
     const TPSF* passImagePSF = this->m_PassImagePSF[pass];
     const AffineXform* correctedToPassXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
