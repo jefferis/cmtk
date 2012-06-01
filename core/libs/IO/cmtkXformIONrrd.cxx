@@ -80,7 +80,7 @@ XformIO::ReadNrrd( const std::string& path )
       }
 
     NrrdAxisInfo* nrrdSpaceAxes = nrrd->axis+1;
-    const int dims[3] = { nrrdSpaceAxes[0].size, nrrdSpaceAxes[1].size, nrrdSpaceAxes[2].size };
+    const int dims[3] = { static_cast<int>( nrrdSpaceAxes[0].size ), static_cast<int>( nrrdSpaceAxes[1].size ), static_cast<int>( nrrdSpaceAxes[2].size ) };
 
     // for each axis, if spacing is NaN, use direction vector to compute spacing.
     double spacing[3] = { 1, 1, 1 };
