@@ -43,7 +43,6 @@ SET(cmtkIO_SRCS
   cmtkLandmarkListIO.cxx
   cmtkPhantomIO_MagphanEMR051.cxx
   cmtkPGM.cxx
-  cmtkResourceFile.cxx
   cmtkSegmentationLabelIO.cxx
   cmtkStudy.cxx
   cmtkStudyList.cxx

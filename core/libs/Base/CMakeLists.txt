@@ -74,7 +74,6 @@ SET(cmtkBase_SRCS
   cmtkImageOperationOtsuThreshold.cxx
   cmtkImageOperationPruneHistogram.cxx
   cmtkImageOperationRevert.cxx
-  cmtkIntersection.cxx
   cmtkJointHistogram.cxx
   cmtkJointHistogramBase.cxx
   cmtkLandmark.cxx

@@ -70,7 +70,6 @@ SET(cmtkRegistration_SRCS
   cmtkImageSymmetryPlaneFunctionalBase.cxx
   cmtkMakeInitialAffineTransformation.cxx
   cmtkMultiChannelRegistrationFunctionalBase.cxx
-  cmtkMultiLevelOptimizer.cxx
   cmtkProtocolCallback.cxx
   cmtkReformatVolume.cxx
   cmtkRegistrationCallback.cxx
@@ -97,8 +96,7 @@ SET(cmtkRegistration_SRCS
 
 IF(CMTK_USE_SQLITE)
   SET(cmtkRegistration_SRCS ${cmtkRegistration_SRCS}
-    cmtkImageXformDB.cxx
-    cmtkRegistrationDatabaseUpdater.cxx)
+    cmtkImageXformDB.cxx)
 ENDIF(CMTK_USE_SQLITE)
 
 ADD_LIBRARY(cmtkRegistration ${cmtkRegistration_SRCS})
