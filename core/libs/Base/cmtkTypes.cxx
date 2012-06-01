@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -133,33 +133,6 @@ GetSignedDataType( const ScalarDataType dtype )
     default:
       return dtype;
     }
-}
-
-ScalarDataType
-GetDifferenceDataType
-( const ScalarDataType dtype1, const ScalarDataType dtype2 )
-{
-  if ( dtype1 == TYPE_DOUBLE || dtype2 == TYPE_DOUBLE )
-    return TYPE_DOUBLE;
-  if ( dtype1 == TYPE_FLOAT || dtype2 == TYPE_FLOAT )
-    return TYPE_FLOAT;
-  
-  if ( dtype1 == TYPE_INT || dtype2 == TYPE_INT )
-    return TYPE_FLOAT;
-  if ( dtype1 == TYPE_UINT || dtype2 == TYPE_UINT )
-    return TYPE_FLOAT;
-
-  if ( dtype1 == TYPE_SHORT || dtype2 == TYPE_SHORT )
-    return TYPE_INT;
-  if ( dtype1 == TYPE_USHORT || dtype2 == TYPE_USHORT )
-    return TYPE_INT;
-
-  if ( dtype1 == TYPE_BYTE || dtype2 == TYPE_BYTE )
-    return TYPE_SHORT; 
-  if ( dtype1 == TYPE_CHAR || dtype2 == TYPE_CHAR )
-    return TYPE_SHORT;
-
-  return TYPE_CHAR;
 }
 
 ScalarDataType

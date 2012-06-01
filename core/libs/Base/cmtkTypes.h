@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
@@ -215,9 +215,6 @@ ScalarDataType SelectDataTypeInteger( const byte itemSize,const bool signBit );
 
 /// Return signed datatype ID corresponding to given datatype.
 ScalarDataType GetSignedDataType( const ScalarDataType dtype );
-
-/// Return difference datatype ID for given pair of datatypes.
-ScalarDataType GetDifferenceDataType( const ScalarDataType dtype1, const ScalarDataType dtype2 );
 
 /// Return unsigned datatype ID corresponding to given datatype.
 ScalarDataType GetUnsignedDataType( const ScalarDataType dtype );
