@@ -341,7 +341,11 @@ VolumeIO::Write
   // if volume was reoriented from its original array order, temporarily reorient back and set actual volume to temporary volume.
   cmtk::UniformVolume::SmartConstPtr reorientedVolume;
 
-  if ( !getenv( CMTK_LEGACY_WRITE_IMAGES_RAS ) )
+  if ( getenv( CMTK_LEGACY_WRITE_IMAGES_RAS ) )
+    {
+    DebugOutput( 1 ) << "INFO: forcing legacy RAS image writing due to set environment variable\n";
+    }
+  else
     {
     if ( volume.MetaKeyExists( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) &&
 	 (volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ) != volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) ) )
