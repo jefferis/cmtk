@@ -75,9 +75,9 @@ VolumeFromFile::ReadNRRD( const std::string& pathHdr )
 
     const int dims[3] = 
       { 
-	(nrrd->dim > 0) ? nrrd->axis[0].size : 1,
-	(nrrd->dim > 1) ? nrrd->axis[1].size : 1,
-	(nrrd->dim > 2) ? nrrd->axis[2].size : 1 
+	static_cast<int>( (nrrd->dim > 0) ? nrrd->axis[0].size : 1 ),
+	static_cast<int>( (nrrd->dim > 1) ? nrrd->axis[1].size : 1 ),
+	static_cast<int>( (nrrd->dim > 2) ? nrrd->axis[2].size : 1 ) 
       };
 
     // for each axis, if spacing is NaN, use direction vector to compute spacing.
