@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -550,44 +550,6 @@ public:
 	return (hX + hY) - hXY;
     else
       return 0;
-  }
-
-  /// Compute the Correlation Ratio corresponding to this histogram.
-  double GetCorrelationRatio() const 
-  {
-    T sampleCount = this->SampleCount();
-    if ( ! sampleCount ) return 0;
-    
-    double sigSquare = 0, m = 0;
-    for ( size_t j = 0; j < NumBinsY; ++j ) 
-      {
-      sigSquare += ( MathUtil::Square(j) * ProjectToY(j) );
-      m += (j * ProjectToY(j));
-      }
-    
-    double invSampleCount = 1.0 / sampleCount;
-    
-    m *= invSampleCount;
-    (sigSquare *= invSampleCount) -= MathUtil::Square(m);
-    
-    double eta = 0;
-    for ( size_t i = 0; i < NumBinsX; ++i ) 
-      {
-      if ( ProjectToX(i) > 0 ) 
-	{
-	double sigSquare_i = 0, m_i = 0;
-	for ( size_t j = 0; j < NumBinsY; ++j ) 
-	  {
-	  sigSquare_i += (MathUtil::Square(j) * this->JointBins[ i + j * NumBinsX ]);
-	  m_i += (j * this->JointBins[ i + j * NumBinsX ]);
-	  }
-	m_i *= (1.0 / ProjectToX(i) );
-	(sigSquare_i *= (1.0 / ProjectToX(i))) -= MathUtil::Square(m_i);
-	eta += (sigSquare_i * ProjectToX(i));
-	}
-      }
-    
-    return eta / (sigSquare * sampleCount); 
   }
 };
 
