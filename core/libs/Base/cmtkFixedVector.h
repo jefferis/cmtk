@@ -148,14 +148,6 @@ public:
     return *this;
   }
   
-  /// Add scalar value to one vector element.
-  Self AddScalarToOne( const size_t idx, const typename MakeSigned<T>::Type& value ) const
-  {
-    Self result = *this;
-    result[idx] += value;
-    return result;
-  }
-  
   /// Maximum value.
   T MaxValue() const
   {

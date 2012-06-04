@@ -39,35 +39,36 @@ cmtk::ScalarImageGradientField::ScalarImageGradientField( const UniformVolume& v
 {
   const DataGrid::RegionType wholeImageRegion = volume.GetWholeImageRegion();
 
-  size_t ofs = 0;
-  for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it, ++ofs )
+  size_t ofsPlusMinus = 1;
+  for ( int dim = 0; dim < 3; ++dim )
     {
-    const DataGrid::IndexType idx = it.Index();
-    
-    for ( int dim = 0; dim < 3; ++dim )
+    size_t ofs = 0;
+    for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it, ++ofs )
       {
+      const DataGrid::IndexType idx = it.Index();
       Types::Coordinate div = 0;
       
-      const DataGrid::IndexType idxUp = idx.AddScalarToOne( dim, 1 );
-      if ( idxUp[dim] < wholeImageRegion.To()[dim] )
+      if ( idx[dim]+1 < wholeImageRegion.To()[dim] )
 	{
-	(*this->m_GradientField)[ofs][dim] = volume.GetDataAt( volume.GetOffsetFromIndex( idxUp ) );
+	(*this->m_GradientField)[ofs][dim] = volume.GetDataAt( ofs + ofsPlusMinus );
 	div += 1.0;
 	}
       else
-	(*this->m_GradientField)[ofs][dim] = volume.GetDataAt( volume.GetOffsetFromIndex( idx ) );
+	(*this->m_GradientField)[ofs][dim] = volume.GetDataAt( ofs );
       
-      const DataGrid::IndexType idxDown = idx.AddScalarToOne( dim, -1 );
-      if ( idx[dim] > wholeImageRegion.From()[dim] )
+      if ( idx[dim]-1 > wholeImageRegion.From()[dim] )
 	{
-	(*this->m_GradientField)[ofs][dim] -= volume.GetDataAt( volume.GetOffsetFromIndex( idxDown ) );
+	(*this->m_GradientField)[ofs][dim] -= volume.GetDataAt( ofs - ofsPlusMinus );
 	div += 1.0;
 	}
       else
-	(*this->m_GradientField)[ofs][dim] -= volume.GetDataAt( volume.GetOffsetFromIndex( idx ) );
+	(*this->m_GradientField)[ofs][dim] -= volume.GetDataAt( ofs );
       
       (*this->m_GradientField)[ofs][dim] /= div;
       }
+    
+    // compute increment for next dimension
+    ofsPlusMinus *= volume.m_Dims[dim];
     }
 }
 
