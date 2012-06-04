@@ -181,10 +181,10 @@ DICOM::GetImageOrigin() const
   return imageOrigin;
 }
 
-const FixedVector< 2, FixedVector<3,double> > 
+const FixedArray< 2, FixedVector<3,double> > 
 DICOM::GetImageOrientation() const
 {
-  FixedVector< 2, FixedVector<3,double> > orientation;
+  FixedArray< 2, FixedVector<3,double> > orientation;
   
   orientation[0] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
   orientation[1] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
@@ -314,7 +314,7 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 
 
 const FixedVector<3,double>
-DICOM::DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
+DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
 {
   // without further information, we "guess" the image normal vector
   FixedVector<3,double> sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
@@ -472,7 +472,7 @@ DICOM::Read
   image->SetImageOrigin( imageOrigin );
   
   // get original image direction from file.
-  FixedVector< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
+  FixedArray< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
   image->SetImageDirectionX( imageOrientation[0] );
   image->SetImageDirectionY( imageOrientation[1] );
 

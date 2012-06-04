@@ -48,7 +48,7 @@ void
 cmtk::SimpleLevelsetDevice
 ::Evolve( const int numberOfIterations, const bool forceIterations )
 {
-  FixedVector< 3, std::vector<float> > kernels;
+  FixedArray< 3, std::vector<float> > kernels;
 
   for ( int dim = 0; dim < 3; ++dim )
     {

@@ -82,7 +82,7 @@ private:
   std::vector< FixedVector<3,int> > m_LandmarksGrid;
 
   /// Spline coeffiecints per landmark.
-  std::vector< FixedVector<3, FixedVector<4,Types::Coordinate> > > m_LandmarksSpline;
+  std::vector< FixedArray<3, FixedVector<4,Types::Coordinate> > > m_LandmarksSpline;
 
   /// Deformation field residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
   std::vector< SplineWarpXform::SpaceVectorType > m_Residuals;

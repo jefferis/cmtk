@@ -116,7 +116,7 @@ public:
 
 private:
   /// Array of pointers to transformed axes points.
-  FixedVector<3,UniformVolume::SpaceVectorType*> m_Hash;
+  FixedArray<3,UniformVolume::SpaceVectorType*> m_Hash;
 
   /// Dimensions of the transformed grid: numbers of samples per axis.
   FixedVector<3,int> m_Dims;

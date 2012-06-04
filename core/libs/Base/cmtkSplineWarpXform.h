@@ -277,7 +277,7 @@ public:
   }
   
   /// Precompute spline parameters for one point.
-  void PrecomputeLocationSpline( const Self::SpaceVectorType& v, FixedVector<3,int>& grid, FixedVector< 3, FixedVector<4,Types::Coordinate> >& spline  ) const
+  void PrecomputeLocationSpline( const Self::SpaceVectorType& v, FixedVector<3,int>& grid, FixedArray< 3, FixedVector<4,Types::Coordinate> >& spline  ) const
   {
     for ( int dim = 0; dim<3; ++dim ) 
       {
@@ -388,7 +388,7 @@ protected:
    * These arrays hold the precomputed grid indexes of the deformed grid's
    * voxels with respect to the control point grid of this deformation. 
    */
-  FixedVector< 3,std::vector<int> > m_GridIndexes;
+  FixedArray< 3,std::vector<int> > m_GridIndexes;
 
   /**\name Precomputed coefficient array offsets.
    * These arrays hold the precomputed grid offsets of the deformed grid's
@@ -396,20 +396,20 @@ protected:
    * values are the grid indexes multiplied by the number of elements to skip in
    * the coefficient array that corresponds to the respective index.
    */
-  FixedVector< 3,std::vector<int> > m_GridOffsets;
+  FixedArray< 3,std::vector<int> > m_GridOffsets;
 
   /**\name Precomputed spline coefficients.
    * These arrays hold the precomputed spline coefficients for deforming the
    * voxel locations in the associated deformed grid.
    */
-  FixedVector< 3,std::vector<Types::Coordinate> > m_GridSpline;
+  FixedArray< 3,std::vector<Types::Coordinate> > m_GridSpline;
   
   /**\name Precomputed derivative spline coefficients.
    * These arrays hold the precomputed derivatives of the spline coefficients.
    * This allows for rapid evaluation of the Jacobian determinant.
    */
   /// x-axis.
-  FixedVector< 3,std::vector<Types::Coordinate> > m_GridDerivSpline;
+  FixedArray< 3,std::vector<Types::Coordinate> > m_GridDerivSpline;
 
   /// Relative offsets of all control points in a 4 x 4 x 4 neighborhood.
   int GridPointOffset[48];

@@ -35,26 +35,29 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataTypeTraits.h>
+#include <Base/cmtkFixedArray.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
 
 #include <math.h>
 
-#include <algorithm>
-#include <iostream>
-
 namespace
 cmtk
 {
-/// Class for fixed-size n-dimensional vector.
+/** Class for fixed-size n-dimensional numerical vector.
+ * This class inherits from cmtk::FixedArray and, unlike its base class, is suitable only for element types that support arithmetic
+ * operations.
+ */
 template<size_t NDIM,typename T=int>
-class FixedVector
+class FixedVector : public FixedArray<NDIM,T>
 {
 public:
   /// This class.
   typedef FixedVector<NDIM,T> Self;
+
+  /// Base class.
+  typedef FixedArray<NDIM,T> Superclass;
 
   /// Type of the stored values.
   typedef T ValueType;
@@ -65,64 +68,19 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Return vector size.
-  size_t Size() const { return NDIM; }
-
-  /// Zero operator.
-  static const Self Zero()
-  {
-    Self v;
-    std::fill( v.begin(), v.end(), DataTypeTraits<T>::Zero() );
-    return v;
-  }
-
   /// Default constructor.
   FixedVector() {}
 
-  /// Initialization class: use this to select initialization constructor.
-  class Init
-  {
-  public:
-    /// Constructor: set initialization value.
-    explicit Init( const T value ) : m_Value( value ) {}
-    
-    /// Array initialization value.
-    T m_Value;
-  };
-  
   /// Initialization constructor.
-  FixedVector( const typename Self::Init& init )
-  {
-    std::fill( this->begin(), this->end(), init.m_Value );
-  }
+  FixedVector( const typename Self::Init& init ) : Superclass( init ) {}
 
   /// Constructor from const pointer.
   template<class T2>
-  explicit FixedVector( const T2 *const ptr ) 
-  { 
-    for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Data[i] = ptr[i];
-  }
-
+  explicit FixedVector( const T2 *const ptr ) : Superclass( ptr ) {}
+  
   /// Type conversion constructor template.
   template<class T2>
-  FixedVector( const FixedVector<NDIM,T2>& rhs )
-  {
-    for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Data[i] = static_cast<T>( rhs[i] );
-  }
-
-  /// Get element reference.
-  T& operator[]( const size_t i )
-  {
-    return this->m_Data[i];
-  }
-
-  /// Get const element reference.
-  const T& operator[]( const size_t i ) const
-  {
-    return this->m_Data[i];
-  }
+  FixedVector( const FixedVector<NDIM,T2>& rhs ) : Superclass( rhs ) {}
 
   /// In-place addition operator.
   Self& operator+=( const Self& rhs )
@@ -138,21 +96,6 @@ public:
     for ( size_t i = 0; i<NDIM; ++i )
       this->m_Data[i] -= rhs.m_Data[i];
     return *this;
-  }
-
-  /// Equality operator.
-  bool operator==( const Self& rhs ) const
-  {
-    for ( size_t i = 0; i<NDIM; ++i )
-      if ( this->m_Data[i] != rhs.m_Data[i] )
-	return false;
-    return true;
-  }
-
-  /// Inequality operator.
-  bool operator!=( const Self& rhs ) const
-  {
-    return !this->operator==( rhs );
   }
 
   /// Multiply by a scalar.
@@ -205,30 +148,14 @@ public:
     return *this;
   }
   
-  /// Pointer to first array element.
-  T* begin()
+  /// Add scalar value to one vector element.
+  Self AddScalarToOne( const size_t idx, const typename MakeSigned<T>::Type& value ) const
   {
-    return this->m_Data;
+    Self result = *this;
+    result[idx] += value;
+    return result;
   }
-
-  /// Pointer behind last array element.
-  T* end()
-  {
-    return this->m_Data+NDIM;
-  }
-
-  /// Pointer to first array element.
-  const T* begin() const
-  {
-    return this->m_Data;
-  }
-
-  /// Pointer behind last array element.
-  const T* end() const
-  {
-    return this->m_Data+NDIM;
-  }
-
+  
   /// Maximum value.
   T MaxValue() const
   {
@@ -298,10 +225,6 @@ public:
   {
     return sqrt( this->SumOfSquares() );
   }
-
-private:
-  /// The actual index array.
-  T m_Data[NDIM];
 };
 
 /// Addition operator.
@@ -447,6 +370,7 @@ public:
     return v;
   }
 };
+
 
 } // namespace cmtk
 

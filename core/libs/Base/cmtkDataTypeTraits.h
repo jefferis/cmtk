@@ -47,6 +47,25 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+/// Make signed data types.
+template<class TType> class MakeSigned {};
+
+template<> class MakeSigned<unsigned long int> { public: typedef signed long int Type; };
+template<> class MakeSigned<signed long int> { public: typedef signed long int Type; };
+
+template<> class MakeSigned<unsigned int> { public: typedef signed int Type; };
+template<> class MakeSigned<signed int> { public: typedef signed int Type; };
+
+template<> class MakeSigned<unsigned short int> { public: typedef signed short int Type; };
+template<> class MakeSigned<signed short int> { public: typedef signed short int Type; };
+
+template<> class MakeSigned<unsigned char> { public: typedef signed char Type; };
+template<> class MakeSigned<signed char> { public: typedef signed char Type; };
+
+template<> class MakeSigned<float> { public: typedef float Type; };
+template<> class MakeSigned<double> { public: typedef double Type; };
+
+
 /** Data type traits */
 template<class TType>
 class DataTypeTraits

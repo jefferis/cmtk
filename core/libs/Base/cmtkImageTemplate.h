@@ -88,7 +88,7 @@ public:
    */
   ImageTemplate( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size ) : Superclass( dims, size ) 
   {
-    this->m_DataArray.resize( this->GetNumberOfPixels );
+    this->m_DataArray.resize( this->GetNumberOfPixels() );
   }
 
   /** Create volume from base class instance.
