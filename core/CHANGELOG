@@ -1,5 +1,8 @@
 Release CMTK-2.2.2:
 
+(r4400) Obsoleted: the "mip" tool as well as library code exclusively used by
+    it (e.g., support for PGM file format; volume/ray accumulators) have been
+    removed.
 (r4385) Changed: the "fit_spline_xform" tool has been renamed to
     "fit_spline_dfield" to make room for a new tool which will fit splines to
     arbitrary transformation sequences.
