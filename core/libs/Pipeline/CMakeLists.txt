@@ -38,7 +38,6 @@ SET(cmtkPipeline_SRCS
   cmtkPipelineObject.cxx
   cmtkPlane.cxx
   cmtkRenderer.cxx
-  cmtkVolumeWrapper.cxx
 )
 
 ADD_LIBRARY(cmtkPipeline ${cmtkPipeline_SRCS})
