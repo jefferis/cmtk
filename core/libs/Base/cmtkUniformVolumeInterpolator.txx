@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,10 +29,6 @@
 //  $LastChangedBy$
 //
 */
-
-#ifdef HAVE_IEEEFP_H
-#  include <ieeefp.h>
-#endif
 
 namespace
 cmtk
