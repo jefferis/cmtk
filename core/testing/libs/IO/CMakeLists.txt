@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -33,23 +33,15 @@
 
 SET(CMTK_LIBRARIES "cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
 
-SET(DRIVERS libIOTests)
+SET(DRIVERS "")
 IF(CMTK_USE_SQLITE)
-  SET(DRIVERS ${DRIVERS} libIOTestsSQLite)
+  LIST(APPEND DRIVERS libIOTestsSQLite)
 ENDIF(CMTK_USE_SQLITE)
 
 FOREACH(D ${DRIVERS})
   ADD_EXECUTABLE(${D} ${D}.cxx)
   TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 ENDFOREACH(D ${DRIVERS})
-
-# ==========================================
-# Tests for "cmtk::PGM" class
-SET(Tests ${Tests} ReadPGM)
-
-FOREACH(T ${Tests})
-  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})
-ENDFOREACH(T Tests)
 
 # ==========================================
 # Tests for "cmtk::SQLite" class
