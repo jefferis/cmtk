@@ -1468,34 +1468,6 @@ case ${RUNTEST} in
 	unset CMTK_NUM_THREADS
 	check_results xform
 	;;
-    mipDefault)
-        run mip --axial spgr_3t.hdr ${tmpdir}/axial.pgm
-        run mip --sagittal spgr_3t.hdr ${tmpdir}/sagittal.pgm
-        run mip --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
-	check_results axial.pgm sagittal.pgm coronal.pgm
-	;;
-    mipBlackWhite)
-        run mip --black 100 --white 2000 --axial spgr_3t.hdr ${tmpdir}/axial.pgm
-        run mip --black 100 --white 2000 --sagittal spgr_3t.hdr ${tmpdir}/sagittal.pgm
-        run mip --black 100 --white 2000 --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
-	check_results axial.pgm sagittal.pgm coronal.pgm
-	;;
-    mipAdjust)
-        run mip --adjust --axial spgr_3t.hdr ${tmpdir}/axial.pgm
-        run mip --adjust --sagittal spgr_3t.hdr ${tmpdir}/sagittal.pgm
-        run mip --adjust --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
-	check_results axial.pgm sagittal.pgm coronal.pgm
-	;;
-    mipSum)
-        run mip --sum --axial spgr_3t.hdr ${tmpdir}/axial.pgm
-        run mip --sum --sagittal spgr_3t.hdr ${tmpdir}/sagittal.pgm
-        run mip --sum --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
-	check_results axial.pgm sagittal.pgm coronal.pgm
-	;;
-    mip16Bit)
-        run mip --write-16bit --axial spgr_3t.hdr ${tmpdir}/axial16.pgm
-	check_results axial16.pgm
-	;;
     mk_adni_phantom2mm)
         run mk_adni_phantom --resolution 2 ${tmpdir}/phantom.nii
         check_results phantom.nii

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -164,26 +164,6 @@ UniformVolume::FindVoxelByIndex
   }
   
   return true;
-}
-
-template<class TAccumulator>
-ScalarImage*
-UniformVolume::ComputeProjection( const int axis ) const
-{
-  ScalarImage* projectImage = DataGrid::ComputeProjection<TAccumulator>( axis );
-  switch ( axis ) 
-    {
-    case AXIS_X:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_Y ), this->GetDelta( AXIS_Z ) );
-      break;
-    case AXIS_Y:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_X ), this->GetDelta( AXIS_Z ) );
-      break;
-    case AXIS_Z:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_X ), this->GetDelta( AXIS_Y ) );
-      break;
-    }
-  return projectImage;
 }
 
 } // namespace cmtk

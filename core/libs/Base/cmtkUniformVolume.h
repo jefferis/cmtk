@@ -512,15 +512,6 @@ public:
    */
   Self::SmartPtr GetCroppedVolume( const Self::RegionType& region ) const;
 
-  /** Return projection (e.g., MIP, sum) along one axis.
-   * This function calls its equivalent in DataGrid and adds calibration
-   * info (i.e., correct pixel sizes) to the resulting image.
-   *\note The pixel size if taken from the size of the first grid element along
-   * each axis -- non-uniform spacings will lead to incorrect results.
-   */
-  template<class TAccumulator>
-  ScalarImage* ComputeProjection( const int axis ) const;
-  
   /// Get center of mass of pixel data.
   virtual Self::CoordinateVectorType GetCenterOfMass() const
   {

@@ -502,15 +502,6 @@ IF(HAVE_STL_HASH_MAP)
 ENDIF(HAVE_STL_HASH_MAP)
 
 # ==========================================
-# Tests for "mip" tool
-LIST(APPEND testList
-  mipDefault
-  mipBlackWhite
-  mipAdjust
-  mipSum
-  mip16Bit)
-
-# ==========================================
 # Tests for "mk_adni_phantom" tool
 LIST(APPEND testList mk_adni_phantom2mm mk_adni_phantom2mmLabels)
 

@@ -331,10 +331,6 @@ public:
   /// Get center of mass and first-order moments of pixel data.
   virtual FixedVector<3,Types::Coordinate> GetCenterOfMassGrid( FixedVector<3,Types::Coordinate>& firstOrderMoment ) const;
   
-  /// Return maximum-intensity projection MIP along one axis.
-  template<class TAccumulator>
-  ScalarImage* ComputeProjection( const int axis ) const;
-  
   /** Return orthogonal slice as a 2D image.
    */
   virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;

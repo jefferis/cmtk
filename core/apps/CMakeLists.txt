@@ -69,7 +69,6 @@ SET(APPS avg_adm
   lvote
   make_initial_affine
   mat2dof
-  mip
   mk_adni_phantom
   mk_analyze_hdr
   mk_nifti_hdr

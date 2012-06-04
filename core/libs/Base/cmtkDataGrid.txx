@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,78 +36,6 @@ cmtk
 
 /** \addtogroup Base */
 //@{
-
-template<class TAccumulator>
-ScalarImage*
-DataGrid::ComputeProjection
-( const int axis ) const
-{
-  unsigned int dims[2], depth, offset, incX, incY, incZ;
-
-  switch ( axis ) 
-    {
-    case AXIS_X:
-      dims[0] = this->m_Dims[1];
-      dims[1] = this->m_Dims[2];
-      depth = this->m_Dims[0];
-      offset = 0;
-      incX = this->m_Dims[0];
-      incY = this->m_Dims[0] * this->m_Dims[1];
-      incZ = 1;
-      break;
-    case AXIS_Y:
-      dims[0] = this->m_Dims[0];
-      dims[1] = this->m_Dims[2];
-      depth = this->m_Dims[1];
-      offset = 0;
-      incX = 1;
-      incY = this->m_Dims[0] * this->m_Dims[1];
-      incZ = this->m_Dims[0];
-      break;
-    case AXIS_Z:
-    default:
-      dims[0] = this->m_Dims[0];
-      dims[1] = this->m_Dims[1];
-      depth = this->m_Dims[2];
-      offset = 0;
-      incX = 1;
-      incY = this->m_Dims[0];
-      incZ = this->m_Dims[0] * this->m_Dims[1];
-      break;
-    }
-  
-  const TypedArray* data = this->GetData();
-  TypedArray::SmartPtr projectData = TypedArray::Create( data->GetType(), dims[0] * dims[1] );
-  
-  for ( unsigned int y = 0; y < dims[1]; ++y ) 
-    {
-    size_t projectOffset = y * dims[0];
-    unsigned int offsetY = offset + incY;
-    for ( unsigned int x = 0; x < dims[0]; ++x, ++projectOffset ) 
-      {
-      unsigned int offsetX = offset + incX;
-      
-      TAccumulator accu;
-      Types::DataItem item;
-      for ( unsigned int z = 0; z < depth; ++z, offset += incZ ) 
-	{
-       	if ( data->Get( item, offset ) ) 
-	  {
-	  accu.AddValue( item );
-	  }
-	}
-      projectData->Set( accu.GetResult(), projectOffset );
-      
-      offset = offsetX;
-      }
-    offset = offsetY;
-    }
-  
-  ScalarImage* projectImage = new ScalarImage( dims[0], dims[1] );
-  projectImage->SetPixelData( TypedArray::SmartPtr( projectData ) );
-  
-  return projectImage;
-}
 
 template<class TData>
 TData
