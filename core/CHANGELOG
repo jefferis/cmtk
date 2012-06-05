@@ -1,5 +1,7 @@
 Release CMTK-2.2.2:
 
+(r4420) Fixed: "reorient" tool can now force reorientation when original image
+    orientation is overridden by command line argument.
 (r4400) Obsoleted: the "mip" tool as well as library code exclusively used by
     it (e.g., support for PGM file format; volume/ray accumulators) have been
     removed.
