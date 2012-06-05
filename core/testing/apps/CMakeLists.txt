@@ -543,6 +543,7 @@ LIST(APPEND testList
 # Tests for "reorient" tool
 LIST(APPEND testList
   reorientHdrSaToAx
+  reorientHdrSaToAxNifti
   reorientHdrCoToAx
   reorientHdrAxToSa
   reorientHdrCoToSa

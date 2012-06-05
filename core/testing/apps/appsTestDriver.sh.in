@@ -1885,48 +1885,43 @@ case ${RUNTEST} in
 	;;
     reorientHdrSaToAx)
 	run reorient -o RAS phantom_sa.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
+	;;
+    reorientHdrSaToAxNifti)
+	run reorient -i RAS -o RAS phantom_sa.hdr ${tmpdir}/reorient.nii
+	check_results reorient.nii
 	;;
     reorientHdrCoToAx)
 	run reorient -o RAS phantom_co.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
 	;;
     reorientHdrAxToSa)
 	run reorient -o ASL phantom_ax.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
 	;;
     reorientHdrCoToSa)
 	run reorient -o ASL phantom_co.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
 	;;
     reorientHdrAxToCo)
 	run reorient -o LSA phantom_ax.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
 	;;
     reorientHdrSaToCo)
 	run reorient -o LSA phantom_sa.hdr ${tmpdir}/reorient.hdr
-	check_results reorient.hdr
-	check_results reorient.img
+	check_results reorient.hdr reorient.img
 	;;
     reorientNrrdToNrrd)
         run reorient vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
-        check_results vol001_mr_t0_crop.nhdr
-	check_results vol001_mr_t0_crop.raw
+        check_results vol001_mr_t0_crop.nhdr vol001_mr_t0_crop.raw
 	;;
     reorientNrrdToNrrdRAS)
         run reorient --output-orientation RAS vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
-        check_results vol001_mr_t0_crop.nhdr
-	check_results vol001_mr_t0_crop.raw
+        check_results vol001_mr_t0_crop.nhdr vol001_mr_t0_crop.raw
 	;;
     reorientNrrdToNrrdSpaceLPS)
         run reorient --output-space LPS vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
-        check_results vol001_mr_t0_crop.nhdr
-	check_results vol001_mr_t0_crop.raw
+        check_results vol001_mr_t0_crop.nhdr vol001_mr_t0_crop.raw
 	;;
     registrationRigidMrPet)
 	run registration -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr

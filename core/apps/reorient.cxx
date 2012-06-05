@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,6 +86,11 @@ doMain( const int argc, const char* argv[] )
     {
     volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION, OldOrientation );
     volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL, OldOrientation );
+
+    volume->SetMetaInfo( cmtk::META_SPACE, OldOrientation );
+    volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, OldOrientation );
+
+    volume->CreateDefaultIndexToPhysicalMatrix();
     }
   else
     {
