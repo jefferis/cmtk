@@ -147,7 +147,6 @@ ImagePairNonrigidRegistrationCommandLine
     cl.BeginGroup( "Regularization", "Regularization parameters" );
     cl.AddOption( Key( "jacobian-constraint-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "smoothness-constraint-weight" ), &this->m_GridEnergyWeight, "Weight for smoothness constraint based on second-order grid bending energy." );
-    cl.AddOption( Key( "landmark-constraint-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "inverse-consistency-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "constraint-relaxation-factor" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
     cl.AddSwitch( Key( "relax-to-unfold" ), &this->m_RelaxToUnfold, true, "Before each resolution level, regularize negative-Jacobian areas of the deformation to unfold them." );
@@ -473,7 +472,6 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "energy_constraint_weight", this->m_GridEnergyWeight );
   classStream.WriteDouble( "inverse_consistency_weight", this->m_InverseConsistencyWeight );
   classStream.WriteDouble( "weight_relaxation", this->m_RelaxWeight );
-  classStream.WriteDouble( "landmark_error_weight", this->m_LandmarkErrorWeight );
   classStream.WriteInt( "refine_grid", this->m_RefineGrid );
   classStream.WriteBool( "delay_refine_grid", this->m_DelayRefineGrid );
   classStream.WriteBool( "adaptive_fix_parameters", this->m_AdaptiveFixParameters );

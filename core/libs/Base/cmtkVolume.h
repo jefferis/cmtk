@@ -96,9 +96,6 @@ public:
     this->m_Offset = o;
   }
 
-  /// List of landmarks defined in this volume.
-  LandmarkList::SmartPtr m_LandmarkList;
-
   /** Spatial extent of the volume in world coordinates
    *\note This is the actual size of the volume between first and last pixel. Therefore,
    * if a non-zero volume coordinate offset is set in m_Offset, this does not affect 
@@ -109,6 +106,9 @@ public:
 
   /// Default constructor.
   Volume() : m_Offset( CoordinateVectorType::Init( 0.0 ) ) {}
+
+  /// Copy constructor.
+  Volume( const Self& other ) : Superclass( other ), m_Offset( other.m_Offset ), m_Size( other.m_Size ) {}
 
   /** Destructor.
    * Do nothing really; just be present and virtual.

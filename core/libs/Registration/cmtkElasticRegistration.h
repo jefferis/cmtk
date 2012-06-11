@@ -38,7 +38,6 @@
 #include <Registration/cmtkVoxelRegistration.h>
 
 #include <Base/cmtkSplineWarpXform.h>
-#include <Base/cmtkLandmarkPairList.h>
 
 namespace
 cmtk
@@ -138,12 +137,6 @@ protected:
    * transformation are optimized simultaneously.
    */
   cmtkGetSetMacro(float,InverseConsistencyWeight);
-
-  /// Weighting factor of landmark registration error vs. image similarity.
-  cmtkGetSetMacro(float,LandmarkErrorWeight);
-
-  /// Matched landmarks list.
-  cmtkGetSetMacro(LandmarkPairList::SmartPtr,LandmarkPairs);
 
   /// Flag to turn on deformation unfolding before each level.
   bool m_RelaxToUnfold;

@@ -161,7 +161,6 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
     cl.AddOption( Key( "rigidity-weight" ), &this->m_RigidityConstraintWeight, "Weight for local rigidity constraint" );
-    cl.AddOption( Key( "landmark-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "ic-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "relax" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
     cl.AddSwitch( Key( "relax-to-unfold" ), &this->m_RelaxToUnfold, true, "Before each resolution level, regularize negative-Jacobian areas of the deformation to unfold them." );
@@ -498,7 +497,6 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "energy_constraint_weight", this->m_GridEnergyWeight );
   classStream.WriteDouble( "inverse_consistency_weight", this->m_InverseConsistencyWeight );
   classStream.WriteDouble( "weight_relaxation", this->m_RelaxWeight );
-  classStream.WriteDouble( "landmark_error_weight", this->m_LandmarkErrorWeight );
   classStream.WriteBool( "force_switch", this->ForceSwitchVolumes );
   classStream.WriteInt( "refine_grid", this->m_RefineGrid );
   classStream.WriteBool( "delay_refine_grid", this->m_DelayRefineGrid );

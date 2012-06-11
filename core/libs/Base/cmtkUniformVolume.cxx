@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+UniformVolume::UniformVolume 
+( const UniformVolume& other ) : Volume( other ), m_Delta( other.m_Delta ), m_IndexToPhysicalMatrix( other.m_IndexToPhysicalMatrix ) {}
+
 UniformVolume::UniformVolume
 ( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data )
 {

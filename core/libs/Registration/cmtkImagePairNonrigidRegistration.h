@@ -36,7 +36,6 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkSplineWarpXform.h>
-#include <Base/cmtkLandmarkPairList.h>
 
 #include <Registration/cmtkImagePairRegistration.h>
 
@@ -141,9 +140,6 @@ protected:
    */
   cmtkGetSetMacro(float,InverseConsistencyWeight);
 
-  /// Weighting factor of landmark registration error vs. image similarity.
-  cmtkGetSetMacro(float,LandmarkErrorWeight);
-
   /// Flag to turn on deformation unfolding before each level.
   bool m_RelaxToUnfold;
 
@@ -191,9 +187,6 @@ protected:
   const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
 
 private:
-  /// (Optional) matched landmark list.
-  LandmarkPairList::SmartConstPtr m_LandmarkPairs;
-
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;
 

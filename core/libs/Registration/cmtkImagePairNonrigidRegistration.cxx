@@ -32,8 +32,6 @@
 
 #include "cmtkImagePairNonrigidRegistration.h"
 
-#include <Base/cmtkLandmarkList.h>
-#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
@@ -81,7 +79,6 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
   this->m_JacobianConstraintWeight = 0;
   this->m_GridEnergyWeight = 0;
   this->m_RelaxWeight = -1;
-  this->m_LandmarkErrorWeight = 0;
   this->m_InverseConsistencyWeight = 0.0;
   RelaxationStep = false;
 }
@@ -92,18 +89,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
   this->m_ReferenceVolume = this->m_Volume_1;
   this->m_FloatingVolume = this->m_Volume_2;
 
-  if ( this->m_LandmarkErrorWeight != 0 ) 
-    {
-    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
-    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
-    
-    if ( sourceLandmarks && targetLandmarks ) 
-      {
-      this->m_LandmarkPairs = LandmarkPairList::SmartPtr( new LandmarkPairList( *sourceLandmarks, *targetLandmarks ) );
-      cmtk::StdErr << "Matched " <<this->m_LandmarkPairs->size() << "landmarks.\n";
-      }
-    }
-  
   Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
   this->m_InitialTransformation->ChangeCenter( center );
 
@@ -250,12 +235,6 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( this->m_LandmarkPairs )
-      {
-      newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetLandmarkPairs( this->m_LandmarkPairs );
-      }
-    
     return newFunctional;
   }
 }

@@ -41,8 +41,23 @@ namespace
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
+DataGrid::DataGrid( const Self& other ) 
+  : MetaInformationObject( other ), 
+    m_Dims( other.m_Dims ), 
+    m_GridIncrements( other.m_GridIncrements ),
+    m_CropRegion( other.m_CropRegion )
+{
+  if (other.m_Data )
+    this->m_Data = other.m_Data->Clone();
+
+  nextI = 1;
+  nextJ = nextI * this->m_Dims[0];
+  nextK = nextJ * this->m_Dims[1];
+  nextIJ = nextI + nextJ;
+  nextIK = nextI + nextK;
+  nextJK = nextJ + nextK;
+  nextIJK = nextI + nextJ + nextK;
+}
 
 DataGrid*
 DataGrid::CloneVirtual( const bool copyData )

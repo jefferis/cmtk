@@ -32,8 +32,6 @@
 
 #include "cmtkElasticRegistration.h"
 
-#include <Base/cmtkLandmarkList.h>
-#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
@@ -81,7 +79,6 @@ ElasticRegistration::ElasticRegistration ()
   this->m_RigidityConstraintWeight = 0;
   this->m_GridEnergyWeight = 0;
   this->m_RelaxWeight = -1;
-  this->m_LandmarkErrorWeight = 0;
   this->m_InverseConsistencyWeight = 0.0;
   RelaxationStep = false;
 }
@@ -95,18 +92,6 @@ ElasticRegistration::InitRegistration ()
   if ( this->m_MatchFltToRefHistogram )
     {
     this->GetVolume_2()->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
-    }
-  
-  if ( this->m_LandmarkErrorWeight != 0 ) 
-    {
-    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
-    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
-    
-    if ( sourceLandmarks && targetLandmarks ) 
-      {
-      this->m_LandmarkPairs = LandmarkPairList::SmartPtr( new LandmarkPairList( *(sourceLandmarks), *(targetLandmarks) ) );
-      StdErr << "Matched " << this->m_LandmarkPairs->size() << " landmarks.\n";
-      }
     }
   
   AffineXform::SmartPtr affineXform = this->m_InitialTransformation;
@@ -242,12 +227,6 @@ ElasticRegistration::MakeFunctional
       newFunctional->SetRigidityConstraintMap( rigidityMap );
       }
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( this->m_LandmarkPairs )
-      {
-      newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetLandmarkPairs( this->m_LandmarkPairs );
-      }
-    
     return newFunctional;
   }
 }

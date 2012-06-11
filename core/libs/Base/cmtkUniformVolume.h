@@ -96,6 +96,11 @@ public:
   /// Destructor.
   virtual ~UniformVolume() {}
 
+  /** Copy constructor.
+   *\param other Original volume that will be copied.
+   */
+  UniformVolume( const UniformVolume& other );
+
   /** Resample other volume to given resolution.
    *\param other Original volume that will be resampled.
    *\param resolution Resolution of the newly created volume in world units.
@@ -103,7 +108,7 @@ public:
    * where the original image resolution (non-uniform) was coarser than the
    * given resolution of the resampled volume.
    */
-  UniformVolume( const UniformVolume& other, const Types::Coordinate resolution = 0, const bool allowUpsampling = false );
+  UniformVolume( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling = false );
 
   /** Create uniform volume "from scratch".
    *\param dims Number of grid elements for the three spatial dimensions.
@@ -135,7 +140,7 @@ public:
    *  space back into physical space.
    */
   AffineXform::MatrixType m_IndexToPhysicalMatrix;
-
+  
   /** Change volume coordinate space.
    * Re-arrange volume's direction vectors to refer to a different coordinate space.
    *\invariant This should keep the result of GetOrientationFromDirections invariant.

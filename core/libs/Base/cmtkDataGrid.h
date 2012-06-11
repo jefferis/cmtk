@@ -100,6 +100,9 @@ public:
   DataGrid() : 
     m_Data( NULL )
   {}
+
+  /// Copy constructor.
+  DataGrid( const Self& other );
   
   /// Constructor.
   DataGrid( const Self::IndexType& dims, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null() ) 

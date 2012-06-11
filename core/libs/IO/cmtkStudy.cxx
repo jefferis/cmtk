@@ -206,16 +206,9 @@ Study::ReadVolume( const bool reRead, const char* orientation )
       }
     }
   
-  if ( this->m_Volume ) 
+  if ( this->m_Volume && this->m_Volume->GetData() ) 
     {
-    if ( this->m_LandmarkList ) 
-      {
-      this->m_Volume->m_LandmarkList = this->m_LandmarkList;
-      }
-    if ( this->m_Volume->GetData() ) 
-      {
-      return true;
-      }
+    return true;
     }
   
   this->m_Volume = oldVolume;
