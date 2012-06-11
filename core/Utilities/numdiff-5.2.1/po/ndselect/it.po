@@ -1,0 +1,207 @@
+# Italian messages for ndselect
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Ivano Primi <ivprimi@libero.it>
+# This file is distributed under the same license as the Numdiff program.
+# Ivano Primi <ivprimi@libero.it>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: numdiff 5.2.0 (ndselect 5.2.0)\n"
+"Report-Msgid-Bugs-To: ivprimi@libero.it\n"
+"POT-Creation-Date: 2010-01-06 23:20+0100\n"
+"PO-Revision-Date: 2010-01-07 17:00+0100\n"
+"Last-Translator: Ivano Primi <ivprimi@libero.it>\n"
+"Language-Team: ITALIAN <ivprimi@libero.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1 ? 1 : 0;\n"
+
+#: getopt.c:551 getopt.c:570
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: l'opzione `%s' è ambigua\n"
+
+#: getopt.c:603 getopt.c:607
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `--%s' non vuole argomenti\n"
+
+#: getopt.c:616 getopt.c:621
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `%c%s' non vuole argomenti\n"
+
+#: getopt.c:667 getopt.c:689 getopt.c:1020 getopt.c:1042
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: l'opzione `%s' ha bisogno di un argomento\n"
+
+#: getopt.c:727 getopt.c:730
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: l'opzione `--%s' risulta sconosciuta\n"
+
+#: getopt.c:738 getopt.c:741
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: l'opzione `%c%s' risulta sconosciuta\n"
+
+#: getopt.c:796 getopt.c:799
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr "%s: opzione inammissibile -- %c\n"
+
+#: getopt.c:805 getopt.c:808
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: opzione non valida -- %c\n"
+
+#: getopt.c:863 getopt.c:882 getopt.c:1095 getopt.c:1116
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: opzione con argomento obbligatorio -- %c\n"
+
+#: getopt.c:935 getopt.c:954
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: l'opzione `-W %s' è ambigua\n"
+
+#: getopt.c:978 getopt.c:999
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `-W %s' non vuole argomenti\n"
+
+#: ndselect.c:96
+msgid "Ivano Primi"
+msgstr "Ivano Primi"
+
+#: ndselect.c:97
+#, c-format
+msgid ""
+"License GPLv3+: GNU GPL version 3 or later,\n"
+"see <http://gnu.org/licenses/gpl.html>.\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""
+"Licenza GPLv3+: GNU GPL version 3 o successiva,\n"
+"vedi <http://gnu.org/licenses/gpl.html>.\n"
+"Questo è software libero: sei libero di modificarlo e redistribuirlo.\n"
+"NON c'è NESSUNA GARANZIA, per quanto consentito dalle vigenti normative.\n"
+
+#: ndselect.c:106
+msgid "Usage:"
+msgstr "Uso:"
+
+#: ndselect.c:107
+msgid "or"
+msgstr "oppure"
+
+#: ndselect.c:110
+#, c-format
+msgid ""
+"\n"
+"For a given range of line numbers and a given step\n"
+"print on the standard output all lines of a file,\n"
+"starting with the first line of the range and ending within\n"
+"its last line, whose line number is such that the difference\n"
+"between it and the start point is an integer multiple\n"
+"of the given step\n"
+"\n"
+msgstr ""
+"\n"
+"Dato un intervallo di numeri di linea e un certo passo,\n"
+"stampa sullo schermo, cominciando dalla prima linea dello\n"
+"intervallo e terminando entro l'ultima linea dello stesso,\n"
+"tutte le linee di un file il cui numero di linea è tale che\n"
+"la differenza tra esso e il punto di partenza dell'intervallo\n"
+"è un multiplo intero del passo specificato\n"
+"\n"
+
+#: ndselect.c:118
+msgid "Specify the first line to print"
+msgstr "Specifica la prima linea da stampare"
+
+#: ndselect.c:119
+msgid "(The default behavior is to start with line number 1)"
+msgstr "(L'azione predefinita è di stampare dalla prima linea)"
+
+#: ndselect.c:121
+msgid "Specify the last line that can be printed"
+msgstr "Specifica l'ultima linea stampabile"
+
+#: ndselect.c:122
+msgid "(The default behavior is to arrive till to the end of the file)"
+msgstr "(L'azione predefinita è di arrivare fino alla fine del file)"
+
+#: ndselect.c:124
+msgid "Specify the step to use when selecting the lines to print"
+msgstr "Specifica il passo con cui selezionare le linee da stampare"
+
+#: ndselect.c:125
+msgid "(The default value for the step is 1)"
+msgstr "(Il valore predefinito per il passo è 1)"
+
+#: ndselect.c:127
+msgid "Redirect warning and error messages from stderr to the indicated file"
+msgstr "Reindirizza avvertimenti e messaggi di errore\n"
+"    dallo schermo al file indicato"
+
+#: ndselect.c:129
+msgid "Redirect output from stdout to the indicated file"
+msgstr "Reindirizza l'output dallo schermo al file indicato"
+
+#: ndselect.c:130
+msgid "Show this help message"
+msgstr "Mostra questo messaggio di aiuto"
+
+#: ndselect.c:131
+msgid "Show version number, Copyright, Distribution Terms and NO-Warranty"
+msgstr "Mostra numero di versione, Copyright,\n"
+"    termini di distribuzione e NON-Garanzia"
+
+#: ndselect.c:133
+msgid "The argument after the options is the name of the file to scan."
+msgstr "L'argomento dopo le opzioni è il nome del file da scorrere."
+
+#: ndselect.c:134
+msgid ""
+"The complete path of the file should be given,\n"
+"a directory name is not accepted."
+msgstr ""
+"È bene fornire il percorso completo del file,\n"
+"un nome di cartella non viene accettato."
+
+#: ndselect.c:135
+msgid ""
+"If no input file is specified, the program reads from the standard input."
+msgstr ""
+"Se non si specifica il file da scorrere, il programma prende i dati\n"
+"dallo standard input."
+
+#: ndselect.c:136
+msgid "Exit status: 0 in case of normal termination, -1 (255) in case of error"
+msgstr "Codice di uscita: 0 in caso di conclusione regolare, -1 (255) su errore"
+
+#: ndselect.c:187 ndselect.c:201 ndselect.c:215
+#, c-format
+msgid "%s: invalid argument after `-%c' option\n"
+msgstr "%s: un argomento non valido segue l'opzione `-%c'\n"
+
+#: ndselect.c:223 ndselect.c:232 ndselect.c:288
+#, c-format
+msgid "%s: cannot open file \"%s\":\n"
+msgstr "%s: impossibile aprire il file \"%s\":\n"
+
+#: ndselect.c:292
+#, c-format
+msgid "%s: cannot close file \"%s\":\n"
+msgstr "%s: è stato impossibile chiudere il file \"%s\":\n"
+
+#: ndselect.c:296
+#, c-format
+msgid ""
+"%s: Error occurred while reading from file \"%s\"\n"
+"\n"
+msgstr ""
+"%s: Errore di lettura dal file \"%s\"\n"
+"\n"

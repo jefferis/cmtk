@@ -1,0 +1,766 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: numdiff 5.2.0\n"
+"Report-Msgid-Bugs-To: ivprimi@libero.it\n"
+"POT-Creation-Date: 2010-01-07 17:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: cmpfns.c:270 cmpfns.c:286 cmpfns.c:338 cmpfns.c:354
+#, c-format
+msgid "@ Line %lu in file \"%s\" contains too many fields!\n"
+msgstr ""
+
+#: cmpfns.c:370 cmpfns.c:386
+#, c-format
+msgid "@ Line %lu in file \"%s\" is shorter than expected!\n"
+msgstr ""
+
+#: cmpfns.c:491 cmpfns.c:512 cmpfns.c:540 cmpfns.c:555
+#, c-format
+msgid ""
+"\n"
+"***  Error in reading from file \"%s\"\n"
+msgstr ""
+
+#: cmpfns.c:494 cmpfns.c:515 cmpfns.c:543 cmpfns.c:560
+#, c-format
+msgid ""
+"\n"
+"***  Out of memory while reading from file \"%s\"\n"
+msgstr ""
+
+#: cmpfns.c:501 cmpfns.c:520 cmpfns.c:526 cmpfns.c:547
+#, c-format
+msgid ""
+"\n"
+"***  End of file \"%s\" reached\n"
+msgstr ""
+
+#: cmpfns.c:502 cmpfns.c:521 cmpfns.c:527 cmpfns.c:548
+#, c-format
+msgid ""
+"     Likely the files \"%s\" and \"%s\" do not have the same number of "
+"lines !\n"
+msgstr ""
+
+#: error.c:125
+msgid "Unknown system error"
+msgstr ""
+
+#: errors.c:43
+#, c-format
+msgid ""
+"%s: insufficient memory for new allocation,\n"
+"the execution of the program ends now\n"
+msgstr ""
+
+#: errors.c:76
+#, c-format
+msgid "Runtime error: %s\n"
+msgstr ""
+
+#: errors.c:110
+#, c-format
+msgid "Runtime warning: %s\n"
+msgstr ""
+
+#: flags.c:58
+msgid "<The array is empty>\n"
+msgstr ""
+
+#: getopt.c:551 getopt.c:570
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr ""
+
+#: getopt.c:603 getopt.c:607
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr ""
+
+#: getopt.c:616 getopt.c:621
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr ""
+
+#: getopt.c:667 getopt.c:689 getopt.c:1020 getopt.c:1042
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr ""
+
+#: getopt.c:727 getopt.c:730
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr ""
+
+#: getopt.c:738 getopt.c:741
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr ""
+
+#: getopt.c:796 getopt.c:799
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr ""
+
+#: getopt.c:805 getopt.c:808
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr ""
+
+#: getopt.c:863 getopt.c:882 getopt.c:1095 getopt.c:1116
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr ""
+
+#: getopt.c:935 getopt.c:954
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr ""
+
+#: getopt.c:978 getopt.c:999
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr ""
+
+#: io.c:127
+msgid "@ Absolute error = "
+msgstr ""
+
+#: io.c:129
+msgid ", Relative error = "
+msgstr ""
+
+#: main.c:307
+msgid ""
+"\n"
+"  In the computation of the following quantities\n"
+"  only the errors with positive sign are considered:\n"
+msgstr ""
+
+#: main.c:309
+msgid ""
+"  differences due to numeric fields of the second file that are\n"
+"  less than the corresponding fields in the first file are neglected\n"
+"\n"
+msgstr ""
+
+#: main.c:314
+msgid ""
+"\n"
+"  In the computation of the following quantities\n"
+"  only the errors with negative sign are considered:\n"
+msgstr ""
+
+#: main.c:316
+msgid ""
+"  differences due to numeric fields of the second file that are\n"
+"  greater than the corresponding fields in the first file are neglected\n"
+"\n"
+msgstr ""
+
+#: main.c:322
+msgid ""
+"\n"
+"No numeric comparison has been done\n"
+msgstr ""
+
+#: main.c:326
+#, c-format
+msgid ""
+"\n"
+"One numeric comparison has been done and\n"
+"the resulting numeric difference is negligible\n"
+msgid_plural ""
+"\n"
+"%d numeric comparisons have been done and\n"
+"the resulting numeric differences are all negligible\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: main.c:333
+#, c-format
+msgid ""
+"\n"
+"One numeric comparison has been done and\n"
+"has produced an outcome beyond the tolerance threshold\n"
+msgid_plural ""
+"\n"
+"%d numeric comparisons have been done, all of them\n"
+"have produced an outcome beyond the tolerance threshold\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: main.c:341
+#, c-format
+msgid ""
+"\n"
+"One numeric comparison has been done,\n"
+msgid_plural ""
+"\n"
+"%d numeric comparisons have been done,\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: main.c:346
+#, c-format
+msgid ""
+"only one numeric comparison has produced an outcome\n"
+"beyond the tolerance threshold\n"
+msgid_plural ""
+"%d numeric comparisons have produced an outcome\n"
+"beyond the tolerance threshold\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: main.c:351
+msgid ""
+"\n"
+"Largest absolute error in the set of relevant numerical differences:\n"
+msgstr ""
+
+#: main.c:354
+msgid ""
+"\n"
+"Corresponding relative error:\n"
+msgstr ""
+
+#: main.c:357
+msgid ""
+"\n"
+"Largest relative error in the set of relevant numerical differences:\n"
+msgstr ""
+
+#: main.c:360
+msgid ""
+"\n"
+"Corresponding absolute error:\n"
+msgstr ""
+
+#: main.c:364
+msgid ""
+"\n"
+"Sum of all absolute errors:\n"
+msgstr ""
+
+#: main.c:367
+msgid ""
+"\n"
+"Sum of the relevant absolute errors:\n"
+msgstr ""
+
+#: main.c:373
+msgid ""
+"\n"
+"Arithmetic mean of all absolute errors:\n"
+msgstr ""
+
+#: main.c:376
+msgid ""
+"\n"
+"Arithmetic mean of the relevant absolute errors:\n"
+msgstr ""
+
+#: main.c:385
+msgid ""
+"\n"
+"Square root of the sum of the squares of all absolute errors:\n"
+msgstr ""
+
+#: main.c:388
+msgid ""
+"\n"
+"Quadratic mean of all absolute errors:\n"
+msgstr ""
+
+#: main.c:396
+msgid ""
+"\n"
+"Square root of the sum of the squares\n"
+"of the relevant absolute errors:\n"
+msgstr ""
+
+#: main.c:399
+msgid ""
+"\n"
+"Quadratic mean of the relevant absolute errors:\n"
+msgstr ""
+
+#: main.c:488
+#, c-format
+msgid ""
+"\n"
+"+++  Files \"%s\" and \"%s\" have the same structure\n"
+msgstr ""
+
+#: main.c:491
+#, c-format
+msgid ""
+"\n"
+"+++  Files \"%s\" and \"%s\" are equal\n"
+msgstr ""
+
+#: main.c:495
+#, c-format
+msgid ""
+"\n"
+"+++  File \"%s\" differs from file \"%s\"\n"
+msgstr ""
+
+#: new.c:147 numutil.c:152 numutil.c:303
+#, c-format
+msgid ""
+"%s: a number with a too small exponent has been found,\n"
+"namely \"%s\".\n"
+msgstr ""
+
+#: new.c:148 numutil.c:153 numutil.c:304
+#, c-format
+msgid "Exponents smaller than %ld are not accepted,\n"
+msgstr ""
+
+#: new.c:149 new.c:156 numutil.c:154 numutil.c:161 numutil.c:305 numutil.c:312
+#, c-format
+msgid "the execution of the program ends now\n"
+msgstr ""
+
+#: new.c:154 numutil.c:159 numutil.c:310
+#, c-format
+msgid ""
+"%s: a number with a too large exponent has been found,\n"
+"namely \"%s\".\n"
+msgstr ""
+
+#: new.c:155 numutil.c:160 numutil.c:311
+#, c-format
+msgid "Exponents larger than %ld are not accepted,\n"
+msgstr ""
+
+#: number.c:1228
+msgid "power with non integral base"
+msgstr ""
+
+#: number.c:1234 number.c:1285
+msgid "power with non integral exponent"
+msgstr ""
+
+#: number.c:1241
+msgid "modulus is not an integral value"
+msgstr ""
+
+#: number.c:1289
+msgid "exponent too large in raise"
+msgstr ""
+
+#: numutil.c:854
+#, c-format
+msgid ""
+"The string \"%s\"\n"
+"is not a valid number, the execution of the program ends now\n"
+msgstr ""
+
+#: options.c:45
+msgid "Ivano Primi"
+msgstr ""
+
+#: options.c:46
+#, c-format
+msgid ""
+"License GPLv3+: GNU GPL version 3 or later,\n"
+"see <http://gnu.org/licenses/gpl.html>.\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""
+
+#: options.c:52
+msgid ""
+"The software has been linked against\n"
+"the GNU Multiple Precision Arithmetic Library,\n"
+"version number"
+msgstr ""
+
+#: options.c:56
+msgid ""
+"The software has been built with\n"
+"its own internal support for multiple precision arithmetic"
+msgstr ""
+
+#: options.c:63
+msgid "Usage:"
+msgstr ""
+
+#: options.c:64
+msgid "or"
+msgstr ""
+
+#: options.c:66
+#, c-format
+msgid ""
+"\n"
+"INT stays for a positive integer value or for a range of integer values,\n"
+"like 1-, 3-5 or -7\n"
+msgstr ""
+
+#: options.c:68
+#, c-format
+msgid ""
+"\n"
+"Compare putatively similar files line by line and field by field,\n"
+"ignoring small numeric differences or/and different numeric formats\n"
+"\n"
+msgstr ""
+
+#: options.c:70
+msgid ""
+"Specify the set of characters to use\n"
+"    to split the input lines into fields"
+msgstr ""
+
+#: options.c:71
+msgid "(The default set of characters is space, tab and newline)"
+msgstr ""
+
+#: options.c:73
+msgid ""
+"Specify the maximum absolute difference permitted\n"
+"    before that two numeric fields are regarded as different"
+msgstr ""
+
+#: options.c:74 options.c:77
+msgid "(The default value is zero)"
+msgstr ""
+
+#: options.c:76
+msgid ""
+"Specify the maximum relative difference permitted\n"
+"    before that two numeric fields are regarded as different"
+msgstr ""
+
+#: options.c:79
+msgid ""
+"Order that two numerical values are regarded as equal only if\n"
+"    both absolute and relative difference do not exceed\n"
+"    the corresponding tolerance threshold"
+msgstr ""
+
+#: options.c:81
+msgid ""
+"Specify the number of digits in the significands\n"
+"    used in multiple precision arithmetic"
+msgstr ""
+
+#: options.c:83
+msgid ""
+"Ignore all differences due to numeric fields of the second file that\n"
+"    are less than the corresponding numeric fields in the first file"
+msgstr ""
+
+#: options.c:85
+msgid ""
+"Ignore all differences due to numeric fields of the second file that\n"
+"    are greater than the corresponding numeric fields in the first file"
+msgstr ""
+
+#: options.c:87
+msgid "Ignore changes in case while doing literal comparisons"
+msgstr ""
+
+#: options.c:89
+msgid ""
+"Specify the characters representing the decimal point\n"
+"    in the two files to compare"
+msgstr ""
+
+#: options.c:91
+msgid ""
+"Specify the characters representing the thousands separator\n"
+"    in the two files to compare"
+msgstr ""
+
+#: options.c:93
+msgid ""
+"Specify the number of digits forming each group of thousands\n"
+"    in the two files to compare"
+msgstr ""
+
+#: options.c:95
+msgid ""
+"Specify the (optional) prefixes for positive values\n"
+"    used in the two files to compare"
+msgstr ""
+
+#: options.c:97
+msgid ""
+"Specify the prefixes for negative values\n"
+"    used in the two files to compare"
+msgstr ""
+
+#: options.c:99
+msgid ""
+"Specify the exponent letters\n"
+"    used in the two files to compare"
+msgstr ""
+
+#: options.c:101
+msgid ""
+"Specify the characters representing the imaginary unit\n"
+"    in the two files to compare"
+msgstr ""
+
+#: options.c:103
+msgid "Select the fields of the first file that have to be ignored"
+msgstr ""
+
+#: options.c:105
+msgid "Select the fields of the second file that have to be ignored"
+msgstr ""
+
+#: options.c:107
+msgid ""
+"While printing the differences between the two compared files\n"
+"    show only the numerical ones"
+msgstr ""
+
+#: options.c:109
+msgid ""
+"While printing the differences between the two compared files\n"
+"    neglect all the numerical ones (dummy mode)"
+msgstr ""
+
+#: options.c:111
+msgid ""
+"Suppress all messages concerning the differences discovered\n"
+"    in the structures of the two files"
+msgstr ""
+
+#: options.c:113
+msgid ""
+"For every couple of lines which differ in at least one field print\n"
+"    an header to show how these lines appear in the two compared files"
+msgstr ""
+
+#: options.c:115
+msgid "Suppress all the standard output"
+msgstr ""
+
+#: options.c:117
+msgid "Add some statistics to the standard output"
+msgstr ""
+
+#: options.c:119
+msgid ""
+"Select the fields of the first file that have to be\n"
+"    blurred during the synchronization procedure\n"
+"    only if they turn out to be numeric"
+msgstr ""
+
+#: options.c:121
+msgid ""
+"Select the fields of the second file that have to be\n"
+"    blurred during the synchronization procedure\n"
+"    only if they turn out to be numeric"
+msgstr ""
+
+#: options.c:123
+msgid ""
+"Select the fields of the first file that have to be\n"
+"    unconditionally blurred during the synchronization procedure"
+msgstr ""
+
+#: options.c:125
+msgid ""
+"Select the fields of the second file that have to be\n"
+"    unconditionally blurred during the synchronization procedure"
+msgstr ""
+
+#: options.c:127
+msgid "During synchronization try hard to find a smaller set of changes"
+msgstr ""
+
+#: options.c:129
+msgid ""
+"During synchronization assume large files and\n"
+"    many scattered small changes"
+msgstr ""
+
+#: options.c:131
+msgid ""
+"Run only the filter and then show the results of its\n"
+"    attempt to synchronize the two files."
+msgstr ""
+
+#: options.c:132
+msgid ""
+"If 'NUM' is zero or is not specified, output at most 130 columns per line."
+msgstr ""
+
+#: options.c:133
+msgid ""
+"If 'NUM' is a positive number, output at most\n"
+"    'NUM' columns per line."
+msgstr ""
+
+#: options.c:134
+msgid ""
+"If 'NUM' is a negative number, do not output common lines\n"
+"    and display at most -'NUM' columns per line."
+msgstr ""
+
+#: options.c:136
+msgid ""
+"Expand tabs to spaces in output while displaying the results of the\n"
+"    synchronization procedure (meaningful only together with option -f)"
+msgstr ""
+
+#: options.c:138
+msgid "Redirect warning and error messages from stderr to the indicated file"
+msgstr ""
+
+#: options.c:140
+msgid "Redirect output from stdout to the indicated file"
+msgstr ""
+
+#: options.c:141
+msgid "Show help message and predefined settings"
+msgstr ""
+
+#: options.c:142
+msgid "Show version number, Copyright, Distribution Terms and NO-Warranty"
+msgstr ""
+
+#: options.c:144
+msgid ""
+"The two arguments after the options are the names of the files to compare."
+msgstr ""
+
+#: options.c:145
+msgid ""
+"The complete paths of the files should be given,\n"
+"a directory name is not accepted."
+msgstr ""
+
+#: options.c:146
+msgid ""
+"They cannot refer to the same file but one of them can be \"-\",\n"
+"which refers to stdin."
+msgstr ""
+
+#: options.c:147
+msgid ""
+"Exit status: 1 if files differ, 0 if they are equal, -1 (255) in case of "
+"error"
+msgstr ""
+
+#: options.c:149
+msgid ""
+"\n"
+"  Default numeric format (for both files to compare):\n"
+msgstr ""
+
+#: options.c:150
+#, c-format
+msgid "Decimal point = `%c'\n"
+msgstr ""
+
+#: options.c:152 options.c:814 options.c:831
+#, c-format
+msgid "Thousands separator = `%c'\n"
+msgstr ""
+
+#: options.c:153
+#, c-format
+msgid "Number of digits in each thousands group = %u\n"
+msgstr ""
+
+#: options.c:155 options.c:815 options.c:832
+#, c-format
+msgid "Leading positive sign = `%c'\n"
+msgstr ""
+
+#: options.c:156 options.c:816 options.c:833
+#, c-format
+msgid "Leading negative sign = `%c'\n"
+msgstr ""
+
+#: options.c:157 options.c:817 options.c:834
+#, c-format
+msgid "Prefix for decimal exponent = `%c'\n"
+msgstr ""
+
+#: options.c:158 options.c:820 options.c:837
+#, c-format
+msgid ""
+"Symbol used to denote the imaginary unit = `%c'\n"
+"\n"
+msgstr ""
+
+#: options.c:506 options.c:521 options.c:538 options.c:553 options.c:575
+#: options.c:635 options.c:661 options.c:677 options.c:698 options.c:735
+#: options.c:750
+#, c-format
+msgid "%s: invalid argument after `-%c' option\n"
+msgstr ""
+
+#: options.c:619
+#, c-format
+msgid "%s: invalid argument after `-%c' option:\n"
+msgstr ""
+
+#: options.c:621
+#, c-format
+msgid ""
+"  A list of field delimiters can not be empty and\n"
+"  must always include the newline character ('\\n')\n"
+msgstr ""
+
+#: options.c:761 options.c:770
+#, c-format
+msgid "%s: cannot open file \"%s\":\n"
+msgstr ""
+
+#: options.c:810
+#, c-format
+msgid "The numeric format specified for the first file is illegal,\n"
+msgstr ""
+
+#: options.c:812 options.c:829
+#, c-format
+msgid ""
+"the following symbols should be all different\n"
+"while two or more of them are actually equal:\n"
+msgstr ""
+
+#: options.c:813 options.c:830
+#, c-format
+msgid ""
+"\n"
+"Decimal point = `%c'\n"
+msgstr ""
+
+#: options.c:827
+#, c-format
+msgid "The numeric format specified for the second file is illegal,\n"
+msgstr ""
+
+#: util.c:117 util.c:130 util.c:238 util.c:252
+#, c-format
+msgid ""
+"Line \"%s\"\n"
+"contains too many fields!\n"
+msgstr ""
+
+#: xalloc-die.c:35
+msgid "memory exhausted"
+msgstr ""
