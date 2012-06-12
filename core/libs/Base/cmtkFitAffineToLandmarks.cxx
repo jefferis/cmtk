@@ -33,8 +33,8 @@
 cmtk::FitAffineToLandmarks::FitAffineToLandmarks( const LandmarkPairList& landmarkPairs )
 {
   // first, get the centroids in "from" and "to" space
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( 0.0 );
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( 0.0 );
   
   size_t nLandmarks = 0;
   for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )

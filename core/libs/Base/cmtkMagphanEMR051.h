@@ -116,7 +116,7 @@ public:
   /// Convenience access function - get sphere center as 3D vector.
   static FixedVector<3,Types::Coordinate> SphereCenter( const size_t i )
   {
-    return FixedVector<3,Types::Coordinate>( Self::SphereTable[i].m_CenterLocation );
+    return FixedVector<3,Types::Coordinate>::FromPointer( Self::SphereTable[i].m_CenterLocation );
   }
 
   /// Create a simulated T1-weighted image of the phantom spheres.

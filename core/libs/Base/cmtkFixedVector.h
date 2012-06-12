@@ -72,15 +72,21 @@ public:
   FixedVector() {}
 
   /// Initialization constructor.
-  FixedVector( const typename Self::Init& init ) : Superclass( init ) {}
+  explicit FixedVector( const T& initValue ) : Superclass( initValue ) {}
 
-  /// Constructor from const pointer.
-  template<class T2>
-  explicit FixedVector( const T2 *const ptr ) : Superclass( ptr ) {}
-  
   /// Type conversion constructor template.
   template<class T2>
   FixedVector( const FixedVector<NDIM,T2>& rhs ) : Superclass( rhs ) {}
+
+  /// Make vector from const pointer.
+  template<class T2> static Self FromPointer( const T2 *const ptr ) 
+  { 
+    Self v;
+    for ( size_t i = 0; i < NDIM; ++i )
+      v[i] = ptr[i];
+
+    return v;
+  }
 
   /// In-place addition operator.
   Self& operator+=( const Self& rhs )

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,7 +162,7 @@ doMain ( const int argc, const char *argv[] )
 	if ( !invalid )
 	  v1 -= v0;
 	else
-	  v1 = cmtk::Vector3D( cmtk::Vector3D::Init( 1e10 ) );
+	  v1 = cmtk::Vector3D( 1e10 );
 	
 	dfield->m_Parameters[offset+0] = v1[0];
 	dfield->m_Parameters[offset+1] = v1[1];

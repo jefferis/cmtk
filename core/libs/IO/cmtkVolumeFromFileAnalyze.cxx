@@ -185,7 +185,7 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
       }
     }
   
-  UniformVolume::SmartPtr volume( new UniformVolume( dims, UniformVolume::CoordinateVectorType( size ) ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( dims, UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientString );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientString );
 

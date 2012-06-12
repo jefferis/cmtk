@@ -98,7 +98,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 
   // Centers-of-mass for each label
   std::vector<cmtk::UniformVolume::CoordinateVectorType> centerOfMass( numberOfLabels );
-  std::fill( centerOfMass.begin(), centerOfMass.end(), cmtk::UniformVolume::CoordinateVectorType( cmtk::UniformVolume::CoordinateVectorType::Init( 0 ) ) );
+  std::fill( centerOfMass.begin(), centerOfMass.end(), cmtk::UniformVolume::CoordinateVectorType( 0.0 ) );
 
   int index = 0;
   cmtk::Types::DataItem value, neighbor, maskValue;

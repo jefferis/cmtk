@@ -145,7 +145,7 @@ doMain( const int argc, const char* argv[] )
 	  cmtk::Memory::ByteSwapInPlace( xyzFloat[i] );
 #endif // #ifndef WORDS_BIGENDIAN
 
-	xyz = cmtk::FixedVector<3,float>( xyzFloat );
+	xyz = cmtk::FixedVector<3,float>::FromPointer( xyzFloat );
 	}
       else
 	{

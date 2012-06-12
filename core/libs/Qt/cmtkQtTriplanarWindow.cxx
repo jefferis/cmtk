@@ -666,7 +666,7 @@ QtTriplanarWindow::slotGoToLocation( const QString& xyz )
     }
   else
     {
-    this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType( v ) );
+    this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType::FromPointer( v ) );
     }
 }
 
@@ -833,7 +833,7 @@ QtTriplanarWindow::slotGoToLocation()
 
   // Pretend there was a button event at the given location
   const double location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
-  this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType( location ) );
+  this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType::FromPointer( location ) );
 }
 
 void
@@ -961,7 +961,7 @@ QtTriplanarWindow::slotAddLandmark()
   if ( ok && !name.isEmpty() ) 
     {
     Types::Coordinate location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
-    ll->push_back( Landmark( name.toStdString(), Landmark::SpaceVectorType( location ) ) );
+    ll->push_back( Landmark( name.toStdString(), Landmark::SpaceVectorType::FromPointer( location ) ) );
     LandmarkBox->addItem( name );
     LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( name ) );
     

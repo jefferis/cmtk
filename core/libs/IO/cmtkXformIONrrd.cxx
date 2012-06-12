@@ -106,7 +106,7 @@ XformIO::ReadNrrd( const std::string& path )
 
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
     const Types::Coordinate origin[3] = { nrrd->spaceOrigin[0], nrrd->spaceOrigin[1], nrrd->spaceOrigin[2] };
-    dfield = DeformationField::SmartPtr( new DeformationField( FixedVector<3,Types::Coordinate>( size ), DeformationField::ControlPointIndexType( dims ), origin ) );
+    dfield = DeformationField::SmartPtr( new DeformationField( FixedVector<3,Types::Coordinate>::FromPointer( size ), DeformationField::ControlPointIndexType::FromPointer( dims ), origin ) );
     
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )

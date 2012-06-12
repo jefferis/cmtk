@@ -151,7 +151,7 @@ doMain( const int argc, const char* argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>( dims ), levels, affineXform.GetPtr() );
+      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineXform.GetPtr() );
       }
     else
       {

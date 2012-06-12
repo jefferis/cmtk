@@ -38,19 +38,19 @@ cmtk::MagphanEMR051::GetPhantomImage( const cmtk::Types::Coordinate resolution, 
 {
   const int npx = 1 + static_cast<int>( 200.0 / resolution );
   const int dims[3] = { npx, npx, npx };
-  UniformVolume::SmartPtr result( new UniformVolume( DataGrid::IndexType( dims ), resolution, resolution, resolution ) );
+  UniformVolume::SmartPtr result( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), resolution, resolution, resolution ) );
   result->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   result->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   result->CreateDataArray( TYPE_SHORT );
   
   const Types::Coordinate offset[3] = { -100, -100, -100 };
-  result->m_Offset = UniformVolume::CoordinateVectorType( offset );
+  result->m_Offset = UniformVolume::CoordinateVectorType::FromPointer( offset );
   
   UniformVolumePainter painter( result, UniformVolumePainter::COORDINATES_ABSOLUTE );
   for ( int idx = 0; idx < 165; ++idx )
     {
     const Types::DataItem value = ( labels ) ? (idx+1) : Self::SphereTable[idx].m_EstimatedT1;
-    painter.DrawSphere( UniformVolume::CoordinateVectorType( Self::SphereTable[idx].m_CenterLocation ), Self::SphereTable[idx].m_Diameter / 2, value );
+    painter.DrawSphere( UniformVolume::CoordinateVectorType::FromPointer( Self::SphereTable[idx].m_CenterLocation ), Self::SphereTable[idx].m_Diameter / 2, value );
     }
   
   return result;

@@ -111,7 +111,7 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
 
   Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
 
-  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
   // Nifti is in RAS space.
   const char *const niftiSpace = "RAS";
   volume->SetMetaInfo( META_SPACE, niftiSpace );

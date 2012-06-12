@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,7 @@ CallbackSetPSF( const char* arg )
     {
     throw "ERROR: point spread function size must be given as three comma-separated real values: x,y,z\n";
     }
-  PointSpreadFunction = cmtk::Vector3D( xyz );
+  PointSpreadFunction = cmtk::Vector3D::FromPointer( xyz );
   PointSpreadFunctionSet = true;
 }
 
@@ -137,7 +137,7 @@ CallbackCrop( const char* arg )
 
   if ( UseCropRegion )
     {
-    CropRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    CropRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType::FromPointer( cropFrom ), cmtk::DataGrid::IndexType::FromPointer( cropTo ) );
     }
   else
     {
@@ -162,7 +162,7 @@ CallbackReconGrid( const char* arg )
     throw cmtk::ExitException( 1 );
     }
   
-  ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType::FromPointer( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
   ReconGrid->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   ReconGrid->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   ReconGrid->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
@@ -170,7 +170,7 @@ CallbackReconGrid( const char* arg )
 
   if ( numArgs == 9 )
     {
-    ReconGrid->SetOffset( cmtk::Vector3D( gridOffset ) );
+    ReconGrid->SetOffset( cmtk::Vector3D::FromPointer( gridOffset ) );
     }
 }
 

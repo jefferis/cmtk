@@ -190,7 +190,7 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
   
   // apply shift to origin
   Self::CoordinateVectorType offset( this->m_Offset );
-  offset += Self::CoordinateVectorType( shift );
+  offset += Self::CoordinateVectorType::FromPointer( shift );
   dsVolume->SetOffset( offset );
   
   // set crop region while considering new image offset
@@ -264,7 +264,7 @@ UniformVolume::GetInterleavedSubVolume
     ++dims[axis];
   size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
   
-  Self::CoordinateVectorType offset( Self::CoordinateVectorType::Init( 0 ) );
+  Self::CoordinateVectorType offset( 0.0 );
   offset[axis] = idx * this->m_Delta[axis];
   
   UniformVolume* volume = new UniformVolume( dims, size );
@@ -347,9 +347,9 @@ UniformVolume::GetOrthoSlice
   ScalarImage* sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
 
-  Self::CoordinateVectorType imageOffset( Self::CoordinateVectorType::Init( 0 ) );
-  Self::CoordinateVectorType directionX( Self::CoordinateVectorType::Init( 0 ) );
-  Self::CoordinateVectorType directionY( Self::CoordinateVectorType::Init( 0 ) );
+  Self::CoordinateVectorType imageOffset( 0.0 );
+  Self::CoordinateVectorType directionX( 0.0 );
+  Self::CoordinateVectorType directionY( 0.0 );
   switch ( axis ) 
     {
     case AXIS_X:

@@ -36,9 +36,9 @@ int
 testDataGridMatches()
 {
   const int dims1_array[3] = { 10, 11, 12 };
-  cmtk::DataGrid::IndexType dims1 = cmtk::DataGrid::IndexType( dims1_array ); 
+  cmtk::DataGrid::IndexType dims1 = cmtk::DataGrid::IndexType::FromPointer( dims1_array ); 
   const int dims2_array[3] = { 11, 12, 10 };
-  cmtk::DataGrid::IndexType dims2 = cmtk::DataGrid::IndexType( dims2_array );
+  cmtk::DataGrid::IndexType dims2 = cmtk::DataGrid::IndexType::FromPointer( dims2_array );
   
   cmtk::DataGrid grid1a( dims1 );
   cmtk::DataGrid grid1b( dims1 );

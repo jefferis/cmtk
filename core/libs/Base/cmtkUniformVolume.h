@@ -439,7 +439,7 @@ public:
   virtual const Self::CoordinateVectorType GetGridLocation( const int x, const int y, const int z ) const 
   {
     const Types::Coordinate loc[3] = { this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] };
-    return Self::CoordinateVectorType( loc );
+    return Self::CoordinateVectorType::FromPointer( loc );
   }
   
   /** Get a grid location in image coordinates.
@@ -480,7 +480,7 @@ public:
     const Types::Coordinate loc[3] = { this->m_Offset[0] +  (idx % this->nextJ) * this->m_Delta[0], 
 				       this->m_Offset[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
 				       this->m_Offset[2] +  (idx / this->nextK) * this->m_Delta[2] };
-    return Self::CoordinateVectorType( loc );
+    return Self::CoordinateVectorType::FromPointer( loc );
   }
 
   //@}

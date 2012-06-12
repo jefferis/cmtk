@@ -293,7 +293,7 @@ doMain( const int argc, const char* argv[] )
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
-      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( xyz ), (*refIt)->CropRegion().To() );
+      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType::FromPointer( xyz ), (*refIt)->CropRegion().To() );
       }
     }
 
@@ -307,7 +307,7 @@ doMain( const int argc, const char* argv[] )
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
-      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( (*refIt)->CropRegion().From(), cmtk::DataGrid::IndexType( xyz ) );
+      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( (*refIt)->CropRegion().From(), cmtk::DataGrid::IndexType::FromPointer( xyz ) );
       }
     }
 

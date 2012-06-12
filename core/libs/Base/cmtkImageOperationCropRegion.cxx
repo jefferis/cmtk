@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010, 2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,5 +49,5 @@ cmtk::ImageOperationCropRegion
     throw "Expected six comma-separated integer values.";
     }
   
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( DataGrid::RegionType( DataGrid::IndexType(from), DataGrid::IndexType(to) ) ) ) );
+  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( DataGrid::RegionType( DataGrid::IndexType::FromPointer(from), DataGrid::IndexType::FromPointer(to) ) ) ) );
 }

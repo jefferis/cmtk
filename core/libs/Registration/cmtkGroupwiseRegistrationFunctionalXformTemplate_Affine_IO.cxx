@@ -80,8 +80,8 @@ operator>>
   stream.ReadCoordinateArray( "origin", origin, 3 );
   stream.End();
 
-  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
-  templateGrid->SetOffset( FixedVector<3,Types::Coordinate>( origin ) );
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
+  templateGrid->SetOffset( FixedVector<3,Types::Coordinate>::FromPointer( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;
   std::vector<AffineXform::SmartPtr> xformVector;

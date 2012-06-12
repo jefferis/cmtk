@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,7 +48,7 @@ ParametricPlane::ParametricPlane()
     Theta( 0 ),
     Phi( 0 )
 {
-  this->m_Origin = Self::CoordinateVectorType( Self::CoordinateVectorType::Init( 0 ) );
+  this->m_Origin = Self::CoordinateVectorType( 0.0 );
   this->Update();
 }
 

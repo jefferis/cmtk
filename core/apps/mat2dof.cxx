@@ -164,7 +164,7 @@ doMain( const int argc, const char* argv[] )
     float center[3];
     if ( 3 == sscanf( CenterStr, "%f,%f,%f", center+0, center+1, center+2 ) )
       {
-      xform->ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>( center ) );
+      xform->ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( center ) );
       }
     }
   
@@ -173,7 +173,7 @@ doMain( const int argc, const char* argv[] )
     float offset[3];
     if ( 3 == sscanf( OffsetStr, "%f,%f,%f", offset+0, offset+1, offset+2 ) )
       {
-      xform->Translate( xform->RotateScaleShear( cmtk::FixedVector<3,cmtk::Types::Coordinate>( offset ) ) );
+      xform->Translate( xform->RotateScaleShear( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( offset ) ) );
       }
     }
 
@@ -182,7 +182,7 @@ doMain( const int argc, const char* argv[] )
     float xlate[3];
     if ( 3 == sscanf( TranslateStr, "%f,%f,%f", xlate+0, xlate+1, xlate+2 ) )
       {
-      xform->Translate( cmtk::FixedVector<3,cmtk::Types::Coordinate>( xlate ) );
+      xform->Translate( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( xlate ) );
       }
     }
   

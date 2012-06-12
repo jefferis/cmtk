@@ -45,8 +45,8 @@ cmtk::FitAffineToWarpXform::Fit()
   const WarpXform& warpXform = *(this->m_WarpXform); // bypass smart pointer for speed
   
   // first, get the centroids in "from" and "to" space
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( cmtk::FixedVector<3,cmtk::Types::Coordinate>::Init( 0 ) );
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( 0.0 );
+  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( 0.0 );
   
   for ( RegionIndexIterator<WarpXform::ControlPointRegionType> it = warpXform.GetInsideControlPointsRegion(); it != it.end(); ++it )
     {

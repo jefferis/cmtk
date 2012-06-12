@@ -262,7 +262,7 @@ public:
   /// Get shifted control point position by offset.
   virtual Self::SpaceVectorType GetShiftedControlPointPositionByOffset( const size_t offset ) const 
   { 
-    return Self::SpaceVectorType( this->m_Parameters + 3 * offset );
+    return Self::SpaceVectorType::FromPointer( this->m_Parameters + 3 * offset );
   }
 
   /// Set shifted control point position.

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,15 +38,15 @@ testRegionSizeInt()
   const int regionFromArray[] = { 1, 2, 3 };
   const int regionToArray[] = { 2, 4, 7 };
 
-  const cmtk::Region<3,int> r3( (cmtk::FixedVector<3,int>( regionFromArray )), cmtk::FixedVector<3,int>( regionToArray ) );
+  const cmtk::Region<3,int> r3( (cmtk::FixedVector<3,int>::FromPointer( regionFromArray )), cmtk::FixedVector<3,int>::FromPointer( regionToArray ) );
   if ( r3.Size() != 8 )
     return 1;
 
-  const cmtk::Region<2,int> r2( (cmtk::FixedVector<2,int>( regionFromArray )), cmtk::FixedVector<2,int>( regionToArray ) );
+  const cmtk::Region<2,int> r2( (cmtk::FixedVector<2,int>::FromPointer( regionFromArray )), cmtk::FixedVector<2,int>::FromPointer( regionToArray ) );
   if ( r2.Size() != 2 )
     return 1;
 
-  const cmtk::Region<1,int> r1( (cmtk::FixedVector<1,int>( regionFromArray )), cmtk::FixedVector<1,int>( regionToArray ) );
+  const cmtk::Region<1,int> r1( (cmtk::FixedVector<1,int>::FromPointer( regionFromArray )), cmtk::FixedVector<1,int>::FromPointer( regionToArray ) );
   if ( r1.Size() != 1 )
     return 1;
   
@@ -60,15 +60,15 @@ testRegionSizeFloat()
   const float regionFromArray[] = { 1, 2, 3 };
   const float regionToArray[] = { 2, 4, 7 };
 
-  const cmtk::Region<3,float> r3( (cmtk::FixedVector<3,float>( regionFromArray )), cmtk::FixedVector<3,float>( regionToArray ) );
+  const cmtk::Region<3,float> r3( (cmtk::FixedVector<3,float>::FromPointer( regionFromArray )), cmtk::FixedVector<3,float>::FromPointer( regionToArray ) );
   if ( r3.Size() != 8 )
     return 1;
 
-  const cmtk::Region<2,float> r2( (cmtk::FixedVector<2,float>( regionFromArray )), cmtk::FixedVector<2,float>( regionToArray ) );
+  const cmtk::Region<2,float> r2( (cmtk::FixedVector<2,float>::FromPointer( regionFromArray )), cmtk::FixedVector<2,float>::FromPointer( regionToArray ) );
   if ( r2.Size() != 2 )
     return 1;
 
-  const cmtk::Region<1,float> r1( (cmtk::FixedVector<1,float>( regionFromArray )), cmtk::FixedVector<1,float>( regionToArray ) );
+  const cmtk::Region<1,float> r1( (cmtk::FixedVector<1,float>::FromPointer( regionFromArray )), cmtk::FixedVector<1,float>::FromPointer( regionToArray ) );
   if ( r1.Size() != 1 )
     return 1;
   

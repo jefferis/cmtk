@@ -61,7 +61,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
     
   Dim = 0;
 
-  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) ), reference->m_Size );
+  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( 0.0 ), reference->m_Size );
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;

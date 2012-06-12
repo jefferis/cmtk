@@ -190,7 +190,7 @@ doMain( const int argc, const char *argv[] )
     
     if ( numRead == 3 ) 
       {
-      cmtk::FixedVector<3,cmtk::Types::Coordinate> v( xyz );
+      cmtk::FixedVector<3,cmtk::Types::Coordinate> v = cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( xyz );
       cmtk::FixedVector<3,cmtk::Types::Coordinate> u( v );
       cmtk::FixedVector<3,cmtk::Types::Coordinate> uu;
 

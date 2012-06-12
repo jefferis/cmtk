@@ -122,7 +122,7 @@ doMain ( const int argc, const char *argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>( dims ), Levels, affineXform );
+      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), Levels, affineXform );
       }
     else
       {

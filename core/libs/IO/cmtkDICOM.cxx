@@ -104,7 +104,7 @@ DICOM::DICOM( const std::string& path )
 const FixedVector<3,int>
 DICOM::GetDims() const
 {
-  FixedVector<3,int> dims( FixedVector<3,int>::Init( 0 ) );
+  FixedVector<3,int> dims( 0 );
 
   Uint16 tempUint16 = 1;
   if ( this->Document().getValue( DCM_Columns, tempUint16 ) ) 
@@ -131,7 +131,7 @@ DICOM::GetDims() const
 const FixedVector<3,double>
 DICOM::GetPixelSize() const
 {
-  FixedVector<3,double> pixelSize( FixedVector<3,double>::Init( 0.0 ) );
+  FixedVector<3,double> pixelSize( 0.0 );
   
   // get calibration from image
   const bool hasPixelSpacing = (this->Document().getValue(DCM_PixelSpacing, pixelSize[0], 0) > 0);
@@ -157,7 +157,7 @@ DICOM::GetPixelSize() const
 const FixedVector<3,double>
 DICOM::GetImageOrigin() const
 {
-  FixedVector<3,double> imageOrigin( FixedVector<3,double>::Init( 0.0 ) );
+  FixedVector<3,double> imageOrigin( 0.0 );
 
   const char *image_position_s = NULL;
   if ( ! this->Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
@@ -174,7 +174,7 @@ DICOM::GetImageOrigin() const
     double xyz[3];
     if ( 3 == sscanf( image_position_s,"%20lf%*c%20lf%*c%20lf", xyz, xyz+1, xyz+2 ) ) 
       {
-      imageOrigin = FixedVector<3,double>( xyz );
+      imageOrigin = FixedVector<3,double>::FromPointer( xyz );
       }
     }
   
@@ -186,8 +186,8 @@ DICOM::GetImageOrientation() const
 {
   FixedArray< 2, FixedVector<3,double> > orientation;
   
-  orientation[0] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
-  orientation[1] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
+  orientation[0] = FixedVector<3,double>( 0.0 );
+  orientation[1] = FixedVector<3,double>( 0.0);
 
   orientation[0][0] = 1;
   orientation[1][1] = 1;
@@ -207,8 +207,8 @@ DICOM::GetImageOrientation() const
     double dx[3], dy[3];
     if ( 6 == sscanf( image_orientation_s, "%20lf%*c%20lf%*c%20lf%*c%20lf%*c%20lf%*c%20lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
       {
-      orientation[0] = ( FixedVector<3,double>( dx ) );
-      orientation[1] = ( FixedVector<3,double>( dy ) );
+      orientation[0] = ( FixedVector<3,double>::FromPointer( dx ) );
+      orientation[1] = ( FixedVector<3,double>::FromPointer( dy ) );
       }
     }
 

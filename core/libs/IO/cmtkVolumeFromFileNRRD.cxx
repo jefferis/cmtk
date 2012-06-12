@@ -102,7 +102,7 @@ VolumeFromFile::ReadNRRD( const std::string& pathHdr )
 	}
       }
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
-    volume = UniformVolume::SmartPtr( new UniformVolume( DataGrid::IndexType( dims ),UniformVolume::CoordinateVectorType( size ) ) );
+    volume = UniformVolume::SmartPtr( new UniformVolume( DataGrid::IndexType::FromPointer( dims ),UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
 
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )

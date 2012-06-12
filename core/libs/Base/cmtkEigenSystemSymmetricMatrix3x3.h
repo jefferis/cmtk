@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,7 +60,7 @@ public:
   /// Get n-th eigenvector.
   const FixedVector<3,TFloat> GetNthEigenvector( const size_t n ) const
   {
-    return FixedVector<3,TFloat>( this->m_Eigenvectors[n] );
+    return FixedVector<3,TFloat>::FromPointer( this->m_Eigenvectors[n] );
   }
   
   /// Get n-th eigenvalue.

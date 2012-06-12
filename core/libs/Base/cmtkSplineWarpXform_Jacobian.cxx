@@ -641,7 +641,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	ground += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
+	ground += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType::FromPointer( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
 
   upper = -ground;
   lower = -ground;
@@ -651,13 +651,13 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	upper += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
+	upper += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType::FromPointer( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
 
   this->m_Parameters[param] = oldCoeff - step;
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	lower += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
+	lower += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType::FromPointer( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
   this->m_Parameters[param] = oldCoeff;
 
   upper /= this->m_NumberOfControlPoints;
@@ -733,10 +733,7 @@ SplineWarpXform::RelaxToUnfold()
 	  {
 	  for ( int i = 0; i < this->m_Dims[0]; ++i, param+=3 )
 	    {
-	    Self::SpaceVectorType cp( this->m_Parameters+param );
-	    this->m_InitialAffineXform->GetInverse()->ApplyInPlace( cp );
-
-	    cp -= this->GetOriginalControlPointPosition( i, j, k );
+	    const Self::SpaceVectorType cp = this->m_InitialAffineXform->GetInverse()->Apply( Self::SpaceVectorType::FromPointer( this->m_Parameters+param ) ) - this->GetOriginalControlPointPosition( i, j, k );
 	    for ( int dim = 0; dim < 3; ++dim )
 	      pureDeformation[param+dim] = cp[dim];
 	    }
@@ -803,7 +800,7 @@ SplineWarpXform::RelaxToUnfold()
 	  {
 	  for ( int i = 0; i < this->m_Dims[0]; ++i, param+=3 )
 	    {
-	    Self::SpaceVectorType cp( &(pureDeformation[0])+param );
+	    Self::SpaceVectorType cp = Self::SpaceVectorType::FromPointer( &(pureDeformation[0])+param );
 	    cp += this->GetOriginalControlPointPosition( i, j, k );
 	    
 	    this->m_InitialAffineXform->ApplyInPlace( cp );

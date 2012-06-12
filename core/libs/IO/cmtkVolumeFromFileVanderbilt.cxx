@@ -99,7 +99,7 @@ VolumeFromFile::ReadVanderbilt( const std::string& path )
     size[i] = static_cast<Types::Coordinate>( (dims[i] - 1) * calib[i] );
 
   // create volume, for the time being with empty data array.
-  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientation );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientation );
 

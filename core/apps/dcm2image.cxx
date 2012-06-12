@@ -335,7 +335,7 @@ ImageFile::ImageFile( const char* filename )
     RawDataType( "unknown" ),
     IsDWI( false ),
     BValue( 0 ),
-    BVector( cmtk::FixedVector<3,double>::Init( 0.0 ) )
+    BVector( 0.0 )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);

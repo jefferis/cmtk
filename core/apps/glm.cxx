@@ -96,7 +96,7 @@ CallbackCropImages( const char* arg )
 
   if ( CropImages )
     {
-    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType::FromPointer( cropFrom ), cmtk::DataGrid::IndexType::FromPointer( cropTo ) );
     }
 }
 

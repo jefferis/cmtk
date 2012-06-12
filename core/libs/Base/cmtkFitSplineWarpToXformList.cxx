@@ -124,7 +124,7 @@ cmtk::FitSplineWarpToXformList::FitSpline( SplineWarpXform& splineWarp, const in
     this->ComputeResiduals( splineWarp );
     
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
-    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints, FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0.0 ) ) );
+    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints, FixedVector<3,Types::Coordinate>( 0.0 ) );
     std::vector< Types::Coordinate > weight( splineWarp.m_NumberOfControlPoints, 0.0 );
     
     for ( RegionIndexIterator<DataGrid::RegionType> voxelIt( this->m_XformField.GetWholeImageRegion() ); voxelIt != voxelIt.end(); ++voxelIt )

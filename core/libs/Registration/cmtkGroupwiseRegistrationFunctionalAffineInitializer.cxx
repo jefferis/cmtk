@@ -113,7 +113,7 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
   // convert first order moments to scale with average log factor 0
   if ( initScales )
     {
-    UniformVolume::CoordinateVectorType avgScales( UniformVolume::CoordinateVectorType::Init( 0 ) );
+    UniformVolume::CoordinateVectorType avgScales( 0.0 );
     UniformVolume::CoordinateVectorType fom0( firstOrderMoments[0] );
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {

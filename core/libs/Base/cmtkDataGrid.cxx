@@ -87,8 +87,7 @@ DataGrid::CloneVirtual() const
 const DataGrid::RegionType
 DataGrid::GetWholeImageRegion() const
 {
-  const int zeroes[3] = {0,0,0};
-  return Self::RegionType( Self::IndexType( zeroes ), Self::IndexType( this->m_Dims ) );
+  return Self::RegionType( Self::IndexType( 0 ), Self::IndexType( this->m_Dims ) );
 }
 
 TypedArray::SmartPtr
@@ -106,7 +105,7 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 {
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
-  DataGrid* newDataGrid = new DataGrid( Self::IndexType( newDims ) );
+  DataGrid* newDataGrid = new DataGrid( Self::IndexType::FromPointer( newDims ) );
   
   const TypedArray* thisData = this->GetData();
   if ( thisData )
@@ -168,7 +167,7 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
 {
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
-  DataGrid* newDataGrid = new DataGrid( Self::IndexType( newDims ) );
+  DataGrid* newDataGrid = new DataGrid( Self::IndexType::FromPointer( newDims ) );
   
   const TypedArray* thisData = this->GetData();
   if ( thisData )
@@ -599,7 +598,7 @@ FixedVector<3,Types::Coordinate>
 DataGrid
 ::GetCenterOfMassGrid() const
 {
-  FixedVector<3,Types::Coordinate> com( FixedVector<3,Types::Coordinate>::Init( 0 ) );
+  FixedVector<3,Types::Coordinate> com( 0.0 );
 
   double sumOfSamples = 0;
   size_t ofs = 0;
@@ -611,7 +610,7 @@ DataGrid
 	if ( this->GetDataAt( value, x, y, z ) )
 	  {
 	  const Types::Coordinate pixelCOM[3] = { value * x, value * y, value * z };
-	  com += Self::SpaceVectorType( pixelCOM );
+	  com += Self::SpaceVectorType::FromPointer( pixelCOM );
 	  sumOfSamples += value;
 	  }
 	}
@@ -626,7 +625,7 @@ DataGrid
 ::GetCenterOfMassGrid(  FixedVector<3,Types::Coordinate>& firstOrderMoment ) const
 {
   FixedVector<3,Types::Coordinate> com = this->Self::GetCenterOfMassGrid(); // do not use overloaded function
-  firstOrderMoment = FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0 ) );
+  firstOrderMoment = FixedVector<3,Types::Coordinate>( 0.0 );
 
   double sumOfSamples = 0;
   size_t ofs = 0;
@@ -638,7 +637,7 @@ DataGrid
 	if ( this->GetDataAt( value, x, y, z ) )
 	  {
 	  const Types::Coordinate pixelMoment[3] = { value * fabs(x - com[0]), value * fabs(y - com[1]), value * fabs(z - com[2]) };
-	  firstOrderMoment += Self::SpaceVectorType( pixelMoment );
+	  firstOrderMoment += Self::SpaceVectorType::FromPointer( pixelMoment );
 	  sumOfSamples += value;
 	  }
 	}

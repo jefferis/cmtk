@@ -49,7 +49,7 @@ ClassStreamInput::operator>>( ParametricPlane*& parametricPlane )
 
   Types::Coordinate planeOrigin[3];
   this->ReadCoordinateArray( "origin", planeOrigin, 3 );
-  parametricPlane->SetOrigin( FixedVector<3,Types::Coordinate>( planeOrigin ) );
+  parametricPlane->SetOrigin( FixedVector<3,Types::Coordinate>::FromPointer( planeOrigin ) );
 
   parametricPlane->SetRho( this->ReadCoordinate( "rho" ) );
   parametricPlane->SetTheta( Units::Degrees( this->ReadCoordinate( "theta" ) ) );

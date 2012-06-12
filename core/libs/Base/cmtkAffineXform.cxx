@@ -177,7 +177,7 @@ AffineXform::MakeInverse () const
   inverseXform->Matrix = this->Matrix.GetInverse();
   inverseXform->DecomposeMatrix();
 
-  const Self::SpaceVectorType newCenter = Self::SpaceVectorType( this->RetCenter() ) * this->Matrix;
+  const Self::SpaceVectorType newCenter = Self::SpaceVectorType::FromPointer( this->RetCenter() ) * this->Matrix;
   inverseXform->ChangeCenter( newCenter );
   
   if ( this->NumberDOFs == 7 ) 
@@ -198,7 +198,7 @@ AffineXform::ChangeCenter ( const Self::SpaceVectorType& newCenter )
 {
   Types::Coordinate *const xlate = this->RetXlate();
   Types::Coordinate *const center = this->RetCenter();
-  Self::SpaceVectorType deltaCenter = newCenter - Self::SpaceVectorType( center );
+  Self::SpaceVectorType deltaCenter = newCenter - Self::SpaceVectorType::FromPointer( center );
   
   for ( size_t i = 0; i<3; ++i )
     xlate[i] -= deltaCenter[i];
@@ -318,9 +318,9 @@ AffineXform::RotateWXYZ
 
   Self::SpaceVectorType center3D;
   if ( center ) 
-    center3D = Self::SpaceVectorType( center );
+    center3D = Self::SpaceVectorType::FromPointer( center );
   else
-    center3D = Self::SpaceVectorType( this->RetCenter() );
+    center3D = Self::SpaceVectorType::FromPointer( this->RetCenter() );
 
   if ( accumulate ) 
     {

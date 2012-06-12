@@ -49,7 +49,7 @@ cmtk
 WarpXform::ControlPointRegionType 
 WarpXform::GetAllControlPointsRegion() const
 {
-  return Self::ControlPointRegionType( (Self::ControlPointIndexType::Init( 0 )), this->m_Dims );
+  return Self::ControlPointRegionType( (Self::ControlPointIndexType( 0 )), this->m_Dims );
 }
 
 void
@@ -291,8 +291,7 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   Types::Coordinate *coeff = this->m_Parameters;
   for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
-    Self::SpaceVectorType p( coeff );
-    change.ApplyInPlace( p );
+    const Self::SpaceVectorType p = change.Apply( Self::SpaceVectorType::FromPointer( coeff ) );
     coeff[0] = p[0];
     coeff[1] = p[1];
     coeff[2] = p[2];
@@ -319,8 +318,7 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
   Types::Coordinate *coeff = this->m_Parameters;
   for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
-    Self::SpaceVectorType p( coeff );
-    affineXform->ApplyInPlace( p );
+    const Self::SpaceVectorType p = affineXform->Apply( Self::SpaceVectorType::FromPointer( coeff ) );
     coeff[0] = p[0];
     coeff[1] = p[1];
     coeff[2] = p[2];

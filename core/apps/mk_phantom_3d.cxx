@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -127,7 +127,7 @@ doMain( const int argc, const char* argv[] )
     else
       {
       const cmtk::Types::Coordinate size[3] = { Delta[0] * (Dims[0]-1),  Delta[1] * (Dims[1]-1),  Delta[2] * (Dims[2]-1) };
-      volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( Dims ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( size ) ) );
+      volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType::FromPointer( Dims ), cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( size ) ) );
       volume->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
       volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
       cmtk::TypedArray::SmartPtr data( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
@@ -152,7 +152,7 @@ doMain( const int argc, const char* argv[] )
 	  cmtk::StdErr << "Parameter 'center' of 'sphere' command must be x,y,z\n";
 	  return 1;
 	  }
-	painter.DrawSphere( cmtk::FixedVector<3,cmtk::Types::Coordinate>( cc ), atof( radius ), atof( value ) );
+	painter.DrawSphere( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( cc ), atof( radius ), atof( value ) );
 	}
 
       if ( ! strcmp( nextCmd, "box" ) )
@@ -172,7 +172,7 @@ doMain( const int argc, const char* argv[] )
 	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three numbers x,y,z\n";
 	  return 1;
 	  }
-	painter.DrawBox( cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxFrom ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxTo ), atof( value ) );
+	painter.DrawBox( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( boxFrom ), cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( boxTo ), atof( value ) );
 	}
 
 #ifdef CMTK_USE_DCMTK
@@ -228,8 +228,8 @@ doMain( const int argc, const char* argv[] )
 
 	cmtk::UniformVolumePainter roiPainter( volume, cmtk::UniformVolumePainter::COORDINATES_INDEXED );
 
-	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiCntr( cntr );
-	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiSize( size );
+	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiCntr = cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( cntr );
+	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiSize = cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( size );
 	roiSize *= 0.5;
 
 	roiPainter.DrawBox( volume->PhysicalToIndex( roiCntr - roiSize ), volume->PhysicalToIndex( roiCntr + roiSize ), atof( value ) );

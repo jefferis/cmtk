@@ -289,8 +289,8 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
 				 margin + static_cast<int>( sphereRadius / this->m_PhantomImage->m_Delta[1] ), 
 				 margin + static_cast<int>( sphereRadius / this->m_PhantomImage->m_Delta[2] ) };
   
-  const DataGrid::RegionType region( DataGrid::IndexType( centerPixelIndex ) - DataGrid::IndexType( nSphereRadius ), 
-				     DataGrid::IndexType( centerPixelIndex ) + DataGrid::IndexType( nSphereRadius ) + DataGrid::IndexType( DataGrid::IndexType::Init(1) ) );
+  const DataGrid::RegionType region( centerPixelIndex - DataGrid::IndexType::FromPointer( nSphereRadius ), 
+				     centerPixelIndex + DataGrid::IndexType::FromPointer( nSphereRadius ) + DataGrid::IndexType( 1 ) );
   
   UniformVolume::SmartPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
 

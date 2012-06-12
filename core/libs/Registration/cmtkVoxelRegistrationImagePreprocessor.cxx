@@ -139,7 +139,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
 	cropTo[dim] = volume->GetDims()[dim] + cropTo[dim] + 1;
 	}
       }
-    volume->CropRegion() = DataGrid::RegionType( DataGrid::IndexType( cropFrom ), DataGrid::IndexType( cropTo ) );
+    volume->CropRegion() = DataGrid::RegionType( DataGrid::IndexType::FromPointer( cropFrom ), DataGrid::IndexType::FromPointer( cropTo ) );
     }
   
   if ( this->m_CropWorld )
@@ -164,7 +164,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
 	realCropTo[dim] = crop[3+dim];
 	}
       }
-    volume->SetHighResCropRegion( UniformVolume::CoordinateRegionType( UniformVolume::CoordinateRegionType::IndexType( realCropFrom ), UniformVolume::CoordinateRegionType::IndexType( realCropTo ) ) );
+    volume->SetHighResCropRegion( UniformVolume::CoordinateRegionType( UniformVolume::CoordinateRegionType::IndexType::FromPointer( realCropFrom ), UniformVolume::CoordinateRegionType::IndexType::FromPointer( realCropTo ) ) );
     }
 
   if ( this->m_AutoCropFlag )

@@ -159,8 +159,7 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
     ofs = this->m_Parameters;
     for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, ofs+=3 ) 
       {
-      Self::SpaceVectorType p( ofs );
-      affineXform->ApplyInPlace( p );
+      const Self::SpaceVectorType p = affineXform->Apply( Self::SpaceVectorType::FromPointer( ofs ) );
       ofs[0] = p[0];
       ofs[1] = p[1];
       ofs[2] = p[2];
@@ -982,11 +981,9 @@ SplineWarpXform::GetPureDeformation( const bool includeScale ) const
   Self::SpaceVectorType u;
   for ( size_t pointIdx = 0; pointIdx < numberOfParameters / 3; ++pointIdx, ptr += 3 ) 
     {
-    Self::SpaceVectorType v( ptr );
-    
     // undo affine transformation component
-    xform->ApplyInPlace( v );
-    
+    const Self::SpaceVectorType v = xform->Apply( Self::SpaceVectorType::FromPointer( ptr ) );
+
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
       ptr[dim] = v[dim];

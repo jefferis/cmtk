@@ -63,7 +63,7 @@ public:
   /// Constructor with radius only (center is zero-index).
   explicit RegionSphereSurfaceIterator( const typename Self::IndexType radius /*!< Radius of the sphere in each dimension.*/ )
   {
-    typename Self::IndexType center( typename Self::IndexType::Init( 0 ) );
+    typename Self::IndexType center( 0 );
     this->Populate( radius, center, 0, 1.0 );
   }
 

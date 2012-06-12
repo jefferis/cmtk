@@ -66,10 +66,9 @@ public:
   /// Constructor: compute label combination.
   LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : 
     m_TargetImage( targetImage ),
-    m_PatchRadius( UniformVolume::IndexType::Init( 1 ) ),
-    m_PatchRadiusPlusOne( UniformVolume::IndexType::Init( 2 ) ),
-    m_SearchRegion( UniformVolume::IndexType( UniformVolume::IndexType::Init( 0 ) ),
-		    UniformVolume::IndexType( UniformVolume::IndexType::Init( 1 ) ) )
+    m_PatchRadius( 1 ),
+    m_PatchRadiusPlusOne( 2 ),
+    m_SearchRegion( UniformVolume::IndexType( 0 ), UniformVolume::IndexType( 1 ) )
   {}
   
   /// Add an atlas image (reformatted, target-matched intensity image).
@@ -86,15 +85,15 @@ public:
   /// Set patch radius.
   void SetPatchRadius( const int radius )
   {
-    this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius ) );
-    this->m_PatchRadiusPlusOne = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
+    this->m_PatchRadius = UniformVolume::IndexType( radius );
+    this->m_PatchRadiusPlusOne = UniformVolume::IndexType( radius+1 );
   }
 
   /// Set patch radius.
   void SetSearchRadius( const int radius )
   {
-    this->m_SearchRegion.From() = UniformVolume::IndexType( UniformVolume::IndexType::Init( -radius ) );
-    this->m_SearchRegion.To() = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
+    this->m_SearchRegion.From() = UniformVolume::IndexType( -radius );
+    this->m_SearchRegion.To() = UniformVolume::IndexType( radius+1 );
   }
   
   /// Get resulting combined segmentation.

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,7 +86,7 @@ CallbackTargetVolume( const char* arg )
     throw cmtk::ExitException( 1 );
     }
   
-  UserDefinedTargetVolume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  UserDefinedTargetVolume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType::FromPointer( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
   UserDefinedTargetVolume->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   UserDefinedTargetVolume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
   UserDefinedTargetVolume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
@@ -94,7 +94,7 @@ CallbackTargetVolume( const char* arg )
 
   if ( numArgs == 9 )
     {
-    UserDefinedTargetVolume->SetOffset( cmtk::UniformVolume::CoordinateVectorType( gridOffset ) );
+    UserDefinedTargetVolume->SetOffset( cmtk::UniformVolume::CoordinateVectorType::FromPointer( gridOffset ) );
     }
 }
 
@@ -125,13 +125,13 @@ CallbackCropImages( const char* arg )
 
   if ( CropImages )
     {
-    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType::FromPointer( cropFrom ), cmtk::DataGrid::IndexType::FromPointer( cropTo ) );
     }
 }
 
 bool TargetImageOffsetReal = false;
 bool TargetImageOffsetPixels = false;
-cmtk::UniformVolume::CoordinateVectorType TargetImageOffset( cmtk::UniformVolume::CoordinateVectorType::Init( 0 ) );
+cmtk::UniformVolume::CoordinateVectorType TargetImageOffset( 0.0 );
 
 void
 CallbackTargetImageOffset( const char* arg )

@@ -77,29 +77,10 @@ public:
   /// Default constructor.
   FixedArray() {}
 
-  /// Initialization class: use this to select initialization constructor.
-  class Init
-  {
-  public:
-    /// Constructor: set initialization value.
-    explicit Init( const T value ) : m_Value( value ) {}
-    
-    /// Array initialization value.
-    T m_Value;
-  };
-  
   /// Initialization constructor.
-  FixedArray( const typename Self::Init& init )
+  explicit FixedArray( const T& initValue )
   {
-    std::fill( this->begin(), this->end(), init.m_Value );
-  }
-
-  /// Constructor from const pointer.
-  template<class T2>
-  explicit FixedArray( const T2 *const ptr ) 
-  { 
-    for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Data[i] = ptr[i];
+    std::fill( this->begin(), this->end(), initValue );
   }
 
   /// Type conversion constructor template.
@@ -108,6 +89,16 @@ public:
   {
     for ( size_t i = 0; i < NDIM; ++i )
       this->m_Data[i] = static_cast<T>( rhs[i] );
+  }
+
+  /// Make array from const pointer.
+  template<class T2> static Self FromPointer( const T2 *const ptr ) 
+  { 
+    Self v;
+    for ( size_t i = 0; i < NDIM; ++i )
+      v[i] = ptr[i];
+
+    return v;
   }
 
   /// Get element reference.

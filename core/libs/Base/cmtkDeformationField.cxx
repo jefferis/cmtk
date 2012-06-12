@@ -85,7 +85,7 @@ DeformationField
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
-  return (this->GetOriginalControlPointPosition( idxX, idxY, idxZ ) + Self::SpaceVectorType( coeff ));
+  return (this->GetOriginalControlPointPosition( idxX, idxY, idxZ ) + Self::SpaceVectorType::FromPointer( coeff ));
 }
 
 void 

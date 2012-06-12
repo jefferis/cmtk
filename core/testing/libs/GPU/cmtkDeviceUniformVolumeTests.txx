@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,7 +39,7 @@ testDeviceUniformVolume()
     const int dims[3] = { 10, 10, 10 };
     const float size[3] = { 9, 9, 9 };
 
-    cmtk::UniformVolume volume( (cmtk::FixedVector<3,int>( dims )), cmtk::FixedVector<3,float>( size ) );
+    cmtk::UniformVolume volume( (cmtk::FixedVector<3,int>::FromPointer( dims )), cmtk::FixedVector<3,float>::FromPointer( size ) );
 
     // first, try to create representation of actually empty volume.
     cmtk::DeviceUniformVolume::SmartPtr volumeDevice = cmtk::DeviceUniformVolume::Create( volume );
