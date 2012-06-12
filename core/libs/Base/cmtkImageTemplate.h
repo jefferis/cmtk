@@ -97,6 +97,7 @@ public:
    */
   ImageTemplate( const Superclass& from ) : Superclass( from ) 
   {
+    this->m_DataArray.resize( this->GetNumberOfPixels() );
   }
 
   /// Access operator.
