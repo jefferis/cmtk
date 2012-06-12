@@ -101,15 +101,6 @@ public:
    */
   UniformVolume( const UniformVolume& other );
 
-  /** Resample other volume to given resolution.
-   *\param other Original volume that will be resampled.
-   *\param resolution Resolution of the newly created volume in world units.
-   *\param allowUpsampling If true, then local upsampling is allowed in regions
-   * where the original image resolution (non-uniform) was coarser than the
-   * given resolution of the resampled volume.
-   */
-  UniformVolume( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling = false );
-
   /** Create uniform volume "from scratch".
    *\param dims Number of grid elements for the three spatial dimensions.
    *\param size Size of the volume in real-world coordinates.
@@ -131,6 +122,15 @@ public:
   {
     return Superclass::GridMatches( other ) && ((this->m_Delta-other.m_Delta).MaxAbsValue() < 1e-5) && ((this->m_Offset-other.m_Offset).MaxAbsValue() < 1e-5);
   }
+
+  /** Resample volume to given resolution.
+   *\param resolution Resolution of the newly created volume in world units.
+   *\param allowUpsampling If true, then local upsampling is allowed in regions
+   * where the original image resolution (non-uniform) was coarser than the
+   * given resolution of the resampled volume.
+   *\return Newly created, resampled volume.
+   */
+  virtual UniformVolume* GetResampled( const Types::Coordinate resolution, const bool allowUpsampling = false ) const;
 
   /** Coordinate transformation from index to physical position.
    * This incorporates image axis directions and first pixel offset.

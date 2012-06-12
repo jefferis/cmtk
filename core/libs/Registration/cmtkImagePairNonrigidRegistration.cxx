@@ -209,8 +209,8 @@ ImagePairNonrigidRegistration::MakeFunctional
   if ( levelParameters->m_Resolution > 0 )
     {
     // for resample if not final, original resolution
-    referenceVolume = UniformVolume::SmartPtr( new UniformVolume( *referenceVolume, levelParameters->m_Resolution ) );
-    floatingVolume = UniformVolume::SmartPtr( new UniformVolume( *floatingVolume, levelParameters->m_Resolution ) );
+    referenceVolume = UniformVolume::SmartPtr( referenceVolume->GetResampled( levelParameters->m_Resolution ) );
+    floatingVolume = UniformVolume::SmartPtr( floatingVolume->GetResampled( levelParameters->m_Resolution ) );
     }
 
   if ( this->m_InverseConsistencyWeight > 0 ) 

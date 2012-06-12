@@ -44,25 +44,21 @@ UniformVolume::UniformVolume
 
 UniformVolume::UniformVolume
 ( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data )
+  : Volume( dims, size, data )
 {
-  this->SetData( data );
-  this->SetDims( dims );
-  
-  for ( int i=0; i<3; ++i ) {
-    this->m_Size[i] = static_cast<Types::Coordinate>( size[i] );
+  for ( int i=0; i<3; ++i ) 
+    {
     this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : this->m_Size[i] / (this->m_Dims[i] - 1);
-  }
-
+    }
+  
   this->CropRegion() = this->GetWholeImageRegion();
   this->CreateDefaultIndexToPhysicalMatrix();
 }
 
 UniformVolume::UniformVolume
 ( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data )
+  : Volume( dims, dims, data )
 {
-  this->SetData( data );
-  this->SetDims( dims );
-
   this->m_Delta[0] = deltaX;
   this->m_Delta[1] = deltaY;
   this->m_Delta[2] = deltaZ;
@@ -74,45 +70,48 @@ UniformVolume::UniformVolume
   this->CreateDefaultIndexToPhysicalMatrix();
 }
 
-UniformVolume::UniformVolume 
-( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling ) 
-  : Volume()
+UniformVolume* 
+UniformVolume::GetResampled
+( const Types::Coordinate resolution, const bool allowUpsampling ) const
 {
   Self::IndexType newDims;
+  Self::SpaceVectorType newSize;
+  Self::SpaceVectorType newDelta;
+
   for ( int dim=0; dim<3; ++dim ) 
     {
-    this->m_Size[dim] = other.m_Size[dim];
-    const int new_dims=(int) (this->m_Size[dim]/resolution)+1;
-    if ( allowUpsampling || (new_dims<=other.m_Dims[dim]) ) 
+    newSize[dim] = this->m_Size[dim];
+    const int new_dims=(int) (newSize[dim]/resolution)+1;
+    if ( allowUpsampling || (new_dims<=this->m_Dims[dim]) ) 
       {
       newDims[dim]=new_dims;
-      this->m_Delta[dim] = this->m_Size[dim]/(new_dims-1);
+      newDelta[dim] = newSize[dim]/(new_dims-1);
       } 
     else
       {
-      if ( other.m_Dims[dim] == 1 ) 
+      if ( this->m_Dims[dim] == 1 ) 
 	{
-	this->m_Delta[dim] = this->m_Size[dim];
+	newDelta[dim] = newSize[dim];
 	newDims[dim] = 1;
 	} 
       else 
 	{
-	this->m_Delta[dim] = other.m_Delta[dim];
-	newDims[dim] = ((int)(this->m_Size[dim]/this->m_Delta[dim])) + 1;
-	this->m_Size[dim] = (newDims[dim]-1) * this->m_Delta[dim];
+	newDelta[dim] = this->m_Delta[dim];
+	newDims[dim] = ((int)(newSize[dim]/newDelta[dim])) + 1;
+	newSize[dim] = (newDims[dim]-1) * newDelta[dim];
 	}
       }
     }
-  
-  this->SetDims( newDims );
-  TypedArray::SmartPtr resampledData( this->Resample( other ) );
-  this->SetData( resampledData	 );
-  
-  this->m_IndexToPhysicalMatrix = other.m_IndexToPhysicalMatrix;
 
-  this->SetHighResCropRegion( other.GetHighResCropRegion() );
-  this->SetOffset( other.m_Offset );
-  this->CopyMetaInfo( other );
+  UniformVolume* newVolume = new UniformVolume( newDims, newSize );
+  newVolume->SetData( TypedArray::SmartPtr( newVolume->Resample( *this ) ) );
+  
+  newVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
+  newVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
+  newVolume->SetOffset( this->m_Offset );
+  newVolume->CopyMetaInfo( *this );
+
+  return newVolume;
 }
 
 UniformVolume*

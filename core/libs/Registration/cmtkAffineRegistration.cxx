@@ -139,8 +139,8 @@ AffineRegistration::InitRegistration ()
   
   for ( ; (currSampling<=coarsest); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
-    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
+    UniformVolume::SmartPtr nextRef( currRef->GetResampled( currSampling ) );
+    UniformVolume::SmartPtr nextFlt( currFlt->GetResampled( currSampling ) );
     
     Functional::SmartPtr newFunctional( VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
     FunctionalStack.push( newFunctional );

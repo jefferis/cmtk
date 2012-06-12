@@ -50,13 +50,7 @@ DataGrid::DataGrid( const Self& other )
   if (other.m_Data )
     this->m_Data = other.m_Data->Clone();
 
-  nextI = 1;
-  nextJ = nextI * this->m_Dims[0];
-  nextK = nextJ * this->m_Dims[1];
-  nextIJ = nextI + nextJ;
-  nextIK = nextI + nextK;
-  nextJK = nextJ + nextK;
-  nextIJK = nextI + nextJ + nextK;
+  this->ComputeGridIncrements();
 }
 
 DataGrid*
@@ -112,8 +106,7 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 {
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
-  DataGrid* newDataGrid = new DataGrid;
-  newDataGrid->SetDims( Self::IndexType( newDims ) );
+  DataGrid* newDataGrid = new DataGrid( Self::IndexType( newDims ) );
   
   const TypedArray* thisData = this->GetData();
   if ( thisData )
@@ -175,8 +168,7 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
 {
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
-  DataGrid* newDataGrid = new DataGrid;
-  newDataGrid->SetDims( Self::IndexType( newDims ) );
+  DataGrid* newDataGrid = new DataGrid( Self::IndexType( newDims ) );
   
   const TypedArray* thisData = this->GetData();
   if ( thisData )
@@ -268,11 +260,8 @@ DataGrid::GetReoriented( const char* newOrientation ) const
 }
 
 void
-DataGrid::SetDims( const Self::IndexType& dims )
+DataGrid::ComputeGridIncrements()
 {
-  this->m_Dims = dims;
-  this->m_CropRegion = this->GetWholeImageRegion();
-
   this->m_GridIncrements[0] = 1;
   for ( int i = 1; i < 3; ++i )
     this->m_GridIncrements[i] = this->m_GridIncrements[i-1] * this->m_Dims[i-1];

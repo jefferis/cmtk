@@ -192,7 +192,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
 	{
 	Types::Coordinate voxelSize = this->m_Sampling * pow( 2.0, (this->m_Levels-level-2) );
 	DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, this->m_Levels, voxelSize );
-	volume = UniformVolume::SmartPtr( new UniformVolume( *originalVolume, voxelSize ) );
+	volume = UniformVolume::SmartPtr( originalVolume->GetResampled( voxelSize ) );
 	} 
       else
 	{

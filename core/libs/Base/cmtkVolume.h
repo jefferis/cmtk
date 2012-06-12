@@ -104,11 +104,11 @@ public:
    */
   FixedVector<3,Types::Coordinate> m_Size;
 
-  /// Default constructor.
-  Volume() : m_Offset( CoordinateVectorType::Init( 0.0 ) ) {}
-
   /// Copy constructor.
   Volume( const Self& other ) : Superclass( other ), m_Offset( other.m_Offset ), m_Size( other.m_Size ) {}
+
+  /// Grid and data constructor.
+  Volume( const Self::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null() ) : DataGrid( dims, data ), m_Offset( CoordinateVectorType::Init( 0.0 ) ), m_Size( size ) {}
 
   /** Destructor.
    * Do nothing really; just be present and virtual.

@@ -109,7 +109,7 @@ cmtk::UniformVolume::SmartPtr
 MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample, const cmtk::Types::Coordinate smoothSigmaFactor )
 {
   if ( downsampleWithAverage )
-    return cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( *image, downsample * image->GetMinDelta() ) );
+    return cmtk::UniformVolume::SmartPtr( image->GetDownsampled( downsample * image->GetMinDelta() ) );
 
   cmtk::UniformVolume::SmartPtr result( image->CloneGrid() );
 

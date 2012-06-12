@@ -144,13 +144,13 @@ ElasticRegistration::InitRegistration ()
 
   for ( ;(currSampling<=this->CoarsestResolution); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
-    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
+    UniformVolume::SmartPtr nextRef( currRef->GetResampled( currSampling ) );
+    UniformVolume::SmartPtr nextFlt( currFlt->GetResampled( currSampling ) );
 
     UniformVolume::SmartPtr nextRigidityMap;
     if ( this->m_RigidityConstraintMap )
       {
-      nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
+      nextRigidityMap = UniformVolume::SmartPtr( this->m_RigidityConstraintMap->GetResampled( currSampling ) );
       }
     
     Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, nextRigidityMap ) );

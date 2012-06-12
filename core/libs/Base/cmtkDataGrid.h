@@ -96,11 +96,6 @@ public:
   cmtkGetSetMacro(TypedArray::SmartPtr,Data);
 
 public:
-  /// Default constructor.
-  DataGrid() : 
-    m_Data( NULL )
-  {}
-
   /// Copy constructor.
   DataGrid( const Self& other );
   
@@ -109,6 +104,7 @@ public:
     : m_Dims( dims ), 
       m_Data( data )
   {
+    this->ComputeGridIncrements();
     this->m_CropRegion = this->GetWholeImageRegion();
   }
   
@@ -166,12 +162,6 @@ public:
    */
   const DataGrid::SmartPtr GetReoriented( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
   
-  /** Set dimensions array.
-   * This function updates the internal offsets for fast access to adjacent
-   * voxel rows, columns, planes etc.
-   */
-  void SetDims( const Self::IndexType& dims );
-
   /// Get dimensions array.
   const Self::IndexType GetDims() const
   {
@@ -271,10 +261,6 @@ public:
 
   /// Replace data with mirrored version.
   void ApplyMirrorPlane( const int axis = AXIS_X );
-
-private:
-  /// Mirror about plane without allocating additional memory.
-  static void MirrorPlaneInPlace( TypedArray& data, const Self::IndexType& dims, const int axis = AXIS_X );
 
 public:
   /** Get cropped region reference.
@@ -441,6 +427,14 @@ private:
   /** Crop region.
    */
   Self::RegionType m_CropRegion;
+
+  /** Compute grid increments for fast n-dimensional offset computations.
+   */
+  virtual void ComputeGridIncrements();
+
+  /// Mirror about plane without allocating additional memory.
+  static void MirrorPlaneInPlace( TypedArray& data, const Self::IndexType& dims, const int axis = AXIS_X );
+
 };
 
 //@}

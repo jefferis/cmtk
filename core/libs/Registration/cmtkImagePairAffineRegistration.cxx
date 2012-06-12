@@ -156,8 +156,8 @@ ImagePairAffineRegistration
   UniformVolume::SmartPtr nextRef, nextFlt;
   if ( levelParameters->m_Resolution > 0 )
     {
-    nextRef = UniformVolume::SmartPtr( new UniformVolume( *this->m_ReferenceVolume, levelParameters->m_Resolution ) );
-    nextFlt = UniformVolume::SmartPtr( new UniformVolume( *this->m_FloatingVolume, levelParameters->m_Resolution ) );
+    nextRef = UniformVolume::SmartPtr( this->m_ReferenceVolume->GetResampled( levelParameters->m_Resolution ) );
+    nextFlt = UniformVolume::SmartPtr( this->m_FloatingVolume->GetResampled( levelParameters->m_Resolution ) );
     }
   else
     {
