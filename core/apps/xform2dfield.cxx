@@ -55,6 +55,7 @@
 #endif
 
 bool Mask = false;
+bool OutputAbsolute = false;
 
 const char* RefFileName = NULL;
 const char *OutFileName = NULL;
@@ -83,6 +84,8 @@ doMain ( const int argc, const char *argv[] )
 
     cl.AddOption( Key( "inversion-tolerance-factor" ), &InversionToleranceFactor, "Factor for numerical tolerance of B-spline inversion [multiples of minimum grid pixel size; default=0.1]" );
     cl.AddOption( Key( "downsample" ), &Downsample, "Downsample grid by factors 'x,y,z' or by single factor 'xyz'" );
+
+    cl.AddSwitch( Key( "output-absolute" ), &OutputAbsolute, true, "Make output deformation field with absolute target location vectors, rather than relative offset vectors." );
 
     cl.AddParameter( &OutFileName, "OutputPath", "Path for the output deformation field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddParameter( &RefFileName, "ReferenceImage", "Input reference grid path. The dimensions and pixel size of this image determine the geometry of the output." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -160,9 +163,14 @@ doMain ( const int argc, const char *argv[] )
 	  }
 
 	if ( !invalid )
-	  v1 -= v0;
+	  {
+	  if ( !OutputAbsolute )
+	    v1 -= v0;
+	  }
 	else
+	  {
 	  v1 = cmtk::Vector3D( 1e10 );
+	  }
 	
 	dfield->m_Parameters[offset+0] = v1[0];
 	dfield->m_Parameters[offset+1] = v1[1];
