@@ -49,6 +49,7 @@
 
 #include <vector>
 #include <string>
+#include <numeric>
 
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
@@ -169,7 +170,7 @@ doMain ( const int argc, const char *argv[] )
 	  }
 	else
 	  {
-	  v1 = cmtk::Vector3D( 1e10 );
+	  v1 = cmtk::Vector3D( std::numeric_limits<cmtk::Types::Coordinate>::quiet_NaN() );
 	  }
 	
 	dfield->m_Parameters[offset+0] = v1[0];
