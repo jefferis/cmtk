@@ -57,8 +57,18 @@ cmtk::FitSplineWarpToXformList::ComputeResiduals( const SplineWarpXform& splineW
 }
 
 cmtk::SplineWarpXform::SmartPtr 
-cmtk::FitSplineWarpToXformList::Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels, const AffineXform* affineXform )
+cmtk::FitSplineWarpToXformList::Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels, const bool fitAffineFirst )
 {
+  AffineXform::SmartPtr initialAffine;
+  if ( fitAffineFirst )
+    {
+    initialAffine = this->Superclass::Fit();
+    }
+  else
+    {
+    initialAffine = AffineXform::SmartPtr( new AffineXform );
+    }
+
   // we may have to adjust nLevels downwards
   int numberOfLevels = nLevels;
   
@@ -80,25 +90,30 @@ cmtk::FitSplineWarpToXformList::Fit( const SplineWarpXform::ControlPointIndexTyp
       }
     }
 
-  // initialize B-spline transformation
-  AffineXform::SmartPtr initialAffine( affineXform ? new AffineXform( *affineXform ) : new AffineXform );
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_XformField.m_Size, initialDims, CoordinateVector::SmartPtr::Null(), initialAffine );
-  
   this->FitSpline( *splineWarp, numberOfLevels );
   
   return cmtk::SplineWarpXform::SmartPtr( splineWarp );
 }
 
 cmtk::SplineWarpXform::SmartPtr 
-cmtk::FitSplineWarpToXformList::Fit( const Types::Coordinate finalSpacing, const int nLevels, const AffineXform* affineXform )
+cmtk::FitSplineWarpToXformList::Fit( const Types::Coordinate finalSpacing, const int nLevels, const bool fitAffineFirst )
 {
+  AffineXform::SmartPtr initialAffine;
+  if ( fitAffineFirst )
+    {
+    initialAffine = this->Superclass::Fit();
+    }
+  else
+    {
+    initialAffine = AffineXform::SmartPtr( new AffineXform );
+    }
+
   // compute the start spacing of multi-level approximation by doubling final spacing until user-defined initial spacing is exceeded.
   Types::Coordinate spacing = finalSpacing * (1 << (nLevels-1));
 
-  // initialize B-spline transformation
-  AffineXform::SmartPtr initialAffine( affineXform ? new AffineXform( *affineXform ) : new AffineXform );
+  // initialize B-spline transformation  
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_XformField.m_Size, spacing, initialAffine );
-  
   this->FitSpline( *splineWarp, nLevels );
   
   return cmtk::SplineWarpXform::SmartPtr( splineWarp );

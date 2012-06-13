@@ -107,15 +107,9 @@ doMain ( const int argc, const char *argv[] )
   cmtk::FitSplineWarpToXformList fitSpline( *imageGrid, xformList );
   cmtk::SplineWarpXform::SmartPtr splineWarp;
   
-  cmtk::AffineXform::SmartPtr affineXform;
-  if ( affineFirst )
-    {
-    affineXform = cmtk::FitAffineToXformList( *imageGrid, xformList ).Fit();
-    }
-
   if ( gridSpacing )
     {
-    splineWarp = fitSpline.Fit( gridSpacing, levels, affineXform );
+    splineWarp = fitSpline.Fit( gridSpacing, levels, affineFirst );
     }
   else
     {
@@ -128,7 +122,7 @@ doMain ( const int argc, const char *argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineXform );
+      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineFirst );
       }
     else
       {

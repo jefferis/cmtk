@@ -48,7 +48,7 @@ cmtk
 /** Fit affine transformation to series of concatenated, possibly numerically inverted, transformations.
  */
 class FitAffineToXformList
-  : private FitToXformListBase
+  : protected FitToXformListBase
 {
 public:
   /// This class.
@@ -59,7 +59,8 @@ public:
 
   /// Constructor.
   FitAffineToXformList( const UniformVolume& sampleGrid /*!< Discrete pixel grid where the spline transformation is sampled and residuals are minimized.*/,
-			const XformList& xformList /*!< List of concatenated transformation that the spline transformation is fitted to.*/ ) : Superclass( sampleGrid, xformList ) {}
+			const XformList& xformList /*!< List of concatenated transformation that the spline transformation is fitted to.*/,
+			const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ ) : Superclass( sampleGrid, xformList, absolute ) {}
 
   /// Fit affine transformation.
   AffineXform::SmartPtr Fit();

@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFitToXformListBase.h>
+#include <Base/cmtkFitAffineToXformList.h>
 
 #include <Base/cmtkXformList.h>
 #include <Base/cmtkSplineWarpXform.h>
@@ -54,14 +54,14 @@ cmtk
  * vol. 3, no. 3, pp. 228-244, 1997. http://dx.doi.org/10.1109/2945.620490
  */
 class FitSplineWarpToXformList
-  : private FitToXformListBase
+  : private FitAffineToXformList
 {
 public:
   /// This class.
   typedef FitSplineWarpToXformList Self;
 
   /// Base class.
-  typedef FitToXformListBase Superclass;
+  typedef FitAffineToXformList Superclass;
 
   /// Constructor.
   FitSplineWarpToXformList( const UniformVolume& sampleGrid /*!< Discrete pixel grid where the spline transformation is sampled and residuals are minimized.*/,
@@ -71,12 +71,12 @@ public:
   /// Fit spline warp based on final grid dimensions.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::ControlPointIndexType& finalDims /*!< Final spline control point grid dimensions.*/, 
 				 const int nLevels /*!< Number of levels in the multi-resolution fitting.*/,
-				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/ );
+				 const bool fitAffineFirst = true /*!< Flag for optional affine transformation to initialize the spline control points.*/ );
 
   /// Fit spline warp based on final grid spacing.
   SplineWarpXform::SmartPtr Fit( const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
 				 const int nLevels = 1 /*!< Number of levels for optional multi-resolution fit (default: single-resolution fit)*/,
-				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/  );
+				 const bool fitAffineFirst = true /*!< Flag for optional affine transformation to initialize the spline control points.*/  );
   
 private:
   /// Deformation field residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
