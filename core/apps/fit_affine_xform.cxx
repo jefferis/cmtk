@@ -22,11 +22,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision$
+//  $Revision: 4432 $
 //
-//  $LastChangedDate$
+//  $LastChangedDate: 2012-06-13 13:33:51 -0700 (Wed, 13 Jun 2012) $
 //
-//  $LastChangedBy$
+//  $LastChangedBy: torstenrohlfing $
 //
 */
 
@@ -36,8 +36,8 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkProgress.h>
 
-#include <Base/cmtkSplineWarpXform.h>
-#include <Base/cmtkFitSplineWarpToXformList.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkFitAffineToXformList.h>
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
@@ -49,29 +49,16 @@ doMain ( const int argc, const char *argv[] )
   const char* inputImagePath = NULL;
   const char *outputPath = NULL;
   
-  const char* gridDims = NULL;
-  cmtk::Types::Coordinate gridSpacing = 0;
-  int levels = 1;
-  
   cmtk::Types::Coordinate inversionTolerance = 1e-8;
   std::vector<std::string> inputXformPaths;
-
-  bool affineFirst = false;
 
   try
     {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fit Single B-Spline Transformation to Concatenated Transformation List" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a parametric nonrigid transformation (B-spline free-form deformation) to a list of concatenated, optionally inverted, transformations." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fit Single Affine Transformation to Concatenated List" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a linear affine transformation to a list of concatenated, optionally inverted, transformations." );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.BeginGroup( "Fitting", "Fitting Options" );
-    cl.AddOption( Key( "levels" ), &levels, "Number of levels in the multi-level B-spline approximation procedure." );
-    cl.AddSwitch( Key( "fit-affine-first" ), &affineFirst, true, "Fit affine transformation first, then initialize spline with it." );
-    cl.AddOption( Key( "final-cp-spacing" ), &gridSpacing, "Final control point grid spacing of the output B-spline transformation." );
-    cl.AddOption( Key( "final-cp-dims" ), &gridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
-    cl.EndGroup();
-
     cl.BeginGroup( "Input", "Input Options" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
     cl.EndGroup();
@@ -91,45 +78,14 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( gridDims && gridSpacing )
-    {
-    cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
-    throw cmtk::ExitException( 1 );
-    }
-
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
 
   cmtk::UniformVolume::SmartPtr imageGrid( cmtk::VolumeIO::ReadGridOriented( inputImagePath ) );
   
-  cmtk::FitSplineWarpToXformList fitSpline( *imageGrid, xformList );
-  cmtk::SplineWarpXform::SmartPtr splineWarp;
-  
-  if ( gridSpacing )
-    {
-    splineWarp = fitSpline.Fit( gridSpacing, levels, affineFirst );
-    }
-  else
-    {
-    if ( gridDims )
-      {
-      double dims[3];
-      if ( 3 != sscanf( gridDims, "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
-	{
-	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
-	throw cmtk::ExitException( 1 );
-	}
-      
-      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineFirst );
-      }
-    else
-      {
-      cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions.\n";
-      throw cmtk::ExitException( 1 );
-      }
-    }
-  
-  cmtk::XformIO::Write( splineWarp, outputPath );
+  cmtk::FitAffineToXformList fit( *imageGrid, xformList );
+  cmtk::AffineXform::SmartPtr xform = fit.Fit();
+  cmtk::XformIO::Write( xform, outputPath );
 
   return 0;
 }
