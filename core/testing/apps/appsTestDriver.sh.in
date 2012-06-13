@@ -858,6 +858,14 @@ case ${RUNTEST} in
 	run film --mi --coronal --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --reference-image interleave_3dspgr.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img
 	;;
+    fit_affine_xform)
+        run fit_affine_xform -o ${tmpdir}/affine.xform vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1.list
+	check_results affine.xform
+	;;
+    fit_affine_xformReverse)
+        run fit_affine_xform -o ${tmpdir}/affine.xform vol001_mr_t1.hdr --inverse vol001_mr_t0t1.list vol001_mr_t0t1_warp.xform
+	check_results affine.xform
+	;;
     fit_affine_xform_landmarksRigid)
         run fit_affine_xform_landmarks landmarksSource landmarksTargetRigid ${tmpdir}/affine.xform
 	check_results affine.xform
@@ -886,12 +894,12 @@ case ${RUNTEST} in
         run fit_affine_xform_landmarks --rigid landmarksSource landmarksTargetShear ${tmpdir}/affine.xform
 	check_results affine.xform
 	;;
-    fit_affine_xformDField)
-        run fit_affine_xform vol001_mr_t0t1_dfield.nrrd ${tmpdir}/affine_fit.xform
+    fit_affine_dfieldDField)
+        run fit_affine_dfield vol001_mr_t0t1_dfield.nrrd ${tmpdir}/affine_fit.xform
 	check_results affine_fit.xform
 	;;
-    fit_affine_xformFFD)
-        run fit_affine_xform vol001_mr_t0t1_warp.xform ${tmpdir}/affine_fit.xform
+    fit_affine_dfieldFFD)
+        run fit_affine_dfield vol001_mr_t0t1_warp.xform ${tmpdir}/affine_fit.xform
 	check_results affine_fit.xform
 	;;
     fit_spline_dfieldSpacing)
