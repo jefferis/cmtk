@@ -358,6 +358,10 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
+# Tests for "fit_spline_xform" tool
+LIST(APPEND testList fit_spline_xformSpacing fit_spline_xformSpacingReverse fit_spline_xformSpacingMultiLevel fit_spline_xformDims fit_spline_xformDimsMultiLevel)
+
+# ==========================================
 # Tests for "glm" tool
 LIST(APPEND testList
   glmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
