@@ -438,7 +438,7 @@ doMain ( const int argc, const char* argv[] )
       if ( level < Levels-1 ) 
 	{
 	cmtk::Types::Coordinate voxelSize = Sampling * pow( 2.0, (Levels-level-2) );
-	volume = cmtk::UniformVolume::SmartPtr( originalVolume->GetDownsampled( voxelSize ) );
+	volume = cmtk::UniformVolume::SmartPtr( originalVolume->GetResampled( voxelSize ) );
 	cmtk::DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
 	} 
       else
