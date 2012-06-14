@@ -63,16 +63,21 @@ public:
 			const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ ) : Superclass( sampleGrid, xformList, absolute ) {}
 
   /// Fit affine transformation.
-  AffineXform::SmartPtr Fit();
+  AffineXform::SmartPtr Fit( const bool fitRigid = false /*!< If this flag is set, a rigid transformation is fitted, otherwise a full affine transformation */ );
   
 private:
-  /** Compute rotation, scale, and shear matrix using previously computed translation.
+  /** Compute rotation, scale, and shear matrix by pseudinverse using previously computed centroid translation.
    * We are using simple pseudoinverse rather than procrustes because we do not care whether
    * the result is rigid (det = 1). In fact, if the underlying transformation is not
    * rigid but full affine, then that is exactly what we want the output to be.
    */
-  Matrix3x3<Types::Coordinate> GetMatrix( const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
-					  const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
+  Matrix3x3<Types::Coordinate> GetMatrixAffinePseudoinverse( const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
+							     const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
+  
+  /** Compute rotation matrix by SVD using previously computed centroid translation.
+   */
+  Matrix3x3<Types::Coordinate> GetMatrixRigidSVD( const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
+						  const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
 };
 
 } // namespace

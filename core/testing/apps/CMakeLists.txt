@@ -339,7 +339,7 @@ LIST(APPEND testList fit_affine_xform_landmarksRigid fit_affine_xform_landmarksS
 
 # ==========================================
 # Tests for "fit_affine_xform" tool
-LIST(APPEND testList fit_affine_xform fit_affine_xformReverse)
+LIST(APPEND testList fit_affine_xform fit_affine_xformRigid fit_affine_xformReverse)
 
 # ==========================================
 # Tests for "fit_affine_dfield" tool

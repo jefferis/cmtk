@@ -49,6 +49,8 @@ doMain ( const int argc, const char *argv[] )
   const char* inputImagePath = NULL;
   const char *outputPath = NULL;
   
+  bool fitRigid = false;
+
   cmtk::Types::Coordinate inversionTolerance = 1e-8;
   std::vector<std::string> inputXformPaths;
 
@@ -61,6 +63,11 @@ doMain ( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Fitting", "Fitting Options" );
+    cl.AddSwitch( Key( "rigid" ), &fitRigid, true, "Fit rigid transformation (rotation and translation only) using SVD." );
+    cl.AddSwitch( Key( "affine" ), &fitRigid, false, "Fit full affine transformation (rotation, translation, scales, shears) using pseudoinverse." );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
@@ -84,7 +91,7 @@ doMain ( const int argc, const char *argv[] )
   cmtk::UniformVolume::SmartPtr imageGrid( cmtk::VolumeIO::ReadGridOriented( inputImagePath ) );
   
   cmtk::FitAffineToXformList fit( *imageGrid, xformList );
-  cmtk::AffineXform::SmartPtr xform = fit.Fit();
+  cmtk::AffineXform::SmartPtr xform = fit.Fit( fitRigid );
   cmtk::XformIO::Write( xform, outputPath );
 
   return 0;

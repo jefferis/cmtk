@@ -862,6 +862,10 @@ case ${RUNTEST} in
         run fit_affine_xform -o ${tmpdir}/affine.xform vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1.list
 	check_results affine.xform
 	;;
+    fit_affine_xformRigid)
+        run fit_affine_xform --rigid -o ${tmpdir}/rigid.xform vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1.list
+	check_results rigid.xform
+	;;
     fit_affine_xformReverse)
         run fit_affine_xform -o ${tmpdir}/affine.xform vol001_mr_t1.hdr --inverse vol001_mr_t0t1.list vol001_mr_t0t1_warp.xform
 	check_results affine.xform
