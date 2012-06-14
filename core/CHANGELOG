@@ -1,5 +1,8 @@
 Release CMTK-2.2.2:
 
+(r4438) Added: new tools "fit_spline_xform" and "fit_affine_xform" to fit
+    a single B-spline or affine transformation, respectively, to a list of
+    concentated, optionally inverted, transformations.
 (r4420) Fixed: "reorient" tool can now force reorientation when original image
     orientation is overridden by command line argument.
 (r4400) Obsoleted: the "mip" tool as well as library code exclusively used by
