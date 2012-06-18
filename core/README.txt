@@ -6,6 +6,11 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.2
 ===========================
 
+This release adds more transformation fitting tools and completes support for
+computing SNR and CNR from images of the ADNI phantom. 
+
+A new tool, "streamxform" will ultimately replace the rather poorly-designed
+"gregxform" tool and its confusing and inefficient interface.
 
 
 Release Notes -- CMTK 2.2.1
@@ -43,13 +48,11 @@ file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 15), gcc 4.6.3
-- Linux 64bit (Fedora 15), gcc 4.6.3
-- Linux 32bit (Fedora 16), gcc 4.6.3
-- Linux 64bit (Fedora 16), gcc 4.6.3, CUDA 3.2
+- Linux 32bit (Fedora 17), gcc 4.7.0
+- Linux 64bit (Fedora 17), gcc 4.6.3, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 4.1
-- MacOSX 10.6, x86_64, MacPorts gcc 4.7.0, CUDA 4.1
+- MacOSX 10.6, x86_64, MacPorts gcc 4.7.1, CUDA 4.1
 - MacOSX 10.6, x86_64, llvm-gcc-4.2.1
 - MacOSX 10.6, x86_64, clang 2.0
 - Cygwin, gcc 4.5.3
