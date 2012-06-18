@@ -86,7 +86,7 @@ public:
    *\param dims Number of grid elements for the three spatial dimensions.
    *\param size Size of the volume in real-world coordinates.
    */
-  ImageTemplate( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size ) : Superclass( dims, size ) 
+  ImageTemplate( const DataGrid::IndexType& dims, const typename Self::CoordinateVectorType& size ) : Superclass( dims, size ) 
   {
     this->m_DataArray.resize( this->GetNumberOfPixels() );
   }
