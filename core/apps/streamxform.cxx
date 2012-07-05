@@ -59,7 +59,7 @@ doMain( const int argc, const char* argv[] )
   const char* targetImagePath = NULL;
 
   const char* separator = " ";
-  int precision = 6;
+  int precision = 9;
 
   try
     {
