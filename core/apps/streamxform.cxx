@@ -58,6 +58,9 @@ doMain( const int argc, const char* argv[] )
   const char* sourceImagePath = NULL;
   const char* targetImagePath = NULL;
 
+  const char* separator = " ";
+  int precision = 6;
+
   try
     {
     cmtk::CommandLine cl;
@@ -66,10 +69,19 @@ doMain( const int argc, const char* argv[] )
 		       "The transformed points are then written to standard output." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.BeginGroup( "Xform", "Transformation Options" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( "separator" ), &separator, "Field separator - this string or character is used to separate x, y, and z coordinates and z from the remainder of every line." );
+    cl.AddOption( Key( "precision" ), &precision, "Floating point precision for output file." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Spaces", "Image Space Options" );    
     cl.AddOption( Key( "source-image" ), &sourceImagePath, "Set source image of the transformation (i.e., the image that the transformation maps points FROM) to correct for differences in orientation and coordinate space." );
     cl.AddOption( Key( "target-image" ), &targetImagePath, "Set target image of the transformation (i.e., the image that the transformation maps points TO) to correct for differences in orientation and coordinate space." );
+    cl.EndGroup();
 
     cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
 
@@ -105,6 +117,8 @@ doMain( const int argc, const char* argv[] )
       }
     xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
     }
+
+  std::cout << std::setprecision( precision );
   
   cmtk::Xform::SpaceVectorType xyz;
   std::string restOfLine;
@@ -118,14 +132,14 @@ doMain( const int argc, const char* argv[] )
       // Apply transformation sequence
       const bool valid = xformList.ApplyInPlace( xyz );
       
-      std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2];
+      std::cout << xyz[0] << separator << xyz[1] << separator << xyz[2];
       
       if ( ! valid )
 	{
 	std::cout << " FAILED";
 	}
       
-      std::cout << " " << restOfLine << std::endl;
+      std::cout << separator << restOfLine << std::endl;
       }
     }
   
