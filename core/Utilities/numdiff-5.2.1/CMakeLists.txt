@@ -1,5 +1,5 @@
 ##
-##  Copyright 2011 SRI International
+##  Copyright 2011, 2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -271,4 +271,4 @@ ADD_EXECUTABLE(numdiff ${numdiff_SRCS})
 TARGET_LINK_LIBRARIES(numdiff ${LIBGMP_LIBRARY} ${GETTEXT_LIBRARIES})
 
 # add install target:
-INSTALL(TARGETS numdiff DESTINATION bin)
+#INSTALL(TARGETS numdiff DESTINATION bin)
