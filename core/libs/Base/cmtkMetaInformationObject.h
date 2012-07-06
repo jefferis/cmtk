@@ -74,7 +74,8 @@ public:
 
   /// Copy constructor: copy meta information when copying higher-level objects.
   MetaInformationObject( const MetaInformationObject& other )
-    : m_MetaInformation( other.m_MetaInformation )
+    : m_MetaInformation( other.m_MetaInformation ),
+      m_XML( NULL )
   {}
 
   /// Virtual destructor template.
