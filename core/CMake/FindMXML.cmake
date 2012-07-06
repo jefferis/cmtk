@@ -1,9 +1,11 @@
 # - Find mxml
 # Find the native MXML includes and library
 #
-#  MXML_INCLUDE_DIRS - where to find mxml.h, etc.
-#  MXML_LIBRARIES    - List of libraries when using mxml.
-#  MXML_FOUND        - True if mxml found.
+#  MXML_INCLUDE_DIRS  - where to find mxml.h, etc.
+#  MXML_LIBRARIES     - List of libraries when using mxml.
+#  MXMLDOC_EXECUTABLE - Path to "mxmldoc" executable
+#  MXML_VERSION       - Version string extracted from output of "mxmldoc"
+#  MXML_FOUND         - True if mxml found.
 
 #=============================================================================
 # Copyright 2001-2009 Kitware, Inc.
@@ -55,7 +57,18 @@ FIND_PATH(MXML_INCLUDE_DIR mxml.h)
 
 SET(MXML_NAMES mxml)
 FIND_LIBRARY(MXML_LIBRARY NAMES ${MXML_NAMES} )
-MARK_AS_ADVANCED( MXML_LIBRARY MXML_INCLUDE_DIR )
+FIND_PROGRAM(MXMLDOC_EXECUTABLE NAMES mxmldoc)
+
+# Extract version from header if not defined otherwise
+IF(NOT MXML_VERSION)
+  EXECUTE_PROCESS(COMMAND ${MXMLDOC_EXECUTABLE} OUTPUT_VARIABLE MXML_HDR)
+
+  STRING(REGEX MATCH "meta name=\"creator\".*$" CREATOR ${MXML_HDR})
+  STRING(REGEX REPLACE "meta name=\"creator\" content=\"Mini-XML v([^\"]*)\".*" "\\1" VERSION ${CREATOR})
+  SET(MXML_VERSION ${VERSION} CACHE INTERNAL "MXML version number")
+ENDIF(NOT MXML_VERSION)
+
+MARK_AS_ADVANCED( MXMLDOC_EXECUTABLE MXML_LIBRARY MXML_INCLUDE_DIR )
 
 # Per-recommendation
 SET(MXML_INCLUDE_DIRS "${MXML_INCLUDE_DIR}")

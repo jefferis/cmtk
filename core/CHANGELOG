@@ -1,5 +1,8 @@
 Release CMTK-2.2.3:
 
+(r4449) Added: when installed system mxml library is found, its version is
+    determined, and the bundled library is automatically built if the system
+    library is outdated (pre-2.7).
 (r4447) Added: new tool, "dwi_find_bad_slices," to detect bad slices in sets
     of diffusion-weighted images.
 (r4447) Changed: image-to-physical matrix and slice spacing now work properly

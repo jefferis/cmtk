@@ -1,5 +1,5 @@
 ##
-##  Copyright 2009-2011 SRI International
+##  Copyright 2009-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -30,8 +30,8 @@ PROJECT(MiniXML)
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
 SET(MXML_VERSION_MAJOR 2)
-SET(MXML_VERSION_MINOR 6)
-SET(MXML_VERSION "Mini-XML v2.6")
+SET(MXML_VERSION_MINOR 7)
+SET(MXML_VERSION "Mini-XML v2.7")
 
 SET(mxml_SRCS mxml-attr.c  
 	      mxml-entity.c

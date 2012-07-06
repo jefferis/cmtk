@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,8 @@
 #include <map>
 #include <string>
 
+#include <mxml.h>
+
 namespace
 cmtk
 {
@@ -68,7 +70,7 @@ public:
   typedef MetaInformationObject Self;
 
   /// Default constructor: do nothing.
-  MetaInformationObject() {}
+  MetaInformationObject() : m_XML( NULL ) {}
 
   /// Copy constructor: copy meta information when copying higher-level objects.
   MetaInformationObject( const MetaInformationObject& other )
@@ -76,7 +78,13 @@ public:
   {}
 
   /// Virtual destructor template.
-  virtual ~MetaInformationObject() {};
+  virtual ~MetaInformationObject() 
+  {
+    if ( this->m_XML )
+      {
+      mxmlDelete( this->m_XML );
+      }
+  }
 
   /// Check whether a key exists.
   bool MetaKeyExists( const std::string& key ) const
@@ -103,12 +111,46 @@ public:
     this->m_MetaInformation = other.m_MetaInformation;
   }
 
+  /// Check if object has XML data.
+  bool HasXML() const 
+  {
+    return this->m_XML != NULL;
+  }
+
+  /// Set XML data (delete existing data, if any).
+  void SetXML( mxml_node_t *const xml )
+  {
+    if ( this->m_XML )
+      {
+      mxmlDelete( this->m_XML );
+      }
+
+    this->m_XML = xml;
+  }
+
+  /// Get XML data (or NULL, if no XML data exists).
+  const mxml_node_t* XML( const char* path = NULL /*!< Optional path to the requested element in the XML tree; return root if this is NULL */ ) const
+  {
+    if ( (path != NULL) && (this->m_XML != NULL) )
+      {
+      return mxmlFindPath( this->m_XML, path );
+      }
+    else
+      {
+      return this->m_XML;
+      }
+  }
+  
 private:
   /// The map type used for representation of the key/value map.
   typedef std::map<std::string,std::string> KeyValueMapType;
 
   /// The actual table of meta data: maps keys to values.
   Self::KeyValueMapType m_MetaInformation;
+
+  /// Optional xml sidecar file contents.
+  mxml_node_t* m_XML;
+
 };
 
 //@}
