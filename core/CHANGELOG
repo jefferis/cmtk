@@ -1,5 +1,11 @@
 Release CMTK-2.2.3:
 
+(r4447) Added: new tool, "dwi_find_bad_slices," to detect bad slices in sets
+    of diffusion-weighted images.
+(r4447) Changed: image-to-physical matrix and slice spacing now work properly
+    (as in, without generating Inf/NaN values) when splitting volume into single
+    slices and re-stacking it. This has caused some baselines to change, because
+    the volume field of view sizes have seen subtle changes as a result.
 
 
 Release CMTK-2.2.2 (2012-06-18):
