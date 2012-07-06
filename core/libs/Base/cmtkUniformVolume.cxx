@@ -48,7 +48,7 @@ UniformVolume::UniformVolume
 {
   for ( int i=0; i<3; ++i ) 
     {
-    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : this->m_Size[i] / (this->m_Dims[i] - 1);
+    this->m_Delta[i] = ( (this->m_Dims[i] > 1) && (this->m_Size[i] > 0) ) ? this->m_Size[i] / (this->m_Dims[i] - 1) : 1.0;
     }
   
   this->CropRegion() = this->GetWholeImageRegion();
@@ -152,6 +152,7 @@ UniformVolume*
 UniformVolume::CloneGridVirtual() const
 {
   UniformVolume* clone = new UniformVolume( this->m_Dims, this->m_Size );
+  clone->m_Delta = this->m_Delta; // for single-slice images
   clone->SetOffset( this->m_Offset );
   clone->CopyMetaInfo( *this );
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
@@ -252,22 +253,22 @@ UniformVolume::GetInterleavedSubVolume
 ( const int axis, const int factor, const int idx ) const
 {
   Self::IndexType dims;
-  Self::CoordinateVectorType size;
+  Self::CoordinateVectorType delta;
 
   for ( int dim = 0; dim < 3; ++dim )
     {
     dims[dim] = this->m_Dims[dim];
-    size[dim] = this->m_Size[ dim ];
+    delta[dim] = this->m_Delta[dim];
     }
   dims[axis] = this->m_Dims[axis] / factor;
   if ( this->m_Dims[axis] % factor > idx )
     ++dims[axis];
-  size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
+  delta[axis] = factor * this->m_Delta[axis];
   
   Self::CoordinateVectorType offset( 0.0 );
   offset[axis] = idx * this->m_Delta[axis];
   
-  UniformVolume* volume = new UniformVolume( dims, size );
+  UniformVolume* volume = new UniformVolume( dims, delta[0], delta[1], delta[2] );
   volume->SetOffset( offset );
   for ( int i = 0; i < dims[axis]; ++i )
     {

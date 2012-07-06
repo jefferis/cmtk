@@ -168,9 +168,7 @@ VolumeFromFile::ReadBioRad( const std::string& path )
   dataArray->ChangeEndianness();
 #endif
   
-  const Types::Coordinate volSize[3] = { (dims[0] - 1) * lensScale * pixelsizeX, (dims[1] - 1) * lensScale * pixelsizeY, (dims[2] - 1) * pixelsizeZ };
-  
-  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( volSize ), dataArray ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), lensScale * pixelsizeX, lensScale * pixelsizeY, lensScale * pixelsizeZ, dataArray ) );
 
   if ( flipX )
     {

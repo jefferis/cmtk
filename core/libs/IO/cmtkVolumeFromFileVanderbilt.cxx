@@ -93,13 +93,8 @@ VolumeFromFile::ReadVanderbilt( const std::string& path )
     }
   fclose( fp );
   
-  // convert pixel dimensions to volume dimensions.
-  Types::Coordinate size[3];
-  for ( int i = 0; i < 3; ++i )
-    size[i] = static_cast<Types::Coordinate>( (dims[i] - 1) * calib[i] );
-
   // create volume, for the time being with empty data array.
-  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), calib[0], calib[1], calib[2] ) );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientation );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientation );
 

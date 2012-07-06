@@ -114,13 +114,8 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
   float pixelDim[3];
   header.GetArray( pixelDim, 80, 3 );
 
-// use fabs to catch something weird in FSL's output
-#ifndef CMTK_REGRESSION
-  const Types::Coordinate size[3] = { float((dims[0] - 1) * fabs( pixelDim[0] )), float((dims[1] - 1) * fabs( pixelDim[1] )), float((dims[2] - 1) * fabs( pixelDim[2] )) };
-#else
-  const Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
-#endif
-  
+  UniformVolume::SmartPtr volume( new UniformVolume( dims, fabs( pixelDim[0] ), fabs( pixelDim[1] ), fabs( pixelDim[2] ) ) );
+
   const byte orient = header.GetField<byte>( 252 );
 
   const char* orientString = NULL;
@@ -185,7 +180,6 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
       }
     }
   
-  UniformVolume::SmartPtr volume( new UniformVolume( dims, UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientString );
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientString );
 

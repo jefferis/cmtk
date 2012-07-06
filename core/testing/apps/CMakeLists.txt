@@ -567,7 +567,7 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "split" tool
-LIST(APPEND testList splitAxial splitSagittal2 splitCoronal3)
+LIST(APPEND testList splitAxial splitAxialSlices splitSagittal2 splitCoronal3)
 
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList splitAxialNrrd)

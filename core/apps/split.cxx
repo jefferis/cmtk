@@ -60,18 +60,27 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Split volume image into sub-images, i.e., to separate interleaved images into passes" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'a', "axial" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved axial images" );
-    cl.AddSwitch( Key( 's', "sagittal" ), &Axis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
-    cl.AddSwitch( Key( 'c', "coronal" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    
+    cl.BeginGroup( "Orientation", "Orientation Options" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
+      interleaveGroup = cl.AddEnum( "slice-orientation", &Axis, "Define slice axis for splitting." );
+    interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
+    interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
+    interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    interleaveGroup->AddSwitch( Key( 'x', "interleave-x" ), (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    interleaveGroup->AddSwitch( Key( 'y', "interleave-y" ), (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
+    cl.EndGroup();
 
-    cl.AddSwitch( Key( 'x', "interleave-x" ), &Axis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y', "interleave-y" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z', "interleave-z" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
+    cl.BeginGroup( "Splitting", "Splitting Options" );
+    cl.AddOption( Key( 'f', "factor" ), &Factor, "Interleave factor. This is the number of subimages generated. If this is set to zero, a separate 2D output image is generated for each slice in the input "
+		  "(in the given slice orientation)." );
+    cl.EndGroup();
 
-    cl.AddOption( Key( 'f', "factor" ), &Factor, "Interleave factor. This is the number of subimages generated." );
+    cl.BeginGroup( "Output", "Output Options" );
     cl.AddSwitch( Key( 'p', "padded" ), &Padded, true, "Padded output, i.e., fill in removed slices" );
-
     cl.AddOption( Key( "output-xform-path" ), &OutputXformPath, "Optional path template (fprintf-style) for output affine transformation that maps input image coordinates to each output image." );
+    cl.EndGroup();
 
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &OutputFilePath, "OutputImagePattern", "Output image path pattern. Use '%d' to substitute subimage index." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
@@ -85,6 +94,10 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath ) );
+
+  // if Factor is zero, set to number of slices and generate 2D output images.
+  if ( Factor == 0 )
+    Factor = volume->m_Dims[Axis];
 
   for ( int i = 0; i < Factor; ++i )
     {

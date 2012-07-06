@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,9 @@ doMain( const int argc, const char* argv[] )
 {
   std::list<const char*> inputFilePaths;
   const char* outputFilePath = NULL;
+
   int axis = 2;
+  cmtk::Types::Coordinate forceSpacing = 0;
 
   try
     {
@@ -57,11 +59,20 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "unsplit [options] inImage0 inImage1 ..." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( 'o', "output" ), &outputFilePath, "Path for output image." );
+    cl.BeginGroup( "Stacking", "Stacking Options" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
+      interleaveGroup = cl.AddEnum( "stacking", &axis, "Define slice axis for stacking." );
+    interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
+    interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
+    interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    interleaveGroup->AddSwitch( Key( 'x', "interleave-x" ), (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    interleaveGroup->AddSwitch( Key( 'y', "interleave-y" ), (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
-    cl.AddSwitch( Key( 'z', "axial" ), &axis, 2, "Interleaved axial images (along z axis) [default]" );
-    cl.AddSwitch( Key( 'y', "coronal" ), &axis, 1, "Interleaved coronal images (along y axis)" );
-    cl.AddSwitch( Key( 'x', "sagittal" ), &axis, 0, "Interleaved sagittal images (along x axis)" );
+    cl.AddOption( Key( "spacing" ), &forceSpacing, "If non-zero, force slice spacing in the output image to given value. This is required when stacking single-slice images." );
+    cl.EndGroup();
+
+    cl.AddOption( Key( 'o', "output" ), &outputFilePath, "Path for output image." );
 
     cl.Parse( argc, argv );
 
@@ -127,7 +138,10 @@ doMain( const int argc, const char* argv[] )
     volumes.push_back( volume );
     }
 
-  stackDelta[axis] = volumes[0]->m_Delta[axis] / volumes.size();
+  if ( forceSpacing )
+    stackDelta[axis] = forceSpacing;
+  else
+    stackDelta[axis] = volumes[0]->m_Delta[axis] / volumes.size();
   
   cmtk::DebugOutput( 1 ) << "Stacked image will have dimensions " << stackDims[0] << "x" << stackDims[1] << "x" << stackDims[2] << "\n"
 			 << "Stacked image will have pixel size " << stackDelta[0] << "x" << stackDelta[1] << "x" << stackDelta[2] << "\n";

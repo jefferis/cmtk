@@ -2055,6 +2055,10 @@ case ${RUNTEST} in
 	run split --output-xform-path ${tmpdir}/split_ax_%1d.xform --axial spgr_3t.hdr ${tmpdir}/split_ax_%1d.hdr
 	check_results split_ax_0.img split_ax_1.img split_ax_0.xform split_ax_1.xform
 	;;
+    splitAxialSlices)
+	run split --factor 0 --axial phantom_ax.nii ${tmpdir}/slice_%1d.nii
+	check_results slice_0.nii slice_1.nii slice_2.nii
+	;;
     splitAxialNrrd)
 	run split --axial --factor 3 spgr_3t.hdr ${tmpdir}/split_ax_%1d.nhdr
 	check_results split_ax_0.nhdr split_ax_0.raw split_ax_1.nhdr split_ax_1.raw split_ax_2.nhdr split_ax_2.raw

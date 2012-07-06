@@ -111,8 +111,13 @@ UniformVolume::GetImageToPhysicalMatrix() const
   AffineXform::MatrixType matrix = this->m_IndexToPhysicalMatrix;
 // mDelta[3] is implicitly == 1 (homogeneous coordinates), so 4th matrix row (translation/coordinate origin) stays untouched
   for ( int i = 0; i < 3; ++i )
-    for ( int j = 0; j < 3; ++j )
-      matrix[i][j] /= this->m_Delta[i];
+    {
+    if ( this->m_Delta[i] > 0 )
+      {
+      for ( int j = 0; j < 3; ++j )
+	matrix[i][j] /= this->m_Delta[i];
+      }
+    }
 
   return matrix;
 }
