@@ -135,9 +135,10 @@ doMain
       const cmtk::Types::DataItem otherImagesMean = cmtk::MathUtil::Mean( meansOtherImages );
       const cmtk::Types::DataItem otherImagesSdev = sqrt( cmtk::MathUtil::Variance( meansOtherImages, otherImagesMean ) );
 
-      if ( (sliceMeans[i] < (otherImagesMean - standardDeviations * otherImagesSdev)) || (sliceMeans[i] > (otherImagesMean + standardDeviations * otherImagesSdev)) )
+      const cmtk::Types::DataItem distance = fabs( sliceMeans[i] - otherImagesMean ) / otherImagesSdev;
+      if ( distance > standardDeviations )
 	{
-	cmtk::DebugOutput( 5 ) << "Bad slice #" << slice << " in image #" << i << " filename " << dwiImagePaths[i] << "\n";
+	cmtk::DebugOutput( 2 ) << "Bad slice #" << slice << " in image #" << i << " mean=" << sliceMeans[i] << " distance=" << distance << " filename " << dwiImagePaths[i] << "\n";
 	}
       }    
     }
