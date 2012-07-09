@@ -1,5 +1,8 @@
 Release CMTK-2.2.3:
 
+(r4454) Fixed: the index-to-physical matrix of a UniformVolume was not
+    properly modified when downsampling with pixel selection (rather than
+    averaging).
 (r4449) Added: when installed system mxml library is found, its version is
     determined, and the bundled library is automatically built if the system
     library is outdated (pre-2.7).
