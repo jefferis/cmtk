@@ -5,10 +5,10 @@ type: unsigned char
 dimension: 3
 space: right-anterior-superior
 sizes: 32 64 3
-space directions: (-0.9375,0,0) (0,0.9375,0) (0,0,3)
+space directions: (-7.5,0,0) (0,3.75,0) (0,0,3)
 kinds: domain domain domain
 labels: "x" "y" "z"
 encoding: gzip
 space units: "mm" "mm" "mm"
-space origin: (-90.468999999999994,-119.53100000000001,-3)
+space origin: (116.24975000000001,-118.12475000000001,-3)
 data file: downsample.raw.gz

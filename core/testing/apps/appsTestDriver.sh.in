@@ -2056,7 +2056,7 @@ case ${RUNTEST} in
 	check_results split_ax_0.img split_ax_1.img split_ax_0.xform split_ax_1.xform
 	;;
     splitAxialSlices)
-	run split --factor 0 --axial phantom_ax.nii ${tmpdir}/slice_%1d.nii
+	run split --factor 0 --axial phantom_ax_downsampled.nii ${tmpdir}/slice_%1d.nii
 	check_results slice_0.nii slice_1.nii slice_2.nii
 	;;
     splitAxialNrrd)
@@ -2226,6 +2226,10 @@ case ${RUNTEST} in
     unsplitNrrdNrrd)
 	run unsplit --axial -o ${tmpdir}/unsplit.nhdr split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr
 	check_results unsplit.nhdr unsplit.raw
+	;;
+    unsplitSlices)
+        run unsplit --axial -o ${tmpdir}/unsplit.nii phantom_ax_downsampled_slice_0.nii phantom_ax_downsampled_slice_1.nii phantom_ax_downsampled_slice_2.nii
+	check_results unsplit.nii
 	;;
     unwarp_image_phantomSpacing)
         run unwarp_image_phantom --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform

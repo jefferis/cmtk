@@ -757,7 +757,7 @@ LIST(APPEND testList ttestDefault ttestLog ttestAbsLog ttestInvert
 
 # ==========================================
 # Tests for "unsplit" tool
-LIST(APPEND testList unsplitHdrAx unsplitHdrSa unsplitHdrCo)
+LIST(APPEND testList unsplitHdrAx unsplitHdrSa unsplitHdrCo unsplitSlices)
 
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList unsplitHdrNrrdAx unsplitHdrNrrdSa unsplitHdrNrrdCo unsplitNrrdNrrd)

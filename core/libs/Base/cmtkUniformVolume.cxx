@@ -245,6 +245,15 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   dsVolume->CopyMetaInfo( *this );
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   
+  // apply offset shift to index-to-physical matrix
+  for ( int axis = 0; axis < 3; ++axis )
+    for ( int i = 0; i < 3; ++i )
+      {
+      dsVolume->m_IndexToPhysicalMatrix[3][i] += (downsample[i]-1) * dsVolume->m_IndexToPhysicalMatrix[axis][i] / 2;
+      // also update voxel size
+      dsVolume->m_IndexToPhysicalMatrix[axis][i] *= downsample[i];
+      }
+  
   return dsVolume;
 }
 
