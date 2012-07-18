@@ -98,6 +98,7 @@ IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList
     describeMRNrrd1 
     describeMRNrrd2
+    describeNrrdNoOrigin
     describeEmbedNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 

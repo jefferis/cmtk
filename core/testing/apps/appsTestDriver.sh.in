@@ -754,6 +754,10 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    describeNrrdNoOrigin)
+	run_eval "${BINDIR}/describe -m phantom_ax_noOrigin.nhdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     describeNiftiDetached348)
 	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
 	check_results describe.txt

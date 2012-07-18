@@ -180,7 +180,7 @@ VolumeFromFile::ReadNRRD( const std::string& pathHdr )
     const Matrix3x3<Types::Coordinate> m3( directions );
     Matrix4x4<Types::Coordinate> m4( m3 );
     for ( int i = 0; i < 3; ++i )
-      m4[3][i] = nrrd->spaceOrigin[i];
+      m4[3][i] = ( MathUtil::IsFinite( nrrd->spaceOrigin[i] ) ? nrrd->spaceOrigin[i] : 0 );
     volume->m_IndexToPhysicalMatrix = m4;
     
     if ( orientationSpaceAnatomical )
