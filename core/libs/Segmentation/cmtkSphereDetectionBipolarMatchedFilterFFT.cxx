@@ -35,8 +35,8 @@ cmtk::SphereDetectionBipolarMatchedFilterFFT::SphereDetectionBipolarMatchedFilte
       m_ImageDims( image.m_Dims ),
       m_PixelSize( image.m_Delta )
 {
-  this->m_ImageFT = fftw_alloc_complex( this->m_NumberOfPixels );
-  this->m_FilterFT = fftw_alloc_complex( this->m_NumberOfPixels );
+  this->m_ImageFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
+  this->m_FilterFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
 
   this->m_PlanFilter = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_FORWARD, FFTW_ESTIMATE );
   this->m_PlanBackward = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_BACKWARD, FFTW_ESTIMATE );

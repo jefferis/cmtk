@@ -37,13 +37,13 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalize
       m_SphereRadius( 0 ),
       m_MarginWidth( -1 )
 {
-  this->m_ImageFT = fftw_alloc_complex( this->m_NumberOfPixels );
-  this->m_ImageSquareFT = fftw_alloc_complex( this->m_NumberOfPixels );
+  this->m_ImageFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
+  this->m_ImageSquareFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
 
-  this->m_FilterFT = fftw_alloc_complex( this->m_NumberOfPixels );
-  this->m_FilterSquareFT = fftw_alloc_complex( this->m_NumberOfPixels );
-  this->m_FilterMaskFT = fftw_alloc_complex( this->m_NumberOfPixels );
-  this->m_FilterMaskFT2 = fftw_alloc_complex( this->m_NumberOfPixels );
+  this->m_FilterFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
+  this->m_FilterSquareFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
+  this->m_FilterMaskFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
+  this->m_FilterMaskFT2 = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
 
   this->m_PlanFilter = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_FORWARD, FFTW_ESTIMATE );
   this->m_PlanFilterSquare = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterSquareFT, this->m_FilterSquareFT, FFTW_FORWARD, FFTW_ESTIMATE );
