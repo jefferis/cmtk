@@ -23,7 +23,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \title{Structural MRI Unwarping Using CMTK\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-\release{1.10}
+\release{1.2}
 
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA}
@@ -202,16 +202,17 @@ Magphan\textsuperscript{\textregistered} EMR051 Quantitative Imaging Phantom
 From the phantom description file, we can create an unwarping transformation
 using the following CMTK command (to be entered on a single command line):
 \begin{verbatim}
-cmtk unwarp_phantom_image --final-cp-spacing 40 --levels 2 phantom.nii \
-  phantom.xml unwarp.xform
-\end{verbatim}
-This will generate a nonrigid transformation, ``\texttt{phantom\_warp.xform},''
-in the space of the image ``\texttt{phantom.nii}.'' If a subject image, ``\texttt{subject.nii},'' is to
+cmtk unwarp_image_phantom --final-cp-spacing 40 --levels 2 \
+  phantom.xml phantom.nii unwarp.xform
+\end{verbatim} 
+This will generate a nonrigid transformation,
+``\texttt{phantom\_warp.xform},'' in the space of the image
+``\texttt{phantom.nii}.'' If a subject image, ``\texttt{subject.nii},'' is to
 be unwarped, the command should be changed to (again entered on a single
 command line):
 \begin{verbatim}
-cmtk unwarp_phantom_image --final-cp-spacing 40 --levels 2 subject.nii \
-  phantom.xml unwarp.xform
+cmtk unwarp_image_phantom --final-cp-spacing 40 --levels 2 \
+  phantom.xml subject.nii unwarp.xform
 \end{verbatim}
 
 {\bf Note that a separate transformation must be created for every
