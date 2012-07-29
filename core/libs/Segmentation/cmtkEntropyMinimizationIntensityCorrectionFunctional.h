@@ -1,8 +1,8 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,7 @@ public:
   /// Return parameter vector length.
   virtual size_t ParamVectorDim() const
   {
-    return this->m_NumberOfParameters;
+    return Self::m_NumberOfParameters;
   }
 
   /// Return parameter stepping.
