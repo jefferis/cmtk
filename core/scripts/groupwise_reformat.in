@@ -39,24 +39,56 @@ CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
 if test $# -lt 2; then
     echo "Reformat all floating images previously aligned by one of CMTK's groupwise registration tools."
     echo
-    echo "USAGE: $0 outputPathPattern templateGrid groupwiseXform [reformatxOptionsXforms]"
+    echo "USAGE: $0 [reformatxOptions] outputPathPattern templateGrid groupwiseXform [reformatxXforms]"
     exit 2
 fi
 
+# put all arguments starting with "-" into reformat options
+reformatOptions=""
+while [[ "$1" =~ "-" ]]; do
+    reformatOptions+="$1 "
+    shift
+done
+
+# first non-option argument is output pattern
 outPattern=$1
 
+# second argument is template grid path
 templateGrid=$2
 if ! ${CMTK_BINARY_DIR}/describe ${templateGrid} > /dev/null; then
     echo "ERROR: template grid ${templateGrid} is not a valid image."
     exit 1
 fi
 
+# third argument is groupwise xform file
 groupwiseXform=$3
 [ -f ${groupwiseXform} ] || groupwiseXform=${groupwiseXform}.gz
 [ -f ${groupwiseXform} ] || ( echo "ERROR: could not find groupwise transformation"; exit 1 )
 
+# everything else is optional xforms to be added before the groupwise alignment
 shift 3
-reformatxOptions="$*"
+reformatXforms="$*"
+
+make_output_path()
+{
+    local target=$1
+    local pattern=$2
+
+    local base=`basename $target | sed 's/\..*//g'`
+    local dir=`dirname $target`
+
+    local idx=1
+    while [ "${base}" != "" ]; do
+	pattern=`eval "echo $pattern | sed 's/%${idx}/${base}/g'"`
+
+	base=`basename $dir | sed 's/\.,*//g'`
+	dir=`dirname $dir`
+
+	((++idx))
+    done
+
+    echo ${pattern}
+}
 
 process_target()
 {
@@ -76,7 +108,11 @@ process_target()
 
     outputPath=`make_output_path ${target} ${outPattern}`
 
-    ${CMTK_BINARY_DIR}/reformatx --floating ${target} --outfile ${outputPath} ${templateGrid} ${tmp}
+    if [ "${outputPath}" != "" ]; then
+	${CMTK_BINARY_DIR}/reformatx ${reformatOptions} --floating ${target} --outfile ${outputPath} ${templateGrid} ${tmp} ${reformatXforms}
+    fi
+
+    rm -rf ${tmp}
 }
 
 parse_xform_file()
