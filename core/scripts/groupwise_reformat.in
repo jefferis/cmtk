@@ -46,7 +46,10 @@ fi
 outPattern=$1
 
 templateGrid=$2
-[ ${CMTK_BINARY_DIR}/describe ${templateGrid} > /dev/null ] || ( echo "ERROR: template grid ${templateGrid} is not a valid image."; exit 1 )
+if ! ${CMTK_BINARY_DIR}/describe ${templateGrid} > /dev/null; then
+    echo "ERROR: template grid ${templateGrid} is not a valid image."
+    exit 1
+fi
 
 groupwiseXform=$3
 [ -f ${groupwiseXform} ] || groupwiseXform=${groupwiseXform}.gz
@@ -55,11 +58,33 @@ groupwiseXform=$3
 shift 3
 reformatxOptions="$*"
 
+process_target()
+{
+    local target=$1
+
+    local tmp=`mktemp`
+    echo "! TYPEDSTREAM 1.1" > ${tmp}
+
+    while read line; do
+	if [[ "${line}" =~ "}" ]]; then
+	    break;
+	fi
+
+	echo -e "${line}" >> ${tmp}
+    done
+    echo "}" >> ${tmp}
+
+    outputPath=`make_output_path ${target} ${outPattern}`
+
+    ${CMTK_BINARY_DIR}/reformatx --floating ${target} --outfile ${outputPath} ${templateGrid} ${tmp}
+}
+
 parse_xform_file()
 {
   while read line; do
     if [[ "${line}" =~ "target" ]]; then
-
+	target=`echo ${line} | sed 's/target \"//g; s/\".*//g'`
+	process_target ${target}
     fi
   done
 }
