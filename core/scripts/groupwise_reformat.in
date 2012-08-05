@@ -1,0 +1,67 @@
+#!/bin/sh
+
+##
+##  Copyright 2012 SRI International
+##
+##  Copyright 2012 Torsten Rohlfing
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+ 
+# Get the utilities.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINARY_DIR}/utilities.sh
+ 
+# Check for command line arguments, print help if none given
+if test $# -lt 2; then
+    echo "Reformat all floating images previously aligned by one of CMTK's groupwise registration tools."
+    echo
+    echo "USAGE: $0 outputPathPattern templateGrid groupwiseXform [reformatxOptionsXforms]"
+    exit 2
+fi
+
+outPattern=$1
+
+templateGrid=$2
+[ ${CMTK_BINARY_DIR}/describe ${templateGrid} > /dev/null ] || ( echo "ERROR: template grid ${templateGrid} is not a valid image."; exit 1 )
+
+groupwiseXform=$3
+[ -f ${groupwiseXform} ] || groupwiseXform=${groupwiseXform}.gz
+[ -f ${groupwiseXform} ] || ( echo "ERROR: could not find groupwise transformation"; exit 1 )
+
+shift 3
+reformatxOptions="$*"
+
+parse_xform_file()
+{
+  while read line; do
+    if [[ "${line}" =~ "target" ]]; then
+
+    fi
+  done
+}
+
+gzip -cdf ${groupwiseXform} | parse_xform_file
