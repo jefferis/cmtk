@@ -46,7 +46,6 @@ fi
 # put all arguments starting with "-" into reformat options
 reformatOptions=""
 while [[ "$1" =~ ^- ]]; do
-    echo $1
     reformatOptions+="$1 "
     shift
 done
@@ -103,12 +102,12 @@ process_target()
     local tmp=`mktemp`
     echo "! TYPEDSTREAM 1.1" > ${tmp}
 
-    while read line; do
-	if [[ "${line}" =~ "}" ]]; then
+    while IFS="" read line; do
+	if [[ "${line}" =~ ^\} ]]; then
 	    break;
 	fi
 
-	echo -e "${line}" >> ${tmp}
+	echo "${line}" >> ${tmp}
     done
     echo "}" >> ${tmp}
 
@@ -118,7 +117,7 @@ process_target()
 	${CMTK_BINARY_DIR}/reformatx ${reformatOptions} --floating ${target} --outfile ${outputPath} ${templateGrid} ${tmp} ${reformatXforms}
     fi
 
-    rm -rf ${tmp}
+#    rm -rf ${tmp}
 }
 
 parse_xform_file()
