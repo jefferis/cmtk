@@ -117,7 +117,7 @@ process_target()
 	${CMTK_BINARY_DIR}/reformatx ${reformatOptions} --floating ${target} --outfile ${outputPath} ${templateGrid} ${tmp} ${reformatXforms}
     fi
 
-#    rm -rf ${tmp}
+    rm -rf ${tmp}
 }
 
 parse_xform_file()
