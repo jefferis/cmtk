@@ -39,7 +39,7 @@ CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
 if test $# -lt 2; then
     echo "Reformat all floating images previously aligned by one of CMTK's groupwise registration tools."
     echo
-    echo "USAGE: $0 [reformatxOptions] outputPathPattern templateGrid groupwiseXform [reformatxXforms]"
+    echo "USAGE: $0 [OPTIONS] groupwiseXform templateGrid outputPathPattern [XFORMS ...]"
     exit 2
 fi
 
@@ -50,8 +50,10 @@ while [[ "$1" =~ "-" ]]; do
     shift
 done
 
-# first non-option argument is output pattern
-outPattern=$1
+# first non-option argument is groupwise xform
+groupwiseXform=$1
+[ -f ${groupwiseXform} ] || groupwiseXform=${groupwiseXform}.gz
+[ -f ${groupwiseXform} ] || ( echo "ERROR: could not find groupwise transformation"; exit 1 )
 
 # second argument is template grid path
 templateGrid=$2
@@ -60,10 +62,8 @@ if ! ${CMTK_BINARY_DIR}/describe ${templateGrid} > /dev/null; then
     exit 1
 fi
 
-# third argument is groupwise xform file
-groupwiseXform=$3
-[ -f ${groupwiseXform} ] || groupwiseXform=${groupwiseXform}.gz
-[ -f ${groupwiseXform} ] || ( echo "ERROR: could not find groupwise transformation"; exit 1 )
+# third argument is output pattern
+outPattern=$1
 
 # everything else is optional xforms to be added before the groupwise alignment
 shift 3
