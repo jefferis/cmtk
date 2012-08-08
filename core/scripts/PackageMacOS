@@ -42,7 +42,7 @@ SOURCEDIR=`cd ${SOURCEDIR}; pwd`
 
 SDKs="$*"
 if [ "${SDKs}" == "" ]; then
-    SDKs="OSX-10.4 OSX-10.5 OSX-10.6 gcc4.6-macports-OSX-10.6"
+    SDKs="OSX-10.4 OSX-10.5 OSX-10.6 gcc4.7-macports-OSX-10.6"
 fi
 
 svn update source

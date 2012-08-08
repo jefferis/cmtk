@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010-2011 SRI International
+##  Copyright 2010-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -51,3 +51,6 @@ SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 # Disable Grand Central Dispatch as it is broken with C++ in 10.4 SDK
 SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch")
 SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
+
+# Disable FFTW, even if installed on our build system, since it requires MacPorts
+SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library (required for ADNI phantom detection)");

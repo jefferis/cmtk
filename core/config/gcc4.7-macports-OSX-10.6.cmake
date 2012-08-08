@@ -39,8 +39,8 @@ SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 SET(CMAKE_OSX_SYSROOT "/" CACHE STRING "OS-X architecture")
 
 # Select MacPorts compiler
-SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.6" CACHE FILEPATH "C++ compiler path")
-SET(CMAKE_C_COMPILER "/opt/local/bin/gcc-mp-4.6" CACHE FILEPATH "C compiler path")
+SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.7" CACHE FILEPATH "C++ compiler path")
+SET(CMAKE_C_COMPILER "/opt/local/bin/gcc-mp-4.7" CACHE FILEPATH "C compiler path")
 
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
@@ -55,3 +55,5 @@ SET(BUILD_GUI ON CACHE BOOL "Build GUI applications (requires Qt)")
 SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
+# Enable FFTW, since we require MacPorts for this build anyway
+SET(CMTK_USE_FFTW ON CACHE BOOL "Use FFTW library (required for ADNI phantom detection)");

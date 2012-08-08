@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010-2011 SRI International
+##  Copyright 2010-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -53,3 +53,6 @@ SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # Disable OpenMP - broken on Mac
 SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
+
+# Disable FFTW, even if installed on our build system, since it requires MacPorts
+SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library (required for ADNI phantom detection)");
