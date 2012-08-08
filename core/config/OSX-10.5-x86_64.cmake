@@ -55,4 +55,4 @@ SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
 
 # Disable FFTW, even if installed on our build system, since it requires MacPorts
-SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library (required for ADNI phantom detection)");
+SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library (required for ADNI phantom detection)")

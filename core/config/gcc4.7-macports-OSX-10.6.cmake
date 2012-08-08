@@ -56,4 +56,4 @@ SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # Enable FFTW, since we require MacPorts for this build anyway
-SET(CMTK_USE_FFTW ON CACHE BOOL "Use FFTW library (required for ADNI phantom detection)");
+SET(CMTK_USE_FFTW ON CACHE BOOL "Use FFTW library (required for ADNI phantom detection)")
