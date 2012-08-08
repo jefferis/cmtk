@@ -575,11 +575,12 @@ ENDIF(CMTK_USE_QT)
 #-----------------------------------------------------------------------------
 # Add an option to use FFTW library
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindFFTW.cmake)
+OPTION(CMTK_USE_FFTW "Use FFTW library for fast Fourier transform (required for some specialized tools)" ON)
 
-IF(FFTWD_FOUND)
-  OPTION(CMTK_USE_FFTW "Use FFTW library for fast Fourier transform (required for some specialized tools)" ON)
-  IF(CMTK_USE_FFTW)
+IF(CMTK_USE_FFTW)
+  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindFFTW.cmake)
+
+  IF(FFTWD_FOUND)
     SET(FFTW_LIBS ${FFTWD_LIB})
     IF(CMTK_USE_SMP)
       IF(CMTK_USE_OPENMP AND FFTWD_OMP_LIB)
@@ -591,12 +592,12 @@ IF(FFTWD_FOUND)
       ENDIF(CMTK_USE_OPENMP AND FFTWD_OMP_LIB)
     ENDIF(CMTK_USE_SMP)
     SET(CMTK_FFTW_LIBRARIES ${FFTW_LIBS} CACHE INTERNAL "Link libraries for FFTW support.")
-  ELSE(CMTK_USE_FFTW)
-    UNSET(CMTK_FFTW_LIBRARIES CACHE)
-  ENDIF(CMTK_USE_FFTW)
-ELSE(FFTWD_FOUND)
-  UNSET(CMTK_USE_FFTW CACHE)
-ENDIF(FFTWD_FOUND)
+  ELSE(FFTWD_FOUND)
+    SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library for fast Fourier transform (required for some specialized tools)")
+  ENDIF(FFTWD_FOUND)
+ELSE(CMTK_USE_FFTW)
+  UNSET(CMTK_FFTW_LIBRARIES CACHE)
+ENDIF(CMTK_USE_FFTW)
 
 #-----------------------------------------------------------------------------
 # Add an option to enable building of test code
