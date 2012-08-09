@@ -1,5 +1,7 @@
 Release CMTK-2.2.3:
 
+(r4475) Added: new "contrib" directory for third-party contributions;
+	initially Greg Jefferis' "munger" Perl script.
 (r4458) Fixed: older versions of FFTW than 3.3.2 now supported again.
 (r4456) Fixed: when reading NRRD files with missing "spaceOrigin" entry,
 	CMTK now substitutes a zero-vector for the origin, rather than
