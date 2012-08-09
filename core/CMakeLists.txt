@@ -29,7 +29,8 @@
 ##
 
 ##
-## This file borrows heavily from the analogous InsightToolkit file
+## This file used to borrow heavily from the analogous InsightToolkit file.
+## It may have evolved away since then, however.
 ##
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
@@ -689,3 +690,11 @@ INSTALL(FILES ${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake DESTINATION ${CMTK_INS
 
 OPTION(BUILD_MANPAGES "Create application manpages" OFF)
 
+#-----------------------------------------------------------------------------
+# Configure third-party contributions.
+
+OPTION(BUILD_CONTRIB "Build, install, and package third-party contributions" OFF)
+
+IF(BUILD_CONTRIB)
+  ADD_SUBDIRECTORY(contrib)
+ENDIF(BUILD_CONTRIB)
