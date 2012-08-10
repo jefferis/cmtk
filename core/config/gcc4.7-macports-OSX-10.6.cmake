@@ -57,3 +57,7 @@ SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # Enable FFTW, since we require MacPorts for this build anyway
 SET(CMTK_USE_FFTW ON CACHE BOOL "Use FFTW library (required for ADNI phantom detection)")
+
+# Enable building Greg's "munger" script
+SET(BUILD_CONTRIB ON CACHE BOOL "Build, install, and package third-party contributions")
+SET(BUILD_CONTRIB_MUNGER ON CACHE BOOL "Build, install, and package Greg Jefferis' munger script (requires perl)")
