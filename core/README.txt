@@ -6,6 +6,16 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.3
 ===========================
 
+This maintenance release adds a new script for easy reformatting of all images
+in a groupwise-aligned set, as well as a registration-and-reformatting script
+("munger") contributed by Greg Jefferis (this requires Perl).
+
+In the official "standard" MacOS builds, FFTW is now disabled, as all CMTK
+tools would otherwise require MacPorts to be installed. Qt and CUDA support
+remain enabled, as these should not interefere with tools that do not use
+these libraries. The MacPorts build continues to come with FFTW support
+enabled.
+
 
 Release Notes -- CMTK 2.2.2
 ===========================
