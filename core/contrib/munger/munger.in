@@ -1,4 +1,4 @@
-#!@PERL_EXECUTABLE@
+#!/usr/bin/env perl
 
 # munger.pl
 # script to process all of the images in the specified directory tree
