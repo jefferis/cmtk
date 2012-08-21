@@ -80,20 +80,21 @@ described tools and workflows.
 
 \subsection{CMTK}
 
-Unlike the previous two items, The Computational Morphometry Toolkit (CMTK) is
-{\bf free}, and that's as in both free beer and free speech. CMTK is available
-both in source code, licensed under the GPLv3, and as pre-compiled binary
-distributions from \url{http://nitrc.org/projects/cmtk/}. If you are using
-NeuroDebian, you can also install CMTK directly.
+The Computational Morphometry Toolkit (CMTK) is {\bf free software}, and
+that's as in both free beer and free speech. CMTK is available both in source
+code, licensed under the GPLv3, and as pre-compiled binary distributions from
+\url{http://nitrc.org/projects/cmtk/}. If you are using NeuroDebian, you can
+also install CMTK directly.
 
 We shall assume that CMTK has been installed such that its tools can be run as
 \begin{verbatim}
 cmtk <tool> <arg1> <arg2> ...
 \end{verbatim}
 
-{\bf You will need CMTK release 2.2.4 or later.} Versions prior to 2.2.0 do not
-  support EPI unwarping, and versions 2.2.0 through 2.2.3 contain a bug that
-  prevented proper initialization of the deformation field.
+{\bf To perform the processing stages described in this article, you will need
+CMTK release 2.2.4 or later.} Versions prior to 2.2.0 do not support EPI
+unwarping, and versions 2.2.0 through 2.2.3 contain a bug that prevented
+proper initialization of the deformation field in some cases.
 
 \section{Step-by-Step}
 
@@ -143,7 +144,7 @@ Assume that the DICOM files containing the EPI data are stored in the
 ``\texttt{dicom/}'' directory. These are stacked into 3D images in
 NIFTI-format using the following CMTK command:
 \begin{verbatim}
-cmtk dcm2image -vx -O dwi/image\%d.nii dicom/
+cmtk dcm2image -vx -O dwi/image%n.nii dicom/
 \end{verbatim}
 
 This will result in a series of continuously numbered images in NIFTI format,
@@ -164,7 +165,11 @@ directions. In this case, we should find the following files:
 \item[\tt dwi/image8.nii] -- 6th diffusion image
 \end{description}
 
-\section{Concluding Remarks}
+\subsection{Unwarping EPI}
+
+\subsection{Unwarping EPI with Eddy-Current Correction}
+
+\subsection{Unwarping EPI with Eddy-Current and Subject Motion Correction}
 
 \section*{Acknowledgments}
 
