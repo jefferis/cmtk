@@ -111,13 +111,24 @@ cmtk::EchoPlanarUnwarpFunctional::InitShiftCentersOfMass()
       centerOfMassRev += idx[this->m_PhaseEncodeDirection] * valueRev;
       }
 
-    centerOfMassFwd /= totalMassFwd;
-    centerOfMassRev /= totalMassRev;
-
-    const double delta = (centerOfMassFwd - centerOfMassRev) / 2;
-    for ( idx[this->m_PhaseEncodeDirection] = wholeImageRegion.From()[this->m_PhaseEncodeDirection]; idx[this->m_PhaseEncodeDirection] < wholeImageRegion.To()[this->m_PhaseEncodeDirection]; ++idx[this->m_PhaseEncodeDirection] )
+    if ( (centerOfMassFwd > 0) && (centerOfMassRev > 0) )
       {
-      this->m_Deformation( 1 + this->m_ImageFwd->GetOffsetFromIndex( idx ) ) = delta;
+      centerOfMassFwd /= totalMassFwd;
+      centerOfMassRev /= totalMassRev;
+      
+      const double delta = (centerOfMassFwd - centerOfMassRev) / 2;
+      for ( idx[this->m_PhaseEncodeDirection] = wholeImageRegion.From()[this->m_PhaseEncodeDirection]; idx[this->m_PhaseEncodeDirection] < wholeImageRegion.To()[this->m_PhaseEncodeDirection]; ++idx[this->m_PhaseEncodeDirection] )
+	{
+	this->m_Deformation( 1 + this->m_ImageFwd->GetOffsetFromIndex( idx ) ) = delta;
+	}
+      }
+    else
+      {
+      // for all-zero rows, we cannot shift COMs because there isn't any, so set init deformation to zero
+      for ( idx[this->m_PhaseEncodeDirection] = wholeImageRegion.From()[this->m_PhaseEncodeDirection]; idx[this->m_PhaseEncodeDirection] < wholeImageRegion.To()[this->m_PhaseEncodeDirection]; ++idx[this->m_PhaseEncodeDirection] )
+	{
+	this->m_Deformation( 1 + this->m_ImageFwd->GetOffsetFromIndex( idx ) ) = 0.0;
+	}
       }
     }
 }
