@@ -1,5 +1,9 @@
 Release CMTK-2.2.4:
 
+(r4485) Fixed: echo planar image unwarping created NaN deformations if any of
+        the image columns was all zeroes, because no center of mass could be
+        computed. For these cases, deformation is now forced to zero
+        initially.
 
 
 Release CMTK-2.2.3 (2012-08-10):
