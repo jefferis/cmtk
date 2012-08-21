@@ -41,7 +41,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \noindent This document describes the workflow for unwarping echo planar MR
 images (EPI), in particular diffusion-weighted images, using an acquisition method
 with reversed phase encoding and the tools of the Computational Morphometry
-Toolkit (CMTK).
+Toolkit (CMTK). Simple demonstration data are provided with this article.
 \end{abstract}
 
 \tableofcontents
@@ -49,7 +49,34 @@ Toolkit (CMTK).
 \clearpage
 \section{Introduction}
 
-\cite{HollKupeDale:2010}
+Echo-planar images are essential for the acquisition of diffusion weighted as
+well as functional (i.e., BOLD) MR images. Unfortunately, these images are
+subject to significant spatial distortions to due susceptibility changes at,
+for example, air-tissue boundaries.
+
+The most common technique to correct these distortions is via the acquisition
+of a field map, from which the distortion field can be computed. This has
+several disadvantages, such as the need to acquire the field maps, and the
+need to compute unwrapped phase maps. Also, the resulting distortion
+correction is not necessarily of good quality.
+
+Holland {\em et al.\/}~\cite{HollKupeDale:2010} have recently introduced a
+field map-free undistortion method, which makes use of the fact that the
+distortion behaves ``symmetrically'' when the phase encoding direction of the
+acquisition is reversed.
+
+Thus, from a pair of images acquired with opposing phase encoding direction,
+one can compute a symmetric deformation field pair that undistorts both input
+images. If this is done for a pair of opposing-phase-encode $b=0$ images in
+diffusion images, and the actual diffusion-weighted images are acquired
+analogous to one of the two $b=0$ images, then the entire set of diffusion
+images can be unwarped using the deformation field computed for the
+appropriate $b=0$ image.
+
+We describe herein the tools of the Computational Morphometry Toolkit (CMTK),
+which implement the numerical computational part of this unwarping
+strategy. Demonstration data are provided with this article to test the
+described tools and workflows.
 
 \subsection{CMTK}
 
@@ -85,25 +112,26 @@ the scope of the toolkit and also outside the scope of this manual.}
 \begin{figure}[tbp]
 \begin{center}
 \begin{tabular}{cc}
-\includegraphics[width=.47\linewidth]{eps/b0_bwd} &
-\includegraphics[width=.47\linewidth]{eps/b0_fwd} \\
-(a) & (b) \\
+\includegraphics[width=.475\linewidth]{eps/b0_bwd} &
+\includegraphics[width=.475\linewidth]{eps/b0_fwd} \\
+(a) \texttt{b0\_bwd.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
 \\
 \end{tabular}
 \begin{tabular}{ccc}
 \includegraphics[width=.31\linewidth]{eps/b1} &
 \includegraphics[width=.31\linewidth]{eps/b2} &
 \includegraphics[width=.31\linewidth]{eps/b3} \\
-(c) & (d) & (e) \\
+(c) \texttt{b1.nii.gz} & (d) \texttt{b2.nii.gz} & (e) \texttt{b3.nii.gz} \\
 \\
 \includegraphics[width=.31\linewidth]{eps/b4} &
 \includegraphics[width=.31\linewidth]{eps/b5} &
 \includegraphics[width=.31\linewidth]{eps/b6} \\
-(f) & (g) & (h) \\
+(f) \texttt{b4.nii.gz} & (g) \texttt{b5.nii.gz} & (h) \texttt{b6.nii.gz} \\
 \end{tabular}
 \end{center}
-\caption{(a) Axial slice from $b=0$ image acquired with reversed phase-encoding
-  direction. (b) Aame slice from $b=0$ image acquired with standard
+\caption{Demonstration data provided with this paper (file names given in
+  parentheses). (a) Axial slice from $b=0$ image acquired with reversed phase-encoding
+  direction. (b) Same slice from $b=0$ image acquired with standard
   phase-encoding direction. (c) through (h) Same slice from six different
   diffusion-weighted images acquired with standard phase-encoding direction.}
 \label{fig:B0FwBw}
@@ -142,11 +170,6 @@ directions. In this case, we should find the following files:
 
 \bibliographystyle{UnwarpEchoPlanar}
 \bibliography{UnwarpEchoPlanar}
-
-\clearpage
-\appendix
-
-\section{Example Data}
 
 \end{document}
 
