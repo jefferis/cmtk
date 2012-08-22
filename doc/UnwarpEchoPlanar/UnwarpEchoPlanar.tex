@@ -168,6 +168,18 @@ directions. In this case, we should find the following files:
 \item[\tt image8.nii] -- 6th diffusion image
 \end{description}
 
+This image naming system is easy to achieve but less than transparent. For the
+sake of clarity, we shall assume below that the images have been renamed to
+\verb|b0_rev.nii| for the reverse-encoded $b=0$ image, \verb|b0_fwd.nii| for
+the standard $b=0$ image, and \verb|b1.nii| through \verb|b6.nii| for the
+diffusion-weighted images.
+
+Demonstration images following this naming convention are distributed with the
+article. They can be found in the \verb|inputs/| folder of the attached data
+archive in zip format, or obtained from the CMTK subversion repository at
+
+\centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/inputs/}}
+
 \subsection{Unwarping EPI}
 
 First, we compute the deformations to unwarp the two opposite-direction phase
@@ -191,7 +203,15 @@ with the Jacobian of the deformation:
 cmtk imagemath --in epiunwarp/b1.nii epiunwarp/jacobian_fwd.nii --mul \
   --out epiunwarp/b1.nii
 \end{verbatim}
-The result is the final, distortion-corrected image.
+The result is the final, distortion-corrected image. For the demonstration
+data distributed with this article the unwarped images are shown in
+Fig.~\ref{fig:Unwarp}. The unwarped images in NIFTI format are also
+contained in the \verb|unwarp/| folder of the data archive that accompanies
+this article, and they can be obtained from the CMTK subversion repository
+under
+
+\centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp/}}
+
 
 \begin{figure}[tbp]
 \begin{center}
@@ -222,10 +242,45 @@ this article in the \texttt{data/unwarp/} directory.}
 
 \subsection{Unwarping EPI with Eddy-Current Correction}
 
+The distortion caused by the $B_0$ field inhomogeneity and corrected by the
+\verb|epiunwarp| tool is not the only type of distortion that spatially
+affects echo-planar images. A second source of distortions are eddy currents,
+which primarily lead to shear transformations within each acquired slice. To
+avoid unnecessary multiple interpolation, which would degrade the already
+low-quality image data further, CMTK provides a script,
+\verb|correct_dwi_distortion|, which performs correction of both eddy current
+and $B_0$ field distortions.
+
+The script is called as follows:
 \begin{verbatim}
 cmtk correct_dwi_distortion unwarp_eddy \
   inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
+The first argument, \verb|unwarp_eddy|, is a directory, which will be created
+by the script and will hold all output files, most importantly the corrected
+images. The second and third argument are the reverse-encoded and
+standard-encoded $b=0$ image files, and the remaining arguments, here
+abbreviated by the ``?'' wildcard, are the diffusion weighted images,
+\verb|b1.nii| through \verb|b6.nii|.
+
+Upon completion of the script, the newly created output directory will contain
+the unwarped image files, each named with the same file name as its
+corresponding input image file.
+
+The output directory will also contain \verb|dfield_fwd.nrrd|, the deformation
+field for the standard-encoded $b=0$ image (and the diffusion-weighted
+images); \verb|jacobian.nii|, the Jacobian determinant map for intensity
+correction; and the \verb|eddy/| subdirectory, which contains the eddy
+current-correcting coordinate transformations between the $b=0$ image and each
+of the diffusion-weighted images.
+
+For the demonstration data distributed with this article the unwarped and eddy
+current-corrected images are shown in Fig.~\ref{fig:UnwarpEddy}. The unwarped
+images files in NIFTI format are also contained in the \verb|unwarp_eddy/| folder
+of the data archive that accompanies this article, and they can be obtained
+from the CMTK subversion repository under
+
+\centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp_eddy/}}
 
 \begin{figure}[tbp]
 \begin{center}
@@ -256,10 +311,41 @@ directory.}
 
 \subsection{Unwarping EPI with Eddy Current and Subject Motion Correction}
 
+A third common source of artifacts in imaging in general is subject motion. In
+the context of this article, subject motion can cause considerable problems
+because changes of the subject position over the course of a
+diffusion-weighted imaging session mean that the same unwarping deformation
+can no longer be applied to all diffusion-weighted images. 
+
+Thus, we note, in the presence of significant subject motion, the correction
+of image distortion will necessarily be compromised (this is equally true for
+correction using field maps, as in the presence of motion the acquired field
+maps will not in general be aligned with the acquired echo-planar images).
+
+With this in mind, we still would like to correct subject motion as well as
+$B_0$-field distortion and eddy current effects as much as possible. CMTK
+provides a script for this purpose as well, which is called entirely analogous
+to the aforementioned undistortion and eddy current correction script:'
 \begin{verbatim}
 cmtk correct_dwi_distortion_and_motion unwarp_eddy_motion \
   inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
+
+Internally, both scripts are organized very similarly, and indeed the
+\verb|correct_dwi_distortion_and_motion| script begins by correcting eddy
+current effects and $B_0$-field distortion in exactly the same way as does the
+\verb|correct_dwi_distortion| script. Subsequently, however, the undistorted
+images are all aligned using 3D rigid transformations, to correct for subject
+motion.
+
+For the demonstration data distributed with this article the unwarped, eddy
+current-corrected, and motion-corrected images are shown in
+Fig.~\ref{fig:UnwarpEddyMotion}. The image files in NIFTI format are
+also contained in the \verb|unwarp_eddy/| folder of the data archive that
+accompanies this article, and they can be obtained from the CMTK subversion
+repository under
+
+\centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp_eddy/}}
 
 \begin{figure}[tbp]
 \begin{center}
