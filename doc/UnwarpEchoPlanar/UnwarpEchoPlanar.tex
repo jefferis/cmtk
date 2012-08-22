@@ -95,9 +95,12 @@ cmtk <tool> <arg1> <arg2> ...
 \end{verbatim}
 
 {\bf To perform the processing stages described in this article, you will need
-CMTK release 2.2.4 or later.} Versions prior to 2.2.0 do not support EPI
-unwarping, and versions 2.2.0 through 2.2.3 contain a bug that prevented
-proper initialization of the deformation field in some cases.
+CMTK release 2.2.4\footnote{Has not been released yet. Please obtain latest
+CMTK source code from Subversion repository,
+\url{https://www.nitrc.org/svn/cmtk/trunk/core/}.} or later.} Versions prior
+to 2.2.0 do not support EPI unwarping, and versions 2.2.0 through 2.2.3
+contain a bug that prevented proper initialization of the deformation field in
+some cases.
 
 \section{Step-by-Step}
 
@@ -105,7 +108,7 @@ proper initialization of the deformation field in some cases.
 
 On your MR scanner of choice, you will need to implement an acquisition like
 the one described in Ref.~\cite{HollKupeDale:2010}. In short, before the $b=0$
-image of your favourite DWI acquisition sequence, you need to acquire an
+image of your favorite DWI acquisition sequence, you need to acquire an
 additional $b=0$ image with phase-encoding direction reversed, thus resulting
 in an image that is flipped in the phase-encoding direction and also distorted
 by the ``opposite'' distortion field. 
@@ -179,7 +182,7 @@ diffusion-weighted images.
 
 Demonstration images following this naming convention are distributed with the
 article. They can be found in the \verb|inputs/| folder of the attached data
-archive in zip format, or obtained from the CMTK subversion repository at
+archive in zip format, or obtained from the CMTK Subversion repository at
 
 \centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/inputs/}}
 
@@ -210,7 +213,7 @@ The result is the final, distortion-corrected image. For the demonstration
 data distributed with this article the unwarped images are shown in
 Fig.~\ref{fig:Unwarp}. The unwarped images in NIFTI format are also
 contained in the \verb|unwarp/| folder of the data archive that accompanies
-this article, and they can be obtained from the CMTK subversion repository
+this article, and they can be obtained from the CMTK Subversion repository
 under
 
 \centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp/}}
@@ -275,7 +278,7 @@ corresponding input image file.
 The output directory will also contain \verb|dfield_fwd.nrrd|, the deformation
 field for the standard-encoded $b=0$ image (and the diffusion-weighted
 images); \verb|jacobian.nii|, the Jacobian determinant map for intensity
-correction; and the \verb|eddy/| subdirectory, which contains the eddy
+correction; and the \verb|eddy/| sub-directory, which contains the eddy
 current-correcting coordinate transformations between the $b=0$ image and each
 of the diffusion-weighted images.
 
@@ -283,7 +286,7 @@ For the demonstration data distributed with this article the unwarped and eddy
 current-corrected images are shown in Fig.~\ref{fig:UnwarpEddy}. The unwarped
 images files in NIFTI format are also contained in the \verb|unwarp_eddy/| folder
 of the data archive that accompanies this article, and they can be obtained
-from the CMTK subversion repository under
+from the CMTK Subversion repository under
 
 \centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp_eddy/}}
 
@@ -293,8 +296,8 @@ the \verb|make_unwarp_eddy| shell script in the accompanying data archive.
 \begin{figure}[tbp]
 \begin{center}
 \begin{tabular}{cc}
-\includegraphics[width=.475\linewidth]{eps/unwarp_eddy/b0_rev} &
-\includegraphics[width=.475\linewidth]{eps/unwarp_eddy/b0_fwd} \\
+\includegraphics[width=.47\linewidth]{eps/unwarp_eddy/b0_rev} &
+\includegraphics[width=.47\linewidth]{eps/unwarp_eddy/b0_fwd} \\
 (a) \texttt{b0\_rev.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
 \\
 \end{tabular}
@@ -350,7 +353,7 @@ For the demonstration data distributed with this article the unwarped, eddy
 current-corrected, and motion-corrected images are shown in
 Fig.~\ref{fig:UnwarpEddyMotion}. The image files in NIFTI format are
 also contained in the \verb|unwarp_eddy/| folder of the data archive that
-accompanies this article, and they can be obtained from the CMTK subversion
+accompanies this article, and they can be obtained from the CMTK Subversion
 repository under
 
 \centerline{\url{https://www.nitrc.org/svn/cmtk/trunk/doc/UnwarpEchoPlanar/data/unwarp_eddy/}}
