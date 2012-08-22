@@ -151,7 +151,7 @@ cmtk dcm2image -vx -O dwi/image%n.nii dicom/
 \end{verbatim}
 
 This will result in a series of continuously numbered images in NIFTI format,
-all stored in the <tt>dwi/</tt> directory.
+all stored in the \texttt{dwi/} directory.
 
 Let us assume that we are using a 6-gradient-direction DWI setup with a single
 reverse phase-encoded $b=0$ image acquired first, followed by the standard
@@ -175,8 +175,8 @@ encoded $b=0$ images. We also write out the Jacobian determinant map of the
 forward-encoded image, which we will need to correct for signal pile up:
 \begin{verbatim}
 cmtk epiunwarp --write-jacobian-fwd epiunwarp/jacobian_fwd.nii \
-  inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz \
-  epiunwarp/b0_rev.nii epiunwarp/b0_fwd.nii epiunwarp/dfield.nrrd
+  inputs/b0_fwd.nii.gz inputs/b0_rev.nii.gz \
+  epiunwarp/b0_fwd.nii epiunwarp/b0_rev.nii epiunwarp/dfield.nrrd
 \end{verbatim}
 Second, apply the computed deformation to the first diffusion-weighted image
 (analogous to the remaining diffusion images) to create an unwarped
@@ -193,6 +193,33 @@ cmtk imagemath --in epiunwarp/b1.nii epiunwarp/jacobian_fwd.nii --mul \
 \end{verbatim}
 The result is the final, distortion-corrected image.
 
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.475\linewidth]{eps/unwarp/b0_rev} &
+\includegraphics[width=.475\linewidth]{eps/unwarp/b0_fwd} \\
+(a) \texttt{b0\_rev.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
+\\
+\end{tabular}
+\begin{tabular}{ccc}
+\includegraphics[width=.31\linewidth]{eps/unwarp/b1} &
+\includegraphics[width=.31\linewidth]{eps/unwarp/b2} &
+\includegraphics[width=.31\linewidth]{eps/unwarp/b3} \\
+(c) \texttt{b1.nii.gz} & (d) \texttt{b2.nii.gz} & (e) \texttt{b3.nii.gz} \\
+\\
+\includegraphics[width=.31\linewidth]{eps/unwarp/b4} &
+\includegraphics[width=.31\linewidth]{eps/unwarp/b5} &
+\includegraphics[width=.31\linewidth]{eps/unwarp/b6} \\
+(f) \texttt{b4.nii.gz} & (g) \texttt{b5.nii.gz} & (h) \texttt{b6.nii.gz} \\
+\end{tabular}
+\end{center}
+\caption{Unwarped echo planar images. These images were unwarped and intensity
+corrected using the deformation and Jacobian determinant fields computed by
+the \texttt{epiunwarp} tool. The image files in NIFTI format are provided with
+this article in the \texttt{data/unwarp/} directory.}
+\label{fig:Unwarp}
+\end{figure}
+
 \subsection{Unwarping EPI with Eddy-Current Correction}
 
 \begin{verbatim}
@@ -200,12 +227,66 @@ cmtk correct_dwi_distortion unwarp_eddy \
   inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
 
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.475\linewidth]{eps/unwarp_eddy/b0_rev} &
+\includegraphics[width=.475\linewidth]{eps/unwarp_eddy/b0_fwd} \\
+(a) \texttt{b0\_rev.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
+\\
+\end{tabular}
+\begin{tabular}{ccc}
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b1} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b2} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b3} \\
+(c) \texttt{b1.nii.gz} & (d) \texttt{b2.nii.gz} & (e) \texttt{b3.nii.gz} \\
+\\
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b4} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b5} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy/b6} \\
+(f) \texttt{b4.nii.gz} & (g) \texttt{b5.nii.gz} & (h) \texttt{b6.nii.gz} \\
+\end{tabular}
+\end{center}
+\caption{Unwarped and eddy current-corrected images. These images were
+computed using the \texttt{correct\_dwi\_distortion} script. The image files in
+NIFTI format are provided with this article in the \texttt{data/unwarp\_eddy/}
+directory.}
+\label{fig:UnwarpEddy}
+\end{figure}
+
 \subsection{Unwarping EPI with Eddy Current and Subject Motion Correction}
 
 \begin{verbatim}
 cmtk correct_dwi_distortion_and_motion unwarp_eddy_motion \
   inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
+
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.475\linewidth]{eps/unwarp_eddy_motion/b0_rev} &
+\includegraphics[width=.475\linewidth]{eps/unwarp_eddy_motion/b0_fwd} \\
+(a) \texttt{b0\_rev.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
+\\
+\end{tabular}
+\begin{tabular}{ccc}
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b1} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b2} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b3} \\
+(c) \texttt{b1.nii.gz} & (d) \texttt{b2.nii.gz} & (e) \texttt{b3.nii.gz} \\
+\\
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b4} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b5} &
+\includegraphics[width=.31\linewidth]{eps/unwarp_eddy_motion/b6} \\
+(f) \texttt{b4.nii.gz} & (g) \texttt{b5.nii.gz} & (h) \texttt{b6.nii.gz} \\
+\end{tabular}
+\end{center}
+\caption{Unwarped, eddy current-corrected, and motion-corrected images. These
+images were computed using the \texttt{correct\_dwi\_distortion\_and\_motion}
+script. The image files in NIFTI format are provided with this article in the
+\texttt{data/unwarp\_eddy/} directory.}
+\label{fig:UnwarpEddyMotion}
+\end{figure}
 
 \section*{Acknowledgments}
 

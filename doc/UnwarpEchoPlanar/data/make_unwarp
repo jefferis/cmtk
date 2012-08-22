@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cmtk epiunwarp --write-jacobian-fwd unwarp/jacobian_fwd.nii inputs/b0_fwd.nii.gz inputs/b0_rev.nii.gz unwarp/b0_fwd.nii unwarp/b0_rev.nii unwarp/dfield.nrrd
+
+for b in 1 2 3 4 5 6; do
+  cmtk reformatx --linear --floating inputs/b${b}.nii -o unwarp/b${b}.nii unwarp/b0_fwd.nii.gz unwarp/dfield.nrrd 
+  cmtk imagemath --in unwarp/b${b}.nii unwarp/jacobian_fwd.nii --mul --out unwarp/b${b}.nii
+done
+

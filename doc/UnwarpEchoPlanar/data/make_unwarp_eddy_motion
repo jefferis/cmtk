@@ -1,0 +1,1 @@
+cmtk correct_dwi_distortion_and_motion unwarp_eddy_motion inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
