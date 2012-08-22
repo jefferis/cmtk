@@ -116,9 +116,9 @@ the scope of the toolkit and also outside the scope of this manual.}
 \begin{figure}[tbp]
 \begin{center}
 \begin{tabular}{cc}
-\includegraphics[width=.475\linewidth]{eps/b0_bwd} &
+\includegraphics[width=.475\linewidth]{eps/b0_rev} &
 \includegraphics[width=.475\linewidth]{eps/b0_fwd} \\
-(a) \texttt{b0\_bwd.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
+(a) \texttt{b0\_rev.nii.gz} & (b)  \texttt{b0\_fwd.nii.gz}\\
 \\
 \end{tabular}
 \begin{tabular}{ccc}
@@ -175,8 +175,8 @@ encoded $b=0$ images. We also write out the Jacobian determinant map of the
 forward-encoded image, which we will need to correct for signal pile up:
 \begin{verbatim}
 cmtk epiunwarp --write-jacobian-fwd epiunwarp/jacobian_fwd.nii \
-  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz \
-  epiunwarp/b0_bwd.nii epiunwarp/b0_fwd.nii epiunwarp/dfield.nrrd
+  inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz \
+  epiunwarp/b0_rev.nii epiunwarp/b0_fwd.nii epiunwarp/dfield.nrrd
 \end{verbatim}
 Second, apply the computed deformation to the first diffusion-weighted image
 (analogous to the remaining diffusion images) to create an unwarped
@@ -197,14 +197,14 @@ The result is the final, distortion-corrected image.
 
 \begin{verbatim}
 cmtk correct_dwi_distortion unwarp_eddy \
-  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
+  inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
 
 \subsection{Unwarping EPI with Eddy Current and Subject Motion Correction}
 
 \begin{verbatim}
 cmtk correct_dwi_distortion_and_motion unwarp_eddy_motion \
-  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
+  inputs/b0_rev.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
 \end{verbatim}
 
 \section*{Acknowledgments}
