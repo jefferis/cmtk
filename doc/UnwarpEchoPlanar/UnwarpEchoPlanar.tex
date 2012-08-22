@@ -158,21 +158,54 @@ reverse phase-encoded $b=0$ image acquired first, followed by the standard
 $b=0$ image, followed by six diffusion images with different gradient
 directions. In this case, we should find the following files:
 \begin{description}
-\item[\tt dwi/image1.nii] -- reverse phase-encoded $b=0$ image
-\item[\tt dwi/image2.nii] -- standard phase-encoded $b=0$ image
-\item[\tt dwi/image3.nii] -- 1st diffusion image
-\item[\tt dwi/image4.nii] -- 2nd diffusion image
-\item[\tt dwi/image5.nii] -- 3rd diffusion image
-\item[\tt dwi/image6.nii] -- 4th diffusion image
-\item[\tt dwi/image7.nii] -- 5th diffusion image
-\item[\tt dwi/image8.nii] -- 6th diffusion image
+\item[\tt image1.nii] -- reverse phase-encoded $b=0$ image
+\item[\tt image2.nii] -- standard phase-encoded $b=0$ image
+\item[\tt image3.nii] -- 1st diffusion image
+\item[\tt image4.nii] -- 2nd diffusion image
+\item[\tt image5.nii] -- 3rd diffusion image
+\item[\tt image6.nii] -- 4th diffusion image
+\item[\tt image7.nii] -- 5th diffusion image
+\item[\tt image8.nii] -- 6th diffusion image
 \end{description}
 
 \subsection{Unwarping EPI}
 
+First, we compute the deformations to unwarp the two opposite-direction phase
+encoded $b=0$ images. We also write out the Jacobian determinant map of the
+forward-encoded image, which we will need to correct for signal pile up:
+\begin{verbatim}
+cmtk epiunwarp --write-jacobian-fwd epiunwarp/jacobian_fwd.nii \
+  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz \
+  epiunwarp/b0_bwd.nii epiunwarp/b0_fwd.nii epiunwarp/dfield.nrrd
+\end{verbatim}
+Second, apply the computed deformation to the first diffusion-weighted image
+(analogous to the remaining diffusion images) to create an unwarped
+reformatted image:
+\begin{verbatim}
+cmtk reformatx --floating inputs/b1.nii --linear -o epiunwarp/b1.nii \
+  epiunwarp/b0_fwd.nii epiunwarp/dfield.nrrd
+\end{verbatim}
+Third, compute the pixel-wise multiplication of the unwarped diffusion image
+with the Jacobian of the deformation:
+\begin{verbatim}
+cmtk imagemath --in epiunwarp/b1.nii epiunwarp/jacobian_fwd.nii --mul \
+  --out epiunwarp/b1.nii
+\end{verbatim}
+The result is the final, distortion-corrected image.
+
 \subsection{Unwarping EPI with Eddy-Current Correction}
 
-\subsection{Unwarping EPI with Eddy-Current and Subject Motion Correction}
+\begin{verbatim}
+cmtk correct_dwi_distortion unwarp_eddy \
+  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
+\end{verbatim}
+
+\subsection{Unwarping EPI with Eddy Current and Subject Motion Correction}
+
+\begin{verbatim}
+cmtk correct_dwi_distortion_and_motion unwarp_eddy_motion \
+  inputs/b0_bwd.nii.gz inputs/b0_fwd.nii.gz inputs/b?.nii.gz
+\end{verbatim}
 
 \section*{Acknowledgments}
 
