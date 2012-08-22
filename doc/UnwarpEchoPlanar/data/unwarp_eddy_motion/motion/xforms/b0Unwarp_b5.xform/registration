@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "unwarp_eddy_motion/bAverage.nii"
+	floating_study "unwarp_eddy_motion/b5.nii"
+	affine_xform {
+		xlate 0.375 0.375 0 
+		rotate 0.2649118628 0.6622796569 -0.1276038873 
+		scale 1 1 1 
+		shear 0 0 0 
+		center 119.0625 119.0625 25 
+	}
+}

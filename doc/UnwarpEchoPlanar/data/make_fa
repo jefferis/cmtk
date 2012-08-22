@@ -1,0 +1,19 @@
+#!/bin/sh
+
+CAMINO_BINDIR=${HOME}/software/camino/bin
+
+TMPDIR=`mktemp -d`
+
+for i in b*.nii.gz; do
+  cmtk convertx $i ${TMPDIR}/`basename $i .nii.gz`.hdr
+done
+
+gzip -cd ${TMPDIR}/b0_fwd.img.gz ${TMPDIR}/b0_rev.img.gz ${TMPDIR}/b?.img.gz | ${CAMINO_BINDIR}/shredder 0 -4 0 | ${CAMINO_BINDIR}/scanner2voxel -voxels 344064 -components 8 -inputdatatype float -outputdatatype float | ${CAMINO_BINDIR}/modelfit -schemefile ../scheme -model 2 -inputdatatype float -outputdatatype double | ${CAMINO_BINDIR}/fa -inputdatatype double -outputdatatype double | ${CAMINO_BINDIR}/shredder 0 -8 0 | gzip -9c > fa.img.gz
+
+cmtk mk_analyze_hdr --import ${TMPDIR}/b0_fwd.hdr --double fa.hdr
+
+cmtk imagemath --in ${TMPDIR}/b*.hdr --average --out ${TMPDIR}/avg.hdr
+cmtk convertx --otsu-thresh --byte --dilate 2 --erode 2 ${TMPDIR}/avg.hdr ${TMPDIR}/mask.hdr
+cmtk convertx --set-padding 0 --mask ${TMPDIR}/mask.hdr fa.hdr fa.hdr
+
+rm -rf ${TMPDIR}

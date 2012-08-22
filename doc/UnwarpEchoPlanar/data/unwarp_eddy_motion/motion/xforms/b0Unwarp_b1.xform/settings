@@ -1,0 +1,15 @@
+! TYPEDSTREAM 1.1
+
+exploration 10.0000000000
+accuracy 0.1875000000
+min_sampling 2.5000000000
+coarsest_resolution -1.0000000000
+metric 5
+optimizer_step_factor 0.5000000000
+initializer "FieldsOfView"
+preprocessing_ref {
+	dataclass "GreyLevel"
+}
+preprocessing_flt {
+	dataclass "GreyLevel"
+}

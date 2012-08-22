@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "inputs/b0_fwd.nii"
+	floating_study "inputs/b6.nii"
+	affine_xform {
+		xlate 0 0.75 0 
+		rotate 0 0 -5.551115123e-17 
+		scale 0.9885826772 0.9972440945 1 
+		shear 0 0 0 
+		center 119.0625 119.0625 25 
+	}
+}
