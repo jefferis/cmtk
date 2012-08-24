@@ -501,6 +501,7 @@ ImageFile::DoVendorTagsSiemens( const DiDocument& document )
   const char* tmpStr = NULL;
 
   this->IsMultislice = document.getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
+  this->IsMultislice |= ( document.getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
   
   if ( this->Modality == "MR" )
     {

@@ -1,5 +1,8 @@
 Release CMTK-2.2.4:
 
+(r4498) Fixed: some PACS-processed Siemens mosaic DICOM files have lost
+	some DCM tags; missing information must be parsed from CSA headers
+	instead.
 (r4485) Fixed: echo planar image unwarping created NaN deformations if any of
         the image columns was all zeroes, because no center of mass could be
         computed. For these cases, deformation is now forced to zero
