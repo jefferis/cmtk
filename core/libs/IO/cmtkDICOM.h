@@ -128,7 +128,12 @@ private:
   std::auto_ptr<DiDocument> m_Document;
 
   /// Parse private Siemens CSA data.
-  void ParseSiemensCSA( const DcmTagKey& tagKey, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin );
+  void ParseSiemensCSA( const DcmTagKey& tagKey /*!< DCM tag with the Siemens CSA header data */, 
+			int& unmosaicImageCols /*!< Return demosaiced image columns */, 
+			int& unmosaicImageRows /*!< Return demosaiced image rows */, 
+			int& slices /*!< Return demosaiced image slices */, 
+			FixedVector<3,double>& sliceNormal /*!< Return demosaiced image slice normal */,
+			FixedVector<3,double>& imageOrigin /*!< Return demosaiced image origin */ );
 };
 
 //@}

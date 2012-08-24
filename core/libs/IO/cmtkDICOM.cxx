@@ -330,51 +330,57 @@ DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& image
       if ( this->Document().getValue( nSlicesTag, tempUint16 ) )
 	{
 	dims[2] = tempUint16;
-	
+	}
+
+      // check for mosaic
+      if ( dims[2] || (this->Document().getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" )) )
+	{
+	int unmosaicImageRows;
+	int unmosaicImageCols;
+
 	const DcmTagKey mosaicTag(0x0051,0x100b);
 	if ( this->Document().getValue( mosaicTag, tmpStr ) )
 	  {
-	  int rows;
-	  int cols;
-	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
+	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
 	    {
-	    if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
+	    if ( 2 != sscanf( tmpStr, "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
 	      {
-	      StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
+	      StdErr << "ERROR: unable to parse mosaic size from (0x0051,0x100b): " << tmpStr << "\n";
 	      }
 	    }
-	  
-	  if ( (cols > 0) && (rows > 0 ) )
-	    {
-	    const int xMosaic = dims[0] / cols;
-	    
-	    dims[0] = cols;
-	    dims[1] = rows;
-	    
-	    // de-mosaic the data array
-	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
-	    TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
-	    
-	    const size_t pixelsPerSlice = cols * rows;
-	    size_t toOffset = 0;
-	    for ( int slice = 0; slice < dims[2]; ++slice )
-	      {
-	      for ( int j = 0; j < rows; ++j, toOffset += dims[0] )
-		{
-		const size_t iPatch = slice % xMosaic;
-		const size_t jPatch = slice / xMosaic;
-		
-		const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
-		pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
-		}
-	      }
-	    
-	    pixelDataArray = newDataArray;
-	    }
+	  }
 	  
 // For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
-	  this->ParseSiemensCSA( DcmTagKey(0x0029,0x1010), sliceNormal, imageOrigin ); // image information
-	  this->ParseSiemensCSA( DcmTagKey(0x0029,0x1020), sliceNormal, imageOrigin ); // series information
+	this->ParseSiemensCSA( DcmTagKey(0x0029,0x1020), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal, imageOrigin ); // series information
+	this->ParseSiemensCSA( DcmTagKey(0x0029,0x1010), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal, imageOrigin ); // image information
+	
+	// hopefully we have figured out the mosaic dimensions by now.
+	if ( (unmosaicImageCols > 0) && (unmosaicImageRows > 0 ) )
+	  {
+	  const int xMosaic = dims[0] / unmosaicImageCols;
+	  
+	  dims[0] = unmosaicImageCols;
+	  dims[1] = unmosaicImageRows;
+	  
+	  // de-mosaic the data array
+	  const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
+	  TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
+	  
+	  const size_t pixelsPerSlice = unmosaicImageCols * unmosaicImageRows;
+	  size_t toOffset = 0;
+	  for ( int slice = 0; slice < dims[2]; ++slice )
+	    {
+	    for ( int j = 0; j < unmosaicImageRows; ++j, toOffset += dims[0] )
+	      {
+	      const size_t iPatch = slice % xMosaic;
+	      const size_t jPatch = slice / xMosaic;
+	      
+	      const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * unmosaicImageCols + iPatch * unmosaicImageCols;
+	      pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, unmosaicImageCols );
+	      }
+	    }
+	  
+	  pixelDataArray = newDataArray;
 	  }
 	}
       }  
@@ -383,7 +389,7 @@ DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& image
 }
 
 void
-DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
+DICOM::ParseSiemensCSA( const DcmTagKey& tagKey,  int& unmosaicImageCols, int& unmosaicImageRows, int& slices, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
 {
   const Uint8* csaHeaderInfo = NULL;
   unsigned long csaHeaderLength = 0;
@@ -408,11 +414,33 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, FixedVector<3,double>& sliceNor
 	const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
 	
 //	StdErr << "    len: " << itemLen << "\n";
-	
+
+	// check only first item for de-mosaiced image matrix size
+	if ( !item && !strcmp( tagName, "AcquisitionMatrixText" ) )
+	  {
+	  char mosaicStr[33];
+	  fileHeader.GetFieldString( tagOffset+16, mosaicStr, sizeof(mosaicStr) );
+
+	  if ( 2 != sscanf( mosaicStr, "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	    {
+	    if ( 2 != sscanf( mosaicStr, "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	      {
+	      StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << mosaicStr << "\n";
+	      }
+	    }
+	  }
+
+	// check only first item for numbner of images in mosaic
+	if ( !item && !strcmp( tagName, "NumberOfImagesInMosaic" ) )
+	  {
+	  char valStr[65];
+	  slices = atof( fileHeader.GetFieldString( tagOffset+16, valStr, sizeof(valStr) ) );
+	  }
+
 	if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
 	  {
 	  char valStr[65];
-	  sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
+	  sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, sizeof(valStr) ) );
 	  
 //	  StdErr << "    " << valStr << "\n";
 	  }
