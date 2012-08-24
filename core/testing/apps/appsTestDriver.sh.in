@@ -646,6 +646,10 @@ case ${RUNTEST} in
 	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic/
 	check_results 00.nii 00.nii.xml
 	;;
+    dcm2imageMosaicPACS)
+	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
+	check_results 00.nii 00.nii.xml
+	;;
     dcm2imageDiffusionGEXML)
         run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
@@ -688,6 +692,10 @@ case ${RUNTEST} in
 	;;
     describeMosaicDICOM)
 	run_eval "${BINDIR}/describe -m mr-mosaic/fmri.dcm > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMosaicPACSDICOM)
+	run_eval "${BINDIR}/describe -m mr-mosaic-pacs/image.dcm > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     describeVanderbilt)

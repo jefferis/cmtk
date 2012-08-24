@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device>
+	<manufacturer>SIEMENS</manufacturer>
+	<model>TrioTim</model>
+</device>
+<mr>
+	<tr>2200.000000</tr>
+	<te>30.000000</te>
+</mr>
+<dcmPath>mr-mosaic-pacs/</dcmPath>
+<stack>
+	<dcmFile>image.dcm</dcmFile>
+</stack>
+

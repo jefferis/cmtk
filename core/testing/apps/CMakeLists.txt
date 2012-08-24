@@ -81,6 +81,7 @@ LIST(APPEND testList
   describeEmpty
   describeDICOM
   describeMosaicDICOM
+  describeMosaicPACSDICOM
   describeDICOMZ
   describeVanderbilt
   describeMR1 
@@ -301,6 +302,7 @@ IF(CMTK_USE_DCMTK)
     dcm2imageEmbedStudyIDDateNifti
     dcm2imageEmbedDefaultNifti
     dcm2imageMosaic
+    dcm2imageMosaicPACS
     dcm2imageDiffusionGEXML
     dcm2imageExclude
     dcm2imageInclude)
