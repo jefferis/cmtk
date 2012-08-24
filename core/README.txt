@@ -6,6 +6,10 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.4
 ===========================
 
+This release fixes two problems: a) the echo planar image unwarping tool,
+epiwarp, failed when there were all-zero columns in the input image, and b)
+some PACS-processed Siemens mosaic DICOM files were not detected and handled
+correctly, due to missing DICOM tags.
 
 
 Release Notes -- CMTK 2.2.3

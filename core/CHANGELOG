@@ -1,4 +1,4 @@
-Release CMTK-2.2.4:
+Release CMTK-2.2.4 (2012-08-24):
 
 (r4498) Fixed: some PACS-processed Siemens mosaic DICOM files have lost
 	some DCM tags; missing information must be parsed from CSA headers
