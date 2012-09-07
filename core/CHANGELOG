@@ -4,6 +4,7 @@ Release CMTK-2.2.5:
 	(these were skipped previously). Use the new
 	"--write-single-slices" command line switch to activate this
 	behaviour.
+	
 
 Release CMTK-2.2.4 (2012-08-24):
 
