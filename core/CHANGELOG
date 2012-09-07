@@ -1,6 +1,6 @@
 Release CMTK-2.2.5:
 
-(rXXXX) Added: "dcm2image" tool can now write single-slice images also
+(r4504) Added: "dcm2image" tool can now write single-slice images also
 	(these were skipped previously). Use the new
 	"--write-single-slices" command line switch to activate this
 	behaviour.
