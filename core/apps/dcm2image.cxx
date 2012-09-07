@@ -157,6 +157,8 @@ SortKeyEnum SortFiles = SORT_INSTANCE_NUMBER;
 
 bool WriteXML = false;
 
+bool WriteSingleSlices = false;
+
 bool DisableOrientationCheck = false;
 double Tolerance = 1e-5;
 
@@ -905,7 +907,7 @@ VolumeList::WriteVolumes()
   std::map< std::string,std::vector<const ImageStack*> > pathToVolumeMap;
   for ( const_iterator it = begin(); it != end(); ++it ) 
     {
-    if ( ((*it)->size() > 1) || (*(*it)->begin())->IsMultislice )
+    if ( ((*it)->size() > 1) || (*(*it)->begin())->IsMultislice || WriteSingleSlices )
       {
       // replace place holders
       std::string path( OutPathPattern );
@@ -927,8 +929,6 @@ VolumeList::WriteVolumes()
 
   if ( cntSingleImages )
     {
-    cmtk::StdErr << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks.\n";
-
     cmtk::DebugOutput( 1 ) << "\n====================================================\n";
     cmtk::DebugOutput( 1 ) << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks:\n\n";
     for ( const_iterator it = begin(); it != end(); ++it ) 
@@ -1187,6 +1187,7 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Stacking", "Stacking Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.AddSwitch( Key( "write-single-slices" ), &WriteSingleSlices, true, "Also write output images for single-slice DICOM files that could not be assigned to any 3D stacks. By default, these are skipped." );
     cl.AddSwitch( Key( "ignore-acq-number" ), &IgnoreAcquisitionNumber, true, "Ignore 'AcquisitionNumber' tag for image grouping, i.e., do not separate stacks based on this tag." );
     cl.AddSwitch( Key( "no-orientation-check" ), &DisableOrientationCheck, true, "Disable checking of image orientations (to avoid rounding issues)" );
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );

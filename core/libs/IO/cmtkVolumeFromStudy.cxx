@@ -83,10 +83,6 @@ const UniformVolume::SmartPtr
 VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
 {
   UniformVolume::SmartPtr Result( NULL );
-  
-  if ( study->size() < 2 ) 
-    return Result;
-  
   const std::string imageDir = MountPoints::Translate( study->GetImageDirectory() );
 
   try
