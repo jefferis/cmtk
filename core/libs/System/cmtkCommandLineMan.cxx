@@ -126,8 +126,13 @@ CommandLine::PrintMan
     }
 
   StdOut << ".SH BUGS\nReport bugs at http://nitrc.org/projects/cmtk/\n";
-  StdOut << ".SH ACKNOWLEDGMENTS\n"
-	 << "From April 2009 through September 2011, CMTK Development and Maintenance was supported by the National Institute of Biomedical Imaging and Bioengineering under Grant No.R01 EB008381 (PI: Torsten Rohlfing).\n";
+
+  ppit = this->m_ProgramInfo.find(PRG_ACKNL);
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
+    StdOut << ".SH ACKNOWLEDGMENTS\n"
+	   << ppit->second << "\n";
+    }
 }
 
 } // namespace cmtk

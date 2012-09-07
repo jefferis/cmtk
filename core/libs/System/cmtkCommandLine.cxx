@@ -74,7 +74,7 @@ CommandLine::SetDefaultInfo()
 {
   this->m_ProgramInfo[PRG_LCNSE] = "http://www.fsf.org/licensing/licenses/gpl.html";
   this->m_ProgramInfo[PRG_CNTRB] = "Torsten Rohlfing, with contributions from Michael P. Hasak, Greg Jefferis, Calvin R. Maurer, and Daniel B. Russakoff";
-  this->m_ProgramInfo[PRG_ACKNL] = "CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381";
+  this->m_ProgramInfo[PRG_ACKNL] = "CMTK is supported by the NIAAA under Grant AA021697, National Consortium on Alcohol and Neurodevelopment in Adolescence (N-CANDA), Data Integration Component. From April 2009 through September 2011, CMTK development and maintenance was supported by the NIBIB under Grant EB008381.";
   this->m_ProgramInfo[PRG_CATEG] = "CMTK.Miscellaneous";
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
