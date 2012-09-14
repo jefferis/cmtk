@@ -1,5 +1,9 @@
 Release CMTK-2.2.5:
 
+(r4510) Refactored: more logical API for symmetric matrix eigensystem
+	computation. Symmetric matrices are now actually enforced, whereas
+	previously it was silently assumed all matrices handed to the
+	eigensystem functions were symmetric.
 (r4504) Added: "dcm2image" tool can now write single-slice images also
 	(these were skipped previously). Use the new
 	"--write-single-slices" command line switch to activate this
