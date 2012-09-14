@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -35,7 +35,6 @@
 #include "cmtkDataGridTests.txx"
 #include "cmtkEigenSystemSymmetricMatrix3x3Tests.txx"
 #include "cmtkMathUtilTests.txx"
-#include "cmtkMathUtilLinAlgTests.txx"
 #include "cmtkParametricPlaneTests.txx"
 #include "cmtkRegionTests.txx"
 #include "cmtkScalarImageTests.txx"
@@ -50,8 +49,6 @@ main( const int argc, const char* argv[] )
   cmtk::TestFunctionMap map;
   map.AddTest( "DataGridMatches",               &testDataGridMatches );
   map.AddTest( "EigenSystemSymmetricMatrix3x3", &testEigenSystemSymmetricMatrix3x3 );
-  map.AddTest( "MathUtilEigensystem",           &testMathUtilEigensystem );
-  map.AddTest( "MathUtilEigenvalues",           &testMathUtilEigenvalues );
   map.AddTest( "MathUtilUniformRandom",         &testMathUtilUniformRandom );
   map.AddTest( "ParametricPlaneMirror",         &testParametricPlaneMirror );
   map.AddTest( "ParametricPlaneMirrorOffset",   &testParametricPlaneMirrorOffset );

@@ -55,9 +55,9 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
   this->m_Products.resize( ((nref+nflt) * (nref+nflt+1)) / 2 );
   std::fill( this->m_Products.begin(), this->m_Products.end(), static_cast<TRealType>( 0.0 ) );
 
-  this->m_CovarianceMatrix.Resize( nref+nflt, nref+nflt ); // needs no reset
-  this->m_CovarianceMatrixRef.Resize( nref, nref ); // needs no reset
-  this->m_CovarianceMatrixFlt.Resize( nflt, nflt ); // needs no reset
+  this->m_CovarianceMatrix.Resize( nref+nflt ); // needs no reset
+  this->m_CovarianceMatrixRef.Resize( nref ); // needs no reset
+  this->m_CovarianceMatrixFlt.Resize( nflt ); // needs no reset
   
   this->m_TotalNumberOfSamples = 0;
 }

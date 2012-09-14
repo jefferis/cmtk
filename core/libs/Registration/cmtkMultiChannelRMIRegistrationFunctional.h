@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,6 +38,8 @@
 #include <Registration/cmtkMultiChannelRegistrationFunctional.h>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSymmetricMatrix.h>
+
 #include <System/cmtkSmartPtr.h>
 
 #include <vector>
@@ -94,13 +96,13 @@ protected:
     std::vector<RealType> m_Products;
     
     /** Covariance matrix for joint entropy computation. */
-    Matrix2D<RealType> m_CovarianceMatrix;
+    SymmetricMatrix<RealType> m_CovarianceMatrix;
     
     /** Covariance matrix for reference channels entropy computation. */
-    Matrix2D<RealType> m_CovarianceMatrixRef;
+    SymmetricMatrix<RealType> m_CovarianceMatrixRef;
     
     /** Covariance matrix for floating channels entropy computation. */
-    Matrix2D<RealType> m_CovarianceMatrixFlt;
+    SymmetricMatrix<RealType> m_CovarianceMatrixFlt;
     
     /** Total number of samples (pixels) under current transformation. */
     size_t m_TotalNumberOfSamples;
@@ -128,7 +130,7 @@ protected:
   virtual void ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
 
   /** Get metric value. */
-  virtual RealType GetMetric( const MetricData& metricData ) const;
+  virtual RealType GetMetric( MetricData& metricData ) const;
 };
 
 //@}

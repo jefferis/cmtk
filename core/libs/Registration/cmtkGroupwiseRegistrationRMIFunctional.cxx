@@ -33,6 +33,8 @@
 #include <Registration/cmtkGroupwiseRegistrationRMIFunctional.h>
 
 #include <Base/cmtkMathUtil.h>
+#include <Base/cmtkEigenValuesSymmetricMatrix.h>
+
 #include <System/cmtkThreadPool.h>
 
 #include <algorithm>
@@ -76,7 +78,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfImages = this->m_ImageVector.size();
 
-  this->m_CovarianceMatrix.Resize( numberOfImages, numberOfImages ); // needs no reset
+  this->m_CovarianceMatrix.Resize( numberOfImages ); // needs no reset
   this->m_TotalNumberOfSamples = 0;
 
   this->m_SumOfProductsMatrix.resize( numberOfImages * (1+numberOfImages) / 2 );
@@ -120,13 +122,12 @@ GroupwiseRegistrationRMIFunctional<TXform>
     {
     for ( size_t i = 0; i <= j; ++i, ++midx )
       {
-      covarianceMatrix[i][j] = covarianceMatrix[j][i] = (sumOfProductsMatrix[midx] - ((1.0 * sumsVector[i] * sumsVector[j]) / totalNumberOfSamples)) / totalNumberOfSamples;
+      covarianceMatrix(i,j) = (sumOfProductsMatrix[midx] - ((1.0 * sumsVector[i] * sumsVector[j]) / totalNumberOfSamples)) / totalNumberOfSamples;
       }
     }
   
-  std::vector<typename Self::ReturnType> eigenvalues( numberOfImages );
-  MathUtil::ComputeEigenvalues<typename Self::ReturnType>( covarianceMatrix, eigenvalues );
-
+  const std::vector<typename Self::ReturnType> eigenvalues = EigenValuesSymmetricMatrix<typename Self::ReturnType>( covarianceMatrix ).GetEigenvalues();
+  
   const typename Self::ReturnType EIGENVALUE_THRESHOLD = 1e-6;
   typename Self::ReturnType determinant = 1.0;
   for ( size_t i = 0; i < numberOfImages; ++i )

@@ -42,6 +42,8 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkMathFunctionWrappers.h>
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
+#include <Base/cmtkSymmetricMatrix.h>
+#include <Base/cmtkEigenSystemSymmetricMatrix.h>
 
 #include <IO/cmtkFileFormat.h>
 #include <IO/cmtkVolumeIO.h>
@@ -1446,40 +1448,31 @@ CallbackCombinePCA()
     meanVector[image] = mean / numberOfPixels;
     }
   
-  cmtk::Matrix2D<cmtk::Types::DataItem> cc( numberOfImages, numberOfImages );
+  cmtk::SymmetricMatrix<cmtk::Types::DataItem> cc( numberOfImages );
 
   for ( size_t imageY = 0; imageY < numberOfImages; ++imageY )
     {
     for ( size_t imageX = 0; imageX < numberOfImages; ++imageX )
       {
-      // compute upper half of matrix, use symmetry to fill lower half
-      if ( imageY <= imageX )
+      cmtk::Types::DataItem ccXY = 0;
+      
+      for ( size_t pixel = 0; pixel < numberOfPixels; ++pixel )
 	{
-	cmtk::Types::DataItem ccXY = 0;
-	
-	for ( size_t pixel = 0; pixel < numberOfPixels; ++pixel )
+	cmtk::Types::DataItem valueX, valueY;
+	if ( volPtrs[imageX]->GetDataAt( valueX, pixel ) && volPtrs[imageY]->GetDataAt( valueY, pixel ) )
 	  {
-	  cmtk::Types::DataItem valueX, valueY;
-	  if ( volPtrs[imageX]->GetDataAt( valueX, pixel ) && volPtrs[imageY]->GetDataAt( valueY, pixel ) )
-	    {
-	    ccXY += ( valueX - meanVector[imageX] ) * ( valueY - meanVector[imageY] );
-	    }
+	  ccXY += ( valueX - meanVector[imageX] ) * ( valueY - meanVector[imageY] );
 	  }
-	
-	cc[imageX][imageY] = ccXY / numberOfImages;
 	}
-      else
-	{
-	cc[imageX][imageY] = cc[imageY][imageX];
-	}      
+      
+      cc(imageX,imageY) = ccXY / numberOfImages;
       }
     }
   
-  cmtk::Matrix2D<cmtk::Types::DataItem> eigensystem( numberOfImages, numberOfImages );
-  std::vector<cmtk::Types::DataItem> eigenvalues( numberOfImages );
-  
-  cmtk::MathUtil::ComputeEigensystem( cc, eigensystem, eigenvalues );
-  
+  const cmtk::EigenSystemSymmetricMatrix<cmtk::Types::DataItem> eigensystem( cc );
+
+  const std::vector<cmtk::Types::DataItem> eigenvalues = eigensystem.GetEigenvalues();
+
   // find maximum eigenvalue
   int maxL = 0;
   cmtk::Types::DataItem maxLambda = fabs( eigenvalues[0] );
@@ -1496,7 +1489,7 @@ CallbackCombinePCA()
   cmtk::Vector<cmtk::Types::DataItem> ev( numberOfImages );
   for ( size_t l = 0; l < numberOfImages; ++l )
     {
-    ev[l] = eigensystem[l][maxL];
+    ev[l] = eigensystem.EigenvectorElement(l,maxL);
     }
   ev *= 1.0 / ev.EuclidNorm();
   

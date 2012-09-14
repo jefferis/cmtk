@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -285,7 +285,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
       }
     }
   
-  Matrix2D<Self::ReturnType> covarianceMatrix( numberOfImages, numberOfImages );
+  Self::CovarianceMatrixType covarianceMatrix( numberOfImages );
   
   // approximate gradient from upper and lower function evaluations  
   size_t img = 0, currentParameter = 0;

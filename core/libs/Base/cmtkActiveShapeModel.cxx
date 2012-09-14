@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,8 +32,8 @@
 
 #include <Base/cmtkActiveShapeModel.h>
 
-#include <Base/cmtkMatrix.h>
-#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkSymmetricMatrix.h>
+#include <Base/cmtkEigenSystemSymmetricMatrix.h>
 
 #include <System/cmtkConsole.h>
 
@@ -87,38 +87,29 @@ ActiveShapeModel::Construct
   // modified approach following Cootes' 1995 CVIU paper. This is much
   // more efficient when the number of samples is smaller than the
   // number of data dimensions.
-  Matrix2D<Types::Coordinate> cc( numberOfSamples, numberOfSamples );
+  SymmetricMatrix<Types::Coordinate> cc( numberOfSamples );
   
   for ( unsigned int sampleY = 0; sampleY < numberOfSamples; ++sampleY )
-    for ( unsigned int sampleX = 0; sampleX < numberOfSamples; ++sampleX ) {
-
-      // compute upper half of matrix, use symmetry to fill lower half
-      if ( sampleY <= sampleX ) 
-	{
-	Types::Coordinate ccXY = 0;
-	
-	const Types::Coordinate* meanPtr = Mean->Elements;
-	for ( unsigned int point = 0; point < NumberOfPoints; ++point, ++meanPtr )
-	  {
-	  ccXY += ( trainingSet[sampleX][point] - (*meanPtr) ) * ( trainingSet[sampleY][point] - (*meanPtr) );
-	  }
-	cc[sampleX][sampleY] = ccXY / numberOfSamples;
-	}
-      else
-	{
-	cc[sampleX][sampleY] = cc[sampleY][sampleX];
-	}
+    {
+    for ( unsigned int sampleX = 0; sampleX <= sampleY; ++sampleX ) 
+      {
+      Types::Coordinate ccXY = 0;
       
+      const Types::Coordinate* meanPtr = Mean->Elements;
+      for ( unsigned int point = 0; point < NumberOfPoints; ++point, ++meanPtr )
+	{
+	ccXY += ( trainingSet[sampleX][point] - (*meanPtr) ) * ( trainingSet[sampleY][point] - (*meanPtr) );
+	}
+      cc(sampleX,sampleY) = ccXY / numberOfSamples;
+      }
     }
   
   // here comes the hard part: compute Eigenvectors of cc...
   // we do this in a separate routine, for clarity.
-  Matrix2D<Types::Coordinate> eigensystem( numberOfSamples, numberOfSamples );
-  std::vector<Types::Coordinate> eigenvalues( numberOfSamples );
-
-  MathUtil::ComputeEigensystem( cc, eigensystem, eigenvalues );
+  const EigenSystemSymmetricMatrix<Types::Coordinate> eigensystem( cc );
 
   // determine permutation that orders eigenvectors by descending eigenvalues
+  const std::vector<Types::Coordinate> eigenvalues = eigensystem.GetEigenvalues();
   std::vector<unsigned int> permutation( numberOfSamples );
   // initialize permutation array
   for ( unsigned int i = 0; i < numberOfSamples; ++i )
@@ -152,7 +143,7 @@ ActiveShapeModel::Construct
       
       *modePtr = 0;
       for ( unsigned int sample = 0; sample < numberOfSamples; ++sample )
-	*modePtr += (eigensystem[sample][fromMode] * (trainingSet[sample][point] - meanValue) );
+	*modePtr += (eigensystem.EigenvectorElement(sample,fromMode) * (trainingSet[sample][point] - meanValue) );
       }
     
     // finally, normalize mode vectors... if Geremy is right ;)

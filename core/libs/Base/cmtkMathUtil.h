@@ -352,12 +352,6 @@ public:
    */
   static double UniformRandom();
   
-  /// Compute eigensystem and eigenvalues for square real matrix using Jacobi rotation.
-  template<class T> static void ComputeEigensystem( const Matrix2D<T>& matrix, Matrix2D<T>& eigensystem, std::vector<T>& eigenvalues );
-
-  /// Compute eigenvalues for square real matrix using Jacobi rotation.
-  template<class T> static void ComputeEigenvalues( const Matrix2D<T>& matrix, std::vector<T>& eigenvalues );
-
   /// Determinant of an n x n square matrix.
   template<class T> static T CholeskyDeterminant( const Matrix2D<T>& matrix, int n);
 };

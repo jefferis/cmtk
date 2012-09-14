@@ -44,7 +44,7 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkXform.h>
 #include <Base/cmtkMathUtil.h>
-#include <Base/cmtkMatrix.h>
+#include <Base/cmtkSymmetricMatrix.h>
 
 #include <vector>
 
@@ -102,7 +102,7 @@ public:
   
 protected:
   /// Covariance matrix type.
-  typedef Matrix2D<typename Self::ReturnType> CovarianceMatrixType;
+  typedef SymmetricMatrix<typename Self::ReturnType> CovarianceMatrixType;
 
   /// Actual covariance matrix.
   typename Self::CovarianceMatrixType m_CovarianceMatrix;

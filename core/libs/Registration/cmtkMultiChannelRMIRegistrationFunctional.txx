@@ -32,8 +32,8 @@
 
 #include <System/cmtkException.h>
 
-#include <Base/cmtkMathUtil.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkEigenValuesSymmetricMatrix.h>
 
 #include <algorithm>
 #include <vector>
@@ -73,7 +73,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
 template<class TRealType,class TDataType,class TInterpolator>
 TRealType
 MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
-::GetMetric( const MetricData& metricData ) const
+::GetMetric( MetricData& metricData ) const
 {
   const size_t nRefs = this->m_ReferenceChannels.size();
   const size_t nFlts = this->m_FloatingChannels.size();
@@ -86,8 +86,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
     for ( size_t i = 0; i <= j; ++i, ++idx )
       {
       const RealType mui = metricData.m_Sums[i] / metricData.m_TotalNumberOfSamples;
-      metricData.m_CovarianceMatrix[i][j] = metricData.m_CovarianceMatrix[j][i] = 
-	(metricData.m_Products[idx] / metricData.m_TotalNumberOfSamples) - mui * muj;
+      metricData.m_CovarianceMatrix(i,j) = (metricData.m_Products[idx] / metricData.m_TotalNumberOfSamples) - mui * muj;
       }
     }
 
@@ -95,7 +94,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
     {
     for ( size_t i = 0; i <= j; ++i )
       {
-      metricData.m_CovarianceMatrixRef[i][j] = metricData.m_CovarianceMatrixRef[j][i] = metricData.m_CovarianceMatrix[i][j];
+      metricData.m_CovarianceMatrixRef(i,j) = metricData.m_CovarianceMatrix(i,j);
       }
     }
   
@@ -103,17 +102,13 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
     {
     for ( size_t i = 0; i <= j; ++i )
       {
-      metricData.m_CovarianceMatrixFlt[i][j] = metricData.m_CovarianceMatrixFlt[j][i] = metricData.m_CovarianceMatrix[nRefs+i][nRefs+j];
+      metricData.m_CovarianceMatrixFlt(i,j) = metricData.m_CovarianceMatrix(nRefs+i,nRefs+j);
       }
     }
   
-  std::vector<RealType> eigenvalues( this->m_NumberOfChannels );
-  std::vector<RealType> eigenvaluesRef( this->m_ReferenceChannels.size() );
-  std::vector<RealType> eigenvaluesFlt( this->m_FloatingChannels.size() );
-
-  MathUtil::ComputeEigenvalues( metricData.m_CovarianceMatrix, eigenvalues );
-  MathUtil::ComputeEigenvalues( metricData.m_CovarianceMatrixRef, eigenvaluesRef );
-  MathUtil::ComputeEigenvalues( metricData.m_CovarianceMatrixFlt, eigenvaluesFlt );
+  const std::vector<RealType> eigenvalues = EigenValuesSymmetricMatrix<RealType>( metricData.m_CovarianceMatrix ).GetEigenvalues();
+  const std::vector<RealType> eigenvaluesRef = EigenValuesSymmetricMatrix<RealType>( metricData.m_CovarianceMatrixRef ).GetEigenvalues();
+  const std::vector<RealType> eigenvaluesFlt = EigenValuesSymmetricMatrix<RealType>( metricData.m_CovarianceMatrixFlt ).GetEigenvalues();
 
   const double EIGENVALUE_THRESHOLD = 1e-6;
   double determinant = 1.0, determinantRef = 1.0, determinantFlt = 1.0;
