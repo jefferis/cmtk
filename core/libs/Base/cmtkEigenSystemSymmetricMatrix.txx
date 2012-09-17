@@ -71,9 +71,12 @@ EigenSystemSymmetricMatrix<TFloat>
    */
 
   for (int j = 0; j < n; j++)
+    {
+    this->m_Eigenvectors[j].SetDim( matrix.Dim() );
     for (int i = 0; i < n; i++)
-      this->m_Eigenvectors[i][j] = static_cast<TFloat>( apEigenvectors(i,j) );
-
+      this->m_Eigenvectors[j][i] = static_cast<TFloat>( apEigenvectors(j,i) );
+    }
+  
   for (int i = 0; i < n; i++)
     this->m_Eigenvalues[i] = static_cast<TFloat>( apEigenvalues(i) );
 }
