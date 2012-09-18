@@ -6,6 +6,7 @@
 <mr>
 	<tr>4000.000000</tr>
 	<te>97.900000</te>
+	<type>magnitude</type>
 	<dwi>
 		<bValue>0</bValue>
 		<bVector coordinateSpace="LPS">0.000000 0.000000 -0.000000</bVector>

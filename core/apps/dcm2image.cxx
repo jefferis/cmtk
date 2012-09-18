@@ -537,10 +537,10 @@ ImageFile::DoVendorTagsGE( const DiDocument& document )
     // raw data type
     Sint16 rawTypeIdx = 3;
     if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
-      rawTypeIdx = 3; // assume this is a magnitude image
+      rawTypeIdx = 0; // assume this is a magnitude image
     rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
     
-    const char *const RawDataTypeString[4] = { "magn", "phas", "real", "imag" };
+    const char *const RawDataTypeString[4] = { "magnitude", "phase", "real", "imaginary" };
     this->RawDataType = RawDataTypeString[rawTypeIdx];
     
     // dwi information
@@ -664,6 +664,7 @@ ImageStack::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "model",           { "\t", NULL, NULL, "\n" } },
     { "tr",              { "\t", NULL, NULL, "\n" } },
     { "te",              { "\t", NULL, NULL, "\n" } },
+    { "type",            { "\t", NULL, NULL, "\n" } },
     { "dwi",             { "\t", "\n", "\t", "\n" } },
     { "bValue",          { "\t\t", NULL, NULL, "\n" } },
     { "bVector",         { "\t\t", NULL, NULL, "\n" } },
@@ -729,6 +730,12 @@ ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volum
     
     mxml_node_t *x_te = mxmlNewElement( x_modality, "te");
     mxmlNewReal( x_te, atof( this->front()->EchoTime.c_str() ) );
+
+    if ( this->front()->RawDataType != "unknown" )
+      {
+      mxml_node_t *x_type = mxmlNewElement( x_modality, "type");
+      mxmlNewText( x_type, 0, this->front()->RawDataType.c_str() );
+      }
     
     if ( this->front()->IsDWI )
       {
