@@ -1,5 +1,8 @@
 Release CMTK-2.2.5:
 
+(r4513) Added: for GE DICOM images, the raw data type (magnitude, phase, real,
+	or imaginary) is now written into the output XML files by the
+	"dcm2image" tool.
 (r4510) Refactored: more logical API for symmetric matrix eigensystem
 	computation. Symmetric matrices are now actually enforced, whereas
 	previously it was silently assumed all matrices handed to the
