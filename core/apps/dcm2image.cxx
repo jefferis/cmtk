@@ -116,9 +116,6 @@ std::vector<std::string> SearchRootDirVector;
 
 std::ofstream cnull( "/dev/null" );
 
-const char progress_chars[] = "-\\|/";
-int progress = 0;
-
 bool Recursive = false;
 
 /// Enum type to select sort order key.
@@ -287,6 +284,9 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
 void
 VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 {
+  static int progress = 0;
+  const char progress_chars[] = "-\\|/";
+
   char fullname[PATH_MAX];
 
   std::vector<ImageFileDICOM::SmartConstPtr> fileList;
