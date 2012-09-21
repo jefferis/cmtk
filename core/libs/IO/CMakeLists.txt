@@ -40,6 +40,7 @@ SET(cmtkIO_SRCS
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageFileDICOM.cxx
   cmtkImageOperationApplyMask.cxx
+  cmtkImageStackDICOM.cxx
   cmtkLandmarkIO.cxx
   cmtkLandmarkListIO.cxx
   cmtkPhantomIO_MagphanEMR051.cxx
