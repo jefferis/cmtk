@@ -157,11 +157,15 @@ public:
   /// This class.
   typedef VolumeList Self;
 
-  /// Add a new image file to the correct stack or create a new stack.
-  void AddImageFile( ImageFileDICOM::SmartConstPtr& newImage );
+  /// Build a volume list by traversing a directory.
+  void AppendFromDirectory( const std::string& path, const char *wildcard );
   
   /// Write all volumes in this list.
   void WriteVolumes();
+
+private:
+  /// Add a new image file to the correct stack or create a new stack.
+  void AddImageFile( ImageFileDICOM::SmartConstPtr& newImage );
 };
 
 std::string
@@ -280,8 +284,8 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
   push_back( newImageStack );    
 }
   
-int
-traverse_directory( VolumeList& volumeList, const std::string& path, const char *wildcard )
+void
+VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 {
   char fullname[PATH_MAX];
 
@@ -299,7 +303,7 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
       {
       if ( Recursive && (fData.cFileName[0] != '.') )
 	{
-	traverse_directory( volumeList, fullname, wildcard );
+	this->AppendFromDirectory( fullname, wildcard );
 	}
       }
     else
@@ -338,7 +342,7 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
 	if ( S_ISDIR( entry_status.st_mode ) && Recursive && (entry_pointer->d_name[0] != '.') ) 
 	  {
 	  strcat( fullname, "/" );
-	  traverse_directory( volumeList, fullname, wildcard );
+	  this->AppendFromDirectory( fullname, wildcard );
 	  } 
 	else
 	  {
@@ -385,7 +389,7 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
     {
     try 
       {
-      volumeList.AddImageFile( *it );
+      this->AddImageFile( *it );
       }
     catch (int)
       {
@@ -393,7 +397,6 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
     }
 
   cmtk::StdErr << "\r";
-  return 0;
 }
 
 
@@ -493,7 +496,7 @@ doMain ( const int argc, const char *argv[] )
   VolumeList volumeList;
   for ( std::vector<std::string>::const_iterator it = SearchRootDirVector.begin(); it != SearchRootDirVector.end(); ++it )
     {
-    traverse_directory( volumeList, *it, "*" );
+    volumeList.AppendFromDirectory( *it, "*" );
     }
   
   volumeList.WriteVolumes();
