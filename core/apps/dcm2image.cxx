@@ -45,7 +45,7 @@
 #include <IO/cmtkStudyImageSet.h>
 #include <IO/cmtkVolumeFromStudy.h>
 #include <IO/cmtkVolumeFromFile.h>
-#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkImageFileDICOM.h>
 
 #include <mxml.h>
 
@@ -73,24 +73,9 @@
 #include <sstream>
 
 #include <iostream>
-#include <memory>
 #include <fstream>
 
 #include <dcmtk/dcmdata/dctk.h>
-#include <dcmtk/dcmimgle/didocu.h>
-#include <dcmtk/dcmimgle/diutils.h>
-
-#ifndef DCM_RawDataType_ImageType
-#define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
-#endif
-
-#ifndef DCM_ManufacturerModelName
-#define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)
-#endif
-
-#ifndef DCM_PatientsName
-#define DCM_PatientsName DCM_PatientName
-#endif
 
 void
 AddPatternToMap( std::map<DcmTagKey,std::string>& map, const char* pattern )
@@ -180,421 +165,20 @@ typedef enum
 /// Selector for embedded image information.
 EmbedInfoEnum EmbedInfo = EMBED_STUDYID_STUDYDATE;
 
-/// Class handling a single image file and its meta data.
-class ImageFile 
-{
-public:
-  /// File name.
-  char* fname;
-
-  /// File system path (i.e., directory).
-  char* fpath;
-
-  /// Modality.
-  std::string Modality;
-
-  /// Device manufacturer.
-  std::string Manufacturer;
-
-  /// Device model.
-  std::string ManufacturerModel;
-
-  /// Flag for multislice images
-  bool IsMultislice;
-
-  /// Patient name.
-  std::string PatientName;
-
-  /// DICOM SeriesUID.
-  std::string SeriesUID;
-
-  /// DICOM SeriesDescription
-  std::string SeriesDescription;
-
-  /// DICOM StudyID.
-  std::string StudyID;
-
-  /// DICOM StudyDate.
-  std::string StudyDate;
-  
-  /// DICOM StudyUID.
-  std::string StudyUID;
-
-  /// MR repetition time, TR
-  std::string RepetitionTime;
-
-  /// MR echo time, TE.
-  std::string EchoTime;
-
-  /// 3D image position (first pixel) in patient coordinates.
-  std::string ImagePositionPatient;
-
-  /// 3D image orientation (pos. x and pos. y image axes) in patient coordinates.
-  std::string ImageOrientationPatient;
-
-  /// DICOM acquisition number.
-  Sint32 AcquisitionNumber;
-
-  /// DICOM image number (index in volume).
-  Sint32 InstanceNumber;
-
-  /// Raw data type (real, imaginary, phase, magnitude) currently supported on GE images only.
-  std::string RawDataType;
-
-  /// Flag for diffusion-weighted images.
-  bool IsDWI;
-
-  /// B value for DWI.
-  Sint16 BValue;
-
-  /// B vector for DWI.
-  cmtk::FixedVector<3,double> BVector;
-
-  /// Constructor.
-  ImageFile( const char* filename );
-
-  /// Destructor.
-  ~ImageFile();
-
-  /// Determine whether two images match, i.e., belong to the same volume.
-  bool Match( const ImageFile& other ) const;
-
-  /// Compare order based on file name (for lexicographic sorting).
-  static bool lessFileName( const ImageFile* lhs, const ImageFile* rhs )
-  {
-    return strcmp( lhs->fname, rhs->fname ) < 0;
-  }
-
-  /// Compare order based on image instace (for sorting in acquisition order).
-  static bool lessInstanceNumber( const ImageFile* lhs, const ImageFile* rhs )
-  {
-    return lhs->InstanceNumber < rhs->InstanceNumber;
-  }
-
-  void Print() const;
-
-private:
-  /// Handle Siemens private tags.
-  void DoVendorTagsSiemens( const DiDocument& document );
-
-  /// Handle GE private tags.
-  void DoVendorTagsGE( const DiDocument& document );
-};
-
-void
-ImageFile::Print() const
-{
-  cmtk::DebugOutput( 1 ) << "  File Name =            [" << this->fpath << "/" << this->fname << "]\n";
-  cmtk::DebugOutput( 1 ) << "  SeriesID =             [" << this->SeriesUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  StudyID =              [" << this->StudyUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  ImagePositionPatient = [" << this->ImagePositionPatient << "]\n";
-  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =    [" << this->AcquisitionNumber << "]\n";
-  cmtk::DebugOutput( 1 ) << "  Modality =             [" << this->Modality << "]\n";
-
-  if ( this->Modality == "MR" )
-    {
-    cmtk::DebugOutput( 1 ) << "  EchoTime =          [" << this->EchoTime << "]\n";
-    cmtk::DebugOutput( 1 ) << "  RepetitionTime =      [" << this->RepetitionTime << "]\n";
-    }
-}
-  
-bool
-ImageFile::Match( const ImageFile& other ) const
-{
-  // do not stack multislice images
-  if ( this->IsMultislice || other.IsMultislice )
-    return false;
-
-  if ( ! DisableOrientationCheck )
-    {
-    double orientThis[6], orientOther[6];
-    sscanf( this->ImageOrientationPatient.c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
-    sscanf( other.ImageOrientationPatient.c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
-
-    for ( int i = 0; i < 6; ++i )
-      {
-      if ( fabs( orientThis[i] - orientOther[i] ) > Tolerance )
-	return false;
-      }
-    }
-
-  return
-    ( SeriesUID == other.SeriesUID ) && 
-    ( StudyUID == other.StudyUID ) && 
-    ( EchoTime == other.EchoTime ) &&
-    ( RepetitionTime == other.RepetitionTime ) && 
-    ( BValue == other.BValue ) &&
-    ( BVector == other.BVector ) &&
-    (( AcquisitionNumber == other.AcquisitionNumber ) || IgnoreAcquisitionNumber) && 
-    ( this->RawDataType == other.RawDataType );
-}
-
-ImageFile::ImageFile( const char* filename )
-  : Modality( "unknown" ),
-    Manufacturer( "unknown" ),
-    ManufacturerModel( "unknown" ),
-    IsMultislice( false ),
-    RawDataType( "unknown" ),
-    IsDWI( false ),
-    BValue( 0 ),
-    BVector( 0.0 )
-{
-  if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
-    throw(0);
-
-  const char *last_slash = strrchr( filename, CMTK_PATH_SEPARATOR );
-  if ( last_slash ) 
-    {
-    fname = strdup(last_slash+1);
-    char *suffix = strrchr( fname, '.' );
-    if ( suffix )
-      if ( !strcmp( suffix, ".Z" ) || !strcmp( suffix, ".gz" ) ) 
-	{
-	*suffix = 0;
-	}
-    
-    int path_len = last_slash-filename;
-    fpath = (char*)malloc( path_len+1 );
-    strncpy( fpath, filename, path_len );
-    fpath[path_len] = 0;
-    } 
-  else
-    {
-    fname = strdup( filename );
-    fpath = NULL;
-    }
-  
-  std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
-  
-  fileformat->transferInit();
-  OFCondition status = fileformat->loadFile( filename );
-  fileformat->transferEnd();
-  
-  if ( !status.good() ) 
-    {
-    cmtk::StdErr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")\n";
-    throw (0);
-    }
-  
-  DcmDataset *dataset = fileformat->getAndRemoveDataset();
-  if ( ! dataset )
-  {
-     throw(1);
-  }
-
-  std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
-  if ( ! document.get() || ! document->good() ) 
-    {
-    throw(2);
-    }
-
-  const char* tmpStr = NULL;
-
-  // check for positive include list
-  if ( !IncludePatterns.empty() )
-    {
-    for ( std::map<DcmTagKey,std::string>::const_iterator it = IncludePatterns.begin(); it != IncludePatterns.end(); ++it )
-      {
-      // if tag not found, do not include
-      if ( document->getValue( it->first, tmpStr ) )
-	{
-	// if tag value matches, then include
-	if ( strstr( tmpStr, it->second.c_str() ) )
-	  continue;
-	}
-
-      // no match - exclude
-      throw( 3 );
-      }
-    }
-
-  // check for exclude list
-  if ( !ExcludePatterns.empty() )
-    {
-    for ( std::map<DcmTagKey,std::string>::const_iterator it = ExcludePatterns.begin(); it != ExcludePatterns.end(); ++it )
-      {
-      // only check tags that exist
-      if ( document->getValue( it->first, tmpStr ) )
-	{
-	// if tag value matches, exclude
-	if ( strstr( tmpStr, it->second.c_str() ) )
-	  throw( 4 );
-	}
-      }
-    }
-
-  if ( document->getValue( DCM_Modality, tmpStr ) )
-    this->Modality = tmpStr;
-
-  // check for multi-slice DICOMs
-  Uint16 nFrames = 0;
-  if ( document->getValue( DCM_NumberOfFrames, nFrames ) ) 
-    {
-    this->IsMultislice = (nFrames > 1 );
-    }
-
-  if ( document->getValue( DCM_PatientsName, tmpStr ) )
-    PatientName = tmpStr;
-
-  if ( document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
-    SeriesUID = tmpStr;
-
-  if ( document->getValue( DCM_SeriesDescription, tmpStr ) )
-    SeriesDescription = tmpStr;
-
-  if ( document->getValue( DCM_StudyInstanceUID, tmpStr ) )
-    StudyUID = tmpStr;
-
-  if ( document->getValue( DCM_StudyID, tmpStr ) )
-    StudyID = tmpStr;
-
-  if ( document->getValue( DCM_StudyDate, tmpStr ) )
-    StudyDate = tmpStr;
-  
-  if ( document->getValue( DCM_ImagePositionPatient, tmpStr ) )
-    ImagePositionPatient = tmpStr;
-
-  if ( document->getValue( DCM_ImageOrientationPatient, tmpStr ) )
-    ImageOrientationPatient = tmpStr;
-
-  if ( ! document->getValue( DCM_InstanceNumber, InstanceNumber ) )
-    InstanceNumber = 0;
-
-  if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
-    AcquisitionNumber = 0;
-
-  // check for MR modality and treat accordingly
-  if ( this->Modality == "MR" )
-    {
-    if ( document->getValue( DCM_EchoTime, tmpStr ) )
-      EchoTime = tmpStr;
-    
-    if ( document->getValue( DCM_RepetitionTime, tmpStr ) )
-      RepetitionTime = tmpStr;
-    }
-  else
-    {
-    this->EchoTime = this->RepetitionTime = "";
-    }
-  
-  if ( document->getValue( DCM_ManufacturerModelName, tmpStr ) != 0 )
-    this->ManufacturerModel = tmpStr;
-
-  // check for which vendor and deal with specifics elsewhere
-  if ( document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
-    {
-    this->Manufacturer = tmpStr;
-    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
-      {
-      this->DoVendorTagsSiemens( *document );
-      }      
-    
-    if ( !strncmp( tmpStr, "GE", 2 ) )
-      {
-      this->DoVendorTagsGE( *document );
-      }
-    }
-}
-
-void
-ImageFile::DoVendorTagsSiemens( const DiDocument& document )
-{
-  Uint16 nFrames = 0;
-  const char* tmpStr = NULL;
-
-  this->IsMultislice = document.getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
-  this->IsMultislice |= ( document.getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
-  
-  if ( this->Modality == "MR" )
-    {
-    if ( (this->IsDWI = (document.getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
-      {
-      if ( document.getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
-	{
-	this->BValue = atoi( tmpStr );
-	this->IsDWI |= (this->BValue > 0);
-	}
-      
-      if ( this->BValue > 0 )
-	{
-	for ( int idx = 0; idx < 3; ++idx )
-	  {
-	  this->IsDWI |= (document.getValue( DcmTagKey(0x0019,0x100e), this->BVector[idx], idx ) != 0);
-	  }
-	}
-      }
-    }
-}
-
-void
-ImageFile::DoVendorTagsGE( const DiDocument& document )
-{
-  const char* tmpStr = NULL;
-  int tmpInt = 0;
-
-  if ( this->Modality == "MR" )
-    {
-    // raw data type
-    Sint16 rawTypeIdx = 3;
-    if ( ! document.getValue( DCM_RawDataType_ImageType, rawTypeIdx ) )
-      rawTypeIdx = 0; // assume this is a magnitude image
-    rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
-    
-    const char *const RawDataTypeString[4] = { "magnitude", "phase", "real", "imaginary" };
-    this->RawDataType = RawDataTypeString[rawTypeIdx];
-    
-    // dwi information
-    this->IsDWI = false;
-    if ( document.getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
-      {
-      const int nDirections = atoi( tmpStr );
-      if ( nDirections > 0 )
-	{
-	this->IsDWI = true;
-	
-	if ( document.getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
-	  {
-	  if ( 1 == sscanf( tmpStr, "%d\\%*c", &tmpInt ) )
-	    {
-	    this->BValue = static_cast<Sint16>( tmpInt );
-
-	    for ( int i = 0; i < 3; ++i )
-	      {
-	      if ( document.getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
-		{
-		this->BVector[i] = atof( tmpStr );
-		}
-	      else
-		{
-		this->BVector[i] = 0;
-		}
-	      }
-	    this->BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
-	    }
-	  }
-	}
-      }
-    }
-}
-
-ImageFile::~ImageFile()
-{
-  free( fname );
-  free( fpath );
-}
+using cmtk::ImageFileDICOM;
 
 /// Class handling a stack of image files.
-class ImageStack : public std::vector<ImageFile*> 
+class ImageStack : public std::vector<ImageFileDICOM*> 
 {
 public:
   /// This class.
   typedef ImageStack Self;
   
   /// Add new DICOM image file to this stack.
-  void AddImageFile( ImageFile *const image );
+  void AddImageFile( ImageFileDICOM *const image );
 
   /// Match new image file against this volume stack.
-  bool Match ( const ImageFile *newImage ) const;
+  bool Match ( const ImageFileDICOM *newImage ) const;
 
   /// Write XML sidecar file.
   void WriteXML ( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */ ) const;
@@ -612,15 +196,15 @@ private:
 };
 
 bool
-ImageStack::Match ( const ImageFile *newImage ) const
+ImageStack::Match ( const ImageFileDICOM *newImage ) const
 {
   if ( empty() ) 
     return 1;
 
-  const ImageFile *check = front();
+  const ImageFileDICOM *check = front();
   if ( check )
     {
-    if ( !check->Match( *newImage ) )
+    if ( !check->Match( *newImage, Tolerance, DisableOrientationCheck, IgnoreAcquisitionNumber ) )
       return 0;
 
     for ( const_iterator it = this->begin(); it != this->end(); ++it )
@@ -637,7 +221,7 @@ ImageStack::Match ( const ImageFile *newImage ) const
 }
 
 void
-ImageStack::AddImageFile ( ImageFile *const newImage )
+ImageStack::AddImageFile ( ImageFileDICOM *const newImage )
 {
   iterator it = begin();
   for ( ; it != end(); ++it )
@@ -810,7 +394,7 @@ ImageStack::WriteXML( const std::string& fname, const cmtk::UniformVolume& volum
 cmtk::UniformVolume::SmartConstPtr
 ImageStack::WriteImage( const std::string& fname ) const
 {
-  const ImageFile *first = this->front();
+  const ImageFileDICOM *first = this->front();
     
   cmtk::UniformVolume::SmartPtr volume;
   if ( !first->IsMultislice )
@@ -894,7 +478,7 @@ class VolumeList :
 {
 public:
   /// Add a new image file to the correct stack or create a new stack.
-  void AddImageFile( ImageFile *const newImage );
+  void AddImageFile( ImageFileDICOM *const newImage );
   
   /// Write all volumes in this list.
   void WriteVolumes();
@@ -991,7 +575,7 @@ VolumeList::WriteVolumes()
 
 
 void
-VolumeList::AddImageFile( ImageFile *const newImage )
+VolumeList::AddImageFile( ImageFileDICOM *const newImage )
 {
   if ( empty() ) 
     {
@@ -1026,7 +610,7 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
 {
   char fullname[PATH_MAX];
 
-  std::vector<ImageFile*> fileList;
+  std::vector<ImageFileDICOM*> fileList;
 
 #ifdef _MSC_VER
   WIN32_FIND_DATA fData;
@@ -1047,7 +631,18 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
       {
       try
 	{
-	fileList.push_back( new ImageFile( fullname ) );
+	ImageFileDICOM* newFile = new ImageFileDICOM( fullname );
+
+	if ( newFile->MatchAllPatterns( IncludePatterns ) && !newFile->MatchAnyPattern( ExcludePatterns ) )
+	  {
+	  newFile->ReleaseDocument();
+	  fileList.push_back( newFile );
+	  }
+	else
+	  {
+	  delete newFile;
+	  }
+
 	(cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
 	}
       catch ( ... )
@@ -1080,7 +675,18 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
 	    {
 	    try
 	      {
-	      fileList.push_back( new ImageFile( fullname ) );
+	      ImageFileDICOM* newFile = new ImageFileDICOM( fullname );
+	      
+	      if ( newFile->MatchAllPatterns( IncludePatterns ) && !newFile->MatchAnyPattern( ExcludePatterns ) )
+		{
+		newFile->ReleaseDocument();
+		fileList.push_back( new ImageFileDICOM( fullname ) );
+		}
+	      else
+		{
+		delete newFile;
+		}
+	      
 	      (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
 	      }
 	    catch ( ... )
@@ -1101,14 +707,14 @@ traverse_directory( VolumeList& volumeList, const std::string& path, const char 
     default:
       break;
     case SORT_FILENAME:
-      std::sort( fileList.begin(), fileList.end(), ImageFile::lessFileName );
+      std::sort( fileList.begin(), fileList.end(), ImageFileDICOM::lessFileName );
       break;
     case SORT_INSTANCE_NUMBER:
-      std::sort( fileList.begin(), fileList.end(), ImageFile::lessInstanceNumber );
+      std::sort( fileList.begin(), fileList.end(), ImageFileDICOM::lessInstanceNumber );
       break;
     }
   
-  for ( std::vector<ImageFile*>::const_iterator it = fileList.begin(); it != fileList.end(); ++it )
+  for ( std::vector<ImageFileDICOM*>::const_iterator it = fileList.begin(); it != fileList.end(); ++it )
     {
     try 
       {
