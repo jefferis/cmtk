@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <device>
-	<manufacturer>SIEMENS</manufacturer>
-	<model>TrioTim</model>
+	<dicom:Manufacturer>SIEMENS</dicom:Manufacturer>
+	<dicom:ManufacturerModel>TrioTim</dicom:ManufacturerModel>
+	<dicom:DeviceSerialNumber>35139</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<tr>2200.000000</tr>
-	<te>30.000000</te>
+	<dicom:Tr>2200.000000</dicom:Tr>
+	<dicom:Te>30.000000</dicom:Te>
+	<dicom:ImagingFrequency>123.250616</dicom:ImagingFrequency>
 </mr>
-<dcmPath>mr-mosaic-pacs/</dcmPath>
 <stack>
-	<dcmFile>image.dcm</dcmFile>
+	<dcmFileDirectory>mr-mosaic-pacs/</dcmFileDirectory>
+	<dicom:StudyInstanceUID>missing</dicom:StudyInstanceUID>
+	<dicom:SeriesInstanceUID>missing</dicom:SeriesInstanceUID>
+	<dicom:FrameOfReferenceUID>1.3.12.2.1107.5.2.32.35139.1.20120823092133890.0.0.0</dicom:FrameOfReferenceUID>
+	<image>
+		<dcmFile>image.dcm</dcmFile>
+	</image>
 </stack>
 

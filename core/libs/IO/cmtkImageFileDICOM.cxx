@@ -92,6 +92,7 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     }
 
   return
+    ( m_FrameOfReferenceUID == other.m_FrameOfReferenceUID ) && 
     ( SeriesUID == other.SeriesUID ) && 
     ( StudyUID == other.StudyUID ) && 
     ( EchoTime == other.EchoTime ) &&
@@ -106,7 +107,14 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   : Modality( "unknown" ),
     Manufacturer( "unknown" ),
     ManufacturerModel( "unknown" ),
+    m_DeviceSerialNumber( "missing" ),
     IsMultislice( false ),
+    SeriesUID( "missing" ),
+    m_FrameOfReferenceUID( "missing" ),
+    StudyUID( "missing" ),
+    m_RescaleIntercept( "missing" ),
+    m_RescaleSlope( "missing" ),
+    m_ImagingFrequency( "missing" ),
     RawDataType( "unknown" ),
     IsDWI( false ),
     BValue( 0 ),
@@ -179,6 +187,9 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   if ( this->m_Document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
     SeriesUID = tmpStr;
 
+  if ( this->m_Document->getValue( DCM_FrameOfReferenceUID, tmpStr ) )
+    this->m_FrameOfReferenceUID = tmpStr;
+
   if ( this->m_Document->getValue( DCM_SeriesDescription, tmpStr ) )
     SeriesDescription = tmpStr;
 
@@ -203,6 +214,12 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   if ( ! this->m_Document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
 
+  if ( this->m_Document->getValue( DCM_RescaleIntercept, tmpStr ) )
+    this->m_RescaleIntercept = tmpStr;
+
+  if ( this->m_Document->getValue( DCM_RescaleSlope, tmpStr ) )
+    this->m_RescaleSlope = tmpStr;
+
   // check for MR modality and treat accordingly
   if ( this->Modality == "MR" )
     {
@@ -211,6 +228,9 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
     
     if ( this->m_Document->getValue( DCM_RepetitionTime, tmpStr ) )
       RepetitionTime = tmpStr;
+
+    if ( this->m_Document->getValue( DCM_ImagingFrequency, tmpStr ) )
+      this->m_ImagingFrequency = tmpStr;
     }
   else
     {
@@ -219,6 +239,9 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   
   if ( this->m_Document->getValue( DCM_ManufacturerModelName, tmpStr ) != 0 )
     this->ManufacturerModel = tmpStr;
+
+  if ( this->m_Document->getValue( DCM_DeviceSerialNumber, tmpStr ) != 0 )
+    this->m_DeviceSerialNumber = tmpStr;
 
   // check for which vendor and deal with specifics elsewhere
   if ( this->m_Document->getValue( DCM_Manufacturer, tmpStr ) != 0 )

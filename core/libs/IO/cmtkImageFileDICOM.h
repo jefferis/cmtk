@@ -82,6 +82,9 @@ public:
   /// Device model.
   std::string ManufacturerModel;
 
+  /// Device serial number.
+  std::string m_DeviceSerialNumber;
+
   /// Flag for multislice images
   bool IsMultislice;
 
@@ -90,6 +93,9 @@ public:
 
   /// DICOM SeriesUID.
   std::string SeriesUID;
+
+  /// DICOM FrameOfReferenceUID
+  std::string m_FrameOfReferenceUID;
 
   /// DICOM SeriesDescription
   std::string SeriesDescription;
@@ -103,11 +109,20 @@ public:
   /// DICOM StudyUID.
   std::string StudyUID;
 
+  /// DICOM pixel value rescale intercept
+  std::string m_RescaleIntercept;
+
+  /// DICOM pixel value rescale slope
+  std::string m_RescaleSlope;
+
   /// MR repetition time, TR
   std::string RepetitionTime;
 
   /// MR echo time, TE.
   std::string EchoTime;
+
+  /// MR imaging frequency.
+  std::string m_ImagingFrequency;
 
   /// 3D image position (first pixel) in patient coordinates.
   std::string ImagePositionPatient;

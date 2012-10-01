@@ -94,18 +94,26 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "manufacturer",    { "\t", NULL, NULL, "\n" } },
-    { "model",           { "\t", NULL, NULL, "\n" } },
-    { "tr",              { "\t", NULL, NULL, "\n" } },
-    { "te",              { "\t", NULL, NULL, "\n" } },
-    { "type",            { "\t", NULL, NULL, "\n" } },
-    { "dwi",             { "\t", "\n", "\t", "\n" } },
-    { "bValue",          { "\t\t", NULL, NULL, "\n" } },
-    { "bVector",         { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorImage",    { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorStandard", { "\t\t", NULL, NULL, "\n" } },
-    { "dcmPath",         { NULL, NULL, NULL, "\n" } },
-    { "dcmFile",         { "\t", NULL, NULL, "\n" } },
+    { "dicom:Manufacturer",        { "\t", NULL, NULL, "\n" } },
+    { "dicom:ManufacturerModel",   { "\t", NULL, NULL, "\n" } },
+    { "dicom:DeviceSerialNumber",  { "\t", NULL, NULL, "\n" } },
+    { "dicom:Tr",                  { "\t", NULL, NULL, "\n" } },
+    { "dicom:Te",                  { "\t", NULL, NULL, "\n" } },
+    { "dicom:ImagingFrequency",    { "\t", NULL, NULL, "\n" } },
+    { "type",                      { "\t", NULL, NULL, "\n" } },
+    { "dwi",                       { "\t", "\n", "\t", "\n" } },
+    { "bValue",                    { "\t\t", NULL, NULL, "\n" } },
+    { "bVector",                   { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorImage",              { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorStandard",           { "\t\t", NULL, NULL, "\n" } },
+    { "dcmFileDirectory",          { "\t", NULL, NULL, "\n" } },
+    { "dicom:StudyInstanceUID",    { "\t", NULL, NULL, "\n" } },
+    { "dicom:SeriesInstanceUID",   { "\t", NULL, NULL, "\n" } },
+    { "dicom:FrameOfReferenceUID", { "\t", NULL, NULL, "\n" } },
+    { "image",                     { "\t", "\n", "\t", "\n" } },
+    { "dcmFile",                   { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleIntercept",    { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleSlope",        { "\t\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
 
@@ -147,11 +155,14 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
 
   mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
 
-  mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "manufacturer" );
+  mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "dicom:Manufacturer" );
   mxmlNewText( x_manufacturer, 0, this->front()->Manufacturer.c_str() );
     
-  mxml_node_t *x_model = mxmlNewElement( x_device, "model" );
+  mxml_node_t *x_model = mxmlNewElement( x_device, "dicom:ManufacturerModel" );
   mxmlNewText( x_model, 0, this->front()->ManufacturerModel.c_str() );
+
+  mxml_node_t *x_serial_num = mxmlNewElement( x_device, "dicom:DeviceSerialNumber" );
+  mxmlNewText( x_serial_num, 0, this->front()->m_DeviceSerialNumber.c_str() );
 
   std::string modality = this->front()->Modality;
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
@@ -159,11 +170,14 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
-    mxml_node_t *x_tr = mxmlNewElement( x_modality, "tr");
+    mxml_node_t *x_tr = mxmlNewElement( x_modality, "dicom:Tr");
     mxmlNewReal( x_tr, atof( this->front()->RepetitionTime.c_str() ) );
     
-    mxml_node_t *x_te = mxmlNewElement( x_modality, "te");
+    mxml_node_t *x_te = mxmlNewElement( x_modality, "dicom:Te");
     mxmlNewReal( x_te, atof( this->front()->EchoTime.c_str() ) );
+
+    mxml_node_t *x_imaging_f = mxmlNewElement( x_modality, "dicom:ImagingFrequency");
+    mxmlNewReal( x_imaging_f, atof( this->front()->m_ImagingFrequency.c_str() ) );
 
     if ( this->front()->RawDataType != "unknown" )
       {
@@ -215,15 +229,41 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       }
     }
     
-  mxml_node_t *x_dcmpath = mxmlNewElement( x_root, "dcmPath" );
-  mxmlNewText( x_dcmpath, 0, this->front()->fpath );
-
   mxml_node_t *x_stack = mxmlNewElement( x_root, "stack" );
+
+  mxml_node_t *x_dcm_file_dir = mxmlNewElement( x_stack, "dcmFileDirectory" );
+  mxmlNewText( x_dcm_file_dir, 0, this->front()->fpath );
+
+  mxml_node_t *x_study_uid = mxmlNewElement( x_stack, "dicom:StudyInstanceUID" );
+  mxmlNewText( x_study_uid, 0, this->front()->StudyUID.c_str() );
+
+  mxml_node_t *x_series_uid = mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" );
+  mxmlNewText( x_series_uid, 0, this->front()->SeriesUID.c_str() );
+
+  if ( this->front()->m_FrameOfReferenceUID != "missing" )
+    {
+    mxml_node_t *x_for_uid = mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" );
+    mxmlNewText( x_for_uid, 0, this->front()->m_FrameOfReferenceUID.c_str() );
+    }
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    mxml_node_t *x_dcmfile = mxmlNewElement( x_stack, "dcmFile" );
+    mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
+
+    mxml_node_t *x_dcmfile = mxmlNewElement( x_image, "dcmFile" );
     mxmlNewText( x_dcmfile, 0, (*it)->fname );
+
+    if ( (*it)->m_RescaleIntercept != "missing" )
+      {
+      mxml_node_t *x_rescale_intercept = mxmlNewElement( x_image, "dicom:RescaleIntercept" );
+      mxmlNewReal( x_rescale_intercept, atof( (*it)->m_RescaleIntercept.c_str() ) );
+      }
+      
+    if ( (*it)->m_RescaleSlope != "missing" )
+      {
+      mxml_node_t *x_rescale_slope = mxmlNewElement( x_image, "dicom:RescaleSlope" );
+      mxmlNewReal( x_rescale_slope, atof( (*it)->m_RescaleSlope.c_str() ) );
+      }
     }
 
   FILE *file = fopen( fname.c_str(), "w" );

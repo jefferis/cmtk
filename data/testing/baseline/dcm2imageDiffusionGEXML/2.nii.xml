@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <device>
-	<manufacturer>GE MEDICAL SYSTEMS</manufacturer>
-	<model>SIGNA HDx</model>
+	<dicom:Manufacturer>GE MEDICAL SYSTEMS</dicom:Manufacturer>
+	<dicom:ManufacturerModel>SIGNA HDx</dicom:ManufacturerModel>
+	<dicom:DeviceSerialNumber>0000000000585124</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<tr>4000.000000</tr>
-	<te>97.900000</te>
+	<dicom:Tr>4000.000000</dicom:Tr>
+	<dicom:Te>97.900000</dicom:Te>
+	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
 	<type>magnitude</type>
 	<dwi>
 		<bValue>860</bValue>
@@ -14,10 +16,19 @@
 		<bVectorStandard imageOrientation="RAS">0.449000 0.277000 -0.850000</bVectorStandard>
 	</dwi>
 </mr>
-<dcmPath>mr-dwi-ge/</dcmPath>
 <stack>
-	<dcmFile>I0280.dcm</dcmFile>
-	<dcmFile>I0281.dcm</dcmFile>
-	<dcmFile>I0282.dcm</dcmFile>
+	<dcmFileDirectory>mr-dwi-ge/</dcmFileDirectory>
+	<dicom:StudyInstanceUID>missing</dicom:StudyInstanceUID>
+	<dicom:SeriesInstanceUID>missing</dicom:SeriesInstanceUID>
+	<dicom:FrameOfReferenceUID>1.2.840.113619.2.207.6945.567572.31893.1324511312.805</dicom:FrameOfReferenceUID>
+	<image>
+		<dcmFile>I0280.dcm</dcmFile>
+	</image>
+	<image>
+		<dcmFile>I0281.dcm</dcmFile>
+	</image>
+	<image>
+		<dcmFile>I0282.dcm</dcmFile>
+	</image>
 </stack>
 
