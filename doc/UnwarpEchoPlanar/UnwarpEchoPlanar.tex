@@ -23,7 +23,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \title{Unwarping Echo Planar Images Using CMTK\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-\release{1.1}
+\release{1.2}
 
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA}
@@ -398,6 +398,44 @@ way to support non-axial acquisitions, but again, use of this ability by the
 two wrapper scripts has yet to be implemented.
 
 %%\section*{Acknowledgments}
+
+\appendix
+
+\section{Comparison with Standard Diffusion Acquisition}
+
+In Fig.~\ref{fig:PEPolarVsProduct}, we compare the distortion in EPI (here:
+$b=0$ diffusion images) using the reversed phase-encode (``PE Polar'')
+acquisition and GE's standard product DWI acquisition sequence.
+
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{ccc}\
+$b=0$ GE Product DWI & $T_2$-weighted FSE & $b=0$ PE Polar DWI \\
+\includegraphics{eps/pepolar_vs_product/product} &
+\includegraphics{eps/pepolar_vs_product/fse} &
+\includegraphics{eps/pepolar_vs_product/pepolar} \\
+\includegraphics{eps/pepolar_vs_product/product_corrected} && 
+\includegraphics{eps/pepolar_vs_product/pepolar_corrected}
+\end{tabular}
+\end{center}
+\caption{Comparison of distortion in GE product DWI acquisition vs. ``PE
+  Polar'' acquisition. {\em Top row:\/} data as acquired. {\em Bottom row:\/
+    data corrected for EPI distortion using either Field Map (product
+    sequence, left column) or the unwarping workflow described herein (right
+    column).}}
+\label{fig:PEPolarVsProduct}
+\end{figure}
+
+It is readily apparent that the product DWI acquisition is less distorted to
+begin with. This is due to accelerated readout in the product sequence, which
+reduces the time during which signal phase is affected, thus reducing the
+amount of distortion observed. Visually, the field map-corrected product
+sequence image appears almost as similar to the reference FSE image as the
+corrected ``PE Polar'' image.
+
+The magnitude of this observed improvement should be weighed against the
+difficulty of implementing the PE Polar acquisition technique when deciding
+for or against either acquisition scheme.
 
 \bibliographystyle{UnwarpEchoPlanar}
 \bibliography{UnwarpEchoPlanar}
