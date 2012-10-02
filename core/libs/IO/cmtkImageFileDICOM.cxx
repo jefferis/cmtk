@@ -256,6 +256,17 @@ ImageFileDICOM::DoVendorTagsSiemens()
   
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
+    // try to extract raw data type from "ImageType"
+    if ( this->m_Document->getValue( DCM_ImageType, tmpStr ) )
+      {
+      if ( strstr( tmpStr, "\\P\\" ) )
+	this->m_RawDataType = "phase";
+      else if ( strstr( tmpStr, "\\M\\" ) )
+	this->m_RawDataType = "magnitude";
+      else if ( strstr( tmpStr, "\\R\\" ) )
+	this->m_RawDataType = "real";
+      }
+    
     if ( (this->IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
       if ( this->m_Document->getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag

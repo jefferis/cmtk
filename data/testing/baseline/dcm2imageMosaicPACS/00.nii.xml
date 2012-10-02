@@ -8,6 +8,7 @@
 	<dicom:Tr>2200.000000</dicom:Tr>
 	<dicom:Te>30.000000</dicom:Te>
 	<dicom:ImagingFrequency>123.250616</dicom:ImagingFrequency>
+	<type>magnitude</type>
 </mr>
 <stack>
 	<dcmFileDirectory>mr-mosaic-pacs/</dcmFileDirectory>
