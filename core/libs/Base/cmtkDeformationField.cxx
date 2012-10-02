@@ -109,7 +109,7 @@ DeformationField::SpaceVectorType
 DeformationField::Apply
 ( const Self::SpaceVectorType& v ) const
 {
-  Self::SpaceVectorType vTransformed;
+  Self::SpaceVectorType vTransformed( v );
   Types::Coordinate r[3], f[3];
   int grid[3];
   
