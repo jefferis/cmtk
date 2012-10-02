@@ -18,8 +18,8 @@
 </mr>
 <stack>
 	<dcmFileDirectory>mr-dwi-ge/</dcmFileDirectory>
-	<dicom:StudyInstanceUID>missing</dicom:StudyInstanceUID>
-	<dicom:SeriesInstanceUID>missing</dicom:SeriesInstanceUID>
+	<dicom:StudyInstanceUID></dicom:StudyInstanceUID>
+	<dicom:SeriesInstanceUID></dicom:SeriesInstanceUID>
 	<dicom:FrameOfReferenceUID>1.2.840.113619.2.207.6945.567572.31893.1324511312.805</dicom:FrameOfReferenceUID>
 	<image>
 		<dcmFile>I0280.dcm</dcmFile>

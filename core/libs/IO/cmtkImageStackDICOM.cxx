@@ -61,7 +61,7 @@ ImageStackDICOM::Match ( const ImageFileDICOM& newImage, const Types::Coordinate
       {
       // if we already have an image in same location in this study, 
       // then bump to next study
-      if ( (*it)->ImagePositionPatient == newImage.ImagePositionPatient )
+      if ( (*it)->GetTagValue( DCM_ImagePositionPatient ) == newImage.GetTagValue( DCM_ImagePositionPatient ) )
 	return 0;
       }
     return true;
@@ -156,33 +156,33 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
 
   mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "dicom:Manufacturer" );
-  mxmlNewText( x_manufacturer, 0, this->front()->Manufacturer.c_str() );
+  mxmlNewText( x_manufacturer, 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
     
   mxml_node_t *x_model = mxmlNewElement( x_device, "dicom:ManufacturerModel" );
-  mxmlNewText( x_model, 0, this->front()->ManufacturerModel.c_str() );
+  mxmlNewText( x_model, 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
 
   mxml_node_t *x_serial_num = mxmlNewElement( x_device, "dicom:DeviceSerialNumber" );
-  mxmlNewText( x_serial_num, 0, this->front()->m_DeviceSerialNumber.c_str() );
+  mxmlNewText( x_serial_num, 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
 
-  std::string modality = this->front()->Modality;
+  std::string modality = this->front()->GetTagValue( DCM_Modality );
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
   
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
     mxml_node_t *x_tr = mxmlNewElement( x_modality, "dicom:Tr");
-    mxmlNewReal( x_tr, atof( this->front()->RepetitionTime.c_str() ) );
+    mxmlNewReal( x_tr, atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) );
     
     mxml_node_t *x_te = mxmlNewElement( x_modality, "dicom:Te");
-    mxmlNewReal( x_te, atof( this->front()->EchoTime.c_str() ) );
+    mxmlNewReal( x_te, atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) );
 
     mxml_node_t *x_imaging_f = mxmlNewElement( x_modality, "dicom:ImagingFrequency");
-    mxmlNewReal( x_imaging_f, atof( this->front()->m_ImagingFrequency.c_str() ) );
+    mxmlNewReal( x_imaging_f, atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
 
-    if ( this->front()->RawDataType != "unknown" )
+    if ( this->front()->m_RawDataType != "unknown" )
       {
       mxml_node_t *x_type = mxmlNewElement( x_modality, "type");
-      mxmlNewText( x_type, 0, this->front()->RawDataType.c_str() );
+      mxmlNewText( x_type, 0, this->front()->m_RawDataType.c_str() );
       }
     
     if ( this->front()->IsDWI )
@@ -235,15 +235,15 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxmlNewText( x_dcm_file_dir, 0, this->front()->fpath );
 
   mxml_node_t *x_study_uid = mxmlNewElement( x_stack, "dicom:StudyInstanceUID" );
-  mxmlNewText( x_study_uid, 0, this->front()->StudyUID.c_str() );
+  mxmlNewText( x_study_uid, 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
 
   mxml_node_t *x_series_uid = mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" );
-  mxmlNewText( x_series_uid, 0, this->front()->SeriesUID.c_str() );
+  mxmlNewText( x_series_uid, 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
 
-  if ( this->front()->m_FrameOfReferenceUID != "missing" )
+  if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
     {
     mxml_node_t *x_for_uid = mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" );
-    mxmlNewText( x_for_uid, 0, this->front()->m_FrameOfReferenceUID.c_str() );
+    mxmlNewText( x_for_uid, 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
     }
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
@@ -253,16 +253,16 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     mxml_node_t *x_dcmfile = mxmlNewElement( x_image, "dcmFile" );
     mxmlNewText( x_dcmfile, 0, (*it)->fname );
 
-    if ( (*it)->m_RescaleIntercept != "missing" )
+    if ( (*it)->GetTagValue( DCM_RescaleIntercept, "missing" ) != "missing" )
       {
       mxml_node_t *x_rescale_intercept = mxmlNewElement( x_image, "dicom:RescaleIntercept" );
-      mxmlNewReal( x_rescale_intercept, atof( (*it)->m_RescaleIntercept.c_str() ) );
+      mxmlNewReal( x_rescale_intercept, atof( (*it)->GetTagValue( DCM_RescaleIntercept ).c_str() ) );
       }
       
-    if ( (*it)->m_RescaleSlope != "missing" )
+    if ( (*it)->GetTagValue( DCM_RescaleSlope, "missing" ) != "missing" )
       {
       mxml_node_t *x_rescale_slope = mxmlNewElement( x_image, "dicom:RescaleSlope" );
-      mxmlNewReal( x_rescale_slope, atof( (*it)->m_RescaleSlope.c_str() ) );
+      mxmlNewReal( x_rescale_slope, atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) );
       }
     }
 
@@ -322,14 +322,14 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       case EMBED_NONE:
 	break;
       case EMBED_STUDYID_STUDYDATE:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->StudyID + "_" + first->StudyDate );
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_StudyID ) + "_" + first->GetTagValue( DCM_StudyDate ) );
 	break;
 	break;
       case EMBED_PATIENTNAME:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->PatientName );
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientName ) );
 	break;
       case EMBED_SERIESDESCR:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->SeriesDescription );
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_SeriesDescription ) );
 	break;
       }
     
@@ -343,14 +343,14 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
     }
   
   cmtk::DebugOutput( 1 ) << "DICOM Information: \n"
-			 << "  Description:   " << first->SeriesDescription << "\n"
-			 << "  Series:        " << first->SeriesUID << "\n"
-			 << "  Study:         " << first->StudyUID << "\n"
+			 << "  Description:   " << first->GetTagValue( DCM_SeriesDescription ) << "\n"
+			 << "  Series:        " << first->GetTagValue( DCM_SeriesInstanceUID ) << "\n"
+			 << "  Study:         " << first->GetTagValue( DCM_StudyInstanceUID ) << "\n"
 			 << "  Acquisition:   " << first->AcquisitionNumber << "\n"
-			 << "  TR / TE:       " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n"
-			 << "  Position:      " << first->ImagePositionPatient << "\n"
-			 << "  Orientation:   " << first->ImageOrientationPatient << "\n"
-			 << "  Raw Data Type: " << first->RawDataType << "\n";
+			 << "  TR / TE:       " << first->GetTagValue( DCM_RepetitionTime ) << "ms /" << first->GetTagValue( DCM_EchoTime ) << "ms\n"
+			 << "  Position:      " << first->GetTagValue( DCM_ImagePositionPatient ) << "\n"
+			 << "  Orientation:   " << first->GetTagValue( DCM_ImageOrientationPatient ) << "\n"
+			 << "  Raw Data Type: " << first->m_RawDataType << "\n";
     
   cmtk::DebugOutput( 1 ) << "\nImage List:\n";
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 

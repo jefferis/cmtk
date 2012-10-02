@@ -58,16 +58,16 @@ void
 ImageFileDICOM::Print() const
 {
   cmtk::DebugOutput( 1 ) << "  File Name =            [" << this->fpath << "/" << this->fname << "]\n";
-  cmtk::DebugOutput( 1 ) << "  SeriesID =             [" << this->SeriesUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  StudyID =              [" << this->StudyUID << "]\n";
-  cmtk::DebugOutput( 1 ) << "  ImagePositionPatient = [" << this->ImagePositionPatient << "]\n";
+  cmtk::DebugOutput( 1 ) << "  SeriesID =             [" << this->GetTagValue( DCM_SeriesInstanceUID ) << "]\n";
+  cmtk::DebugOutput( 1 ) << "  StudyID =              [" << this->GetTagValue( DCM_StudyInstanceUID ) << "]\n";
+  cmtk::DebugOutput( 1 ) << "  ImagePositionPatient = [" << this->GetTagValue( DCM_ImagePositionPatient ) << "]\n";
   cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =    [" << this->AcquisitionNumber << "]\n";
-  cmtk::DebugOutput( 1 ) << "  Modality =             [" << this->Modality << "]\n";
+  cmtk::DebugOutput( 1 ) << "  Modality =             [" << this->GetTagValue( DCM_Modality ) << "]\n";
 
-  if ( this->Modality == "MR" )
+  if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
-    cmtk::DebugOutput( 1 ) << "  EchoTime =          [" << this->EchoTime << "]\n";
-    cmtk::DebugOutput( 1 ) << "  RepetitionTime =      [" << this->RepetitionTime << "]\n";
+    cmtk::DebugOutput( 1 ) << "  EchoTime =          [" << this->GetTagValue( DCM_EchoTime ) << "]\n";
+    cmtk::DebugOutput( 1 ) << "  RepetitionTime =      [" << this->GetTagValue( DCM_RepetitionTime ) << "]\n";
     }
 }
   
@@ -81,8 +81,8 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
   if ( ! disableCheckOrientation )
     {
     double orientThis[6], orientOther[6];
-    sscanf( this->ImageOrientationPatient.c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
-    sscanf( other.ImageOrientationPatient.c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
+    sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
+    sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
 
     for ( int i = 0; i < 6; ++i )
       {
@@ -92,33 +92,23 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     }
 
   return
-    ( m_FrameOfReferenceUID == other.m_FrameOfReferenceUID ) && 
-    ( SeriesUID == other.SeriesUID ) && 
-    ( StudyUID == other.StudyUID ) && 
-    ( EchoTime == other.EchoTime ) &&
-    ( RepetitionTime == other.RepetitionTime ) && 
-    ( BValue == other.BValue ) &&
-    ( BVector == other.BVector ) &&
-    (( AcquisitionNumber == other.AcquisitionNumber ) || ignoreAcquisitionNumber) && 
-    ( this->RawDataType == other.RawDataType );
+    ( this->GetTagValue( DCM_FrameOfReferenceUID ) == other.GetTagValue( DCM_FrameOfReferenceUID ) ) && 
+    ( this->GetTagValue( DCM_SeriesInstanceUID ) == other.GetTagValue( DCM_SeriesInstanceUID ) ) && 
+    ( this->GetTagValue( DCM_StudyInstanceUID ) == other.GetTagValue( DCM_StudyInstanceUID ) ) && 
+    ( this->GetTagValue( DCM_EchoTime ) == other.GetTagValue( DCM_EchoTime ) ) &&
+    ( this->GetTagValue( DCM_RepetitionTime ) == other.GetTagValue( DCM_RepetitionTime ) ) && 
+    ( this->BValue == other.BValue ) &&
+    ( this->BVector == other.BVector ) &&
+    (( this->AcquisitionNumber == other.AcquisitionNumber ) || ignoreAcquisitionNumber) && 
+    ( this->m_RawDataType == other.m_RawDataType );
 }
 
 ImageFileDICOM::ImageFileDICOM( const char* filename )
-  : Modality( "unknown" ),
-    Manufacturer( "unknown" ),
-    ManufacturerModel( "unknown" ),
-    m_DeviceSerialNumber( "missing" ),
-    IsMultislice( false ),
-    SeriesUID( "missing" ),
-    m_FrameOfReferenceUID( "missing" ),
-    StudyUID( "missing" ),
-    m_RescaleIntercept( "missing" ),
-    m_RescaleSlope( "missing" ),
-    m_ImagingFrequency( "missing" ),
-    RawDataType( "unknown" ),
-    IsDWI( false ),
-    BValue( 0 ),
-    BVector( 0.0 )
+  :IsMultislice( false ),
+   IsDWI( false ),   
+   BValue( 0 ),
+   BVector( 0.0 ),
+   m_RawDataType( "unknown" )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
@@ -172,7 +162,7 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   const char* tmpStr = NULL;
 
   if ( this->m_Document->getValue( DCM_Modality, tmpStr ) )
-    this->Modality = tmpStr;
+    this->m_TagToStringMap[DCM_Modality] = tmpStr;
 
   // check for multi-slice DICOMs
   Uint16 nFrames = 0;
@@ -182,31 +172,31 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
     }
 
   if ( this->m_Document->getValue( DCM_PatientsName, tmpStr ) )
-    PatientName = tmpStr;
+    this->m_TagToStringMap[DCM_PatientName] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
-    SeriesUID = tmpStr;
+    this->m_TagToStringMap[DCM_SeriesInstanceUID] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_FrameOfReferenceUID, tmpStr ) )
-    this->m_FrameOfReferenceUID = tmpStr;
+    this->m_TagToStringMap[DCM_FrameOfReferenceUID] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_SeriesDescription, tmpStr ) )
-    SeriesDescription = tmpStr;
+    this->m_TagToStringMap[DCM_SeriesDescription] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_StudyInstanceUID, tmpStr ) )
-    StudyUID = tmpStr;
+    this->m_TagToStringMap[DCM_StudyInstanceUID] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_StudyID, tmpStr ) )
-    StudyID = tmpStr;
+    this->m_TagToStringMap[DCM_StudyID] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_StudyDate, tmpStr ) )
-    StudyDate = tmpStr;
+    this->m_TagToStringMap[DCM_StudyDate] = tmpStr;
   
   if ( this->m_Document->getValue( DCM_ImagePositionPatient, tmpStr ) )
-    ImagePositionPatient = tmpStr;
+    this->m_TagToStringMap[DCM_ImagePositionPatient] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_ImageOrientationPatient, tmpStr ) )
-    ImageOrientationPatient = tmpStr;
+    this->m_TagToStringMap[DCM_ImageOrientationPatient] = tmpStr;
 
   if ( ! this->m_Document->getValue( DCM_InstanceNumber, InstanceNumber ) )
     InstanceNumber = 0;
@@ -215,38 +205,34 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
     AcquisitionNumber = 0;
 
   if ( this->m_Document->getValue( DCM_RescaleIntercept, tmpStr ) )
-    this->m_RescaleIntercept = tmpStr;
+    this->m_TagToStringMap[DCM_RescaleIntercept] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_RescaleSlope, tmpStr ) )
-    this->m_RescaleSlope = tmpStr;
+    this->m_TagToStringMap[DCM_RescaleSlope] = tmpStr;
 
   // check for MR modality and treat accordingly
-  if ( this->Modality == "MR" )
+  if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
     if ( this->m_Document->getValue( DCM_EchoTime, tmpStr ) )
-      EchoTime = tmpStr;
+      this->m_TagToStringMap[DCM_EchoTime] = tmpStr;
     
     if ( this->m_Document->getValue( DCM_RepetitionTime, tmpStr ) )
-      RepetitionTime = tmpStr;
+      this->m_TagToStringMap[DCM_RepetitionTime] = tmpStr;
 
     if ( this->m_Document->getValue( DCM_ImagingFrequency, tmpStr ) )
-      this->m_ImagingFrequency = tmpStr;
-    }
-  else
-    {
-    this->EchoTime = this->RepetitionTime = "";
+      this->m_TagToStringMap[DCM_ImagingFrequency] = tmpStr;
     }
   
   if ( this->m_Document->getValue( DCM_ManufacturerModelName, tmpStr ) != 0 )
-    this->ManufacturerModel = tmpStr;
+    this->m_TagToStringMap[DCM_ManufacturerModelName] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_DeviceSerialNumber, tmpStr ) != 0 )
-    this->m_DeviceSerialNumber = tmpStr;
+    this->m_TagToStringMap[DCM_DeviceSerialNumber] = tmpStr;
 
   // check for which vendor and deal with specifics elsewhere
   if ( this->m_Document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
     {
-    this->Manufacturer = tmpStr;
+    this->m_TagToStringMap[DCM_Manufacturer] = tmpStr;
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
       this->DoVendorTagsSiemens();
@@ -268,7 +254,7 @@ ImageFileDICOM::DoVendorTagsSiemens()
   this->IsMultislice = this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
   this->IsMultislice |= ( this->m_Document->getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
   
-  if ( this->Modality == "MR" )
+  if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
     if ( (this->IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
@@ -295,7 +281,7 @@ ImageFileDICOM::DoVendorTagsGE()
   const char* tmpStr = NULL;
   int tmpInt = 0;
 
-  if ( this->Modality == "MR" )
+  if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
     // raw data type
     Sint16 rawTypeIdx = 3;
@@ -304,7 +290,7 @@ ImageFileDICOM::DoVendorTagsGE()
     rawTypeIdx = std::min( 3, std::max( 0, (int)rawTypeIdx ) );
     
     const char *const RawDataTypeString[4] = { "magnitude", "phase", "real", "imaginary" };
-    this->RawDataType = RawDataTypeString[rawTypeIdx];
+    this->m_RawDataType = RawDataTypeString[rawTypeIdx];
     
     // dwi information
     this->IsDWI = false;

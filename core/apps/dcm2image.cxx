@@ -183,10 +183,10 @@ VolumeList::WriteVolumes()
       {
       // replace place holders
       std::string path( OutPathPattern );
-      path = cmtk::StrReplace( path, "%D", cmtk::StrMakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
-      path = cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
-      path = cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->EchoTime ) );
-      path = cmtk::StrReplace( path, "%T", (*it)[0][0]->RawDataType );
+      path = cmtk::StrReplace( path, "%D", cmtk::StrMakeLegalInPath( (*it)[0][0]->GetTagValue( DCM_SeriesDescription ) ) );
+      path = cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->GetTagValue( DCM_RepetitionTime ) ) );
+      path = cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->GetTagValue( DCM_EchoTime ) ) );
+      path = cmtk::StrReplace( path, "%T", (*it)[0][0]->m_RawDataType );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";

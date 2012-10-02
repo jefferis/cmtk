@@ -73,71 +73,14 @@ public:
   /// File system path (i.e., directory).
   char* fpath;
 
-  /// Modality.
-  std::string Modality;
-
-  /// Device manufacturer.
-  std::string Manufacturer;
-
-  /// Device model.
-  std::string ManufacturerModel;
-
-  /// Device serial number.
-  std::string m_DeviceSerialNumber;
-
   /// Flag for multislice images
   bool IsMultislice;
-
-  /// Patient name.
-  std::string PatientName;
-
-  /// DICOM SeriesUID.
-  std::string SeriesUID;
-
-  /// DICOM FrameOfReferenceUID
-  std::string m_FrameOfReferenceUID;
-
-  /// DICOM SeriesDescription
-  std::string SeriesDescription;
-
-  /// DICOM StudyID.
-  std::string StudyID;
-
-  /// DICOM StudyDate.
-  std::string StudyDate;
-  
-  /// DICOM StudyUID.
-  std::string StudyUID;
-
-  /// DICOM pixel value rescale intercept
-  std::string m_RescaleIntercept;
-
-  /// DICOM pixel value rescale slope
-  std::string m_RescaleSlope;
-
-  /// MR repetition time, TR
-  std::string RepetitionTime;
-
-  /// MR echo time, TE.
-  std::string EchoTime;
-
-  /// MR imaging frequency.
-  std::string m_ImagingFrequency;
-
-  /// 3D image position (first pixel) in patient coordinates.
-  std::string ImagePositionPatient;
-
-  /// 3D image orientation (pos. x and pos. y image axes) in patient coordinates.
-  std::string ImageOrientationPatient;
 
   /// DICOM acquisition number.
   Sint32 AcquisitionNumber;
 
   /// DICOM image number (index in volume).
   Sint32 InstanceNumber;
-
-  /// Raw data type (real, imaginary, phase, magnitude) currently supported on GE images only.
-  std::string RawDataType;
 
   /// Flag for diffusion-weighted images.
   bool IsDWI;
@@ -147,6 +90,9 @@ public:
 
   /// B vector for DWI.
   cmtk::FixedVector<3,double> BVector;
+
+  /// Raw data type string.
+  std::string m_RawDataType;
 
   /// Constructor.
   ImageFileDICOM( const char* filename );
@@ -186,9 +132,22 @@ public:
     this->m_Document = std::auto_ptr<DiDocument>( NULL );
   }
 
+  /// Get tag value.
+  const std::string& GetTagValue( const DcmTagKey& tag /*!< Find value string for this tag in DICOM file */, const std::string& defaultString = "" /*!< Return this default value if tag does not exist */ ) const
+  {
+    std::map<DcmTagKey,std::string>::const_iterator it = this->m_TagToStringMap.find( tag );
+    if ( it != this->m_TagToStringMap.end() )
+      return it->second;
+    else
+      return defaultString;
+  }
+
 private:
   /// DICOM document object.
   std::auto_ptr<DiDocument> m_Document;
+
+  /// Map DCMTK tags to their string values in this image file.
+  std::map<DcmTagKey,std::string> m_TagToStringMap;
 
   /// Handle Siemens private tags.
   void DoVendorTagsSiemens();
