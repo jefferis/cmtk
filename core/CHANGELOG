@@ -1,5 +1,7 @@
 Release CMTK-2.2.5:
 
+(r4527) Fixed: incorrect image origin was previously computed for Siemens
+        mosaic DICOM images (Issue #6754).
 (r4522) Added: more DICOM information is now put into the dcm2image-generated
         XML files, such as MR imaging frequency; study, series, and
         frame-of-reference UIDs; device serial number; and intensity rescale
