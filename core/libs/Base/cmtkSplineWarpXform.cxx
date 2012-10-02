@@ -950,7 +950,7 @@ SplineWarpXform::GetInverseConsistencyError
 	{
 	if ( inverse->InDomain( *pVec ) ) 
 	  {
-	  inverse->ApplyInPlace( *pVec );
+	  *pVec = inverse->Apply( *pVec );
 	  v = volume->GetGridLocation( x, y, z );
 	  v -= *pVec;
 	  result += v.RootSumOfSquares();

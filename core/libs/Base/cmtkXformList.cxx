@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +56,7 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
       if ( (*it)->m_WarpXform ) 
 	{
 	// yes: use approximate inverse
-	if ( ! (*it)->m_WarpXform->ApplyInverseInPlace( v, this->m_Epsilon ) ) 
+	if ( ! (*it)->m_WarpXform->ApplyInverse( v, v, this->m_Epsilon ) ) 
 	  {
 	  // if that fails, return failure flag
 	  return false;
@@ -67,7 +67,7 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
 	// is this an affine transformation that has an inverse?
 	if ( (*it)->InverseAffineXform ) 
 	  // apply inverse
-	  (*it)->InverseAffineXform->ApplyInPlace( v );
+	  v = (*it)->InverseAffineXform->Apply( v );
 	else
 	  // nothing else we can do: exit with failure flag
 	  return false;
@@ -77,7 +77,7 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
       {
       // are we outside xform domain? then return failure.
       if ( !(*it)->m_Xform->InDomain( v ) ) return false;
-      (*it)->m_Xform->ApplyInPlace( v );
+      v = (*it)->m_Xform->Apply( v );
       }
     }
   return true;
@@ -101,7 +101,7 @@ cmtk::XformList::GetJacobian
       if ( (*it)->m_WarpXform ) 
 	{
 	// yes: use approximate inverse
-	if ( (*it)->m_WarpXform->ApplyInverseInPlace( vv, this->m_Epsilon ) ) 
+	if ( (*it)->m_WarpXform->ApplyInverse( vv, vv, this->m_Epsilon ) ) 
 	  // compute Jacobian at destination and invert
 	  jacobian /= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );	
 	else
@@ -113,7 +113,7 @@ cmtk::XformList::GetJacobian
 	// is this an affine transformation that has an inverse?
 	if ( (*it)->InverseAffineXform ) 
 	  // apply inverse
-	  (*it)->InverseAffineXform->ApplyInPlace( vv );
+	  vv = (*it)->InverseAffineXform->Apply( vv );
 	else
 	  // nothing else we can do: exit with failure flag
 	  return false;
@@ -127,7 +127,7 @@ cmtk::XformList::GetJacobian
       jacobian *= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );
       if ( correctGlobalScale )
 	jacobian /= static_cast<Types::DataItem>( (*it)->GlobalScale );
-      (*it)->m_Xform->ApplyInPlace( vv );
+      vv = (*it)->m_Xform->Apply( vv );
       }
     }
   return true;

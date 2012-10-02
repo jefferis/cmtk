@@ -85,8 +85,8 @@ public:
   {
     for ( std::list<LandmarkPair>::iterator it = this->m_LandmarkPairs.begin(); it != this->m_LandmarkPairs.end(); ++it )
       {
-      xform.ApplyInPlace( it->m_Location );
-      xform.ApplyInPlace( it->m_TargetLocation );
+      it->m_Location = xform.Apply( it->m_Location );
+      it->m_TargetLocation = xform.Apply( it->m_TargetLocation );
       }
   }
 

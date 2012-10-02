@@ -388,11 +388,11 @@ VolumeInjectionReconstruction
 	  UniformVolume::CoordinateVectorType v = passImage->GetGridLocation( x, y, z );
 	  if ( passImageXformInverse )
 	    {
-	    passImageXformInverse->ApplyInPlace( v );
+	    v = passImageXformInverse->Apply( v );
 	    }
 	  else
 	    {
-	    this->m_TransformationsToPassImages[pass]->ApplyInverseInPlace( v );
+	    this->m_TransformationsToPassImages[pass]->ApplyInverse( v, v );
 	    }
 	  
 	  int targetGridPosition[3];

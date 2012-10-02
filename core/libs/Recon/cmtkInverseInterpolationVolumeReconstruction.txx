@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,7 +63,6 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 #pragma omp parallel for
     for ( int x = 0; x < passImageDimsX; ++x )
       {
-      UniformVolume::CoordinateVectorType v;
       int correctedImageGridPoint[3];
       Types::Coordinate from[3], to[3];
     
@@ -73,8 +72,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 	  {
           Types::DataItem interpolatedData = 0;
 	  Types::Coordinate totalWeight = 0;
-          v = passImage->GetGridLocation( x, y, z );
-	  passXform->ApplyInPlace( v );
+	  const UniformVolume::CoordinateVectorType v = passXform->Apply( passImage->GetGridLocation( x, y, z ) );
 
           if ( this->m_CorrectedImage->FindVoxel( v, correctedImageGridPoint, from, to ) )
 	    {
@@ -180,8 +178,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 		{
 		Types::DataItem weight = 0;
 	      
-		UniformVolume::CoordinateVectorType v = interpolatedPassImage->GetGridLocation( i, j, k );
-		inverseTransformationToPassImage->ApplyInPlace( v );
+		const UniformVolume::CoordinateVectorType v = inverseTransformationToPassImage->Apply( interpolatedPassImage->GetGridLocation( i, j, k ) );
 	      
 		int correctedImageGridPoint[3];
 		if ( correctedImage->FindVoxel( v, correctedImageGridPoint, from, to ) )
@@ -244,8 +241,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
       {
       for ( int c = 0; c < 2; ++c, ++neighborIdx )
 	{
-	corners3D[neighborIdx] = correctedImage->GetGridLocation( corners[a][0], corners[b][1], corners[c][2] );
-	transformationToPassImage->ApplyInPlace( corners3D[neighborIdx] );
+	corners3D[neighborIdx] = transformationToPassImage->Apply( correctedImage->GetGridLocation( corners[a][0], corners[b][1], corners[c][2] ) );
 	}
       }
     }

@@ -58,9 +58,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 	p[0] = this->m_Offset[0];
 	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->m_Spacing[0], ofs+=3 ) 
 	  {
-	  Self::SpaceVectorType q( p );
-	  affineXform->ApplyInPlace( q );
-	  q -= p;
+	  const Self::SpaceVectorType q( affineXform->Apply( p ) - p );
 
 	  ofs[0] = q[0];
 	  ofs[1] = q[1];
@@ -107,10 +105,11 @@ DeformationField::GetTransformedGridRow
     }
 }
 
-void
-DeformationField::ApplyInPlace
-( Self::SpaceVectorType& v ) const
+DeformationField::SpaceVectorType
+DeformationField::Apply
+( const Self::SpaceVectorType& v ) const
 {
+  Self::SpaceVectorType vTransformed;
   Types::Coordinate r[3], f[3];
   int grid[3];
   
@@ -157,9 +156,11 @@ DeformationField::ApplyInPlace
       mm +=  ( m ? f[2] : 1-f[2] ) * ll;
       coeff_mm += nextK;
       }
-    v[dim] += mm;
+    vTransformed[dim] += mm;
     ++coeff;
     }
+
+  return vTransformed;
 }
 
 } // namespace cmtk

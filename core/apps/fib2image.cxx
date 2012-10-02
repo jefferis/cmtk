@@ -117,8 +117,7 @@ doMain( const int argc, const char* argv[] )
 	std::getline( std::cin, restOfLine );
 
 	// transform from fib space into image space
-	fromTrackingSpace.ApplyInPlace( xyz );
-	if ( outputImage->GetClosestGridPointIndex( xyz, ijk ) )
+	if ( outputImage->GetClosestGridPointIndex( fromTrackingSpace.Apply( xyz ), ijk ) )
 	  {
 	  outputImage->SetDataAt( value, trackingImage->GetOffsetFromIndex( ijk ) );
 	  }

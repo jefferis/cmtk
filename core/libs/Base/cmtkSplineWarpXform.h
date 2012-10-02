@@ -201,16 +201,6 @@ public:
    * this function computes only a more or less accurate numerical 
    * approximation to the actual origin of a warped vector. Note also that this
    * computation is everything but computationally efficient.
-   *\return True is the given inverse was succesfully comuted, false if the
-   * given warped vector was outside the target domain of this transformation.
-   */
-  virtual bool ApplyInverseInPlace( Self::SpaceVectorType& v, const Types::Coordinate accuracy = 0.01  ) const;
-
-  /** Return origin of warped vector.
-   * Note that since this class of transformation is not closed under inversion
-   * this function computes only a more or less accurate numerical 
-   * approximation to the actual origin of a warped vector. Note also that this
-   * computation is everything but computationally efficient.
    *\param v Input location; is replaced with the inverse transformation applied to it upon return.
    *\param initial Initial estimate for the original location. Search goes
    * from here. This is useful for looking up the original locations of
@@ -220,11 +210,12 @@ public:
    *\return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
-  virtual bool ApplyInverseInPlaceWithInitial( Self::SpaceVectorType& v, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
+  virtual bool ApplyInverseWithInitial( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
 
   /// Replace existing vector with transformed location.
-  virtual void ApplyInPlace( Self::SpaceVectorType& v ) const 
+  virtual Self::SpaceVectorType Apply( const Self::SpaceVectorType& v ) const 
   {
+    Self::SpaceVectorType vTransformed;
     Types::Coordinate f[3];
     int grid[3];
     
@@ -271,9 +262,11 @@ public:
 	mm += CubicSpline::ApproxSpline( m, f[2] ) * ll;
 	coeff_mm += nextK;
 	}
-      v[dim] = mm;
+      vTransformed[dim] = mm;
       ++coeff;
       }
+  
+    return vTransformed;
   }
   
   /// Precompute spline parameters for one point.

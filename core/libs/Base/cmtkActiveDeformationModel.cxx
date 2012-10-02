@@ -161,11 +161,9 @@ ActiveDeformationModel<W>::MakeSamplePoints( const W* deformation )
   Vector3D u;
   for ( unsigned int pointIdx = 0; pointIdx < numberOfParameters / 3; ++pointIdx, ptr += 3 ) 
     {
-    FixedVector<3,Types::Coordinate> v = FixedVector<3,Types::Coordinate>::FromPointer( ptr );
-    
     // undo affine transformation component
-    xform->ApplyInPlace( v );
-    
+    const FixedVector<3,Types::Coordinate> v = xform->Apply( FixedVector<3,Types::Coordinate>::FromPointer( ptr ) );
+
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
       ptr[dim] = v[dim];

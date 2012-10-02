@@ -88,19 +88,13 @@ WarpXform::GetDerivativeLandmarksMSD
   this->m_Parameters[idx] += step;
   for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source = it->m_Location;
-    Self::SpaceVectorType target = it->m_TargetLocation;
-    this->ApplyInPlace( source );
-    upperMSD += (source - target).SumOfSquares();
+    upperMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
     }
   
   this->m_Parameters[idx] = pOld - step;
   for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
     {
-    Self::SpaceVectorType source = it->m_Location;
-    Self::SpaceVectorType target = it->m_TargetLocation;
-    this->ApplyInPlace( source );
-    lowerMSD += (source - target).SumOfSquares();
+    lowerMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
     }
   this->m_Parameters[idx] = pOld;
   
@@ -132,12 +126,10 @@ WarpXform::GetInverseConsistencyError
       for ( int x = pVoi->From()[0]; x < pVoi->To()[0]; ++x ) 
 	{
 	v = volume->GetGridLocation( x, y, z );
-	vv = v;
-	this->ApplyInPlace( vv );
+	vv = this->Apply( v );
 	if ( inverse->InDomain( vv ) ) 
 	  {
-	  inverse->ApplyInPlace( vv );
-	  v -= vv;
+	  v -= inverse->Apply( vv );
 	  result += v.RootSumOfSquares();
 	  ++count;
 	  }

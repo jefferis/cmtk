@@ -215,14 +215,6 @@ public:
   /// Refine control point grid, but maintain transformation exactly.
   virtual void Refine() {}
 
-  /// Return warped vector.
-  virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const 
-  {
-    Self::SpaceVectorType w(v);
-    this->ApplyInPlace( w );
-    return w;
-  }
-  
   /** Return derivative of registration error with respect to one parameter.
    */
   virtual void GetDerivativeLandmarksMSD( double& lowerMSD, double& upperMSD, const LandmarkPairList& ll, const unsigned int idx, const Types::Coordinate step );

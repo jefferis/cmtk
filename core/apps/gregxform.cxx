@@ -217,7 +217,7 @@ doMain( const int argc, const char *argv[] )
 	
 	if ( Forward )
 	  {
-	  splineWarp->ApplyInPlace( v );
+	  v = splineWarp->Apply( v );
 	  success = true;
 	  }
 	else
@@ -225,18 +225,16 @@ doMain( const int argc, const char *argv[] )
 	  if ( fallbackInverseXform )
 	    {
 	    cmtk::Vector3D initialEstimate( fallbackInverseXform->Apply( v ) );
-	    success = splineWarp->ApplyInverseInPlaceWithInitial( v, initialEstimate, Accuracy );
+	    success = splineWarp->ApplyInverseWithInitial( v, v, initialEstimate, Accuracy );
 	    }
 	  else
 	    {
-	    success = splineWarp->ApplyInverseInPlace( v, Accuracy );
+	    success = splineWarp->ApplyInverse( v, v, Accuracy );
 	    }
 	  }
 	if ( !success )
 	  {
-	  uu = v;
-	  splineWarp->ApplyInPlace( uu );
-	  uu -= u;
+	  uu = splineWarp->Apply( v ) - u;
 	  error = uu.RootSumOfSquares();
 
 	  fprintf( stderr, "ERROR: %f %f %f is not inside target image or inversion failed (error = %f)\n", u[0], u[1], u[2], error );
@@ -247,12 +245,12 @@ doMain( const int argc, const char *argv[] )
 	if ( Forward )
 	  {
 	  if ( affineXform )
-	    affineXform->ApplyInPlace( v );
+	    v = affineXform->Apply( v );
 	  }
 	else
 	  {
 	  if ( inverseAffineXform )
-	    inverseAffineXform->ApplyInPlace( v );
+	    v = inverseAffineXform->Apply( v );
 	  }
 	}
       if ( success || NoCheck ) 

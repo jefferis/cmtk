@@ -241,30 +241,14 @@ public:
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& vec ) const 
   {
-    Self::SpaceVectorType Result( vec );
-    this->ApplyInPlace( Result );
-    return Result;
+    return vec * this->Matrix;
   }
   
-  /// Apply transformation to existing vector.
-  void ApplyInPlace( Self::SpaceVectorType& vec ) const 
-  {
-    vec *= this->Matrix;
-  }
-
-  /** Return origin of warped vector.
+  /** Apply inverse of this transformation to vector.
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate = 0.01  ) const
   {
     u = this->GetInverse()->Apply( v );
-    return true;
-  }
-
-  /** Return origin of warped vector.
-   */
-  virtual bool ApplyInverseInPlace( Self::SpaceVectorType& v, const Types::Coordinate = 0.01  ) const
-  {
-    this->GetInverse()->ApplyInPlace( v );
     return true;
   }
 

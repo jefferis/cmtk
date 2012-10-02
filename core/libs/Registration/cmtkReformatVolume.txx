@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -174,8 +174,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
     if ( ! params->ThisThreadIndex && ! (offset % statusUpdateIncrement) ) 
       Progress::SetProgress( offset );
 
-    v = xyz;
-    const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
+    const bool success = splineXform->ApplyInverse( xyz, v, 0.1 * minDelta );
     u = v;
     
     unsigned int toIdx = 0;
@@ -189,8 +188,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
       
       for ( unsigned int img = 0; img < params->numberOfImages-1; ++img ) 
 	{
-	v = u;
-	xforms[img]->ApplyInPlace( v );
+	v = xforms[img]->Apply( u );
 	
 	if ( (*interpolatorList)[img+1]->GetDataAt( v, value[toIdx] ) )
 	  ++toIdx;

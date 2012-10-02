@@ -112,19 +112,11 @@ public:
   void InitControlPoints( const AffineXform* affineXform = NULL );
 
   /// Apply transformation to vector in-place.
-  virtual void ApplyInPlace ( Self::SpaceVectorType& ) const;
+  virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& ) const;
 
   /** Return origin of warped vector.
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const 
-  {
-    // not implemented
-    return false;
-  }
-
-  /** Return origin of warped vector.
-   */
-  virtual bool ApplyInverseInPlace( Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const 
   {
     // not implemented
     return false;

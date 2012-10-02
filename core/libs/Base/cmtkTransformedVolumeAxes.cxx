@@ -56,10 +56,10 @@ TransformedVolumeAxes::TransformedVolumeAxes
     
   if ( xform ) 
     {
-    xform->ApplyInPlace(V);
-    xform->ApplyInPlace(dX);
-    xform->ApplyInPlace(dY);
-    xform->ApplyInPlace(dZ);
+    V = xform->Apply(V);
+    dX = xform->Apply(dX);
+    dY = xform->Apply(dY);
+    dZ = xform->Apply(dZ);
     }
 
   dX -= V;

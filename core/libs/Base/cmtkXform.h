@@ -110,22 +110,15 @@ public:
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& ) const = 0;
 
-  /// Apply transformation to vector in-place.
-  virtual void ApplyInPlace ( Self::SpaceVectorType& ) const = 0;
-
-  /** Return origin of warped vector.
+  /** Return inverse-transformed vector.
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlace( Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const = 0;
-
-  /** Return origin of warped vector.
-   */
-  virtual bool ApplyInverseInPlaceWithInitial( Self::SpaceVectorType& v, const Self::SpaceVectorType&, const Types::Coordinate error = 0.01 ) const
+  virtual bool ApplyInverseWithInitial( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Self::SpaceVectorType&, const Types::Coordinate error = 0.01 ) const
   {
-    return this->ApplyInverseInPlace( v, error );
+    return this->ApplyInverse( v, u, error );
   }
 
   /// Clone and return smart pointer.

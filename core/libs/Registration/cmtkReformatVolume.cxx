@@ -161,8 +161,7 @@ ReformatVolume::PlainReformat()
 	  {
 	  for ( int pX = 0; pX<dims[0]; ++pX, ++offset ) 
 	    {	    
-	    pFlt = ReferenceVolume->GetGridLocation( pX, pY, pZ );
-	    this->m_AffineXform->ApplyInPlace( pFlt );
+	    pFlt = this->m_AffineXform->Apply( ReferenceVolume->GetGridLocation( pX, pY, pZ ) );
 	    
 	    if ( interpolator->GetDataAt( pFlt, value ) )
 	      targetData->Set( value, offset );
@@ -233,8 +232,7 @@ ReformatVolume::PlainReformat
       {
       for ( int pX = 0; pX<DimsX; ++pX, ++offset ) 
 	{	    
-	pMod = ReferenceVolume->GetGridLocation( pX, pY, plane );
-	this->m_AffineXform->ApplyInPlace( pMod );
+	pMod = this->m_AffineXform->Apply( ReferenceVolume->GetGridLocation( pX, pY, plane ) );
 
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );
@@ -275,8 +273,7 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
       v[0] = bbFrom[0];
       for ( int cx = 0; cx < dims[0]; ++cx, v[0] += delta[0], ++offset ) 
 	{
-	u = v;
-	const bool success = splineXform->ApplyInverseInPlace( u, 0.1 * minDelta );
+	const bool success = splineXform->ApplyInverse( v, u, 0.1 * minDelta );
 	
 	if ( success ) 
 	  {
@@ -325,8 +322,7 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
       xyz[0] = bbFrom[0];
       for ( int cx = 0; cx < dims[0]; ++cx, xyz[0] += delta[0], ++offset ) 
 	{
-	v = xyz;
-	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
+	const bool success = splineXform->ApplyInverse( xyz, v, 0.1 * minDelta );
 	u = v;
 	
 	bool valid = false;
@@ -341,8 +337,7 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
 	  
 	  for ( unsigned int img = 0; img < params->numberOfImages-1; ++img ) 
 	    {
-	    v = u;
-	    (*xformList)[img]->ApplyInPlace( v );
+	    v = (*xformList)[img]->Apply( u );
 	    valid = (*volumeList)[img]->ProbeNoXform( probe[toIdx], v );
 	    if ( valid ) ++toIdx;	    
 	    }
@@ -466,8 +461,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
       xyz[0] = bbFrom[0];
       for ( int cx = 0; cx < dims[0]; ++cx, xyz[0] += delta[0], ++offset ) 
 	{
-	v = xyz;
-	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
+	const bool success = splineXform->ApplyInverse( xyz, v, 0.1 * minDelta );
 	u = v;
 	
 	if ( success ) 

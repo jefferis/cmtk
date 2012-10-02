@@ -68,7 +68,7 @@ cmtk::SplineWarpXformITKIO
       {
       v = xform.GetOriginalControlPointPositionByOffset( cp );
       if ( bulkXform )
-	bulkXform->ApplyInPlace( v );
+	v = bulkXform->Apply( v );
       vx = xform.GetShiftedControlPointPositionByOffset( cp );
 
       vx -= v;

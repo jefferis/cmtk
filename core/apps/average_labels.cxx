@@ -135,8 +135,7 @@ doMain( const int argc, const char* argv[] )
 	  const cmtk::Xform* xform = it->first;
 	  const cmtk::UniformVolume* volume = it->second;
 
-	  cmtk::Vector3D vx( v );
-	  xform->ApplyInPlace( vx );
+	  const cmtk::Vector3D vx( xform->Apply( v ) );
 	  	  
 	  cmtk::ProbeInfo probeInfo;
 	  if ( volume->ProbeNoXform( probeInfo, vx ) )

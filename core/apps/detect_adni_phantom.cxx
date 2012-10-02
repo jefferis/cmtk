@@ -92,7 +92,7 @@ doMain( const int argc, const char* argv[] )
   // bring expected landmark locations from phantom image into physical space
   for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
     {
-    phantomToPhysical.ApplyInPlace( it->m_Location );
+    it->m_Location = phantomToPhysical.Apply( it->m_Location );
     }
 
   // get detected landmark locations
@@ -100,7 +100,7 @@ doMain( const int argc, const char* argv[] )
   // bring detected landmark locations from phantom image into physical space
   for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
     {
-    phantomToPhysical.ApplyInPlace( it->m_Location );
+     it->m_Location = phantomToPhysical.Apply( it->m_Location );
     }
   
   // match expected and detected landmarks

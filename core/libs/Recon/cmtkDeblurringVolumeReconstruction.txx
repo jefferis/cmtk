@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -96,11 +96,9 @@ DeblurringVolumeReconstruction<TPSF>
 	  {
 	  for (int i = corrBoundingBox[0]; i <= corrBoundingBox[3]; ++i)
 	    {
-	    UniformVolume::CoordinateVectorType curNeighbVec3D;
-	    Types::Coordinate from[3], to[3];
-	    curNeighbVec3D = correctedImage->GetGridLocation( i, j, k );
-	    correctedToPassXform->ApplyInPlace( curNeighbVec3D );
+	    const UniformVolume::CoordinateVectorType curNeighbVec3D = correctedToPassXform->Apply( correctedImage->GetGridLocation( i, j, k ) );
             
+	    Types::Coordinate from[3], to[3];
 	    int neighborPassVox[3];
 	    if ( passImage->FindVoxel( curNeighbVec3D, neighborPassVox, from, to ) )
 	      {
@@ -161,8 +159,7 @@ DeblurringVolumeReconstruction<TPSF>
 	{
 	const int corrCenterVox[3] = { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 
-        UniformVolume::CoordinateVectorType curCenterVec3D = correctedImage->GetGridLocation( corrCenterVox[0], corrCenterVox[1], corrCenterVox[2] );
-        transformationToPassImage->ApplyInPlace( curCenterVec3D );
+        const UniformVolume::CoordinateVectorType curCenterVec3D = transformationToPassImage->Apply( correctedImage->GetGridLocation( corrCenterVox[0], corrCenterVox[1], corrCenterVox[2] ) );
 
 	/* compute neighborhood in blurred (pass) image from which blurred pixels 
            * are affected by current corrected image pixel
@@ -246,7 +243,7 @@ DeblurringVolumeReconstruction<TPSF>
         corners3D[neighborIdx][0] = corners[a][0];
         corners3D[neighborIdx][1] = corners[b][1];
         corners3D[neighborIdx][2] = corners[c][2];
-	passToCorrectedXform->ApplyInPlace( corners3D[neighborIdx] );
+	corners3D[neighborIdx] = passToCorrectedXform->Apply( corners3D[neighborIdx] );
         }
       }
     }

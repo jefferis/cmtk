@@ -236,16 +236,16 @@ doMain ( const int argc, const char* argv[] )
       if ( xform )
 	{
 	if ( InvertXform )
-	  success = success && xform->ApplyInverseInPlace( v1 );
+	  success = success && xform->ApplyInverse( v1, v1 );
 	else
-	  xform->ApplyInPlace( v1 );
+	  v1 = xform->Apply( v1 );
 	}
       if ( minusXform )
 	{
 	if ( InvertMinusXform )
-	  success = success && minusXform->ApplyInverseInPlace( v0 );
+	  success = success && minusXform->ApplyInverse( v0, v0 );
 	else
-	  minusXform->ApplyInPlace( v0 );
+	  v0 = minusXform->Apply( v0 );
 	}
 
       if ( success )
@@ -277,16 +277,16 @@ doMain ( const int argc, const char* argv[] )
       if ( xform )
 	{
 	if ( InvertXform )
-	  success = success && xform->ApplyInverseInPlace( v1 );
+	  success = success && xform->ApplyInverse( v1, v1 );
 	else
-	  xform->ApplyInPlace( v1 );
+	  v1 = xform->Apply( v1 );
 	}
       if ( minusXform )
 	{
 	if ( InvertMinusXform )
-	  success = success && minusXform->ApplyInverseInPlace( v0 );
+	  success = success && minusXform->ApplyInverse( v0, v0 );
 	else
-	  minusXform->ApplyInPlace( v0 );
+	  v0 = minusXform->Apply( v0 );
 	}
 
       if ( success )

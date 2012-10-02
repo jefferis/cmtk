@@ -448,8 +448,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
       {
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
-	UniformVolume::CoordinateVectorType v = originalVolume->GetGridLocation( x, y, z );
-	alignment->ApplyInPlace( v );
+	const UniformVolume::CoordinateVectorType v = alignment->Apply( originalVolume->GetGridLocation( x, y, z ) );
 
 	if ( interpolator->GetDataAt( v, data ) )
 	  {

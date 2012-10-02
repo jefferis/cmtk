@@ -45,15 +45,7 @@ bool
 SplineWarpXform::ApplyInverse
 ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy ) const
 {
-  u = v;
-  return this->ApplyInverseInPlace( u, accuracy );
-}
-
-bool
-SplineWarpXform::ApplyInverseInPlace 
-( Self::SpaceVectorType& v, const Types::Coordinate accuracy ) const
-{
-  return this->ApplyInverseInPlaceWithInitial( v, this->FindClosestControlPoint( v ), accuracy );
+  return this->ApplyInverseWithInitial( v, u, this->FindClosestControlPoint( v ), accuracy );
 }
 
 SplineWarpXform::SpaceVectorType
@@ -82,8 +74,7 @@ SplineWarpXform::FindClosestControlPoint
 	  idx[dim] += dir * step;
 	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
 	    {
-	    Self::SpaceVectorType cp = this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] );
-	    this->ApplyInPlace( cp );
+	    Self::SpaceVectorType cp = this->Apply( this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] ) );
 	    cp -= v;
 	    const Types::Coordinate distance = cp.RootSumOfSquares();
 	    if ( distance < closestDistance ) 
@@ -112,8 +103,8 @@ SplineWarpXform::FindClosestControlPoint
 }
 
 bool
-SplineWarpXform::ApplyInverseInPlaceWithInitial
-( Self::SpaceVectorType& target, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy ) 
+SplineWarpXform::ApplyInverseWithInitial
+( const Self::SpaceVectorType& target, Self::SpaceVectorType& source, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy ) 
   const
 {
   Self::SpaceVectorType u( initial );
@@ -124,8 +115,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
     u[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( u[dim], this->m_Domain[dim] ) );
     }
 
-  Self::SpaceVectorType vu( initial ), delta;
-  this->ApplyInPlace( vu );
+  Self::SpaceVectorType vu( this->Apply( initial ) ), delta;
   ((delta = vu) -= target);
 
   Types::Coordinate error = delta.RootSumOfSquares();
@@ -150,7 +140,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
       }
     
     Self::SpaceVectorType uNext( vu );
-    this->ApplyInPlace( vu );
+    vu = this->Apply( vu );
     
     (delta = vu) -= target;
     if ( error > delta.RootSumOfSquares() ) 
@@ -164,7 +154,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
       }
     }
 
-  target = u;
+  source = u;
   return !(error > accuracy);
 }
 
