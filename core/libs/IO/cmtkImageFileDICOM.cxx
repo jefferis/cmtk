@@ -146,10 +146,21 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     throw(2);
     }
 
-  const char* tmpStr = NULL;
+  // read the string tags that we need for later
+  const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber,
+					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_ImagingFrequency,
+					  DCM_PatientsName, 
+					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
+					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,
+					  DCM_ImagePositionPatient, DCM_ImageOrientationPatient, 
+					  DCM_RescaleIntercept, DCM_RescaleSlope };
 
-  if ( this->m_Document->getValue( DCM_Modality, tmpStr ) )
-    this->m_TagToStringMap[DCM_Modality] = tmpStr;
+  for ( size_t tagIdx = 0; tagIdx < sizeof( defaultStringTags ); ++tagIdx )
+    {
+    const char* tmpStr = NULL;
+    if ( this->m_Document->getValue( defaultStringTags[tagIdx], tmpStr ) )
+      this->m_TagToStringMap[defaultStringTags[tagIdx]] = tmpStr;
+    }
 
   // check for multi-slice DICOMs
   Uint16 nFrames = 0;
@@ -158,77 +169,22 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     this->m_IsMultislice = (nFrames > 1 );
     }
 
-  if ( this->m_Document->getValue( DCM_PatientsName, tmpStr ) )
-    this->m_TagToStringMap[DCM_PatientsName] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
-    this->m_TagToStringMap[DCM_SeriesInstanceUID] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_FrameOfReferenceUID, tmpStr ) )
-    this->m_TagToStringMap[DCM_FrameOfReferenceUID] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_SeriesDescription, tmpStr ) )
-    this->m_TagToStringMap[DCM_SeriesDescription] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_StudyInstanceUID, tmpStr ) )
-    this->m_TagToStringMap[DCM_StudyInstanceUID] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_StudyID, tmpStr ) )
-    this->m_TagToStringMap[DCM_StudyID] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_StudyDate, tmpStr ) )
-    this->m_TagToStringMap[DCM_StudyDate] = tmpStr;
-  
-  if ( this->m_Document->getValue( DCM_ImagePositionPatient, tmpStr ) )
-    this->m_TagToStringMap[DCM_ImagePositionPatient] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_ImageOrientationPatient, tmpStr ) )
-    this->m_TagToStringMap[DCM_ImageOrientationPatient] = tmpStr;
-
+  // read integer tags that we also need
   if ( ! this->m_Document->getValue( DCM_InstanceNumber, this->m_InstanceNumber ) )
     this->m_InstanceNumber = 0;
 
   if ( ! this->m_Document->getValue( DCM_AcquisitionNumber, this->m_AcquisitionNumber ) )
     this->m_AcquisitionNumber = 0;
 
-  if ( this->m_Document->getValue( DCM_RescaleIntercept, tmpStr ) )
-    this->m_TagToStringMap[DCM_RescaleIntercept] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_RescaleSlope, tmpStr ) )
-    this->m_TagToStringMap[DCM_RescaleSlope] = tmpStr;
-
-  // check for MR modality and treat accordingly
-  if ( this->GetTagValue( DCM_Modality ) == "MR" )
-    {
-    if ( this->m_Document->getValue( DCM_EchoTime, tmpStr ) )
-      this->m_TagToStringMap[DCM_EchoTime] = tmpStr;
-    
-    if ( this->m_Document->getValue( DCM_RepetitionTime, tmpStr ) )
-      this->m_TagToStringMap[DCM_RepetitionTime] = tmpStr;
-
-    if ( this->m_Document->getValue( DCM_ImagingFrequency, tmpStr ) )
-      this->m_TagToStringMap[DCM_ImagingFrequency] = tmpStr;
-    }
-  
-  if ( this->m_Document->getValue( DCM_ManufacturerModelName, tmpStr ) != 0 )
-    this->m_TagToStringMap[DCM_ManufacturerModelName] = tmpStr;
-
-  if ( this->m_Document->getValue( DCM_DeviceSerialNumber, tmpStr ) != 0 )
-    this->m_TagToStringMap[DCM_DeviceSerialNumber] = tmpStr;
-
   // check for which vendor and deal with specifics elsewhere
-  if ( this->m_Document->getValue( DCM_Manufacturer, tmpStr ) != 0 )
+  if ( this->m_TagToStringMap[DCM_Manufacturer].substr( 0, 7 ) == "SIEMENS" )
     {
-    this->m_TagToStringMap[DCM_Manufacturer] = tmpStr;
-    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
-      {
-      this->DoVendorTagsSiemens();
-      }      
-    
-    if ( !strncmp( tmpStr, "GE", 2 ) )
-      {
-      this->DoVendorTagsGE();
-      }
+    this->DoVendorTagsSiemens();
+    }      
+  
+  if ( this->m_TagToStringMap[DCM_Manufacturer].substr( 0, 2 ) == "GE" )
+    {
+    this->DoVendorTagsGE();
     }
 }
 
