@@ -38,18 +38,6 @@
 
 #include <dcmtk/dcmimgle/diutils.h>
 
-#ifndef DCM_RawDataType_ImageType
-#define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
-#endif
-
-#ifndef DCM_ManufacturerModelName
-#define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)
-#endif
-
-#ifndef DCM_PatientsName
-#define DCM_PatientsName DCM_PatientName
-#endif
-
 namespace
 cmtk
 {

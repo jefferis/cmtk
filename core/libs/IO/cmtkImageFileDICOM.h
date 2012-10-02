@@ -43,6 +43,18 @@
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmimgle/didocu.h>
 
+#ifndef DCM_RawDataType_ImageType
+#define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
+#endif
+
+#ifndef DCM_ManufacturerModelName
+#define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)
+#endif
+
+#ifndef DCM_PatientsName
+#define DCM_PatientsName DCM_PatientName
+#endif
+
 #include <string>
 #include <map>
 #include <memory>

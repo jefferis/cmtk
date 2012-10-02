@@ -326,7 +326,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 	break;
 	break;
       case EMBED_PATIENTNAME:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientName ) );
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientsName ) );
 	break;
       case EMBED_SERIESDESCR:
 	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_SeriesDescription ) );
