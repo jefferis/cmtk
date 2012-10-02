@@ -172,7 +172,7 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
     }
 
   if ( this->m_Document->getValue( DCM_PatientsName, tmpStr ) )
-    this->m_TagToStringMap[DCM_PatientName] = tmpStr;
+    this->m_TagToStringMap[DCM_PatientsName] = tmpStr;
 
   if ( this->m_Document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
     this->m_TagToStringMap[DCM_SeriesInstanceUID] = tmpStr;
