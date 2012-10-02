@@ -285,23 +285,23 @@ AffineXform::GetParamStep
   return mmStep;
 }
 
-AffineXform::SmartPtr
-AffineXform::GetDifference( const AffineXform& other ) const
+AffineXform
+AffineXform::GetDifference( const Self& other ) const
 {
-  Self::SmartPtr result( this->MakeInverse() );
-  result->Concat( other );
+  Self result( *(this->GetInverse()) );
+  result.Concat( other );
   return result;
 }
 
 void
-AffineXform::Concat( const AffineXform& other )
+AffineXform::Concat( const Self& other )
 {
   this->Matrix *= other.Matrix;
   this->DecomposeMatrix();
 }
 
 void
-AffineXform::Insert( const AffineXform& other )
+AffineXform::Insert( const Self& other )
 {
   Self::MatrixType composed( other.Matrix );
   composed *= this->Matrix;

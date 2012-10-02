@@ -183,9 +183,8 @@ public:
   virtual Self* MakeInverse () const;
 
   /** Compute difference to another affine transformation.
-   *\todo It is probably not a good idea to return a dynamically allocated object here.
    */
-  virtual Self::SmartPtr GetDifference( const AffineXform& other ) const;
+  virtual Self GetDifference( const AffineXform& other ) const;
 
   /// Get linked inverse of this transformation.
   Self::SmartPtr& GetInverse();
