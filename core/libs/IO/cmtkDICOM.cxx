@@ -314,7 +314,8 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 
 
 const FixedVector<3,double>
-DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
+DICOM::DemosaicAndGetNormal
+( const FixedArray< 2, FixedVector<3,double> >& imageOrientation, const FixedVector<3,Types::Coordinate>& deltas, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
 {
   // without further information, we "guess" the image normal vector
   FixedVector<3,double> sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
@@ -381,6 +382,9 @@ DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& image
 	    }
 	  
 	  pixelDataArray = newDataArray;
+
+	  // convert CSA-header center-of-image origin to corner-of-image standard origin (Issue #6754)
+	  imageOrigin -= (0.5 * ((dims[0]-1) * deltas[0] * imageOrientation[0] + (dims[1]-1) * deltas[1] * imageOrientation[1]) );
 	  }
 	}
       }  
@@ -389,7 +393,7 @@ DICOM::DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& image
 }
 
 void
-DICOM::ParseSiemensCSA( const DcmTagKey& tagKey,  int& unmosaicImageCols, int& unmosaicImageRows, int& slices, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
+DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& unmosaicImageRows, int& slices, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
 {
   const Uint8* csaHeaderInfo = NULL;
   unsigned long csaHeaderLength = 0;

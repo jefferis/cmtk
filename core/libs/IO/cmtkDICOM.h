@@ -88,6 +88,7 @@ public:
 
   /// Demosaic (if necessary) the image and return slice normal vector.
   const FixedVector<3,double> DemosaicAndGetNormal( const FixedArray< 2, FixedVector<3,double> >& imageOrientation /*!< Image orientation vectors (read-only, for default normal computation)*/, 
+						    const FixedVector<3,Types::Coordinate>& deltas /*!< Pixel size - this is needed for computing image origin coordinates from image center location */,
 						    FixedVector<3,int>& dims /*!< Image dimensions - these may be modified if the image is a mosaic */, 
 						    TypedArray::SmartPtr& pixelDataArray /*!< Pixel data array - a new array will be returned if the image is a mosaic.*/,
 						    FixedVector<3,double>& imageOrigin /*!< True image origin from CSA header if this is a mosaic file. */);
