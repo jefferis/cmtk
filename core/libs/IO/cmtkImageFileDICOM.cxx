@@ -45,11 +45,11 @@ cmtk
 void
 ImageFileDICOM::Print() const
 {
-  cmtk::DebugOutput( 1 ) << "  File Name =            [" << this->fpath << "/" << this->fname << "]\n";
+  cmtk::DebugOutput( 1 ) << "  File Name =            [" << this->m_FileDir << "/" << this->m_FileName << "]\n";
   cmtk::DebugOutput( 1 ) << "  SeriesID =             [" << this->GetTagValue( DCM_SeriesInstanceUID ) << "]\n";
   cmtk::DebugOutput( 1 ) << "  StudyID =              [" << this->GetTagValue( DCM_StudyInstanceUID ) << "]\n";
   cmtk::DebugOutput( 1 ) << "  ImagePositionPatient = [" << this->GetTagValue( DCM_ImagePositionPatient ) << "]\n";
-  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =    [" << this->AcquisitionNumber << "]\n";
+  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =    [" << this->m_AcquisitionNumber << "]\n";
   cmtk::DebugOutput( 1 ) << "  Modality =             [" << this->GetTagValue( DCM_Modality ) << "]\n";
 
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
@@ -63,7 +63,7 @@ bool
 ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalTolerance, const bool disableCheckOrientation, const bool ignoreAcquisitionNumber ) const
 {
   // do not stack multislice images
-  if ( this->IsMultislice || other.IsMultislice )
+  if ( this->m_IsMultislice || other.m_IsMultislice )
     return false;
 
   if ( ! disableCheckOrientation )
@@ -85,53 +85,52 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     ( this->GetTagValue( DCM_StudyInstanceUID ) == other.GetTagValue( DCM_StudyInstanceUID ) ) && 
     ( this->GetTagValue( DCM_EchoTime ) == other.GetTagValue( DCM_EchoTime ) ) &&
     ( this->GetTagValue( DCM_RepetitionTime ) == other.GetTagValue( DCM_RepetitionTime ) ) && 
-    ( this->BValue == other.BValue ) &&
-    ( this->BVector == other.BVector ) &&
-    (( this->AcquisitionNumber == other.AcquisitionNumber ) || ignoreAcquisitionNumber) && 
+    ( this->m_BValue == other.m_BValue ) &&
+    ( this->m_BVector == other.m_BVector ) &&
+    (( this->m_AcquisitionNumber == other.m_AcquisitionNumber ) || ignoreAcquisitionNumber) && 
     ( this->m_RawDataType == other.m_RawDataType );
 }
 
-ImageFileDICOM::ImageFileDICOM( const char* filename )
-  :IsMultislice( false ),
-   IsDWI( false ),   
-   BValue( 0 ),
-   BVector( 0.0 ),
+ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
+  :m_IsMultislice( false ),
+   m_IsDWI( false ),   
+   m_BValue( 0 ),
+   m_BVector( 0.0 ),
    m_RawDataType( "unknown" )
 {
-  if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
+  if ( cmtk::FileFormat::Identify( filepath, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
 
-  const char *last_slash = strrchr( filename, CMTK_PATH_SEPARATOR );
-  if ( last_slash ) 
+  this->m_FileName = filepath;
+  this->m_FileDir = "";
+
+  const size_t lastSlash = this->m_FileName.rfind( CMTK_PATH_SEPARATOR );
+  if ( lastSlash != std::string::npos ) 
     {
-    fname = strdup(last_slash+1);
-    char *suffix = strrchr( fname, '.' );
-    if ( suffix )
-      if ( !strcmp( suffix, ".Z" ) || !strcmp( suffix, ".gz" ) ) 
+    this->m_FileDir = this->m_FileName.substr( 0, lastSlash );
+    this->m_FileName = this->m_FileName.substr( lastSlash+1 );
+
+    const size_t suffix = this->m_FileName.rfind( '.' );
+    if ( suffix != std::string::npos )
+      {
+      const std::string suffixStr = this->m_FileName.substr( suffix+1 );
+      if ( (suffixStr == ".Z") || (suffixStr == ".gz") ) 
 	{
-	*suffix = 0;
+	this->m_FileName = this->m_FileName.erase( suffix );
 	}
-    
-    int path_len = last_slash-filename;
-    fpath = (char*)malloc( path_len+1 );
-    strncpy( fpath, filename, path_len );
-    fpath[path_len] = 0;
+      }
+
     } 
-  else
-    {
-    fname = strdup( filename );
-    fpath = NULL;
-    }
   
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
   
   fileformat->transferInit();
-  OFCondition status = fileformat->loadFile( filename );
+  OFCondition status = fileformat->loadFile( filepath.c_str() );
   fileformat->transferEnd();
   
   if ( !status.good() ) 
     {
-    cmtk::StdErr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")\n";
+    cmtk::StdErr << "Error: cannot read DICOM file " << filepath << " (" << status.text() << ")\n";
     throw (0);
     }
   
@@ -156,7 +155,7 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   Uint16 nFrames = 0;
   if ( this->m_Document->getValue( DCM_NumberOfFrames, nFrames ) ) 
     {
-    this->IsMultislice = (nFrames > 1 );
+    this->m_IsMultislice = (nFrames > 1 );
     }
 
   if ( this->m_Document->getValue( DCM_PatientsName, tmpStr ) )
@@ -186,11 +185,11 @@ ImageFileDICOM::ImageFileDICOM( const char* filename )
   if ( this->m_Document->getValue( DCM_ImageOrientationPatient, tmpStr ) )
     this->m_TagToStringMap[DCM_ImageOrientationPatient] = tmpStr;
 
-  if ( ! this->m_Document->getValue( DCM_InstanceNumber, InstanceNumber ) )
-    InstanceNumber = 0;
+  if ( ! this->m_Document->getValue( DCM_InstanceNumber, this->m_InstanceNumber ) )
+    this->m_InstanceNumber = 0;
 
-  if ( ! this->m_Document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
-    AcquisitionNumber = 0;
+  if ( ! this->m_Document->getValue( DCM_AcquisitionNumber, this->m_AcquisitionNumber ) )
+    this->m_AcquisitionNumber = 0;
 
   if ( this->m_Document->getValue( DCM_RescaleIntercept, tmpStr ) )
     this->m_TagToStringMap[DCM_RescaleIntercept] = tmpStr;
@@ -239,8 +238,8 @@ ImageFileDICOM::DoVendorTagsSiemens()
   Uint16 nFrames = 0;
   const char* tmpStr = NULL;
 
-  this->IsMultislice = this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
-  this->IsMultislice |= ( this->m_Document->getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
+  this->m_IsMultislice = this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
+  this->m_IsMultislice |= ( this->m_Document->getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
   
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
@@ -255,19 +254,19 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	this->m_RawDataType = "real";
       }
     
-    if ( (this->IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
+    if ( (this->m_IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
       if ( this->m_Document->getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
 	{
-	this->BValue = atoi( tmpStr );
-	this->IsDWI |= (this->BValue > 0);
+	this->m_BValue = atoi( tmpStr );
+	this->m_IsDWI |= (this->m_BValue > 0);
 	}
       
-      if ( this->BValue > 0 )
+      if ( this->m_BValue > 0 )
 	{
 	for ( int idx = 0; idx < 3; ++idx )
 	  {
-	  this->IsDWI |= (this->m_Document->getValue( DcmTagKey(0x0019,0x100e), this->BVector[idx], idx ) != 0);
+	  this->m_IsDWI |= (this->m_Document->getValue( DcmTagKey(0x0019,0x100e), this->m_BVector[idx], idx ) != 0);
 	  }
 	}
       }
@@ -292,43 +291,37 @@ ImageFileDICOM::DoVendorTagsGE()
     this->m_RawDataType = RawDataTypeString[rawTypeIdx];
     
     // dwi information
-    this->IsDWI = false;
+    this->m_IsDWI = false;
     if ( this->m_Document->getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
       {
       const int nDirections = atoi( tmpStr );
       if ( nDirections > 0 )
 	{
-	this->IsDWI = true;
+	this->m_IsDWI = true;
 	
 	if ( this->m_Document->getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	  {
 	  if ( 1 == sscanf( tmpStr, "%d\\%*c", &tmpInt ) )
 	    {
-	    this->BValue = static_cast<Sint16>( tmpInt );
+	    this->m_BValue = static_cast<Sint16>( tmpInt );
 
 	    for ( int i = 0; i < 3; ++i )
 	      {
 	      if ( this->m_Document->getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
 		{
-		this->BVector[i] = atof( tmpStr );
+		this->m_BVector[i] = atof( tmpStr );
 		}
 	      else
 		{
-		this->BVector[i] = 0;
+		this->m_BVector[i] = 0;
 		}
 	      }
-	    this->BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
+	    this->m_BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
 	    }
 	  }
 	}
       }
     }
-}
-
-ImageFileDICOM::~ImageFileDICOM()
-{
-  free( fname );
-  free( fpath );
 }
 
 bool

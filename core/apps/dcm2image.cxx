@@ -179,7 +179,7 @@ VolumeList::WriteVolumes()
   std::map<std::string,Self> pathToVolumeMap;
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    if ( ((*it)->size() > 1) || (*(*it)->begin())->IsMultislice || WriteSingleSlices )
+    if ( ((*it)->size() > 1) || (*(*it)->begin())->m_IsMultislice || WriteSingleSlices )
       {
       // replace place holders
       std::string path( OutPathPattern );
@@ -205,7 +205,7 @@ VolumeList::WriteVolumes()
     cmtk::DebugOutput( 1 ) << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks:\n\n";
     for ( const_iterator it = begin(); it != end(); ++it ) 
       {
-      if ( ((*it)->size() == 1) && !(*(*it)->begin())->IsMultislice )
+      if ( ((*it)->size() == 1) && !(*(*it)->begin())->m_IsMultislice )
 	{
 	(*(*it))[0]->Print();
 	cmtk::DebugOutput( 1 ) << "\n";

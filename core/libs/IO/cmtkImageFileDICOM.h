@@ -80,37 +80,34 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// File name.
-  char* fname;
+  std::string m_FileName;
 
-  /// File system path (i.e., directory).
-  char* fpath;
+  /// File directory.
+  std::string m_FileDir;
 
   /// Flag for multislice images
-  bool IsMultislice;
+  bool m_IsMultislice;
 
   /// DICOM acquisition number.
-  Sint32 AcquisitionNumber;
+  Sint32 m_AcquisitionNumber;
 
   /// DICOM image number (index in volume).
-  Sint32 InstanceNumber;
+  Sint32 m_InstanceNumber;
 
   /// Flag for diffusion-weighted images.
-  bool IsDWI;
+  bool m_IsDWI;
 
   /// B value for DWI.
-  Sint16 BValue;
+  Sint16 m_BValue;
 
   /// B vector for DWI.
-  cmtk::FixedVector<3,double> BVector;
+  cmtk::FixedVector<3,double> m_BVector;
 
   /// Raw data type string.
   std::string m_RawDataType;
 
   /// Constructor.
-  ImageFileDICOM( const char* filename );
-
-  /// Destructor.
-  ~ImageFileDICOM();
+  ImageFileDICOM( const std::string& filename );
 
   /// Determine whether two images match, i.e., belong to the same volume.
   bool Match( const Self& other, const Types::Coordinate numericalTolerance = 0, /*!< Numerical comparison tolerance; values with absolute difference less than this threshold are considered equal. */
@@ -126,13 +123,13 @@ public:
   /// Compare order based on file name (for lexicographic sorting).
   static bool lessFileName( const Self* lhs, const Self* rhs )
   {
-    return strcmp( lhs->fname, rhs->fname ) < 0;
+    return lhs->m_FileName < rhs->m_FileName;
   }
 
   /// Compare order based on image instace (for sorting in acquisition order).
   static bool lessInstanceNumber( const Self* lhs, const Self* rhs )
   {
-    return lhs->InstanceNumber < rhs->InstanceNumber;
+    return lhs->m_InstanceNumber < rhs->m_InstanceNumber;
   }
 
   /// Print informatiomn about this object.

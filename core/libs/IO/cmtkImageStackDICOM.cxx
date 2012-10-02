@@ -75,7 +75,7 @@ ImageStackDICOM::AddImageFile ( ImageFileDICOM::SmartConstPtr& newImage )
 {
   iterator it = begin();
   for ( ; it != end(); ++it )
-    if ( newImage->InstanceNumber < (*it)->InstanceNumber ) break;
+    if ( newImage->m_InstanceNumber < (*it)->m_InstanceNumber ) break;
   insert( it, newImage );
 }
 
@@ -185,18 +185,18 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       mxmlNewText( x_type, 0, this->front()->m_RawDataType.c_str() );
       }
     
-    if ( this->front()->IsDWI )
+    if ( this->front()->m_IsDWI )
       {
       mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
       
       mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bValue");
-      mxmlNewInteger( x_bval, this->front()->BValue );
+      mxmlNewInteger( x_bval, this->front()->m_BValue );
       
       mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
       mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
-	mxmlNewReal( x_bvec, this->front()->BVector[idx] );
+	mxmlNewReal( x_bvec, this->front()->m_BVector[idx] );
 	}
 
       // Determine bVector in image LPS coordinate space:
@@ -205,7 +205,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       // Make sure still in LPS DICOM coordinate space
       gridLPS->ChangeCoordinateSpace( "LPS" );
       // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
+      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
       
       mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
       mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
@@ -218,7 +218,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       // First, create copy of image grid
       cmtk::UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
       // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
+      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
       
       mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
       mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
@@ -232,7 +232,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxml_node_t *x_stack = mxmlNewElement( x_root, "stack" );
 
   mxml_node_t *x_dcm_file_dir = mxmlNewElement( x_stack, "dcmFileDirectory" );
-  mxmlNewText( x_dcm_file_dir, 0, this->front()->fpath );
+  mxmlNewText( x_dcm_file_dir, 0, this->front()->m_FileDir.c_str() );
 
   mxml_node_t *x_study_uid = mxmlNewElement( x_stack, "dicom:StudyInstanceUID" );
   mxmlNewText( x_study_uid, 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
@@ -251,7 +251,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
 
     mxml_node_t *x_dcmfile = mxmlNewElement( x_image, "dcmFile" );
-    mxmlNewText( x_dcmfile, 0, (*it)->fname );
+    mxmlNewText( x_dcmfile, 0, (*it)->m_FileName.c_str() );
 
     if ( (*it)->GetTagValue( DCM_RescaleIntercept, "missing" ) != "missing" )
       {
@@ -287,17 +287,17 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
   const ImageFileDICOM *first = this->front();
     
   cmtk::UniformVolume::SmartPtr volume;
-  if ( !first->IsMultislice )
+  if ( !first->m_IsMultislice )
     {
     cmtk::StudyImageSet studyImageSet;
     
     studyImageSet.SetImageFormat( cmtk::FILEFORMAT_DICOM );
-    studyImageSet.SetImageDirectory( first->fpath );
+    studyImageSet.SetImageDirectory( first->m_FileDir.c_str() );
     studyImageSet.SetMultiFile( true );
     
     for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
       {
-      studyImageSet.push_back( (*it)->fname );
+      studyImageSet.push_back( (*it)->m_FileName );
       }
     
     volume = cmtk::VolumeFromStudy::Read( &studyImageSet );
@@ -306,9 +306,9 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
     {
     char fullPath[PATH_MAX];
 #ifdef MSC_VER
-    snprintf( fullPath, sizeof( fullPath ), "%s\\%s", first->fpath, first->fname );
+    snprintf( fullPath, sizeof( fullPath ), "%s\\%s", first->m_FileDir.c_str(), first->m_FileName.c_str() );
 #else
-    snprintf( fullPath, sizeof( fullPath ), "%s/%s", first->fpath, first->fname );
+    snprintf( fullPath, sizeof( fullPath ), "%s/%s", first->m_FileDir.c_str(), first->m_FileName.c_str() );
 #endif
 
     volume = cmtk::VolumeFromFile::ReadDICOM( fullPath );
@@ -346,7 +346,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 			 << "  Description:   " << first->GetTagValue( DCM_SeriesDescription ) << "\n"
 			 << "  Series:        " << first->GetTagValue( DCM_SeriesInstanceUID ) << "\n"
 			 << "  Study:         " << first->GetTagValue( DCM_StudyInstanceUID ) << "\n"
-			 << "  Acquisition:   " << first->AcquisitionNumber << "\n"
+			 << "  Acquisition:   " << first->m_AcquisitionNumber << "\n"
 			 << "  TR / TE:       " << first->GetTagValue( DCM_RepetitionTime ) << "ms /" << first->GetTagValue( DCM_EchoTime ) << "ms\n"
 			 << "  Position:      " << first->GetTagValue( DCM_ImagePositionPatient ) << "\n"
 			 << "  Orientation:   " << first->GetTagValue( DCM_ImageOrientationPatient ) << "\n"
@@ -355,7 +355,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
   cmtk::DebugOutput( 1 ) << "\nImage List:\n";
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    cmtk::DebugOutput( 1 ) << (*it)->fname << " ";
+    cmtk::DebugOutput( 1 ) << (*it)->m_FileName << " ";
     }
   cmtk::DebugOutput( 1 ) << "\n====================================================\n";
 
