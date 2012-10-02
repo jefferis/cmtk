@@ -149,9 +149,6 @@ public:
   /// Destructor.
   virtual ~Study();
 
-  /// Update from volume data, possibly after the data has been changed.
-  virtual void UpdateFromVolume();
-
   /** Read volume data.
    *\param reRead If this is false, then the volume is only read if it has not
    * been read before. Otherwise, it is re-read in any case.

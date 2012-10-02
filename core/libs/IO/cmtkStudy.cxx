@@ -90,24 +90,6 @@ Study::Study( const char* fileSystemPath, const char *name )
   }
 }
 
-void
-Study::UpdateFromVolume()
-{
-  const TypedArray *dataArray = this->m_Volume->GetData();
-  if ( dataArray ) 
-    {
-    const Types::DataItemRange range = dataArray->GetRange();
-    this->m_MinimumValue = range.m_LowerBound;
-    this->m_MaximumValue = range.m_UpperBound;
-
-    const Types::DataItem perc01 = dataArray->GetPercentile( 0.01, 1024 );
-    const Types::DataItem perc99 = dataArray->GetPercentile( 0.99, 1024 );
-    
-    this->m_Black = std::min( std::max( this->m_Black, perc01 ), this->m_MaximumValue );
-    this->m_White = std::max( std::min( this->m_White, perc99 ), this->m_MinimumValue );
-    }
-}
-
 const char*
 Study::SetMakeName( const char* name, const int suffix )
 {
