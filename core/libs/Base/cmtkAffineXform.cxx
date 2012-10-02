@@ -285,14 +285,6 @@ AffineXform::GetParamStep
   return mmStep;
 }
 
-AffineXform
-AffineXform::GetDifference( const Self& other ) const
-{
-  Self result( *(this->GetInverse()) );
-  result.Concat( other );
-  return result;
-}
-
 void
 AffineXform::Concat( const Self& other )
 {

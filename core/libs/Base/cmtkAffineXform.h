@@ -182,10 +182,6 @@ public:
   /// Clone inverse of this transformation.
   virtual Self* MakeInverse () const;
 
-  /** Compute difference to another affine transformation.
-   */
-  virtual Self GetDifference( const AffineXform& other ) const;
-
   /// Get linked inverse of this transformation.
   Self::SmartPtr& GetInverse();
 
