@@ -38,7 +38,6 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkStrUtility.h>
 
-#include <IO/cmtkFileConstHeader.h>
 #include <IO/cmtkSiemensCSAHeader.h>
 
 
