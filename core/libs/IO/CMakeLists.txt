@@ -45,6 +45,7 @@ SET(cmtkIO_SRCS
   cmtkLandmarkListIO.cxx
   cmtkPhantomIO_MagphanEMR051.cxx
   cmtkSegmentationLabelIO.cxx
+  cmtkSiemensCSAHeader.cxx
   cmtkStudy.cxx
   cmtkStudyList.cxx
   cmtkTypedStream.cxx
