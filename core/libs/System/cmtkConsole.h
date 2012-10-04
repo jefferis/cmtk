@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,7 @@
 
 #include <iostream>
 #include <string>
+#include <cassert>
 
 #include <System/cmtkMutexLock.h>
 #include <System/cmtkLockingPtr.h>
@@ -106,6 +107,13 @@ public:
 
   /// Decrement indentation level.
   void unindent() { IndentLevel -= 2; }
+
+  /// Implicit conversion to C++ ostream.
+  operator std::ostream&()
+  {
+    assert( this->m_StreamP ); // will fail for StdNull!
+    return *(this->m_StreamP);
+  }
 
 private:
   /// The system stream that we're attaching to.
