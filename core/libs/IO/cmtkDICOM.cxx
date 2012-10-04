@@ -39,6 +39,8 @@
 #include <System/cmtkStrUtility.h>
 
 #include <IO/cmtkFileConstHeader.h>
+#include <IO/cmtkSiemensCSAHeader.h>
+
 
 #ifdef CMTK_USE_DCMTK_JPEG
 #  include <dcmtk/dcmjpeg/djdecode.h>
@@ -399,71 +401,57 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
   unsigned long csaHeaderLength = 0;
   if ( this->Dataset().findAndGetUint8Array ( tagKey, csaHeaderInfo, &csaHeaderLength ).status() == OF_ok )
     {
-    FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
-    const size_t nTags = fileHeader.GetField<Uint32>( 8 );
-    
-    size_t tagOffset = 16; // start after header
-    for ( size_t tag = 0; tag < nTags; ++tag )
+    SiemensCSAHeader csaHeader( (const char*)csaHeaderInfo, csaHeaderLength );
+
+    SiemensCSAHeader::const_iterator it = csaHeader.find( "AcquisitionMatrixText" );
+    if ( (it != csaHeader.end()) && !it->second.empty() )
       {
-      char tagName[65];
-      fileHeader.GetFieldString( tagOffset, tagName, 64 );
-//      StdErr << tag << "\t" << tagName << "\n";
-      
-      const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
-//      StdErr << "  nItems: " << nItems << "\n";
-      
-      tagOffset += 84;
-      for ( size_t item = 0; item < nItems; ++item )
+      if ( 2 != sscanf( it->second[0].c_str(), "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
 	{
-	const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
-	
-//	StdErr << "    len: " << itemLen << "\n";
-
-	// check only first item for de-mosaiced image matrix size
-	if ( !item && !strcmp( tagName, "AcquisitionMatrixText" ) )
+	if ( 2 != sscanf( it->second[0].c_str(), "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
 	  {
-	  char mosaicStr[33];
-	  fileHeader.GetFieldString( tagOffset+16, mosaicStr, sizeof(mosaicStr) );
+	  StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << "\n";
+	  }
+	}
+      }
 
-	  if ( 2 != sscanf( mosaicStr, "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+    it = csaHeader.find( "NumberOfImagesInMosaic" );
+    if ( (it != csaHeader.end()) && !it->second.empty() )
+      slices = atof( it->second[0].c_str() );
+
+    it = csaHeader.find( "SliceNormalVector" );
+    if ( (it != csaHeader.end()) && (it->second.size() >= 3) )
+      {
+      for ( size_t i = 0; i < 3; ++i )
+	sliceNormal[i] = atof( it->second[i].c_str() );
+      }
+
+    // get true slice0 location from CSA header
+    it = csaHeader.find( "MrPhoenixProtocol" );
+    if ( (it != csaHeader.end()) && !it->second.empty() )
+      {
+      // ID strings for three axes in CSA header
+      const std::string sliceOrientationString[] = { "dSag", "dCor", "dTra" };
+      
+      for ( int i = 0; i < 3; ++i )
+	{
+	const size_t sliceTagPos = it->second[0].find( std::string( "sSliceArray.asSlice[0].sPosition." ) + sliceOrientationString[i] );
+	  if ( sliceTagPos != std::string::npos )
 	    {
-	    if ( 2 != sscanf( mosaicStr, "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	    const size_t equalPos = it->second[0].find( '=', sliceTagPos );
+	    if ( equalPos != std::string::npos )
 	      {
-	      StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << mosaicStr << "\n";
+	      imageOrigin[i] = atof( it->second[0].substr( equalPos + 1 ).c_str() );
+	      }
+	    else
+	      {
+	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << "\n";
 	      }
 	    }
-	  }
-
-	// check only first item for numbner of images in mosaic
-	if ( !item && !strcmp( tagName, "NumberOfImagesInMosaic" ) )
-	  {
-	  char valStr[65];
-	  slices = atof( fileHeader.GetFieldString( tagOffset+16, valStr, sizeof(valStr) ) );
-	  }
-
-	if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
-	  {
-	  char valStr[65];
-	  sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, sizeof(valStr) ) );
-	  
-//	  StdErr << "    " << valStr << "\n";
-	  }
-
-	// get true slice0 location from CSA header
-	if ( ! strcmp( tagName, "MrPhoenixProtocol" ) )
-	  {
-	  const char* pSliceZero = StrNStr( reinterpret_cast<const char*>( csaHeaderInfo+tagOffset+16 ), itemLen, "sSliceArray.asSlice[0].sPosition.dSag" );
-	  if ( pSliceZero )
+	  else
 	    {
-	    for ( int i = 0; i < 3; ++i )
-	      {
-	      while ( *pSliceZero != '=' ) ++pSliceZero;
-	      imageOrigin[i] = atof( ++pSliceZero );
-	      }
+	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header\n";
 	    }
-	  }
-	
-	tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
 	}
       }
     }
