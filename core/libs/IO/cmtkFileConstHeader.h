@@ -37,6 +37,8 @@
 
 #include <System/cmtkMemory.h>
 
+#include <string.h>
+
 namespace
 cmtk
 {
