@@ -248,7 +248,7 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	  this->m_BValue = atof( it->second[0].c_str() );
 	  }
 
-	it = csaHeader.find( "DiffusionGradientVector" );	
+	it = csaHeader.find( "DiffusionGradientDirection" );	
 	if ( (it != csaHeader.end()) && (it->second.size() >= 3) )
 	  {
 	  for ( int idx = 0; idx < 3; ++idx )
