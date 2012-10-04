@@ -152,6 +152,9 @@ public:
   }
 
 private:
+  /// Pointer to DICOM dataset object
+  std::auto_ptr<DcmDataset> m_Dataset;
+
   /// DICOM document object.
   std::auto_ptr<DiDocument> m_Document;
 

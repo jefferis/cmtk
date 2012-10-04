@@ -35,6 +35,7 @@
 #include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkFileFormat.h>
+#include <IO/cmtkSiemensCSAHeader.h>
 
 #include <dcmtk/dcmimgle/diutils.h>
 
@@ -134,13 +135,13 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     throw (0);
     }
   
-  DcmDataset *dataset = fileformat->getAndRemoveDataset();
-  if ( ! dataset )
-  {
-     throw(1);
-  }
-
-  this->m_Document = std::auto_ptr<DiDocument>( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
+  this->m_Dataset = std::auto_ptr<DcmDataset>( fileformat->getAndRemoveDataset() );
+  if ( !this->m_Dataset.get() )
+    {
+    throw(1);
+    }
+  
+  this->m_Document = std::auto_ptr<DiDocument>( new DiDocument( this->m_Dataset.get(), this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
   if ( ! this->m_Document.get() || ! this->m_Document->good() ) 
     {
     throw(2);
@@ -209,7 +210,8 @@ ImageFileDICOM::DoVendorTagsSiemens()
       else if ( strstr( tmpStr, "\\R\\" ) )
 	this->m_RawDataType = "real";
       }
-    
+
+    // for DWI, first check standard DICOM vendor tags
     if ( (this->m_IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
       if ( this->m_Document->getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
@@ -223,6 +225,36 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	for ( int idx = 0; idx < 3; ++idx )
 	  {
 	  this->m_IsDWI |= (this->m_Document->getValue( DcmTagKey(0x0019,0x100e), this->m_BVector[idx], idx ) != 0);
+	  }
+	}
+      }
+    else
+      {
+      // no hint of DWI in standard tags, look into CSA header to confirm
+      const Uint8* csaHeaderInfo = NULL;
+      unsigned long csaHeaderLength = 0;
+      if ( this->m_Dataset->findAndGetUint8Array ( DcmTagKey(0x0029,0x1010), csaHeaderInfo, &csaHeaderLength ).status() == OF_ok ) // this is expected in the "Image" CSA header, not the "Series" header.
+	{
+	SiemensCSAHeader csaHeader( (const char*)csaHeaderInfo, csaHeaderLength );
+	SiemensCSAHeader::const_iterator it = csaHeader.find( "DiffusionDirectionality" );
+	if ( (it != csaHeader.end()) && !it->second.empty() )
+	  {
+	  this->m_IsDWI = (0 == it->second[0].compare( 0, 11, "DIRECTIONAL" ));
+	  }
+
+	it = csaHeader.find( "B_value" );
+	if ( (it != csaHeader.end()) && !it->second.empty() )
+	  {
+	  this->m_BValue = atof( it->second[0].c_str() );
+	  }
+
+	it = csaHeader.find( "DiffusionGradientVector" );	
+	if ( (it != csaHeader.end()) && (it->second.size() >= 3) )
+	  {
+	  for ( int idx = 0; idx < 3; ++idx )
+	    {
+	    this->m_BVector[idx] = atof( it->second[idx].c_str() );
+	    }
 	  }
 	}
       }
