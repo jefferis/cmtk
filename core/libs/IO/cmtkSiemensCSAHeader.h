@@ -55,10 +55,9 @@ public:
   SiemensCSAHeader( const char* csaData, const size_t csaLength );
 };
 
-} // namespace cmtk
-
 /// Write header contents to stream.
 std::ostream& operator<<( std::ostream& stream, const cmtk::SiemensCSAHeader& csaHeader );
   
+} // namespace cmtk
 
 #endif // #ifndef __cmtkSiemensCSAHeader_h_included_
