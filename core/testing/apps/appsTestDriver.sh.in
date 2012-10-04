@@ -654,6 +654,10 @@ case ${RUNTEST} in
         run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
+    dcm2imageDiffusionSiemensXML)
+        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-siemens/
+	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml 3.nii 3.nii.xml 4.nii 4.nii.xml
+	;;
     dcm2imageExclude)
         run dcm2image --exclude ImageOrientationPatient=1\\-0\\0\\-0\\1\\0 -O ${tmpdir}/image%n.nii dcm/
 	check_results image1.nii image2.nii

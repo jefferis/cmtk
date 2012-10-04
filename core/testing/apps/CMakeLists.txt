@@ -304,6 +304,7 @@ IF(CMTK_USE_DCMTK)
     dcm2imageMosaic
     dcm2imageMosaicPACS
     dcm2imageDiffusionGEXML
+    dcm2imageDiffusionSiemensXML
     dcm2imageExclude
     dcm2imageInclude)
   
