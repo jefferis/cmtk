@@ -49,6 +49,10 @@ cmtk::SiemensCSAHeader::SiemensCSAHeader( const char* csaData, const size_t csaL
   size_t tagOffset = csa2hdr ? 16 : 8; // start after header: length is 16 bytes for CSA2, 8 bytes for CSA1
   for ( size_t tag = 0; tag < nTags; ++tag )
     {
+    // make sure we don't run over the end of the header
+    if ( tagOffset+84 >= csaLength )
+      break;
+
     // first, get tag name (up to 64 characters plus 0x0)
     char tagName[65];
     fileHeader.GetFieldString( tagOffset, tagName, 64 );
@@ -63,9 +67,12 @@ cmtk::SiemensCSAHeader::SiemensCSAHeader( const char* csaData, const size_t csaL
     tagOffset += 84;
     for ( size_t item = 0; item < nItems; ++item )
       {
+      if ( tagOffset+4 >= csaLength )
+	break;
+
       const size_t itemLen = fileHeader.GetField<unsigned int>( tagOffset );
 
-      if ( itemLen )
+      if ( itemLen && (tagOffset+16+itemLen<csaLength) )
 	{
 	std::vector<char> itemStr( itemLen );
 	fileHeader.GetFieldString( tagOffset+16, &(itemStr[0]), itemLen );	
