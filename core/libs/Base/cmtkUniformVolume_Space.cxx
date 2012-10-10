@@ -70,6 +70,12 @@ UniformVolume
 ::ChangeCoordinateSpace( const std::string& newSpace )
 {
   const std::string currentSpace = this->GetMetaInfo( META_SPACE );
+  if ( currentSpace == "" )
+    {
+    StdErr << "WARNING: trying to change image coordinate space, but no current space is defined. Coordinate system of the resulting image is very likely incorrect.\n";
+    return;
+    }
+  
   if ( currentSpace == newSpace )
     return; // nothing to do.
 
