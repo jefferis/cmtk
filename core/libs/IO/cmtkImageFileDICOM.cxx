@@ -109,6 +109,18 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   if ( lastSlash != std::string::npos ) 
     {
     this->m_FileDir = this->m_FileName.substr( 0, lastSlash );
+
+    // trim trailing slashes, both forward and back
+    const size_t lastNotSlash = this->m_FileDir.find_last_not_of( "/\\" );
+    if ( lastNotSlash != std::string::npos )
+      {
+      this->m_FileDir.erase( lastNotSlash+1 );
+      }
+    else
+      {
+      this->m_FileDir.clear();
+      }
+
     this->m_FileName = this->m_FileName.substr( lastSlash+1 );
 
     const size_t suffix = this->m_FileName.rfind( '.' );

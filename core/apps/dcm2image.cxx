@@ -187,6 +187,28 @@ VolumeList::WriteVolumes()
       path = cmtk::StrReplace( path, "%R", cmtk::StrMakeLegalInPath( (*it)[0][0]->GetTagValue( DCM_RepetitionTime ) ) );
       path = cmtk::StrReplace( path, "%E", cmtk::StrMakeLegalInPath( (*it)[0][0]->GetTagValue( DCM_EchoTime ) ) );
       path = cmtk::StrReplace( path, "%T", (*it)[0][0]->m_RawDataType );
+
+      // replace %0 with file name
+      path = cmtk::StrReplace( path, "%0", (*it)[0][0]->m_FileName );
+
+      // and replace %1 through %9 with directory components of decreasing depth
+      char replaceThis[3] = { '%', '0', 0 }; // this will be modified to be the current replacement
+      std::string directory = (*it)[0][0]->m_FileDir; // start with full directory
+      for ( size_t dirIdx = 1; dirIdx < 10; ++dirIdx )
+	{
+	replaceThis[1] = '0' + dirIdx;
+	const size_t lastSlash = directory.rfind( CMTK_PATH_SEPARATOR );
+	if ( lastSlash == std::string::npos )
+	  {
+	  path = cmtk::StrReplace( path, replaceThis, directory );
+	  dirIdx = 10;
+	  }
+	else
+	  {
+	  path = cmtk::StrReplace( path, replaceThis, directory.substr( lastSlash+1 ) );
+	  directory = directory.substr( 0, lastSlash );
+	  }
+	}
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
