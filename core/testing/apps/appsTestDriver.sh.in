@@ -666,6 +666,12 @@ case ${RUNTEST} in
         run dcm2image --filter ImageOrientationPatient=1\\-0\\0\\-0\\1\\0 -O ${tmpdir}/image%n.nii dcm/
 	check_results image.nii
 	;;
+    dcm2imageSubsDirName)
+        run dcm2image -x --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
+	check_results mr-dwi-ge/I0150.dcm.nii mr-dwi-ge/I0150.dcm.nii.xml mr-dwi-ge/I0280.dcm.nii mr-dwi-ge/I0280.dcm.nii.xml
+	check_results mr-dwi-siemens/I0001.dcm.nii mr-dwi-siemens/I0001.dcm.nii.xml mr-dwi-siemens/I0002.dcm.nii mr-dwi-siemens/I0002.dcm.nii.xml 
+	check_results mr-dwi-siemens/I0003.dcm.nii mr-dwi-siemens/I0003.dcm.nii.xml mr-dwi-siemens/I0004.dcm.nii mr-dwi-siemens/I0004.dcm.nii.xml
+	;;
     describeEmpty)
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt

@@ -306,7 +306,8 @@ IF(CMTK_USE_DCMTK)
     dcm2imageDiffusionGEXML
     dcm2imageDiffusionSiemensXML
     dcm2imageExclude
-    dcm2imageInclude)
+    dcm2imageInclude
+    dcm2imageSubsDirName)
   
   IF(CMTK_BUILD_NRRD)
     LIST(APPEND testList
