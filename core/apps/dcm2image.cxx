@@ -194,19 +194,30 @@ VolumeList::WriteVolumes()
       // and replace %1 through %9 with directory components of decreasing depth
       char replaceThis[3] = { '%', '0', 0 }; // this will be modified to be the current replacement
       std::string directory = (*it)[0][0]->m_FileDir; // start with full directory
-      for ( size_t dirIdx = 1; dirIdx < 10; ++dirIdx )
+      for ( size_t dirIdx = 1; (dirIdx < 10) && !directory.empty(); ++dirIdx )
 	{
 	replaceThis[1] = '0' + dirIdx;
 	const size_t lastSlash = directory.rfind( CMTK_PATH_SEPARATOR );
 	if ( lastSlash == std::string::npos )
 	  {
 	  path = cmtk::StrReplace( path, replaceThis, directory );
-	  dirIdx = 10;
+	  directory.clear();
 	  }
 	else
 	  {
 	  path = cmtk::StrReplace( path, replaceThis, directory.substr( lastSlash+1 ) );
 	  directory = directory.substr( 0, lastSlash );
+
+	  // trim trailing slashes, both forward and back
+	  const size_t lastNotSlash = directory.find_last_not_of( "/\\" );
+	  if ( lastNotSlash != std::string::npos )
+	    {
+	    directory.erase( lastNotSlash+1 );
+	    }
+	  else
+	    {
+	    directory.clear();
+	    }
 	  }
 	}
       
