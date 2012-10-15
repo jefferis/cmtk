@@ -1,5 +1,10 @@
 Release CMTK-2.2.5:
 
+(r4551) Added: "dcm2image" tool can now substitute components of the input
+        image paths into generated output images - "%0" represents the input
+        file name (for the first image in a multi-file stack), "%1" through
+        "%9" the hierarchical directories in order of decreasing depth, i.e.,
+        from deepest to highest. 
 (r4529) Added: image type (magnitude, real, phase) can now be extracted from
         Siemens DICOM files.
 (r4527) Fixed: incorrect image origin was previously computed for Siemens
