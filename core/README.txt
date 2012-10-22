@@ -6,6 +6,8 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.5
 ===========================
 
+The DICOM stacker, dcm2image, has seen a number of recent improvements that
+are included in this release.
 
 
 Release Notes -- CMTK 2.2.4

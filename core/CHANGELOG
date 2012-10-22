@@ -1,4 +1,4 @@
-Release CMTK-2.2.5:
+Release CMTK-2.2.5 (2012-10-22):
 
 (r4551) Added: "dcm2image" tool can now substitute components of the input
         image paths into generated output images - "%0" represents the input
