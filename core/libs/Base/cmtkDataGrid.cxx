@@ -607,7 +607,7 @@ DataGrid
       for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
-	if ( this->GetDataAt( value, x, y, z ) )
+	if ( this->GetDataAt( value, x, y, z ) && MathUtil::IsFinite( value ) )
 	  {
 	  const Types::Coordinate pixelCOM[3] = { value * x, value * y, value * z };
 	  com += Self::SpaceVectorType::FromPointer( pixelCOM );
@@ -634,7 +634,7 @@ DataGrid
       for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
-	if ( this->GetDataAt( value, x, y, z ) )
+	if ( this->GetDataAt( value, x, y, z ) && MathUtil::IsFinite( value ) )
 	  {
 	  const Types::Coordinate pixelMoment[3] = { value * fabs(x - com[0]), value * fabs(y - com[1]), value * fabs(z - com[2]) };
 	  firstOrderMoment += Self::SpaceVectorType::FromPointer( pixelMoment );
