@@ -1,5 +1,6 @@
 Release CMTK-2.2.6:
 
+(r)     Updated: NrrdIO has been updated to current upstream code base.
 (r4562) Fixed: center of mass was not computed properly if Inf or NaN data
         were present in the image.
 

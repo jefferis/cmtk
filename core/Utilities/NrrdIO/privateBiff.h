@@ -24,18 +24,24 @@
 */
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
-** the end result of this is that the source file which includes
-** this can be sure that TEEM_QNANHIBIT is set, and can be sure that
-** it is set to either 0 or 1
+** This private header exists because these functions are used in
+** the biff sources, but no where else.  Also, they take a va_list,
+** which is unusual, and (currently) used for no other public functions
+** in Teem.  Use of va_list args complicates python wrapping (at least
+** with the current ctypeslib mechanism), so these functions are being
+** taken out of the public API.
 */
 
-#ifndef TEEM_QNANHIBIT
-#  error TEEM_QNANHIBIT not defined
-#elif TEEM_QNANHIBIT == 1
-#  /* okay, its 1 */
-#elif TEEM_QNANHIBIT == 0
-#  /* okay, its 0 */
-#else
-#  error TEEM_QNANHIBIT not set to 0 or 1
+/* biffmsg.c */
+extern void _biffMsgAddVL(biffMsg *msg, const char *errfmt, va_list args);
+extern void _biffMsgMoveVL(biffMsg *dest, biffMsg *src,
+                           const char *errfmt, va_list args);
+
+#ifdef __cplusplus
+}
 #endif
