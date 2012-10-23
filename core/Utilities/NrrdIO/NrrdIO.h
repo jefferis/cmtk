@@ -23,6 +23,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/*
+ * Modified 23-Oct-2010 by Torsten Rohlfing for CMTK, 
+ * (C) 2012 SRI International
+ */
+
+#include "NrrdConfigure.h"
 
 #include <stdio.h>
 #include <stdlib.h>
