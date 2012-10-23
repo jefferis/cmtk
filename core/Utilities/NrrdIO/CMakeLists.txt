@@ -23,6 +23,11 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
+#
+# Modified 23-Oct-2012 by Torsten Rohlfing for CMTK, 
+# (C) 2012 SRI International
+#
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 PROJECT(NrrdIO)
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
@@ -47,6 +52,12 @@ miscAir.c simple.c )
 # used on windows builds.
 ADD_DEFINITIONS(-DTEEM_BUILD=1)
 
+# Configure files with settings for use by the build.
+CONFIGURE_FILE(${NrrdIO_SOURCE_DIR}/NrrdConfigure.h.in ${NrrdIO_BINARY_DIR}/NrrdConfigure.h)
+
+# Need to be able to find NrrdConfig.h
+INCLUDE_DIRECTORIES(${NrrdIO_BINARY_DIR})
+
 #The QNANHIBIT variable is configured by the root level CMakeLists.txt
 IF(QNANHIBIT)
   ADD_DEFINITIONS(-DTEEM_QNANHIBIT=1)
@@ -66,12 +77,23 @@ ENDIF(QNANHIBIT)
 
 # Possibly turn on usage of zlib compression (requires linking with libz)
 # (i.e., programs compiled with ITKNrrdIO must also be compiled with zlib)
-#ADD_DEFINITIONS(-DTEEM_ZLIB=1)
+ADD_DEFINITIONS(-DTEEM_ZLIB=1)
+
+##
+## CMTK-speficic add-ons
+##
+
+INCLUDE_DIRECTORIES(BEFORE
+  ${ZCONF_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR})
 
 ADD_LIBRARY(NrrdIO ${nrrdio_SRCS} )
+TARGET_LINK_LIBRARIES(NrrdIO ${ZLIB_LIBRARIES})
 
-## These are ITK-specific
-#TARGET_LINK_LIBRARIES(NrrdIO ${ITK_ZLIB_LIBRARIES} )
-#INSTALL_TARGETS(/lib/InsightToolkit ITKNrrdIO)
-#INSTALL_FILES(/include/InsightToolkit/Utilities/NrrdIO "(\\.h)$")
+INSTALL(TARGETS NrrdIO
+  RUNTIME DESTINATION ${CMTK_INSTALL_BIN_DIR} COMPONENT runtime
+  LIBRARY DESTINATION ${CMTK_INSTALL_LIB_DIR} COMPONENT runtime
+  ARCHIVE DESTINATION ${CMTK_INSTALL_LIB_DIR} COMPONENT libraries)
 
+FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+INSTALL(FILES ${files} DESTINATION ${CMTK_INSTALL_INCLUDE_DIR} COMPONENT headers)
