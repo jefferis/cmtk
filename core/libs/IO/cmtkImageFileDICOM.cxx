@@ -166,9 +166,10 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
 					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
 					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,
 					  DCM_ImagePositionPatient, DCM_ImageOrientationPatient, 
-					  DCM_RescaleIntercept, DCM_RescaleSlope };
-
-  for ( size_t tagIdx = 0; tagIdx < sizeof( defaultStringTags ); ++tagIdx )
+					  DCM_RescaleIntercept, DCM_RescaleSlope,
+					  DcmTagKey( 0, 0 ) };
+  
+  for ( size_t tagIdx = 0; (defaultStringTags[tagIdx].getGroup() != 0) && (defaultStringTags[tagIdx].getElement() != 0); ++tagIdx )
     {
     const char* tmpStr = NULL;
     if ( this->m_Document->getValue( defaultStringTags[tagIdx], tmpStr ) )
