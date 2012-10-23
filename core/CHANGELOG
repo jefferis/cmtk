@@ -1,5 +1,7 @@
 Release CMTK-2.2.6:
 
+(r4562) Fixed: center of mass was not computed properly if Inf or NaN data
+        were present in the image.
 
 
 Release CMTK-2.2.5 (2012-10-22):
