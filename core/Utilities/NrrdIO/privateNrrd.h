@@ -23,6 +23,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+ 	 
+/* 	 
+ * Modified 23-Oct-2012 by Torsten Rohlfing for CMTK, 	 
+ * (C) 2012 SRI International 	 
+ */
 
 #ifdef _WIN32
 #include <io.h>
@@ -165,10 +170,7 @@ extern int _nrrdMaybeAllocMaybeZero_nva(Nrrd *nrrd, int type,
                                         int zeroWhenNoAlloc);
 
 #if TEEM_ZLIB
-#if TEEM_VTK_MANGLE
-#include "vtk_zlib_mangle.h"
-#endif
-#include <zlib.h>
+#include "zlib.h"
 
 /* gzio.c */
 extern gzFile _nrrdGzOpen(FILE* fd, const char *mode);
