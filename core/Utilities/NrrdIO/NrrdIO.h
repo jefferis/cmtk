@@ -61,7 +61,7 @@
                                         easy numerical comparison */
 #define TEEM_VERSION_STRING "1.11.0" /* cannot be so easily compared */
 
-/* THE FOLLOWING INCLUDE IS ONLY FOR THE ITK DISTRIBUTION.
+/* THE FOLLOWING INCLUDE IS ONLY FOR THE CMTK DISTRIBUTION.
    This header mangles the symbols in the NrrdIO library, preventing
    conflicts in applications linked against two versions of NrrdIO. */
 #include "cmtk_NrrdIO_mangle.h"
@@ -70,6 +70,7 @@
 extern "C" {
 #endif
 
+#define TEEM_BUILD 1
 #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(TEEM_STATIC)
 #  if defined(TEEM_BUILD) || defined(air_EXPORTS) || defined(teem_EXPORTS)
 #    define NRRDIO_EXPORT extern __declspec(dllexport)
