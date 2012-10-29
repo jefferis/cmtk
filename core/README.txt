@@ -6,7 +6,8 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.2.6
 ===========================
 
-
+This is primarily a bug fix release to address a segmentation fault in the
+dcm2image tool, introduced in the previous release 2.2.5.
 
 
 Release Notes -- CMTK 2.2.5

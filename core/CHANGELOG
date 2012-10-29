@@ -1,4 +1,4 @@
-Release CMTK-2.2.6:
+Release CMTK-2.2.6 (2012-10-29):
 
 (r4573) Fixed: DICOM stacker segfaulted
 (r4571) Updated: NrrdIO has been updated to current upstream code base from 
