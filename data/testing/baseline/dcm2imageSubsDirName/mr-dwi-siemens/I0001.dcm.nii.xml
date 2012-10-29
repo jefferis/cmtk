@@ -2,6 +2,7 @@
 <device>
 	<dicom:Manufacturer>SIEMENS</dicom:Manufacturer>
 	<dicom:ManufacturerModel>TrioTim</dicom:ManufacturerModel>
+	<dicom:StationName>MRC35216</dicom:StationName>
 	<dicom:DeviceSerialNumber>35216</dicom:DeviceSerialNumber>
 </device>
 <mr>

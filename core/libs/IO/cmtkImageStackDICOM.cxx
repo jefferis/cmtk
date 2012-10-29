@@ -97,6 +97,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:Manufacturer",        { "\t", NULL, NULL, "\n" } },
     { "dicom:ManufacturerModel",   { "\t", NULL, NULL, "\n" } },
     { "dicom:DeviceSerialNumber",  { "\t", NULL, NULL, "\n" } },
+    { "dicom:StationName",         { "\t", NULL, NULL, "\n" } },
     { "dicom:Tr",                  { "\t", NULL, NULL, "\n" } },
     { "dicom:Te",                  { "\t", NULL, NULL, "\n" } },
     { "dicom:ImagingFrequency",    { "\t", NULL, NULL, "\n" } },
@@ -160,6 +161,9 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     
   mxml_node_t *x_model = mxmlNewElement( x_device, "dicom:ManufacturerModel" );
   mxmlNewText( x_model, 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
+
+  mxml_node_t *x_station_name = mxmlNewElement( x_device, "dicom:StationName" );
+  mxmlNewText( x_station_name, 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
 
   mxml_node_t *x_serial_num = mxmlNewElement( x_device, "dicom:DeviceSerialNumber" );
   mxmlNewText( x_serial_num, 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );

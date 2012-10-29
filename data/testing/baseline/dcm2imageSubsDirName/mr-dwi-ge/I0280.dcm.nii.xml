@@ -2,6 +2,7 @@
 <device>
 	<dicom:Manufacturer>GE MEDICAL SYSTEMS</dicom:Manufacturer>
 	<dicom:ManufacturerModel>SIGNA HDx</dicom:ManufacturerModel>
+	<dicom:StationName>3Tclac</dicom:StationName>
 	<dicom:DeviceSerialNumber>0000000000585124</dicom:DeviceSerialNumber>
 </device>
 <mr>
