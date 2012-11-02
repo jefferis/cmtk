@@ -94,27 +94,30 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "dicom:Manufacturer",        { "\t", NULL, NULL, "\n" } },
-    { "dicom:ManufacturerModel",   { "\t", NULL, NULL, "\n" } },
-    { "dicom:DeviceSerialNumber",  { "\t", NULL, NULL, "\n" } },
-    { "dicom:StationName",         { "\t", NULL, NULL, "\n" } },
-    { "dicom:Tr",                  { "\t", NULL, NULL, "\n" } },
-    { "dicom:Te",                  { "\t", NULL, NULL, "\n" } },
-    { "dicom:ImagingFrequency",    { "\t", NULL, NULL, "\n" } },
-    { "type",                      { "\t", NULL, NULL, "\n" } },
-    { "dwi",                       { "\t", "\n", "\t", "\n" } },
-    { "bValue",                    { "\t\t", NULL, NULL, "\n" } },
-    { "bVector",                   { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorImage",              { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorStandard",           { "\t\t", NULL, NULL, "\n" } },
-    { "dcmFileDirectory",          { "\t", NULL, NULL, "\n" } },
-    { "dicom:StudyInstanceUID",    { "\t", NULL, NULL, "\n" } },
-    { "dicom:SeriesInstanceUID",   { "\t", NULL, NULL, "\n" } },
-    { "dicom:FrameOfReferenceUID", { "\t", NULL, NULL, "\n" } },
-    { "image",                     { "\t", "\n", "\t", "\n" } },
-    { "dcmFile",                   { "\t\t", NULL, NULL, "\n" } },
-    { "dicom:RescaleIntercept",    { "\t\t", NULL, NULL, "\n" } },
-    { "dicom:RescaleSlope",        { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:Manufacturer",            { "\t", NULL, NULL, "\n" } },
+    { "dicom:ManufacturerModel",       { "\t", NULL, NULL, "\n" } },
+    { "dicom:DeviceSerialNumber",      { "\t", NULL, NULL, "\n" } },
+    { "dicom:StationName",             { "\t", NULL, NULL, "\n" } },
+    { "dicom:RepetitionTime",          { "\t", NULL, NULL, "\n" } },
+    { "dicom:EchoTime",                { "\t", NULL, NULL, "\n" } },
+    { "dicom:InversionTime",           { "\t", NULL, NULL, "\n" } },
+    { "dicom:ImagingFrequency",        { "\t", NULL, NULL, "\n" } },
+    { "type",                          { "\t", NULL, NULL, "\n" } },
+    { "dwi",                           { "\t", "\n", "\t", "\n" } },
+    { "bValue",                        { "\t\t", NULL, NULL, "\n" } },
+    { "bVector",                       { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorImage",                  { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorStandard",               { "\t\t", NULL, NULL, "\n" } },
+    { "dcmFileDirectory",              { "\t", NULL, NULL, "\n" } },
+    { "dicom:StudyInstanceUID",        { "\t", NULL, NULL, "\n" } },
+    { "dicom:SeriesInstanceUID",       { "\t", NULL, NULL, "\n" } },
+    { "dicom:FrameOfReferenceUID",     { "\t", NULL, NULL, "\n" } }, 
+    { "dicom:ImageOrientationPatient", { "\t", NULL, NULL, "\n" } },
+    { "image",                         { "\t", "\n", "\t", "\n" } },
+    { "dcmFile",                       { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:ImagePositionPatient",    { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleIntercept",        { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleSlope",            { "\t\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
 
@@ -156,17 +159,10 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
 
   mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
 
-  mxml_node_t *x_manufacturer = mxmlNewElement( x_device, "dicom:Manufacturer" );
-  mxmlNewText( x_manufacturer, 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
-    
-  mxml_node_t *x_model = mxmlNewElement( x_device, "dicom:ManufacturerModel" );
-  mxmlNewText( x_model, 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
-
-  mxml_node_t *x_station_name = mxmlNewElement( x_device, "dicom:StationName" );
-  mxmlNewText( x_station_name, 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
-
-  mxml_node_t *x_serial_num = mxmlNewElement( x_device, "dicom:DeviceSerialNumber" );
-  mxmlNewText( x_serial_num, 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
+  mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
+  mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
+  mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
+  mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
 
   std::string modality = this->front()->GetTagValue( DCM_Modality );
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
@@ -174,14 +170,10 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
-    mxml_node_t *x_tr = mxmlNewElement( x_modality, "dicom:Tr");
-    mxmlNewReal( x_tr, atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) );
-    
-    mxml_node_t *x_te = mxmlNewElement( x_modality, "dicom:Te");
-    mxmlNewReal( x_te, atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) );
-
-    mxml_node_t *x_imaging_f = mxmlNewElement( x_modality, "dicom:ImagingFrequency");
-    mxmlNewReal( x_imaging_f, atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
+    mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) );
+    mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) );
+    mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) );
+    mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
 
     if ( this->front()->m_RawDataType != "unknown" )
       {
@@ -193,8 +185,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       {
       mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
       
-      mxml_node_t *x_bval = mxmlNewElement( x_dwi, "bValue");
-      mxmlNewInteger( x_bval, this->front()->m_BValue );
+      mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), this->front()->m_BValue );
       
       mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
       mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
@@ -235,38 +226,32 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     
   mxml_node_t *x_stack = mxmlNewElement( x_root, "stack" );
 
-  mxml_node_t *x_dcm_file_dir = mxmlNewElement( x_stack, "dcmFileDirectory" );
-  mxmlNewText( x_dcm_file_dir, 0, this->front()->m_FileDir.c_str() );
-
-  mxml_node_t *x_study_uid = mxmlNewElement( x_stack, "dicom:StudyInstanceUID" );
-  mxmlNewText( x_study_uid, 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
-
-  mxml_node_t *x_series_uid = mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" );
-  mxmlNewText( x_series_uid, 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
+  mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() );
+  mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
+  mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
 
   if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
     {
-    mxml_node_t *x_for_uid = mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" );
-    mxmlNewText( x_for_uid, 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
+    mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
     }
+
+  mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() );
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
 
-    mxml_node_t *x_dcmfile = mxmlNewElement( x_image, "dcmFile" );
-    mxmlNewText( x_dcmfile, 0, (*it)->m_FileName.c_str() );
+    mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() );
+    mxmlNewText( mxmlNewElement( x_image, "dicom:ImagePositionPatient" ), 0, (*it)->GetTagValue( DCM_ImagePositionPatient ).c_str() );
 
     if ( (*it)->GetTagValue( DCM_RescaleIntercept, "missing" ) != "missing" )
       {
-      mxml_node_t *x_rescale_intercept = mxmlNewElement( x_image, "dicom:RescaleIntercept" );
-      mxmlNewReal( x_rescale_intercept, atof( (*it)->GetTagValue( DCM_RescaleIntercept ).c_str() ) );
+      mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleIntercept" ), atof( (*it)->GetTagValue( DCM_RescaleIntercept ).c_str() ) );
       }
       
     if ( (*it)->GetTagValue( DCM_RescaleSlope, "missing" ) != "missing" )
       {
-      mxml_node_t *x_rescale_slope = mxmlNewElement( x_image, "dicom:RescaleSlope" );
-      mxmlNewReal( x_rescale_slope, atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) );
+      mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) );
       }
     }
 

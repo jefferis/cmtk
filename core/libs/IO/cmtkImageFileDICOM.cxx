@@ -86,6 +86,7 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     ( this->GetTagValue( DCM_StudyInstanceUID ) == other.GetTagValue( DCM_StudyInstanceUID ) ) && 
     ( this->GetTagValue( DCM_EchoTime ) == other.GetTagValue( DCM_EchoTime ) ) &&
     ( this->GetTagValue( DCM_RepetitionTime ) == other.GetTagValue( DCM_RepetitionTime ) ) && 
+    ( this->GetTagValue( DCM_InversionTime ) == other.GetTagValue( DCM_InversionTime ) ) && 
     ( this->m_BValue == other.m_BValue ) &&
     ( this->m_BVector == other.m_BVector ) &&
     (( this->m_AcquisitionNumber == other.m_AcquisitionNumber ) || ignoreAcquisitionNumber) && 
@@ -161,7 +162,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
 
   // read the string tags that we need for later
   const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName,
-					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_ImagingFrequency,
+					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_InversionTime, DCM_ImagingFrequency,
 					  DCM_PatientsName, 
 					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
 					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,

@@ -6,8 +6,9 @@
 	<dicom:DeviceSerialNumber>35216</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<dicom:Tr>7800.000000</dicom:Tr>
-	<dicom:Te>87.000000</dicom:Te>
+	<dicom:RepetitionTime>7800.000000</dicom:RepetitionTime>
+	<dicom:EchoTime>87.000000</dicom:EchoTime>
+	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260136</dicom:ImagingFrequency>
 	<type>magnitude</type>
 	<dwi>
@@ -22,8 +23,10 @@
 	<dicom:StudyInstanceUID></dicom:StudyInstanceUID>
 	<dicom:SeriesInstanceUID></dicom:SeriesInstanceUID>
 	<dicom:FrameOfReferenceUID>1.3.12.2.1107.5.2.32.35216.1.20120221181656968.0.0.0</dicom:FrameOfReferenceUID>
+	<dicom:ImageOrientationPatient>1\0\0\0\1\0</dicom:ImageOrientationPatient>
 	<image>
 		<dcmFile>I0002.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-1082.9055690765\-1094.5278453827\-77.094429016113</dicom:ImagePositionPatient>
 	</image>
 </stack>
 
