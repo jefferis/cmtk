@@ -633,6 +633,7 @@ IF(BUILD_GUI)
 ENDIF(BUILD_GUI)    
 
 SUBDIRS(scripts)
+ADD_SUBDIRECTORY(data)
 
 #-----------------------------------------------------------------------------
 # Configure this tree
