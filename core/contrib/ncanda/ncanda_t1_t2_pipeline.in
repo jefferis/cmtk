@@ -1,0 +1,108 @@
+#!/bin/bash
+
+##
+##  Copyright 2012 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision: 4473 $
+##
+##  $LastChangedDate: 2012-08-08 14:51:14 -0700 (Wed, 08 Aug 2012) $
+##
+##  $LastChangedBy: torsten_at_home $
+##
+
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+ 
+# Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINARY_DIR}/cmtk_functions.sh
+. ${CMTK_BINARY_DIR}/ncanda_setup.sh
+
+#
+# Setup input and output
+#
+
+OUTDIR=$1
+INPUT_T1=$2
+INPUT_T2=$3
+
+#
+# 1 - Bias field correcton
+#
+
+mrbias()
+{
+    local inp=$1
+    local out=$2
+
+    if needs_update_and_lock ${out} ${inp}
+	cmtk mrbias -M 2 --log-intensity --thresh-auto ${inp} ${out}
+	lockfile_delete ${out}
+    fi
+}
+
+mrbias ${INPUT_T1} ${OUTDIR}/mrbias/t1.nii
+mrbias ${INPUT_T2} ${OUTDIR}/mrbias/t2.nii
+
+t1_mrbias=`get_override_file ${OUTDIR}/mrbias/t1.nii`
+t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
+
+#
+# 2 - Align T1 and T2 weighted images
+#
+
+t1t2_affine=${OUTDIR}/registration/t1_t2/affine.xform
+if needs_update ${t1t2_affine}
+    cmtk registrationx --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
+    lockfile_delete ${t1t2_affine}
+fi
+t1t2_affine=`get_override_file ${t1t2_affine}`
+
+#
+# 3 - T2 image skull stripping
+#
+
+t2_mask=${OUTDIR}/stripped/t2_mask.nii
+t2_brain=${OUTDIR}/stripped/t2_brain.nii
+
+if needs_update_and_lock ${t2_mask} ${t2_mrbias}; then
+    fsl bet ${t2_mrbias} stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
+    lockfile_delete ${t2_mask}
+fi
+
+t2_mask=`get_override_file ${t2_mask}`
+t2_brain=`get_override_file ${t2_brain}`
+
+#
+# 4 - map T2 mask to T1 image
+#
+
+t1_mask=${OUTDIR}/stripped/t1_mask.nii
+if needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_affine}; then
+    cmtk reformatx --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_affine}
+    lockfile_delete ${t1_mask}
+fi
+t1_mask=`get_override_file ${t1_mask}`
+
+t1_brain=${OUTDIR}/stripped/t1_brain.nii
+if needs_update ${t1_brain} ${t1_mask}; then
+    cmtk convertx --set-padding 0 --mask ${t1_mask} ${t1_mrbias} ${t1_brain}
+    lockfile_delete ${t1_brain}
+fi
+t1_brain=`get_override_file ${t1_brain}`
