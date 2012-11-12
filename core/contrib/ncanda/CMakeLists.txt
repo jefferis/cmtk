@@ -26,18 +26,17 @@
 ##  $LastChangedBy: torsten_at_home $
 ##
 
-#-----------------------------------------------------------------------------
-# Configure third-party contributions.
+SET(CMTK_FSLDIR "NOTFOUND" CACHE PATH "FSLDIR environment variable default")
 
-OPTION(BUILD_CONTRIB_NCANDA "Build, install, and package script from the National Consortium on Alcohol and Neurodevelopment in Adolescence (N-CANDA)" OFF)
+SET(SCRIPTS ncanda_setup.sh ncanda_t1_pipeline)
 
-IF(BUILD_CONTRIB_NCANDA)
-  ADD_SUBDIRECTORY(ncanda)
-ENDIF(BUILD_CONTRIB_NCANDA)
-
-
-OPTION(BUILD_CONTRIB_MUNGER "Build, install, and package Greg Jefferis' munger script (requires perl)" OFF)
-
-IF(BUILD_CONTRIB_MUNGER)
-  ADD_SUBDIRECTORY(munger)
-ENDIF(BUILD_CONTRIB_MUNGER)
+FOREACH(s ${SCRIPTS})
+  ## Configure for the build tree
+  SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.in ${CMAKE_BINARY_DIR}/bin/${s} @ONLY)
+  
+  ## Configure for the install tree
+  SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_BIN_DIR})
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.in ${CMAKE_BINARY_DIR}/scripts/${s} @ONLY)
+  INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/scripts/${s} DESTINATION ${CMTK_INSTALL_BIN_DIR} COMPONENT tools)
+ENDFOREACH(s ${SCRIPTS})

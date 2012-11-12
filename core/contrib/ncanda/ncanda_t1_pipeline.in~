@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#
+# Set up FSL
+#
+
+FSLDIR=${FSLDIR:-@CMTK_FSLDIR@}
+
+if [ "${FSLDIR}" = "" ]; then
+    echo "ERROR: must set 'FSLDIR' environment variable to FSL root directory"
+    exit 1
+fi
+
+FSL_SH=${FSLDIR}/etc/fslconf/fsl.sh
+if [ ! -e ${FSL_SH} ]; then
+    echo "ERROR: FSL configuration script ${FSL_SH} does not exist."
+    exit 1
+fi
+
+. ${FSL_SH}
+
+fsl()
+{
+	${FSLDIR}/bin/$*
+}
+
+

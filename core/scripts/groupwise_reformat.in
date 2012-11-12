@@ -32,8 +32,8 @@
 
 CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
  
-# Get the utilities.sh script from the scripts/ directory in the CMTK source tree
-. ${CMTK_BINARY_DIR}/utilities.sh
+# Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINARY_DIR}/cmtk_functions.sh
  
 # Check for command line arguments, print help if none given
 if test $# -lt 3; then

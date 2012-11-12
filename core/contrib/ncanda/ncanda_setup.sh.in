@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ##
 ##  Copyright 2012 SRI International
 ##
@@ -26,18 +28,28 @@
 ##  $LastChangedBy: torsten_at_home $
 ##
 
-#-----------------------------------------------------------------------------
-# Configure third-party contributions.
+#
+# Set up FSL
+#
 
-OPTION(BUILD_CONTRIB_NCANDA "Build, install, and package script from the National Consortium on Alcohol and Neurodevelopment in Adolescence (N-CANDA)" OFF)
+FSLDIR=${FSLDIR:-@CMTK_FSLDIR@}
 
-IF(BUILD_CONTRIB_NCANDA)
-  ADD_SUBDIRECTORY(ncanda)
-ENDIF(BUILD_CONTRIB_NCANDA)
+if [ "${FSLDIR}" = "" ]; then
+    echo "ERROR: must set 'FSLDIR' environment variable to FSL root directory"
+    exit 1
+fi
+
+FSL_SH=${FSLDIR}/etc/fslconf/fsl.sh
+if [ ! -e ${FSL_SH} ]; then
+    echo "ERROR: FSL configuration script ${FSL_SH} does not exist."
+    exit 1
+fi
+
+. ${FSL_SH}
+
+fsl()
+{
+    ${FSLDIR}/bin/$*
+}
 
 
-OPTION(BUILD_CONTRIB_MUNGER "Build, install, and package Greg Jefferis' munger script (requires perl)" OFF)
-
-IF(BUILD_CONTRIB_MUNGER)
-  ADD_SUBDIRECTORY(munger)
-ENDIF(BUILD_CONTRIB_MUNGER)
