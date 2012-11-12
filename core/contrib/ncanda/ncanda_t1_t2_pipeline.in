@@ -68,7 +68,7 @@ t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
 #
 
 t1t2_affine=${OUTDIR}/registration/t1_t2/affine.xform
-if needs_update ${t1t2_affine}
+if needs_update ${t1t2_affine}; then
     cmtk registrationx --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
     lockfile_delete ${t1t2_affine}
 fi
