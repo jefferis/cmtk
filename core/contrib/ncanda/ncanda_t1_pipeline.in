@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# Set up FSL
+#
+
+FSLDIR=${FSLDIR:-@CMTK_FSLDIR@}
+. ${FSLDIR}/etc/fslconf/fsl.sh
+
+fsl()
+{
+	${FSLDIR}/bin/$*
+}
+
+
