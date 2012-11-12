@@ -667,6 +667,7 @@ ENDIF(CMTK_USE_SQLITE)
 LIST(APPEND testList
   mrbiasMulIncremental
   mrbiasMulAutoThresh
+  mrbiasMulOtsuThresh
   mrbiasMulLogIntensity
   mrbiasAddMulMask)
 

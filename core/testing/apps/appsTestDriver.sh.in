@@ -1634,6 +1634,10 @@ case ${RUNTEST} in
         run mrbias -v -M 2 --set-padding-value 0 --thresh-auto spgr_3t.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img
 	;;
+    mrbiasMulOtsuThresh)
+        run mrbias -v -M 2 --set-padding-value 0 --thresh-otsu-nbins 256 spgr_3t.hdr ${tmpdir}/corrected.hdr
+	check_results corrected.img
+	;;
     mrbiasMulLogIntensity)
 	run mrbias --log-intensities -M 2 --write-bias-mul ${tmpdir}/bias_mul.hdr --thresh-min 100 spgr_3t.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img bias_mul.img

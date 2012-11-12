@@ -28,7 +28,7 @@
 
 SET(CMTK_FSLDIR "NOTFOUND" CACHE PATH "FSLDIR environment variable default")
 
-SET(SCRIPTS ncanda_setup.sh ncanda_t1_pipeline)
+SET(SCRIPTS ncanda_setup.sh ncanda_t1_pipeline ncanda_t1_t2_pipeline)
 
 FOREACH(s ${SCRIPTS})
   ## Configure for the build tree

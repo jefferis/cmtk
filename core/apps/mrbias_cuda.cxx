@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+#include <Base/cmtkHistogramOtsuThreshold.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -64,6 +65,7 @@ float ThresholdForegroundMin = -FLT_MAX;
 float ThresholdForegroundMax = FLT_MAX;
 bool ThresholdForegroundFlag = false;
 bool ThresholdAuto = false;
+int ThresholdOtsuNBins = 0;
 const char* FNameMaskImage = NULL;
 
 bool UseSamplingDensity = false;
@@ -112,6 +114,7 @@ doMain( const int argc, const char *argv[] )
     cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.AddSwitch( Key( "thresh-auto" ), &ThresholdAuto, true, "Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level." );
+    cl.AddOption( Key( "thresh-otsu-nbins" ), &ThresholdOtsuNBins, "If this is a positive integer, use automatic minimum intensity threshold selection for image foreground by Otsu thresholding with given number of histogram bins." );
     cl.EndGroup();
 
     cl.BeginGroup( "Entropy Estimation", "Entropy Estimation Settings" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
@@ -183,6 +186,14 @@ doMain( const int argc, const char *argv[] )
       cmtk::DebugOutput( 1 ) << "INFO: estimated foreground threshold from noise level as " << ThresholdForegroundMin << "\n";
       }
 
+    if ( ThresholdOtsuNBins > 0 )
+      {
+      ThresholdForegroundMin = static_cast<float>( cmtk::HistogramOtsuThreshold< cmtk::Histogram<unsigned int> >( *(inputImage->GetData()->GetHistogram( ThresholdOtsuNBins )) ).Get() );
+      ThresholdForegroundFlag = true;
+
+      cmtk::DebugOutput( 1 ) << "INFO: Otsu thresholding at " << ThresholdForegroundMin << "\n";
+      }
+    
     if ( ThresholdForegroundFlag )
       {
       maskImage = cmtk::UniformVolume::SmartPtr( inputImage->Clone( true /*copyData*/ ) );

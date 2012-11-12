@@ -31,7 +31,7 @@
 CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
 
 # Check whether we have "lockfile" tool available and include proper script with locking functions
-if which lockfile; then
+if which lockfile > /dev/null; then
     . ${CMTK_BINARY_DIR}/cmtk_locking_procmail.sh
 else
     . ${CMTK_BINARY_DIR}/cmtk_locking.sh
