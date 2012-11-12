@@ -34,4 +34,3 @@ CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
 . ${CMTK_BINARY_DIR}/cmtk_functions.sh
 . ${CMTK_BINARY_DIR}/ncanda_setup.sh
 
-echo $FSLDIR
