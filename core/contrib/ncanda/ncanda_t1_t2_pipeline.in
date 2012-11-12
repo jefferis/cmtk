@@ -51,7 +51,7 @@ mrbias()
     local inp=$1
     local out=$2
 
-    if needs_update_and_lock ${out} ${inp}
+    if needs_update_and_lock ${out} ${inp}; then
 	cmtk mrbias -M 2 --log-intensity --thresh-auto ${inp} ${out}
 	lockfile_delete ${out}
     fi
