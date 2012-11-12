@@ -29,6 +29,33 @@
 ##
 
 #
+# See if a manual override file exists for a given (input) file. An override file inserts
+#  'manual/' into the file system path immediately prior to the file's base name.
+#
+get_override_file()
+{
+    local fpath=$1
+
+    local fdir=`dirname $fpath`
+    local fbse=`basename $fpath`
+
+    local manual=${fdir}/manual/${fbse}
+    if [ -e ${manual} ]; then
+	echo ${manual}
+	return
+    else
+	for compress in gz xz bz2 Z; do
+	    if [ -e ${manual}.${compress} ]; then
+		echo ${manual}
+		return
+	    fi
+	done
+    fi
+
+    echo $fpath
+}
+
+#
 # Set up FSL
 #
 
