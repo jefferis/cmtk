@@ -56,7 +56,3 @@ SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
 
 # Disable FFTW, even if installed on our build system, since it requires MacPorts
 SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library (required for ADNI phantom detection)")
-
-# Enable building Greg's "munger" script
-SET(BUILD_CONTRIB ON CACHE BOOL "Build, install, and package third-party contributions")
-SET(BUILD_CONTRIB_MUNGER ON CACHE BOOL "Build, install, and package Greg Jefferis' munger script (requires perl)")

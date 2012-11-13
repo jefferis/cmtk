@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2009 Torsten Rohlfing
 ##
-##  Copyright 2010 SRI International
+##  Copyright 2010-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -55,3 +55,8 @@ SET(CMTK_USE_MPI "OFF" CACHE BOOL "Support for Message passing Interface distrib
 SET(CMTK_USE_OPENMP "ON" CACHE BOOL "Use OpenMP parallelism")
 SET(CMTK_USE_QT "ON" CACHE BOOL "Use Gt toolkit for GUI tools")
 SET(CMTK_USE_LZMA "OFF" CACHE BOOL "Support for LZMA on-the-fly decompression")
+
+# Enable building N-CANDA pipelines and Greg's "munger" script
+SET(BUILD_CONTRIB ON CACHE BOOL "Build, install, and package third-party contributions")
+SET(BUILD_CONTRIB_NCANDA ON CACHE BOOL "Build, install, and package pipelines for the National Consortium on Alcohol and Neurodevelopment in Adolescence (N-CANDA)")
+SET(BUILD_CONTRIB_MUNGER ON CACHE BOOL "Build, install, and package Greg Jefferis' munger script (requires perl)")
