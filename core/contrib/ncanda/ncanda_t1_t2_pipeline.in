@@ -52,25 +52,27 @@ mrbias()
     local chn=$1
     local inp=$2
 
+    local mrbias_args="$3"
+
     local out=${OUTDIR}/mrbias/${chn}.nii
     local msk=${OUTDIR}/mrbias/${chn}_mask.nii
 
     if needs_update_and_lock ${out} ${inp}; then
 	# make foreground mask
 	local tmpdir=`mktemp -d`
-	cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --prune-histogram-ref 128 --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
-	cmtk reformatx -o ${tmpdir}/mask.nii --pv --floating ${CMTK_DATA_DIR}/sri24/sri24_brainmask.nii ${inp} ${tmpdir}/xform
-	cmtk convertx --dilate 5 ${tmpdir}/mask.nii ${msk}
+	cmtk registrationx ${CMTK_GLOBAL_ARGS} --omit-original-data --dofs 6,9,12 --auto-multi-levels 5 --ncc --prune-histogram-ref 128 --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
+	cmtk reformatx ${CMTK_GLOBAL_ARGS} -o ${tmpdir}/mask.nii --pv --floating ${CMTK_DATA_DIR}/sri24/sri24_brainmask.nii ${inp} ${tmpdir}/xform
+	cmtk convertx ${CMTK_GLOBAL_ARGS} --dilate 5 ${tmpdir}/mask.nii ${msk}
 	rm -rf ${tmpdir}
 
 	# run bias field correction
-	cmtk mrbias --sampling-density 0.1 -M 2 --log-intensities --mask ${msk} ${inp} ${out}
+	cmtk mrbias ${CMTK_GLOBAL_ARGS} ${mrbias_args} -M 2 --log-intensities --mask ${msk} ${inp} ${out}
 	lockfile_delete ${out}
     fi
 }
 
-mrbias t1 ${INPUT_T1}
-mrbias t2 ${INPUT_T2}
+mrbias t1 ${INPUT_T1} "--sampling-density 0.025"
+mrbias t2 ${INPUT_T2} "--sampling-density 0.01"
 
 t1_mrbias=`get_override_file ${OUTDIR}/mrbias/t1.nii`
 t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
@@ -81,7 +83,7 @@ t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
 
 t1t2_affine=${OUTDIR}/registration/t1_t2/affine.xform
 if needs_update ${t1t2_affine}; then
-    cmtk registrationx --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
+    cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
     lockfile_delete ${t1t2_affine}
 fi
 t1t2_affine=`get_override_file ${t1t2_affine}`
@@ -109,14 +111,14 @@ t2_brain=`get_override_file ${t2_brain}`
 
 t1_mask=${OUTDIR}/stripped/t1_mask.nii
 if needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_affine}; then
-    cmtk reformatx --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_affine}
+    cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_affine}
     lockfile_delete ${t1_mask}
 fi
 t1_mask=`get_override_file ${t1_mask}`
 
 t1_brain=${OUTDIR}/stripped/t1_brain.nii
 if needs_update_and_lock ${t1_brain} ${t1_mask}; then
-    cmtk convertx --set-padding 0 --mask ${t1_mask} ${t1_mrbias} ${t1_brain}
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask ${t1_mask} ${t1_mrbias} ${t1_brain}
     lockfile_delete ${t1_brain}
 fi
 t1_brain=`get_override_file ${t1_brain}`
@@ -129,7 +131,7 @@ sri24_t1=${CMTK_DATA_DIR}/sri24/sri24_t1.nii
 
 t1_sri24_affine=${OUTDIR}/registration/sri24/affine/t1_atlas.xform
 if needs_update_and_lock ${t1_sri24_affine} ${t1_brain}; then
-    cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
+    cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
     lockfile_delete ${t1_sri24_affine}
 fi
 t1_sri24_affine=`get_override_file ${t1_sri24_affine}`
@@ -142,14 +144,14 @@ t1_sri24_warp_args="-e 16 --coarsest 4 --sampling 2 --accuracy 0.1 --grid-spacin
 
 t1_sri24_warp=${OUTDIR}/registration/sri24/warp/t1_atlas.xform
 if needs_update_and_lock ${t1_sri24_warp} ${t1_sri24_affine}; then
-    cmtk warp ${t1_sri24_warp_args} -o ${t1_sri24_warp} ${t1_sri24_affine}
+    cmtk warp ${CMTK_GLOBAL_ARGS} ${t1_sri24_warp_args} -o ${t1_sri24_warp} ${t1_sri24_affine}
     lockfile_delete ${t1_sri24_warp}
 fi
 t1_sri24_warp=`get_override_file ${t1_sri24_warp}`
 
 sri24_t1_warp=${OUTDIR}/registration/sri24/warp/atlas_t1.xform
 if needs_update_and_lock ${sri24_t1_warp} ${t1_sri24_affine}; then
-    cmtk warp ${t1_sri24_warp_args} -o ${sri24_t1_warp} --switch ${t1_sri24_affine}
+    cmtk warp ${CMTK_GLOBAL_ARGS} ${t1_sri24_warp_args} -o ${sri24_t1_warp} --switch ${t1_sri24_affine}
     lockfile_delete ${sri24_t1_warp}
 fi
 sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
@@ -164,7 +166,7 @@ for tissue in CSF GM WM; do
     priot_inp=${CMTK_DATA_DIR}/sri24/sri24_pbmap${tissue}.nii
 
     if needs_update_and_lock ${prior_tmp} ${t1_sri24_warp}; then
-	cmtk reformatx --linear -o ${prior_tmp} --floating ${prior_inp} ${t1_brain} ${t1_sri24_warp}
+	cmtk reformatx ${CMTK_GLOBAL_ARGS} --linear -o ${prior_tmp} --floating ${prior_inp} ${t1_brain} ${t1_sri24_warp}
 	lockfile_delete ${prior_tmp}
     fi
 
