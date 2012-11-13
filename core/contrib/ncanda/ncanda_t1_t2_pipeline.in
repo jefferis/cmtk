@@ -155,8 +155,25 @@ fi
 sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 
 #
-# 7 - reformat SRI24 label maps and tissue priors
+# 7 - reformat SRI24 tissue priors
 #
+
+priors=""
+for tissue in CSF GM WM; do
+    prior_tmp=${OUTDIR}/segment/priors/sri24_${tissue}.nii
+    priot_inp=${CMTK_DATA_DIR}/sri24/sri24_pbmap${tissue}.nii
+
+    if needs_update_and_lock ${prior_tmp} ${t1_sri24_warp}; then
+	cmtk reformatx --linear -o ${prior_tmp} --floating ${prior_inp} ${t1_brain} ${t1_sri24_warp}
+	lockfile_delete ${prior_tmp}
+    fi
+
+    if [ -e ${prior_tmp}.gz ]; then
+	priors+=" ${prior_tmp}.gz"
+    else
+	priors+=" ${prior_tmp}"
+    fi
+done
 
 #
 # 8 - tissue classification
@@ -164,3 +181,9 @@ sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 
 [ -d ${OUTDIR}/segment ] || mkdir -p ${OUTDIR}/segment
 
+t1_seg=${OUTPUT}/segment/t1_seg.nii
+if needs_update_and_lock ${t1_seg} ${priors}; then
+    fsl fast -A ${priors} -a ${FSLDIR}/src/flirt/flirtsch/ident.mat -P -v -o ${OUTPUT}/segment/t1 ${t1_brain}
+    lockfile_delete ${t1_seg}
+fi
+t1_seg=`get_override_file ${t1_seg}`
