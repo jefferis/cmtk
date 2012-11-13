@@ -153,7 +153,7 @@ ImagePairAffineRegistrationCommandLine
 		  "It may also be more robust and/or more accurate than forward-only registration." );
 
     CommandLine::EnumGroup<int>::SmartPtr
-      inPlaneGroup = cl.AddEnum( "restrict-in-plane", &this->m_RestrictToInPlane, "Restrict the affine trasnformation to be in-plane for planes perpendicular to a given coordinate axis." );
+      inPlaneGroup = cl.AddEnum( "restrict-in-plane", &this->m_RestrictToInPlane, "Restrict the affine transformation to be in-plane for planes perpendicular to a given coordinate axis." );
     inPlaneGroup->AddSwitch( Key( "xy" ), 2, "Transformation restricted to in-plane for 'xy' plane (perpendicular to z coordinate axis)." );
     inPlaneGroup->AddSwitch( Key( "xz" ), 1, "Transformation restricted to in-plane for 'xz' plane (perpendicular to y coordinate axis)." );
     inPlaneGroup->AddSwitch( Key( "yz" ), 0, "Transformation restricted to in-plane for 'yz' plane (perpendicular to x coordinate axis)." );
