@@ -90,11 +90,13 @@ t1t2_affine=`get_override_file ${t1t2_affine}`
 # 3 - T2 image skull stripping
 #
 
+[ -d ${OUTDIR}/stripped ] || mkdir -p ${OUTDIR}/stripped
+
 t2_mask=${OUTDIR}/stripped/t2_mask.nii
 t2_brain=${OUTDIR}/stripped/t2_brain.nii
 
 if needs_update_and_lock ${t2_mask} ${t2_mrbias}; then
-    fsl bet ${t2_mrbias} stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
+    fsl bet ${t2_mrbias} ${OUTDIR}/stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
     lockfile_delete ${t2_mask}
 fi
 
@@ -159,4 +161,6 @@ sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 #
 # 8 - tissue classification
 #
+
+[ -d ${OUTDIR}/segment ] || mkdir -p ${OUTDIR}/segment
 
