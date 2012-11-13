@@ -162,8 +162,8 @@ sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 
 priors=""
 for tissue in CSF GM WM; do
-    prior_tmp=${OUTDIR}/segment/priors/sri24_${tissue}.nii
-    priot_inp=${CMTK_DATA_DIR}/sri24/sri24_pbmap${tissue}.nii
+    prior_tmp=${OUTDIR}/segment/priors/sri24_pbmap_${tissue}.nii
+    prior_inp=${CMTK_DATA_DIR}/sri24/sri24_pbmap_${tissue}.nii
 
     if needs_update_and_lock ${prior_tmp} ${t1_sri24_warp}; then
 	cmtk reformatx ${CMTK_GLOBAL_ARGS} --linear -o ${prior_tmp} --floating ${prior_inp} ${t1_brain} ${t1_sri24_warp}
@@ -183,9 +183,9 @@ done
 
 [ -d ${OUTDIR}/segment ] || mkdir -p ${OUTDIR}/segment
 
-t1_seg=${OUTPUT}/segment/t1_seg.nii
+t1_seg=${OUTDIR}/segment/t1_seg.nii
 if needs_update_and_lock ${t1_seg} ${priors}; then
-    fsl fast -A ${priors} -a ${FSLDIR}/src/flirt/flirtsch/ident.mat -P -v -o ${OUTPUT}/segment/t1 ${t1_brain}
+    fsl fast -A ${priors} -a ${FSLDIR}/src/flirt/flirtsch/ident.mat -P -v -o ${OUTDIR}/segment/t1 ${t1_brain}
     lockfile_delete ${t1_seg}
 fi
 t1_seg=`get_override_file ${t1_seg}`
