@@ -51,21 +51,26 @@ mrbias()
 {
     local chn=$1
     local inp=$2
-    local out=$3
+
+    local out=${OUTDIR}/mrbias/${chn}.nii
+    local msk=${OUTDIR}/mrbias/${chn}_mask.nii
 
     if needs_update_and_lock ${out} ${inp}; then
+	# make foreground mask
 	local tmpdir=`mktemp -d`
-	cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
+	cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --prune-histogram-ref 128 --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
 	cmtk reformatx -o ${tmpdir}/mask.nii --pv --floating ${CMTK_DATA_DIR}/sri24/sri24_brainmask.nii ${inp} ${tmpdir}/xform
-	cmtk convertx --dilate 5 ${tmpdir}/mask.nii ${tmpdir}/mask5.nii
-	cmtk mrbias --sampling-density 0.1 -M 2 --log-intensities --mask ${tmpdir}/mask5.nii ${inp} ${out}
+	cmtk convertx --dilate 5 ${tmpdir}/mask.nii ${msk}
 	rm -rf ${tmpdir}
+
+	# run bias field correction
+	cmtk mrbias --sampling-density 0.1 -M 2 --log-intensities --mask ${msk} ${inp} ${out}
 	lockfile_delete ${out}
     fi
 }
 
-mrbias t1 ${INPUT_T1} ${OUTDIR}/mrbias/t1.nii
-mrbias t2 ${INPUT_T2} ${OUTDIR}/mrbias/t2.nii
+mrbias t1 ${INPUT_T1}
+mrbias t2 ${INPUT_T2}
 
 t1_mrbias=`get_override_file ${OUTDIR}/mrbias/t1.nii`
 t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
