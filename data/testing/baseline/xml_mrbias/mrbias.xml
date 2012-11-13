@@ -189,6 +189,24 @@ thresh_auto
 </longflag>
 
 </boolean>
+<integer>
+<default>
+0
+</default>
+<description>
+If this is a positive integer, use automatic minimum intensity threshold selection for image foreground by Otsu thresholding with given number of histogram bins.
+</description>
+<name>
+thresh_otsu_nbins
+</name>
+<label>
+thresh_otsu_nbins
+</label>
+<longflag>
+--thresh_otsu_nbins
+</longflag>
+
+</integer>
 
 </parameters>
 <parameters advanced="true">

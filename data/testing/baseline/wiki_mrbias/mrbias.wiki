@@ -60,6 +60,8 @@ where
 
 ; <tt>--thresh-auto</tt> : Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level.
 
+; <tt>--thresh-otsu-nbins</tt> <tt><integer></tt> : If this is a positive integer, use automatic minimum intensity threshold selection for image foreground by Otsu thresholding with given number of histogram bins. '''[Default: 0]'''
+
 === Entropy Estimation Settings ===
 
 ; <tt>--log-intensities</tt>, <tt>-L</tt> : Use log intensities for entropy estimation.
