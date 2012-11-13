@@ -29,6 +29,7 @@
 ##
 
 CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+CMTK_DATA_DIR=@CMTK_DATA_DIR_CONFIG@
  
 # Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
 . ${CMTK_BINARY_DIR}/cmtk_functions.sh
@@ -48,17 +49,23 @@ INPUT_T2=$3
 
 mrbias()
 {
-    local inp=$1
-    local out=$2
+    local chn=$1
+    local inp=$2
+    local out=$3
 
     if needs_update_and_lock ${out} ${inp}; then
-	cmtk mrbias -M 2 --log-intensities --thresh-auto ${inp} ${out}
+	local tmpdir=`mktemp -d`
+	cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
+	cmtk reformatx -o ${tmpdir}/mask.nii --pv --floating ${CMTK_DATA_DIR}/sri24/sri24_brainmask.nii ${inp} ${tmpdir}/xform
+	cmtk convertx --dilate 5 ${tmpdir}/mask.nii ${tmpdir}/mask5.nii
+	cmtk mrbias --sampling-density 0.1 -M 2 --log-intensities --mask ${tmpdir}/mask5.nii ${inp} ${out}
+	rm -rf ${tmpdir}
 	lockfile_delete ${out}
     fi
 }
 
-mrbias ${INPUT_T1} ${OUTDIR}/mrbias/t1.nii
-mrbias ${INPUT_T2} ${OUTDIR}/mrbias/t2.nii
+mrbias t1 ${INPUT_T1} ${OUTDIR}/mrbias/t1.nii
+mrbias t2 ${INPUT_T2} ${OUTDIR}/mrbias/t2.nii
 
 t1_mrbias=`get_override_file ${OUTDIR}/mrbias/t1.nii`
 t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
@@ -106,3 +113,45 @@ if needs_update ${t1_brain} ${t1_mask}; then
     lockfile_delete ${t1_brain}
 fi
 t1_brain=`get_override_file ${t1_brain}`
+
+#
+# 5 - affine alignment with SRI24 atlas
+#
+
+sri24_t1=${CMTK_DATA_DIR}/sri24/sri24_t1.nii
+
+t1_sri24_affine=${OUTDIR}/registration/sri24/affine/t1_atlas.xform
+if needs_update_and_lock ${t1_sri24_affine} ${t1_brain}; then
+    cmtk registrationx --dofs 6,9,12 --auto-multi-levels --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
+    lockfile_delete ${t1_sri24_affine}
+fi
+t1_sri24_affine=`get_override_file ${t1_sri24_affine}`
+
+#
+# 6 - nonrigid alignment with SRI24 atlas
+#
+
+t1_sri24_warp_args="-e 16 --coarsest 4 --sampling 2 --accuracy 0.1 --grid-spacing 40 --refine 4 --delay-refine --energy-weight 1e-3"
+
+t1_sri24_warp=${OUTDIR}/registration/sri24/warp/t1_atlas.xform
+if needs_update_and_lock ${t1_sri24_warp} ${t1_sri24_affine}; then
+    cmtk warp ${t1_sri24_warp_args} -o ${t1_sri24_warp} ${t1_sri24_affine}
+    lockfile_delete ${t1_sri24_warp}
+fi
+t1_sri24_warp=`get_override_file ${t1_sri24_warp}`
+
+sri24_t1_warp=${OUTDIR}/registration/sri24/warp/atlas_t1.xform
+if needs_update_and_lock ${sri24_t1_warp} ${t1_sri24_affine}; then
+    cmtk warp ${t1_sri24_warp_args} -o ${sri24_t1_warp} --switch ${t1_sri24_affine}
+    lockfile_delete ${sri24_t1_warp}
+fi
+sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
+
+#
+# 7 - reformat SRI24 label maps and tissue priors
+#
+
+#
+# 8 - tissue classification
+#
+
