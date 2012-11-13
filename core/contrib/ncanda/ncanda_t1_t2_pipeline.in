@@ -115,7 +115,7 @@ fi
 t1_mask=`get_override_file ${t1_mask}`
 
 t1_brain=${OUTDIR}/stripped/t1_brain.nii
-if needs_update ${t1_brain} ${t1_mask}; then
+if needs_update_and_lock ${t1_brain} ${t1_mask}; then
     cmtk convertx --set-padding 0 --mask ${t1_mask} ${t1_mrbias} ${t1_brain}
     lockfile_delete ${t1_brain}
 fi
@@ -129,7 +129,7 @@ sri24_t1=${CMTK_DATA_DIR}/sri24/sri24_t1.nii
 
 t1_sri24_affine=${OUTDIR}/registration/sri24/affine/t1_atlas.xform
 if needs_update_and_lock ${t1_sri24_affine} ${t1_brain}; then
-    cmtk registrationx --dofs 6,9,12 --auto-multi-levels --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
+    cmtk registrationx --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
     lockfile_delete ${t1_sri24_affine}
 fi
 t1_sri24_affine=`get_override_file ${t1_sri24_affine}`
