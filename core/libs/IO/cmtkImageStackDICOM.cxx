@@ -336,7 +336,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 			 << "  Series:        " << first->GetTagValue( DCM_SeriesInstanceUID ) << "\n"
 			 << "  Study:         " << first->GetTagValue( DCM_StudyInstanceUID ) << "\n"
 			 << "  Acquisition:   " << first->m_AcquisitionNumber << "\n"
-			 << "  TR / TE:       " << first->GetTagValue( DCM_RepetitionTime ) << "ms /" << first->GetTagValue( DCM_EchoTime ) << "ms\n"
+			 << "  TR / TE:       " << first->GetTagValue( DCM_RepetitionTime ) << "ms / " << first->GetTagValue( DCM_EchoTime ) << "ms\n"
 			 << "  Position:      " << first->GetTagValue( DCM_ImagePositionPatient ) << "\n"
 			 << "  Orientation:   " << first->GetTagValue( DCM_ImageOrientationPatient ) << "\n"
 			 << "  Raw Data Type: " << first->m_RawDataType << "\n";
