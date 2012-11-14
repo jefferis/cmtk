@@ -59,7 +59,7 @@ get_override_file()
 # Set up FSL
 #
 
-FSLDIR=${FSLDIR:-@CMTK_FSLDIR@}
+export FSLDIR=${FSLDIR:-@CMTK_FSLDIR@}
 
 if [ "${FSLDIR}" = "" ]; then
     echo "ERROR: must set 'FSLDIR' environment variable to FSL root directory"
