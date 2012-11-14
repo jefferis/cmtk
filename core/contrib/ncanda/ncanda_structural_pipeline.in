@@ -157,7 +157,21 @@ fi
 sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 
 #
-# 7 - reformat SRI24 tissue priors
+# 7 - reformat SRI24 parcellation maps
+#
+
+for parc in parc116plus_novent; do
+    inp=${CMTK_DATA_DIR}/sri24/parcellation/sri24_${parc}.nii
+    out=${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii
+
+    if needs_update_and_lock ${out} ${inp}; then
+	cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${out} --floating ${inp} ${t1_brain} ${t1_sri24_warp}
+	lockfile_delete ${out}
+    fi
+done
+
+#
+# 8 - reformat SRI24 tissue priors
 #
 
 priors=""
@@ -178,7 +192,7 @@ for tissue in CSF GM WM; do
 done
 
 #
-# 8 - tissue classification
+# 9 - tissue classification
 #
 
 [ -d ${OUTDIR}/segment ] || mkdir -p ${OUTDIR}/segment
