@@ -95,15 +95,25 @@ t1t2_affine=`get_override_file ${t1t2_affine}`
 [ -d ${OUTDIR}/stripped ] || mkdir -p ${OUTDIR}/stripped
 
 t2_mask=${OUTDIR}/stripped/t2_mask.nii
-t2_brain=${OUTDIR}/stripped/t2_brain.nii
-
 if needs_update_and_lock ${t2_mask} ${t2_mrbias}; then
     fsl bet ${t2_mrbias} ${OUTDIR}/stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
     lockfile_delete ${t2_mask}
 fi
-
 t2_mask=`get_override_file ${t2_mask}`
+
+t2_brain=${OUTDIR}/stripped/t2_brain.nii
+if needs_update_and_lock ${t2_brain} ${t2_mask}; then
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask ${t2_mask} ${t2_mrbias} ${t2_brain}
+    lockfile_delete ${t2_brain}
+fi
 t2_brain=`get_override_file ${t2_brain}`
+
+t2_skull=${OUTDIR}/stripped/t2_skull.nii
+if needs_update_and_lock ${t2_skull} ${t2_mask}; then
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask-inverse ${t2_mask} ${t2_mrbias} ${t2_skull}
+    lockfile_delete ${t2_skull}
+fi
+t2_skull=`get_override_file ${t2_skull}`
 
 #
 # 4 - map T2 mask to T1 image
@@ -122,6 +132,13 @@ if needs_update_and_lock ${t1_brain} ${t1_mask}; then
     lockfile_delete ${t1_brain}
 fi
 t1_brain=`get_override_file ${t1_brain}`
+
+t1_skull=${OUTDIR}/stripped/t1_skull.nii
+if needs_update_and_lock ${t1_skull} ${t1_mask}; then
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask-inverse ${t1_mask} ${t1_mrbias} ${t1_skull}
+    lockfile_delete ${t1_skull}
+fi
+t1_skull=`get_override_file ${t1_skull}`
 
 #
 # 5 - affine alignment with SRI24 atlas
@@ -160,7 +177,8 @@ sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 # 7 - reformat SRI24 parcellation maps
 #
 
-for parc in parc116plus_novent; do
+PARCELLATIONS="parc116plus_novent"
+for parc in ${PARCELLATIONS}; do
     inp=${CMTK_DATA_DIR}/sri24/parcellation/sri24_${parc}.nii
     out=${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii
 
@@ -207,3 +225,130 @@ if needs_update_and_lock ${t1_seg} ${priors}; then
     lockfile_delete ${t1_seg}
 fi
 t1_seg=`get_override_file ${t1_seg}`
+
+#
+# 10 - generate HTML summary
+#
+
+make_pngs()
+{
+    local inp=$1
+    local stm=$2
+
+    local triplanar_cmds="$3"
+
+    local timestamp=${OUTDIR}/html/${stm}.ts
+    if needs_update_and_lock ${timestamp} ${inp}; then
+	cmtk triplanar --exec load ${inp} ${triplanar_cmds} export-axial ${OUTDIR}/html/${stm}-ax.png export-sagittal ${OUTDIR}/html/${stm}-sa.png export-coronal ${OUTDIR}/html/${stm}-co.png
+	touch ${timestamp}
+	lockfile_delete ${timestamp}
+    fi
+
+    png_timestamps+=" ${timestamp}"
+}
+
+
+png_timestamps=""
+make_pngs ${INPUT_T1} t1
+make_pngs ${INPUT_T2} t2
+
+make_pngs ${t1_mrbias} t1_mrbias
+make_pngs ${t2_mrbias} t2_mrbias
+
+make_pngs ${t1_brain} t1_brain
+make_pngs ${t1_skull} t1_skull
+make_pngs ${t2_brain} t2_brain
+make_pngs ${t2_skull} t2_skull
+
+make_pngs ${t1_seg} t1_seg
+
+for parc in ${PARCELLATIONS}; do
+    make_pngs ${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii ${parc} "colormap Labels"
+done
+
+html=${OUTDIR}/html/index.html
+if needs_update_and_lock ${html} ${png_timestamps}; then
+    echo "<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Input Images</h1>
+
+<h2>T1-weighted</h2>
+<table><tr>
+  <td><img src=\"t1-ax.png\"></td>
+  <td><img src=\"t1-co.png\"></td>
+  <td><img src=\"t1-sa.png\"></td>
+</tr></table>
+
+<h2>T2-weighted</h2>
+<table><tr>
+  <td><img height=\"256\" src=\"t2-ax.png\"></td>
+  <td><img height=\"256\" src=\"t2-co.png\"></td>
+  <td><img height=\"256\" src=\"t2-sa.png\"></td>
+</tr></table>
+
+<h1>Intensity Bias Field Correction</h1>
+
+<h2>T1-weighted</h2>
+<table><tr>
+  <td><img src=\"t1_mrbias-ax.png\"></td>
+  <td><img src=\"t1_mrbias-co.png\"></td>
+  <td><img src=\"t1_mrbias-sa.png\"></td>
+</tr></table>
+
+<h2>T2-weighted</h2>
+<table><tr>
+  <td><img height=\"256\" src=\"t2_mrbias-ax.png\"></td>
+  <td><img height=\"256\" src=\"t2_mrbias-co.png\"></td>
+  <td><img height=\"256\" src=\"t2_mrbias-sa.png\"></td>
+</tr></table>
+
+<h1>Skull Stripping / Brain Extraction</h1>
+
+<h2>T1-weighted</h2>
+<table><tr>
+  <td><img src=\"t1_brain-ax.png\"></td>
+  <td><img src=\"t1_brain-co.png\"></td>
+  <td><img src=\"t1_brain-sa.png\"></td>
+</tr>
+<tr>
+  <td><img src=\"t1_skull-ax.png\"></td>
+  <td><img src=\"t1_skull-co.png\"></td>
+  <td><img src=\"t1_skull-sa.png\"></td>
+</tr></table>
+
+<h2>T2-weighted</h2>
+<table><tr>
+  <td><img height=\"256\" src=\"t2_brain-ax.png\"></td>
+  <td><img height=\"256\" src=\"t2_brain-co.png\"></td>
+  <td><img height=\"256\" src=\"t2_brain-sa.png\"></td>
+</tr><tr>
+  <td><img height=\"256\" src=\"t2_skull-ax.png\"></td>
+  <td><img height=\"256\" src=\"t2_skull-co.png\"></td>
+  <td><img height=\"256\" src=\"t2_skull-sa.png\"></td>
+</tr></table>
+
+<h1>Tissue Classification</h1>
+
+<h2>T1-weighted</h2>
+<table><tr>
+  <td><img src=\"t1_seg-ax.png\"></td>
+  <td><img src=\"t1_seg-co.png\"></td>
+  <td><img src=\"t1_seg-sa.png\"></td>
+</tr><table>" > ${html}
+
+    echo "<h1>Parcellations</h1>" >> ${html}
+    for parc in ${PARCELLATIONS}; do
+	echo "<h2>${parc}</h2>
+<table><tr>
+  <td><img height=\"256\" src=\"${parc}-ax.png\"></td>
+  <td><img height=\"256\" src=\"${parc}-co.png\"></td>
+  <td><img height=\"256\" src=\"${parc}-sa.png\"></td>
+</tr></table> " >> ${html}
+    done
+
+    echo "</body>" >> ${html}
+
+    lockfile_delete ${html}
+fi
