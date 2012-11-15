@@ -200,6 +200,10 @@ done
 t1_seg=${OUTDIR}/segment/t1_seg.nii
 if needs_update_and_lock ${t1_seg} ${priors}; then
     fsl fast -A ${priors} -a ${FSLDIR}/src/flirt/flirtsch/ident.mat -P -v -o ${OUTDIR}/segment/t1 ${t1_brain}
+
+    # remove again-reformatted priors
+    rm ${OUTDIR}/segment/t1_*_stdspace.*
+
     lockfile_delete ${t1_seg}
 fi
 t1_seg=`get_override_file ${t1_seg}`
