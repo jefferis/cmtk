@@ -239,14 +239,14 @@ make_pngs()
 
     local timestamp=${OUTDIR}/html/${stm}.ts
     if needs_update_and_lock ${timestamp} ${inp}; then
-	cmtk triplanar --exec load ${inp} ${triplanar_cmds} export-axial ${OUTDIR}/html/${stm}-ax.png export-sagittal ${OUTDIR}/html/${stm}-sa.png export-coronal ${OUTDIR}/html/${stm}-co.png
-	touch ${timestamp}
+	if cmtk triplanar --exec load ${inp} ${triplanar_cmds} export-axial ${OUTDIR}/html/${stm}-ax.png export-sagittal ${OUTDIR}/html/${stm}-sa.png export-coronal ${OUTDIR}/html/${stm}-co.png; then
+	    touch ${timestamp}
+	fi
 	lockfile_delete ${timestamp}
     fi
 
     png_timestamps+=" ${timestamp}"
 }
-
 
 png_timestamps=""
 make_pngs ${INPUT_T1} t1
