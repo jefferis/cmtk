@@ -7,6 +7,52 @@
 
 \begin{document}
 
+\section{Overview}
+
+\begin{center}
+\setlength\tabcolsep{0mm}
+\begin{tabular}{ccccccc}
+\multicolumn{7}{c}{Original Images} \\
+\includegraphics[height=.17\linewidth]{t1-ax.png} &
+\includegraphics[height=.17\linewidth]{t1-co.png} &
+\includegraphics[height=.17\linewidth]{t1-sa.png} &&
+\includegraphics[height=.17\linewidth]{t2-ax.png} &
+\includegraphics[height=.17\linewidth]{t2-co.png} &
+\includegraphics[height=.17\linewidth]{t2-sa.png} \\
+\multicolumn{7}{c}{Intensity Bias-Corrected Images} \\
+\includegraphics[height=.17\linewidth]{t1_mrbias-ax.png} &
+\includegraphics[height=.17\linewidth]{t1_mrbias-co.png} &
+\includegraphics[height=.17\linewidth]{t1_mrbias-sa.png} &&
+\includegraphics[height=.17\linewidth]{t2_mrbias-ax.png} &
+\includegraphics[height=.17\linewidth]{t2_mrbias-co.png} &
+\includegraphics[height=.17\linewidth]{t2_mrbias-sa.png} \\
+\multicolumn{7}{c}{Skull-Stripped Brain Images} \\
+\includegraphics[height=.17\linewidth]{t1_brain-ax.png} &
+\includegraphics[height=.17\linewidth]{t1_brain-co.png} &
+\includegraphics[height=.17\linewidth]{t1_brain-sa.png} &&
+\includegraphics[height=.17\linewidth]{t2_brain-ax.png} &
+\includegraphics[height=.17\linewidth]{t2_brain-co.png} &
+\includegraphics[height=.17\linewidth]{t2_brain-sa.png} \\
+\multicolumn{7}{c}{Non-Brain Images} \\
+\includegraphics[height=.17\linewidth]{t1_skull-ax.png} &
+\includegraphics[height=.17\linewidth]{t1_skull-co.png} &
+\includegraphics[height=.17\linewidth]{t1_skull-sa.png} &&
+\includegraphics[height=.17\linewidth]{t2_skull-ax.png} &
+\includegraphics[height=.17\linewidth]{t2_skull-co.png} &
+\includegraphics[height=.17\linewidth]{t2_skull-sa.png} \\
+\multicolumn{3}{c}{Tissue Classification} \\
+\includegraphics[height=.17\linewidth]{t1_seg-ax.png} &
+\includegraphics[height=.17\linewidth]{t1_seg-co.png} &
+\includegraphics[height=.17\linewidth]{t1_seg-sa.png} \\
+\multicolumn{3}{c}{{\tt parc116plus\_novent} Parcellation} \\
+\includegraphics[height=.17\linewidth]{parc116plus_novent-ax.png} &
+\includegraphics[height=.17\linewidth]{parc116plus_novent-co.png} &
+\includegraphics[height=.17\linewidth]{parc116plus_novent-sa.png} 
+\end{tabular}
+\end{center}
+
+\clearpage
+
 \section{Input Images}
     
 \subsection{T1-weighted}
