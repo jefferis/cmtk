@@ -40,9 +40,9 @@ TEMPLATE_DIR=@TEMPLATE_DIR_CONFIG@
 # Setup input and output
 #
 
-OUTDIR=$1
-INPUT_T1=$2
-INPUT_T2=$3
+export OUTDIR=$1
+export INPUT_T1=$2
+export INPUT_T2=$3
 
 #
 # 1 - Bias field correcton
@@ -95,9 +95,10 @@ t1t2_affine=`get_override_file ${t1t2_affine}`
 
 [ -d ${OUTDIR}/stripped ] || mkdir -p ${OUTDIR}/stripped
 
+# run this on the pre-bias-corrected image - sometimes bias correction interferes with brain extraction
 t2_mask=${OUTDIR}/stripped/t2_mask.nii
 if needs_update_and_lock ${t2_mask} ${t2_mrbias}; then
-    fsl bet ${t2_mrbias} ${OUTDIR}/stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
+    fsl bet ${INPUT_T2} ${OUTDIR}/stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
     lockfile_delete ${t2_mask}
 fi
 t2_mask=`get_override_file ${t2_mask}`
@@ -278,12 +279,23 @@ fi
 # 11 - if pdflatex is installed, also create PDF summary
 #
 
+configure_file()
+{
+    local inp=$1
+    local out=$2
+
+    cat ${inp} | sed 's/\\\\/\\\\\\\\/g; s/\\/\\\\/g' | while read line; do
+	eval echo \""$line"\"
+    done > ${out}
+}
+
 if which pdflatex >& /dev/null; then
     latex=${TEMPLATE_DIR}/structural.tex
     pdf=${OUTDIR}/pdf/structural.pdf
     if needs_update_and_lock ${pdf} ${latex} ${png_timestamps}; then
 	tmpdir=`mktemp -d`
-	TEXINPUTS="${OUTDIR}/html:.:" pdflatex -halt-on-error -output-directory ${tmpdir} ${latex} >& /dev/null
+	configure_file ${latex} ${tmpdir}/structural.tex
+	TEXINPUTS="${OUTDIR}/html:.:" pdflatex -halt-on-error -output-directory ${tmpdir} ${tmpdir}/structural.tex >& /dev/null
 	mv ${tmpdir}/structural.pdf ${pdf}
 	rm -rf ${tmpdir}
 	lockfile_delete ${pdf}

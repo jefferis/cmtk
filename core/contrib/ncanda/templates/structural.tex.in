@@ -7,6 +7,12 @@
 
 \begin{document}
 
+\begin{tabular}{ll}
+T1 Input:&  \verb|${INPUT_T1}| \\
+T2 Input:&  \verb|${INPUT_T2}| \\
+Output:& \verb|${OUTDIR}|
+\end{tabular}
+
 \begin{center}
 \setlength\tabcolsep{0mm}
 \begin{tabular}{ccccccc}
