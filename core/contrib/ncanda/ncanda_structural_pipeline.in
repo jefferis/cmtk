@@ -30,6 +30,7 @@
 
 CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
 CMTK_DATA_DIR=@CMTK_DATA_DIR_CONFIG@
+TEMPLATE_DIR=@TEMPLATE_DIR_CONFIG@
  
 # Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
 . ${CMTK_BINARY_DIR}/cmtk_functions.sh
@@ -266,89 +267,25 @@ for parc in ${PARCELLATIONS}; do
     make_pngs ${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii ${parc} "colormap Labels"
 done
 
+templ=${TEMPLATE_DIR}/structural_pipeline_index.html
 html=${OUTDIR}/html/index.html
-if needs_update_and_lock ${html} ${png_timestamps}; then
-    echo "<!DOCTYPE html>
-<html>
-<body>
-
-<h1>Input Images</h1>
-
-<h2>T1-weighted</h2>
-<table><tr>
-  <td><img src=\"t1-ax.png\"></td>
-  <td><img src=\"t1-co.png\"></td>
-  <td><img src=\"t1-sa.png\"></td>
-</tr></table>
-
-<h2>T2-weighted</h2>
-<table><tr>
-  <td><img height=\"256\" src=\"t2-ax.png\"></td>
-  <td><img height=\"256\" src=\"t2-co.png\"></td>
-  <td><img height=\"256\" src=\"t2-sa.png\"></td>
-</tr></table>
-
-<h1>Intensity Bias Field Correction</h1>
-
-<h2>T1-weighted</h2>
-<table><tr>
-  <td><img src=\"t1_mrbias-ax.png\"></td>
-  <td><img src=\"t1_mrbias-co.png\"></td>
-  <td><img src=\"t1_mrbias-sa.png\"></td>
-</tr></table>
-
-<h2>T2-weighted</h2>
-<table><tr>
-  <td><img height=\"256\" src=\"t2_mrbias-ax.png\"></td>
-  <td><img height=\"256\" src=\"t2_mrbias-co.png\"></td>
-  <td><img height=\"256\" src=\"t2_mrbias-sa.png\"></td>
-</tr></table>
-
-<h1>Skull Stripping / Brain Extraction</h1>
-
-<h2>T1-weighted</h2>
-<table><tr>
-  <td><img src=\"t1_brain-ax.png\"></td>
-  <td><img src=\"t1_brain-co.png\"></td>
-  <td><img src=\"t1_brain-sa.png\"></td>
-</tr>
-<tr>
-  <td><img src=\"t1_skull-ax.png\"></td>
-  <td><img src=\"t1_skull-co.png\"></td>
-  <td><img src=\"t1_skull-sa.png\"></td>
-</tr></table>
-
-<h2>T2-weighted</h2>
-<table><tr>
-  <td><img height=\"256\" src=\"t2_brain-ax.png\"></td>
-  <td><img height=\"256\" src=\"t2_brain-co.png\"></td>
-  <td><img height=\"256\" src=\"t2_brain-sa.png\"></td>
-</tr><tr>
-  <td><img height=\"256\" src=\"t2_skull-ax.png\"></td>
-  <td><img height=\"256\" src=\"t2_skull-co.png\"></td>
-  <td><img height=\"256\" src=\"t2_skull-sa.png\"></td>
-</tr></table>
-
-<h1>Tissue Classification</h1>
-
-<h2>T1-weighted</h2>
-<table><tr>
-  <td><img src=\"t1_seg-ax.png\"></td>
-  <td><img src=\"t1_seg-co.png\"></td>
-  <td><img src=\"t1_seg-sa.png\"></td>
-</tr><table>" > ${html}
-
-    echo "<h1>Parcellations</h1>" >> ${html}
-    for parc in ${PARCELLATIONS}; do
-	echo "<h2>${parc}</h2>
-<table><tr>
-  <td><img height=\"256\" src=\"${parc}-ax.png\"></td>
-  <td><img height=\"256\" src=\"${parc}-co.png\"></td>
-  <td><img height=\"256\" src=\"${parc}-sa.png\"></td>
-</tr></table> " >> ${html}
-    done
-
-    echo "</body>" >> ${html}
-
+if needs_update_and_lock ${html} ${templ}; then
+    cp ${templ} ${html}
     lockfile_delete ${html}
+fi
+
+#
+# 11 - if pdflatex is installed, also create PDF summary
+#
+
+if which pdflatex >& /dev/null; then
+    latex=${TEMPLATE_DIR}/structural.tex
+    pdf=${OUTDIR}/pdf/structural.pdf
+    if needs_update_and_lock ${pdf} ${latex} ${png_timestamps}; then
+	tmpdir=`mktemp -d`
+	TEXINPUTS="${OUTDIR}/html:.:" pdflatex -halt-on-error -output-directory ${tmpdir} ${latex} >& /dev/null
+	mv ${tmpdir}/structural.pdf ${pdf}
+	rm -rf ${tmpdir}
+	lockfile_delete ${pdf}
+    fi
 fi
