@@ -122,7 +122,7 @@ lockfile_delete()
     local file=${1}
     local lockfile=${file}.lock
 
-    realfile=${file}
+    local realfile=${file}
     [ -f ${realfile} ] || realfile=${file}.gz
     [ -f ${realfile} ] || realfile=${file}.xz
     
@@ -143,18 +143,13 @@ lockfile_delete()
 needs_update_and_lock()
 {
     local target=$1
-    if test ! -e ${target}; then
-	if test -e ${target}.gz; then
-	    target=${target}.gz
-	else
-	    if test -e ${target}.xz; then
-		target=${target}.xz
-	    fi
-	fi
-    fi
+    local realtarget=$target
+    [ -e ${realtarget} ] || realtarget=${target}.gz
+    [ -e ${realtarget} ] || realtarget=${target}.xz
+    [ -e ${realtarget} ] || realtarget=${target}
     
     shift
-    if needs_update ${target} $*; then
+    if needs_update ${realtarget} $*; then
 	if lockfile_create ${target}; then
 	    return 0
 	else
