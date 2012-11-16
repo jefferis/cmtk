@@ -55,6 +55,33 @@ get_override_file()
     echo $fpath
 }
 
+##
+## Determine number of CPUs allocated to this job.
+##
+
+if [ "${PBS_NUM_PPN}" != "" ]; then
+    export CMTK_NUM_THREADS=${PBS_NUM_PPN}
+    export IGS_NUM_THREADS=${PBS_NUM_PPN}
+    export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${PBS_NUM_PPN}
+fi
+
+##
+## Determine and cd into submission directory
+##
+if [ "${PBS_O_WORKDIR}" != "" ]; then
+    cd ${PBS_O_WORKDIR}
+fi
+
+##
+## Determine virtual memory limit and set for Camino/Java
+##
+vmem=`ulimit -v`
+if [ "${vmem}" != "unlimited" ]; then
+    # divide by 2 to be safe, and by 1000 to go from Kbytes (ulimit) to MBytes (camino/java)
+    javamem=`expr ${vmem} / 2000`
+    export CAMINO_HEAP_SIZE=${javamem}
+fi
+
 #
 # Set up FSL
 #
