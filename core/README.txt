@@ -6,6 +6,13 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.3.0
 ===========================
 
+This release bundles the SRI24 atlas.
+
+A new contrib/ncanda/ section has been added, which will contain an emerging
+set of pipeline scripts used by the National Center for Alcohol and
+Neurodevelopment in Adolescence (N-CANDA).
+
+
 CMTK has been built and tested on the following platforms:
 
 - Linux 64bit (Fedora 17), gcc 4.7.2, CUDA 3.2
