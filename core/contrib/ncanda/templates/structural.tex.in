@@ -7,8 +7,6 @@
 
 \begin{document}
 
-\section{Overview}
-
 \begin{center}
 \setlength\tabcolsep{0mm}
 \begin{tabular}{ccccccc}
@@ -50,91 +48,5 @@
 \includegraphics[height=.17\linewidth]{parc116plus_novent-sa.png} 
 \end{tabular}
 \end{center}
-
-\clearpage
-
-\section{Input Images}
-    
-\subsection{T1-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t1-ax.png} &
-\includegraphics[height=.3\linewidth]{t1-co.png} &
-\includegraphics[height=.3\linewidth]{t1-sa.png} 
-\end{tabular}
-
-\subsection{T2-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t2-ax.png} &
-\includegraphics[height=.3\linewidth]{t2-co.png} &
-\includegraphics[height=.3\linewidth]{t2-sa.png} 
-\end{tabular}
-
-\clearpage
-
-\section{Intensity Bias Field Correction}
-    
-\subsection{T1-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t1_mrbias-ax.png} &
-\includegraphics[height=.3\linewidth]{t1_mrbias-co.png} &
-\includegraphics[height=.3\linewidth]{t1_mrbias-sa.png} 
-\end{tabular}
-
-\subsection{T2-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t2_mrbias-ax.png} &
-\includegraphics[height=.3\linewidth]{t2_mrbias-co.png} &
-\includegraphics[height=.3\linewidth]{t2_mrbias-sa.png} 
-\end{tabular}
-
-\clearpage
-
-\section{Skull Stripping / Brain Extraction}
-    
-\subsection{T1-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t1_brain-ax.png} &
-\includegraphics[height=.3\linewidth]{t1_brain-co.png} &
-\includegraphics[height=.3\linewidth]{t1_brain-sa.png} \\
-\includegraphics[height=.3\linewidth]{t1_skull-ax.png} &
-\includegraphics[height=.3\linewidth]{t1_skull-co.png} &
-\includegraphics[height=.3\linewidth]{t1_skull-sa.png}
-\end{tabular}
-
-\subsection{T2-weighted}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t2_brain-ax.png} &
-\includegraphics[height=.3\linewidth]{t2_brain-co.png} &
-\includegraphics[height=.3\linewidth]{t2_brain-sa.png} \\
-\includegraphics[height=.3\linewidth]{t2_skull-ax.png} &
-\includegraphics[height=.3\linewidth]{t2_skull-co.png} &
-\includegraphics[height=.3\linewidth]{t2_skull-sa.png}
-\end{tabular}
-
-\clearpage
-
-\section{Tissue Classification}
-    
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{t1_seg-ax.png} &
-\includegraphics[height=.3\linewidth]{t1_seg-co.png} &
-\includegraphics[height=.3\linewidth]{t1_seg-sa.png} 
-\end{tabular}
-
-\section{Parcellations}
-    
-\subsection{{\tt parc116plus\_novent}}
-
-\begin{tabular}{ccc}
-\includegraphics[height=.3\linewidth]{parc116plus_novent-ax.png} &
-\includegraphics[height=.3\linewidth]{parc116plus_novent-co.png} &
-\includegraphics[height=.3\linewidth]{parc116plus_novent-sa.png} 
-\end{tabular}
 
 \end{document}
