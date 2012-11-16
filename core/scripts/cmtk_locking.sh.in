@@ -121,18 +121,17 @@ lockfile_delete()
     local file=${1}
     local lockfile=${file}.lock
 
-    if [ -f ${file} ]; then
+    realfile=${file}
+    [ -f ${realfile} ] || realfile=${file}.gz
+    [ -f ${realfile} ] || realfile=${file}.xz
+    
+    if [ -f ${realfile} ]; then
 	# do not update timestamp if file is older than lock (i.e., existed before and did not get updated at all)
-	if test ${lockfile} -ot ${file}; then
-	    touch --no-create -r ${lockfile} ${file}
-	fi
-    else
-	# do not update timestamp if file is older than lock (i.e., existed before and did not get updated at all)
-	if test ${lockfile} -ot ${file}.gz; then
-	    touch --no-create -r ${lockfile} ${file}.gz
+	if test ${lockfile} -ot ${realfile}; then
+	    touch --no-create -r ${lockfile} ${realfile}
 	fi
     fi
-    
+
     rm -f ${lockfile}
     trap - INT TERM EXIT
 }
