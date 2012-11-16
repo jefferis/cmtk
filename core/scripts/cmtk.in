@@ -3,7 +3,7 @@
 ##
 ##  Copyright 2011 Yaroslav Halchenko 
 ##
-##  Copyright 2011 SRI International
+##  Copyright 2011-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -48,3 +48,6 @@ if echo "$CMD $@" | grep -q -e --help; then
 else
     ${CMDPATH} "$@"
 fi
+
+# "exit" without argument will forward exit code of last executed command
+exit
