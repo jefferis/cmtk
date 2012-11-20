@@ -85,11 +85,25 @@ export t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
 #
 
 t1t2_affine=${OUTDIR}/registration/t1_t2/affine.xform
-if needs_update ${t1t2_affine}; then
+if needs_update_and_lock ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}; then
     cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
     lockfile_delete ${t1t2_affine}
 fi
 export t1t2_affine=`get_override_file ${t1t2_affine}`
+
+t1t2_warp=${OUTDIR}/registration/t1_t2/warp.xform
+if needs_update ${t1t2_warp} ${t1t2_affine}; then
+    cmtk warp --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t1t2_warp} ${t1t2_affine}
+    lockfile_delete ${t1t2_warp}
+fi
+export t1t2_warp=`get_override_file ${t1t2_warp}`
+
+t2t1_warp=${OUTDIR}/registration/t2_t1/warp.xform
+if needs_update ${t2t1_warp} ${t1t2_affine}; then
+    cmtk warp --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t1t2_warp} --switch ${t1t2_affine}
+    lockfile_delete ${t2t1_warp}
+fi
+export t2t1_warp=`get_override_file ${t2t1_warp}`
 
 #
 # 3 - T2 image skull stripping
@@ -124,8 +138,8 @@ export t2_skull=`get_override_file ${t2_skull}`
 #
 
 t1_mask=${OUTDIR}/stripped/t1_mask.nii
-if needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_affine}; then
-    cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_affine}
+if needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_warp}; then
+    cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_warp}
     lockfile_delete ${t1_mask}
 fi
 export t1_mask=`get_override_file ${t1_mask}`
