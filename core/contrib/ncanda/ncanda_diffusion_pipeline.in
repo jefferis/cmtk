@@ -50,15 +50,21 @@ export INPUT_DWI60=$3
 
 b0DTI6=${INPUT_DWI6}/image1.nii
 b0DTI60=${INPUT_DWI60}/image01.nii
-b0Unwarp=${OUTDIR}/dti60/b00.nii
+b0Unwarp=${OUTDIR}/dti60/bAverage.nii
 
 if needs_update_and_lock ${b0Unwarp} ${b0DTI6} ${b0DTI60}; then    
     tmpdir=`mktemp -d`
     cmtk convertx --flip-y ${b0DTI6} ${tmpdir}/flip.nii
-    cmtk correct_dwi_distortion_and_motion ${OUTDIR}/dti60/corrected ${tmpdir}/flip.nii ${b0DTI60}
+    cmtk correct_dwi_distortion_and_motion ${OUTDIR}/dti60/corrected ${tmpdir}/flip.nii ${INPUT_DWI60}/image*.nii*
     rm -rf ${tmpdir}
     lockfile_delete ${b0Unwarp}
 fi
+
+#
+# 2 - 
+#
+
+bValue=`fgrep bValue ${INPUT_DWI60}/image03.nii.xml | sed 's/\<[^>]*\>//g'`
 
 #
 # 1 - reformat SRI24 fiber masks maps
