@@ -55,7 +55,6 @@
 #include <Base/cmtkImageOperationConnectedComponents.h>
 #include <Base/cmtkImageOperationDownsample.h>
 #include <Base/cmtkImageOperationHistogramEqualization.h>
-#include <Base/cmtkImageOperationHoughTransformSphere.h>
 #include <Base/cmtkImageOperationCropRegion.h>
 #include <Base/cmtkImageOperationCropThreshold.h>
 #include <Base/cmtkImageOperationScaleToRange.h>
@@ -206,11 +205,6 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "gaussian-filter-fwhm" ), &cmtk::ImageOperationGaussFilter::NewFWHM, 
 		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel full width at half maximum in world units [e.g., mm]." );
     cl.AddCallback( Key( "laplace-filter" ), &cmtk::ImageOperationLaplaceFilter::New, "Filter image with edge-enhancing Laplacian kernel." );
-    cl.EndGroup();
-    
-    cl.BeginGroup( "Feature", "Feature Detection Operations" );
-    cl.AddCallback( Key( "hough-sphere" ), &cmtk::ImageOperationHoughTransformSphere::New, "Hough transform to detect sphere with a given radius. "
-		    "The radius in world units (typically mm) is provided as an argument to this operation." );
     cl.EndGroup();
     
     cl.BeginGroup( "Grid", "Grid Operations" );
