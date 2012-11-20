@@ -107,3 +107,21 @@ fsl()
 }
 
 
+
+#
+# Set up Camino
+#
+
+export CAMINO_DIR=${CAMINO_DIR:-@CMTK_CAMINO_DIR@}
+
+if [ "${CAMINO_DIR}" = "" ]; then
+    echo "ERROR: must set 'CAMINO_DIR' environment variable to Camino root directory"
+    exit 1
+fi
+
+camino()
+{
+    ${CAMINO_DIR}/bin/$*
+}
+
+
