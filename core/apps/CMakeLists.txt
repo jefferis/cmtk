@@ -86,6 +86,7 @@ SET(APPS avg_adm
   sba
   sbai
   sequence
+  sh_command_line_parser
   similarity
   split
   statistics

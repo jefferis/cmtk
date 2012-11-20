@@ -10,6 +10,7 @@
 	<dicom:EchoTime>87.000000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.250600</dicom:ImagingFrequency>
+	<dicom:SequenceName>*ep_b1000#2</dicom:SequenceName>
 	<dwi>
 		<bValue>1000</bValue>
 		<bVector coordinateSpace="LPS">0.710642 0.525152 -0.468191</bVector>

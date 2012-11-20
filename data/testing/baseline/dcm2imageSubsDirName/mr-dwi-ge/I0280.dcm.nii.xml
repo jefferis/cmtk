@@ -10,6 +10,9 @@
 	<dicom:EchoTime>97.900000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
+	<dicom:GE:PulseSequenceName>dirk/sri_tensor_ramp1800_inv</dicom:GE:PulseSequenceName>
+	<dicom:GE:PulseSequenceDate>20111215102622</dicom:GE:PulseSequenceDate>
+	<dicom:GE:InternalPulseSequenceName>EPI2</dicom:GE:InternalPulseSequenceName>
 	<type>magnitude</type>
 	<dwi>
 		<bValue>860</bValue>

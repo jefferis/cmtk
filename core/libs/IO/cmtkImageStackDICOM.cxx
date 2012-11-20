@@ -94,30 +94,34 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "dicom:Manufacturer",            { "\t", NULL, NULL, "\n" } },
-    { "dicom:ManufacturerModel",       { "\t", NULL, NULL, "\n" } },
-    { "dicom:DeviceSerialNumber",      { "\t", NULL, NULL, "\n" } },
-    { "dicom:StationName",             { "\t", NULL, NULL, "\n" } },
-    { "dicom:RepetitionTime",          { "\t", NULL, NULL, "\n" } },
-    { "dicom:EchoTime",                { "\t", NULL, NULL, "\n" } },
-    { "dicom:InversionTime",           { "\t", NULL, NULL, "\n" } },
-    { "dicom:ImagingFrequency",        { "\t", NULL, NULL, "\n" } },
-    { "type",                          { "\t", NULL, NULL, "\n" } },
-    { "dwi",                           { "\t", "\n", "\t", "\n" } },
-    { "bValue",                        { "\t\t", NULL, NULL, "\n" } },
-    { "bVector",                       { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorImage",                  { "\t\t", NULL, NULL, "\n" } },
-    { "bVectorStandard",               { "\t\t", NULL, NULL, "\n" } },
-    { "dcmFileDirectory",              { "\t", NULL, NULL, "\n" } },
-    { "dicom:StudyInstanceUID",        { "\t", NULL, NULL, "\n" } },
-    { "dicom:SeriesInstanceUID",       { "\t", NULL, NULL, "\n" } },
-    { "dicom:FrameOfReferenceUID",     { "\t", NULL, NULL, "\n" } }, 
-    { "dicom:ImageOrientationPatient", { "\t", NULL, NULL, "\n" } },
-    { "image",                         { "\t", "\n", "\t", "\n" } },
-    { "dcmFile",                       { "\t\t", NULL, NULL, "\n" } },
-    { "dicom:ImagePositionPatient",    { "\t\t", NULL, NULL, "\n" } },
-    { "dicom:RescaleIntercept",        { "\t\t", NULL, NULL, "\n" } },
-    { "dicom:RescaleSlope",            { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:Manufacturer",                 { "\t", NULL, NULL, "\n" } },
+    { "dicom:ManufacturerModel",            { "\t", NULL, NULL, "\n" } },
+    { "dicom:DeviceSerialNumber",           { "\t", NULL, NULL, "\n" } },
+    { "dicom:StationName",                  { "\t", NULL, NULL, "\n" } },
+    { "dicom:RepetitionTime",               { "\t", NULL, NULL, "\n" } },
+    { "dicom:EchoTime",                     { "\t", NULL, NULL, "\n" } },
+    { "dicom:InversionTime",                { "\t", NULL, NULL, "\n" } },
+    { "dicom:ImagingFrequency",             { "\t", NULL, NULL, "\n" } },
+    { "dicom:SequenceName",                 { "\t", NULL, NULL, "\n" } },
+    { "dicom:GE:PulseSequenceName",         { "\t", NULL, NULL, "\n" } },
+    { "dicom:GE:PulseSequenceDate",         { "\t", NULL, NULL, "\n" } },
+    { "dicom:GE:InternalPulseSequenceName", { "\t", NULL, NULL, "\n" } },
+    { "type",                               { "\t", NULL, NULL, "\n" } },
+    { "dwi",                                { "\t", "\n", "\t", "\n" } },
+    { "bValue",                             { "\t\t", NULL, NULL, "\n" } },
+    { "bVector",                            { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorImage",                       { "\t\t", NULL, NULL, "\n" } },
+    { "bVectorStandard",                    { "\t\t", NULL, NULL, "\n" } },
+    { "dcmFileDirectory",                   { "\t", NULL, NULL, "\n" } },
+    { "dicom:StudyInstanceUID",             { "\t", NULL, NULL, "\n" } },
+    { "dicom:SeriesInstanceUID",            { "\t", NULL, NULL, "\n" } },
+    { "dicom:FrameOfReferenceUID",          { "\t", NULL, NULL, "\n" } }, 
+    { "dicom:ImageOrientationPatient",      { "\t", NULL, NULL, "\n" } },
+    { "image",                              { "\t", "\n", "\t", "\n" } },
+    { "dcmFile",                            { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:ImagePositionPatient",         { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleIntercept",             { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:RescaleSlope",                 { "\t\t", NULL, NULL, "\n" } },
     { NULL, {NULL, NULL, NULL, NULL} }
   };
 
@@ -175,10 +179,29 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) );
     mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
 
+    if ( this->front()->GetTagValue( DCM_SequenceName ) != "" )
+      {
+      mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() );
+      }
+    
+    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceName ) != "" )
+      {
+      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() );
+      }
+    
+    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceDate ) != "" )
+      {
+      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() );
+      }
+    
+    if ( this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" )
+      {
+      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() );
+      }
+    
     if ( this->front()->m_RawDataType != "unknown" )
       {
-      mxml_node_t *x_type = mxmlNewElement( x_modality, "type");
-      mxmlNewText( x_type, 0, this->front()->m_RawDataType.c_str() );
+      mxmlNewText( mxmlNewElement( x_modality, "type"), 0, this->front()->m_RawDataType.c_str() );
       }
     
     if ( this->front()->m_IsDWI )
