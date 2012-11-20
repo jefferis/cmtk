@@ -184,7 +184,7 @@ for parc in ${PARCELLATIONS}; do
     inp=${CMTK_DATA_DIR}/sri24/parcellation/sri24_${parc}.nii
     out=${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii
 
-    if needs_update_and_lock ${out} ${inp}; then
+    if needs_update_and_lock ${out} ${inp} ${t1_sri24_warp}; then
 	cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${out} --floating ${inp} ${t1_brain} ${t1_sri24_warp}
 	lockfile_delete ${out}
     fi
