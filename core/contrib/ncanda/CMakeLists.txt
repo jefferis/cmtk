@@ -19,11 +19,11 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 4473 $
+##  $Revision$
 ##
-##  $LastChangedDate: 2012-08-08 14:51:14 -0700 (Wed, 08 Aug 2012) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torsten_at_home $
+##  $LastChangedBy$
 ##
 
 SET(CMTK_FSLDIR "NOTFOUND" CACHE PATH "FSLDIR environment variable default")
