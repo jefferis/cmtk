@@ -58,14 +58,16 @@ mrbias()
     local out=${OUTDIR}/mrbias/${chn}.nii
     local msk=${OUTDIR}/mrbias/${chn}_mask.nii
 
-    if needs_update_and_lock ${out} ${inp}; then
+    if needs_update_and_lock ${msk} ${inp}; then
 	# make foreground mask
 	local tmpdir=`mktemp -d`
-	cmtk registrationx ${CMTK_GLOBAL_ARGS} --omit-original-data --dofs 6,9,12 --auto-multi-levels 5 --ncc --prune-histogram-ref 128 --init com -o ${tmpdir}/xform ${inp} ${CMTK_DATA_DIR}/sri24/sri24_${chn}_whole.nii
-	cmtk reformatx ${CMTK_GLOBAL_ARGS} -o ${tmpdir}/mask.nii --pv --floating ${CMTK_DATA_DIR}/sri24/sri24_brainmask.nii ${inp} ${tmpdir}/xform
-	cmtk convertx ${CMTK_GLOBAL_ARGS} --dilate 5 ${tmpdir}/mask.nii ${msk}
+	cmtk levelset ${CMTK_GLOBAL_ARGS} --filter-sigma 20 --binarize ${inp} ${tmpdir}/mask.nii
+	cmtk convertx ${CMTK_GLOBAL_ARGS} --signed-distance-map --binarize-thresh 10 --revert ${tmpdir}/mask.nii ${msk}
 	rm -rf ${tmpdir}
+	lockfile_delete ${msk}
+    fi
 
+    if needs_update_and_lock ${out} ${msk}; then
 	# run bias field correction
 	cmtk mrbias ${CMTK_GLOBAL_ARGS} ${mrbias_args} -M 2 --log-intensities --mask ${msk} ${inp} ${out}
 	lockfile_delete ${out}
