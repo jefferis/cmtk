@@ -81,6 +81,7 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     }
 
   return
+    ( this->m_FileDir == other.m_FileDir ) && // do not stack across directories
     ( this->GetTagValue( DCM_FrameOfReferenceUID ) == other.GetTagValue( DCM_FrameOfReferenceUID ) ) && 
     ( this->GetTagValue( DCM_SeriesInstanceUID ) == other.GetTagValue( DCM_SeriesInstanceUID ) ) && 
     ( this->GetTagValue( DCM_StudyInstanceUID ) == other.GetTagValue( DCM_StudyInstanceUID ) ) && 
