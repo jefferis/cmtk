@@ -33,7 +33,7 @@
 ##
 
 # check whether file needs update due to updated dependencies
-needs_update()
+CMTK_needs_update()
 {
     local target=$1
     
@@ -104,7 +104,7 @@ needs_update()
 }
 
 # NFS-safe (hopefully) file locking.
-lockfile_create()
+CMTK_lockfile_create()
 {
     local lockfile=$1.lock
     
@@ -117,7 +117,7 @@ lockfile_create()
     return 1;
 }
 
-lockfile_delete()
+CMTK_lockfile_delete()
 {
     local file=${1}
     local lockfile=${file}.lock
@@ -140,7 +140,7 @@ lockfile_delete()
 #
 # Combine dependency checking with locking of target
 #
-needs_update_and_lock()
+CMTK_needs_update_and_lock()
 {
     local target=$1
     local realtarget=$target
@@ -149,8 +149,8 @@ needs_update_and_lock()
     [ -e ${realtarget} ] || realtarget=${target}
     
     shift
-    if needs_update ${realtarget} $*; then
-	if lockfile_create ${target}; then
+    if CMTK_needs_update ${realtarget} $*; then
+	if CMTK_lockfile_create ${target}; then
 	    return 0
 	else
 	    echo "========================================================================"

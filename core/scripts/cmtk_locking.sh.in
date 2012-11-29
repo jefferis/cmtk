@@ -32,7 +32,7 @@
 ## Helper functions for file locking and dependency checking using simple shell tools (this is not 100% NFS-safe)
 ##
 
-needs_update()
+CMTK_needs_update()
 {
     local target=$1
     if test ! -e ${target}; then
@@ -94,7 +94,7 @@ needs_update()
 }
 
 # NFS-safe (hopefully) file locking.
-lockfile_create()
+CMTK_lockfile_create()
 {
     local lockfile=$1.lock
     local hostpid=`hostname`-$$
@@ -116,7 +116,7 @@ lockfile_create()
     return 0;
 }
 
-lockfile_delete()
+CMTK_lockfile_delete()
 {
     local file=${1}
     local lockfile=${file}.lock
@@ -139,7 +139,7 @@ lockfile_delete()
 #
 # Combine dependency checking with locking of target
 #
-needs_update_and_lock()
+CMTK_needs_update_and_lock()
 {
     local target=$1
     local realtarget=$target
@@ -149,8 +149,8 @@ needs_update_and_lock()
 
     shift
     
-    if needs_update ${realtarget} $*; then
-	if lockfile_create ${target}; then
+    if CMTK_needs_update ${realtarget} $*; then
+	if CMTK_lockfile_create ${target}; then
 	    return 0
 	fi
     fi
