@@ -33,8 +33,8 @@ CMTK_DATA_DIR=@CMTK_DATA_DIR_CONFIG@
 TEMPLATE_DIR=@TEMPLATE_DIR_CONFIG@
  
 # Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
-. ${CMTK_BINARY_DIR}/cmtk_functions.sh
-. ${CMTK_BINARY_DIR}/ncanda_setup.sh
+source ${CMTK_BINARY_DIR}/cmtk_functions.sh
+source ${CMTK_BINARY_DIR}/ncanda_setup.sh
 
 #
 # Setup input and output
@@ -43,6 +43,9 @@ TEMPLATE_DIR=@TEMPLATE_DIR_CONFIG@
 export OUTDIR=$1
 export INPUT_T1=$2
 export INPUT_T2=$3
+
+export t1_input=${INPUT_T1}
+export t2_input=${INPUT_T2}
 
 #
 # 1 - Bias field correcton
@@ -58,50 +61,47 @@ mrbias()
     local out=${OUTDIR}/mrbias/${chn}.nii
     local msk=${OUTDIR}/mrbias/${chn}_mask.nii
 
-    if needs_update_and_lock ${msk} ${inp}; then
+    if CMTK_needs_update_and_lock ${msk} ${inp}; then
 	# make foreground mask
 	local tmpdir=`mktemp -d`
 	cmtk levelset ${CMTK_GLOBAL_ARGS} --filter-sigma 20 --binarize ${inp} ${tmpdir}/mask.nii
 	cmtk convertx ${CMTK_GLOBAL_ARGS} --signed-distance-map --binarize-thresh 10 --revert ${tmpdir}/mask.nii ${msk}
 	rm -rf ${tmpdir}
-	lockfile_delete ${msk}
+	CMTK_lockfile_delete ${msk}
     fi
 
-    if needs_update_and_lock ${out} ${msk}; then
+    if CMTK_needs_update_and_lock ${out} ${msk}; then
 	# run bias field correction
 	cmtk mrbias ${CMTK_GLOBAL_ARGS} ${mrbias_args} -M 2 --log-intensities --mask ${msk} ${inp} ${out}
-	lockfile_delete ${out}
+	CMTK_lockfile_delete ${out}
     fi
 }
 
 mrbias t1 ${INPUT_T1} "--sampling-density 0.025"
-mrbias t2 ${INPUT_T2} "--sampling-density 0.01"
-
 export t1_mrbias=`get_override_file ${OUTDIR}/mrbias/t1.nii`
-export t2_mrbias=`get_override_file ${OUTDIR}/mrbias/t2.nii`
 
 #
 # 2 - Align T1 and T2 weighted images
 #
 
 t1t2_affine=${OUTDIR}/registration/t1_t2/affine.xform
-if needs_update_and_lock ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}; then
-    cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_mrbias}
-    lockfile_delete ${t1t2_affine}
+if CMTK_needs_update_and_lock ${t1t2_affine} ${t1_mrbias} ${t2_input}; then
+    cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 4 --init physical -o ${t1t2_affine} ${t1_mrbias} ${t2_input}
+    CMTK_lockfile_delete ${t1t2_affine}
 fi
 export t1t2_affine=`get_override_file ${t1t2_affine}`
 
 t1t2_warp=${OUTDIR}/registration/t1_t2/warp.xform
-if needs_update ${t1t2_warp} ${t1t2_affine}; then
-    cmtk warp --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t1t2_warp} ${t1t2_affine}
-    lockfile_delete ${t1t2_warp}
+if CMTK_needs_update_and_lock ${t1t2_warp} ${t1t2_affine}; then
+    cmtk warp ${CMTK_GLOBAL_ARGS} --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t1t2_warp} ${t1t2_affine}
+    CMTK_lockfile_delete ${t1t2_warp}
 fi
 export t1t2_warp=`get_override_file ${t1t2_warp}`
 
 t2t1_warp=${OUTDIR}/registration/t2_t1/warp.xform
-if needs_update ${t2t1_warp} ${t1t2_affine}; then
-    cmtk warp --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t1t2_warp} --switch ${t1t2_affine}
-    lockfile_delete ${t2t1_warp}
+if CMTK_needs_update_and_lock ${t2t1_warp} ${t1t2_affine}; then
+    cmtk warp ${CMTK_GLOBAL_ARGS} --jacobian-weight 1e-2 --grid-spacing 40 --refine 1 -e 4 -a 0.125 -o ${t2t1_warp} --switch ${t1t2_affine}
+    CMTK_lockfile_delete ${t2t1_warp}
 fi
 export t2t1_warp=`get_override_file ${t2t1_warp}`
 
@@ -113,23 +113,23 @@ export t2t1_warp=`get_override_file ${t2t1_warp}`
 
 # run this on the pre-bias-corrected image - sometimes bias correction interferes with brain extraction
 t2_mask=${OUTDIR}/stripped/t2_mask.nii
-if needs_update_and_lock ${t2_mask} ${t2_mrbias}; then
+if CMTK_needs_update_and_lock ${t2_mask} ${t2_input}; then
     fsl bet ${INPUT_T2} ${OUTDIR}/stripped/t2 -R -f 0.5 -g +0.0 -m -n -v
-    lockfile_delete ${t2_mask}
+    CMTK_lockfile_delete ${t2_mask}
 fi
 export t2_mask=`get_override_file ${t2_mask}`
 
 t2_brain=${OUTDIR}/stripped/t2_brain.nii
-if needs_update_and_lock ${t2_brain} ${t2_mask}; then
-    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask ${t2_mask} ${t2_mrbias} ${t2_brain}
-    lockfile_delete ${t2_brain}
+if CMTK_needs_update_and_lock ${t2_brain} ${t2_mask}; then
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask ${t2_mask} ${t2_input} ${t2_brain}
+    CMTK_lockfile_delete ${t2_brain}
 fi
 export t2_brain=`get_override_file ${t2_brain}`
 
 t2_skull=${OUTDIR}/stripped/t2_skull.nii
-if needs_update_and_lock ${t2_skull} ${t2_mask}; then
-    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask-inverse ${t2_mask} ${t2_mrbias} ${t2_skull}
-    lockfile_delete ${t2_skull}
+if CMTK_needs_update_and_lock ${t2_skull} ${t2_mask}; then
+    cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask-inverse ${t2_mask} ${t2_input} ${t2_skull}
+    CMTK_lockfile_delete ${t2_skull}
 fi
 export t2_skull=`get_override_file ${t2_skull}`
 
@@ -138,23 +138,23 @@ export t2_skull=`get_override_file ${t2_skull}`
 #
 
 t1_mask=${OUTDIR}/stripped/t1_mask.nii
-if needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_warp}; then
+if CMTK_needs_update_and_lock ${t1_mask} ${t2_mask} ${t1t2_warp}; then
     cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${t1_mask} --floating ${t2_mask} ${t1_mrbias} ${t1t2_warp}
-    lockfile_delete ${t1_mask}
+    CMTK_lockfile_delete ${t1_mask}
 fi
 export t1_mask=`get_override_file ${t1_mask}`
 
 t1_brain=${OUTDIR}/stripped/t1_brain.nii
-if needs_update_and_lock ${t1_brain} ${t1_mask}; then
+if CMTK_needs_update_and_lock ${t1_brain} ${t1_mask}; then
     cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask ${t1_mask} ${t1_mrbias} ${t1_brain}
-    lockfile_delete ${t1_brain}
+    CMTK_lockfile_delete ${t1_brain}
 fi
 export t1_brain=`get_override_file ${t1_brain}`
 
 t1_skull=${OUTDIR}/stripped/t1_skull.nii
-if needs_update_and_lock ${t1_skull} ${t1_mask}; then
+if CMTK_needs_update_and_lock ${t1_skull} ${t1_mask}; then
     cmtk convertx ${CMTK_GLOBAL_ARGS} --set-padding 0 --mask-inverse ${t1_mask} ${t1_mrbias} ${t1_skull}
-    lockfile_delete ${t1_skull}
+    CMTK_lockfile_delete ${t1_skull}
 fi
 export t1_skull=`get_override_file ${t1_skull}`
 
@@ -165,9 +165,9 @@ export t1_skull=`get_override_file ${t1_skull}`
 sri24_t1=${CMTK_DATA_DIR}/sri24/sri24_t1.nii
 
 t1_sri24_affine=${OUTDIR}/registration/sri24/affine/t1_atlas.xform
-if needs_update_and_lock ${t1_sri24_affine} ${t1_brain}; then
+if CMTK_needs_update_and_lock ${t1_sri24_affine} ${t1_brain}; then
     cmtk registrationx ${CMTK_GLOBAL_ARGS} --dofs 6,9,12 --auto-multi-levels 5 --ncc --init com -o ${t1_sri24_affine} ${t1_brain} ${sri24_t1}
-    lockfile_delete ${t1_sri24_affine}
+    CMTK_lockfile_delete ${t1_sri24_affine}
 fi
 export t1_sri24_affine=`get_override_file ${t1_sri24_affine}`
 
@@ -178,16 +178,16 @@ export t1_sri24_affine=`get_override_file ${t1_sri24_affine}`
 t1_sri24_warp_args="-e 16 --coarsest 4 --sampling 2 --accuracy 0.1 --grid-spacing 40 --refine 4 --delay-refine --energy-weight 1e-3"
 
 t1_sri24_warp=${OUTDIR}/registration/sri24/warp/t1_atlas.xform
-if needs_update_and_lock ${t1_sri24_warp} ${t1_sri24_affine}; then
+if CMTK_needs_update_and_lock ${t1_sri24_warp} ${t1_sri24_affine}; then
     cmtk warp ${CMTK_GLOBAL_ARGS} ${t1_sri24_warp_args} -o ${t1_sri24_warp} ${t1_sri24_affine}
-    lockfile_delete ${t1_sri24_warp}
+    CMTK_lockfile_delete ${t1_sri24_warp}
 fi
 t1_sri24_warp=`get_override_file ${t1_sri24_warp}`
 
 sri24_t1_warp=${OUTDIR}/registration/sri24/warp/atlas_t1.xform
-if needs_update_and_lock ${sri24_t1_warp} ${t1_sri24_affine}; then
+if CMTK_needs_update_and_lock ${sri24_t1_warp} ${t1_sri24_affine}; then
     cmtk warp ${CMTK_GLOBAL_ARGS} ${t1_sri24_warp_args} -o ${sri24_t1_warp} --switch ${t1_sri24_affine}
-    lockfile_delete ${sri24_t1_warp}
+    CMTK_lockfile_delete ${sri24_t1_warp}
 fi
 export sri24_t1_warp=`get_override_file ${sri24_t1_warp}`
 
@@ -200,9 +200,9 @@ for parc in ${PARCELLATIONS}; do
     inp=${CMTK_DATA_DIR}/sri24/parcellation/sri24_${parc}.nii
     out=${OUTDIR}/reformat/subject_t1/sri24_direct/${parc}.nii
 
-    if needs_update_and_lock ${out} ${inp} ${t1_sri24_warp}; then
+    if CMTK_needs_update_and_lock ${out} ${inp} ${t1_sri24_warp}; then
 	cmtk reformatx ${CMTK_GLOBAL_ARGS} --pv -o ${out} --floating ${inp} ${t1_brain} ${t1_sri24_warp}
-	lockfile_delete ${out}
+	CMTK_lockfile_delete ${out}
     fi
 done
 
@@ -215,9 +215,9 @@ for tissue in CSF GM WM; do
     prior_tmp=${OUTDIR}/segment/priors/sri24_pbmap_${tissue}.nii
     prior_inp=${CMTK_DATA_DIR}/sri24/sri24_pbmap_${tissue}.nii
 
-    if needs_update_and_lock ${prior_tmp} ${t1_sri24_warp}; then
+    if CMTK_needs_update_and_lock ${prior_tmp} ${t1_sri24_warp}; then
 	cmtk reformatx ${CMTK_GLOBAL_ARGS} --linear -o ${prior_tmp} --floating ${prior_inp} ${t1_brain} ${t1_sri24_warp}
-	lockfile_delete ${prior_tmp}
+	CMTK_lockfile_delete ${prior_tmp}
     fi
 
     if [ -e ${prior_tmp}.gz ]; then
@@ -234,13 +234,13 @@ done
 [ -d ${OUTDIR}/segment ] || mkdir -p ${OUTDIR}/segment
 
 t1_seg=${OUTDIR}/segment/t1_seg.nii
-if needs_update_and_lock ${t1_seg} ${priors}; then
+if CMTK_needs_update_and_lock ${t1_seg} ${priors}; then
     fsl fast -A ${priors} -a ${FSLDIR}/src/flirt/flirtsch/ident.mat -P -v -o ${OUTDIR}/segment/t1 ${t1_brain}
 
     # remove again-reformatted priors
     rm ${OUTDIR}/segment/t1_*_stdspace.*
 
-    lockfile_delete ${t1_seg}
+    CMTK_lockfile_delete ${t1_seg}
 fi
 export t1_seg=`get_override_file ${t1_seg}`
 
@@ -256,22 +256,21 @@ make_pngs()
     local triplanar_cmds="$3"
 
     local timestamp=${OUTDIR}/html/${stm}.ts
-    if needs_update_and_lock ${timestamp} ${inp}; then
+    if CMTK_needs_update_and_lock ${timestamp} ${inp}; then
 	if cmtk triplanar --exec load ${inp} ${triplanar_cmds} export-axial ${OUTDIR}/html/${stm}-ax.png export-sagittal ${OUTDIR}/html/${stm}-sa.png export-coronal ${OUTDIR}/html/${stm}-co.png; then
 	    touch ${timestamp}
 	fi
-	lockfile_delete ${timestamp}
+	CMTK_lockfile_delete ${timestamp}
     fi
 
     png_timestamps+=" ${timestamp}"
 }
 
 png_timestamps=""
-make_pngs ${INPUT_T1} t1
-make_pngs ${INPUT_T2} t2
+make_pngs ${t1_input} t1
+make_pngs ${t2_input} t2
 
 make_pngs ${t1_mrbias} t1_mrbias
-make_pngs ${t2_mrbias} t2_mrbias
 
 make_pngs ${t1_brain} t1_brain
 make_pngs ${t1_skull} t1_skull
@@ -286,9 +285,9 @@ done
 
 templ=${TEMPLATE_DIR}/structural_pipeline_index.html
 html=${OUTDIR}/html/index.html
-if needs_update_and_lock ${html} ${templ}; then
+if CMTK_needs_update_and_lock ${html} ${templ}; then
     cp ${templ} ${html}
-    lockfile_delete ${html}
+    CMTK_lockfile_delete ${html}
 fi
 
 #
@@ -308,12 +307,12 @@ configure_file()
 if which pdflatex >& /dev/null; then
     latex=${TEMPLATE_DIR}/structural.tex
     pdf=${OUTDIR}/pdf/structural.pdf
-    if needs_update_and_lock ${pdf} ${latex} ${png_timestamps}; then
+    if CMTK_needs_update_and_lock ${pdf} ${latex} ${png_timestamps}; then
 	tmpdir=`mktemp -d`
 	configure_file ${latex} ${tmpdir}/structural.tex
 	TEXINPUTS="${OUTDIR}/html:.:" pdflatex -halt-on-error -output-directory ${tmpdir} ${tmpdir}/structural.tex >& /dev/null
 	mv ${tmpdir}/structural.pdf ${pdf}
 	rm -rf ${tmpdir}
-	lockfile_delete ${pdf}
+	CMTK_lockfile_delete ${pdf}
     fi
 fi
