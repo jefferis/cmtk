@@ -264,8 +264,6 @@ LIST(APPEND testList
   convertxThirdMomentFilter
   convertxStandardDeviationFilter
   convertxSmoothnessFilter
-  convertxMedialSkeletonFilter1D
-  convertxMedialSkeletonFilter2D
   convertxNiftiToAnalyze
   convertxNiftiToMetaImage
   convertxAnalyzeToNifti

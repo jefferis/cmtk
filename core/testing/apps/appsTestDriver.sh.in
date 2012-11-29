@@ -480,14 +480,6 @@ case ${RUNTEST} in
 	run convertx --float --smoothness-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
-    convertxMedialSkeletonFilter1D)
-	run convertx --float --medial-skeleton 1 spgr_brain_1.hdr ${tmpdir}/medial_1.nii
-	check_results medial_1.nii
-	;;
-    convertxMedialSkeletonFilter2D)
-	run convertx --float --medial-skeleton 2 spgr_brain_1.hdr ${tmpdir}/medial_2.nii
-	check_results medial_2.nii
-	;;
     convertxNiftiToAnalyze)
 	run convertx spgr_brain_1.nii ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.hdr spgr_brain_1.img
