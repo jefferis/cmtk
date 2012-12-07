@@ -51,7 +51,6 @@ SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERS
 #-----------------------------------------------------------------------------
 # Test for some required system information.
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeDetermineSystem.cmake)
-INCLUDE (${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeSystem.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
