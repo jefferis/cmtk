@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4648) Fixed: configuration problem with CMake 2.8.10 due to changed path to
+        CMakeSystem.cmake file.
 (r4622) Added: N-CANDA structural pipeline in "contrib/ncanda/"
 (r4595) Added: more channels of the SRI24 atlas added to the CMTK
         repository. The atlas is also now installed and packaged with the
