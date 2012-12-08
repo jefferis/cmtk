@@ -1,0 +1,63 @@
+#!/bin/bash
+
+##
+##  Copyright 2012 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+CMTK_DATA_DIR=@CMTK_DATA_DIR_CONFIG@
+TEMPLATE_DIR=@TEMPLATE_DIR_CONFIG@
+ 
+# Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
+source ${CMTK_BINARY_DIR}/cmtk_functions.sh
+source ${CMTK_BINARY_DIR}/ncanda_setup.sh
+
+#
+# Setup input and output
+#
+
+export OUTDIR=$1
+
+export INPUT_M1=$2
+export INPUT_R1=$3
+export INPUT_I1=$4
+
+export INPUT_M2=$5
+export INPUT_R2=$6
+export INPUT_I2=$7
+
+tmpdir=`mktemp -d`
+
+cmtk imagemath --in ${INPUT_M1} ${INPUT_M2} --average --out ${tmpdir}/mavg.nii
+fsl bet ${tmpdir}/mavg ${tmpdir}/mavg_strip -m
+
+cmtk imagemath --in ${INPUT_R1} ${INPUT_I1} ${INPUT_R2} ${INPUT_I2} --complex-div --out ${tmpdir}/fmap_i.nii --pop --out ${tmpdir}/fmap_r.nii
+fsl fslcomplex -complex ${tmpdir}/fmap_i.nii ${tmpdir}/fmap_r.nii ${tmpdir}/fmap_c.nii
+
+fsl prelude -c ${tmpdir}/fmap_c -m ${tmpdir}/mavg_strip_mask -u ${tmpdir}/unwrap
+
+cmtk imagemath --in ${tmpdir}/unwrap.nii --scalar-mul 500 --scalar-mul 0.159154943 --out ${tmpdir}/fieldmap_hz.nii

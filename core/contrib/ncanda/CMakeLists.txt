@@ -29,7 +29,7 @@
 SET(CMTK_FSLDIR "NOTFOUND" CACHE PATH "Default value for FSLDIR environment variable")
 SET(CMTK_CAMINO_DIR "NOTFOUND" CACHE PATH "Default value for CAMINO_DIR environment variable")
 
-SET(SCRIPTS ncanda_setup.sh ncanda_structural_pipeline ncanda_diffusion_pipeline)
+SET(SCRIPTS ncanda_setup.sh ncanda_structural_pipeline ncanda_diffusion_pipeline ncanda_make_fieldmap)
 
 FOREACH(s ${SCRIPTS})
   ## Configure for the build tree
