@@ -761,6 +761,49 @@ CallbackDiv()
 }
 
 void
+CallbackComplexDiv()
+{
+  CheckStackTwoMatchingImages( "ComplexDiv" );
+  cmtk::UniformVolume::SmartPtr q1 = ImageStack.front();
+  ImageStack.pop_front();
+  cmtk::UniformVolume::SmartPtr p1 = ImageStack.front();
+  ImageStack.pop_front();
+  
+  CheckStackTwoMatchingImages( "ComplexDiv" );
+  cmtk::UniformVolume::SmartPtr q0 = ImageStack.front();
+  ImageStack.pop_front();
+  cmtk::UniformVolume::SmartPtr p0 = ImageStack.front();
+  ImageStack.pop_front();
+  
+  const size_t numberOfPixels = p0->GetNumberOfPixels();
+  cmtk::TypedArray::SmartPtr divP( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray::SmartPtr divQ( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+
+#pragma omp parallel for
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
+    {
+    cmtk::Types::DataItem pv0, qv0, pv1, qv1;
+    if ( p0->GetDataAt( pv0, i ) && q0->GetDataAt( qv0, i ) && p1->GetDataAt( pv1, i ) && q1->GetDataAt( qv1, i ) && (pv1 != 0) && (qv1 != 0) )
+      {
+      const cmtk::Types::DataItem denom = pv1*pv1 + qv1*qv1;
+      divP->Set( (pv0*pv1 + qv0*qv1) / denom, i );
+      divQ->Set( (qv0*pv1 - pv0*qv1) / denom, i );
+      }
+    else
+      {
+      divP->SetPaddingAt( i );
+      divQ->SetPaddingAt( i );
+      }
+    }
+
+  p0->SetData( divP );
+  ImageStack.push_front( p0 );
+
+  q0->SetData( divQ );
+  ImageStack.push_front( q0 );
+}
+
+void
 CallbackAtan2()
 {
   CheckStackTwoMatchingImages( "Atan2" );
@@ -1581,6 +1624,10 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "match-mean-sdev" ), CallbackMatchMeanSDev, "Scale intensities of one image to match mean and standard deviation of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.AddCallback( Key( "match-mean-sdev3" ), CallbackMatchMeanSDevThree, "Scale intensities of an image by a factor and offset computed from two other images to match their mean and standard deviations. The last image pushed onto the stack provides the reference intensity distribution, the preceding image provides the intensity distribution to match to the reference image's, and the third image on the stack will be modified. All three input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.AddCallback( Key( "mask-average" ), CallbackMaskAverage, "Mask averaging: the top image is taken as a multi-label mask. The pixels in the second image are averaged by mask labels, and then replaced with the average value for each mask label." );
+    cl.EndGroup();
+ 
+    cl.BeginGroup( "Complex", "Complex Arithmetic" );
+    cl.AddCallback( Key( "complex-div" ), CallbackComplexDiv, "Complex division, (a+ib)/(c+id), assuming four values were put on the stack in order a, b, c, d. Place result on stack, real first, imaginary second (i.e., imaginary is top)." );
     cl.EndGroup();
 
     cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
