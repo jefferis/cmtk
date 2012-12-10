@@ -783,7 +783,7 @@ CallbackComplexDiv()
   for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
     {
     cmtk::Types::DataItem pv0, qv0, pv1, qv1;
-    if ( p0->GetDataAt( pv0, i ) && q0->GetDataAt( qv0, i ) && p1->GetDataAt( pv1, i ) && q1->GetDataAt( qv1, i ) && (pv1 != 0) && (qv1 != 0) )
+    if ( p0->GetDataAt( pv0, i ) && q0->GetDataAt( qv0, i ) && p1->GetDataAt( pv1, i ) && q1->GetDataAt( qv1, i ) && ((pv1 != 0) || (qv1 != 0)) )
       {
       const cmtk::Types::DataItem denom = pv1*pv1 + qv1*qv1;
       divP->Set( (pv0*pv1 + qv0*qv1) / denom, i );
