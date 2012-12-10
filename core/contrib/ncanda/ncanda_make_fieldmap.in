@@ -42,25 +42,41 @@ source ${CMTK_BINARY_DIR}/ncanda_setup.sh
 
 export OUTDIR=$1
 
+# first three - magnitude, real, imaginary of GRE 7ms
 export INPUT_M1=$2
 export INPUT_R1=$3
 export INPUT_I1=$4
 
+# first three - magnitude, real, imaginary of GRE 9ms
 export INPUT_M2=$5
 export INPUT_R2=$6
 export INPUT_I2=$7
 
-tmpdir=`mktemp -d`
+fieldmap=${OUTDIR}/fieldmap_hz.nii
+if CMTK_needs_update_and_lock ${fieldmap} ${INPUT_R1} ${INPUT_I1} ${INPUT_R2} ${INPUT_I2}; then
+    tmpdir=`mktemp -d`
 
-cmtk imagemath --in ${INPUT_M1} ${INPUT_M2} --average --out ${tmpdir}/mavg.nii
-fsl bet ${tmpdir}/mavg ${tmpdir}/mavg_strip -m
+    # average magnitude images
+    cmtk imagemath --in ${INPUT_M1} ${INPUT_M2} --average --out ${tmpdir}/mavg.nii
 
-cmtk imagemath --in ${INPUT_R1} ${INPUT_I1} ${INPUT_R2} ${INPUT_I2} --complex-div --out ${tmpdir}/fmap_i.nii --pop --out ${tmpdir}/fmap_r.nii
-fsl fslcomplex -complex ${tmpdir}/fmap_i.nii ${tmpdir}/fmap_r.nii ${tmpdir}/fmap_c.nii
+    # create brain mask from magnitude images
+    fsl bet ${tmpdir}/mavg ${tmpdir}/mavg_strip -m
+    
+    # compute complex phase ratio
+    cmtk imagemath --in ${INPUT_R1} ${INPUT_I1} ${INPUT_R2} ${INPUT_I2} --complex-div --out ${tmpdir}/fmap_i.nii --pop --out ${tmpdir}/fmap_r.nii
+    fsl fslcomplex -complex ${tmpdir}/fmap_r.nii ${tmpdir}/fmap_i.nii ${tmpdir}/fmap_c.nii
+    
+    # unwrap phase
+    fsl prelude -c ${tmpdir}/fmap_c -m ${tmpdir}/mavg_strip_mask -u ${tmpdir}/unwrap
+    
+    # convert unwrapped phase from radians to Hz
+    cmtk imagemath --in ${tmpdir}/unwrap.nii --scalar-mul 500 --scalar-mul -0.159154943 --out ${fieldmap}
+    
+    # put lost orientation information back into NIFTI fieldmap file
+    sform=`fsl fslorient -getsform  ${tmpdir}/mavg.nii`
+    fsl fslorient -setsform ${sform} ${fieldmap}
 
-fsl prelude -c ${tmpdir}/fmap_c -m ${tmpdir}/mavg_strip_mask -u ${tmpdir}/unwrap
+    rm -rf ${tmpdir}
 
-cmtk imagemath --in ${tmpdir}/unwrap.nii --scalar-mul 500 --scalar-mul 0.159154943 --out ${tmpdir}/fieldmap_hz.nii
-
-sform=`fsl fslorient -getsform  ${tmpdir}/mavg.nii`
-fsl fslorient -setsform ${sform} ${tmpdir}/fieldmap_hz.nii*
+    CMTK_lockfile_delete ${fieldmap}
+fi
