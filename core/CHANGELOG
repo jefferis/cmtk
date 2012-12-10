@@ -1,5 +1,6 @@
 Release CMTK-2.3.0:
 
+(r4652) Fixed: OpenMP problems using VisualStudio
 (r4648) Fixed: configuration problem with CMake 2.8.10 due to changed path to
         CMakeSystem.cmake file.
 (r4622) Added: N-CANDA structural pipeline in "contrib/ncanda/"
