@@ -159,7 +159,7 @@ doMain
   for ( size_t i = 0; i < nIterations; ++i )
     {
 #pragma omp parallel for
-    for ( size_t k = 0; k < nClasses; ++k )
+    for ( int k = 0; k < nClasses; ++k )
       {
       classMu[k] = pTotal[k] = 0;
       for ( size_t n = 0; n < nPixels; ++n )
@@ -195,7 +195,7 @@ doMain
     cmtk::StdOut << "\n";
 
 #pragma omp parallel for    
-    for ( size_t n = 0; n < nPixels; ++n )
+    for ( int n = 0; n < nPixels; ++n )
       {
       if ( maskImage->GetDataAt( n ) > 0 )
 	{
@@ -243,7 +243,7 @@ doMain
     }
   
 #pragma omp parallel for
-  for ( size_t n = 0; n < nPixels; ++n )
+  for ( int n = 0; n < nPixels; ++n )
     {
     if ( maskImage->GetDataAt( n ) > 0 )
       {

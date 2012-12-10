@@ -417,7 +417,7 @@ cmtk::EchoPlanarUnwarpFunctional
   std::vector<double> diffImage( nPixels );
   std::vector<double> compositeImage( nPixels );
 #pragma omp parallel for
-  for ( size_t px = 0; px < nPixels; ++px )
+  for ( int px = 0; px < nPixels; ++px )
     {
     diffImage[px] = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
     compositeImage[px] = diffImage[px] * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] );

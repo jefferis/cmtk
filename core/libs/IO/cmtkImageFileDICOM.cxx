@@ -211,7 +211,7 @@ ImageFileDICOM::DoVendorTagsSiemens()
   Uint16 nFrames = 0;
   const char* tmpStr = NULL;
 
-  this->m_IsMultislice = this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames ); // Number of Slices tag
+  this->m_IsMultislice = (0 != this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames )); // Number of Slices tag
   this->m_IsMultislice |= ( this->m_Document->getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
   
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
