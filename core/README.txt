@@ -23,7 +23,7 @@ CMTK has been built and tested on the following platforms:
 - MacOSX 10.6, x86_64, clang 2.0
 - Cygwin, gcc 4.5.3
 - Windows XP, VisualStudio 10SP1 (2010 Express Edition), CUDA 4.1
-- Windows 7 64bit, VisualStudio 2012 Express for Desktop, CUDA 5
+- Windows 7 64bit, VisualStudio 2012 Express for Desktop, CUDA 4.1
 
 
 Platform-Specific Issues
