@@ -82,7 +82,8 @@ if CMTK_needs_update_and_lock ${fieldmap} ${INPUT_R1} ${INPUT_I1} ${INPUT_R2} ${
     
     # bring back into native orientation
     orient_native=`cmtk describe -m ${INPUT_M1} | fgrep ORIENT | cut -f2`
-    cmtk reorient -i RAS -o ${orient_native} ${tmpdir}/fieldmap.nii ${fieldmap}
+    cmtk reorient -o ${orient_native} ${tmpdir}/fieldmap.nii ${fieldmap}
+    cmtk convertx --flip-x ${fieldmap} ${fieldmap}
 
     rm -rf ${tmpdir}
 
