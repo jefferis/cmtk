@@ -61,3 +61,6 @@ fsl fslcomplex -complex ${tmpdir}/fmap_i.nii ${tmpdir}/fmap_r.nii ${tmpdir}/fmap
 fsl prelude -c ${tmpdir}/fmap_c -m ${tmpdir}/mavg_strip_mask -u ${tmpdir}/unwrap
 
 cmtk imagemath --in ${tmpdir}/unwrap.nii --scalar-mul 500 --scalar-mul 0.159154943 --out ${tmpdir}/fieldmap_hz.nii
+
+sform=`fsl fslorient -getsform  ${tmpdir}/mavg.nii`
+fsl fslorient -setsform ${sform} ${tmpdir}/fieldmap_hz.nii*
