@@ -106,6 +106,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:GE:PulseSequenceName",         { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:PulseSequenceDate",         { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:InternalPulseSequenceName", { "\t", NULL, NULL, "\n" } },
+    { "dicom:GE:EffectiveEchoSpacing",      { "\t", NULL, NULL, "\n" } },
     { "type",                               { "\t", NULL, NULL, "\n" } },
     { "dwi",                                { "\t", "\n", "\t", "\n" } },
     { "bValue",                             { "\t\t", NULL, NULL, "\n" } },
@@ -178,6 +179,11 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) );
     mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) );
     mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
+
+    if ( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ) != "" )
+      {
+      mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) );
+      }
 
     if ( this->front()->GetTagValue( DCM_SequenceName ) != "" )
       {
