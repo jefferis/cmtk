@@ -187,7 +187,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
     
     // apply delta
 #pragma omp parallel for
-    for ( int cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
+    for ( int cp = 0; cp < static_cast<int>( splineWarp.m_NumberOfControlPoints ); ++cp )
       {
       if ( weight[cp] != 0 )
 	{

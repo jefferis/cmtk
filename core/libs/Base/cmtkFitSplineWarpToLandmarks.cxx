@@ -52,7 +52,7 @@ cmtk::FitSplineWarpToLandmarks::ComputeResiduals( const SplineWarpXform& splineW
   Types::Coordinate maxResidual = 0;
 
 #pragma omp parallel for
-  for ( int i = 0; i < this->m_Landmarks.size(); ++i )
+  for ( int i = 0; i < static_cast<int>( this->m_Landmarks.size() ); ++i )
     {
     splineWarp.PrecomputeLocationSpline( this->m_Landmarks[i].m_Location, this->m_LandmarksGrid[i], this->m_LandmarksSpline[i] );
     this->m_Residuals[i] = this->m_Landmarks[i].m_TargetLocation - splineWarp.Apply( this->m_Landmarks[i].m_Location );
@@ -167,7 +167,7 @@ cmtk::FitSplineWarpToLandmarks::FitSpline( SplineWarpXform& splineWarp, const in
     
     // apply delta
 #pragma omp parallel for
-    for ( int cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
+    for ( int cp = 0; cp < static_cast<int>( splineWarp.m_NumberOfControlPoints ); ++cp )
       {
       if ( weight[cp] != 0 )
 	{

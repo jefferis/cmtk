@@ -195,7 +195,7 @@ doMain
     cmtk::StdOut << "\n";
 
 #pragma omp parallel for    
-    for ( int n = 0; n < nPixels; ++n )
+    for ( int n = 0; n < static_cast<int>( nPixels ); ++n )
       {
       if ( maskImage->GetDataAt( n ) > 0 )
 	{
@@ -243,7 +243,7 @@ doMain
     }
   
 #pragma omp parallel for
-  for ( int n = 0; n < nPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( nPixels ); ++n )
     {
     if ( maskImage->GetDataAt( n ) > 0 )
       {
