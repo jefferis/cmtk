@@ -50,13 +50,13 @@ SET(cmtkSegmentation_SRCS
 
 SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
-IF(CMTK_USE_FFTW)
+IF(CMTK_USE_FFTW AND FFTWD_FOUND)
   LIST(APPEND cmtkSegmentation_SRCS 
     cmtkDetectPhantomMagphanEMR051.cxx
     cmtkSphereDetectionBipolarMatchedFilterFFT.cxx
     cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.cxx)
   LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
-ENDIF(CMTK_USE_FFTW)
+ENDIF(CMTK_USE_FFTW AND FFTWD_FOUND)
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
 TARGET_LINK_LIBRARIES(${cmtkSegmentation_LIBS})
