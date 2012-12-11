@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4662) Fixed: check whether FFTW libraries were found rather than relying on
+        CMTK_USE_FFTW option being set.
 (r4654) Added: N-CANDA script for creating GRE field maps using FSL/prelude
 (r4652) Fixed: OpenMP problems using VisualStudio
 (r4648) Fixed: configuration problem with CMake 2.8.10 due to changed path to
