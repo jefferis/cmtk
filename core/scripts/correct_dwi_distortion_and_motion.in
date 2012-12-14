@@ -59,19 +59,19 @@ for bX in ${bXlist}; do
     pref=`echo ${base} | sed 's/\..*//g'`
 
     xform=${outdir}/eddy/b0_${pref}.xform
-    if needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
+    if CMTK_needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
 	echo "Computing eddy current correction for ${base}..."
 	cmtk registrationx --restrict-in-plane xy --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
-	lockfile_delete ${xform}
+	CMTK_lockfile_delete ${xform}
     fi
 done
  
 b0FwdCorr=${outdir}/`basename ${b0Fwd}`
 b0RevCorr=${outdir}/`basename ${b0Rev}`
-if needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
+if CMTK_needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
     echo "Computing deformation..."
     cmtk epiunwarp --write-jacobian-fwd ${outdir}/jacobian.nii --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 0.25 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ${b0Fwd} ${b0Rev} ${b0FwdCorr} ${b0RevCorr} ${outdir}/dfield_fwd.nrrd
-    lockfile_delete ${outdir}/dfield_fwd.nrrd
+    CMTK_lockfile_delete ${outdir}/dfield_fwd.nrrd
 fi
 
 unwarpedList=""
@@ -80,10 +80,10 @@ for bX in ${bXlist}; do
     pref=`echo ${base} | sed 's/\..*//g'`
     xform=${outdir}/eddy/b0_${pref}.xform
 
-    if needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
+    if CMTK_needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
 	echo "Unwarping $bX"
 	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
-	lockfile_delete ${outdir}/${base}
+	CMTK_lockfile_delete ${outdir}/${base}
     fi
 
     unwarpedList="${unwarpedList} ${outdir}/${base}"
@@ -95,9 +95,9 @@ done
 ##
 
 average=${outdir}/bAverage.nii.gz
-if needs_update_and_lock ${average} ${b0FwdCorr} ${b0RevCorr} ${unwarpedList}; then
+if CMTK_needs_update_and_lock ${average} ${b0FwdCorr} ${b0RevCorr} ${unwarpedList}; then
     cmtk imagemath --in ${b0FwdCorr} ${b0RevCorr} ${unwarpedList} --average --out ${average}
-    lockfile_delete ${average}
+    CMTK_lockfile_delete ${average}
 fi
 
 for bX in ${bXlist}; do
@@ -105,15 +105,15 @@ for bX in ${bXlist}; do
     bXUnwarp=${outdir}/${base}
     pref=`echo ${base} | sed 's/\..*//g'`
     xform=${outdir}/motion/xforms/b0Unwarp_${pref}.xform
-    if needs_update_and_lock ${xform} ${average} ${bXUnwarp} ; then
+    if CMTK_needs_update_and_lock ${xform} ${average} ${bXUnwarp} ; then
 	cmtk registrationx --linear --dofs 6 --auto-multi-levels 3 --ncc -o ${xform} ${average} ${bXUnwarp}
-	lockfile_delete ${xform}
+	CMTK_lockfile_delete ${xform}
     fi
 
-    if needs_update_and_lock ${outdir}/motion/${base} ${bXUnwarp} ${xform}; then
+    if CMTK_needs_update_and_lock ${outdir}/motion/${base} ${bXUnwarp} ${xform}; then
 	echo "Reformatting motion-corrected $bX"
 	cmtk reformatx --sinc-cosine -o ${outdir}/motion/${base} --floating ${bXUnwarp} ${average} ${xform}
-	lockfile_delete ${outdir}/motion/${base}
+	CMTK_lockfile_delete ${outdir}/motion/${base}
     fi
 done
 
