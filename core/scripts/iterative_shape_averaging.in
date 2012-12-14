@@ -57,9 +57,9 @@ average_images()
     shift
     local in_imgs="$*"
 
-    if needs_update_and_lock ${out_img} ${in_imgs}; then
+    if CMTK_needs_update_and_lock ${out_img} ${in_imgs}; then
 	cmtk average_images --echo -o ${out_img} ${in_imgs}
-	lockfile_delete ${out_img}
+	CMTK_lockfile_delete ${out_img}
     fi
 }
     
@@ -75,21 +75,21 @@ pass0()
     for in_flt in ${images}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
 	local out_xfm=isa/pass0/${flt_name}.xform
-	if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
+	if CMTK_needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
 	    if [ "${in_ref}" != "${in_flt}" ]; then
 		cmtk registration --echo --initxlate --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
 	    else
 		cmtk make_initial_affine --identity ${in_ref} ${in_flt} ${out_xfm}
 	    fi
-	    lockfile_delete ${out_xfm}
+	    CMTK_lockfile_delete ${out_xfm}
 	fi
 	
 	local out_nii=isa/pass0/${flt_name}.nii
 	out_nii_list="${out_nii_list} ${out_nii}"
 
-	if needs_update_and_lock ${out_nii} ${out_xfm}; then
+	if CMTK_needs_update_and_lock ${out_nii} ${out_xfm}; then
 	    cmtk reformatx --echo --sinc-cosine -o ${out_nii} --floating ${in_flt} ${in_ref} ${out_xfm}
-	    lockfile_delete ${out_nii}
+	    CMTK_lockfile_delete ${out_nii}
 	fi
     done
 
@@ -131,17 +131,17 @@ passn()
 
 	local out_xfm=isa/pass${curr}/${flt_name}.xform
 	local inp_xfm=isa/pass${prev}/${flt_name}.xform
-	if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then	    
+	if CMTK_needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then	    
 	    cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
-	    lockfile_delete ${out_xfm}
+	    CMTK_lockfile_delete ${out_xfm}
 	fi
 	
 	local out_nii=isa/pass${curr}/${flt_name}.nii
 	out_nii_list="${out_nii_list} ${out_nii}"
 
-	if needs_update_and_lock ${out_nii} ${out_xfm}; then
+	if CMTK_needs_update_and_lock ${out_nii} ${out_xfm}; then
 	    cmtk reformatx --echo --sinc-cosine -o ${out_nii} --floating ${in_flt} ${ref_nii} ${out_xfm}
-	    lockfile_delete ${out_nii}
+	    CMTK_lockfile_delete ${out_nii}
 	fi
     done
 
