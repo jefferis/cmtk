@@ -55,7 +55,7 @@ doMain ( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert nonrigd transformations." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts nonrigid BB-spline free-format deformation coordinate transformations between different representations (e.g., absolute vs. relative vectors). Also creates fractional transformations." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts nonrigid B-spline free-format deformation coordinate transformations between different representations (e.g., absolute vs. relative vectors). Also creates fractional transformations." );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'f', "fractional" ), &Fractional, "Write fractional deformation. Range: 0=affine to 1=full nonrigid; Default: 1" );
