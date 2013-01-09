@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -269,15 +269,15 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
 {
   AffineXform change;
 
-  // first, get inverse of current initial affine transformation
+  // First, put new affine transformation
+  if ( newAffineXform )
+    change = *newAffineXform;
+
+  // Second, concat inverse of current initial affine transformation to undo it
   if ( this->m_InitialAffineXform ) 
     {
-    change = *(this->m_InitialAffineXform->GetInverse());
+    change.Concat( *(this->m_InitialAffineXform->GetInverse()) );
     }
-
-  // second, append current initial affine transformation
-  if ( newAffineXform )
-    change.Concat( *newAffineXform );
 
   // apply effective change to all control points.
   Types::Coordinate *coeff = this->m_Parameters;

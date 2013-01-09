@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  Copyright 1997-2011 Torsten Rohlfing
 ##
@@ -265,6 +265,14 @@ case ${RUNTEST} in
     concat_affineA1A)
 	run concat_affine -o ${tmpdir}/concat.xform -- --inverse affineA.xform affineA.xform
 	check_results concat.xform
+	;;
+    convert_warpFractional)
+	run convert_warp --fractional 0.5 vol001_mr_t0t1_warp.xform ${tmpdir}/fractional.xform
+	check_results fractional.xform
+	;;
+    convert_warpDeformation)
+	run convert_warp --deformation-only vol001_mr_t0t1_warp.xform ${tmpdir}/deformation.xform
+	check_results deformation.xform
 	;;
     convertxType)
         run convertx --byte --char --float --double --int --uint --short --ushort spgr_brain_1.hdr ${tmpdir}/convert.nii
