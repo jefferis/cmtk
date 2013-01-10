@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -50,13 +50,13 @@ SET(cmtkSegmentation_SRCS
 
 SET(cmtkSegmentation_LIBS cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
-IF(CMTK_USE_FFTW AND FFTWD_FOUND)
+IF(CMTK_USE_FFTW_FOUND)
   LIST(APPEND cmtkSegmentation_SRCS 
     cmtkDetectPhantomMagphanEMR051.cxx
     cmtkSphereDetectionBipolarMatchedFilterFFT.cxx
     cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.cxx)
   LIST(APPEND cmtkSegmentation_LIBS ${CMTK_FFTW_LIBRARIES})
-ENDIF(CMTK_USE_FFTW AND FFTWD_FOUND)
+ENDIF(CMTK_USE_FFTW_FOUND)
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
 TARGET_LINK_LIBRARIES(${cmtkSegmentation_LIBS})

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,7 +71,7 @@ __attribute__((visibility("hidden"))) pthread_attr_t gomp_thread_attr;
 #  endif
 #endif
 
-#ifdef CMTK_USE_FFTW
+#ifdef CMTK_USE_FFTW_FOUND
 #  include <System/cmtkFFTW.h>
 #endif
 
@@ -328,7 +328,7 @@ Threads::CheckEnvironment()
     SetNumberOfThreads( std::min( Threads::GetNumberOfProcessors(), Threads::GetMaxThreads() ) );
     }
 
-#ifdef CMTK_USE_FFTW
+#ifdef CMTK_USE_FFTW_FOUND
   FFTW::GetStatic().SetNumberOfThreads( Threads::GetNumberOfThreads() );
 #endif
 

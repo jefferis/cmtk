@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -77,9 +77,9 @@ ENDIF(CMTK_USE_GCD)
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
 
 SET(cmtkSystem_LIBS ${CMTK_BZIP2_LIBS} ${CMTK_LZMA_LIBS} ${CMTK_ZLIB_LIB} ${ZLIB_LIBRARIES} ${MXML_LIBRARIES})
-IF(CMTK_USE_FFTW)
+IF(CMTK_USE_FFTW_FOUND)
   LIST(APPEND cmtkSystem_LIBS ${CMTK_FFTW_LIBRARIES})
-ENDIF(CMTK_USE_FFTW)
+ENDIF(CMTK_USE_FFTW_FOUND)
 
 TARGET_LINK_LIBRARIES(cmtkSystem ${cmtkSystem_LIBS})
 

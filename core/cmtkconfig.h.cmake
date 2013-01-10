@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,7 +61,8 @@
 #cmakedefine CMTK_USE_LZMA 1
 #cmakedefine CMTK_USE_DCMTK 1
 #cmakedefine CMTK_USE_SQLITE 1
-#cmakedefine CMTK_USE_FFTW 1
+
+#cmakedefine CMTK_USE_FFTW_FOUND 1
 
 #cmakedefine CMTK_COORDINATES_DOUBLE 1
 #ifndef CMTK_COORDINATES_DOUBLE

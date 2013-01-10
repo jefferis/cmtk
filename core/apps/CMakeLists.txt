@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2012 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -129,11 +129,11 @@ IF(CMTK_USE_DCMTK)
   LIST(APPEND APPS dcm2image)
 ENDIF(CMTK_USE_DCMTK)
 
-IF(CMTK_USE_FFTW AND FFTWD_FOUND)
+IF(CMTK_USE_FFTW_FOUND)
   LIST(APPEND APPS
     detect_spheres_matched_filter
     detect_adni_phantom)
-ENDIF(CMTK_USE_FFTW AND FFTWD_FOUND)
+ENDIF(CMTK_USE_FFTW_FOUND)
 
 FOREACH(APPLICATION ${APPS})
   ADD_EXECUTABLE(${APPLICATION} ${APPLICATION}.cxx)

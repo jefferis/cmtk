@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -593,8 +593,10 @@ IF(CMTK_USE_FFTW)
     ENDIF(CMTK_USE_SMP)
     SET(CMTK_FFTW_LIBRARIES ${FFTW_LIBS} CACHE INTERNAL "Link libraries for FFTW support.")
   ENDIF(FFTWD_FOUND)
+  SET(CMTK_USE_FFTW_FOUND ON)
 ELSE(CMTK_USE_FFTW)
-  SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library for fast Fourier transform (required for some specialized tools)" FORCE )
+  MESSAGE( WARNING "Cannot find FFTW3 library - disabling FFT support.")
+  SET(CMTK_USE_FFTW_FOUND OFF)
   UNSET(CMTK_FFTW_LIBRARIES CACHE)
 ENDIF(CMTK_USE_FFTW)
 
