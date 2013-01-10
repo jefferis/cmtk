@@ -594,6 +594,7 @@ IF(CMTK_USE_FFTW)
     SET(CMTK_FFTW_LIBRARIES ${FFTW_LIBS} CACHE INTERNAL "Link libraries for FFTW support.")
   ENDIF(FFTWD_FOUND)
 ELSE(CMTK_USE_FFTW)
+  SET(CMTK_USE_FFTW OFF CACHE BOOL "Use FFTW library for fast Fourier transform (required for some specialized tools)" FORCE )
   UNSET(CMTK_FFTW_LIBRARIES CACHE)
 ENDIF(CMTK_USE_FFTW)
 
