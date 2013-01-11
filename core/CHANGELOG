@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4674)	Fixed: FFTW dependency was not really options due to incorrect
+	configuration conditions (Issue #6841).
 (r4670) Fixed: an error in WarpXform::ReplaceInitialAffine broke
         convert_warp tool, specifically the computation of a fractional
         transformation. New test cases have also been added to cover this.
@@ -19,7 +21,7 @@ Release CMTK-2.3.0:
 Release CMTK-2.2.6 (2012-10-29):
 
 (r4573) Fixed: DICOM stacker segfaulted
-(r4571) Updated: NrrdIO has been updated to current upstream code base from 
+(r4571) Updated: NrrdIO has been updated to current upstream code base from
 	https://teem.svn.sourceforge.net/svnroot/teem/NrrdIO/trunk
 (r4562) Fixed: center of mass was not computed properly if Inf or NaN data
         were present in the image.
@@ -31,7 +33,7 @@ Release CMTK-2.2.5 (2012-10-22):
         image paths into generated output images - "%0" represents the input
         file name (for the first image in a multi-file stack), "%1" through
         "%9" the hierarchical directories in order of decreasing depth, i.e.,
-        from deepest to highest. 
+        from deepest to highest.
 (r4529) Added: image type (magnitude, real, phase) can now be extracted from
         Siemens DICOM files.
 (r4527) Fixed: incorrect image origin was previously computed for Siemens
@@ -52,7 +54,7 @@ Release CMTK-2.2.5 (2012-10-22):
 	(these were skipped previously). Use the new
 	"--write-single-slices" command line switch to activate this
 	behaviour.
-	
+
 
 Release CMTK-2.2.4 (2012-08-24):
 
@@ -211,7 +213,7 @@ Release CMTK-2.1.2 (2012-02-22):
 
 (r3902) Fixed: compilation errors using latest zlib (1.2.6); also fixed
     configuration problem on Mac with system zlib and MacPorts zlib being
-    incompatible. 
+    incompatible.
 (r3880) Added: "fit_affine_xform" can fit an affine transformation to a
     nonrigid transformation, either a deformation field or a B-spline
     free-form deformation. The "fit_warp_xform" tool can use this
@@ -251,7 +253,7 @@ Release CMTK-2.1.1 (2012-01-10):
     using two images acquired with reversed phase encoding direction.
 (r3698) Changed: by default, "dcm2image" now embeds concatenated DICOM tags
     StudyID and StudyDate into "description" fields of Analyze, NIFTI, and
-    Nrrd output images. 
+    Nrrd output images.
 (r3628) Added: "similarity" tool now computes absolute and relative image
     differences; this feature is used by the applications test driver script
     to perform tolerant comparisons.
@@ -297,7 +299,7 @@ Release CMTK-2.1.0 (2011-11-21):
     MXML library and using installed system library.
 (r3438) Fixed: proactively fixed a problem reading and writing very large
     gzip-compressed files. Thanks to Yaroslav Halchenko
-    <debian@onerussian.com> for pointing this out. 
+    <debian@onerussian.com> for pointing this out.
     See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
 (r3420) Added: when registration tools (warp, warpx, registration,
     registrationx) are interrupted, suffix "-partial" is added to any results
@@ -491,7 +493,7 @@ Release CMTK-1.5.3 (2010-12-13):
 (r2629) Fixed: LZMA decompression was broken on i686 due to bug in
     lzmadec_seek(). The decompression backend classes now use a common fake
     "seek" implementation if seek is not supported by the low-level backend or
-    broken. 
+    broken.
 (r2613) Fixed: "dbtool" was warning of unused command line parameters.
 (r2611) Fixed: properly exit "fview" application with an exception when one of
     the input images cannot be read.
@@ -513,7 +515,7 @@ Release CMTK-1.5.1 (2010-12-02):
     written in internal order, i.e., RAS or closest orientation supported by
     output file format. For backward compatibility, the old behaviour can be
     turned back on by defining the "CMTK_LEGACY_WRITE_IMAGES_RAS" environment
-    variable. 
+    variable.
 (r2563) Fixed: "dcm2image" tool choked on non-DICOM files.
 (r2560) Added: "dcm2image" tool has new option to ignore AcquisitionNumber tag
     when grouping images, which is useful for Siemens fMRI series. Tool also
@@ -527,7 +529,7 @@ Release CMTK-1.5.0 (2010-11-17):
 (r2544) Added: "similarity" in label mode now prints Jaccard index, J.
 (r2540) Fixed: all command line tools now use a C++-safe exit mechanism based
     on throwing an exit exception that is caught in a safe main() wrapper
-    function. 
+    function.
 (r2540) Fixed: CommandLine class was leaking memory because some local classes
     did not have virtual destructors (Issue #5320).
 (r2512) Fixed: SmartPointer::DynamicCastFrom() was leaking memory due to
@@ -557,7 +559,7 @@ Release CMTK-1.5.0 (2010-11-17):
     accuracy.
 (r2450) Removed: support for pixelwise incompressibility weight maps, which
     was never really used and hasn't been exposed at the command line for a
-    while. 
+    while.
 (r2445) Fixed: conversion of affine transformation to/from ITK format and
     native image space failed when fixed and moving images resided in different
     spaces (fixed image space was used for both of them).
@@ -727,7 +729,7 @@ Release CMTK-1.4.0 (2010-07-12):
     Create() member functions of different classes.
 - Improved: parallelized computation of FFD smoothness constraint. This
     greatly improves multicore scaling of nonrigid registration using this
-    constraint. 
+    constraint.
 - Removed: "describe" tool no longer prints center of mass and first-order
     moments. If we ever need this, we'll make a separate tool for this.
 - Refactored: further consolidated Vector3D into FixedVector
@@ -751,7 +753,7 @@ Release CMTK-1.3.1 (2010-06-07):
 - Refactored: completely reorganised the groupwise registration functional
     hierarchy - instead of redundant member functions in leaf classes, we are
     now using template specialization to inject the necessary transformation
-    model-dependent code at the base of the hierarchy. 
+    model-dependent code at the base of the hierarchy.
 - Fixed: previously undetected bug in AffineGroupwiseRegistrationRMI
     functional effectively led to inverse transformations to be computed.
 - API: renamed CongealingFunctionalBase to more appropriate
@@ -850,7 +852,7 @@ Release CMTK-1.3.0 (2010-04-19):
     task-appropriate interface.
 - API: refactored multi-channel registration class hierarchy to factor common
     code out of template class and into new non-template base class
-    cmtk::MultiChannelRegistrationFunctionalBase 
+    cmtk::MultiChannelRegistrationFunctionalBase
 - Added: mat2dof tool can now read from file in addition to reading from
     std::cin via redirection.
 - API: introduced "cmtk::Units" namespace with classes that handle conversions
@@ -1158,7 +1160,7 @@ Release CMTK-1.1.0 (2009-08-26):
 - API: all "...NonVirtual" member functions replaced their virtual
     counterparts and became virtual themselves.
 - API: decoupled VTK and non-VTK landmark code so only one tool,
-    align_landmarks, still needs to be linked against the VTKWrapper and VTK 
+    align_landmarks, still needs to be linked against the VTKWrapper and VTK
     libraries.
 - API: re-worked progress reporting to support multiple-level nested tasks
 - API: removed some residual legacy preprocessor definitions
@@ -1291,7 +1293,7 @@ Release CMTK-1.0.1 (2009-06-25):
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.
-- Fixed: crash of average_affine tool when run with no parameters 
+- Fixed: crash of average_affine tool when run with no parameters
     [Tracker #3841]
 
 - Improved: AffineRegistration and ElasticRegistration now use a new, unified
