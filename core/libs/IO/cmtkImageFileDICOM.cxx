@@ -39,6 +39,8 @@
 
 #include <dcmtk/dcmimgle/diutils.h>
 
+#include <sstream>
+
 namespace
 cmtk
 {
@@ -165,7 +167,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName,
 					  DCM_PatientsName, 
 					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_InversionTime, DCM_ImagingFrequency, DCM_SequenceName,
-					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName, DCM_GE_EffectiveEchoSpacing,
+					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName,
 					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
 					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,
 					  DCM_ImagePositionPatient, DCM_ImageOrientationPatient, 
@@ -293,6 +295,14 @@ ImageFileDICOM::DoVendorTagsGE()
     
     const char *const RawDataTypeString[4] = { "magnitude", "phase", "real", "imaginary" };
     this->m_RawDataType = RawDataTypeString[rawTypeIdx];
+
+    Sint16 effEchoSpacing = 0;
+    if ( this->m_Document->getValue( DCM_GE_EffectiveEchoSpacing, effEchoSpacing ) )
+      {
+      std::ostringstream ss;
+      ss << effEchoSpacing;
+      this->m_TagToStringMap[DCM_GE_EffectiveEchoSpacing] = ss.str();
+      }
     
     // dwi information
     this->m_IsDWI = false;
