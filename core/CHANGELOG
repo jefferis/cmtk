@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4677) Fixed: use of stat() rather than stat64() broke access to files on
+	larrge file systems.
 (r4674)	Fixed: FFTW dependency was not really options due to incorrect
 	configuration conditions (Issue #6841).
 (r4670) Fixed: an error in WarpXform::ReplaceInitialAffine broke
