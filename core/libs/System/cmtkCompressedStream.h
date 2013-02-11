@@ -161,7 +161,7 @@ public:
    * the file exists with both its plain name AND at least one compressed suffix. The last case indicates a
    * potential consistency problem because it is not clear, which file should be read.
    */
-  static int Stat( const std::string& path, struct stat *const buf = NULL );
+  static int Stat( const std::string& path, struct stat64 *const buf = NULL );
 
 private:
   /** Open decompressing pipe.
