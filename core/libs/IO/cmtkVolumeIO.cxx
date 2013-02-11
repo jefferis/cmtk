@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -107,7 +107,13 @@ VolumeIO::Read( const std::string& path )
     case FILEFORMAT_NRRD:
       volume = VolumeFromFile::ReadNRRD( translatedPath );
       break;
-    default: {}
+    case FILEFORMAT_NEXIST:
+      StdErr << "ERROR: could not find file " << path << "\n";
+      throw ExitException( 1 );      
+    default: 
+      StdErr << "ERROR: unidentified format of file " << path << "\n";
+      throw ExitException( 1 );
+      break;
     }
   
   if ( ! volume )
