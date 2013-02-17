@@ -160,8 +160,14 @@ CompressedStream::OpenDecompressionPipe
   std::replace( fname.begin(), fname.end(), '/', '\\' );
 #endif
 
-  struct stat64 buf;
-  if ( (! stat64( fname.c_str(), &buf )) && ( (buf.st_mode & S_IFREG) == S_IFREG ) ) 
+  Self::StatType buf;
+  if ( (! 
+#ifdef HAVE_STRUCT_STAT64
+          stat64( fname.c_str(), &buf )
+#else
+          stat( fname.c_str(), &buf )
+#endif
+       ) && ( (buf.st_mode & S_IFREG) == S_IFREG ) ) 
     {
     if ( !strcmp( compressedSuffix, ".gz" ) ) 
       {
@@ -207,20 +213,30 @@ CompressedStream::GetBaseName( const std::string& path )
 }
 
 int 
-CompressedStream::Stat( const std::string& path, struct stat64* buf )
+CompressedStream::Stat( const std::string& path, Self::StatType* buf )
 {
   const std::string baseName = CompressedStream::GetBaseName( path );
 
-  struct stat64 statbuf;
+  Self::StatType statbuf;
   if ( ! buf )
     buf = &statbuf;
 
+#ifdef HAVE_STRUCT_STAT64
   const bool existsUncompressed = ! stat64( baseName.c_str(), buf );
+#else
+  const bool existsUncompressed = ! stat( baseName.c_str(), buf );
+#endif
   
   for ( int i = 0; ArchiveLookup[i].suffix; ++i ) 
     {
     const std::string cpath = baseName + std::string( ArchiveLookup[i].suffix );
-    if ( ! stat64( cpath.c_str(), buf ) ) 
+    if ( ! 
+#ifdef HAVE_STRUCT_STAT64
+           stat64( cpath.c_str(), buf )
+#else
+           stat( cpath.c_str(), buf )
+#endif
+        ) 
       return existsUncompressed ? 2 : 1;
     }
   

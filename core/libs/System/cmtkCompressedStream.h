@@ -80,6 +80,13 @@ public:
   /// This class.
   typedef CompressedStream Self;
   
+  /// Type for stat() buffer
+#ifdef HAVE_STRUCT_STAT64
+  typedef struct stat64 StatType;
+#else
+  typedef struct stat StatType;
+#endif
+
   /// Create stream object without opening any files.
   CompressedStream() : m_Reader( NULL ) {};
   
@@ -161,7 +168,7 @@ public:
    * the file exists with both its plain name AND at least one compressed suffix. The last case indicates a
    * potential consistency problem because it is not clear, which file should be read.
    */
-  static int Stat( const std::string& path, struct stat64 *const buf = NULL );
+  static int Stat( const std::string& path, Self::StatType *const buf = NULL );
 
 private:
   /** Open decompressing pipe.

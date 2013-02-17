@@ -140,7 +140,7 @@ const char* FileFormatName[] =
 FileFormatID 
 FileFormat::Identify( const std::string& path, const bool decompress )
 {
-  struct stat64 buf;
+  CompressedStream::StatType buf;
   if ( CompressedStream::Stat( path, &buf ) < 0 ) 
     return FILEFORMAT_NEXIST;
 

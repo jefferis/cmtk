@@ -101,6 +101,8 @@
 #cmakedefine HAVE_SYS_TYPES_H 1
 #cmakedefine HAVE_SYS_UTSNAME_H 1
 
+#cmakedefine HAVE_STRUCT_STAT64 1
+
 #cmakedefine HAVE_HASH_MAP 1
 #cmakedefine HAVE_HASH_MAP_H 1
 
