@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ##
 ##  Copyright 2004-2013 SRI International
 ##
@@ -107,6 +109,16 @@ get_unzipped()
     fi
 }
 
+remove_if_tempfile()
+{
+    for f in $*; do
+	local dir=`dirname $f`
+	if [ "${dir}" == "/tmp" ]; then
+	    rm $f
+	fi 
+    done
+}
+
 check_result()
 {
     baseline=`get_unzipped ${BASELINE}/$1`
@@ -114,11 +126,13 @@ check_result()
 
     if test ! -f ${result}; then
 	echo "Results file ${result} does not exist"
+	remove_if_tempfile ${baseline} ${result}
 	exit 1
     fi
 
     if test ! -f ${baseline}; then
 	echo "Baseline file ${baseline} does not exist"
+	remove_if_tempfile ${baseline} ${result}
 	exit 1
     fi
 
@@ -131,8 +145,10 @@ check_result()
     echo "${diff} ${tmpdir}/$1 ${BASELINE}/$1"
 
     if ${diff} $result $baseline; then
+	remove_if_tempfile ${baseline} ${result}
 	return
     else
+	remove_if_tempfile ${baseline} ${result}
 	exit 1
     fi
 }
