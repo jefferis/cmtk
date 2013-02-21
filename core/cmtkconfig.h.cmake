@@ -101,8 +101,6 @@
 #cmakedefine HAVE_SYS_TYPES_H 1
 #cmakedefine HAVE_SYS_UTSNAME_H 1
 
-#cmakedefine HAVE_STRUCT_STAT64 1
-
 #cmakedefine HAVE_HASH_MAP 1
 #cmakedefine HAVE_HASH_MAP_H 1
 
@@ -110,6 +108,9 @@
 #cmakedefine HAVE_UNORDERED_MAP_TR1 1
 
 #cmakedefine WORDS_BIGENDIAN 1
+
+/* Use stat64 on systems where it is available and stat is not 64bit aware. */
+#cmakedefine CMTK_USE_STAT64 1
 
 // Flag for Grand Central Dispatch
 #cmakedefine CMTK_USE_GCD 1

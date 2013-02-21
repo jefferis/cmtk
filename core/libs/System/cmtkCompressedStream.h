@@ -81,7 +81,7 @@ public:
   typedef CompressedStream Self;
   
   /// Type for stat() buffer
-#ifdef HAVE_STRUCT_STAT64
+#ifdef CMTK_USE_STAT64
   typedef struct stat64 StatType;
 #else
   typedef struct stat StatType;

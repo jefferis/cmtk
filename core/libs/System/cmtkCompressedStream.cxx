@@ -162,7 +162,7 @@ CompressedStream::OpenDecompressionPipe
 
   Self::StatType buf;
   if ( (! 
-#ifdef HAVE_STRUCT_STAT64
+#ifdef CMTK_USE_STAT64
           stat64( fname.c_str(), &buf )
 #else
           stat( fname.c_str(), &buf )
@@ -221,7 +221,7 @@ CompressedStream::Stat( const std::string& path, Self::StatType* buf )
   if ( ! buf )
     buf = &statbuf;
 
-#ifdef HAVE_STRUCT_STAT64
+#ifdef CMTK_USE_STAT64
   const bool existsUncompressed = ! stat64( baseName.c_str(), buf );
 #else
   const bool existsUncompressed = ! stat( baseName.c_str(), buf );
@@ -231,7 +231,7 @@ CompressedStream::Stat( const std::string& path, Self::StatType* buf )
     {
     const std::string cpath = baseName + std::string( ArchiveLookup[i].suffix );
     if ( ! 
-#ifdef HAVE_STRUCT_STAT64
+#ifdef CMTK_USE_STAT64
            stat64( cpath.c_str(), buf )
 #else
            stat( cpath.c_str(), buf )
