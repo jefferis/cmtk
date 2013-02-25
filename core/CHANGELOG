@@ -1,5 +1,8 @@
 Release CMTK-2.3.0:
 
+(r4684) Added: pixel search tool, "pxsearch." For now, this simply
+	searches for the pixel with the maximum value in a local
+	neighborhood.
 (r4680) Fixed: use of stat() rather than stat64() broke access to files on
 	large file systems.
 (r4674)	Fixed: FFTW dependency was not really options due to incorrect
