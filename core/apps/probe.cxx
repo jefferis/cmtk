@@ -153,7 +153,7 @@ doMain( const int argc, const char *argv[] )
   const char* inputImagePath = NULL;
   const char* readOrientation = "RAS";
 
-  CoordinateModeEnum mode;
+  CoordinateModeEnum mode = COORDINATES_ABSOLUTE;
 
   cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::NEAREST_NEIGHBOR;
   int interpolationWindowRadius = 3;
