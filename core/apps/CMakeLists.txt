@@ -78,6 +78,7 @@ SET(APPS avg_adm
   mrbias
   overlap
   probe
+  pxsearch
   reformatx
   registration
   registrationx

@@ -166,8 +166,8 @@ doMain( const int argc, const char *argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cmtk::CommandLine::EnumGroup<CoordinateModeEnum>::SmartPtr modeGroup = cl.AddEnum( "coordinates", &mode, "Coordinate specification mode." );
-    modeGroup->AddSwitch( Key( "indexed" ), COORDINATES_INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
     modeGroup->AddSwitch( Key( "absolute" ), COORDINATES_ABSOLUTE, "Use absolute volume coordinates. For each dimension, the valid range is [0,FOV]." );
+    modeGroup->AddSwitch( Key( "indexed" ), COORDINATES_INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
     modeGroup->AddSwitch( Key( "relative" ), COORDINATES_RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
     modeGroup->AddSwitch( Key( "physical" ), COORDINATES_PHYSICAL, "Use physical volume coordinates. "
 			  "Each given location is transformed into image coordinates via the inverse of the images's index-to-physical space matrix." );
