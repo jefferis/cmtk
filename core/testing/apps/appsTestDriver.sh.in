@@ -1728,6 +1728,26 @@ case ${RUNTEST} in
         run_eval "echo 98.5 154.5 1 |${BINDIR}/probe --sinc-cosine --indexed phantom_ax.nii.gz > ${tmpdir}/probe.txt"
 	check_results probe.txt
 	;;
+    pxsearchIndexed)
+        run_eval "echo 98 154 1 |${BINDIR}/pxsearch --input-coordinates indexed --output-coordinates indexed phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
+    pxsearchIndexedRadius3)
+        run_eval "echo 98 154 1 |${BINDIR}/pxsearch --radius 3 --input-coordinates indexed --output-coordinates indexed phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
+    pxsearchAbsolute)
+        run_eval "echo 91.875 144.375 3 |${BINDIR}/pxsearch --input-coordinates absolute --output-coordinates absolute phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
+    pxsearchRelative)
+        run_eval "echo 0.384313725 0.603921569 0.5 |${BINDIR}/pxsearch --input-coordinates relative --output-coordinates relative phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
+    pxsearchPhysical)
+        run_eval "echo -27.656 24.844 0 |${BINDIR}/pxsearch --input-coordinates physical --output-coordinates physical phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
     reformatxNoXform)
 	run reformatx --linear -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr
 	check_results reformat.img

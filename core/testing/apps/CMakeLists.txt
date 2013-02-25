@@ -602,6 +602,10 @@ LIST(APPEND testList
   probeIndexedSinc)
 
 # ==========================================
+# Tests for "pxsearch" tool
+LIST(APPEND testList pxsearchIndexed pxsearchIndexedRadius3 pxsearchAbsolute pxsearchRelative pxsearchPhysical)
+
+# ==========================================
 # Tests for "registration" tool
 LIST(APPEND testList
   registrationAffineMrMrMSD
