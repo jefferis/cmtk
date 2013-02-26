@@ -1736,6 +1736,10 @@ case ${RUNTEST} in
         run_eval "echo 98 154 1 |${BINDIR}/pxsearch --radius 3 --input-coordinates indexed --output-coordinates indexed phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
 	check_results pxsearch.txt
 	;;
+    pxsearchIndexedRadius311)
+        run_eval "echo 98 154 1 |${BINDIR}/pxsearch --radius 3,1,1 --input-coordinates indexed --output-coordinates indexed phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
+	check_results pxsearch.txt
+	;;
     pxsearchAbsolute)
         run_eval "echo 91.875 144.375 3 |${BINDIR}/pxsearch --input-coordinates absolute --output-coordinates absolute phantom_ax.nii.gz > ${tmpdir}/pxsearch.txt"
 	check_results pxsearch.txt

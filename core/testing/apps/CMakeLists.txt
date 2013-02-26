@@ -603,7 +603,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "pxsearch" tool
-LIST(APPEND testList pxsearchIndexed pxsearchIndexedRadius3 pxsearchAbsolute pxsearchRelative pxsearchPhysical)
+LIST(APPEND testList pxsearchIndexed pxsearchIndexedRadius3 pxsearchIndexedRadius311 pxsearchAbsolute pxsearchRelative pxsearchPhysical)
 
 # ==========================================
 # Tests for "registration" tool

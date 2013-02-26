@@ -60,7 +60,7 @@ doMain( const int argc, const char *argv[] )
   CoordinateModeEnum inputMode = COORDINATES_ABSOLUTE;
   CoordinateModeEnum outputMode = COORDINATES_ABSOLUTE;
 
-  int radius = 1;
+  const char* radiusStr = "1";
 
   try
     {
@@ -84,7 +84,8 @@ doMain( const int argc, const char *argv[] )
     outputModeGroup->AddSwitch( Key( "physical" ), COORDINATES_PHYSICAL, "Use physical volume coordinates. "
 				"Each given location is transformed into image coordinates via the inverse of the images's index-to-physical space matrix." );
 
-    cl.AddOption( Key( "radius" ), &radius, "Radius of the search region in pixels. The region searched is thus [2*radius+1]^3 pixels large, centered at the input location (but cropped at the image boundary)." );
+    cl.AddOption( Key( "radius" ), &radiusStr, "Radius of the search region in pixels (specified either as triple \"rX,rY,rZ\", or a single value, \"rXYZ\"). "
+		  "The region searched is [2*rX+1,2*rY+1,2*rZ+1] pixels large, centered at the input location (but cropped at the image boundary)." );
     cl.AddSwitch( Key( "no-reorient" ), &readOrientation, static_cast<const char*>( NULL ), "Disable image reorientation into RAS alignment." );
 
     cl.AddParameter( &inputImagePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -108,6 +109,12 @@ doMain( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
+  cmtk::FixedVector<3,int> radius;
+  if ( 3 != sscanf( radiusStr, "%d,%d,%d", &radius[0], &radius[1], &radius[2] ) )
+    {
+    radius[0] = radius[1] = radius[2] = atof( radiusStr );
+    }
+  
   cmtk::UniformVolume::SpaceVectorType v;
   std::string restOfLine;
 
@@ -145,9 +152,9 @@ doMain( const int argc, const char *argv[] )
     cmtk::Types::DataItem maxValue = volume->GetDataAt( volume->GetOffsetFromIndex( ijk ) );
 
     cmtk::DataGrid::IndexType probe = ijk;
-    for ( probe[2] = std::max( 0, ijk[2]-radius ); probe[2] < std::min( volume->m_Dims[2], ijk[2]+radius+1 ); ++probe[2] )
-      for ( probe[1] = std::max( 0, ijk[1]-radius ); probe[1] < std::min( volume->m_Dims[1], ijk[1]+radius+1 ); ++probe[1] )
-	for ( probe[0] = std::max( 0, ijk[0]-radius ); probe[0] < std::min( volume->m_Dims[0], ijk[0]+radius+1 ); ++probe[0] )
+    for ( probe[2] = std::max( 0, ijk[2]-radius[2] ); probe[2] < std::min( volume->m_Dims[2], ijk[2]+radius[2]+1 ); ++probe[2] )
+      for ( probe[1] = std::max( 0, ijk[1]-radius[1] ); probe[1] < std::min( volume->m_Dims[1], ijk[1]+radius[1]+1 ); ++probe[1] )
+	for ( probe[0] = std::max( 0, ijk[0]-radius[0] ); probe[0] < std::min( volume->m_Dims[0], ijk[0]+radius[0]+1 ); ++probe[0] )
 	  {
 	  const cmtk::Types::DataItem value = volume->GetDataAt( volume->GetOffsetFromIndex( probe ) );
 	  if ( value > maxValue )
