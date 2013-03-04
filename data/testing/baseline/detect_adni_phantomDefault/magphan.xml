@@ -3,6 +3,8 @@
 <phantomType>MagphanEMR051</phantomType>
 <snr>18.931023</snr>
 <cnr>15.522731 43.722179 37.260305 32.906366</cnr>
+<scale>0.999950 1.009641 0.996718</scale>
+<nonlinear>0.379241 0.447851 0.248359</nonlinear>
 <landmarkList coordinates="physical" space="RAS">
 	<landmark>
 		<name>SNR</name>

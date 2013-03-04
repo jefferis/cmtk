@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2012 SRI International
+//  Copyright 2010-2013 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -216,6 +216,15 @@ public:
       maxAbs = std::max<T>( maxAbs, fabs( this->m_Data[i] ) );
     
     return maxAbs;
+  }
+
+  /// Elementwise absolute-value operator.
+  const Self Abs() const
+  {
+    FixedVector<NDIM,T> result;
+    for ( size_t i = 0; i < NDIM; ++i )
+      result[i] = static_cast<T>( fabs( (*this)[i] ) );
+    return result;
   }
 
   /// Shorthand for root of sum of squares (i.e., Euclid's norm)

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,6 +104,9 @@ public:
 
   /// Estimated linear transformation fitted to landmarks.
   AffineXform m_LinearFitXform;
+
+  /// Estimated image contrast-to-noise ratio.
+  FixedVector<3,Types::Coordinate> m_EstimatedNonLinear;
 
   /// Vector of landmark pairs.
   std::list<LandmarkPair> m_LandmarkPairs;

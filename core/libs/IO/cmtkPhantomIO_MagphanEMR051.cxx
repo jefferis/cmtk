@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,6 +50,8 @@ cmtk::PhantomIO::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "phantomType",  { NULL, NULL, NULL, "\n" } },
     { "snr",          { NULL, NULL, NULL, "\n" } },
     { "cnr",          { NULL, NULL, NULL, "\n" } },
+    { "scale",        { NULL, NULL, NULL, "\n" } },
+    { "nonlinear",    { NULL, NULL, NULL, "\n" } },
     { "landmarkList", { NULL, "\n", NULL, "\n" } },
     { "landmark",     { "\t", "\n", "\t", "\n" } },
     { "name",         { "\t\t", NULL, NULL, "\n" } },
@@ -98,6 +100,19 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   for ( size_t i=0; i < phantom.m_EstimatedCNR.Size(); ++i )
     mxmlNewReal( x_cnr, phantom.m_EstimatedCNR[i] ); 
     
+  FixedVector<3,Types::Coordinate> scales = phantom.m_LinearFitXform.GetScales(); 
+  mxml_node_t *x_scale= mxmlNewElement( x_phantom, "scale");
+  for ( size_t idx = 0; idx < 3; ++idx )
+    {
+    mxmlNewReal( x_scale, scales[idx] );
+    }
+  
+  mxml_node_t *x_nonlinear= mxmlNewElement( x_phantom, "nonlinear");
+  for ( size_t idx = 0; idx < 3; ++idx )
+    {
+    mxmlNewReal( x_nonlinear, phantom.m_EstimatedNonLinear[idx] );
+    }
+  
   mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarkList" );
   mxmlElementSetAttr( x_lmpairs, "coordinates", "physical" );
   mxmlElementSetAttr( x_lmpairs, "space", "RAS" );
