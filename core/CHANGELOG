@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4690) Added: ADNI phantom description file (XML) now contains estimated
+	scale factors and nonlinearity.
 (r4684) Added: pixel search tool, "pxsearch." For now, this simply
 	searches for the pixel with the maximum value in a local
 	neighborhood.
