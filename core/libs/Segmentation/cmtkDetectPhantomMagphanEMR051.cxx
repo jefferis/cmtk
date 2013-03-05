@@ -94,7 +94,14 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     {
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
     this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0 /*search distance*/, 5 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0 /*search distance*/, 5 /*search band width*/ );
+    try 
+      {
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      }
+    catch (...)
+      {
+      }
     
     landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
     }
@@ -138,13 +145,17 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       {
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
-	const Self::SpaceVectorType predicted = this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
+	const Self::SpaceVectorType predicted = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
 
 	// if we predict a landmark outside the image field of view, then the phantom was not imaged completely and we need to bail
 	if ( ! this->m_PhantomImage->IsInside( predicted ) )
 	  throw Self::OutsideFieldOfView( i, predicted );
 
-	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->FindSphereAtDistance( filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	// Find actual sphere somewhere near the predicted location
+	this->m_Landmarks[i] = this->FindSphereAtDistance( filterResponse, predicted, 0, 0.5 * this->GetLandmarkFitResidualThreshold() );
+
+	// Refine detection based on local center-of-mass computation
+	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
 
 	// if the refined landmark is outside the image field of view, then the phantom was not imaged completely and we need to bail
 	if ( ! this->m_PhantomImage->IsInside( refined ) )
@@ -301,7 +312,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   
   const DataGrid::RegionType region( centerPixelIndex - DataGrid::IndexType::FromPointer( nSphereRadius ), 
 				     centerPixelIndex + DataGrid::IndexType::FromPointer( nSphereRadius ) + DataGrid::IndexType( 1 ) );
-  
+
   UniformVolume::SmartPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
 
   UniformVolume::SmartPtr regionMask = regionVolume->CloneGrid();
