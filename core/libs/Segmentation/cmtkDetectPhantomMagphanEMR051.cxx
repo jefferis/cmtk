@@ -139,7 +139,17 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       if ( this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold() )
 	{
 	const Self::SpaceVectorType predicted = this->m_Landmarks[i] = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
+
+	// if we predict a landmark outside the image field of view, then the phantom was not imaged completely and we need to bail
+	if ( ! this->m_PhantomImage->IsInside( predicted ) )
+	  throw Self::OutsideFieldOfView( i, predicted );
+
 	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->FindSphereAtDistance( filterResponse, this->m_Landmarks[i], 0, 0.5 * this->GetLandmarkFitResidualThreshold() ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+
+	// if the refined landmark is outside the image field of view, then the phantom was not imaged completely and we need to bail
+	if ( ! this->m_PhantomImage->IsInside( refined ) )
+	  throw Self::OutsideFieldOfView( i, refined );
+
 	// some spheres are darker than background - only accept refinements that improve residual fit error
 	if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i] - predicted).RootSumOfSquares() )
 	  this->m_Landmarks[i] = refined;

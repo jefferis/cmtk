@@ -68,6 +68,20 @@ public:
   /// Exception thrown if a landmark sphere cannot be localized in the search region.
   class NoSphereInSearchRegion : public Exception {};
   
+  /// Exception thrown if the field of view is insufficient.
+  class OutsideFieldOfView : public Exception 
+  {
+  public:
+    // Constructor takes index and predicted location of offending landmark.
+    OutsideFieldOfView( const size_t idx, const UniformVolume::CoordinateVectorType& v ) : m_Idx( idx ), m_Location( v ) {}
+
+    // Offending landmark index.
+    size_t m_Idx;
+
+    // Offending predicted location.
+    UniformVolume::CoordinateVectorType m_Location;
+  };
+  
   /// Constructor: detect all landmark spheres.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
 
