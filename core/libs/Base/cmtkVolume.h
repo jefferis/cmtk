@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -88,7 +88,7 @@ public:
   /** Volume offset (coordinate of first voxel in RAS standard space).
    *\note This offset is NOT included in the volume size, m_Size.
    */
-  CoordinateVectorType m_Offset;
+  Self::CoordinateVectorType m_Offset;
 
   /// Set volume offset.
   void SetOffset( const Vector3D& o )
@@ -102,8 +102,14 @@ public:
    * this field, because the volume size as the product of pixel size times number of pixels
    * per dimension minus one remains unaffected.
    */
-  FixedVector<3,Types::Coordinate> m_Size;
+  Self::CoordinateVectorType m_Size;
 
+  /// Check whether a location is inside the image.
+  bool IsInside( const Self::CoordinateVectorType& v ) const
+  {
+    return (this->m_Offset <= v) && ((v-this->m_Offset) < this->m_Size);
+  }
+  
   /// Copy constructor.
   Volume( const Self& other ) : Superclass( other ), m_Offset( other.m_Offset ), m_Size( other.m_Size ) {}
 
