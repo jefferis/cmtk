@@ -101,6 +101,10 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     catch (...)
       {
+      if ( !this->m_TolerateTruncation )
+	throw;
+      
+      continue;
       }
     
     landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
@@ -356,6 +360,11 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   // update exclusion mask
   UniformVolumePainter maskPainter( this->m_ExcludeMask, UniformVolumePainter::COORDINATES_ABSOLUTE );
   maskPainter.DrawSphere( refined, sphereRadius+this->GetSphereExcludeSafetyMargin(), label );
+
+  if ( ! (MathUtil::IsFinite( refined[0] ) && MathUtil::IsFinite( refined[1] ) && MathUtil::IsFinite( refined[2] ) ) )
+    {
+    throw( Self::OutsideFieldOfView( label-1, estimate ) );
+    }
 
   return refined;
 }

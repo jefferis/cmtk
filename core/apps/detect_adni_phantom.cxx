@@ -55,6 +55,8 @@ doMain( const int argc, const char* argv[] )
   const char* outputRigidPath = NULL;
   const char* outputAffinePath = NULL;
 
+  bool tolerant = false;
+
   try
     {
     cmtk::CommandLine cl;
@@ -62,6 +64,8 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a 3D image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom)." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.AddSwitch( Key( "tolerant" ), &tolerant, true, "Be tolerant of issues such as partially truncated marker spheres. This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-rigid" ), &outputRigidPath, "Output path for the fitted rigid transformation from phantom space into RAS image standard space. This transformation defines where each sphere should be in the image." )
@@ -88,6 +92,7 @@ doMain( const int argc, const char* argv[] )
   try
     {
     cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
+    detectionFilter.SetTolerateTruncation( tolerant );
 
     // get expected landmark locations
     cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();

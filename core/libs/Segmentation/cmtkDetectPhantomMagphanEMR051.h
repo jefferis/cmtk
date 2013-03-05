@@ -109,9 +109,20 @@ public:
   /// Get actual, detected landmark locations.
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
+  /// Set flag for truncation-tolerant operation.
+  void SetTolerateTruncation( const bool flag = true )
+  {
+    this->m_TolerateTruncation = flag;
+  }
+
 private:
   /// Flag for correction of (linear) bias field for each sphere.
   bool m_CorrectSphereBiasField;
+
+  /** Flag for tolerant operation - if set, we are lenient when spheres are slightly truncated.
+   * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
+   */
+  bool m_TolerateTruncation;
   
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
