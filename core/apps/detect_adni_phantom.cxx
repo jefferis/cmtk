@@ -85,39 +85,52 @@ doMain( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPath ) );
   const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
 
-  cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
-
-  // get expected landmark locations
-  cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
-  // bring expected landmark locations from phantom image into physical space
-  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+  try
     {
-    it->m_Location = phantomToPhysical.Apply( it->m_Location );
-    }
+    cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
 
-  // get detected landmark locations
-  cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
-  // bring detected landmark locations from phantom image into physical space
-  for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    // get expected landmark locations
+    cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
+    // bring expected landmark locations from phantom image into physical space
+    for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+      {
+      it->m_Location = phantomToPhysical.Apply( it->m_Location );
+      }
+    
+    // get detected landmark locations
+    cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
+    // bring detected landmark locations from phantom image into physical space
+    for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+      {
+      it->m_Location = phantomToPhysical.Apply( it->m_Location );
+      }
+    
+    // match expected and detected landmarks
+    cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
+    cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
+    
+    if ( outputPath )
+      cmtk::PhantomIO::Write( *(detectionFilter.GetDetectedPhantom()), outputPath );
+    
+    if ( outputLabelPath )
+      cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputLabelPath );
+    
+    if ( outputAffinePath )
+      cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationAffine(), outputAffinePath );
+    
+    if ( outputRigidPath )
+      cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationRigid(), outputRigidPath );
+    }
+  catch ( const cmtk::DetectPhantomMagphanEMR051::OutsideFieldOfView& ex )
     {
-     it->m_Location = phantomToPhysical.Apply( it->m_Location );
+    cmtk::StdErr << "ERROR: estimated location " << ex.m_Location << " of landmark #" << ex.m_Idx << " is outside image field of view.\n";
+    return 3;
     }
-  
-  // match expected and detected landmarks
-  cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
-  cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
-
-  if ( outputPath )
-    cmtk::PhantomIO::Write( *(detectionFilter.GetDetectedPhantom()), outputPath );
-
-  if ( outputLabelPath )
-    cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputLabelPath );
-
-  if ( outputAffinePath )
-    cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationAffine(), outputAffinePath );
-
-  if ( outputRigidPath )
-    cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationRigid(), outputRigidPath );
+  catch ( const cmtk::DetectPhantomMagphanEMR051::NoSphereInSearchRegion )
+    {
+    cmtk::StdErr << "ERROR: unable to find sphere near expected location - most likely insufficient field of view.\n";
+    return 3;
+    }
 
   return 0;
 }
