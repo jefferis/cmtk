@@ -46,8 +46,9 @@
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
-cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage ) 
+cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant )
   : m_CorrectSphereBiasField( true ),
+    m_TolerateTruncation( tolerant ),
     m_PhantomImage( phantomImage ),
     m_ExcludeMask( phantomImage->CloneGrid() ),
     m_IncludeMask( phantomImage->CloneGrid() )
@@ -70,7 +71,16 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
 
     const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], distanceFromCenter , 10 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], distanceFromCenter , 10 /*search band width*/ );
+    try 
+      {
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      }
+    catch (...)
+      {
+      if ( !this->m_TolerateTruncation )
+	throw;
+      }
     }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
@@ -316,6 +326,12 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
   
   const DataGrid::RegionType region( centerPixelIndex - DataGrid::IndexType::FromPointer( nSphereRadius ), 
 				     centerPixelIndex + DataGrid::IndexType::FromPointer( nSphereRadius ) + DataGrid::IndexType( 1 ) );
+
+  // Check whether region is entirely within image FOV
+  if ( ! (region.From() >= DataGrid::IndexType( 0 ) && region.To() <= this->m_PhantomImage->m_Dims) )
+    {
+    throw( Self::OutsideFieldOfView( label-1, estimate ) );
+    }
 
   UniformVolume::SmartPtr regionVolume = this->m_PhantomImage->GetCroppedVolume( region );
 

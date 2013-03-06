@@ -91,8 +91,7 @@ doMain( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage );
-    detectionFilter.SetTolerateTruncation( tolerant );
+    cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage, tolerant );
 
     // get expected landmark locations
     cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();

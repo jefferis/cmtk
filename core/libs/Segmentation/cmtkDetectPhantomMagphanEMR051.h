@@ -83,7 +83,7 @@ public:
   };
   
   /// Constructor: detect all landmark spheres.
-  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage );
+  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant = false /*!< If this is set, partial sphere truncation will be tolerated.*/ );
 
   /// Get comprehensive description of phantom as detected in image.
   DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();
@@ -108,12 +108,6 @@ public:
 
   /// Get actual, detected landmark locations.
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
-
-  /// Set flag for truncation-tolerant operation.
-  void SetTolerateTruncation( const bool flag = true )
-  {
-    this->m_TolerateTruncation = flag;
-  }
 
 private:
   /// Flag for correction of (linear) bias field for each sphere.
