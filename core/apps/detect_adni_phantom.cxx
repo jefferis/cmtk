@@ -128,7 +128,7 @@ doMain( const int argc, const char* argv[] )
     }
   catch ( const cmtk::DetectPhantomMagphanEMR051::OutsideFieldOfView& ex )
     {
-    cmtk::StdErr << "ERROR: estimated location " << ex.m_Location << " of landmark #" << ex.m_Idx << " is outside image field of view.\n";
+    cmtk::StdErr << "ERROR: estimated location " << ex.m_Location << " puts landmark #" << ex.m_Idx << " (partly) outside image field of view.\n";
     return 3;
     }
   catch ( const cmtk::DetectPhantomMagphanEMR051::NoSphereInSearchRegion )
