@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,7 +70,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddOption( Key( "target-image" ), &targetImagePath, "Set target image of the transformation (i.e., the image that the fiber track points are mapped into) "
 		  "to correct for differences in orientation and coordinate space." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
-    cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )
+    cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next."
+			   "(If the first transformation in the sequence is inverted, then '--inverse' must be preceded by '--', i.e., use '-- --inverse xform.path')." )->SetProperties( cmtk::CommandLine::PROPS_XFORM )
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );  
     
     cl.Parse( argc, argv );

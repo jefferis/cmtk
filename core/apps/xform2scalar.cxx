@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -111,7 +111,8 @@ doMain ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutImagePath, "Output path for image with extracted scalar data." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameterVector( &InputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+    cl.AddParameterVector( &InputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next. "
+			   "(If the first transformation in the sequence is inverted, then '--inverse' must be preceded by '--', i.e., use '-- --inverse xform.path')." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
     
     cl.Parse( argc, argv );
     }

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +56,8 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Concatenate affine transformations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the explicit concatenation of multiple affine coordinate transformations, each of which can be optionally inverted." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "concat_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "concat_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #. "
+		       "(If the first transformation in the sequence is inverted, then '--inverse' must be preceded by '--', i.e., use '-- --inverse xform.path').");
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'o', "outfile" ), &OutputName, "Output transformation." );
