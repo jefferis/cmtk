@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mr>
+	<dicom:RepetitionTime>2200.000000</dicom:RepetitionTime>
+	<dicom:EchoTime>30.000000</dicom:EchoTime>
+	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:ImagingFrequency>123.250616</dicom:ImagingFrequency>
+	<type>magnitude</type>
+</mr>
+<stack>
+	<dicom:ImageOrientationPatient>1\0\0\0\1\0</dicom:ImageOrientationPatient>
+	<image>
+		<dcmFile>image.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-719.29111117125\-722.38326668739\-50.305274963379</dicom:ImagePositionPatient>
+	</image>
+</stack>
+

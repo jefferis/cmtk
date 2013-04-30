@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mr>
+	<dicom:RepetitionTime>7800.000000</dicom:RepetitionTime>
+	<dicom:EchoTime>87.000000</dicom:EchoTime>
+	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:ImagingFrequency>123.250600</dicom:ImagingFrequency>
+	<dwi>
+		<bValue>1000</bValue>
+		<bVector coordinateSpace="LPS">0.710642 0.525152 -0.468191</bVector>
+		<bVectorImage imageOrientation="LPS">0.710642 0.525152 -0.468191</bVectorImage>
+		<bVectorStandard imageOrientation="RAS">-0.710642 -0.525152 -0.468191</bVectorStandard>
+	</dwi>
+</mr>
+<stack>
+	<dicom:ImageOrientationPatient>1\0\0\0\1\0</dicom:ImageOrientationPatient>
+	<image>
+		<dcmFile>I0004.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-1079.2911111712\-1082.3832666874\-52.805274963379</dicom:ImagePositionPatient>
+	</image>
+</stack>
+

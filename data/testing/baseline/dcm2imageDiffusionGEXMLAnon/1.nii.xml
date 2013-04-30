@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mr>
+	<dicom:RepetitionTime>4000.000000</dicom:RepetitionTime>
+	<dicom:EchoTime>97.900000</dicom:EchoTime>
+	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
+	<dicom:GE:EffectiveEchoSpacing>628.000000</dicom:GE:EffectiveEchoSpacing>
+	<dicom:GE:PulseSequenceName>dirk/sri_tensor_ramp1800_inv</dicom:GE:PulseSequenceName>
+	<dicom:GE:InternalPulseSequenceName>EPI2</dicom:GE:InternalPulseSequenceName>
+	<type>magnitude</type>
+	<dwi>
+		<bValue>0</bValue>
+		<bVector coordinateSpace="LPS">0.000000 0.000000 -0.000000</bVector>
+		<bVectorImage imageOrientation="LPI">0.000000 0.000000 0.000000</bVectorImage>
+		<bVectorStandard imageOrientation="RAS">0.000000 0.000000 0.000000</bVectorStandard>
+	</dwi>
+</mr>
+<stack>
+	<dicom:ImageOrientationPatient>1\-0\0\-0\1\0</dicom:ImageOrientationPatient>
+	<image>
+		<dcmFile>I0150.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-117.516\-134.874\10.5997</dicom:ImagePositionPatient>
+	</image>
+	<image>
+		<dcmFile>I0151.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-117.516\-134.874\8.09975</dicom:ImagePositionPatient>
+	</image>
+	<image>
+		<dcmFile>I0152.dcm</dcmFile>
+		<dicom:ImagePositionPatient>-117.516\-134.874\5.59975</dicom:ImagePositionPatient>
+	</image>
+</stack>
+
