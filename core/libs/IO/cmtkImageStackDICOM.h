@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -87,7 +87,8 @@ public:
 	       const bool ignoreAcquisitionNumber = false /*!< When this flag is set, the AcquisitionNumber DICOM tag is ignore for matching images*/ ) const;
   
   /// Write XML sidecar file.
-  void WriteXML( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */ ) const;
+  void WriteXML( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */,
+		 const bool includeIdentifiers = false /*!< If this is set, protected "identifiers" such as device serial numbers will also be included in the XML output.*/ ) const;
 
   /// Write to image file.
   cmtk::UniformVolume::SmartConstPtr WriteImage ( const std::string& name /*!< File name and path for new image.*/, const Self::EmbedInfoEnum embedInfo /*!< Flag for selecting information embedded into image description.*/  ) const;

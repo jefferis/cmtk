@@ -113,7 +113,7 @@ LIST(APPEND testList
 # Tests for "detect_adni_phantom" tool
 IF(CMTK_USE_FFTW)
   LIST(APPEND testList 
-    detect_adni_phantomDefault)
+    detect_adni_phantomDefault detect_adni_phantomBadFOV)
 ENDIF(CMTK_USE_FFTW)
 
 # ==========================================
@@ -307,6 +307,10 @@ IF(CMTK_USE_DCMTK)
     dcm2imageMosaicPACS
     dcm2imageDiffusionGEXML
     dcm2imageDiffusionSiemensXML
+    dcm2imageMosaicAnon
+    dcm2imageMosaicPACSAnon
+    dcm2imageDiffusionGEXMLAnon
+    dcm2imageDiffusionSiemensXMLAnon
     dcm2imageExclude
     dcm2imageInclude
     dcm2imageSubsDirName)

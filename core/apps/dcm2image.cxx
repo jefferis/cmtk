@@ -132,6 +132,7 @@ typedef enum
 SortKeyEnum SortFiles = SORT_INSTANCE_NUMBER;
 
 bool WriteXML = false;
+bool IncludeIdentifiers = false;
 
 bool WriteSingleSlices = false;
 
@@ -261,7 +262,7 @@ VolumeList::WriteVolumes()
 
       if ( WriteXML )
 	{
-	it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume );
+	it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume, IncludeIdentifiers );
 	}
       }
     else
@@ -280,7 +281,7 @@ VolumeList::WriteVolumes()
 
 	if ( WriteXML )
 	  {
-	  it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume );
+	  it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume, IncludeIdentifiers );
 	  }
 	}
       }
@@ -480,6 +481,7 @@ doMain ( const int argc, const char *argv[] )
 		  "%T (RawDataType - vendor-specific, currently GE MRI only)" );
 
     cl.AddSwitch( Key( 'x', "xml" ), &WriteXML, true, "Write XML sidecar file for each created image." );
+    cl.AddSwitch( Key( "include-identifiers" ), &IncludeIdentifiers, true, "Include potentially protected identifying information (e.g., UIDs, device serial numbers, dates) in the created XML sidecar files." );
 
     cmtk::CommandLine::EnumGroup<cmtk::ImageStackDICOM::EmbedInfoEnum>::SmartPtr embedGroup = cl.AddEnum( "embed", &EmbedInfo, "Embed DICOM information into output images as 'description' (if supported by output file format)." );
     embedGroup->AddSwitch( Key( "StudyID_StudyDate" ), cmtk::ImageStackDICOM::EMBED_STUDYID_STUDYDATE, "StudyID, tag (0020,0010), then underscore, followed by StudyDate, tag (0008,0020). "

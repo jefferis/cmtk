@@ -82,6 +82,18 @@ run()
     fi
 }
 
+run_expect_fail()
+{
+    cmd=$*
+
+    echo "pushd $PWD; ${BINDIR}/$cmd; popd"
+    if ${BINDIR}/$cmd; then
+	exit 1
+    else
+	return
+    fi
+}
+
 run_eval()
 {
     cmd=$*
@@ -659,18 +671,34 @@ case ${RUNTEST} in
 	check_results 001.nhdr 002.nhdr 003.nhdr
 	;;
     dcm2imageMosaic)
-	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic/
+	run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/00.nii mr-mosaic/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageMosaicPACS)
-	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
+	run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXML)
-        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     dcm2imageDiffusionSiemensXML)
+        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-siemens/
+	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml 3.nii 3.nii.xml 4.nii 4.nii.xml
+	;;
+    dcm2imageMosaicAnon)
+	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic/
+	check_results 00.nii 00.nii.xml
+	;;
+    dcm2imageMosaicPACSAnon)
+	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
+	check_results 00.nii 00.nii.xml
+	;;
+    dcm2imageDiffusionGEXMLAnon)
+        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
+	;;
+    dcm2imageDiffusionSiemensXMLAnon)
         run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-siemens/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml 3.nii 3.nii.xml 4.nii 4.nii.xml
 	;;
@@ -683,7 +711,7 @@ case ${RUNTEST} in
 	check_results image.nii
 	;;
     dcm2imageSubsDirName)
-        run dcm2image -x --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
+        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
 	check_results mr-dwi-ge/I0150.dcm.nii mr-dwi-ge/I0150.dcm.nii.xml mr-dwi-ge/I0280.dcm.nii mr-dwi-ge/I0280.dcm.nii.xml
 	check_results mr-dwi-siemens/I0001.dcm.nii mr-dwi-siemens/I0001.dcm.nii.xml mr-dwi-siemens/I0002.dcm.nii mr-dwi-siemens/I0002.dcm.nii.xml 
 	check_results mr-dwi-siemens/I0003.dcm.nii mr-dwi-siemens/I0003.dcm.nii.xml mr-dwi-siemens/I0004.dcm.nii mr-dwi-siemens/I0004.dcm.nii.xml
@@ -819,6 +847,9 @@ case ${RUNTEST} in
     detect_adni_phantomDefault)
         run detect_adni_phantom --write-labels ${tmpdir}/labels.nii --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan.nii ${tmpdir}/magphan.xml
         check_results labels.nii rigid.xform affine.xform magphan.xml
+	;;
+    detect_adni_phantomBadFOV)
+        run_expect_fail detect_adni_phantom spgr_magphan_badFOV.nii ${tmpdir}/magphan.xml
 	;;
     detect_spheres_matched_filter)
         run detect_spheres_matched_filter --radius 15 --filter-margin 2 adni_phantom2mm.nii ${tmpdir}/filtered.nii

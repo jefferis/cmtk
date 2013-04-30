@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -157,17 +157,19 @@ static int cmtkWrapToLower( const int c )
 }
 
 void
-ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& volume ) const
+ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& volume, const bool includeIdentifiers ) const
 {
   mxmlSetWrapMargin( 120 ); // make enough room for indented bVectorStandard
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
 
-  mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
-
-  mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
-  mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
-  mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
-  mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
+  if ( includeIdentifiers )
+    {
+    mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
+    mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
+    mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
+    mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
+    mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
+    }
 
   std::string modality = this->front()->GetTagValue( DCM_Modality );
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
@@ -185,7 +187,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) );
       }
 
-    if ( this->front()->GetTagValue( DCM_SequenceName ) != "" )
+    if ( this->front()->GetTagValue( DCM_SequenceName ) != "" && includeIdentifiers )
       {
       mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() );
       }
@@ -195,7 +197,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceDate ) != "" )
+    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceDate ) != "" && includeIdentifiers )
       {
       mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() );
       }
@@ -255,13 +257,16 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     
   mxml_node_t *x_stack = mxmlNewElement( x_root, "stack" );
 
-  mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() );
-  mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
-  mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
-
-  if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
+  if ( includeIdentifiers )
     {
-    mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
+    mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() );
+    mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
+    mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
+
+    if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
+      {
+      mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
+      }
     }
 
   mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() );
