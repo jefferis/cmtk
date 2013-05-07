@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -131,8 +131,25 @@ private:
    */
   UniformVolume::SmartPtr m_IncludeMask;
 
+  /// Class for landmarks and validity flags
+  class LandmarkType
+  {
+  public:
+    /// Default constructor.
+    LandmarkType() : m_Location( 0 ), m_Valid( false ) {}
+
+    /// Constructor.
+    LandmarkType( const Self::SpaceVectorType& location, const bool valid = true ) : m_Location( location ), m_Valid( valid ) {}
+
+    /// Location of the landmark
+    Self::SpaceVectorType m_Location;
+
+    /// Is this landmark valid?
+    bool m_Valid;
+  };
+
   /// The detected sphere centroid landmarks in image space.
-  std::vector<Self::SpaceVectorType> m_Landmarks;
+  std::vector<Self::LandmarkType> m_Landmarks;
 
   /// Fitted rigid transformation from phantom to image coordinates.
   AffineXform::SmartPtr m_PhantomToImageTransformationRigid;

@@ -71,10 +71,10 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
 
     const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
-    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0], distanceFromCenter , 10 /*search band width*/ );
+    this->m_Landmarks[i] = Self::LandmarkType( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 10 /*search band width*/ ) );
     try 
       {
-      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      this->m_Landmarks[i] = Self::LandmarkType( this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ ) );
       }
     catch (...)
       {
@@ -86,7 +86,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
   LandmarkPairList landmarkList;
   for ( size_t i = 0; i < 3; ++i )
-    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
 
   // create initial rigid transformation to find approximate 10mm landmark sphere locations
   AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
@@ -103,11 +103,11 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
-    this->m_Landmarks[i] = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    this->m_Landmarks[i] = this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i], 0 /*search distance*/, 5 /*search band width*/ );
+    this->m_Landmarks[i] = Self::LandmarkType( intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) ) );
+    this->m_Landmarks[i] = Self::LandmarkType( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[i].m_Location, 0 /*search distance*/, 5 /*search band width*/ ) );
     try 
       {
-      this->m_Landmarks[i] = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      this->m_Landmarks[i] = Self::LandmarkType( this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ ) );
       }
     catch (...)
       {
@@ -117,7 +117,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       continue;
       }
     
-    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
     }
 
   landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
@@ -169,25 +169,25 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
 	this->m_Landmarks[i] = this->FindSphereAtDistance( filterResponse, predicted, 0, 0.5 * this->GetLandmarkFitResidualThreshold() );
 
 	// Refine detection based on local center-of-mass computation
-	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
 
 	// if the refined landmark is outside the image field of view, then the phantom was not imaged completely and we need to bail
 	if ( ! this->m_PhantomImage->IsInside( refined ) )
 	  throw Self::OutsideFieldOfView( i, refined );
 
 	// some spheres are darker than background - only accept refinements that improve residual fit error
-	if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i] - predicted).RootSumOfSquares() )
+	if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i].m_Location - predicted).RootSumOfSquares() )
 	  this->m_Landmarks[i] = refined;
 	}
       }
     
     LandmarkPairList refinedLandmarkList;
-    refinedLandmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
-    refinedLandmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+    refinedLandmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1].m_Location ) );
+    refinedLandmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2].m_Location ) );
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {
-      refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+      refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
       }
     }
 }
@@ -200,14 +200,14 @@ cmtk::DetectPhantomMagphanEMR051::ExcludeOutlierLandmarks()
     {  
     LandmarkPairList landmarkList;
     // add two 15mm spheres
-    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 1 ), MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1] ) );
-    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 2 ), MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2] ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 1 ), MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1].m_Location ) );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 2 ), MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2].m_Location ) );
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {
       if ( this->m_LandmarkFitResiduals[i] < this->GetLandmarkFitResidualThreshold() )
 	{
-	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i] ) );
+	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
 	}
       }
     
@@ -227,7 +227,7 @@ cmtk::DetectPhantomMagphanEMR051::ComputeLandmarkFitResiduals( const AffineXform
   this->m_LandmarkFitResiduals.resize( MagphanEMR051::NumberOfSpheres );
   for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    this->m_LandmarkFitResiduals[i] = (this->m_Landmarks[i] - xform.Apply( MagphanEMR051::SphereCenter( i ) ) ).RootSumOfSquares();
+    this->m_LandmarkFitResiduals[i] = (this->m_Landmarks[i].m_Location - xform.Apply( MagphanEMR051::SphereCenter( i ) ) ).RootSumOfSquares();
     if ( i > 6 )
       {
       maxResidual = std::max( this->m_LandmarkFitResiduals[i], maxResidual );
@@ -246,7 +246,7 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedSpheresLabelMap()
 
   for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    maskPainter.DrawSphere( this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 1+i );
+    maskPainter.DrawSphere( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i );
     }
 
   return this->m_ExcludeMask;
@@ -305,7 +305,6 @@ cmtk::DetectPhantomMagphanEMR051::FindSphereAtDistance
 
   if ( maxIndex < 0 )
     {
-    VolumeIO::Write( *this->m_ExcludeMask, "/tmp/exclude_mask.nii" );
     throw( Self::NoSphereInSearchRegion() );
     }
   
@@ -420,7 +419,7 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedLandmarks( const bool includeOutlie
   for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
     if ( includeOutliers || (this->m_LandmarkFitResiduals[i] < this->GetLandmarkFitResidualThreshold()) )    
-      list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_Landmarks[i] ) );
+      list.push_back( Landmark( MagphanEMR051::SphereName( i ), this->m_Landmarks[i].m_Location ) );
     }
   
   return list;
@@ -437,12 +436,12 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
   const AffineXform phantomToPhysical( this->m_PhantomImage->GetImageToPhysicalMatrix() );
   for ( size_t i = 0; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
-    detected->AddLandmarkPair( MagphanEMR051::SphereName( i ), phantomToPhysical.Apply( this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ), phantomToPhysical.Apply( this->m_Landmarks[i] ), 
+    detected->AddLandmarkPair( MagphanEMR051::SphereName( i ), phantomToPhysical.Apply( this->m_PhantomToImageTransformationRigid->Apply( MagphanEMR051::SphereCenter( i ) ) ), phantomToPhysical.Apply( this->m_Landmarks[i].m_Location ), 
 			       this->m_LandmarkFitResiduals[i], (i>=7) /*only the 10mm spheres #7 and above are considered precise enough for registration*/ );
 
     if ( i >= 7 )
       {
-      const Self::SpaceVectorType residual = phantomToPhysical.Apply( this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) ) ) - phantomToPhysical.Apply( this->m_Landmarks[i] );
+      const Self::SpaceVectorType residual = phantomToPhysical.Apply( this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) ) ) - phantomToPhysical.Apply( this->m_Landmarks[i].m_Location );
       detected->m_EstimatedNonLinear += residual.Abs();
       ++countSpheresNonLinear;
       }
@@ -452,14 +451,14 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
 
   // get SNR estimate
   Types::DataItem mean, stdev;
-  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0], MagphanEMR051::SphereRadius( 0 ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0].m_Location, MagphanEMR051::SphereRadius( 0 ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
   detected->m_EstimatedSNR = mean / stdev;
   
   // get four CNR estimates
   for ( size_t i = 3; i < 7; ++i )
     {
     // we compute CNR per CNR sphere using formula from http://www.mr-tip.com/serv1.php?type=db1&dbs=Contrast%20to%20Noise%20Ratio (plus "fabs")
-    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i], MagphanEMR051::SphereRadius( i ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
     detected->m_EstimatedCNR[i-3] = fabs( detected->m_EstimatedSNR - mean / stdev );
     }
 
