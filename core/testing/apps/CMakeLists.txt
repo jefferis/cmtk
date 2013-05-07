@@ -113,7 +113,7 @@ LIST(APPEND testList
 # Tests for "detect_adni_phantom" tool
 IF(CMTK_USE_FFTW)
   LIST(APPEND testList 
-    detect_adni_phantomDefault detect_adni_phantomBadFOV)
+    detect_adni_phantomDefault detect_adni_phantomBadFOV detect_adni_phantomTolerantBadFOV)
 ENDIF(CMTK_USE_FFTW)
 
 # ==========================================

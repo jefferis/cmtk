@@ -851,6 +851,10 @@ case ${RUNTEST} in
     detect_adni_phantomBadFOV)
         run_expect_fail detect_adni_phantom spgr_magphan_badFOV.nii ${tmpdir}/magphan.xml
 	;;
+    detect_adni_phantomTolerantBadFOV)
+        run detect_adni_phantom --tolerant --write-labels ${tmpdir}/labels.nii spgr_magphan_badFOV.nii ${tmpdir}/magphan.xml
+	check_results magphan.xml labels.nii
+	;;
     detect_spheres_matched_filter)
         run detect_spheres_matched_filter --radius 15 --filter-margin 2 adni_phantom2mm.nii ${tmpdir}/filtered.nii
 	run convertx --float --downsample-select 4,4,4 ${tmpdir}/filtered.nii ${tmpdir}/filtered.nii
