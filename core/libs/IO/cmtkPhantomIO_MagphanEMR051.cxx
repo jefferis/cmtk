@@ -115,9 +115,13 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   
   mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarkList" );
   mxmlElementSetAttr( x_lmpairs, "coordinates", "physical" );
-  mxmlElementSetAttr( x_lmpairs, "space", "RAS" );
+  mxmlElementSetAttr( x_lmpairs, "space", "RAS" );  
 
   const std::list<LandmarkPair>& lmPairs = phantom.LandmarkPairsList();
+  char lmCntStr[5];
+  snprintf( lmCntStr, 4, "%d", static_cast<byte>( lmPairs.size() ) );
+  mxmlElementSetAttr( x_lmpairs, "count", lmCntStr );    
+
   for ( std::list<LandmarkPair>::const_iterator it = lmPairs.begin(); it != lmPairs.end(); ++it )
     {
     mxml_node_t *x_lm = mxmlNewElement( x_lmpairs, "landmark");
