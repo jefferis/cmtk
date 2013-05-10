@@ -33,15 +33,6 @@
       </tr>
     </table>
     
-    <h2>T2-weighted</h2>
-    <table>
-      <tr>
-	<td><img height="256" src="t2_mrbias-ax.png"></td>
-	<td><img height="256" src="t2_mrbias-co.png"></td>
-	<td><img height="256" src="t2_mrbias-sa.png"></td>
-      </tr>
-    </table>
-    
     <h1>Skull Stripping / Brain Extraction</h1>
     
     <h2>T1-weighted</h2>
