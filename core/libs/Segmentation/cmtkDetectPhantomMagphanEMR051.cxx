@@ -49,6 +49,8 @@
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant )
   : m_CorrectSphereBiasField( true ),
     m_TolerateTruncation( tolerant ),
+    m_ErodePixelsSNR( 2 ),
+    m_ErodePixelsCNR( 2 ),
     m_PhantomImage( phantomImage ),
     m_ExcludeMask( phantomImage->CloneGrid() ),
     m_IncludeMask( phantomImage->CloneGrid() )
@@ -477,14 +479,14 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
 
   // get SNR estimate
   Types::DataItem mean, stdev;
-  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0].m_Location, MagphanEMR051::SphereRadius( 0 ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0].m_Location, MagphanEMR051::SphereRadius( 0 ), this->m_ErodePixelsSNR, 2 /*biasFieldDegree*/ );
   detected->m_EstimatedSNR = mean / stdev;
   
   // get four CNR estimates
   for ( size_t i = 3; i < 7; ++i )
     {
     // we compute CNR per CNR sphere using formula from http://www.mr-tip.com/serv1.php?type=db1&dbs=Contrast%20to%20Noise%20Ratio (plus "fabs")
-    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 2 /*erodeBy*/, 2 /*biasFieldDegree*/ );
+    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), this->m_ErodePixelsCNR, 2 /*biasFieldDegree*/ );
     detected->m_EstimatedCNR[i-3] = fabs( detected->m_EstimatedSNR - mean / stdev );
     }
 

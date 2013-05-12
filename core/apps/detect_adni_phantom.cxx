@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,6 +56,8 @@ doMain( const int argc, const char* argv[] )
   const char* outputAffinePath = NULL;
 
   bool tolerant = false;
+  byte erodePixelsSNR = 2;
+  byte erodePixelsCNR = 2;
 
   try
     {
@@ -65,6 +67,8 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( "tolerant" ), &tolerant, true, "Be tolerant of issues such as partially truncated marker spheres. This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." )
+      cl.AddOption( Key( "erode-pixels-snr" ), &erodePixelsSNR, "Erode SNR sphere by this many pixels prior to computing SNR estimate." );
+      cl.AddOption( Key( "erode-pixels-cnr" ), &erodePixelsSNR, "Erode each CNR sphere by this many pixels prior to computing CNR estimate." );
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );

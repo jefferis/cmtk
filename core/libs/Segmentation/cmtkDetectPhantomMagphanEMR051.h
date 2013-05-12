@@ -117,6 +117,12 @@ private:
    * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
    */
   bool m_TolerateTruncation;
+
+  /// Erode SNR sphere by this many pixels for SNR computation
+  byte m_ErodePixelsSNR;
+  
+  /// Erode CNR spheres by this many pixels for SNR computation
+  byte m_ErodePixelsCNR;
   
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
