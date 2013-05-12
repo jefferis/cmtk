@@ -45,12 +45,10 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/** Grid topology of data arranged in a 3D lattice.
- * This class extends the plain data handling functions of TypedArray
- * with a 3D topology. Real world coordinates, however, are not considered and
- * need to be handled by derived classes. Thus, this class provides the coordinate
- * independent services such as median filtering and, to a certain extent,
- * interpolation.
+/** Morphological operators applied to a 3D grid of data.
+ * This class provides a selection of morphological operators that act on data arranged on
+ * a regular 3D grid, but do not require the real-world spacing of the grid points for
+ * their operation. 
  */
 class DataGridMorphologicalOperators :
   /// Prevent copying by inheritance.

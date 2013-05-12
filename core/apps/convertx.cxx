@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,6 +51,7 @@
 #include <Base/cmtkImageOperationFlip.h>
 #include <IO/cmtkImageOperationApplyMask.h>
 #include <Base/cmtkImageOperationErodeDilate.h>
+#include <Base/cmtkImageOperationErodeDilateDistance.h>
 #include <Base/cmtkImageOperationBoundaryMap.h>
 #include <Base/cmtkImageOperationConnectedComponents.h>
 #include <Base/cmtkImageOperationDownsample.h>
@@ -166,8 +167,10 @@ doMain( const int argc, const char* argv[] )
     
     cl.BeginGroup( "Morphological", "Morphological Operations" );
     cl.AddCallback( Key( "revert" ), &cmtk::ImageOperationRevert::New, "Revert a binary mask, i.e., exchange foreground and background." );
-    cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator" );
-    cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
+    cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator (by pixels)" );
+    cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator (by pixels)" );
+    cl.AddCallback( Key( "erode-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewErode, "Morphological erosion operator (by distance). Often preferable for anisotropic data." );
+    cl.AddCallback( Key( "dilate-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewDilate, "Morphological dilation operator (by distance). Oftern preferable for anisotropic data." );
     cl.AddCallback( Key( "connected-components" ), &cmtk::ImageOperationConnectedComponents::New, "Create connected components map with regions numbered by decreasing component size" );
     cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
     cl.AddCallback( Key( "multi-boundary-map" ), &cmtk::ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );

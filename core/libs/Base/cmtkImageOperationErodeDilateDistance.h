@@ -20,21 +20,21 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision$
+//  $Revision: 2902 $
 //
-//  $LastChangedDate$
+//  $LastChangedDate: 2011-02-24 12:12:46 -0800 (Thu, 24 Feb 2011) $
 //
-//  $LastChangedBy$
+//  $LastChangedBy: torstenrohlfing $
 //
 */
 
-#ifndef __cmtkImageOperationErodeDilate_h_included_
-#define __cmtkImageOperationErodaDilate_h_included_
+#ifndef __cmtkImageOperationErodeDilateDistance_h_included_
+#define __cmtkImageOperationErodaDilateDistance_h_included_
 
 #include <cmtkconfig.h>
 
 #include <Base/cmtkImageOperation.h>
-#include <Base/cmtkDataGridMorphologicalOperators.h>
+#include <Base/cmtkUniformVolumeMorphologicalOperators.h>
 
 namespace
 cmtk
@@ -43,53 +43,53 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Image operation: erode or dilate.
-class ImageOperationErodeDilate
+/// Image operation: erode or dilate by distance (rather than pixels).
+class ImageOperationErodeDilateDistance
 /// Inherit from image operation base class.
   : public ImageOperation
 {
 public:
   /// Constructor:
-  ImageOperationErodeDilate( const int iterations ) : m_Iterations( iterations ) {}
+  ImageOperationErodeDilateDistance( const double distance ) : m_Distance( distance ) {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    if ( this->m_Iterations < 0 )
+    if ( this->m_Distance < 0 )
       {
-      cmtk::DataGridMorphologicalOperators ops( volume );
-      volume->SetData( ops.GetEroded( -this->m_Iterations ) );
+      cmtk::UniformVolumeMorphologicalOperators ops( volume );
+      volume->SetData( ops.GetErodedByDistance( -this->m_Distance ) );
       }
     else
       {
-      if ( this->m_Iterations > 0 )
+      if ( this->m_Distance > 0 )
 	{
-	cmtk::DataGridMorphologicalOperators ops( volume );
-	volume->SetData( ops.GetDilated( this->m_Iterations ) );
+	cmtk::UniformVolumeMorphologicalOperators ops( volume );
+	volume->SetData( ops.GetDilatedByDistance( this->m_Distance ) );
 	}
       }
     return volume;
   }
 
   /// Create new dilation operation.
-  static void NewDilate( const long int iterations )
+  static void NewDilate( const double distance )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( iterations ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( distance ) ) );
   }
 
   /// Create new erosion operation.
-  static void NewErode( const long int iterations )
+  static void NewErode( const double distance )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( -iterations ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( -distance ) ) );
   }
   
 private:
-  /// Number of iterations of erosion (if negative) or dilation (if positive).
-  int m_Iterations;
+  /// Distance of erosion (if negative) or dilation (if positive).
+  double m_Distance;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationErodeDilate_h_included_
+#endif // #ifndef __cmtkImageOperationErodeDilateDistance_h_included_

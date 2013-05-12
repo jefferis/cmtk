@@ -116,6 +116,7 @@ SET(cmtkBase_SRCS
   cmtkUniformVolumeLaplaceFilter.cxx
   cmtkUniformVolumeInterpolatorBase.cxx
   cmtkUniformVolumeInterpolatorPartialVolume.cxx
+  cmtkUniformVolumeMorphologicalOperators.cxx
   cmtkUniformVolumePainter.cxx
   cmtkVolumeClipping.cxx
   cmtkVolume.cxx

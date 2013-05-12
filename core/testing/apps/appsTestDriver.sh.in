@@ -428,6 +428,14 @@ case ${RUNTEST} in
 	run convertx --dilate 1 --erode 2 --dilate 1 parc1_bin.hdr ${tmpdir}/parc1_ded.img
 	check_results parc1_ded.img
 	;;
+    convertxErodeByDistance)
+	run convertx --erode-distance 2.5 parc1_bin.hdr ${tmpdir}/parc1_erode.nii
+	check_results parc1_erode.hii
+	;;
+    convertxDilateByDistance)
+	run convertx --dilate-distance 2.5 parc1_bin.hdr ${tmpdir}/parc1_dilate.nii
+	check_results parc1_dilate.hii
+	;;
     convertxGaussianFilterSigma)
 	run convertx --gaussian-filter-sigma 5.0 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img

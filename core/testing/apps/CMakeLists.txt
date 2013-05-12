@@ -240,6 +240,8 @@ LIST(APPEND testList
   convertxFlipYZ
   convertxErodeDilateErode
   convertxDilateErodeDilate
+  convertxErodeByDistance
+  convertxDilateByDistance
   convertxGaussianFilterSigma
   convertxGaussianFilterFWHM
   convertxHistogramEqualization
