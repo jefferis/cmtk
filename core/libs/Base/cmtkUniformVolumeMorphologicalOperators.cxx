@@ -54,9 +54,7 @@ TypedArray::SmartPtr
 UniformVolumeMorphologicalOperators::GetErodedByDistance( const Types::Coordinate erodeBy ) const
 {
   TypedArray::SmartPtr erodedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume), DistanceMap::INSIDE ).Get()->GetData();
-
   erodedData->Binarize( erodeBy + 0.5 );
-
   return erodedData->Convert( TYPE_BYTE );
 }
 
@@ -64,10 +62,8 @@ TypedArray::SmartPtr
 UniformVolumeMorphologicalOperators::GetDilatedByDistance( const Types::Coordinate dilateBy ) const
 {
   TypedArray::SmartPtr dilatedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume) ).Get()->GetData();
-
   dilatedData->Binarize( dilateBy + 0.5 );
   dilatedData->Rescale( -1 /*scale*/, +1 /*offset*/ ); // this is binary inversion, 0->1, 1->0
-
   return dilatedData->Convert( TYPE_BYTE );
 }
 

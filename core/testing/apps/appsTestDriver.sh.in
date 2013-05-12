@@ -429,11 +429,11 @@ case ${RUNTEST} in
 	check_results parc1_ded.img
 	;;
     convertxErodeByDistance)
-	run convertx --erode-distance 2.5 parc1_bin.hdr ${tmpdir}/parc1_erode.nii
+	run convertx --erode-distance 10 parc1_bin.hdr ${tmpdir}/parc1_erode.nii
 	check_results parc1_erode.hii
 	;;
     convertxDilateByDistance)
-	run convertx --dilate-distance 2.5 parc1_bin.hdr ${tmpdir}/parc1_dilate.nii
+	run convertx --dilate-distance 10 parc1_bin.hdr ${tmpdir}/parc1_dilate.nii
 	check_results parc1_dilate.hii
 	;;
     convertxGaussianFilterSigma)
