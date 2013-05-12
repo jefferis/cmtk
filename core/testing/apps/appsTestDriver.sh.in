@@ -430,11 +430,11 @@ case ${RUNTEST} in
 	;;
     convertxErodeByDistance)
 	run convertx --erode-distance 10 parc1_bin.hdr ${tmpdir}/parc1_erode.nii
-	check_results parc1_erode.hii
+	check_results parc1_erode.nii
 	;;
     convertxDilateByDistance)
 	run convertx --dilate-distance 10 parc1_bin.hdr ${tmpdir}/parc1_dilate.nii
-	check_results parc1_dilate.hii
+	check_results parc1_dilate.nii
 	;;
     convertxGaussianFilterSigma)
 	run convertx --gaussian-filter-sigma 5.0 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
