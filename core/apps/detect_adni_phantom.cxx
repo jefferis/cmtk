@@ -66,9 +66,9 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a 3D image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom)." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( "tolerant" ), &tolerant, true, "Be tolerant of issues such as partially truncated marker spheres. This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." )
-      cl.AddOption( Key( "erode-pixels-snr" ), &erodePixelsSNR, "Erode SNR sphere by this many pixels prior to computing SNR estimate." );
-      cl.AddOption( Key( "erode-pixels-cnr" ), &erodePixelsSNR, "Erode each CNR sphere by this many pixels prior to computing CNR estimate." );
+    cl.AddSwitch( Key( "tolerant" ), &tolerant, true, "Be tolerant of issues such as partially truncated marker spheres. This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." );
+    cl.AddOption( Key( "erode-pixels-snr" ), &erodePixelsSNR, "Erode SNR sphere by this many pixels prior to computing SNR estimate." );
+    cl.AddOption( Key( "erode-pixels-cnr" ), &erodePixelsCNR, "Erode each CNR sphere by this many pixels prior to computing CNR estimate." );
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
