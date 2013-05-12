@@ -83,7 +83,10 @@ public:
   };
   
   /// Constructor: detect all landmark spheres.
-  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant = false /*!< If this is set, partial sphere truncation will be tolerated.*/ );
+  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, 
+			      const bool tolerant = false /*!< If this is set, partial sphere truncation will be tolerated.*/,
+			      const byte erodePixelsSNR = 2 /*!< Number of pixels to erode the SNR sphere mask before computing mean and std.dev. for SNR estimate.*/,
+			      const byte erodePixelsCNR = 2 /*!< Number of pixels to erode the CNR sphere masks before computing mean and std.dev. for SNR estimate.*/ );
 
   /// Get comprehensive description of phantom as detected in image.
   DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();

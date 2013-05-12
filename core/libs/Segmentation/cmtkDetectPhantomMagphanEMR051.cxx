@@ -46,11 +46,11 @@
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
-cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant )
+cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant, const byte erodePixelsSNR, const byte erodePixelsCNR )
   : m_CorrectSphereBiasField( true ),
     m_TolerateTruncation( tolerant ),
-    m_ErodePixelsSNR( 2 ),
-    m_ErodePixelsCNR( 2 ),
+    m_ErodePixelsSNR( erodePixelsSNR ),
+    m_ErodePixelsCNR( erodePixelsCNR ),
     m_PhantomImage( phantomImage ),
     m_ExcludeMask( phantomImage->CloneGrid() ),
     m_IncludeMask( phantomImage->CloneGrid() )
@@ -527,6 +527,7 @@ cmtk::DetectPhantomMagphanEMR051::GetSphereMeanStdDeviation( Types::DataItem& me
     {
     dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
     }
+
 
   // compute summary statistics
   ValueSequence<Types::DataItem> vs;
