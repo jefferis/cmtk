@@ -1,5 +1,7 @@
 Release CMTK-2.3.0:
 
+(r4719) Added: dilation and erosion in anisotropic images by distance, not by
+        pixels.
 (r4708)	Added: ADNI phantom detection is now more robust in the presence
 	of missing, cropped, or low-contrast marker spheres.
 (r4703)	Added/Changed: dcm2image now only exports potentially protected,
