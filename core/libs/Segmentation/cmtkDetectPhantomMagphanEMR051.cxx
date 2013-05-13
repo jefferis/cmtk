@@ -71,9 +71,9 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
 
     const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
-    this->m_Landmarks[i] = Self::LandmarkType( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 10 /*search band width*/ ) );
     try 
       {
+      this->m_Landmarks[i] = Self::LandmarkType( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 10 /*search band width*/ ) );
       this->m_Landmarks[i] = Self::LandmarkType( this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ ) );
       }
     catch (...)
@@ -83,20 +83,34 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     }
 
-  // now use the SNR and the two 15mm spheres to define first intermediate coordinate system
+  // now use the SNR and the two 15mm spheres to define first intermediate coordinate system, assuming they were suiccessfully detected.
   LandmarkPairList landmarkList;
   for ( size_t i = 0; i < 3; ++i )
-    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
-
-  // create initial rigid transformation to find approximate 10mm landmark sphere locations
-  AffineXform::SmartPtr intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
-
-  // Find 4x 30mm CNR spheres in the right order.
-  for ( size_t i = 3; i < 7; ++i )
     {
-    filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
-    const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
-    this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0 /*search distance*/, 15 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+    if ( this->m_Landmarks[i].m_Valid )
+      {
+      landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+      }
+    }
+    
+  AffineXform::SmartPtr intermediateXform;
+  // Check if all three initial landmarks were found successfully - if not, we need to fall back to CNR spheres for eastblishing initial gross orientation
+  if (  landmarkList.size() >= 3 )
+    {
+    // create initial rigid transformation to find approximate 10mm landmark sphere locations
+    intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+
+    // Find 4x 30mm CNR spheres in the right order.
+    for ( size_t i = 3; i < 7; ++i )
+      {
+      filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
+      const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0 /*search distance*/, 15 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      }
+    }
+  else
+    {
+    exit( 1 );
     }
   
   // Find 10mm spheres in order near projected locations
