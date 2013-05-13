@@ -47,6 +47,8 @@
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
+#include <map>
+
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, Self::Parameters& parameters )
   : m_Parameters( parameters ),
     m_PhantomImage( phantomImage ),
@@ -141,20 +143,41 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 
     // brightest sphere is landmark #3
     this->m_Landmarks[3] = cnrSpheres.begin()->second;
-    cnrSpheres.erase( cnrSpheres.begin() );
     landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 3 ), MagphanEMR051::SphereCenter( 3 ), this->m_Landmarks[3].m_Location ) );
     
-    // find sphere closest to #3 - this is #7
+    // find sphere closest to #3 - this is #6
     for ( std::multimap<Types::DataItem,Self::SpaceVectorType>::const_iterator it = cnrSpheres.begin(); it != cnrSpheres.end(); ++it )
       {
-      if ( (this->m_Landmarks[3].m_Location - it->second).RootSumOfSquares() < 60 ) // Other two CNR spheres are at least about 120mm away, so 60mm should be a safe threshold
+      if ( it != cnrSpheres.begin() )
 	{
-	this->m_Landmarks[7] = it->second;
-	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 7 ), MagphanEMR051::SphereCenter( 7 ), this->m_Landmarks[7].m_Location ) );
+	if ( (this->m_Landmarks[3].m_Location - it->second).RootSumOfSquares() < 60 ) // Other two CNR spheres are at least about 120mm away, so 60mm should be a safe threshold
+	  {
+	  this->m_Landmarks[6] = it->second;
+	  landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 6 ), MagphanEMR051::SphereCenter( 6 ), this->m_Landmarks[6].m_Location ) );
+	  }
 	}
       }
 
     // create intermediate transform based on spheres so far
+    intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+
+    // clear exclusion mask (except SNR sphere mask) before re-localizing CNR spheres.
+    for ( size_t px = 0; px < this->m_ExcludeMask->GetNumberOfPixels(); ++px )
+      {
+      if ( this->m_ExcludeMask->GetDataAt( px ) > 1 )
+	this->m_ExcludeMask->SetDataAt( 0.0, px );
+      }
+
+    // Re-localize all CNR spheres, this time in the right place
+    for ( size_t i = 3; i < 7; ++i )
+      {
+      filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
+      const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0 /*search distance*/, 15 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+      landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+      }
+
+    // refine initial xform using all four CNR spheres
     intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
     }
   
@@ -173,15 +196,15 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       this->m_Landmarks[i].m_Valid = false;
       if ( !this->m_Parameters.m_TolerateTruncation )
 	throw;
-      
-      continue;
       }
     
     if ( this->m_Landmarks[i].m_Valid )
       landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
     }
 
-  landmarkList.pop_front(); // remove unreliable SNR sphere before making final fit
+  // remove unreliable SNR sphere before making final fit
+  landmarkList.pop_front(); 
+
   // create linear, not necessarily rigid, transformation based on all detected landmarks.
   this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
   this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
@@ -225,31 +248,33 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       {
       if ( !this->m_Landmarks[i].m_Valid || (this->m_LandmarkFitResiduals[i] > this->GetLandmarkFitResidualThreshold()) )
 	{
+	this->m_Landmarks[i].m_Valid = false;
 	const Self::SpaceVectorType predicted = this->m_PhantomToImageTransformationAffine->Apply( MagphanEMR051::SphereCenter( i ) );
 
 	// if we predict a landmark outside the image field of view, then the phantom was not imaged completely and we need to bail
-	if ( ! this->m_PhantomImage->IsInside( predicted ) )
-	  throw Self::OutsideFieldOfView( i, predicted );
-
-	// Find actual sphere somewhere near the predicted location
-	try
+	if ( this->m_PhantomImage->IsInside( predicted ) )
 	  {
-	  this->m_Landmarks[i] = this->FindSphereAtDistance( filterResponse, predicted, 0, 0.5 * this->GetLandmarkFitResidualThreshold() );
-
-	  // Refine detection based on local center-of-mass computation
-	  const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
-	  
-	  // if the refined landmark is outside the image field of view, then the phantom was not imaged completely and we need to bail
-	  if ( ! this->m_PhantomImage->IsInside( refined ) )
-	    throw Self::OutsideFieldOfView( i, refined );
-	  
-	  // some spheres are darker than background - only accept refinements that improve residual fit error
-	  if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i].m_Location - predicted).RootSumOfSquares() )
-	    this->m_Landmarks[i] = refined;
-	  }
-	catch (...)
-	  {
-	  this->m_Landmarks[i].m_Valid = false;
+	  // Find actual sphere somewhere near the predicted location
+	  try
+	    {
+	    this->m_Landmarks[i] = this->FindSphereAtDistance( filterResponse, predicted, 0, 0.5 * this->GetLandmarkFitResidualThreshold() );
+	    
+	    // Refine detection based on local center-of-mass computation
+	    const Self::SpaceVectorType refined = this->RefineSphereLocation( this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
+	    
+	    // if the refined landmark is outside the image field of view, then the phantom was not imaged completely and we need to bail
+	    if ( ! this->m_PhantomImage->IsInside( refined ) )
+	      throw Self::OutsideFieldOfView( i, refined );
+	    
+	    // some spheres are darker than background - only accept refinements that improve residual fit error
+	    if ( (refined - predicted).RootSumOfSquares() <= (this->m_Landmarks[i].m_Location - predicted).RootSumOfSquares() )
+	      this->m_Landmarks[i] = refined;
+	    }
+	  catch (...)
+	    {
+	    if ( ! this->m_Parameters.m_TolerateTruncation )
+	      throw;
+	    }
 	  }
 	}
       }
