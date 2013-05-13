@@ -125,15 +125,37 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     }
   else
     {
-    // Find 4x 30mm CNR spheres in the ANY order - sort them out by comparing signal intensity
+    // Fallback - Find 4x 30mm CNR spheres in the ANY order - sort them out by comparing signal intensity
+    std::multimap<Types::DataItem,Self::SpaceVectorType> cnrSpheres;
     for ( size_t i = 3; i < 7; ++i )
       {
       filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
       const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
-      this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 20 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), i+1 /*label*/ );
+      const Self::SpaceVectorType location = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 20 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), i+1 /*label*/ );
 
-      StdErr << this->m_Landmarks[i].m_Location << "\n";
+      Types::DataItem mean, stdev;
+      this->GetSphereMeanStdDeviation( mean, stdev, location, MagphanEMR051::SphereRadius( i ), this->m_Parameters.m_ErodeCNR, 2 /*biasFieldDegree*/ );
+
+      cnrSpheres.insert( std::pair<Types::DataItem,Self::SpaceVectorType>( -mean, location ) );
       }
+
+    // brightest sphere is landmark #3
+    this->m_Landmarks[3] = cnrSpheres.begin()->second;
+    cnrSpheres.erase( cnrSpheres.begin() );
+    landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 3 ), MagphanEMR051::SphereCenter( 3 ), this->m_Landmarks[3].m_Location ) );
+    
+    // find sphere closest to #3 - this is #7
+    for ( std::multimap<Types::DataItem,Self::SpaceVectorType>::const_iterator it = cnrSpheres.begin(); it != cnrSpheres.end(); ++it )
+      {
+      if ( (this->m_Landmarks[3].m_Location - it->second).RootSumOfSquares() < 60 ) // Other two CNR spheres are at least about 120mm away, so 60mm should be a safe threshold
+	{
+	this->m_Landmarks[7] = it->second;
+	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 7 ), MagphanEMR051::SphereCenter( 7 ), this->m_Landmarks[7].m_Location ) );
+	}
+      }
+
+    // create intermediate transform based on spheres so far
+    intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
     }
   
   // Find 10mm spheres in order near projected locations
