@@ -85,8 +85,8 @@ public:
   /// Constructor: detect all landmark spheres.
   DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, 
 			      const bool tolerant = false /*!< If this is set, partial sphere truncation will be tolerated.*/,
-			      const byte erodePixelsSNR = 2 /*!< Number of pixels to erode the SNR sphere mask before computing mean and std.dev. for SNR estimate.*/,
-			      const byte erodePixelsCNR = 2 /*!< Number of pixels to erode the CNR sphere masks before computing mean and std.dev. for SNR estimate.*/ );
+			      const Types::Coordinate erodeSNR = 10/*!< Distance to erode the SNR sphere mask before computing mean and std.dev. for SNR estimate.*/,
+			      const Types::Coordinate erodeCNR = 5 /*!< Distance to erode the CNR sphere masks before computing mean and std.dev. for SNR estimate.*/ );
 
   /// Get comprehensive description of phantom as detected in image.
   DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();
@@ -122,10 +122,10 @@ private:
   bool m_TolerateTruncation;
 
   /// Erode SNR sphere by this many pixels for SNR computation
-  byte m_ErodePixelsSNR;
+  Types::Coordinate m_ErodeSNR;
   
   /// Erode CNR spheres by this many pixels for SNR computation
-  byte m_ErodePixelsCNR;
+  Types::Coordinate m_ErodeCNR;
   
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
@@ -226,7 +226,7 @@ private:
   /// Get the mean and standard deviation of intensities within a sphere of given location and radius.
   void GetSphereMeanStdDeviation( Types::DataItem& mean /*!< Reference to return mean intensity */, Types::DataItem& stdev /*!< Reference to return intensity standard deviation */, 
 				  const Self::SpaceVectorType& center /*!< Center coordinate of the sphere. */, const Types::Coordinate radius /*!< Radius of the sphere */, 
-				  const int erodeBy /*!< Number of pixels to erode the sphere by before computing mean and standard deviation. */,
+				  const Types::Coordinate erodeBy /*!< Distance to erode the sphere by before computing mean and standard deviation. */,
 				  const int biasFieldDegree /*!< Polynomial degree of the estimated bias field before computing mean and standard deviation (0 = no bias field correction) */ );
 };
 

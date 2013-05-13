@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phantom>
 <phantomType>MagphanEMR051</phantomType>
-<snr>18.931023</snr>
-<cnr>15.522731 43.722179 37.260305 32.906366</cnr>
+<snr>17.068171</snr>
+<cnr>14.449707 37.711643 30.105455 27.882183</cnr>
 <scale>1.000298 1.009402 0.996078</scale>
 <nonlinear>0.365253 0.435330 0.242334</nonlinear>
 <landmarkList coordinates="physical" space="RAS" count="158">
