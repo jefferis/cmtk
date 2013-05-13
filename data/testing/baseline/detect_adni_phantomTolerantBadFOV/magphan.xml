@@ -29,31 +29,31 @@
 	</landmark>
 	<landmark>
 		<name>CNR-Orange</name>
-		<expected>57.555735 46.080330 -5.739410</expected>
+		<expected>57.442216 51.075476 -5.550636</expected>
 		<detected>58.223905 51.049351 -6.129657</detected>
 		<isPrecise>no</isPrecise>
-		<fitResidual>4.938804</fitResidual>
+		<fitResidual>1.090412</fitResidual>
 	</landmark>
 	<landmark>
 		<name>CNR-Red</name>
-		<expected>-62.364875 43.230133 -2.434312</expected>
+		<expected>-62.478394 48.225278 -2.245538</expected>
 		<detected>-63.541018 48.952579 -2.563358</detected>
 		<isPrecise>no</isPrecise>
-		<fitResidual>5.657839</fitResidual>
+		<fitResidual>1.167579</fitResidual>
 	</landmark>
 	<landmark>
 		<name>CNR-Yellow</name>
-		<expected>-61.683763 13.259260 -3.566952</expected>
+		<expected>-61.570244 8.264115 -3.755725</expected>
 		<detected>-62.303136 6.088085 -4.213572</detected>
 		<isPrecise>no</isPrecise>
-		<fitResidual>7.117151</fitResidual>
+		<fitResidual>2.184430</fitResidual>
 	</landmark>
 	<landmark>
 		<name>CNR-Green</name>
-		<expected>58.236847 16.109457 -6.872050</expected>
+		<expected>58.350366 11.114312 -7.060823</expected>
 		<detected>58.489096 9.665472 -7.493879</detected>
 		<isPrecise>no</isPrecise>
-		<fitResidual>6.310628</fitResidual>
+		<fitResidual>1.331441</fitResidual>
 	</landmark>
 	<landmark>
 		<name>10mm_0_01</name>
