@@ -83,6 +83,21 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     }
 
+  // Check whether three initial spheres actually define an orthogonal coordinate system
+  if ( this->m_Landmarks[0].m_Valid && this->m_Landmarks[1].m_Valid && this->m_Landmarks[2].m_Valid )
+    {
+    const Self::SpaceVectorType d01 = (this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location);
+    const Self::SpaceVectorType d02 = (this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location);
+    const Types::Coordinate angleCos =  (d01 * d02)  / ( d01.RootSumOfSquares() * d02.RootSumOfSquares() );
+
+    // Is the angle between the two directions too large?
+    if ( fabs( angleCos ) > 0.087 ) // about 5 degrees
+      {
+      // usually this means, one or both of the 15mm spheres weren't found
+      this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
+      }
+    }
+
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system, assuming they were suiccessfully detected.
   LandmarkPairList landmarkList;
   for ( size_t i = 0; i < 3; ++i )
@@ -110,7 +125,15 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     }
   else
     {
-    exit( 1 );
+    // Find 4x 30mm CNR spheres in the ANY order - sort them out by comparing signal intensity
+    for ( size_t i = 3; i < 7; ++i )
+      {
+      filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
+      const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
+      this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 20 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), i+1 /*label*/ );
+
+      StdErr << this->m_Landmarks[i].m_Location << "\n";
+      }
     }
   
   // Find 10mm spheres in order near projected locations
