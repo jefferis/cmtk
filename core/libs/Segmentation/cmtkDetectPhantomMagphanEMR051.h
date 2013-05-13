@@ -62,6 +62,32 @@ public:
   /// Smart pointer to const for  this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Class for parameters that control the phantom detection
+  class Parameters
+  {
+  public:
+    /// Default constructor.
+    Parameters() : m_CorrectSphereBiasField( true ), m_TolerateTruncation( false ), m_ErodeSNR( 10 ), m_ErodeCNR( 5 ) {}
+
+    /// Flag for correction of (linear) bias field for each sphere.
+    bool m_CorrectSphereBiasField;
+
+    /** Flag for tolerant operation - if set, we are lenient when spheres are slightly truncated.
+     * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
+     */
+    bool m_TolerateTruncation;
+
+    /// Erode SNR sphere by this many pixels for SNR computation
+    Types::Coordinate m_ErodeSNR;
+    
+    /// Erode CNR spheres by this many pixels for SNR computation
+    Types::Coordinate m_ErodeCNR;
+
+  protected:
+    /// Statis default parameters.
+  static Parameters Default;
+  } 
+
   /// Spatial coordinate vector.
   typedef UniformVolume::SpaceVectorType SpaceVectorType;
 
@@ -83,10 +109,7 @@ public:
   };
   
   /// Constructor: detect all landmark spheres.
-  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, 
-			      const bool tolerant = false /*!< If this is set, partial sphere truncation will be tolerated.*/,
-			      const Types::Coordinate erodeSNR = 10/*!< Distance to erode the SNR sphere mask before computing mean and std.dev. for SNR estimate.*/,
-			      const Types::Coordinate erodeCNR = 5 /*!< Distance to erode the CNR sphere masks before computing mean and std.dev. for SNR estimate.*/ );
+  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, Self::Parameters& parameters = Self::Parameters::Default );
 
   /// Get comprehensive description of phantom as detected in image.
   DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();
@@ -113,20 +136,6 @@ public:
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
 private:
-  /// Flag for correction of (linear) bias field for each sphere.
-  bool m_CorrectSphereBiasField;
-
-  /** Flag for tolerant operation - if set, we are lenient when spheres are slightly truncated.
-   * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
-   */
-  bool m_TolerateTruncation;
-
-  /// Erode SNR sphere by this many pixels for SNR computation
-  Types::Coordinate m_ErodeSNR;
-  
-  /// Erode CNR spheres by this many pixels for SNR computation
-  Types::Coordinate m_ErodeCNR;
-  
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 

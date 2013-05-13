@@ -55,10 +55,8 @@ doMain( const int argc, const char* argv[] )
   const char* outputRigidPath = NULL;
   const char* outputAffinePath = NULL;
 
-  bool tolerant = false;
-  cmtk::Types::Coordinate erodeSNR = 10;
-  cmtk::Types::Coordinate erodeCNR = 5;
-
+  cmtk::DetectPhantomMagphanEMR051::Parameters detectionParameters;
+  
   try
     {
     cmtk::CommandLine cl;
@@ -66,9 +64,10 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a 3D image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom)." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( "tolerant" ), &tolerant, true, "Be tolerant of issues such as partially truncated marker spheres. This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." );
-    cl.AddOption( Key( "erode-snr" ), &erodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
-    cl.AddOption( Key( "erode-cnr" ), &erodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
+    cl.AddSwitch( Key( "tolerant" ), &detectionParameters.m_TolerateTruncation, true, "Be tolerant of issues such as partially truncated marker spheres. "
+		  "This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." );
+    cl.AddOption( Key( "erode-snr" ), &detectionParameters.m_ErodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
+    cl.AddOption( Key( "erode-cnr" ), &detectionParameters.m_ErodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
     cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-rigid" ), &outputRigidPath, "Output path for the fitted rigid transformation from phantom space into RAS image standard space. This transformation defines where each sphere should be in the image." )
@@ -94,7 +93,7 @@ doMain( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage, tolerant, erodeSNR, erodeCNR );
+    cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage, detectionParameters );
 
     // get expected landmark locations
     cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();

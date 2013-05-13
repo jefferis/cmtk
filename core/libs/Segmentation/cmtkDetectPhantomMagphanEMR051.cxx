@@ -47,11 +47,8 @@
 #include <Segmentation/cmtkSphereDetectionNormalizedBipolarMatchedFilterFFT.h>
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
-cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, const bool tolerant, const Types::Coordinate erodeSNR, const Types::Coordinate erodeCNR )
-  : m_CorrectSphereBiasField( true ),
-    m_TolerateTruncation( tolerant ),
-    m_ErodeSNR( erodeSNR ),
-    m_ErodeCNR( erodeCNR ),
+cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, Self::Parameters& parameters )
+  : m_Parameters( parameters ),
     m_PhantomImage( phantomImage ),
     m_ExcludeMask( phantomImage->CloneGrid() ),
     m_IncludeMask( phantomImage->CloneGrid() )
@@ -81,7 +78,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     catch (...)
       {
-      if ( !this->m_TolerateTruncation )
+      if ( !this->m_Paramaters.m_TolerateTruncation )
 	throw;
       }
     }
@@ -115,7 +112,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     catch (...)
       {
       this->m_Landmarks[i].m_Valid = false;
-      if ( !this->m_TolerateTruncation )
+      if ( !this->m_Paramaters.m_TolerateTruncation )
 	throw;
       
       continue;
@@ -375,7 +372,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
     regionMaskVector[i] = ( regionMask->GetDataAt( i ) != 0 );
     }
 
-  if ( this->m_CorrectSphereBiasField )
+  if ( this->m_Parameters.m_CorrectSphereBiasField )
     {
     regionMask->SetData( DataGridMorphologicalOperators( regionMask ).GetEroded( 1 /*erode by 1 pixel*/ ) );
     
@@ -480,14 +477,14 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
 
   // get SNR estimate
   Types::DataItem mean, stdev;
-  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0].m_Location, MagphanEMR051::SphereRadius( 0 ), this->m_ErodeSNR, 2 /*biasFieldDegree*/ );
+  this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[0].m_Location, MagphanEMR051::SphereRadius( 0 ), this->m_Paramaters.m_ErodeSNR, 2 /*biasFieldDegree*/ );
   detected->m_EstimatedSNR = mean / stdev;
   
   // get four CNR estimates
   for ( size_t i = 3; i < 7; ++i )
     {
     // we compute CNR per CNR sphere using formula from http://www.mr-tip.com/serv1.php?type=db1&dbs=Contrast%20to%20Noise%20Ratio (plus "fabs")
-    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), this->m_ErodeCNR, 2 /*biasFieldDegree*/ );
+    this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), this->m_Paramaters.m_ErodeCNR, 2 /*biasFieldDegree*/ );
     detected->m_EstimatedCNR[i-3] = fabs( detected->m_EstimatedSNR - mean / stdev );
     }
 
