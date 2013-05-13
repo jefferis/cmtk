@@ -64,10 +64,16 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool detects the locations of all spherical landmarks in a 3D image of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom)." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.BeginGroup( "Detection", "Phantom Detection Options" );
     cl.AddSwitch( Key( "tolerant" ), &detectionParameters.m_TolerateTruncation, true, "Be tolerant of issues such as partially truncated marker spheres. "
 		  "This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." );
     cl.AddOption( Key( "erode-snr" ), &detectionParameters.m_ErodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
     cl.AddOption( Key( "erode-cnr" ), &detectionParameters.m_ErodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
+    cl.AddSwitch( Key( "no-bias-correct-spheres" ), &detectionParameters.m_CorrectSphereBiasField, false, "Disable intensity bias field correction for each detected sphere. This will likely reduce accuracy of SNR/CNR estimates and also affect "
+		  "localication accuracy of smaller spheres, but may be helpful in extreme cases where bias correction fails completely." )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( "write-labels" ), &outputLabelPath, "Output label image path. This image contains the mask of detected spheres, each labeled uniquely in their order in CMTK's ADNI phantom fiducial table." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-rigid" ), &outputRigidPath, "Output path for the fitted rigid transformation from phantom space into RAS image standard space. This transformation defines where each sphere should be in the image." )
@@ -76,6 +82,7 @@ doMain( const int argc, const char* argv[] )
 		  "and as such it includes scale and shear components not present in the fitted rigid transformations. Since these components are due to scanner miscalibration and distortion, this transformation DOES NOT "
 		  "specify the correct spehre locations in the image, but rather, allows for quantification of scale miscalibration.")
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.EndGroup();
     
     cl.AddParameter( &inputPath, "InputImage", "Input image path. This is the image in which spheres are detected." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outputPath, "OutputXML", "Output path for the XML file describing the dected phantom." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
