@@ -1,5 +1,8 @@
 Release CMTK-2.3.0:
 
+(r4732)	Added: ADNI phantom detection tool can now robustly bootstrap gross
+	orientation from CNR spheres if one or both of the 15mm phantom
+	spheres are missing.
 (r4719) Added: dilation and erosion in anisotropic images by distance, not by
         pixels.
 (r4708)	Added: ADNI phantom detection is now more robust in the presence
