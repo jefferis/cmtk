@@ -83,10 +83,9 @@ public:
     /// Erode CNR spheres by this many pixels for SNR computation
     Types::Coordinate m_ErodeCNR;
 
-  protected:
-    /// Statis default parameters.
-  static Parameters Default;
-  } 
+    /// Static default parameters.
+    static Parameters Default;
+  };
 
   /// Spatial coordinate vector.
   typedef UniformVolume::SpaceVectorType SpaceVectorType;
@@ -136,6 +135,9 @@ public:
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
 private:
+  /// Parameters that control the phantom detection
+  Self::Parameters m_Parameters;
+
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;
 
