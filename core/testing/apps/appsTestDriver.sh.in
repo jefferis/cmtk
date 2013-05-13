@@ -856,6 +856,10 @@ case ${RUNTEST} in
         run detect_adni_phantom --write-labels ${tmpdir}/labels.nii --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan.nii ${tmpdir}/magphan.xml
         check_results labels.nii rigid.xform affine.xform magphan.xml
 	;;
+    detect_adni_phantomErodeNonStd)
+        run detect_adni_phantom --erode-snr 20 --erode-cnr 2 spgr_magphan.nii ${tmpdir}/magphan.xml
+        check_results magphan.xml
+	;;
     detect_adni_phantomBadFOV)
         run_expect_fail detect_adni_phantom spgr_magphan_badFOV.nii ${tmpdir}/magphan.xml
 	;;
