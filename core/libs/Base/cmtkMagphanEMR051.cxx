@@ -47,10 +47,10 @@ const cmtk::MagphanEMR051::SphereEntryType cmtk::MagphanEMR051::SphereTable[cmtk
   { "15mm@90mm",  15, {  89.0, -2.9,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { "15mm@60mm",  15, {   0.0, -2.9, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   // 4x 3.0cm spheres
-  { "CNR-Orange", 30, {  60.0,  15.0, 0 },    0.590, 450, Self::SPHERE_COLOR_ORANGE }, // y coordinate estimated - not marked in construction drawing
-  { "CNR-Red",    30, { -60.0,  15.0, 0 },    0.430, 600, Self::SPHERE_COLOR_RED },    // y coordinate estimated - not marked in construction drawing
-  { "CNR-Yellow", 30, { -60.0, -15.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW }, // y coordinate estimated - not marked in construction drawing
-  { "CNR-Green",  30, {  60.0, -15.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN },  // y coordinate estimated - not marked in construction drawing
+  { "CNR-Orange", 30, {  60.0,  20.0, 0 },    0.590, 450, Self::SPHERE_COLOR_ORANGE }, // y coordinate estimated - not marked in construction drawing
+  { "CNR-Red",    30, { -60.0,  20.0, 0 },    0.430, 600, Self::SPHERE_COLOR_RED },    // y coordinate estimated - not marked in construction drawing
+  { "CNR-Yellow", 30, { -60.0, -20.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW }, // y coordinate estimated - not marked in construction drawing
+  { "CNR-Green",  30, {  60.0, -20.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN },  // y coordinate estimated - not marked in construction drawing
   // 158x 1.0cm spheres
   //   Plane 0
   //     outer ring
