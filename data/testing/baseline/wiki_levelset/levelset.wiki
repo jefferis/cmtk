@@ -34,11 +34,11 @@ where
 
 ; <tt>--echo</tt> : Write the current command line to standard output.
 
-; <tt>--verbose-level</tt> <tt><signed integer></tt> : Set verbosity level.
+; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
 ; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-; <tt>--threads</tt> <tt><signed integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
+; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Main Options ===
 
@@ -50,7 +50,7 @@ where
 
 === These parameters control the evolution of the levelset function ===
 
-; <tt>--iterations</tt> <tt><signed integer></tt>, <tt>-n</tt> <tt><signed integer></tt> : Maximum number of iterations '''[Default: 100]'''
+; <tt>--iterations</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Maximum number of iterations '''[Default: 100]'''
 
 ; <tt>--force-iterations</tt>, <tt>-f</tt> : Force given number of iterations, even when convergence has been detected
 

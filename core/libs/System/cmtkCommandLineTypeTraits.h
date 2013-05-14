@@ -157,7 +157,7 @@ CommandLineTypeTraits<int>
 public:
   static const char* GetName() 
   { 
-    return "signed integer";
+    return "integer";
   }
 };
 
@@ -170,7 +170,7 @@ CommandLineTypeTraits<unsigned int>
 public:
   static const char* GetName() 
   { 
-    return "unsigned integer";
+    return "integer";
   }
 };
 
@@ -183,7 +183,7 @@ CommandLineTypeTraits<short>
 public:
   static const char* GetName() 
   { 
-    return "signed integer";
+    return "integer";
   }
 };
 
@@ -196,7 +196,7 @@ CommandLineTypeTraits<unsigned short>
 public:
   static const char* GetName() 
   { 
-    return "unsigned integer";
+    return "integer";
   }
 };
 
@@ -225,7 +225,7 @@ public:
 
   static const char* GetName() 
   { 
-    return "signed integer";
+    return "integer";
   }
 };
 
@@ -254,7 +254,7 @@ public:
 
   static const char* GetName() 
   { 
-    return "unsigned integer";
+    return "integer";
   }
 };
 
