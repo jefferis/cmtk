@@ -34,17 +34,17 @@ where
 
 ; <tt>--echo</tt> : Write the current command line to standard output.
 
-; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
+; <tt>--verbose-level</tt> <tt><signed integer></tt> : Set verbosity level.
 
 ; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
+; <tt>--threads</tt> <tt><signed integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Bias Field Parameterization ===
 
-; <tt>--degree-add</tt> <tt><integer></tt>, <tt>-A</tt> <tt><integer></tt> : Polynomial degree for additive correction. '''[Default: 0]'''
+; <tt>--degree-add</tt> <tt><signed integer></tt>, <tt>-A</tt> <tt><signed integer></tt> : Polynomial degree for additive correction. '''[Default: 0]'''
 
-; <tt>--degree-mul</tt> <tt><integer></tt>, <tt>-M</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction. '''[Default: 2]'''
+; <tt>--degree-mul</tt> <tt><signed integer></tt>, <tt>-M</tt> <tt><signed integer></tt> : Polynomial degree for multiplicative correction. '''[Default: 2]'''
 
 ; <tt>--incremental</tt>, <tt>-I</tt> : Incrementally increase polynomial degrees.
 
@@ -60,7 +60,7 @@ where
 
 ; <tt>--thresh-auto</tt> : Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level.
 
-; <tt>--thresh-otsu-nbins</tt> <tt><integer></tt> : If this is a positive integer, use automatic minimum intensity threshold selection for image foreground by Otsu thresholding with given number of histogram bins. '''[Default: 0]'''
+; <tt>--thresh-otsu-nbins</tt> <tt><signed integer></tt> : If this is a positive integer, use automatic minimum intensity threshold selection for image foreground by Otsu thresholding with given number of histogram bins. '''[Default: 0]'''
 
 === Entropy Estimation Settings ===
 
@@ -68,7 +68,7 @@ where
 
 ; <tt>--sampling-density</tt> <tt><float></tt>, <tt>-s</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels '''[Default: disabled]'''
 
-; <tt>--num-bins</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation '''[Default: 256]'''
+; <tt>--num-bins</tt> <tt><unsigned integer></tt>, <tt>-n</tt> <tt><unsigned integer></tt> : Number of histogram bins for entropy estimation '''[Default: 256]'''
 
 === Optimization Algorithm Settings ===
 

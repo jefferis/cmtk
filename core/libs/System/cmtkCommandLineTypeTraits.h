@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -157,7 +157,7 @@ CommandLineTypeTraits<int>
 public:
   static const char* GetName() 
   { 
-    return "integer";
+    return "signed integer";
   }
 };
 
@@ -170,7 +170,7 @@ CommandLineTypeTraits<unsigned int>
 public:
   static const char* GetName() 
   { 
-    return "integer";
+    return "unsigned integer";
   }
 };
 
@@ -183,7 +183,7 @@ CommandLineTypeTraits<short>
 public:
   static const char* GetName() 
   { 
-    return "integer";
+    return "signed integer";
   }
 };
 
@@ -196,7 +196,7 @@ CommandLineTypeTraits<unsigned short>
 public:
   static const char* GetName() 
   { 
-    return "integer";
+    return "unsigned integer";
   }
 };
 
@@ -225,7 +225,7 @@ public:
 
   static const char* GetName() 
   { 
-    return "integer";
+    return "signed integer";
   }
 };
 
@@ -254,7 +254,7 @@ public:
 
   static const char* GetName() 
   { 
-    return "integer";
+    return "unsigned integer";
   }
 };
 

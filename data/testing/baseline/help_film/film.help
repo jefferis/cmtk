@@ -65,7 +65,7 @@ Interleaving Options
             --interleave-z, -z
                       Interleaved along z axis
 
-  --passes <integer>, -p <integer>
+  --passes <unsigned integer>, -p <unsigned integer>
             Number of interleaved passes
             [Default: 2]
 
@@ -101,7 +101,7 @@ Inverse Interpolation Options
             --cosine-sinc, -O
                       Cosine-windowed sinc interpolation (most accurate but slowest)
 
-  --num-iterations <integer>, -n <integer>
+  --num-iterations <signed integer>, -n <signed integer>
             Maximum number of inverse interpolation iterations
             [Default: 20]
 

@@ -40,13 +40,13 @@ Global Toolkit Options (these are shared by all CMTK tools)
 
   --echo    Write the current command line to standard output.
 
-  --verbose-level <integer>
+  --verbose-level <signed integer>
             Set verbosity level.
 
   --verbose, -v
             Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-  --threads <integer>
+  --threads <signed integer>
             Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 Input Options
@@ -85,7 +85,7 @@ Interleaving Options
             --interleave-z, -z
                       Interleaved along z axis
 
-  --passes <integer>, -p <integer>
+  --passes <unsigned integer>, -p <unsigned integer>
             Number of interleaved passes
             [Default: 2]
 
@@ -157,7 +157,7 @@ Inverse Interpolation Options
   --fourth-order-error, -f
             Use fourth-order (rather than second-order) error for optimization.
 
-  --num-iterations <integer>, -n <integer>
+  --num-iterations <signed integer>, -n <signed integer>
             Maximum number of inverse interpolation iterations
             [Default: 20]
 

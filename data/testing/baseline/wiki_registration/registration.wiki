@@ -34,15 +34,15 @@ where
 
 ; <tt>--echo</tt> : Write the current command line to standard output.
 
-; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
+; <tt>--verbose-level</tt> <tt><signed integer></tt> : Set verbosity level.
 
 ; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
+; <tt>--threads</tt> <tt><signed integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Automation Options ===
 
-; <tt>--auto-multi-levels</tt> <tt><integer></tt> : Automatic optimization and resolution parameter generation for <n> levels '''[Default: 0]'''
+; <tt>--auto-multi-levels</tt> <tt><unsigned integer></tt> : Automatic optimization and resolution parameter generation for <n> levels '''[Default: 0]'''
 
 === Optimization settings ===
 
@@ -64,9 +64,9 @@ where
 
 === Transformation parameters ===
 
-; <tt>--dofs</tt> <tt><integer>[,<integer>,...]</tt> : Add number of degrees of freedom [can be repeated]
+; <tt>--dofs</tt> <tt><signed integer>[,<signed integer>,...]</tt> : Add number of degrees of freedom [can be repeated]
 
-; <tt>--dofs-final</tt> <tt><integer>[,<integer>,...]</tt> : Add number of degrees of freedom for final level only [can be repeated]
+; <tt>--dofs-final</tt> <tt><signed integer>[,<signed integer>,...]</tt> : Add number of degrees of freedom for final level only [can be repeated]
 
 ; <tt>--no-switch</tt>, <tt>-n</tt> : Do not auto-switch reference and floating image for improved computational performance
 
@@ -97,7 +97,7 @@ where
 
 ; <tt>--thresh-max-ref</tt> <tt><double></tt> : Maximum value truncation threshold '''[Default: disabled]'''
 
-; <tt>--prune-histogram-ref</tt> <tt><integer></tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
+; <tt>--prune-histogram-ref</tt> <tt><unsigned integer></tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
 
 ; <tt>--histogram-equalization-ref</tt> : Apply histogram equalization
 
@@ -117,7 +117,7 @@ where
 
 ; <tt>--thresh-max-flt</tt> <tt><double></tt> : Maximum value truncation threshold '''[Default: disabled]'''
 
-; <tt>--prune-histogram-flt</tt> <tt><integer></tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
+; <tt>--prune-histogram-flt</tt> <tt><unsigned integer></tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
 
 ; <tt>--histogram-equalization-flt</tt> : Apply histogram equalization
 

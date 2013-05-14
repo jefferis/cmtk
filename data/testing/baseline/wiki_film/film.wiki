@@ -34,11 +34,11 @@ where
 
 ; <tt>--echo</tt> : Write the current command line to standard output.
 
-; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
+; <tt>--verbose-level</tt> <tt><signed integer></tt> : Set verbosity level.
 
 ; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
+; <tt>--threads</tt> <tt><signed integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Input Options ===
 
@@ -55,7 +55,7 @@ where
 :; <tt>--interleave-y</tt>, <tt>-y</tt> : Interleaved along y axis
 :; <tt>--interleave-z</tt>, <tt>-z</tt> : Interleaved along z axis
 
-; <tt>--passes</tt> <tt><integer></tt>, <tt>-p</tt> <tt><integer></tt> : Number of interleaved passes '''[Default: 2]'''
+; <tt>--passes</tt> <tt><unsigned integer></tt>, <tt>-p</tt> <tt><unsigned integer></tt> : Number of interleaved passes '''[Default: 2]'''
 
 ; <tt>--pass-weight</tt> <tt><string></tt>, <tt>-W</tt> <tt><string></tt> : Set contribution weight for a pass in the form 'pass:weight'
 
@@ -90,7 +90,7 @@ where
 
 ; <tt>--fourth-order-error</tt>, <tt>-f</tt> : Use fourth-order (rather than second-order) error for optimization.
 
-; <tt>--num-iterations</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations '''[Default: 20]'''
+; <tt>--num-iterations</tt> <tt><signed integer></tt>, <tt>-n</tt> <tt><signed integer></tt> : Maximum number of inverse interpolation iterations '''[Default: 20]'''
 
 === Reconstruction Regularization Options ===
 
