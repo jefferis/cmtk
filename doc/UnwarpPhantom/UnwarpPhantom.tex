@@ -23,7 +23,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \title{Structural MRI Unwarping Using CMTK\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-\release{1.2}
+\release{1.3}
 
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA}
@@ -196,6 +196,67 @@ Magphan\textsuperscript{\textregistered} EMR051 Quantitative Imaging Phantom
 \texttt{detect\_adni\_phantom} tool.}
 \label{fig:PhantomLabels}
 \end{figure}
+
+\subsection{Fault-Tolerant Phantom Detection}
+
+Not all MR scans of the imaging phantom may be of ideal quality, and
+sub-standard scans may cause phantom detection to fail. Examples are images
+with insufficient field-of-view, where not all phantom spheres are actually
+fully covered. Also the phantom itself may be degraded, resulting in
+insufficient contrast of some spheres.
+
+By default, the phantom detection tool will terminate operation with an error
+message if problems such as missing or undetectable spheres are
+encountered. To produce potentially usable results in these cases, however,
+the tool offers an optional ``tolerant'' mode of operation (beginning with
+CMTK Release 2.3.0). This mode is invoked by adding the
+``\verb|--tolerant|'' option to the command line:
+\begin{verbatim}
+cmtk detect_adni_phantom --tolerant phantom.nii phantom.xml
+\end{verbatim}
+Note that in this mode, the tool can even potentially recover from otherwise
+fatal conditions, such as a missing 15\,mm-diameter sphere (which is required
+by the standard phantom detection algorithm to establish gross phantom
+orientation). Instead, in tolerant mode, the detection tool will attempt to
+bootstrap orientation from the positions of the 30\,mm-diameter CNR spheres,
+and the only requirement here is that the Orange CNR sphere appears with the
+highest intensity of all four CNR spheres (thus making detection robust even
+when doping of the CNR spheres is compromised with respect to one another).
+
+In more technical detail, the phantom detection tool identifies the phantom
+orientation using the following procedure:
+\begin{enumerate}
+\item The 60\,mm SNR sphere and all four 30\,mm CNR spheres are detected
+  independently using an FFT-based matched, bipolar filter. 
+\item The two 15\,mm spheres are detected, again using a matched
+  filter. Search for each sphere is constrained to a ring of
+  appropriate radius around the center of the 60\,mm sphere.
+\item The angle is computed between the two lines from the SNR sphere to each
+  of the 15\,mm spheres. The same is done for the lines from the centroid 
+  of the four CNR sphere centers to each of the 15\,mm spheres.
+\item If the resulting angle is closer to 90 degrees for the CNR-spheres
+  centroid, then the latter is used as the phantom center rather than the
+  center of the SNR sphere (this makes the procedure robust against phantoms
+  with broken-off SNR spheres).
+\item If the angle between lines from the the selected phantom center to the
+  two 15\,mm spheres is within the range of 85 to 95 degrees, then the
+  coordinate system defined by the 15\,mm spheres and the phantom center is
+  used to establish gross phantom orientation (via a least-squares rigid
+  alignment).
+\item If said angle is outside the valid range, this indicates that one or
+  both of the 15\,mm spheres are missing or could not be detected for other
+  reasons. In this case, the brightest CNR sphere (``Orange'') is identified
+  by comparing mean intensities across all four CNR spheres. The CNR sphere
+  closest to is identified as the ``Green'' sphere. Together with the center
+  of the SNR sphere, these two landmarks define a coordinate system that is
+  used as the third and final alternative for establishing phantom
+  orientation.
+\end{enumerate}
+
+In summary, phantom detection as implemented above can tolerate all three of
+the following phantom defects: a) one or two missing 15\,mm spheres, b)
+misplaced SNR sphere, c) out-of-order CNR sphere intensities (so long as the
+``Orange'' sphere remains the brightest).
 
 \subsection{Create Unwarping Transformation}
 
@@ -385,12 +446,16 @@ physical image coordinates, derived ultimately from the DICOM headers but
 represented in ``RAS'' coordinates (which means that $x$ and $y$ coordinates
 are negative relative to DICOM's ``LPS'' coordinates):
 \begin{verbatim}
-<landmarkList coordinates="physical" space="RAS">
+<landmarkList coordinates="physical" space="RAS" count="165">
 \end{verbatim} 
-For each landmark, its unique name, expected location, detected
-location, precision flag, and fitting residual are stored. The landmark name
-is essentially arbitrary and based on the table of phantom landmarks as shown
-in Appendix~\ref{sec:PhantomGeometry}.
+The \verb|count| attribute provides the number of successfully detected
+landmarks (which may be lower than 165 in ``tolerant'' phantom detection
+mode).
+
+Immediately following, for each landmark, its unique name, expected location,
+detected location, precision flag, and fitting residual are stored. The
+landmark name is essentially arbitrary and based on the table of phantom
+landmarks as shown in Appendix~\ref{sec:PhantomGeometry}.
 
 The {\em expected location\/} is where the sphere center should be located in
 the phantom image if the transformation between ideal phantom and image was
@@ -508,10 +573,10 @@ cmtk::MagphanEMR051::SphereTable[cmtk::MagphanEMR051::NumberOfSpheres] =
   { "15mm@90mm",  15, {  89.0, -2.9,   0.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   { "15mm@60mm",  15, {   0.0, -2.9, -60.0 },  0.820, 282, Self::SPHERE_COLOR_NONE },
   // 4x 3.0cm spheres -- estimated y coord's -- these are not marked in construction drawing
-  { "CNR-Orange", 30, {  60.0,  15.0, 0 },    0.590, 450, Self::SPHERE_COLOR_ORANGE },
-  { "CNR-Red",    30, { -60.0,  15.0, 0 },    0.430, 600, Self::SPHERE_COLOR_RED },   
-  { "CNR-Yellow", 30, { -60.0, -15.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW },
-  { "CNR-Green",  30, {  60.0, -15.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN }, 
+  { "CNR-Orange", 30, {  60.0,  20.0, 0 },    0.590, 450, Self::SPHERE_COLOR_ORANGE },
+  { "CNR-Red",    30, { -60.0,  20.0, 0 },    0.430, 600, Self::SPHERE_COLOR_RED },   
+  { "CNR-Yellow", 30, { -60.0, -20.0, 0 },    0.295, 750, Self::SPHERE_COLOR_YELLOW },
+  { "CNR-Green",  30, {  60.0, -20.0, 0 },    0.220, 900, Self::SPHERE_COLOR_GREEN }, 
   // 158x 1.0cm spheres
   //   Plane 0
   //     outer ring
