@@ -195,13 +195,6 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     // create intermediate transform based on spheres so far
     intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
 
-    // clear exclusion mask (except SNR sphere mask) before re-localizing CNR spheres.
-    for ( size_t px = 0; px < this->m_ExcludeMask->GetNumberOfPixels(); ++px )
-      {
-      if ( this->m_ExcludeMask->GetDataAt( px ) >= 3 )
-	this->m_ExcludeMask->SetDataAt( 0.0, px );
-      }
-
     // Re-localize all CNR spheres, this time in the right place
     for ( size_t i = 3; i < 7; ++i )
       {
