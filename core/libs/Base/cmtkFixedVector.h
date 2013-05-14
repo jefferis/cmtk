@@ -232,6 +232,12 @@ public:
   {
     return sqrt( this->SumOfSquares() );
   }
+
+  /// Get angle cosine between this and another vector.
+  T GetAngleCosine( const Self& other ) const
+  {
+    return (*this * other)  / ( this->RootSumOfSquares() * other.RootSumOfSquares() );
+  }
 };
 
 /// Addition operator.
