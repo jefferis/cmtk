@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,6 +57,15 @@ public:
   Console& operator<<( const T data ) const
   {
     return this->GetStream() << data;
+  }
+
+  /// Flush the appropriate stream for this output object.
+  void Flush()
+  {
+    if ( this->m_Level > Self::GetGlobalLevel() )
+      StdNull.flush();
+    else
+      StdOut.flush();
   }
 
   /// Get the appropriate stream for this output object.
