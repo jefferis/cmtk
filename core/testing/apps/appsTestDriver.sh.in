@@ -871,6 +871,10 @@ case ${RUNTEST} in
         run detect_adni_phantom --write-labels ${tmpdir}/labels.nii --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan_missingSphere.nii ${tmpdir}/magphan.xml
         check_results labels.nii rigid.xform affine.xform magphan.xml
 	;;
+    detect_adni_phantomBrokenSNR)
+        run detect_adni_phantom --write-labels ${tmpdir}/labels.nii --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan_brokenSNR.nii ${tmpdir}/magphan.xml
+        check_results labels.nii rigid.xform affine.xform magphan.xml
+	;;
     detect_spheres_matched_filter)
         run detect_spheres_matched_filter --radius 15 --filter-margin 2 adni_phantom2mm.nii ${tmpdir}/filtered.nii
 	run convertx --float --downsample-select 4,4,4 ${tmpdir}/filtered.nii ${tmpdir}/filtered.nii

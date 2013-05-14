@@ -41,6 +41,7 @@
 #include <Base/cmtkValueSequence.h>
 
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -66,7 +67,40 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   // Find 1x 60mm SNR sphere
   TypedArray::SmartPtr filterResponse( sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( 0 ), this->GetBipolarFilterMargin() ) );
   this->m_Landmarks[0] = this->RefineSphereLocation( this->FindSphere( *filterResponse ), MagphanEMR051::SphereRadius( 0 ), 1 /*label*/ );
+
+  // Nothing goes without the SNR sphere!
+  if ( ! this->m_Landmarks[0].m_Valid )
+    {
+    StdErr << "ERROR: cannot find SNR sphere.\n";
+    throw ExitException( 1 );
+    }
+
+  // assume that SNR sphere defines center of phantom (may not be true if phantom is broken)
+  Self::SpaceVectorType phantomCenter = this->m_Landmarks[0].m_Location;
   
+  // The first pass at the CNR spheres is only temporary, so store exclusion mask (SNR sphere)
+  TypedArray::SmartPtr saveExcludeMaskData = this->m_ExcludeMask->GetData()->Clone();
+
+  // Find 4x 30mm CNR spheres in the ANY order - sort them out by comparing signal intensity
+  std::multimap<Types::DataItem,Self::SpaceVectorType> cnrSpheres;
+  Self::SpaceVectorType cnrCenter( 0.0 );
+  for ( size_t i = 3; i < 7; ++i )
+    {
+    filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
+    const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
+    const Self::SpaceVectorType location = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 20 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), i+1 /*label*/ );
+
+    cnrCenter += location;
+    
+    Types::DataItem mean, stdev;
+    this->GetSphereMeanStdDeviation( mean, stdev, location, MagphanEMR051::SphereRadius( i ), this->m_Parameters.m_ErodeCNR, 2 /*biasFieldDegree*/ );
+    
+    cnrSpheres.insert( std::pair<Types::DataItem,Self::SpaceVectorType>( -mean, location ) );
+    }
+  cnrCenter /= cnrSpheres.size();
+  // the CNR spheres are only temporaty, so bring back previous exclusion mask (SNR sphere)
+  this->m_ExcludeMask->SetData( saveExcludeMaskData );
+
   // find the two 15mm spheres near estimated position
   for ( size_t i = 1; i < 3; ++i )
     {
@@ -85,24 +119,38 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     }
 
-  // Check whether three initial spheres actually define an orthogonal coordinate system
-  if ( this->m_Landmarks[0].m_Valid && this->m_Landmarks[1].m_Valid && this->m_Landmarks[2].m_Valid )
+  // Check whether phantom center and the 15mm spheres actually define an orthogonal coordinate system
+  if ( this->m_Landmarks[1].m_Valid && this->m_Landmarks[2].m_Valid )
     {
-    const Self::SpaceVectorType d01 = (this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location);
-    const Self::SpaceVectorType d02 = (this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location);
-    const Types::Coordinate angleCos =  (d01 * d02)  / ( d01.RootSumOfSquares() * d02.RootSumOfSquares() );
+    // Cosine of angle between SNR sphere center and the two 15mm spheres
+    const Types::Coordinate angleCosineSNR = fabs( (this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location).GetAngleCosine( this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location ) );
+    // Cosine of angle between CNR 4-sphere centroid and the two 15mm spheres    
+    const Types::Coordinate angleCosineCNR = fabs( (cnrCenter - this->m_Landmarks[1].m_Location).GetAngleCosine( cnrCenter - this->m_Landmarks[2].m_Location ) );
 
-    // Is the angle between the two directions too large?
-    if ( fabs( angleCos ) > 0.087 ) // about 5 degrees
+    // Use the phantom center estimate with the smallest angle cosine, i.e., the one generating the closest to an orthogonal coordinate system
+    Types::Coordinate minAngleCosine;
+    if ( angleCosineSNR < angleCosineCNR )
       {
-      // usually this means, one or both of the 15mm spheres weren't found
+      minAngleCosine = angleCosineSNR;
+      phantomCenter = this->m_Landmarks[0].m_Location;
+      }
+    else
+      {
+      minAngleCosine = angleCosineCNR;
+      phantomCenter = cnrCenter;
+      }
+
+    if ( minAngleCosine > 0.087 ) // about 5 degrees
+      {
+      // Because neither phantom center estimate gave an orthogonal system, this means, one or both of the 15mm spheres weren't found properly
       this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
       }
     }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system, assuming they were suiccessfully detected.
   LandmarkPairList landmarkList;
-  for ( size_t i = 0; i < 3; ++i )
+  landmarkList.push_back( LandmarkPair( "PhantomCenter", MagphanEMR051::SphereCenter( 0 ), phantomCenter ) );
+  for ( size_t i = 1; i < 3; ++i )
     {
     if ( this->m_Landmarks[i].m_Valid )
       {
@@ -111,7 +159,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     }
     
   AffineXform::SmartPtr intermediateXform;
-  // Check if all three initial landmarks were found successfully - if not, we need to fall back to CNR spheres for eastblishing initial gross orientation
+  // Check if all three initial landmarks were found successfully - if not, we need to fall back to CNR spheres for establishing initial gross orientation
   if (  landmarkList.size() >= 3 )
     {
     // create initial rigid transformation to find approximate 10mm landmark sphere locations
@@ -127,20 +175,6 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     }
   else
     {
-    // Fallback - Find 4x 30mm CNR spheres in the ANY order - sort them out by comparing signal intensity
-    std::multimap<Types::DataItem,Self::SpaceVectorType> cnrSpheres;
-    for ( size_t i = 3; i < 7; ++i )
-      {
-      filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
-      const Types::Coordinate distanceFromCenter = (MagphanEMR051::SphereCenter( i ) - MagphanEMR051::SphereCenter( 0 )).RootSumOfSquares(); // at what distance from phantom center do we expect to find this sphere?
-      const Self::SpaceVectorType location = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, this->m_Landmarks[0].m_Location, distanceFromCenter , 20 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), i+1 /*label*/ );
-
-      Types::DataItem mean, stdev;
-      this->GetSphereMeanStdDeviation( mean, stdev, location, MagphanEMR051::SphereRadius( i ), this->m_Parameters.m_ErodeCNR, 2 /*biasFieldDegree*/ );
-
-      cnrSpheres.insert( std::pair<Types::DataItem,Self::SpaceVectorType>( -mean, location ) );
-      }
-
     // brightest sphere is landmark #3
     this->m_Landmarks[3] = cnrSpheres.begin()->second;
     landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( 3 ), MagphanEMR051::SphereCenter( 3 ), this->m_Landmarks[3].m_Location ) );
@@ -164,13 +198,14 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     // clear exclusion mask (except SNR sphere mask) before re-localizing CNR spheres.
     for ( size_t px = 0; px < this->m_ExcludeMask->GetNumberOfPixels(); ++px )
       {
-      if ( this->m_ExcludeMask->GetDataAt( px ) > 1 )
+      if ( this->m_ExcludeMask->GetDataAt( px ) >= 3 )
 	this->m_ExcludeMask->SetDataAt( 0.0, px );
       }
 
     // Re-localize all CNR spheres, this time in the right place
     for ( size_t i = 3; i < 7; ++i )
       {
+      (DebugOutput( 5 ) << MagphanEMR051::SphereName( i ) << "          \r").flush();
       filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
       const Self::SpaceVectorType candidate = intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) );
       this->m_Landmarks[i] = this->RefineSphereLocation( this->FindSphereAtDistance( *filterResponse, candidate, 0 /*search distance*/, 15 /*search band width*/ ), MagphanEMR051::SphereRadius( i ), 1+i /*label*/ );
@@ -184,6 +219,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   // Find 10mm spheres in order near projected locations
   for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
     {
+    (DebugOutput( 5 ) << MagphanEMR051::SphereName( i ) << "          \r").flush();
     filterResponse = sphereDetector.GetFilteredImageData( MagphanEMR051::SphereRadius( i ), this->GetBipolarFilterMargin() );
     this->m_Landmarks[i] = Self::LandmarkType( intermediateXform->Apply( MagphanEMR051::SphereCenter( i ) ) );
     try
@@ -202,7 +238,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
     }
 
-  // remove unreliable SNR sphere before making final fit
+  // remove unreliable SNR sphere or CNR centroid before making final fit
   landmarkList.pop_front(); 
 
   // create linear, not necessarily rigid, transformation based on all detected landmarks.
