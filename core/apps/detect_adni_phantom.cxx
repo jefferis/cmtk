@@ -67,6 +67,8 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "Detection", "Phantom Detection Options" );
     cl.AddSwitch( Key( "tolerant" ), &detectionParameters.m_TolerateTruncation, true, "Be tolerant of issues such as partially truncated marker spheres. "
 		  "This should be considered a last-ditch resort, and both phantom image and detection results should be carefully inspected." );
+    cl.AddSwitch( Key( "standard-orientation" ), &detectionParameters.m_StandardOrientation, true, "Assume standard orientation of the phantom, i.e., correct side up. This makes detection of defective phantoms more robust, but it also prevents detection if."
+		  "the phantom was in fact scanned standing upside down." );
     cl.AddOption( Key( "erode-snr" ), &detectionParameters.m_ErodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
     cl.AddOption( Key( "erode-cnr" ), &detectionParameters.m_ErodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
     cl.AddSwitch( Key( "no-bias-correct-spheres" ), &detectionParameters.m_CorrectSphereBiasField, false, "Disable intensity bias field correction for each detected sphere. This will likely reduce accuracy of SNR/CNR estimates and also affect "

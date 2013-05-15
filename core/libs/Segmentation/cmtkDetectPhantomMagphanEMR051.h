@@ -70,6 +70,7 @@ public:
     Parameters() : 
       m_CorrectSphereBiasField( true ), 
       m_TolerateTruncation( false ),
+      m_StandardOrientation( false ),
       m_BipolarFilterMargin( 1 ), 
       m_RefineMarginPixels( 1 ), 
       m_SphereExcludeSafetyMargin( 10.0 ),
@@ -85,6 +86,13 @@ public:
      * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
      */
     bool m_TolerateTruncation;
+
+    /** Flag for standard orientation.
+     * Setting this assumes that the phantom was scanned with the correct side up, rather than upside down.
+     * This will make detection of defective phantoms more robust, but it will also prevent detection of
+     * phantoms scanned upside down.
+     */
+    bool m_StandardOrientation;
 
     /// Margin (in pixels) for the bipolar sphere detection matched filter.
     int m_BipolarFilterMargin;

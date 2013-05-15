@@ -147,6 +147,13 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       // Because neither phantom center estimate gave an orthogonal system, this means, one or both of the 15mm spheres weren't found properly
       this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
       }
+
+    if ( this->m_Parameters.m_StandardOrientation &&
+	 CrossProduct( this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location, this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location )[1] < 0 )
+      {
+      // Phantom appears upside-down, but we're told to expect correct position, so something is wrong with our detected 15mm spheres (may have mistakenly picked opposing 10mm sphere)
+      this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
+      }
     }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system, assuming they were suiccessfully detected.
