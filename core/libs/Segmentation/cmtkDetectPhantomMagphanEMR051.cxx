@@ -142,17 +142,16 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       phantomCenter = cnrCenter;
       }
 
-    if ( minAngleCosine > 0.087 ) // about 5 degrees
+    if ( (minAngleCosine > 0.087) || // more than about 5 degrees deviation from right angle - neither phantom center estimate gave an orthogonal system, this means, one or both of the 15mm spheres weren't found properly
+	 ( this->m_Parameters.m_StandardOrientation &&
+	   CrossProduct( this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location, this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location )[1] < 0 ) ) // wrong handedness (upside down phantom) for "standard orientation"
       {
-      // Because neither phantom center estimate gave an orthogonal system, this means, one or both of the 15mm spheres weren't found properly
       this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
-      }
-
-    if ( this->m_Parameters.m_StandardOrientation &&
-	 CrossProduct( this->m_Landmarks[0].m_Location - this->m_Landmarks[1].m_Location, this->m_Landmarks[0].m_Location - this->m_Landmarks[2].m_Location )[1] < 0 )
-      {
-      // Phantom appears upside-down, but we're told to expect correct position, so something is wrong with our detected 15mm spheres (may have mistakenly picked opposing 10mm sphere)
-      this->m_Landmarks[1].m_Valid = this->m_Landmarks[2].m_Valid = false;
+      for ( size_t px = 0; px < this->m_ExcludeMask->GetNumberOfPixels(); ++px )
+	{
+	if ( this->m_ExcludeMask->GetDataAt( px ) > 1 )
+	  this->m_ExcludeMask->SetDataAt( 0.0, px );
+	}
       }
     }
 
@@ -286,7 +285,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
   if ( this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformationAffine) ) > this->m_Parameters.m_LandmarkFitResidualThreshold )
     {  
     // try to refine outliers, which probably were not properly located.
-    for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i ) // we only care for the 10mm spheres.
+    for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i ) // we only care about the 10mm spheres.
       {
       if ( !this->m_Landmarks[i].m_Valid || (this->m_LandmarkFitResiduals[i] > this->m_Parameters.m_LandmarkFitResidualThreshold) )
 	{
@@ -322,8 +321,11 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
       }
     
     LandmarkPairList refinedLandmarkList;
-    refinedLandmarkList.push_back( LandmarkPair( "15mm@90mm", MagphanEMR051::SphereCenter( 1 ), this->m_Landmarks[1].m_Location ) );
-    refinedLandmarkList.push_back( LandmarkPair( "15mm@60mm", MagphanEMR051::SphereCenter( 2 ), this->m_Landmarks[2].m_Location ) );
+    for ( size_t i = 1; i < 3; ++i )
+      {
+      if ( this->m_Landmarks[i].m_Valid )
+	refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+      }
     
     for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
       {

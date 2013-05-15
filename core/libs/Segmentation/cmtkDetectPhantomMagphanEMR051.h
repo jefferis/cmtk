@@ -70,7 +70,7 @@ public:
     Parameters() : 
       m_CorrectSphereBiasField( true ), 
       m_TolerateTruncation( false ),
-      m_StandardOrientation( false ),
+      m_StandardOrientation( true ),
       m_BipolarFilterMargin( 1 ), 
       m_RefineMarginPixels( 1 ), 
       m_SphereExcludeSafetyMargin( 10.0 ),
