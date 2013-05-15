@@ -253,8 +253,35 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
   this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
 
-  this->RefineOutlierLandmarks( *filterResponse );
-  this->ExcludeOutlierLandmarks();
+  if ( this->m_Parameters.m_RefineOutliers )
+    {
+    this->RefineOutlierLandmarks( *filterResponse );
+    
+    landmarkList.clear();
+    for ( size_t i = 1; i < 3; ++i )
+      {
+      if ( this->m_Landmarks[i].m_Valid )
+	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+      }
+    
+    for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
+      {
+      if ( this->m_Landmarks[i].m_Valid )
+	{
+	landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+	}
+      }
+    
+    this->ExcludeOutlierLandmarks();
+    
+    this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+    this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+    
+    this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+    this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+    }
+
+  this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformationAffine) );
 
   Types::Coordinate averageFittingError = 0;
   Types::Coordinate maximumFittingError = 0;
@@ -317,21 +344,6 @@ cmtk::DetectPhantomMagphanEMR051::RefineOutlierLandmarks( const TypedArray& filt
 	      throw;
 	    }
 	  }
-	}
-      }
-    
-    LandmarkPairList refinedLandmarkList;
-    for ( size_t i = 1; i < 3; ++i )
-      {
-      if ( this->m_Landmarks[i].m_Valid )
-	refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
-      }
-    
-    for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
-      {
-      if ( this->m_Landmarks[i].m_Valid )
-	{
-	refinedLandmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
 	}
       }
     }
