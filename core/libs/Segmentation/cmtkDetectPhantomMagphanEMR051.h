@@ -67,7 +67,16 @@ public:
   {
   public:
     /// Default constructor.
-    Parameters() : m_CorrectSphereBiasField( true ), m_TolerateTruncation( false ), m_ErodeSNR( 10 ), m_ErodeCNR( 5 ) {}
+    Parameters() : 
+      m_CorrectSphereBiasField( true ), 
+      m_TolerateTruncation( false ),
+      m_BipolarFilterMargin( 1 ), 
+      m_RefineMarginPixels( 1 ), 
+      m_SphereExcludeSafetyMargin( 10.0 ),
+      m_ErodeSNR( 10.0 ), 
+      m_ErodeCNR( 5.0 ),
+      m_LandmarkFitResidualThreshold( 5.0 )
+    {}
 
     /// Flag for correction of (linear) bias field for each sphere.
     bool m_CorrectSphereBiasField;
@@ -77,14 +86,30 @@ public:
      */
     bool m_TolerateTruncation;
 
+    /// Margin (in pixels) for the bipolar sphere detection matched filter.
+    int m_BipolarFilterMargin;
+
+    /// Margin in pixels for center-of-mass-based refinement.
+    int m_RefineMarginPixels;
+
+    /// Safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.
+    Types::Coordinate m_SphereExcludeSafetyMargin;
+
     /// Erode SNR sphere by this many pixels for SNR computation
     Types::Coordinate m_ErodeSNR;
     
     /// Erode CNR spheres by this many pixels for SNR computation
     Types::Coordinate m_ErodeCNR;
 
+    /// Threshold for detecting outliers based on landmark fitting residuals.
+    Types::Coordinate m_LandmarkFitResidualThreshold;
+
+  private:
     /// Static default parameters.
     static Parameters Default;
+
+    /// Let outside class have access.
+    friend class DetectPhantomMagphanEMR051;
   };
 
   /// Spatial coordinate vector.
@@ -197,30 +222,6 @@ private:
   
   /// Refine sphere position based on intensity-weighted center of mass.
   Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int label );
-
-  /// Get margin (in pixels) for the bipolar sphere detection matched filter.
-  int GetBipolarFilterMargin() const
-  {
-    return 1;
-  }
-
-  /// Get safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.
-  Types::Coordinate GetSphereExcludeSafetyMargin() const
-  {
-    return 10.0;
-  }
-
-  /// Get margin in pixels for center-of-mass-based refinement.
-  int GetRefineMarginPixels() const
-  {
-    return 1;
-  }
-
-  /// Get threshold for detecting outliers based on landmark fitting residuals.
-  Types::Coordinate GetLandmarkFitResidualThreshold() const
-  {
-    return 5.0; // if we're off bymore than 5mm, that's probably not due to actual distortion
-  }
 
   /** Compute landmark fitting residuals under given linear transformation
    *\return The maximum residual over all landmarks. This can be compared with a threshold to
