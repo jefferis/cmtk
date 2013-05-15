@@ -48,6 +48,15 @@ cmtk
 /// Convenience typedef: vectors in 3D coordinate space.
 typedef FixedVector<3,Types::Coordinate> Vector3D;
 
+/// Cross-product of two 3D vectors.
+template<class T>
+FixedVector<3,T> 
+CrossProduct( const FixedVector<3,T>& u, const FixedVector<3,T>& v )
+{
+  const T result[3] = { u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0] };
+  return FixedVector<3,T>::FromPointer( result );
+}
+
 //@}
 
 } // namespace cmtk
