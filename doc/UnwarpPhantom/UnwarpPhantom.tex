@@ -258,6 +258,14 @@ the following phantom defects: a) one or two missing 15\,mm spheres, b)
 misplaced SNR sphere, c) out-of-order CNR sphere intensities (so long as the
 ``Orange'' sphere remains the brightest).
 
+In order to support this level of robustness, the phantom detection tool does
+have to make one assumption about the way that the phantom is scanned, namely
+that the phantom was scanned with the correct side facing up (the A direction
+in patient coordinates). If the phantom was scanned upside-down, then
+detection will fail, unless the ``\verb|--any-orientation|'' command line
+option is invoked (which, in turn, will lead to detection failures with
+defective phantoms).
+
 \subsection{Create Unwarping Transformation}
 
 From the phantom description file, we can create an unwarping transformation
