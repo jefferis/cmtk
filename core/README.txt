@@ -6,11 +6,15 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.3.0
 ===========================
 
-This release bundles the SRI24 atlas.
+This release of CMTK incorporates some major bug fixes and improvements. Most
+notable the ADNI phantom detection tool can now robustly handle a variety of
+real-world problems, such as broken phantoms.
 
-A new contrib/ncanda/ section has been added, which will contain an emerging
-set of pipeline scripts used by the National Center for Alcohol and
-Neurodevelopment in Adolescence (N-CANDA).
+The "dcm2image" tool no longer puts potentially protected information, such as
+device identifiers or dates, into XML sidecar files.
+
+This release also bundles the complete SRI24 atlas with all template images
+and a variety of labels maps for volumetry and DTI fiber tracking.
 
 
 CMTK has been built and tested on the following platforms:

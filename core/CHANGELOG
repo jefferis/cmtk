@@ -1,4 +1,4 @@
-Release CMTK-2.3.0:
+Release CMTK-2.3.0 (2013-05-16):
 
 (r4751) Added: ADNI phantom detection tool now also functions when the
 	60mm SNR sphere is displaced.
