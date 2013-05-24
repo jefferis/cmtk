@@ -1,5 +1,8 @@
 Release CMTK-2.3.1:
 
+(r4760) Changed: "CMTK_BUILD_WRAPPER" is now turned ON by default (i.e.,
+	wrapper script "cmtk" is built, and all binaries are installed
+	into a private directory)
 (r4758) Added: "dcm2image" tool has new option, "--no-progress" to disable
 	progress reporting (for batch operation).
 
