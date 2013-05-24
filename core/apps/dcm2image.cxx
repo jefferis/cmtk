@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -116,6 +116,7 @@ std::vector<std::string> SearchRootDirVector;
 
 std::ofstream cnull( "/dev/null" );
 
+bool Progress = true;
 bool Recursive = false;
 
 /// Enum type to select sort order key.
@@ -352,7 +353,10 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 	  fileList.push_back( newFile );
 	  }
 
-	(cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+	if ( Progress )
+	  {
+	  (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+	  }
 	}
       catch ( ... )
 	{
@@ -392,7 +396,10 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 		fileList.push_back( newFile );
 		}
 	      
-	      (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+	      if ( Progress )
+		{
+		(cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+		}
 	      }
 	    catch ( ... )
 	      {
@@ -430,7 +437,10 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
       }
     }
 
-  cmtk::StdErr << "\r";
+  if ( Progress )
+    {
+    cmtk::StdErr << "\r";
+    }
 }
 
 
@@ -466,6 +476,8 @@ doMain ( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Combine sets of DICOM slices to 3D image stacks" );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.AddSwitch( Key( "no-progress" ), &Progress, false, "Disable progress reporting." );
+
     cl.BeginGroup( "Input", "Input Options");
     cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories" );
     cl.EndGroup();
