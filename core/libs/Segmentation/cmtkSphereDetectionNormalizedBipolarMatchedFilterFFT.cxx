@@ -113,6 +113,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   fftw_execute( this->m_PlanFilterMask );
   
   // apply FT'ed filter to FT'ed image
+#pragma omp parallel for
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     this->m_FilterMaskFT2[n][0] = this->m_FilterMaskFT[n][0];
@@ -128,13 +129,15 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   fftw_execute( this->m_PlanBackwardMask );
   fftw_execute( this->m_PlanBackwardMask2 );
 
+  const double invNumberOfPixels = 1.0 / this->m_NumberOfPixels;
+#pragma omp parallel for
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     for ( int c = 0; c < 2; ++c )
       {
-      this->m_FilterMaskFT[n][c] /= this->m_NumberOfPixels;
-      this->m_FilterMaskFT2[n][c] /= this->m_NumberOfPixels;
-      this->m_FilterFT[n][c] /= this->m_NumberOfPixels;
+      this->m_FilterMaskFT[n][c] *= invNumberOfPixels;
+      this->m_FilterMaskFT2[n][c] *= invNumberOfPixels;
+      this->m_FilterFT[n][c] *= invNumberOfPixels;
       }
     }
   
@@ -142,6 +145,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   if ( !this->m_FilterResponse )
     this->m_FilterResponse = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
   
+#pragma omp parallel for
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     const Types::DataItem num = FFTW::Magnitude( this->m_FilterFT[n] ) - (FFTW::Magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
