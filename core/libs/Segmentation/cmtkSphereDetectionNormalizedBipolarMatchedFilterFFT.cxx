@@ -56,6 +56,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalize
   // initialize image FT
   fftw_plan plan_image = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_ImageFT, this->m_ImageFT, FFTW_FORWARD, FFTW_ESTIMATE );
   fftw_plan plan_image_square = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_ImageSquareFT, this->m_ImageSquareFT, FFTW_FORWARD, FFTW_ESTIMATE );
+#pragma omp parallel for
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     this->m_ImageFT[n][0] = image.GetDataAt( n );
@@ -167,9 +168,10 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 
 			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
 
-  this->m_SumFilter = this->m_SumFilterMask = this->m_SumFilterSquare = 0;
+  Types::DataItem sumFilter = 0, sumFilterMask = 0, sumFilterSquare = 0;
   
   // create a filter kernel for the sphere
+#pragma omp parallel for reduction(+:sumFilter) reduction(+:sumFilterMask) reduction(+:sumFilterSquare)
   for ( int k = 0; k < nRadius[2]; ++k )
     for ( int j = 0; j < nRadius[1]; ++j )
       for ( int i = 0; i < nRadius[0]; ++i )
@@ -194,11 +196,16 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 		  this->m_FilterSquareFT[ofs][0] = value*value;
 		  this->m_FilterMaskFT[ofs][0] = 1;
 
-		  this->m_SumFilter += value;
-		  this->m_SumFilterSquare += value * value;
-		  this->m_SumFilterMask += 1;
+		  sumFilter += value;
+		  sumFilterSquare += value * value;
+		  sumFilterMask += 1;
 		  }
 	    }
 	  }
 	}
+
+  this->m_SumFilter = sumFilter;
+  this->m_SumFilterMask = sumFilterMask;
+  this->m_SumFilterSquare = sumFilterSquare;
+  
 }
