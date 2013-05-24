@@ -192,7 +192,7 @@ SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_HASH_MAP}${HAVE_HASH_MAP_H} CA
 OPTION(BUILD_SHARED_LIBS "Build CMTK with shared libraries." OFF)
 SET(CMTK_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 
-OPTION(CMTK_BUILD_WRAPPER "Build 'cmtk' wrapper script and install all actual executables in a private directory to avoid name collisions" OFF)
+OPTION(CMTK_BUILD_WRAPPER "Build 'cmtk' wrapper script and install all actual executables in a private directory to avoid name collisions" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_WRAPPER)
 
 OPTION(CMTK_BUILD_UNSTABLE "Build 'unstable' library and tools" OFF)
