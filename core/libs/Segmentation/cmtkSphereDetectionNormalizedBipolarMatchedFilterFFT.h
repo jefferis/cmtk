@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,6 +56,9 @@ cmtk
  *\todo The current implementation does not take advantage of the real-valued image and filter data, which could be used to reduce the storage
  * requirement of the FT data (and probably the computational cost of the transform) by almost 50%. On the other hand, capitalizing on these
  * savings would either require out-of-place, rather than in-place, transforms, or substantially complicate memory layout of the input data.
+ *
+ *\todo Currently, the FFT calls within the class do not take advantage of the redundancy in the real-to-complex FT applied to the
+ * real-valued image and mask. Properly considering this could potentially save about 1/2 of memory and CPU time.
  */
 class SphereDetectionNormalizedBipolarMatchedFilterFFT
 {
