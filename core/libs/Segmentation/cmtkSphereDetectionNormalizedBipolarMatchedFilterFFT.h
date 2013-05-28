@@ -48,6 +48,9 @@ cmtk
  * The filter kernel is bipolar, i.e., +1 inside the sphere and -1 outside the sphere, each within a user-provided margin inside and outside the
  * sphere surface. This makes the filter robust to intensity differences across the images.
  *
+ * Because the filter values are either +1 or -1 or 0, the squared filter is identical to the filter mask. This simplifies the computation and
+ * saves FT of the squared filter.
+ *
  *\see D. Padfield, "Masked object registration in the Fourier domain," IEEE Transactions on Image Processing, vol. 21, no. 5, pp. 2706-2718, 2012.
  * http://dx.doi.org/10.1109/TIP.2011.2181402
  * http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6111478&isnumber=4358840
@@ -101,9 +104,6 @@ private:
   /// The Fourier-transformed matched filter.
   fftw_complex* m_FilterFT;
 
-  /// The Fourier-transformed squared matched filter.
-  fftw_complex* m_FilterSquareFT;
-
   /// The Fourier-transformed matched filter mask.
   fftw_complex* m_FilterMaskFT;
 
@@ -112,9 +112,6 @@ private:
 
   /// The filter FFT plan.
   fftw_plan m_PlanFilter;
-
-  /// The squared filter FFT plan.
-  fftw_plan m_PlanFilterSquare;
 
   /// The filter mask FFT plan.
   fftw_plan m_PlanFilterMask;
@@ -130,9 +127,6 @@ private:
 
   /// Sum of filter elements.
   Types::DataItem m_SumFilter;
-
-  /// Sum of filter element squares.
-  Types::DataItem m_SumFilterSquare;
   
   /// Sum of filter mask elements (number of non-zero elements).
   Types::DataItem m_SumFilterMask;

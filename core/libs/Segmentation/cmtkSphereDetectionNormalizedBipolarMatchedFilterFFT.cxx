@@ -41,12 +41,10 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalize
   this->m_ImageSquareFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
 
   this->m_FilterFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
-  this->m_FilterSquareFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
   this->m_FilterMaskFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
   this->m_FilterMaskFT2 = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
 
   this->m_PlanFilter = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_FORWARD, FFTW_ESTIMATE );
-  this->m_PlanFilterSquare = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterSquareFT, this->m_FilterSquareFT, FFTW_FORWARD, FFTW_ESTIMATE );
   this->m_PlanFilterMask = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterMaskFT, this->m_FilterMaskFT, FFTW_FORWARD, FFTW_ESTIMATE );
 
   this->m_PlanBackward = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_FilterFT, this->m_FilterFT, FFTW_BACKWARD, FFTW_ESTIMATE );
@@ -79,13 +77,11 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::~SphereDetectionNormaliz
   fftw_destroy_plan( this->m_PlanBackwardMask );
   fftw_destroy_plan( this->m_PlanBackwardMask2 );
 
-  fftw_destroy_plan( this->m_PlanFilterSquare );
   fftw_destroy_plan( this->m_PlanFilter );
   fftw_destroy_plan( this->m_PlanFilterMask );
   
   fftw_free( this->m_FilterMaskFT2 );
   fftw_free( this->m_FilterMaskFT );
-  fftw_free( this->m_FilterSquareFT );
   fftw_free( this->m_FilterFT );
   fftw_free( this->m_ImageFT );
 }
@@ -101,16 +97,14 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   this->m_MarginWidth = marginWidth;
 
   memset( this->m_FilterFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
-  memset( this->m_FilterSquareFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
   memset( this->m_FilterMaskFT, 0, sizeof( fftw_complex ) * this->m_NumberOfPixels );
 
   this->MakeFilter( sphereRadius, marginWidth );
 
-  const Types::DataItem denom2 = sqrt( this->m_SumFilterSquare - (this->m_SumFilter*this->m_SumFilter) / this->m_SumFilterMask );
+  const Types::DataItem denom2 = sqrt( this->m_SumFilterMask - (this->m_SumFilter*this->m_SumFilter) / this->m_SumFilterMask );
 
   // compute filter kernel FT
   fftw_execute( this->m_PlanFilter );
-  fftw_execute( this->m_PlanFilterSquare );
   fftw_execute( this->m_PlanFilterMask );
   
   // apply FT'ed filter to FT'ed image
@@ -168,13 +162,13 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[1] ), 
 			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
 
-  Types::DataItem sumFilter = 0, sumFilterMask = 0, sumFilterSquare = 0;
+  Types::DataItem sumFilter = 0, sumFilterMask = 0;
 
   const Types::Coordinate sphereRadiusSq = MathUtil::Square( sphereRadius );
   const Types::Coordinate outerRadiusSq = MathUtil::Square( sphereRadius+marginWidth );
   
   // create a filter kernel for the sphere
-#pragma omp parallel for reduction(+:sumFilter) reduction(+:sumFilterMask) reduction(+:sumFilterSquare)
+#pragma omp parallel for reduction(+:sumFilter) reduction(+:sumFilterMask)
   for ( int k = 0; k < nRadius[2]; ++k )
     {
     const Types::Coordinate dzSq = MathUtil::Square( k * this->m_PixelSize[2] );
@@ -192,18 +186,15 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 	    value = -1;
 	    }
 
-	  Types::DataItem valueSquare = value*value;	  
 	  for ( int kk = k; kk < this->m_ImageDims[2]; kk += (this->m_ImageDims[2]-1-2*k) )
 	    for ( int jj = j; jj < this->m_ImageDims[1]; jj += (this->m_ImageDims[1]-1-2*j) )
 	      for ( int ii = i; ii < this->m_ImageDims[0]; ii += (this->m_ImageDims[0]-1-2*i) )
 		{
 		const size_t ofs = ii+this->m_ImageDims[0] * (jj+this->m_ImageDims[1]*kk);
 		this->m_FilterFT[ofs][0] = value;
-		this->m_FilterSquareFT[ofs][0] = valueSquare;
 		this->m_FilterMaskFT[ofs][0] = 1;
 		
 		sumFilter += value;
-		sumFilterSquare += valueSquare;
 		sumFilterMask += 1;
 		}
 	  }
@@ -213,6 +204,4 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 
   this->m_SumFilter = sumFilter;
   this->m_SumFilterMask = sumFilterMask;
-  this->m_SumFilterSquare = sumFilterSquare;
-  
 }
