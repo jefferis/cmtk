@@ -169,22 +169,25 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 			   1 + marginWidth + static_cast<int>( sphereRadius / this->m_PixelSize[2] ) };
 
   Types::DataItem sumFilter = 0, sumFilterMask = 0, sumFilterSquare = 0;
+
+  const Types::Coordinate sphereRadiusSq = MathUtil::Square( sphereRadius );
+  const Types::Coordinate outerRadiusSq = MathUtil::Square( sphereRadius+marginWidth );
   
   // create a filter kernel for the sphere
 #pragma omp parallel for reduction(+:sumFilter) reduction(+:sumFilterMask) reduction(+:sumFilterSquare)
   for ( int k = 0; k < nRadius[2]; ++k )
     {
-    const Types::Coordinate dzSq = cmtk::MathUtil::Square( k * this->m_PixelSize[2] );
+    const Types::Coordinate dzSq = MathUtil::Square( k * this->m_PixelSize[2] );
     for ( int j = 0; j < nRadius[1]; ++j )
       {
-      const Types::Coordinate dyzSq = dzSq + cmtk::MathUtil::Square( j * this->m_PixelSize[1] );
+      const Types::Coordinate dyzSq = dzSq + MathUtil::Square( j * this->m_PixelSize[1] );
       for ( int i = 0; i < nRadius[0]; ++i )
 	{
-	const Types::Coordinate distance = sqrt( dyzSq + cmtk::MathUtil::Square( i * this->m_PixelSize[0] ) );
-	if ( distance <= sphereRadius+marginWidth )
+	const Types::Coordinate distanceSq = dyzSq + MathUtil::Square( i * this->m_PixelSize[0] );
+	if ( distanceSq <= outerRadiusSq )
 	  {
 	  Types::DataItem value = 1;
-	  if ( (distance > sphereRadius) )
+	  if ( (distanceSq > sphereRadiusSq) )
 	    {
 	    value = -1;
 	    }
