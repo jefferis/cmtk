@@ -185,22 +185,20 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::MakeFilter( const Types:
 	    value = -1;
 	    }
 
-	  if ( value != 0 )
-	    {
-	    for ( int kk = k; kk < this->m_ImageDims[2]; kk += (this->m_ImageDims[2]-1-2*k) )
-	      for ( int jj = j; jj < this->m_ImageDims[1]; jj += (this->m_ImageDims[1]-1-2*j) )
-		for ( int ii = i; ii < this->m_ImageDims[0]; ii += (this->m_ImageDims[0]-1-2*i) )
-		  {
-		  const size_t ofs = ii+this->m_ImageDims[0] * (jj+this->m_ImageDims[1]*kk);
-		  this->m_FilterFT[ofs][0] = value;
-		  this->m_FilterSquareFT[ofs][0] = value*value;
-		  this->m_FilterMaskFT[ofs][0] = 1;
-
-		  sumFilter += value;
-		  sumFilterSquare += value * value;
-		  sumFilterMask += 1;
-		  }
-	    }
+	  cmtk::Types::DataItem valueSquare = value*value;	  
+	  for ( int kk = k; kk < this->m_ImageDims[2]; kk += (this->m_ImageDims[2]-1-2*k) )
+	    for ( int jj = j; jj < this->m_ImageDims[1]; jj += (this->m_ImageDims[1]-1-2*j) )
+	      for ( int ii = i; ii < this->m_ImageDims[0]; ii += (this->m_ImageDims[0]-1-2*i) )
+		{
+		const size_t ofs = ii+this->m_ImageDims[0] * (jj+this->m_ImageDims[1]*kk);
+		this->m_FilterFT[ofs][0] = value;
+		this->m_FilterSquareFT[ofs][0] = valueSquare;
+		this->m_FilterMaskFT[ofs][0] = 1;
+		
+		sumFilter += value;
+		sumFilterSquare += valueSquare;
+		sumFilterMask += 1;
+		}
 	  }
 	}
 
