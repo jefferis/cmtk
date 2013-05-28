@@ -1,8 +1,8 @@
 Release CMTK-2.3.1:
 
-(r4762)	Improved: speed-up of FFT-based matched filter sphere detection.
+(r4766)	Improved: speed-up of FFT-based matched filter sphere detection.
 	Benefits primarily ADNI phantom detection (faster by up to about
-	20 percent)
+	25-30 percent)
 (r4760) Changed: "CMTK_BUILD_WRAPPER" is now turned ON by default (i.e.,
 	wrapper script "cmtk" is built, and all binaries are installed
 	into a private directory)
