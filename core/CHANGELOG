@@ -1,5 +1,8 @@
 Release CMTK-2.3.1:
 
+(r4774) Removed: the "contributed" N-CANDA pipeline scripts have been
+	moved out of the CMTK code tree and into the N-CANDA Data Core
+	repository, hosted at http://nitrc.org/svn/ncanda-datacore
 (r4770)	Improved: speed-up of FFT-based matched filter sphere detection.
 	Benefits primarily ADNI phantom detection (faster by up to about
 	25-30 percent)
