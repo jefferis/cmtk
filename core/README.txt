@@ -2,6 +2,13 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
+Release Notes -- CMTK 2.3.1
+===========================
+
+Contributed pipeline scripts from the N-CANDA project, which briefly appeared
+in the CMTK code tree, have been moved into their own, project-specific
+repository.
+
 
 Release Notes -- CMTK 2.3.0
 ===========================
