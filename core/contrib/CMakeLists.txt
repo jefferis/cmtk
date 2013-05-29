@@ -1,5 +1,5 @@
 ##
-##  Copyright 2012 SRI International
+##  Copyright 2012, 2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -28,13 +28,6 @@
 
 #-----------------------------------------------------------------------------
 # Configure third-party contributions.
-
-OPTION(BUILD_CONTRIB_NCANDA "Build, install, and package script from the National Consortium on Alcohol and Neurodevelopment in Adolescence (N-CANDA)" OFF)
-
-IF(BUILD_CONTRIB_NCANDA)
-  ADD_SUBDIRECTORY(ncanda)
-ENDIF(BUILD_CONTRIB_NCANDA)
-
 
 OPTION(BUILD_CONTRIB_MUNGER "Build, install, and package Greg Jefferis' munger script (requires perl)" OFF)
 
