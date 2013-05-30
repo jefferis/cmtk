@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,6 +80,12 @@ public:
       m_Residual( residual ),
       m_Precise( precise )
   {}
+
+  /// Get same pair with source and target swapped.
+  Self GetSwapSourceTarget() const
+  {
+    return Self( this->m_Name, this->m_TargetLocation, this->m_Location, this->m_Residual, this->m_Precise );
+  }
 
   /// Coordinates of this landmark.
   Self::SpaceVectorType m_TargetLocation;

@@ -785,6 +785,7 @@ ENDIF(CMTK_BUILD_NRRD)
 # Tests for "unwarp_image_phantom" tool
 LIST(APPEND testList
   unwarp_image_phantomSpacing
+  unwarp_image_phantomSpacingInverse
   unwarp_image_phantomSpacingLevels
   unwarp_image_phantomSpacingDirect
   unwarp_image_phantomDims

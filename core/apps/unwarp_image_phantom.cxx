@@ -57,6 +57,7 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::Types::Coordinate residualThreshold = 5.0;
 
+  bool fitInverse = false;
   const char* gridDims = NULL;
   cmtk::Types::Coordinate gridSpacing = 0;
   int levels = 1;  
@@ -73,6 +74,8 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;    
     cl.BeginGroup( "Fitting", "Fitting Options" );
+    cl.AddSwitch( Key( "fit-inverse" ), &fitInverse, true, "Fit inverse transformation - this is useful for computing a Jacobian volume correction map (using 'reformatx') without having to numerically invert the fitted unwarping "
+		  "transformation." );
     cl.AddOption( Key( "levels" ), &levels, "Number of levels in the multi-level B-spline approximation procedure." );
     cl.AddSwitch( Key( "no-fit-affine" ), &affineFirst, false, "Disable fitting of affine transformation to initialize spline. Instead, fit spline directly. This usually gives worse results and is discouraged." );
     cl.EndGroup();
@@ -119,7 +122,14 @@ doMain( const int argc, const char* argv[] )
       {
       if ( it->m_Residual < residualThreshold ) // exclude outliers based on residual
 	{
-	pairList.push_back( *it );
+	if ( fitInverse )
+	  {
+	  pairList.push_back( it->GetSwapSourceTarget() );
+	  }
+	else
+	  {
+	  pairList.push_back( *it );
+	  }
 	}
       }
     }

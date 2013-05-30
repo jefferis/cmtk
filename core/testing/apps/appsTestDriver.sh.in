@@ -2356,6 +2356,10 @@ case ${RUNTEST} in
         run unwarp_image_phantom --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
+    unwarp_image_phantomSpacingInverse)
+        run unwarp_image_phantom --final-cp-spacing 80 --fit-inverse magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
     unwarp_image_phantomSpacingLevels)
         run unwarp_image_phantom --final-cp-spacing 80 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
