@@ -201,7 +201,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
     }
   
   if ( ! WriteAsColumn )
-    fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tH1\tH2\tsum\n" );
+    fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tH\tsum\n" );
   
   for ( int maskSelect = 0; maskSelect <= maxLabel; ++maskSelect )
     {
