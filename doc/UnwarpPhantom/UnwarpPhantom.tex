@@ -23,7 +23,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \title{Structural MRI Unwarping Using CMTK\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-\release{1.3}
+\release{1.4}
 
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA}
@@ -335,18 +335,20 @@ What we need for this correct is a map that tells us, for each pixel, how much
 larger (or smaller) its volume really is, relative to the ideal volume as
 prescribed in the imaging protocol. Mathematically speaking, we need the map
 of Jacobian determinants of the inverse unwarping transformation in the
-coordinate space of the acquired image. 
+coordinate space of the acquired image. Unfortunately, we also need this map
+deformed using the inverse of the transformation itself.
 
 CMTK can give us this exact type of map using the following command (here, for
 a subject image, but analogous for the phantom image itself if you care):
 \begin{verbatim}
-cmtk reformatx -o pxvolume.nii subject.nii unwarp.xform --jacobian \
-  --inverse unwarp.xform
+cmtk reformatx -o pxvolume.nii subject.nii --inverse unwarp.xform --jacobian \
+    --inverse unwarp.xform
 \end{verbatim}
-Equivalently, we can use the following two commands to avoid numerical
-inversion of the nonrigid transformation:
+Equivalently, we can use the following two commands to avoid at least the
+second numerical inversion of the nonrigid transformation:
 \begin{verbatim}
-cmtk reformatx -o temporary.nii subject.nii --jacobian unwarp.xform
+cmtk reformatx -o temporary.nii subject.nii --inverse unwarp.xform --jacobian \
+     unwarp.xform
 cmtk imagemath --in temporary.nii --one-over --out pxvolume.nii
 \end{verbatim}
 This makes use of the fact that the Jacobian determinant of forward and
@@ -355,6 +357,22 @@ $$J_{T^{-1}}(T(\vec{x})) = 1/J_{T}(\vec{x})$$
 for a transformation $T$ and any location $\vec{x}$. The former command above
 computes the left-hand side of this equation, whereas the latter two-command
 sequence computes its right-hand side.
+
+The best way, however, to create a Jacobian volume correction map is to avoid
+inversion of the unwarping transformation altogether by simply fitting a
+deformation to the ``inverse'' phantom landmarks instead, i.e., to the
+landmarks with detected and expected positions exchanged. The fitting tool
+provides the ``\verb|--fit-inverse|'' option for just this purpose:
+\begin{verbatim}
+cmtk unwarp_image_phantom --fit-inverse --final-cp-spacing 40 --levels 2 \
+  phantom.xml phantom.nii unwarp_inverse.xform
+\end{verbatim} 
+Then we can simply evaluate the Jacobian of the fitted inverse transformation
+to obtain the volume correction map:
+\begin{verbatim}
+cmtk reformatx -o pxvolume.nii subject.nii --jacobian unwarp_inverse.xform
+\end{verbatim}
+
 
 Either way, the resulting image, ``\texttt{pxvolume.nii},'' contains at each
 pixel the true volume of that pixel. By multiplying these values with tissue
