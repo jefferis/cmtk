@@ -362,7 +362,8 @@ The best way, however, to create a Jacobian volume correction map is to avoid
 inversion of the unwarping transformation altogether by simply fitting a
 deformation to the ``inverse'' phantom landmarks instead, i.e., to the
 landmarks with detected and expected positions exchanged. The fitting tool
-provides the ``\verb|--fit-inverse|'' option for just this purpose:
+(beginning with CMTK Release 2.3.1) provides the ``\verb|--fit-inverse|''
+option for just this purpose:
 \begin{verbatim}
 cmtk unwarp_image_phantom --fit-inverse --final-cp-spacing 40 --levels 2 \
   phantom.xml phantom.nii unwarp_inverse.xform
