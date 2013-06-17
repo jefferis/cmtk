@@ -138,7 +138,7 @@ doMain
   if ( pxvolImage )
     pxvolImage->GetData()->Rescale( pixelVolumeRegionsImage );
 
-  const size_t maxLabel = std::max( 1, static_cast<int>( regionsImage->GetData()->GetRange().m_LowerBound ) );
+  const size_t maxLabel = std::max( 1, static_cast<int>( regionsImage->GetData()->GetRange().m_UpperBound ) );
   std::vector<cmtk::Types::Coordinate> regionVolumes( 1+maxLabel, 0.0 );
 
   std::vector< std::vector<cmtk::Types::Coordinate> > regionDensities( densityImages.size() );
@@ -150,7 +150,7 @@ doMain
   cmtk::Types::Coordinate pixelVolume = 0.0;
   for ( size_t px = 0; px < regionsImage->GetNumberOfPixels(); ++px )
     {
-    const size_t label = std::max( 0, static_cast<int>( regionsImage->GetDataAt( px ) ) );
+    const size_t label = std::min<size_t>( maxLabel, std::max( 0, static_cast<int>( regionsImage->GetDataAt( px ) ) ) );
 
     // get size for this pixel depending on whether we have a per-pixel map or not.
     if ( pxvolImage )
