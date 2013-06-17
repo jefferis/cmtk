@@ -97,6 +97,7 @@ SET(APPS avg_adm
   ttest
   unsplit
   unwarp_image_phantom
+  vol2csv
   volume_injection
   volume_reconstruction
   vtkxform
