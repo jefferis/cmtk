@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,7 +59,7 @@ doMain
   const char* writeJacobianPath2 = NULL;  
 
   byte phaseEncodeDirection = 1;
-
+  bool flipPEPolar = true;
   bool initShiftCentersOfMass = true;
 
   double smoothnessConstraintWeight = 0;
@@ -83,6 +83,8 @@ doMain
     phaseEncodeGroup->AddSwitch( Key( 'y', "phase-encode-ap" ), 1, "Anterior/posterior phase encoding (this is the most common case)" );
     phaseEncodeGroup->AddSwitch( Key( 'z', "phase-encode-is" ), 2, "Top/bottom phase encoding (this is rare)" );
     phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is extremely rare)" );
+    cl.AddSwitch( Key( "no-flip" ), &flipPEPolar, false, "Use this switch is the reverse phase-encoded image does not need to be flipped prior to unwarping. If normal and reverse phase-encoded image display in the same gross "
+		  "orientation in 'triplanar', then flipping is not necessary and must be turned off using this switch." );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization Parameters" );    
@@ -120,7 +122,8 @@ doMain
   cmtk::UniformVolume::SmartPtr inputImage1 = cmtk::VolumeIO::ReadOriented( inputImagePath1 );
   cmtk::UniformVolume::SmartPtr inputImage2 = cmtk::VolumeIO::ReadOriented( inputImagePath2 );
 
-  inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
+  if ( flipPEPolar )
+    inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection, initShiftCentersOfMass );
 
