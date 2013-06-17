@@ -39,7 +39,9 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <vector>
+#include <map>
 #include <string>
+#include <fstream>
 
 int
 doMain
@@ -72,7 +74,8 @@ doMain
     cl.AddOption( Key( "normalize-densities" ), &normalizeDensities, "Optional normalization factor for density images. Typically, the values in the density images should be in the range 0..1, but often such images are scaled to "
 		  "different ranges to accomodate storage as integers. If, for example, densities are stored as values 0..255, set this paramater to 255." );
     cl.AddOption( Key( "labels-file" ), &labelsFilePath, "If provided, this text file contains names for all labels in the regions image. These names are then used to label the rows of the CSV output." );
-    cl.AddOption( Key( "pixel-volumes-image" ), &pxvolImagePath, "If provided, this volume contains scale factors for the volume of each pixel. This is typically the Jacobian determinant map of a spatial unwarping deformation." );
+    cl.AddOption( Key( "pixel-volumes-image" ), &pxvolImagePath, "If provided, this volume contains scale factors for the volume of each pixel. This is typically the Jacobian determinant map of a spatial unwarping deformation." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.EndGroup();
 
     cl.BeginGroup( "output", "Output Options" );
@@ -92,6 +95,22 @@ doMain
     {
     cmtk::StdErr << "ERROR: could not read regions image " << regionsImagePath << "\n";
     throw cmtk::ExitException( 1 );
+    }
+
+  std::map<size_t, std::string> labelToNameMap;
+  if ( labelsFilePath )
+    {
+    size_t idx;
+    std::string name;
+    std::string restOfLine;
+    
+    std::ifstream labelsFile( labelsFilePath );
+    while ( ! labelsFile.eof() )
+      {
+      labelsFile >> idx >> name;
+      labelToNameMap[idx] = name;
+      std::getline( labelsFile, restOfLine );
+      }
     }
 
   cmtk::UniformVolume::SmartPtr pxvolImage;
@@ -147,6 +166,7 @@ doMain
     regionDensities[midx].resize( 1+maxLabel, 0.0 );
     }
       
+  // go over all pixels and count/compound volumes
   cmtk::Types::Coordinate pixelVolume = 0.0;
   for ( size_t px = 0; px < regionsImage->GetNumberOfPixels(); ++px )
     {
@@ -165,10 +185,32 @@ doMain
       regionDensities[midx][label] += pixelVolume * densityImages[midx]->GetDataAt( px );
       }
     }
+
+  // write column labels
+  std::cout << "label,volume";
+  for ( size_t midx = 0; midx < densityImages.size(); ++midx )
+    {
+    std::cout << ",density" << midx;
+    }
+  std::cout << "\n";
   
+  // write rows with label volumes
   for ( size_t label = 0; label <= maxLabel; ++label )
     {
-    std::cout << label << "," << regionVolumes[label];
+    if ( labelsFilePath )
+      {
+      std::map<size_t, std::string>::const_iterator it = labelToNameMap.find( label );
+      if ( it == labelToNameMap.end() )
+	continue;
+
+      std::cout << "\"" << it->second << "\"";
+      }
+    else
+      {
+      std::cout << label;
+      }
+
+    std::cout << "," << regionVolumes[label];
     for ( size_t midx = 0; midx < densityImages.size(); ++midx )
       {
       std::cout << "," << regionDensities[midx][label];
