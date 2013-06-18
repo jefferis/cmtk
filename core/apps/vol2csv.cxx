@@ -182,13 +182,17 @@ doMain
       }
     }
 
+  // select either output file or standard output
+  std::ofstream outputFile;
+  std::ostream& output = outputFilePath ? outputFile.open( outputFilePath, std::ios::out), outputFile : std::cout;
+
   // write column labels
-  std::cout << "label,volume";
+  output << "label,volume";
   for ( size_t midx = 0; midx < densityImages.size(); ++midx )
     {
-    std::cout << ",density" << midx;
+    output << ",density" << midx;
     }
-  std::cout << "\n";
+  output << "\n";
   
   // write rows with label volumes
   for ( size_t label = 0; label <= maxLabel; ++label )
@@ -199,19 +203,19 @@ doMain
       if ( it == labelToNameMap.end() )
 	continue;
 
-      std::cout << "\"" << it->second << "\"";
+      output << "\"" << it->second << "\"";
       }
     else
       {
-      std::cout << label;
+      output << label;
       }
 
-    std::cout << "," << regionVolumes[label];
+    output << "," << regionVolumes[label];
     for ( size_t midx = 0; midx < densityImages.size(); ++midx )
       {
-      std::cout << "," << regionDensities[midx][label];
+      output << "," << regionDensities[midx][label];
       }
-    std::cout << "\n";
+    output << "\n";
     }
 
   return 0;
