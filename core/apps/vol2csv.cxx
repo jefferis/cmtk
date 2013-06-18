@@ -49,7 +49,7 @@ doMain
 {
   const char* regionsImagePath = NULL;
   const char* labelsFilePath = NULL;
-  const char* pxvolImagePath = NULL;
+  const char* pscaleImagePath = NULL;
   const char* outputFilePath = NULL;
 
   std::vector<std::string> densityImagePaths;
@@ -74,7 +74,7 @@ doMain
     cl.AddOption( Key( "normalize-densities" ), &normalizeDensities, "Optional normalization factor for density images. Typically, the values in the density images should be in the range 0..1, but often such images are scaled to "
 		  "different ranges to accomodate storage as integers. If, for example, densities are stored as values 0..255, set this paramater to 255." );
     cl.AddOption( Key( "labels-file" ), &labelsFilePath, "If provided, this text file contains names for all labels in the regions image. These names are then used to label the rows of the CSV output." );
-    cl.AddOption( Key( "pixel-volumes-image" ), &pxvolImagePath, "If provided, this volume contains scale factors for the volume of each pixel. This is typically the Jacobian determinant map of a spatial unwarping deformation." )
+    cl.AddOption( Key( "pixel-scale-image" ), &pscaleImagePath, "If provided, this volume contains scale factors for the volume of each pixel. This is typically the Jacobian determinant map of a spatial unwarping deformation." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.EndGroup();
 
@@ -90,7 +90,7 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartConstPtr regionsImage( cmtk::VolumeIO::Read( regionsImagePath ) );
+  cmtk::UniformVolume::SmartConstPtr regionsImage( cmtk::VolumeIO::ReadOriented( regionsImagePath ) );
   if ( ! regionsImage )
     {
     cmtk::StdErr << "ERROR: could not read regions image " << regionsImagePath << "\n";
@@ -113,20 +113,20 @@ doMain
       }
     }
 
-  cmtk::UniformVolume::SmartPtr pxvolImage;
-  if ( pxvolImagePath )
+  cmtk::UniformVolume::SmartPtr pscaleImage;
+  if ( pscaleImagePath )
     {
-    pxvolImage =  cmtk::VolumeIO::Read( pxvolImagePath );
+    pscaleImage =  cmtk::VolumeIO::ReadOriented( pscaleImagePath );
 
-    if ( ! pxvolImage )
+    if ( ! pscaleImage )
       {
-      cmtk::StdErr << "ERROR: could not read pixel volume image " << pxvolImagePath << "\n";
+      cmtk::StdErr << "ERROR: could not read pixel volume image " << pscaleImagePath << "\n";
       throw cmtk::ExitException( 1 );
       }
 
-    if ( ! regionsImage->GridMatches( *pxvolImage ) )
+    if ( ! regionsImage->GridMatches( *pscaleImage ) )
       {
-      cmtk::StdErr << "ERROR: grid of pixel volume image " << pxvolImagePath << " does not match that of the regions image.\n";
+      cmtk::StdErr << "ERROR: grid of pixel volume image " << pscaleImagePath << " does not match that of the regions image.\n";
       throw cmtk::ExitException( 1 );
       }
     }
@@ -134,7 +134,7 @@ doMain
   std::vector<cmtk::UniformVolume::SmartConstPtr> densityImages;
   for ( size_t idx = 0; idx < densityImagePaths.size(); ++idx )
     {
-    cmtk::UniformVolume::SmartPtr nextImage( cmtk::VolumeIO::Read( densityImagePaths[idx].c_str() ) );
+    cmtk::UniformVolume::SmartPtr nextImage( cmtk::VolumeIO::ReadOriented( densityImagePaths[idx].c_str() ) );
     if ( ! nextImage )
       {
       cmtk::StdErr << "ERROR: could not read density image " << densityImagePaths[idx] << "\n";
@@ -154,8 +154,6 @@ doMain
     }
 
   const cmtk::Types::Coordinate pixelVolumeRegionsImage = regionsImage->m_Delta.Product();
-  if ( pxvolImage )
-    pxvolImage->GetData()->Rescale( pixelVolumeRegionsImage );
 
   const size_t maxLabel = std::max( 1, static_cast<int>( regionsImage->GetData()->GetRange().m_UpperBound ) );
   std::vector<cmtk::Types::Coordinate> regionVolumes( 1+maxLabel, 0.0 );
@@ -167,16 +165,14 @@ doMain
     }
       
   // go over all pixels and count/compound volumes
-  cmtk::Types::Coordinate pixelVolume = 0.0;
   for ( size_t px = 0; px < regionsImage->GetNumberOfPixels(); ++px )
     {
     const size_t label = std::min<size_t>( maxLabel, std::max( 0, static_cast<int>( regionsImage->GetDataAt( px ) ) ) );
 
-    // get size for this pixel depending on whether we have a per-pixel map or not.
-    if ( pxvolImage )
-      pixelVolume = pxvolImage->GetDataAt( px );
-    else
-      pixelVolume = pixelVolumeRegionsImage;
+    // get size for this pixel and scale, depending on whether we have a per-pixel map or not.
+    cmtk::Types::Coordinate pixelVolume = pixelVolumeRegionsImage;
+    if ( pscaleImage )
+      pixelVolume *= pscaleImage->GetDataAt( px );
 
     regionVolumes[label] += pixelVolume;
     
