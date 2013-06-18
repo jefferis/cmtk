@@ -2592,6 +2592,14 @@ case ${RUNTEST} in
 	run xform2scalar --float --output ${tmpdir}/magnitude.nii parc1.hdr parc1_parc2_dfield.nrrd
 	check_results magnitude.nii
 	;;
+    vol2csvLabels)
+	run vol2csv -o ${tmpdir}/volumes.csv --labels-file sri24_ventricles.txt ncanda_t1_ventricles.nii ncanda_t1_pve_0.nii ncanda_t1_pve_1.nii ncanda_t1_pve_2.nii
+	check_results volumes.csv
+	;;
+    vol2csvScale)
+	run vol2csv -o ${tmpdir}/volumes.csv --pixel-scale-image ncanda_t1_jacobian.nii ncanda_t1_ventricles.nii ncanda_t1_pve_0.nii ncanda_t1_pve_1.nii ncanda_t1_pve_2.nii
+	check_results volumes.csv
+	;;
     help_film)
 	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --help > ${tmpdir}/film.help"
 	check_results film.help

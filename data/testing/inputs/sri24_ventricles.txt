@@ -1,0 +1,5 @@
+0	Background		000	000	000	0
+1	LateralVentricle_L	255	128	255	255
+2	LateralVentricle_R	177	18	255	255
+3	ThirdVentricle_L	45	255	47	255
+4	ThirdVentricls_R	106	209	255	255

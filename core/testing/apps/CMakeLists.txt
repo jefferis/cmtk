@@ -866,6 +866,10 @@ LIST(APPEND testList
   xform2scalarWarpOnly)
 
 # ==========================================
+# Tests for "vol2csv" tool
+LIST(APPEND testList vol2csvLabels vol2csvScale)
+
+# ==========================================
 # Tests for "vtkxform" tool
 LIST(APPEND testList
   vtkxform
