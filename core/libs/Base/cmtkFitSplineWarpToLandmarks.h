@@ -59,22 +59,42 @@ public:
   /// This class.
   typedef FitSplineWarpToLandmarks Self;
 
+  /// Class for parameters to the fitting algorithm.
+  class Parameters
+  {
+  public:
+    /// Default constructor. 
+    Parameters() : m_Levels( 1 ), m_IterationsPerLevel( 100 ), m_ResidualThreshold( 0 ) {}
+
+    /// Number of levels in the multi-resolution fitting.
+    int m_Levels;
+
+    /// Number of update iterations per level in the multi-resolution fitting.
+    int m_IterationsPerLevel;
+
+    /// Threshold for relative RMS residual improvement. Iteration terminates if (rmsAfterUpdate-rmsBeforeUpdate)/rmsBeforeUpdate < threshold.
+    Types::Coordinate m_ResidualThreshold;
+  };
+
   /// Constructor.
   FitSplineWarpToLandmarks( const LandmarkPairList& landmarkList );
 
   /// Fit spline warp based on final grid dimensions.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceVectorType& domain /*!< Domain of the deformation field. This should be the size of the fixed image grid to be used with the resulting deformation */,
   				 const SplineWarpXform::ControlPointIndexType& finalDims /*!< Final spline control point grid dimensions.*/, 
-				 const int nLevels /*!< Number of levels in the multi-resolution fitting.*/,
-				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/ );
+				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/,
+				 const Self::Parameters& parameters = Self::DefaultParameters /*!< Fitting parameters.*/ );
 
   /// Fit spline warp based on final grid spacing.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::SpaceVectorType& domain /*!< Domain of the deformation field. This should be the size of the fixed image grid to be used with the resulting deformation */,
 				 const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
-				 const int nLevels = 1 /*!< Number of levels for optional multi-resolution fit (default: single-resolution fit)*/,
-				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/  );
+				 const AffineXform* initialAffine = NULL /*!< Optional affine transformation to initialize the spline control points.*/,
+				 const Self::Parameters& parameters = Self::DefaultParameters /*!< Fitting parameters.*/ );
   
 private:
+  /// Default parameters.
+  static Self::Parameters DefaultParameters;
+
   /// Input landmarks.
   std::vector<LandmarkPair> m_Landmarks;
 
@@ -88,12 +108,12 @@ private:
   std::vector< SplineWarpXform::SpaceVectorType > m_Residuals;
 
   /** Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
-   *\return Maximum residual over all landmarks.
+   *\return Root-of-mean-squared residual over all landmarks.
    */
   Types::Coordinate ComputeResiduals( const SplineWarpXform& splineWarp );
 
   /// Fit spline warp based on initial warp object.
-  void FitSpline( SplineWarpXform& splineWarp, const int nLevels );
+  void FitSpline( SplineWarpXform& splineWarp /*!< Fitted spline warp is returned here.*/, const Self::Parameters& parameters = Self::DefaultParameters /*!< Fitting parameters.*/ );
 };
 
 } // namespace

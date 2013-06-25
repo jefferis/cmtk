@@ -2353,27 +2353,27 @@ case ${RUNTEST} in
 	check_results unsplit.nii
 	;;
     unwarp_image_phantomSpacing)
-        run unwarp_image_phantom --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingInverse)
-        run unwarp_image_phantom --final-cp-spacing 80 --fit-inverse magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 --fit-inverse magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingLevels)
-        run unwarp_image_phantom --final-cp-spacing 80 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingDirect)
-        run unwarp_image_phantom --no-fit-affine --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --no-fit-affine --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDims)
-        run unwarp_image_phantom --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsLevels)
-        run unwarp_image_phantom --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --iterations-per-level 1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     volume_injection)

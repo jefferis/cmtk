@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,7 +60,9 @@ doMain( const int argc, const char* argv[] )
   bool fitInverse = false;
   const char* gridDims = NULL;
   cmtk::Types::Coordinate gridSpacing = 0;
-  int levels = 1;  
+
+  cmtk::FitSplineWarpToLandmarks::Parameters fittingParameters;
+  
   bool affineFirst = true;
 
   const char* outputXform = NULL;
@@ -76,7 +78,10 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "Fitting", "Fitting Options" );
     cl.AddSwitch( Key( "fit-inverse" ), &fitInverse, true, "Fit inverse transformation - this is useful for computing a Jacobian volume correction map (using 'reformatx') without having to numerically invert the fitted unwarping "
 		  "transformation." );
-    cl.AddOption( Key( "levels" ), &levels, "Number of levels in the multi-level B-spline approximation procedure." );
+    cl.AddOption( Key( "levels" ), &fittingParameters.m_Levels, "Number of levels in the multi-level B-spline approximation procedure." );
+    cl.AddOption( Key( "iterations-per-level" ), &fittingParameters.m_IterationsPerLevel, "Maximum number of spline coefficient update iterations per level in the multi-level B-spline approximation procedure." );
+    cl.AddOption( Key( "rms-threshold" ), &fittingParameters.m_ResidualThreshold, "Threshold for relative improvement of the RMS fitting residual. "
+		  "The fitting iteration terminates if (rmsAfterUpdate-rmsBeforeUpdate)/rmsBeforeUpdate < threshold." );
     cl.AddSwitch( Key( "no-fit-affine" ), &affineFirst, false, "Disable fitting of affine transformation to initialize spline. Instead, fit spline directly. This usually gives worse results and is discouraged." );
     cl.EndGroup();
 
@@ -147,7 +152,7 @@ doMain( const int argc, const char* argv[] )
   // fit by final spacing
   if ( gridSpacing )
     {
-    splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, gridSpacing, levels, affineXform.GetPtr() );
+    splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, gridSpacing, affineXform.GetPtr(), fittingParameters );
     }
   else
     {
@@ -161,7 +166,7 @@ doMain( const int argc, const char* argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineXform.GetPtr() );
+      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>::FromPointer( dims ), affineXform.GetPtr(), fittingParameters );
       }
     else
       {
