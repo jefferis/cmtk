@@ -1,5 +1,7 @@
 Release CMTK-2.4.0:
 
+(r4792) Added: multi-iteration and residual-controlled fitting of B-spline FFD
+        to phantom landmarks.
 (r4787) Added: new "vol2csv" tool writes regional volumes of a label image
 	to a CSV files, optionally using a text file with label
 	descriptions, a (Jacobian) pixel volume scale map, and one or more

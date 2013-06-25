@@ -9,6 +9,9 @@ Contributed pipeline scripts from the N-CANDA project, which briefly appeared
 in the CMTK code tree, have been moved into their own, project-specific
 repository.
 
+unwarp_image_phantom default behaviour has been changed to multi-iteration
+fitting. Also now supports residual-controlled fitting.
+
 
 Platform Support
 ================
