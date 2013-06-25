@@ -1,4 +1,4 @@
-Release CMTK-2.3.1:
+Release CMTK-2.4.0:
 
 (r4787) Added: new "vol2csv" tool writes regional volumes of a label image
 	to a CSV files, optionally using a text file with label

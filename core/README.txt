@@ -2,7 +2,7 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 2.3.1
+Release Notes -- CMTK 2.4.0
 ===========================
 
 Contributed pipeline scripts from the N-CANDA project, which briefly appeared
@@ -10,22 +10,13 @@ in the CMTK code tree, have been moved into their own, project-specific
 repository.
 
 
-Release Notes -- CMTK 2.3.0
-===========================
-
-This release of CMTK incorporates some major bug fixes and improvements. Most
-notable the ADNI phantom detection tool can now robustly handle a variety of
-real-world problems, such as broken phantoms.
-
-The "dcm2image" tool no longer puts potentially protected information, such as
-device identifiers or dates, into XML sidecar files.
-
-This release also bundles the complete SRI24 atlas with all template images
-and a variety of labels maps for volumetry and DTI fiber tracking.
-
+Platform Support
+================
 
 CMTK has been built and tested on the following platforms:
 
+- Linux 64bit (Fedora 19), gcc 4.8.1, CUDA 3.2
+- Linux 64bit (Fedora 19), clang 3.3
 - Linux 64bit (Fedora 17), gcc 4.7.2, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 4.1
