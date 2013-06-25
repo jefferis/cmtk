@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,6 +52,8 @@ cmtk
  * http://dx.doi.org/10.1109/TIP.2008.2010072
  *\see The implementation itself is more closely following S. Lee, G. Wolberg, and S. Y. Shin, “Scattered data interpolation with multilevel B-splines,” IEEE Transactions on Visualization and Computer Graphics, 
  * vol. 3, no. 3, pp. 228-244, 1997. http://dx.doi.org/10.1109/2945.620490
+ *
+ *\todo It would be nice to have the same multi-iteration fitting options here as in cmtk::FitSplineWarpToLandmarks.
  */
 class FitSplineWarpToXformList
   : private FitAffineToXformList
