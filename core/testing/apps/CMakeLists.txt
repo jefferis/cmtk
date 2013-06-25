@@ -789,7 +789,11 @@ LIST(APPEND testList
   unwarp_image_phantomSpacingLevels
   unwarp_image_phantomSpacingDirect
   unwarp_image_phantomDims
-  unwarp_image_phantomDimsLevels)
+  unwarp_image_phantomDimsLevels
+  unwarp_image_phantomDimsLevelsIterations
+  unwarp_image_phantomDimsLevelsThreshold	
+  unwarp_image_phantomDimsLevelsIterationsThreshold
+  unwarp_image_phantomDimsDefault)
 
 # ==========================================
 # Tests for "volume_injection" tool

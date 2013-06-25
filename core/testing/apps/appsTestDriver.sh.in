@@ -2376,6 +2376,22 @@ case ${RUNTEST} in
         run unwarp_image_phantom --iterations-per-level 1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
+    unwarp_image_phantomDimsLevelsIterations)
+        run unwarp_image_phantom --iterations-per-level 10 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
+    unwarp_image_phantomDimsLevelsThreshold)
+        run unwarp_image_phantom --iterations-per-level 1 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
+    unwarp_image_phantomDimsLevelsIterationsThreshold)
+        run unwarp_image_phantom --iterations-per-level 10 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
+    unwarp_image_phantomDimsDefault)
+        run unwarp_image_phantom --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
     volume_injection)
 	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
