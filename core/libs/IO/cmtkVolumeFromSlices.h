@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -77,6 +77,9 @@ cmtk
 class VolumeFromSlices 
 {
 public:
+  /// This class.
+  typedef VolumeFromSlices Self;
+
   /// Default constructor.
   VolumeFromSlices() : VolumeDataArray( NULL ) {}
 

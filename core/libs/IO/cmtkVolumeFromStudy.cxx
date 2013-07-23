@@ -64,7 +64,7 @@ cmtk
 
 const UniformVolume::SmartPtr
 VolumeFromStudy::Read
-( const Study* study )
+( const Study* study, const Types::Coordinate tolerance )
 {
   if ( !study ) 
     return UniformVolume::SmartPtr( NULL );
@@ -72,7 +72,7 @@ VolumeFromStudy::Read
   const StudyImageSet* studyImageSet = dynamic_cast<const StudyImageSet*>( study );
   if ( studyImageSet ) 
     {
-    VolumeFromStudy vfs;    
+    VolumeFromStudy vfs;
     return vfs.AssembleVolume( studyImageSet );
     } 
   else

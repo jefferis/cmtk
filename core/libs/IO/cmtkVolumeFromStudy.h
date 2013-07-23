@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,18 +49,19 @@ cmtk
 //@{
 
 /// Class for building 3D volumes from an Study object.
-class VolumeFromStudy : 
-  /// Inherit basic slice-to-volume functions.
-  public VolumeFromSlices 
+class VolumeFromStudy : private VolumeFromSlices
 {
 public:
+  /// This class.
+  typedef VolumeFromStudy Self;
+
   /** Build volume from slice images.
    *\see VolumeFromSlices#AssembleVolume
    */
-  virtual const UniformVolume::SmartPtr AssembleVolume ( const StudyImageSet* study );
+  const UniformVolume::SmartPtr AssembleVolume ( const StudyImageSet* study );
 
   /// Read from generic Study object.
-  static const UniformVolume::SmartPtr Read( const Study* study );
+  static const UniformVolume::SmartPtr Read( const Study* study, const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ );
 };
 
 //@}

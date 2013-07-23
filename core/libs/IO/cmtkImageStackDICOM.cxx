@@ -323,7 +323,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       studyImageSet.push_back( (*it)->m_FileName );
       }
     
-    volume = cmtk::VolumeFromStudy::Read( &studyImageSet );
+    volume = cmtk::VolumeFromStudy::Read( &studyImageSet, this->m_Tolerance );
     }
   else
     {

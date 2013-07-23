@@ -77,6 +77,9 @@ public:
     EMBED_SERIESDESCR = 3
   } EmbedInfoEnum;
 
+  /// Constructor.
+  ImageStackDICOM( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ) {}
+
   /// Add new DICOM image file to this stack.
   void AddImageFile( ImageFileDICOM::SmartConstPtr& image );
 
@@ -97,6 +100,9 @@ public:
   void print() const;
 
 private:
+  /// Stored floating point tolerance.
+  Types::Coordinate m_Tolerance;
+
   /// Generate custom whitespaces for XML output.
   static const char *WhitespaceWriteMiniXML( mxml_node_t*, int where);
 };

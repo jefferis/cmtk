@@ -156,6 +156,9 @@ public:
   /// This class.
   typedef VolumeList Self;
 
+  /// Constructor.
+  VolumeList( const cmtk::Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ) {}
+
   /// Build a volume list by traversing a directory.
   void AppendFromDirectory( const std::string& path, const char *wildcard );
   
@@ -163,6 +166,9 @@ public:
   void WriteVolumes();
 
 private:
+  /// Stored floating point tolerance.
+  cmtk::Types::Coordinate m_Tolerance;
+  
   /// Add a new image file to the correct stack or create a new stack.
   void AddImageFile( ImageFileDICOM::SmartConstPtr& newImage );
 };
@@ -540,7 +546,7 @@ doMain ( const int argc, const char *argv[] )
     dcmDataDict.unlock();
     }
   
-  VolumeList volumeList;
+  VolumeList volumeList( Tolerance );
   for ( std::vector<std::string>::const_iterator it = SearchRootDirVector.begin(); it != SearchRootDirVector.end(); ++it )
     {
     volumeList.AppendFromDirectory( *it, "*" );
