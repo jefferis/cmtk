@@ -1,5 +1,9 @@
 Release CMTK-2.4.0:
 
+(r4797) Changed: "dcm2image" tool now enforces uniform volume spacing up
+	to given tolerance level. Volumes with non-uniformity exceeding
+	the threshold, no volume will be created, thus avoiding creation
+	of invalid data.
 (r4792) Added: multi-iteration and residual-controlled fitting of B-spline FFD
         to phantom landmarks.
 (r4787) Added: new "vol2csv" tool writes regional volumes of a label image
