@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -122,6 +122,9 @@ public:
   static ScalarImage* Read( const char *path );
 
 private:
+  /// Path of this DICOM file.
+  std::string m_Path;
+
   /// Pointer to the DICOM dataset object
   DcmDataset* m_Dataset;
 

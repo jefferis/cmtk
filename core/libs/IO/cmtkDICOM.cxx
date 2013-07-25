@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -60,7 +60,7 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-DICOM::DICOM( const std::string& path )
+DICOM::DICOM( const std::string& path ) : m_Path( path )
 {
 #ifdef CMTK_USE_DCMTK_JPEG
   // register global decompression codecs
@@ -409,7 +409,7 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
 	{
 	if ( 2 != sscanf( it->second[0].c_str(), "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
 	  {
-	  StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << "\n";
+	  StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << " in file " << this->m_Path << "\n";
 	  }
 	}
       }
@@ -444,12 +444,12 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
 	      }
 	    else
 	      {
-	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << "\n";
+	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << " in file " << this->m_Path << "\n";
 	      }
 	    }
 	  else
 	    {
-	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header\n";
+	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header in file " << this->m_Path << "\n";
 	    }
 	}
       }
