@@ -54,9 +54,9 @@ BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/clang
-CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2  -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
-CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
+CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2
 
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON
