@@ -362,7 +362,8 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
     }
   else
     {
-    cmtk::StdErr << "WARNING: No valid volume was read.\n";
+    // No longer need to warn - now warn at lower level
+    //    cmtk::StdErr << "WARNING: No valid volume was read.\n";
     }
   
   cmtk::DebugOutput( 1 ) << "DICOM Information: \n"

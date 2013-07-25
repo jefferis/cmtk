@@ -72,8 +72,10 @@ VolumeFromStudy::Read
   const StudyImageSet* studyImageSet = dynamic_cast<const StudyImageSet*>( study );
   if ( studyImageSet ) 
     {
-    VolumeFromStudy vfs( tolerance );
-    return vfs.AssembleVolume( studyImageSet );
+    UniformVolume::SmartPtr volume = VolumeFromStudy( tolerance ).AssembleVolume( studyImageSet );
+    if ( ! volume )
+      StdErr << "ERROR: volume assembly failed in directory " << studyImageSet->GetImageDirectory() << "\n";
+    return volume;
     } 
   else
     return VolumeIO::Read( study->GetFileSystemPath() );
