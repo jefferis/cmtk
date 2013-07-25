@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,8 +52,6 @@ addImages( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Add images to the database" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command manually adds a new image to the database, potentially assigning it to the space of an existing image. "
 		       "This is useful, for example, when multiple images were acquired in spatial alignment, or when images were created using tools that do not support database updating." );
-
-    typedef cmtk::CommandLine::Key Key;
 
     cl.AddParameter( &dbpath, "Database", "Database path." );
     cl.AddParameter( &space, "Space", "Image that defines coordinate space. If this image is not yet in the database, it will be added first." );
