@@ -155,6 +155,10 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   const Types::Coordinate* aux[] = { Points[0], Points[1], Points[2] };
   UniformVolume::SmartPtr Result = this->ConstructVolume( Dims, Size, aux, VolumeDataArray );
 
+  // if something went wrong assembling the volume, then return NULL pointer
+  if ( ! Result )
+    return Result;
+
   // clear reference, since now linked by volume.
   VolumeDataArray = TypedArray::SmartPtr::Null(); 
 
@@ -280,7 +284,7 @@ VolumeFromSlices::ConstructVolume
     Types::Coordinate delta = points[dim][1] - points[dim][0];
     for ( int idx=2; (idx<dims[dim]) && isUniform; ++idx ) 
       {
-      if ( fabs( delta - (points[dim][idx] - points[dim][idx-1]) ) > (0.0001 * delta ) )
+      if ( fabs( delta - (points[dim][idx] - points[dim][idx-1]) ) > ( this->m_Tolerance * delta ) )
 	isUniform = false;
       error = fabs( delta - (points[dim][idx] - points[dim][idx-1]) );
       }
@@ -288,7 +292,8 @@ VolumeFromSlices::ConstructVolume
   
   if ( !isUniform )
     {
-    StdErr << "WARNING: not a uniform volume (error = " << error << ")\n";
+    StdErr << "ERROR: not a uniform volume (error = " << error << ")\n";
+    return UniformVolume::SmartPtr( NULL );
     }
   return UniformVolume::SmartPtr( new UniformVolume( dims, size, data ) );
 }

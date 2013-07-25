@@ -81,12 +81,15 @@ public:
   typedef VolumeFromSlices Self;
 
   /// Default constructor.
-  VolumeFromSlices() : VolumeDataArray( NULL ) {}
+  VolumeFromSlices( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ), VolumeDataArray( NULL ) {}
 
   /// Virtual dummy destructor.
   virtual ~VolumeFromSlices() {}
 
 protected:
+  /// Stored floating point tolerance.
+  Types::Coordinate m_Tolerance;
+
   /** Start creation of new volume.
    */
   void InitSequence( const ScalarImage* image, const unsigned int numberOfSlices );

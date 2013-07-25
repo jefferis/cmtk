@@ -687,7 +687,7 @@ case ${RUNTEST} in
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXML)
-        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+        run dcm2image -x --tolerance 1e-4 --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     dcm2imageDiffusionSiemensXML)
@@ -703,7 +703,7 @@ case ${RUNTEST} in
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXMLAnon)
-        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+        run dcm2image -x --tolerance 1e-4 --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     dcm2imageDiffusionSiemensXMLAnon)
@@ -719,7 +719,7 @@ case ${RUNTEST} in
 	check_results image.nii
 	;;
     dcm2imageSubsDirName)
-        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
+        run dcm2image -x --tolerance 1e-4 --include-identifiers --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
 	check_results mr-dwi-ge/I0150.dcm.nii mr-dwi-ge/I0150.dcm.nii.xml mr-dwi-ge/I0280.dcm.nii mr-dwi-ge/I0280.dcm.nii.xml
 	check_results mr-dwi-siemens/I0001.dcm.nii mr-dwi-siemens/I0001.dcm.nii.xml mr-dwi-siemens/I0002.dcm.nii mr-dwi-siemens/I0002.dcm.nii.xml 
 	check_results mr-dwi-siemens/I0003.dcm.nii mr-dwi-siemens/I0003.dcm.nii.xml mr-dwi-siemens/I0004.dcm.nii mr-dwi-siemens/I0004.dcm.nii.xml

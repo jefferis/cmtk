@@ -72,7 +72,7 @@ VolumeFromStudy::Read
   const StudyImageSet* studyImageSet = dynamic_cast<const StudyImageSet*>( study );
   if ( studyImageSet ) 
     {
-    VolumeFromStudy vfs;
+    VolumeFromStudy vfs( tolerance );
     return vfs.AssembleVolume( studyImageSet );
     } 
   else
@@ -132,6 +132,10 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
     Progress::Done();
     
     Result = this->FinishVolume();
+
+    // If seomthing went wrong constructing the volume, return the NULL pointer that we just got
+    if ( ! Result )
+      return Result;
     
     TypedArray::SmartPtr data = Result->GetData();
     if ( data ) 

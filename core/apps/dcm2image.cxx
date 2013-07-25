@@ -267,7 +267,7 @@ VolumeList::WriteVolumes()
 
       cmtk::UniformVolume::SmartConstPtr volume = it->second[0]->WriteImage( uniquePath.c_str(), EmbedInfo );
 
-      if ( WriteXML )
+      if ( volume && WriteXML )
 	{
 	it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume, IncludeIdentifiers );
 	}
@@ -286,7 +286,7 @@ VolumeList::WriteVolumes()
 
 	cmtk::UniformVolume::SmartConstPtr volume = it->second[i]->WriteImage( uniquePath.c_str(), EmbedInfo );
 
-	if ( WriteXML )
+	if ( volume && WriteXML )
 	  {
 	  it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume, IncludeIdentifiers );
 	  }
@@ -317,7 +317,7 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
       }
     }    
 
-  ImageStackDICOM::SmartPtr newImageStack( new ImageStackDICOM );
+  ImageStackDICOM::SmartPtr newImageStack( new ImageStackDICOM( Tolerance ) );
   newImageStack->AddImageFile( newImage );
   push_back( newImageStack );    
 }

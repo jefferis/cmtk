@@ -55,6 +55,9 @@ public:
   /// This class.
   typedef VolumeFromStudy Self;
 
+  /// Constructor.
+  VolumeFromStudy( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : VolumeFromSlices( tolerance ) {}
+
   /** Build volume from slice images.
    *\see VolumeFromSlices#AssembleVolume
    */
