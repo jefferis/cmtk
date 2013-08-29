@@ -1,5 +1,9 @@
 Release CMTK-2.4.0:
 
+(r4805) Added: "detect_adni_phantom" tool (and library classes) now state
+	in the output XML file whether certain fallback conditions were
+	triggered. These usually hint at problems with the imaging
+	phantom, e.g., missing spheres.
 (r4797) Changed: "dcm2image" tool now enforces uniform volume spacing up
 	to given tolerance level. Volumes with non-uniformity exceeding
 	the threshold, no volume will be created, thus avoiding creation
