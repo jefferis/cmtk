@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2010, 2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -36,7 +36,7 @@ SUBDIRS(Registration)
 SUBDIRS(IO)
 SUBDIRS(Base)
 
-IF(CMTK_CONFIG_GPU)
+IF(CMTK_USE_CUDA)
   SUBDIRS(GPU)
-ENDIF(CMTK_CONFIG_GPU)
+ENDIF(CMTK_USE_CUDA)
 
