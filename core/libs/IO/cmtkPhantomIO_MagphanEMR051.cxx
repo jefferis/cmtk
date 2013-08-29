@@ -47,19 +47,21 @@ cmtk::PhantomIO::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 
   static const wsLookupType wsLookup[] = 
   {
-    { "phantomType",  { NULL, NULL, NULL, "\n" } },
-    { "snr",          { NULL, NULL, NULL, "\n" } },
-    { "cnr",          { NULL, NULL, NULL, "\n" } },
-    { "scale",        { NULL, NULL, NULL, "\n" } },
-    { "nonlinear",    { NULL, NULL, NULL, "\n" } },
-    { "landmarkList", { NULL, "\n", NULL, "\n" } },
-    { "landmark",     { "\t", "\n", "\t", "\n" } },
-    { "name",         { "\t\t", NULL, NULL, "\n" } },
-    { "detected",     { "\t\t", NULL, NULL, "\n" } },
-    { "expected",     { "\t\t", NULL, NULL, "\n" } },
-    { "isPrecise",    { "\t\t", NULL, NULL, "\n" } },
-    { "fitResidual",  { "\t\t", NULL, NULL, "\n" } },
-    { NULL, {NULL, NULL, NULL, NULL} }
+    { "phantomType",             { NULL, NULL, NULL, "\n" } },
+    { "fallbackOrientationCNR",  { NULL, "\n", NULL, "\n" } },
+    { "fallbackCentroidCNR",     { NULL, "\n", NULL, "\n" } },
+    { "snr",                     { NULL, NULL, NULL, "\n" } },
+    { "cnr",                     { NULL, NULL, NULL, "\n" } },
+    { "scale",                   { NULL, NULL, NULL, "\n" } },
+    { "nonlinear",               { NULL, NULL, NULL, "\n" } },
+    { "landmarkList",            { NULL, "\n", NULL, "\n" } },
+    { "landmark",                { "\t", "\n", "\t", "\n" } },
+    { "name",                    { "\t\t", NULL, NULL, "\n" } },
+    { "detected",                { "\t\t", NULL, NULL, "\n" } },
+    { "expected",                { "\t\t", NULL, NULL, "\n" } },
+    { "isPrecise",               { "\t\t", NULL, NULL, "\n" } },
+    { "fitResidual",             { "\t\t", NULL, NULL, "\n" } },
+    { NULL,                      {NULL, NULL, NULL, NULL} }
   };
   
   if ( (where >= 0) && (where < 4) )
@@ -94,6 +96,17 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   
   mxml_node_t *x_phantom = mxmlNewElement( x_root, "phantom" );
   mxmlNewText( mxmlNewElement( x_phantom, "phantomType" ), 0, "MagphanEMR051" );
+
+  // put fallback flags into output as a warning
+  if ( phantom.m_FallbackOrientationCNR )
+    {
+    mxmlNewElement( x_phantom, "fallbackOrientationCNR" );
+    }
+  if ( phantom.m_FallbackCentroidCNR )
+    {
+    mxmlNewElement( x_phantom, "fallbackCentroidCNR" );
+    }
+
   mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR ); 
 
   mxml_node_t *x_cnr = mxmlNewElement( x_phantom, "cnr" );

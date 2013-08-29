@@ -138,6 +138,8 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     else
       {
+      // Set flag to mark that we could not use the SNR sphere.
+      this->m_StatusFlags.m_FallbackCentroidCNR = true;
       minAngleCosine = angleCosineCNR;
       phantomCenter = cnrCenter;
       }
@@ -153,6 +155,11 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 	  this->m_ExcludeMask->SetDataAt( 0.0, px );
 	}
       }
+    }
+  else
+    {
+    // Set flag to mark that we could not use the 15mm spheres
+    this->m_StatusFlags.m_FallbackOrientationCNR = true;
     }
 
   // now use the SNR and the two 15mm spheres to define first intermediate coordinate system, assuming they were suiccessfully detected.
@@ -613,7 +620,9 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
       }
     }
 
-  detected->m_EstimatedNonLinear /= countSpheresNonLinear;  
+  detected->m_EstimatedNonLinear /= countSpheresNonLinear;
+
+  detected->m_FallbackCentroidCNR = this->m_StatusFlags.m_FallbackCentroidCNR;
 
   // get SNR estimate
   Types::DataItem mean, stdev;
