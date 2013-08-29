@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,7 +51,6 @@ doMain
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Hausdorff Distance." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the Hausdorff distance between two label images." );
 
-    typedef cmtk::CommandLine::Key Key;
     cl.AddParameter( &imagePath0, "Image0", "First image path." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &imagePath1, "Image1", "Second image path." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
