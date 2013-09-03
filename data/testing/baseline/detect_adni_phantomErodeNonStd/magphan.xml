@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phantom>
 <phantomType>MagphanEMR051</phantomType>
+<fallbackOrientationCNR />
 <fallbackCentroidCNR />
 <snr>53.085523</snr>
 <cnr>21.567644 1.694292 5.911896 8.135168</cnr>
