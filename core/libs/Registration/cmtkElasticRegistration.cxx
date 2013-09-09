@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,6 +57,7 @@ ElasticRegistration::ElasticRegistration ()
     InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
     ForceSwitchVolumes( false ),
+    m_ExactGridSpacing( false ),
     m_MatchFltToRefHistogram( false ),
     m_RigidityConstraintMap( NULL ),
     m_InverseConsistencyWeight( 0.0 ),

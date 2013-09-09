@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,7 +42,7 @@ cmtk
 
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::GroupwiseRegistrationFunctionalXformTemplate()
-  : m_ForceZeroSumNoAffine( false )
+  : m_ForceZeroSumNoAffine( false ), m_MaximumNumberOfPixelsVOI( 0 ), m_MaximumNumberOfPixelsPerLineVOI( 0 )
 {
   this->m_ParametersPerXform = 0;
   this->m_WarpFastMode = true;

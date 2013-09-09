@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +50,8 @@ cmtk
 CommandLine::CommandLine( const int properties ) 
   : ArgC( 0 ),
     ArgV( NULL ),
-    m_Properties( properties )
+    m_Properties( properties ),
+    Index( 0 )
 {
   this->SetDefaultInfo();    
   this->BeginGroup( "MAIN", "Main Options" );
