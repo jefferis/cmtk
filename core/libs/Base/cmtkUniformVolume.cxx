@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -350,11 +350,11 @@ UniformVolume::Mirror ( const int axis )
   this->CropRegion().To()[ axis ] = this->m_Dims[ axis ] - 1 - this->CropRegion().To()[ axis ];
 }
 
-ScalarImage*
+ScalarImage::SmartPtr
 UniformVolume::GetOrthoSlice
 ( const int axis, const unsigned int plane ) const
 {
-  ScalarImage* sliceImage = DataGrid::GetOrthoSlice( axis, plane );
+  ScalarImage::SmartPtr sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
 
   Self::CoordinateVectorType imageOffset( 0.0 );
@@ -389,12 +389,12 @@ UniformVolume::GetOrthoSlice
   return sliceImage;
 }
 
-UniformVolume*
-UniformVolume::ExtractSliceVirtual
+UniformVolume::SmartPtr
+UniformVolume::ExtractSlice
 ( const int axis, const int plane ) const
 {
-  DataGrid::SmartPtr sliceGrid( this->DataGrid::ExtractSliceVirtual( axis, plane ) );
-  Self* sliceVolume = new Self( sliceGrid->m_Dims, this->m_Delta[0], this->m_Delta[1], this->m_Delta[2], sliceGrid->m_Data );
+  DataGrid::SmartPtr sliceGrid( this->DataGrid::ExtractSlice( axis, plane ) );
+  Self::SmartPtr sliceVolume( new Self( sliceGrid->m_Dims, this->m_Delta[0], this->m_Delta[1], this->m_Delta[2], sliceGrid->m_Data ) );
 
   sliceVolume->m_Offset = this->m_Offset;
   sliceVolume->m_Offset[axis] += plane * this->m_Delta[axis];
@@ -402,14 +402,14 @@ UniformVolume::ExtractSliceVirtual
   return sliceVolume;
 }
 
-ScalarImage*
+ScalarImage::SmartPtr
 UniformVolume::GetNearestOrthoSlice
 ( const int axis, const Types::Coordinate location ) const
 {
   return this->GetOrthoSlice( axis, this->GetCoordIndex( axis, location ) );
 }
 
-ScalarImage*
+ScalarImage::SmartPtr
 UniformVolume::GetOrthoSliceInterp
 ( const int axis, const Types::Coordinate location ) const
 {
@@ -426,8 +426,8 @@ UniformVolume::GetOrthoSliceInterp
   if ( ((nextSliceLocation - location) / (nextSliceLocation-baseSliceLocation )) < 0.01 )
     return this->GetOrthoSlice( axis, baseSliceIndex+1 );
 
-  ScalarImage* image0 = this->GetOrthoSlice( axis, baseSliceIndex );
-  ScalarImage* image1 = this->GetOrthoSlice( axis, baseSliceIndex+1 );
+  ScalarImage::SmartPtr image0 = this->GetOrthoSlice( axis, baseSliceIndex );
+  ScalarImage::SmartPtr image1 = this->GetOrthoSlice( axis, baseSliceIndex+1 );
 
   TypedArray::SmartPtr data0 = image0->GetPixelData();
   TypedArray::SmartPtr data1 = image1->GetPixelData();
@@ -446,11 +446,10 @@ UniformVolume::GetOrthoSliceInterp
       data0->SetPaddingAt( idx );
       }
     }
-  delete image1;
   
   image0->SetImageSlicePosition( location );
   image0->SetImageOrigin( weight0 * image0->GetImageOrigin() + (1-weight0) * image1->GetImageOrigin() );
-  
+
   return image0;
 }
 

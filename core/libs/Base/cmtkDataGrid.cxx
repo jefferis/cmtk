@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -389,7 +389,7 @@ DataGrid::MirrorPlaneInPlace
     }
 }
 
-ScalarImage*
+ScalarImage::SmartPtr
 DataGrid::GetOrthoSlice
 ( const int axis, const unsigned int plane ) const
 {
@@ -456,14 +456,13 @@ DataGrid::GetOrthoSlice
       }
     }
   
-  ScalarImage* sliceImage = new ScalarImage( dims[0], dims[1] );
+  ScalarImage::SmartPtr sliceImage( new ScalarImage( dims[0], dims[1] ) );
   sliceImage->SetPixelData( TypedArray::SmartPtr( sliceData ) );
-  
   return sliceImage;
 }
 
-DataGrid*
-DataGrid::ExtractSliceVirtual
+DataGrid::SmartPtr
+DataGrid::ExtractSlice
 ( const int axis, const int plane ) const
 {
   unsigned int dims[2], incX, incY, incZ;
@@ -528,7 +527,7 @@ DataGrid::ExtractSliceVirtual
   IndexType newDims = this->m_Dims;
   newDims[axis] = 1;
 
-  return new DataGrid( newDims, sliceData );
+  return Self::SmartPtr( new Self( newDims, sliceData ) );
 }
 
 void 

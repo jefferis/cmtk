@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -272,14 +272,11 @@ public:
    *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
-  virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;
+  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const unsigned int plane ) const;
 
   /** Extract orthogonal slice as a new volume.
    */
-  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const
-  {
-    return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
-  }
+  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const;
 
   /** Return interpolated orthogonal slice.
    * This function calls its non-interpolating counterpart twice and performs
@@ -287,7 +284,7 @@ public:
    *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
-  virtual ScalarImage* GetOrthoSliceInterp( const int axis, const Types::Coordinate location ) const;
+  virtual ScalarImage::SmartPtr GetOrthoSliceInterp( const int axis, const Types::Coordinate location ) const;
 
   /** Return orthogonal slice by location.
    * This function looks up a given orthogonal slice location and returns the 
@@ -295,7 +292,7 @@ public:
    *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
-  virtual ScalarImage* GetNearestOrthoSlice( const int axis, const Types::Coordinate location ) const;
+  virtual ScalarImage::SmartPtr GetNearestOrthoSlice( const int axis, const Types::Coordinate location ) const;
 
   /** Get date gradient vector at pixel using central differences.
    * This function cannot be called for pixels on the volume boundaries, i.e.,
@@ -608,10 +605,6 @@ private:
 
   /// Multi-threaded resampling for label data (using partial volume averaging).
   static void ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
-
-  /** Extract orthogonal slice as a new volume.
-   */
-  virtual Self* ExtractSliceVirtual( const int axis, const int plane ) const;
 };
 
 //@}

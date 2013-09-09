@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -322,15 +322,12 @@ public:
   
   /** Return orthogonal slice as a 2D image.
    */
-  virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;
+  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const unsigned int plane ) const;
   
   /** Extract orthogonal slice as a data grid object.
    */
-  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const
-  {
-    return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
-  }
-  
+  Self::SmartPtr ExtractSlice( const int axis /*!< Coordinate axis perpendicular to extracted plane*/, const int plane /*!< Index of extracted plane */ ) const;
+
   /** Set orthogonal slice from a 2D image.
    */
   virtual void SetOrthoSlice( const int axis, const unsigned int idx, const ScalarImage* slice );
@@ -418,10 +415,6 @@ protected:
 
   /// Offset to next column, row, and plane.
   int nextIJK;
-
-  /** Extract orthogonal slice as a data grid object.
-   */
-  virtual Self* ExtractSliceVirtual( const int axis /*!< Coordinate axis perpendicular to extracted plane*/, const int plane /*!< Index of extracted plane */ ) const;
 
 private:
   /** Crop region.

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -567,7 +567,7 @@ QtTriplanarWindow::slotSwitchImageSa( int imageIndex )
 
   if ( volume ) 
     {
-    ScalarImage *sliceImage = volume->GetOrthoSlice( AXIS_X, imageIndex );
+    ScalarImage::SmartPtr sliceImage = volume->GetOrthoSlice( AXIS_X, imageIndex );
     
     if ( sliceImage ) 
       {
@@ -606,7 +606,7 @@ QtTriplanarWindow::slotSwitchImageCo( int imageIndex )
 
   if ( volume ) 
     {
-    ScalarImage *sliceImage = volume->GetOrthoSlice( AXIS_Y, imageIndex );
+    ScalarImage::SmartPtr sliceImage = volume->GetOrthoSlice( AXIS_Y, imageIndex );
     
     if ( sliceImage ) 
       {

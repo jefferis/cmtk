@@ -2,7 +2,7 @@
 //
 //  Copyright 2010 Torsten Rohlfing
 //
-//  Copyright 2011, 2012 SRI International
+//  Copyright 2011-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,11 +81,10 @@ cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, con
 	}
       }
 
-    // if more rules are following, separated by ";", then move to next one, otherwise terminate loop.
+    // if more rules are following, separated by "+", then move to next one, otherwise terminate loop.
     if ( plus )
       {
       rptr = plus + 1;
-      plus = strchr( rptr, '+' );
       }
     else
       rptr = NULL;
