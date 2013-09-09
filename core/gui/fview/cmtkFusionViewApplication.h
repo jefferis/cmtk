@@ -116,6 +116,9 @@ private:
   class Data
   {
   public:
+    /// Default constructor.
+    Data() : m_DataRange( 0, 0 ) {}
+
     /// The volume.
     UniformVolume::SmartConstPtr m_Volume;
 

@@ -537,7 +537,7 @@ QtTriplanarWindow::slotSwitchImageAx( int imageIndex )
 	sliceImage->GetPixelData()->ReplacePaddingData( 0.0 );
       
       sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
-      PipelineImageAx->SetFromScalarImage( sliceImage );
+      PipelineImageAx->SetFromScalarImage( *sliceImage );
       }
     sliceImage = ScalarImage::SmartPtr::Null();
 
@@ -576,8 +576,7 @@ QtTriplanarWindow::slotSwitchImageSa( int imageIndex )
       
       sliceImage->Mirror( false /* horizontal */, true /* vertical */ );
       sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
-      PipelineImageSa->SetFromScalarImage( sliceImage );
-      delete sliceImage;
+      PipelineImageSa->SetFromScalarImage( *sliceImage );
       }
     
     LocationEntryX->setText( QString::number( volume->GetPlaneCoord( AXIS_X, imageIndex ) ) );
@@ -615,8 +614,7 @@ QtTriplanarWindow::slotSwitchImageCo( int imageIndex )
       
       sliceImage->Mirror( false /* horizontal */, true /* vertical */ );
       sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
-      PipelineImageCo->SetFromScalarImage( sliceImage );
-      delete sliceImage;
+      PipelineImageCo->SetFromScalarImage( *sliceImage );
       }
     
     LocationEntryY->setText( QString::number( volume->GetPlaneCoord( AXIS_Y, imageIndex ) ) );

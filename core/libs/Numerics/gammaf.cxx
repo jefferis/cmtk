@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -185,7 +185,6 @@ ap::real_value_type gamma(ap::real_value_type x)
     qq = 7.14304917030273074085E-2+x*qq;
     qq = 1.00000000000000000320+x*qq;
     result = z*pp/qq;
-    return result;
     return result;
 }
 

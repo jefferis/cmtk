@@ -2,7 +2,7 @@
 //
 //  Copyright 2004-2012 SRI International
 //
-//  Copyright 1997-2011 Torsten Rohlfing
+//  Copyright 1997-2011, 2013 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -155,9 +155,6 @@ template<class T>
 class Range
 {
 public:
-  /// Default constructor: do nothing at all.
-  Range() {}
-
   /// Constructor.
   Range( const T& lowerBound, const T& upperBound ) : m_LowerBound( lowerBound ), m_UpperBound( upperBound ) {}
 

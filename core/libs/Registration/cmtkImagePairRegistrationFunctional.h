@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,7 +104,7 @@ public:
    *\param floating The floating (i.e. transformed) volume.
    */
   ImagePairRegistrationFunctional( UniformVolume::SmartConstPtr& reference, UniformVolume::SmartConstPtr& floating )
-    : m_ForceOutsideFlag( false )
+    : m_ForceOutsideFlag( false ), m_ForceOutsideValueRescaled( 0.0 )
   {
     this->InitFloating( floating );
     this->InitReference( reference );

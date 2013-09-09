@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -107,7 +107,11 @@ public:
     }
     
     /// Default constructor.
-    ImageData() : Padding( DataTypeTraits<T>::ChoosePaddingValue() ), Data( NULL ), DataArray( NULL )
+    ImageData() : 
+      Padding( DataTypeTraits<T>::ChoosePaddingValue() ), 
+      Data( NULL ), 
+      DataArray( NULL ), 
+      m_ValueRange( 0, 0 )
     {
       nextJ = nextK = nextIJ = nextJK = nextIK = nextIJK = 0;
     }

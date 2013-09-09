@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,11 +64,11 @@ public:
 #endif
 
   /// Default constructor.
-  ThreadParameters() 
+  ThreadParameters() : thisObject( NULL ), ThisThreadIndex( 0 ), NumberOfThreads( 0 )
   {
     this->m_ThreadID = 0;
 #ifdef _MSC_VER
-    m_Handle = NULL;
+    this->m_Handle = NULL;
 #endif
   }
 };

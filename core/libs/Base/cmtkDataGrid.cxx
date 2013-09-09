@@ -457,7 +457,7 @@ DataGrid::GetOrthoSlice
     }
   
   ScalarImage::SmartPtr sliceImage( new ScalarImage( dims[0], dims[1] ) );
-  sliceImage->SetPixelData( TypedArray::SmartPtr( sliceData ) );
+  sliceImage->SetPixelData( sliceData );
   return sliceImage;
 }
 

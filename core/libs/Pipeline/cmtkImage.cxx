@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,21 +81,18 @@ Image::SetData( TypedArray::SmartPtr& data )
 
 void
 Image::SetFromScalarImage
-( const ScalarImage* scalarImage )
+( const ScalarImage& scalarImage )
 {
-  if ( scalarImage )
-    {
-    this->SetDims( scalarImage->GetDims()[0], scalarImage->GetDims()[1] );
-    TypedArray::SmartPtr pixelData = scalarImage->GetPixelData();
-    if ( pixelData )
-      pixelData = TypedArray::SmartPtr( pixelData->Clone() );
-    this->SetData( pixelData );
-    this->SetSpacing( scalarImage->GetPixelSize() );
-    this->SetOrigin( scalarImage->GetImageOrigin().begin() );
-    this->SetDirectionX( scalarImage->GetImageDirectionX().begin() );
-    this->SetDirectionY( scalarImage->GetImageDirectionY().begin() );
-    this->UpdateModifiedTime();
-    }
+  this->SetDims( scalarImage.GetDims()[0], scalarImage.GetDims()[1] );
+  TypedArray::SmartPtr pixelData = scalarImage.GetPixelData();
+  if ( pixelData )
+    pixelData = TypedArray::SmartPtr( pixelData->Clone() );
+  this->SetData( pixelData );
+  this->SetSpacing( scalarImage.GetPixelSize() );
+  this->SetOrigin( scalarImage.GetImageOrigin().begin() );
+  this->SetDirectionX( scalarImage.GetImageDirectionX().begin() );
+  this->SetDirectionY( scalarImage.GetImageDirectionY().begin() );
+  this->UpdateModifiedTime();
 }
 
 double

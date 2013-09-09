@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,6 +54,7 @@ VolumeInjectionReconstruction
 ::VolumeInjectionReconstruction( const UniformVolume* originalImage, const int interleaveFactor, const int interleaveAxis )
   : m_NumberOfPasses( interleaveFactor ),
     m_PassWeights( interleaveFactor ),
+    m_OriginalImageRange( 0, 0 ),
     m_OriginalImageHistogram(),
     m_CorrectedImageHistogram()
 {
@@ -87,6 +88,7 @@ VolumeInjectionReconstruction
 ::VolumeInjectionReconstruction( const UniformVolume* reconstructionGrid, std::vector<UniformVolume::SmartPtr>& images )
   : m_NumberOfPasses( images.size() ),
     m_PassWeights( images.size() ),
+    m_OriginalImageRange( 0, 0 ),
     m_OriginalImageHistogram( new Histogram<double>( Self::NumberOfHistogramBins ) ),
     m_CorrectedImageHistogram( new Histogram<double>( Self::NumberOfHistogramBins ) )
 {

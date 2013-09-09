@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,6 +69,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   : m_AdaptiveFixEntropyThreshold( false ),
     m_AdaptiveFixThreshFactor( 0.5 ),
     m_JacobianConstraintWeight( 0.0 ),
+    m_UpdateTransformationFixedControlPointsRequired( false ),
     m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )
 {
   this->SetInitialAffineTransformation( affineFunctional.GetTransformation() );
@@ -146,7 +147,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 {
   this->m_UpdateTransformationFixedControlPointsRequired = false;
 
-  std::vector<Types::DataItemRange> valueRange( this->m_NumberOfChannels );
+  std::vector<Types::DataItemRange> valueRange( this->m_NumberOfChannels, Types::DataItemRange( 0,0 ) );
 
   size_t channel = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref, ++channel )

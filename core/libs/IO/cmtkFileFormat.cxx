@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -189,7 +189,7 @@ FileFormat::Describe( const FileFormatID id )
       return "Nrrd image file [File].";
     case FILEFORMAT_UNKNOWN:
     default:
-      return "Unknown format.";
+      break;
     }
   return "ILLEGAL ID tag in FileFormat::Describe().";
 }

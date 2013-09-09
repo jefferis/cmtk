@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,7 +48,6 @@ MakeInitialAffineTransformation
   switch ( mode )
     {
     case Self::NONE:
-    default:
       return std::string( "none" );
     case Self::FOV:
       return std::string( "FieldsOfView" );
@@ -58,6 +57,8 @@ MakeInitialAffineTransformation
       return std::string( "PrincipalAxes" );
     case Self::PHYS:
       return std::string( "PhysicalCoordinates" );
+    default:
+      break;
     }
   return std::string( "unknown" );
 }
@@ -68,9 +69,6 @@ MakeInitialAffineTransformation
 {
   switch ( mode )
     {
-    case Self::NONE:
-    default:
-      return new AffineXform;
     case Self::FOV:
       return Self::AlignFieldsOfView( referenceImage, floatingImage );
     case Self::COM:
@@ -79,6 +77,9 @@ MakeInitialAffineTransformation
       return Self::AlignPrincipalAxes( referenceImage, floatingImage );
     case Self::PHYS:
       return Self::AlignDirectionVectors( referenceImage, floatingImage );
+    case Self::NONE:
+    default:
+      break;
     }
   return new AffineXform;
 }

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,7 +63,10 @@ public:
    * accordingly.
    */
   TypedArraySimilarityMemory( const bool repeatCheck = true )
-    : ValidX( false ), ValidY( false ), MinNumBins( 8 ), MaxNumBins( 128 )
+    : ValidX( false ), RangeX( 0, 0 ),
+      ValidY( false ), RangeY( 0, 0 ),
+      MinNumBins( 8 ), 
+      MaxNumBins( 128 )
   {  
     RepeatCheck = repeatCheck;
   }

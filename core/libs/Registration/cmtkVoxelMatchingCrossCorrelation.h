@@ -69,7 +69,7 @@ public:
 
   /** Default constructor.
    */
-  VoxelMatchingCrossCorrelation() {};
+  VoxelMatchingCrossCorrelation() {}
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.

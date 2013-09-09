@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,11 +70,11 @@ public:
       case 2:
 	return 0.5 * xcube - 0.5 * xsquare;
       default:
-	StdErr << "weight=" << weight << " shouldn't happen!\n";
-	throw ExitException( 1 );
 	break;
       }
-    return 0;
+
+    StdErr << "weight=" << weight << " shouldn't happen!\n";
+    throw ExitException( 1 );
   }
 };
 
