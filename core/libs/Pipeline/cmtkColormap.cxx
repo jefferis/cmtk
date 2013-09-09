@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,7 @@ const char *Colormap::StandardColormaps[] =
 Colormap::Colormap()
 {
   TableEntries = 256;
-  SetStandardColormap( PALETTE_GRAY );
+  Gamma = 0;
   DataRange[0] = 0;
   DataRange[1] = 4095;
   HueRange[0] = 0;
@@ -67,10 +67,11 @@ Colormap::Colormap()
   ValueRange[1] = 4095;
   SaturationRange[0] = 0;
   SaturationRange[1] = 4095;
-  Gamma = 0;
   Reverse = false;
 
   CreateSystemLabelColorMap( this->LabelColorMap );
+
+  this->SetStandardColormap( PALETTE_GRAY );
 }
 
 void 
