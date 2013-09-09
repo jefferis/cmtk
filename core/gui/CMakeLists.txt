@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2011, 2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -32,8 +32,4 @@ SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO
 
 SUBDIRS(triplanar)
 SUBDIRS(fview)
-
-IF(CMTK_BUILD_UNSTABLE)
-  SUBDIRS(bsedit)
-ENDIF(CMTK_BUILD_UNSTABLE)
 
