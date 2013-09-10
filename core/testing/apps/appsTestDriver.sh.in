@@ -844,6 +844,14 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m embed_patient.nrrd > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    describeXform)
+	run_eval "${BINDIR}/describe spgr_brain_12_warp.list vol001_mr_t0t1.list > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeXformMachine)
+	run_eval "${BINDIR}/describe -m spgr_brain_12_warp.list vol001_mr_t0t1.list > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     destripeDefault)
         run destripe -y stripes_crop_byte.nii ${tmpdir}/destripe.nii
 	check_results destripe.nii

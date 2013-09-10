@@ -93,7 +93,9 @@ LIST(APPEND testList
   describeMRBioradGz
   describeNiftiDetached348
   describeEmbedAnalyze
-  describeEmbedNifti)
+  describeEmbedNifti
+  describeXform
+  describeXformMachine)
 
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList
