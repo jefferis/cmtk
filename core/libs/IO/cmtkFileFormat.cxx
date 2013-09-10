@@ -248,4 +248,42 @@ FileFormat::IdentifyFile( const std::string& path, const bool decompress )
   return FILEFORMAT_UNKNOWN;
 }
 
+bool
+FileFormat::IsImage( const FileFormatID& id )
+{
+  switch ( id )
+    {
+    case FILEFORMAT_STUDY:
+    case FILEFORMAT_PGM:
+    case FILEFORMAT_DICOM:
+    case FILEFORMAT_VANDERBILT:
+    case FILEFORMAT_AMIRA:
+    case FILEFORMAT_BIORAD:
+    case FILEFORMAT_NIFTI_DETACHED:
+    case FILEFORMAT_NIFTI_SINGLEFILE:
+    case FILEFORMAT_ANALYZE_AVW:
+    case FILEFORMAT_METAIMAGE:
+    case FILEFORMAT_NRRD:
+    case FILEFORMAT_ANALYZE_HDR:
+    case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
+bool
+FileFormat::IsXform( const FileFormatID& id )
+{
+  switch ( id )
+    {
+    case FILEFORMAT_STUDYLIST:
+      return true;
+    default:
+      break;
+    }
+  return false;
+}
+
 } // namespace cmtk

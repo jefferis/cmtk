@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -117,6 +117,12 @@ public:
   {
     return Describe( Identify( path ) );
   }
+
+  /// Say whether given file format is an image file format.
+  static bool IsImage( const FileFormatID& id );
+
+  /// Say whether given file format is a transformation file format.
+  static bool IsXform( const FileFormatID& id );
 
 private:
   /** Identify directory with given path.
