@@ -1,5 +1,7 @@
 Release CMTK-2.4.0:
 
+(r4819)	Added: "describe" tool can now describe transformation files as
+	well as images.
 (r4805) Added: "detect_adni_phantom" tool (and library classes) now state
 	in the output XML file whether certain fallback conditions were
 	triggered. These usually hint at problems with the imaging
