@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkMemory.h>
+#include <System/cmtkMountPoints.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -80,7 +81,7 @@ CompressedStream::CompressedStream ( const std::string& filename )
   : m_Reader( NULL ),
     m_Compressed( false )
 {
-  this->Open( filename );
+  this->Open( MountPoints::Translate( filename ) );
 }
 
 CompressedStream::~CompressedStream () 
@@ -215,7 +216,7 @@ CompressedStream::GetBaseName( const std::string& path )
 int 
 CompressedStream::Stat( const std::string& path, Self::StatType* buf )
 {
-  const std::string baseName = CompressedStream::GetBaseName( path );
+  const std::string baseName = CompressedStream::GetBaseName( MountPoints::Translate( path ) );
 
   Self::StatType statbuf;
   if ( ! buf )
