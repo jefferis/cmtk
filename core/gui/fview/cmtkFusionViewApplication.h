@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -117,7 +117,10 @@ private:
   {
   public:
     /// Default constructor.
-    Data() : m_DataRange( 0, 0 ) {}
+    Data() : m_DataRange( 0, 0 ), m_ColorMapIndex( 0 ), m_View( NULL ), m_Scene( NULL ), m_PixmapItem( NULL ) 
+    {
+      m_CursorLines[0] = m_CursorLines[1] = NULL;
+    }
 
     /// The volume.
     UniformVolume::SmartConstPtr m_Volume;
