@@ -54,6 +54,11 @@ CompressedStream::File::File( const std::string& filename )
     }
 }
 
+CompressedStream::File::~File()
+{
+  this->Close();
+}
+
 void 
 CompressedStream::File::Close()
 {

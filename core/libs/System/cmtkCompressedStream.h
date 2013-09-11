@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -273,7 +273,7 @@ private:
     File( const std::string& filename );
     
     /// Virtual destructor.
-    virtual ~File() {}
+    virtual ~File();
 
     /// Close current file stream.
     virtual void Close();
@@ -323,7 +323,7 @@ private:
     Pipe( const std::string& filename, const char* command );
     
     /// Virtual destructor.
-    virtual ~Pipe() {}
+    virtual ~Pipe();
 
     /// Close current file stream.
     virtual void Close();
