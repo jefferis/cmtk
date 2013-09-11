@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,8 +54,8 @@ AnatomicalOrientation
       sqrt( directions[2][0]*directions[2][0] + directions[2][1]*directions[2][1] + directions[2][2]*directions[2][2] )
     };
 
-  // keep track of which axes are already used in the direction code
-  bool axisUsed[3] = { false, false, false };
+  // keep track of which axes are already used in the direction code - need 4 entries to allow for access when axes are non-ortogonal
+  bool axisUsed[4] = { false, false, false, true };
 
   for ( int axis = 0; axis < 3; ++axis )
     {

@@ -42,7 +42,7 @@ cmtk
 
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::GroupwiseRegistrationFunctionalXformTemplate()
-  : m_ForceZeroSumNoAffine( false ), m_MaximumNumberOfPixelsVOI( 0 ), m_MaximumNumberOfPixelsPerLineVOI( 0 )
+  : m_MaximumNumberOfPixelsVOI( 0 ), m_MaximumNumberOfPixelsPerLineVOI( 0 ), m_ForceZeroSumNoAffine( false )
 {
   this->m_ParametersPerXform = 0;
   this->m_WarpFastMode = true;
