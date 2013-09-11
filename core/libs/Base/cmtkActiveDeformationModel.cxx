@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -177,7 +177,7 @@ W*
 ActiveDeformationModel<W>::Compose
 ( const Types::Coordinate* weights )
 {
-  this->Generate( this->m_Parameters, weights );
+  this->m_Parameters = this->Generate( this->m_Parameters, weights );
 
   return this;
 }
