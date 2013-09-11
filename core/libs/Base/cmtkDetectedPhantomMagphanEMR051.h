@@ -64,7 +64,8 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : m_LinearFitXform( linearFitXform ), m_FallbackCentroidCNR( false ) {}
+  DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : 
+    m_LinearFitXform( linearFitXform ), m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.
