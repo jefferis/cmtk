@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,7 +45,7 @@ cmtk
 
 template<class T>
 Matrix3x3<T>&
-Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
+Matrix3x3<T>::Compose( const Self::ElementType params[8] )
 {
   const Units::Radians alpha = Units::Degrees( params[2] );
 
@@ -65,7 +65,7 @@ Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
   *this *= shearMatrix;
 
   // transform rotation center
-  Types::Coordinate cM[2] = 
+  Self::ElementType cM[2] = 
     {
       params[6]*(*this)[0][0] + params[7]*(*this)[1][0],
       params[6]*(*this)[0][1] + params[7]*(*this)[1][1],
@@ -87,10 +87,10 @@ Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
 template<class T>
 bool
 Matrix3x3<T>::Decompose
-( Types::Coordinate params[8], const Types::Coordinate *center ) const
+( Self::ElementType params[8], const Self::ElementType *center ) const
 {
   // make a working copy of the matrix for step-by-step decomposition
-  Types::Coordinate matrix[3][3];
+  Self::ElementType matrix[3][3];
   memcpy( matrix, this->m_Matrix, sizeof( matrix ) );
 
   // translation entries
@@ -99,16 +99,16 @@ Matrix3x3<T>::Decompose
 
   if ( center ) 
     {
-    Types::Coordinate cM[2] = { center[0]*matrix[0][0] + center[1]*matrix[1][0], center[0]*matrix[0][1] + center[1]*matrix[1][1] };
+    Self::ElementType cM[2] = { center[0]*matrix[0][0] + center[1]*matrix[1][0], center[0]*matrix[0][1] + center[1]*matrix[1][1] };
   
     params[0] += cM[0] - center[0];
     params[1] += cM[1] - center[1];
 
-    memcpy( params+6, center, 2*sizeof( Types::Coordinate ) );
+    memcpy( params+6, center, 2*sizeof( Self::ElementType ) );
     }
   else
     {
-    memset( params+6, 0, 2*sizeof( Types::Coordinate ) );
+    memset( params+6, 0, 2*sizeof( Self::ElementType ) );
     }
 
   for ( int i=0; i<2; ++i ) 

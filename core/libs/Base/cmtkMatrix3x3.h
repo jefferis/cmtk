@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,6 +56,9 @@ public:
   /// This class.
   typedef Matrix3x3<T> Self;
 
+  /// The floating point element type.
+  typedef T ElementType;
+
   /// Parent class.
   typedef FixedSquareMatrix<3,T> Superclass;
 
@@ -69,19 +72,19 @@ public:
    * If a NULL parameter is given, an uninitialized matrix is generated. This
    * is intended behaviour.
    */
-  Matrix3x3( const T *const values ) : Superclass( values ) {}
+  Matrix3x3( const Self::ElementType *const values ) : Superclass( values ) {}
   
   /// 2D array constructor.
   template<class T2> Matrix3x3( const T2 (&matrix)[3][3] ) : Superclass( matrix ) {}
 
   /// Compose from canonical parameters.
-  Self& Compose( const Types::Coordinate params[8] );
+  Self& Compose( const Self::ElementType params[8] );
   
   /// Decompose into affine parameters.
-  bool Decompose( Types::Coordinate params[8], const Types::Coordinate *center = NULL ) const;
+  bool Decompose( Self::ElementType params[8], const Self::ElementType *center = NULL ) const;
 
   /// Get determinant.
-  T Determinant() const 
+  Self::ElementType Determinant() const 
   {
     return ( (*this)[0][0]*(*this)[1][1]*(*this)[2][2] + 
 	     (*this)[0][1]*(*this)[1][2]*(*this)[2][0] + 
@@ -92,7 +95,7 @@ public:
   }
 
   /// Compute eigenvalues.
-  void ComputeEigenvalues( T (&lambda)[3] ) const;
+  void ComputeEigenvalues( Self::ElementType (&lambda)[3] ) const;
 };
 
 /// Define coordinate matrix.
