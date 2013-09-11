@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -322,7 +322,7 @@ protected:
   /// Constructor.
   VoxelMatchingElasticFunctional_WarpTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
     : VoxelMatchingElasticFunctional( reference, floating ),
-      Warp( NULL ), InverseTransformation( NULL )
+      Warp( NULL ), InverseTransformation( NULL ), InverseConsistencyWeight( 0.0 )
   {}
   
   /// Dummy virtual destructor.

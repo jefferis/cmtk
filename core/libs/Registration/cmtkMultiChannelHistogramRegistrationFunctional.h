@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,6 +80,9 @@ public:
   /** Hash key type. */
   typedef THashKeyType HashKeyType;
 
+  /// Default constructor.
+  MultiChannelHistogramRegistrationFunctional() : m_HashKeyShiftRef( 0 ) {}
+
   /** Add reference channel. */
   virtual void AddReferenceChannel( UniformVolume::SmartPtr& channel );
 
@@ -103,6 +106,9 @@ protected:
   public:
     /** This class type. */
     typedef MetricData Self;
+
+    /// Default constructor.
+    MetricData() : m_TotalNumberOfSamples( 0 ) {}
 
     /** Initialize metric object and local storage. */
     void Init( Parent *const parent );

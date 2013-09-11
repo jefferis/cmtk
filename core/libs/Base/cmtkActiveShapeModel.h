@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,13 +85,8 @@ public:
    * For a description of the parameters, see the Construct() member function.
    *\see ActiveShapeModel::Construct
    */
-  ActiveShapeModel
-  ( const Types::Coordinate *const* trainingSet, 
-    const unsigned int numberOfSamples,
-    const unsigned int numberOfPoints, 
-    const unsigned int numberOfModes ) :
-    Mean( NULL ), 
-    Modes( NULL )
+  ActiveShapeModel( const Types::Coordinate *const* trainingSet, const unsigned int numberOfSamples, const unsigned int numberOfPoints, const unsigned int numberOfModes ) 
+    : NumberOfPoints( 0 ), Mean( NULL ), NumberOfModes( 0 ), Modes( NULL )
   {
     this->Construct( trainingSet, numberOfSamples, numberOfPoints, numberOfModes ); 
   }

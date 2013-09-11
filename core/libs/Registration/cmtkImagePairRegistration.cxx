@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,7 +66,13 @@ ImagePairRegistration::ImagePairRegistration ()
     m_InitialTransformation( NULL ),
     m_InitialXformIsInverse( false ),
     m_Xform( NULL ),
-    m_Optimizer( NULL )
+    m_Optimizer( NULL ),
+    m_TimeStartRegistration ( 0.0 ),
+    m_TimeStartLevel( 0.0 ),
+    m_WalltimeStartRegistration( 0.0 ),
+    m_WalltimeStartLevel( 0.0 ),
+    m_ThreadTimeStartRegistration( 0.0 ),
+    m_ThreadTimeStartLevel( 0.0 )
 { 
   this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
 

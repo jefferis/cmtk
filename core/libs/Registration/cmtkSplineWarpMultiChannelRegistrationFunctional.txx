@@ -57,6 +57,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   : m_AdaptiveFixEntropyThreshold( false ),
     m_AdaptiveFixThreshFactor( 0.5 ), 
     m_JacobianConstraintWeight( 0.0 ),
+    m_UpdateTransformationFixedControlPointsRequired( false ),
     m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )
 {
 }

@@ -307,13 +307,7 @@ public:
   }
   
   /// Default constructor.
-  TypedArray () 
-  {
-    DataSize = 0;
-    PaddingFlag = false;
-    this->m_Deallocator = NULL;
-    this->m_DataClass = DATACLASS_GREY;
-  }
+  TypedArray () : m_DataClass( DATACLASS_GREY ), m_DataType( TYPE_NONE ), m_Deallocator( NULL ), DataSize( 0 ), PaddingFlag( false ) {}
   
   /** Destructor.
    * Just has to be declared virtual.
