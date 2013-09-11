@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -681,7 +681,7 @@ TypedStreamInput
 		return Self::CONDITION_ERROR;
 		}
 	      char *b;
-	      if (!(b = (char *)malloc(strlen(buffer)))) 
+	      if (!(b = (char *)malloc(1+strlen(buffer)))) 
 		{
 		for (--i; i >= 0; i--)
 		  free( arrayString[i] );
