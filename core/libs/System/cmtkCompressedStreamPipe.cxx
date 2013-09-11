@@ -100,9 +100,17 @@ void
 CompressedStream::Pipe::Close()
 {
 #ifndef _MSC_VER
-  pclose( this->m_File );
+  if ( this->m_File )
+    {
+    pclose( this->m_File );
+    this->m_File = NULL;
+    }
 #else
-  remove( this->m_TempName );
+  if ( this->m_TempName )
+    {
+    remove( this->m_TempName );
+    this->m_TempName = NULL;
+    }
 #endif // # ifndef _MSC_VER
 }
 

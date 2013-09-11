@@ -62,7 +62,11 @@ CompressedStream::File::~File()
 void 
 CompressedStream::File::Close()
 {
-  fclose( this->m_File );
+  if ( this->m_File )
+    {
+    fclose( this->m_File );
+    this->m_File = NULL;
+    }
 }
 
 void
