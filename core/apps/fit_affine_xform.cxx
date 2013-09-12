@@ -46,8 +46,8 @@
 int
 doMain ( const int argc, const char *argv[] ) 
 {
-  const char* inputImagePath = NULL;
-  const char *outputPath = NULL;
+  std::string inputImagePath;
+  std::string outputPath;
   
   bool fitRigid = false;
 

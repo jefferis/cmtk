@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,8 +56,8 @@
 #include <map>
 #include <vector>
 
-const char* InputFilePath = NULL;
-const char* OutputFilePath = NULL;
+std::string InputFilePath;
+std::string OutputFilePath;
 
 int InterleaveAxis = -1;
 unsigned int NumberOfPasses = 2;
@@ -79,11 +79,11 @@ int NumberOfIterations = 20;
 bool RegionalIntensityTruncation = true;
 double ConstraintWeightLNorm = 0;
 
-const char* ReferenceImagePath = NULL;
-const char* InjectedImagePath = NULL;
+std::string ReferenceImagePath;
+std::string InjectedImagePath;
 
-const char* ExportXformsPath = NULL;
-const char* ImportXformsPath = NULL;
+std::string ExportXformsPath;
+std::string ImportXformsPath;
 
 std::map<size_t,float> PassWeights;
 
@@ -138,7 +138,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     xformsToPassImages = volRecon.GetTransformationsToPassImages();
     }
   
-  if ( ExportXformsPath )
+  if ( !ExportXformsPath.empty() )
     {
     cmtk::ClassStreamOutput stream( ExportXformsPath, cmtk::ClassStreamOutput::MODE_WRITE );
     if ( stream.IsValid() )
@@ -157,7 +157,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
 
   cmtk::DebugOutput( 2 ) << "Volume injection...\n";
   volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
-  if ( InjectedImagePath )
+  if ( !InjectedImagePath.empty() )
     {
     cmtk::UniformVolume::SmartPtr outputImage = volRecon.GetCorrectedImage();
     if ( !WriteImagesAsFloat && outputImage->GetData()->GetType() != volume->GetData()->GetType() )
@@ -261,7 +261,7 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr refImage;
-  if ( ReferenceImagePath )
+  if ( !ReferenceImagePath.empty() )
     {
     refImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReferenceImagePath ) );
     if ( ! refImage || ! refImage->GetData() )
@@ -272,7 +272,7 @@ doMain( const int argc, const char* argv[] )
     }
 
   std::vector<cmtk::Xform::SmartPtr> xformsToPassImages;
-  if ( ImportXformsPath )
+  if ( !ImportXformsPath.empty() )
     {
     cmtk::ClassStreamInput stream( ImportXformsPath );
     if ( stream.IsValid() )

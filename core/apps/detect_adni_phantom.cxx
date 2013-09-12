@@ -48,12 +48,12 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* inputPath = NULL;
-  const char* outputPath = NULL;
+  std::string inputPath;
+  std::string outputPath;
 
-  const char* outputLabelPath = NULL;
-  const char* outputRigidPath = NULL;
-  const char* outputAffinePath = NULL;
+  std::string outputLabelPath;
+  std::string outputRigidPath;
+  std::string outputAffinePath;
 
   cmtk::DetectPhantomMagphanEMR051::Parameters detectionParameters;
   
@@ -123,16 +123,16 @@ doMain( const int argc, const char* argv[] )
     cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
     cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
     
-    if ( outputPath )
+    if ( ! outputPath.empty() )
       cmtk::PhantomIO::Write( *(detectionFilter.GetDetectedPhantom()), outputPath );
     
-    if ( outputLabelPath )
+    if ( ! outputLabelPath.empty() )
       cmtk::VolumeIO::Write( *(detectionFilter.GetDetectedSpheresLabelMap()), outputLabelPath );
     
-    if ( outputAffinePath )
+    if ( ! outputAffinePath.empty() )
       cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationAffine(), outputAffinePath );
     
-    if ( outputRigidPath )
+    if ( ! outputRigidPath.empty() )
       cmtk::XformIO::Write( detectionFilter.GetPhantomToImageTransformationRigid(), outputRigidPath );
     }
   catch ( const cmtk::DetectPhantomMagphanEMR051::OutsideFieldOfView& ex )

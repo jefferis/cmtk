@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -135,7 +135,7 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
   
   if ( this->m_UseTemplateData && ! this->m_TemplateGrid->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->GetMetaInfo(META_FS_PATH).c_str() ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->GetMetaInfo(META_FS_PATH) ) );
     this->m_TemplateGrid->SetData( readImage->GetData() );
     }
   
@@ -236,7 +236,7 @@ GroupwiseRegistrationFunctionalBase
 {
   if ( !image->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->GetMetaInfo( META_FS_PATH ).c_str() ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->GetMetaInfo( META_FS_PATH ) ) );
     image->SetData( readImage->GetData() );
     }
   
@@ -475,7 +475,7 @@ GroupwiseRegistrationFunctionalBase
 	}
       else
 	{
-	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->GetMetaInfo( META_FS_PATH ).c_str() ) );
+	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->GetMetaInfo( META_FS_PATH ) ) );
 	}
 
       UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( scaledImage, i ) );

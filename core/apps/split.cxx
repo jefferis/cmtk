@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,9 +42,9 @@
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
-const char* InputFilePath = NULL;
-const char* OutputFilePath = NULL;
-const char* OutputXformPath = NULL;
+std::string InputFilePath;
+std::string OutputFilePath;
+std::string OutputXformPath;
 
 int Axis = cmtk::AXIS_Z;
 int Factor = 2;
@@ -104,7 +104,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::UniformVolume::SmartPtr subvolume( Padded ? volume->GetInterleavedPaddedSubVolume( Axis, Factor, i ) : volume->GetInterleavedSubVolume( Axis, Factor, i ) );
 
     char path[PATH_MAX];
-    if ( snprintf( path, PATH_MAX, OutputFilePath, i ) > PATH_MAX )
+    if ( snprintf( path, PATH_MAX, OutputFilePath.c_str(), i ) > PATH_MAX )
       {
       cmtk::StdErr << "ERROR: output path exceeds maximum path length\n";
       }
@@ -113,9 +113,9 @@ doMain( const int argc, const char* argv[] )
       cmtk::VolumeIO::Write( *subvolume, path );
       }
 
-    if ( OutputXformPath )
+    if ( !OutputXformPath.empty() )
       {
-      if ( snprintf( path, PATH_MAX, OutputXformPath, i ) > PATH_MAX )
+      if ( snprintf( path, PATH_MAX, OutputXformPath.c_str(), i ) > PATH_MAX )
 	{
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length\n";
 	}

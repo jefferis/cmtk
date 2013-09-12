@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -582,7 +582,7 @@ private:
   /// Non-option parameter.
   class NonOptionParameter :
     /// This is like a standalone string option, so inherit from that.
-    public Option<const char*>
+    public Option<std::string>
   {
   public:
     /// This class.
@@ -592,10 +592,10 @@ private:
     typedef SmartPointer<Self> SmartPtr;
     
     /// Superclass.
-    typedef Option<const char*> Superclass;
+    typedef Option<std::string> Superclass;
 
     /// Constructor.
-    NonOptionParameter( const char* *const var, const char* name, const std::string& comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
+    NonOptionParameter( std::string *const var, const std::string& name, const std::string& comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
 
     /// Evaluate and set associated variable.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
@@ -639,7 +639,7 @@ private:
     }
 
     /// Name of this parameter.
-    const char* m_Name;
+    const std::string m_Name;
 
     /// Comment (description) of this parameter.
     const std::string m_Comment;
@@ -661,7 +661,7 @@ private:
     typedef Option< std::vector<std::string> > Superclass;
 
     /// Constructor.
-    NonOptionParameterVector( std::vector<std::string> *pvec, const char* name, const std::string& comment, bool *const flag ) 
+    NonOptionParameterVector( std::vector<std::string> *pvec, const std::string& name, const std::string& comment, bool *const flag ) 
       : Superclass( pvec, flag ), 
 	m_Name( name ), 
 	m_Comment( comment ) {};
@@ -726,7 +726,7 @@ private:
     }
     
     /// Name of this parameter.
-    const char* m_Name;
+    const std::string m_Name;
 
     /// Comment (description) of this parameter.
     const std::string m_Comment;
@@ -1086,7 +1086,7 @@ public:
   
   /// Add single non-option parameter.
   Item::SmartPtr
-  AddParameter( const char* *const var, const char* name, const std::string& comment, bool *const flag = NULL ) 
+  AddParameter( std::string *const var, const std::string& name, const std::string& comment, bool *const flag = NULL ) 
   {
     NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
     this->m_NonOptionParameterList.push_back( parameter );
@@ -1095,7 +1095,7 @@ public:
 
   /// Add vector of non-option parameters.
   Item::SmartPtr
-  AddParameterVector( std::vector<std::string>* pvec, const char* name, const std::string& comment, bool *const flag = NULL ) 
+  AddParameterVector( std::vector<std::string>* pvec, const std::string& name, const std::string& comment, bool *const flag = NULL ) 
   {
     NonOptionParameterVector::SmartPtr vparameter( new NonOptionParameterVector( pvec, name, comment, flag ) );
     this->m_NonOptionParameterVectorList.push_back( vparameter );
@@ -1141,10 +1141,10 @@ public:
     virtual ~KeyActionGroupType() {}
     
     /// Group name.
-    std::string m_Name;
+    const std::string m_Name;
 
     /// Group description.
-    std::string m_Description;
+    const std::string m_Description;
 
     /// Key-action list for this group.
     KeyActionListType m_KeyActionList;

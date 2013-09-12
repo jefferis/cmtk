@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,7 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* targetImagePath = NULL;
+  std::string targetImagePath;
   std::vector<std::string> atlasImagesLabels;
 
   bool detectGlobalOutliers = false;
@@ -55,7 +55,7 @@ doMain
 
   bool useGlobalWeights = false;
 
-  const char* outputImagePath = "lvote.nii";
+  std::string outputImagePath = "lvote.nii";
 
   cmtk::Types::DataItem paddingValue = 0;
   bool paddingFlag = false;  
@@ -112,14 +112,14 @@ doMain
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {
-    cmtk::UniformVolume::SmartPtr atlasImage = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() );
+    cmtk::UniformVolume::SmartPtr atlasImage = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx] );
     if ( !atlasImage )
       {
       cmtk::StdErr << "ERROR: could not read atlas intensity image " << atlasImagesLabels[atlasIdx] << "\n";
       throw cmtk::ExitException( 1 );
       }
     
-    cmtk::UniformVolume::SmartPtr atlasLabels = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() );
+    cmtk::UniformVolume::SmartPtr atlasLabels = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1] );
     if ( !atlasLabels )
       {
       cmtk::StdErr << "ERROR: could not read atlas label image " << atlasImagesLabels[atlasIdx+1] << "\n";
@@ -139,7 +139,7 @@ doMain
     
   targetImage->SetData( lvote.GetResult() );
   
-  if ( outputImagePath )
+  if ( !outputImagePath.empty() )
     {
     cmtk::VolumeIO::Write( *targetImage, outputImagePath );
     }

@@ -42,8 +42,8 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* imagePath0 = NULL;
-  const char* imagePath1 = NULL;
+  std::string imagePath0;
+  std::string imagePath1;
 
   try
     {

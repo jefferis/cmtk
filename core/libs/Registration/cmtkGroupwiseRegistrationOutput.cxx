@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -146,7 +146,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       if ( ! templateGrid->GetData() )
 	{
-	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->GetMetaInfo( META_FS_PATH ).c_str() ) );
+	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->GetMetaInfo( META_FS_PATH ) ) );
 	templateGrid->SetData( readImage->GetData() );
 	}
 
@@ -170,7 +170,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       UniformVolume::SmartPtr floatingVolume = this->m_Functional->GetOriginalTargetImage( idx );
       if ( !floatingVolume->GetData() )
-	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->GetMetaInfo( META_FS_PATH ).c_str() ) );
+	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->GetMetaInfo( META_FS_PATH ) ) );
       
       cmtk::ReformatVolume reformat;
       reformat.SetReferenceVolume( templateGrid );

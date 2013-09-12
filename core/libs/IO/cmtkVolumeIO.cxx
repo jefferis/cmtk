@@ -213,9 +213,9 @@ VolumeIO
 
 UniformVolume::SmartPtr
 VolumeIO
-::ReadOriented( const char *path, const char* orientation )
+::ReadOriented( const std::string& path, const char* orientation )
 {
-  UniformVolume::SmartPtr volume( VolumeIO::Read( path ) );
+  UniformVolume::SmartPtr volume( Self::Read( path ) );
 
   const std::string orientationOriginal = volume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( orientationOriginal == "" )

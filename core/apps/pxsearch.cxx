@@ -54,7 +54,7 @@ typedef enum
 int
 doMain( const int argc, const char *argv[] )
 {
-  const char* inputImagePath = NULL;
+  std::string inputImagePath;
   const char* readOrientation = "RAS";
 
   CoordinateModeEnum inputMode = COORDINATES_ABSOLUTE;

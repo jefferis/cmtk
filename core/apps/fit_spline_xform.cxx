@@ -46,10 +46,10 @@
 int
 doMain ( const int argc, const char *argv[] ) 
 {
-  const char* inputImagePath = NULL;
-  const char *outputPath = NULL;
+  std::string inputImagePath;
+  std::string outputPath;
   
-  const char* gridDims = NULL;
+  std::string gridDims;
   cmtk::Types::Coordinate gridSpacing = 0;
   int levels = 1;
   
@@ -92,7 +92,7 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( gridDims && gridSpacing )
+  if ( !gridDims.empty() && gridSpacing )
     {
     cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
     throw cmtk::ExitException( 1 );
@@ -112,10 +112,10 @@ doMain ( const int argc, const char *argv[] )
     }
   else
     {
-    if ( gridDims )
+    if ( !gridDims.empty() )
       {
       double dims[3];
-      if ( 3 != sscanf( gridDims, "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
+      if ( 3 != sscanf( gridDims.c_str(), "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
 	{
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );

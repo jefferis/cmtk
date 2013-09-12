@@ -47,16 +47,16 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* inputImagePath1 = NULL;
-  const char* inputImagePath2 = NULL;
+  std::string inputImagePath1;
+  std::string inputImagePath2;
 
-  const char* outputImagePath1 = NULL;
-  const char* outputImagePath2 = NULL;
+  std::string outputImagePath1;
+  std::string outputImagePath2;
 
-  const char* outputDField = NULL;
+  std::string outputDField;
 
-  const char* writeJacobianPath1 = NULL;
-  const char* writeJacobianPath2 = NULL;  
+  std::string writeJacobianPath1;
+  std::string writeJacobianPath2;  
 
   byte phaseEncodeDirection = 1;
   bool flipPEPolar = true;
@@ -134,16 +134,16 @@ doMain
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( +1 ), outputImagePath1 );
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( -1 ), outputImagePath2 );
 
-  if ( outputDField )
+  if ( !outputDField.empty() )
     {
     cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( +1 ) );
     cmtk::XformIO::Write( dfield, outputDField );
     }
     
-  if ( writeJacobianPath1 )
+  if ( !writeJacobianPath1.empty() )
     cmtk::VolumeIO::Write( *func.GetJacobianMap( +1 ), writeJacobianPath1 );
 
-  if ( writeJacobianPath2 )
+  if ( !writeJacobianPath2.empty() )
     cmtk::VolumeIO::Write( *func.GetJacobianMap( -1 ), writeJacobianPath2 );
 
   return 0;

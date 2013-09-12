@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,15 +100,14 @@ ImagePairNonrigidRegistrationCommandLine
 
   this->m_OutputIntermediate = 0;
 
-  InputStudylist = NULL;
   IntermediateResultIndex = 0;
 
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
 
-  const char* clArg1 = NULL; // input studylist or reference image
-  const char* clArg2 = NULL; // empty or floating image
-  const char* clArg3 = NULL; // empty or initial transformation
+  std::string clArg1; // input studylist or reference image
+  std::string clArg2; // empty or floating image
+  std::string clArg3; // empty or initial transformation
 
   try
     {
@@ -206,10 +205,8 @@ ImagePairNonrigidRegistrationCommandLine
     cl.EndGroup();
 #endif
 
-    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )
-      ->SetProperties( CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )
-      ->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
+    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
     cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )
       ->SetProperties( CommandLine::PROPS_NOXML | CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
 
@@ -227,14 +224,14 @@ ImagePairNonrigidRegistrationCommandLine
     exit( 1 );
     }
 
-  if ( clArg2 ) 
+  if ( ! clArg2.empty() ) 
     {
     this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
     
-    Study1 = const_cast<char*>( clArg1 );
-    Study2 = const_cast<char*>( clArg2 );
+    this->Study1 = clArg1;
+    this->Study2 = clArg2;
 
-    if ( clArg3 )
+    if ( ! clArg3.empty() )
       {
       this->m_InitialTransformationFile = clArg3;
       }
@@ -255,7 +252,7 @@ ImagePairNonrigidRegistrationCommandLine
     classStream.Seek ( "registration" );
     Study1 = classStream.ReadString( "reference_study" );
     Study2 = classStream.ReadString( "floating_study" );
-    if ( Study2 )
+    if ( ! Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
       classStream >> affineXform;
@@ -274,7 +271,7 @@ ImagePairNonrigidRegistrationCommandLine
     }
   
   // Was an initial studylist given? If so, get warp 
-  if ( this->m_InitialTransformationFile ) 
+  if ( ! this->m_InitialTransformationFile.empty() ) 
     {
     Xform::SmartPtr initialXform( XformIO::Read( this->m_InitialTransformationFile ) );
     AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
@@ -291,11 +288,11 @@ ImagePairNonrigidRegistrationCommandLine
       }
     }
 
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1 ) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( this->Study1 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->Study2 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
@@ -350,7 +347,7 @@ ImagePairNonrigidRegistrationCommandLine
 ::OutputResult
 ( const CoordinateVector*, const CallbackResult irq )
 {
-  if ( this->Studylist ) 
+  if ( ! this->Studylist.empty() ) 
     {
     std::string path( this->Studylist );
     if ( irq != CALLBACK_OK )
@@ -389,15 +386,15 @@ ImagePairNonrigidRegistrationCommandLine
 	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
 	}
       
-      if ( this->Studylist )
+      if ( ! this->Studylist.empty() )
 	{
-	if ( this->InputStudylist ) 
+	if ( ! this->InputStudylist.empty() ) 
 	  {
 	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->InputStudylist );
 	  }
 	else 
 	  { 
-	  if ( this->m_InitialTransformationFile )
+	  if ( ! this->m_InitialTransformationFile.empty() )
 	    {
 	    db.AddRefinedXform( this->Studylist, true /*invertible*/, this->m_InitialTransformationFile, m_InitialTransformationInverse );
 	    }
@@ -531,9 +528,9 @@ void
 ImagePairNonrigidRegistrationCommandLine::OutputIntermediate( const bool incrementCount )
 {
   char path[PATH_MAX];
-  if ( Studylist ) 
+  if ( ! Studylist.empty() ) 
     {
-    snprintf( path, sizeof( path ), "%s%clevel-%02d.list", Studylist, (int)CMTK_PATH_SEPARATOR, IntermediateResultIndex );
+    snprintf( path, sizeof( path ), "%s%clevel-%02d.list", Studylist.c_str(), (int)CMTK_PATH_SEPARATOR, IntermediateResultIndex );
     } 
   else
     {

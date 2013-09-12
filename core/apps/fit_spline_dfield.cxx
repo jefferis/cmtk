@@ -43,10 +43,10 @@
 
 #include <IO/cmtkXformIO.h>
 
-const char* InputPath = NULL;
-const char *OutputPath = NULL;
+std::string InputPath;
+std::string OutputPath;
 
-const char* GridDims = NULL;
+std::string GridDims;
 cmtk::Types::Coordinate GridSpacing = 0;
 int Levels = 1;
 
@@ -90,7 +90,7 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( GridDims && GridSpacing )
+  if ( !GridDims.empty() && GridSpacing )
     {
     cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
     throw cmtk::ExitException( 1 );
@@ -113,10 +113,10 @@ doMain ( const int argc, const char *argv[] )
     }
   else
     {
-    if ( GridDims )
+    if ( !GridDims.empty() )
       {
       double dims[3];
-      if ( 3 != sscanf( GridDims, "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
+      if ( 3 != sscanf( GridDims.c_str(), "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
 	{
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );

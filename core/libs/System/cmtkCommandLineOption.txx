@@ -51,7 +51,7 @@ cmtk::CommandLine::Option<T>
 template<class T>
 mxml_node_t* 
 cmtk::CommandLine::Option<T>
-::MakeXML(  mxml_node_t *const parent ) const 
+::MakeXML( mxml_node_t *const parent ) const 
 {
   if ( ! (this->m_Properties & PROPS_NOXML) )
     {

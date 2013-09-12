@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,9 +49,9 @@ doMain( const int argc, const char* argv[] )
   cmtk::Types::Coordinate resolution = 1.0;
   bool labels = false;
 
-  const char* outputFileName = "phantom.nii";
-  const char* outputLabelsName = NULL;
-  const char* outputLandmarksName = NULL;
+  std::string outputFileName = "phantom.nii";
+  std::string outputLabelsName;
+  std::string outputLandmarksName;
 
   try 
     {
@@ -78,9 +78,9 @@ doMain( const int argc, const char* argv[] )
   cmtk::VolumeIO::Write( *(cmtk::MagphanEMR051::GetPhantomImage( resolution, labels )), outputFileName );
 
   // write optional labels file
-  if ( outputLabelsName )
+  if ( !outputLabelsName.empty() )
     {
-    std::ofstream stream( outputLabelsName );
+    std::ofstream stream( outputLabelsName.c_str() );
     if ( stream.good() )
       {
       for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )
@@ -91,9 +91,9 @@ doMain( const int argc, const char* argv[] )
     }
   
   // write optional landmarks file
-  if ( outputLandmarksName )
+  if ( !outputLandmarksName.empty() )
     {
-    std::ofstream stream( outputLandmarksName );
+    std::ofstream stream( outputLandmarksName.c_str() );
     if ( stream.good() )
       {
       for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )

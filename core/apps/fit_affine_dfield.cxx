@@ -42,8 +42,8 @@
 
 #include <IO/cmtkXformIO.h>
 
-const char* InputPath = NULL;
-const char *OutputPath = NULL;
+std::string InputPath;
+std::string OutputPath;
 
 int
 doMain ( const int argc, const char *argv[] ) 

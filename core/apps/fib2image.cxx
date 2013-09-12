@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,9 +48,8 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* trackingImagePath = NULL;
-
-  const char* outputImagePath = "fib2image.nii";
+  std::string trackingImagePath;
+  std::string outputImagePath = "fib2image.nii";
 
   cmtk::Types::DataItem value = 1;
 

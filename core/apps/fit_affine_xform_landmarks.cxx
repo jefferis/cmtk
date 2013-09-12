@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,9 +51,9 @@
 int
 doMain ( const int argc, const char *argv[] ) 
 {
-  const char* lmSourcePath = NULL;
-  const char* lmTargetPath = NULL;
-  const char *outputPath = NULL;
+  std::string lmSourcePath;
+  std::string lmTargetPath;
+  std::string outputPath;
 
   bool rigid = false;
 
@@ -80,7 +80,7 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  std::ifstream lmSourceStream( lmSourcePath );
+  std::ifstream lmSourceStream( lmSourcePath.c_str() );
   if ( !lmSourceStream.good() )
     {
     cmtk::StdErr << "ERROR: could not open source landmark file " << lmSourcePath << "\n";
@@ -92,7 +92,7 @@ doMain ( const int argc, const char *argv[] )
 
   cmtk::DebugOutput( 5 ) << "Read " << sourceLandmarks.size() << " source landmarks\n";
 
-  std::ifstream lmTargetStream( lmTargetPath );
+  std::ifstream lmTargetStream( lmTargetPath.c_str() );
   if ( !lmTargetStream.good() )
     {
     cmtk::StdErr << "ERROR: could not open target landmark file " << lmTargetPath << "\n";

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -109,11 +109,9 @@ AffineRegistrationCommandLine
   InitXlate = 0;
   this->m_NoSwitch = 0;
 
-  const char *InitialStudylist = NULL;
-  Study1 = Study2 = NULL;
-
-  const char* clArg1 = NULL; // input studylist or reference image
-  const char* clArg2 = NULL; // empty or floating image
+  std::string InitialStudylist;
+  std::string clArg1; // input studylist or reference image
+  std::string clArg2; // empty or floating image
 
   try 
     {
@@ -205,16 +203,16 @@ AffineRegistrationCommandLine
 
   this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
     
-  if ( clArg2 ) 
+  if ( ! clArg2.empty() ) 
     {
-    Study1 = const_cast<char*>( clArg1 );
-    Study2 = const_cast<char*>( clArg2 );
+    Study1 = clArg1;
+    Study2 = clArg2;
     } 
   else
     {
     this->m_InitialXformPath = clArg1;
 
-    if ( InitialStudylist ) 
+    if ( ! InitialStudylist.empty() ) 
       {
       StdErr << "WARNING: transformation of input studylist will be overriden by transformation provided with '--initial'.\n";
       }
@@ -231,7 +229,7 @@ AffineRegistrationCommandLine
     typedStream.Seek ( "registration" );
     Study1 = typedStream.ReadString( "reference_study" );
     Study2 = typedStream.ReadString( "floating_study" );
-    if ( Study2 )
+    if ( ! Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
@@ -249,19 +247,19 @@ AffineRegistrationCommandLine
     typedStream.Close();
     }
 
-  if ( !Study1 )
+  if ( Study1.empty() )
     {
     StdErr << "ERROR: reference image path resolved to NULL.\n";
     throw cmtk::ExitException( 1 );
     }
   
-  if ( !Study2 )
+  if ( Study2.empty() )
     {
     StdErr << "ERROR: floating image path resolved to NULL.\n";
     throw cmtk::ExitException( 1 );
     }
   
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1 ) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( this->Study1 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
@@ -269,7 +267,7 @@ AffineRegistrationCommandLine
     }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->Study2 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
@@ -277,7 +275,7 @@ AffineRegistrationCommandLine
     }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
-  if ( InitialStudylist ) 
+  if ( ! InitialStudylist.empty() ) 
     {
     this->m_InitialXformPath = InitialStudylist;
     Xform::SmartPtr xform( XformIO::Read( InitialStudylist ) );
@@ -306,7 +304,7 @@ AffineRegistrationCommandLine
   
   if ( InitXlate ) 
     {
-    if ( this->m_InitialXformPath ) 
+    if ( ! this->m_InitialXformPath.empty() ) 
       {
       StdErr << "WARNING: Initial transformation was taken from studylist. Switch --initxlate / -i will be ignored.\n";
       } 
@@ -499,7 +497,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const C
       
       if ( this->Studylist )
 	{
-	if ( this->m_InitialXformPath ) 
+	if ( ! this->m_InitialXformPath.empty() )
 	  {
 	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath, this->m_InitialXformIsInverse );
 	  }

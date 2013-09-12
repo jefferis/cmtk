@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,7 +44,7 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* inputFileName = NULL;
+  std::string inputFileName;
   
   bool transpose = false;
   
@@ -69,7 +69,7 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( inputFileName )
+  if ( ! inputFileName.empty() )
     {
     cmtk::AffineXform::SmartConstPtr affineXform = cmtk::AffineXform::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( inputFileName ) );
 

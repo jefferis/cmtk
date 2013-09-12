@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,12 +100,12 @@ public:
    * with the P/A (posterior/anterior) direction, and the y axis is aligned with the I/S (inferior/superior) 
    * direction.
    */
-  static UniformVolume::SmartPtr ReadOriented( const char *path, const char* orientation );
+  static UniformVolume::SmartPtr ReadOriented( const std::string& path, const char* orientation );
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
    *\param path Filesystem path of the image to read.
    */
-  static UniformVolume::SmartPtr ReadOriented( const char *path )
+  static UniformVolume::SmartPtr ReadOriented( const std::string& path )
   {
     return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }

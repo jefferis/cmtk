@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,11 +62,11 @@ cmtk::FusionViewApplication
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
 
-  const char* imagePathFix;
+  std::string imagePathFix;
   cl.AddParameter( &imagePathFix, "FixedImage", "Fixed image path. If this is '?', the program attempts to automatically deduce the fixed image path of the first transformation in the given sequence." )
     ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
-  const char* imagePathMov;
+  std::string imagePathMov;
   cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path. If this is '?', the program attempts to automatically deduce the moving image path of the last transformation in the given sequence." )
     ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
@@ -86,10 +86,10 @@ cmtk::FusionViewApplication
   this->m_XformList = XformListIO::MakeFromStringList( xformList );
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
-  if ( !strcmp( imagePathFix, "?" ) )
+  if ( imagePathFix == "?" )
     {
-    imagePathFix = this->m_XformList.GetFixedImagePath().c_str();
-    if ( strlen( imagePathFix ) )
+    imagePathFix = this->m_XformList.GetFixedImagePath();
+    if ( !imagePathFix.empty() )
       {
       DebugOutput( 2 ) << "INFO: deduced fixed image path as " << imagePathFix << "\n";
       }
@@ -114,10 +114,10 @@ cmtk::FusionViewApplication
 
   (this->m_CursorPosition = this->m_Fixed.m_Volume->GetDims() ) *= 0.5;
 
-  if ( !strcmp( imagePathMov, "?" ) )
+  if ( imagePathMov == "?" )
     {
-    imagePathMov = this->m_XformList.GetMovingImagePath().c_str();
-    if ( strlen( imagePathMov ) )
+    imagePathMov = this->m_XformList.GetMovingImagePath();
+    if ( !imagePathMov.empty() )
       {
       DebugOutput( 2 ) << "INFO: deduced moving image path as " << imagePathMov << "\n";
       }

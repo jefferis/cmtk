@@ -47,10 +47,10 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* regionsImagePath = NULL;
-  const char* labelsFilePath = NULL;
-  const char* pscaleImagePath = NULL;
-  const char* outputFilePath = NULL;
+  std::string regionsImagePath;
+  std::string labelsFilePath;
+  std::string pscaleImagePath;
+  std::string outputFilePath;
 
   std::vector<std::string> densityImagePaths;
 
@@ -98,13 +98,13 @@ doMain
     }
 
   std::map<size_t, std::string> labelToNameMap;
-  if ( labelsFilePath )
+  if ( !labelsFilePath.empty() )
     {
     size_t idx;
     std::string name;
     std::string restOfLine;
     
-    std::ifstream labelsFile( labelsFilePath );
+    std::ifstream labelsFile( labelsFilePath.c_str() );
     while ( ! labelsFile.eof() )
       {
       labelsFile >> idx >> name;
@@ -114,7 +114,7 @@ doMain
     }
 
   cmtk::UniformVolume::SmartPtr pscaleImage;
-  if ( pscaleImagePath )
+  if ( !pscaleImagePath.empty() )
     {
     pscaleImage =  cmtk::VolumeIO::ReadOriented( pscaleImagePath );
 
@@ -134,7 +134,7 @@ doMain
   std::vector<cmtk::UniformVolume::SmartConstPtr> densityImages;
   for ( size_t idx = 0; idx < densityImagePaths.size(); ++idx )
     {
-    cmtk::UniformVolume::SmartPtr nextImage( cmtk::VolumeIO::ReadOriented( densityImagePaths[idx].c_str() ) );
+    cmtk::UniformVolume::SmartPtr nextImage( cmtk::VolumeIO::ReadOriented( densityImagePaths[idx] ) );
     if ( ! nextImage )
       {
       cmtk::StdErr << "ERROR: could not read density image " << densityImagePaths[idx] << "\n";
@@ -184,7 +184,7 @@ doMain
 
   // select either output file or standard output
   std::ofstream outputFile;
-  std::ostream& output = outputFilePath ? outputFile.open( outputFilePath, std::ios::out), outputFile : std::cout;
+  std::ostream& output = !outputFilePath.empty() ? outputFile.open( outputFilePath.c_str(), std::ios::out), outputFile : std::cout;
 
   // write column labels
   output << "label,volume";
@@ -197,7 +197,7 @@ doMain
   // write rows with label volumes
   for ( size_t label = 0; label <= maxLabel; ++label )
     {
-    if ( labelsFilePath )
+    if ( !labelsFilePath.empty() )
       {
       std::map<size_t, std::string>::const_iterator it = labelToNameMap.find( label );
       if ( it == labelToNameMap.end() )

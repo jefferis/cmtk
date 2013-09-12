@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -160,7 +160,7 @@ private:
   const char* m_SymmetryParametersFile;
 
   /// Input image file path.
-  const char* m_InFileName;
+  std::string m_InFileName;
   
 /// Constants for initial plane orientation.
   typedef enum

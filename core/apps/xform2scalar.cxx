@@ -72,8 +72,8 @@ cmtk::XformToScalarMode Mode = cmtk::X2S_MAGNITUDE;
 /// Data type for scalar data.
 cmtk::ScalarDataType DataType = cmtk::TYPE_DOUBLE;
 
-const char* InputGridPath = NULL;
-const char* OutImagePath = NULL;
+std::string InputGridPath;
+std::string OutImagePath;
 
 std::vector<std::string> InputXformPaths;
 
@@ -185,7 +185,7 @@ doMain ( const int argc, const char* argv[] )
 );
 #endif
 
-  if ( OutImagePath ) 	 
+    if ( !OutImagePath.empty() ) 	 
     {
     cmtk::VolumeIO::Write( *scalarImage, OutImagePath );
     }

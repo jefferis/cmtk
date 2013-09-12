@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,11 +55,11 @@
 #  include <Registration/cmtkImageXformDB.h>
 #endif
 
-const char* ImportBiasFieldAdd = NULL;
-const char* ImportBiasFieldMul = NULL;
+std::string ImportBiasFieldAdd;
+std::string ImportBiasFieldMul;
 
-const char* FNameBiasFieldAdd = NULL;
-const char* FNameBiasFieldMul = NULL;
+std::string FNameBiasFieldAdd;
+std::string FNameBiasFieldMul;
 
 cmtk::Types::DataItem PaddingValue = 0;
 bool PaddingFlag = false;
@@ -69,15 +69,15 @@ float ThresholdForegroundMax = FLT_MAX;
 bool ThresholdForegroundFlag = false;
 bool ThresholdAuto = false;
 int ThresholdOtsuNBins = 0;
-const char* FNameMaskImage = NULL;
+std::string FNameMaskImage;
 
 bool UseSamplingDensity = false;
 float SamplingDensity = 1.0;
 
 unsigned int NumberOfHistogramBins = 256;
 
-const char* FNameInputImage = NULL;
-const char* FNameOutputImage = NULL;
+std::string FNameInputImage;
+std::string FNameOutputImage;
 bool OutputFloatImage = false;
 
 int PolynomialDegreeAdd = 0;
@@ -90,7 +90,7 @@ cmtk::Types::Coordinate StepMin = 0.1;
 bool LogIntensities = false;
 
 #ifdef CMTK_USE_SQLITE
-const char* updateDB = NULL;
+std::string updateDB;
 #endif
 
 int
@@ -166,7 +166,7 @@ doMain( const int argc, const char *argv[] )
     }
   
   cmtk::UniformVolume::SmartPtr maskImage;
-  if ( FNameMaskImage )
+  if ( !FNameMaskImage.empty() )
     {
     maskImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FNameMaskImage ) );
     if ( ! maskImage || ! maskImage->GetData() )
@@ -205,7 +205,7 @@ doMain( const int argc, const char *argv[] )
   FunctionalPointer functional( NULL );
   
   cmtk::UniformVolume::SmartPtr outputImage;
-  if ( ImportBiasFieldAdd || ImportBiasFieldMul )
+  if ( ! (ImportBiasFieldAdd.empty() && ImportBiasFieldMul.empty()) )
     {
     functional = cmtk::CreateEntropyMinimizationIntensityCorrectionFunctional( 1, 1 );
 
@@ -217,7 +217,7 @@ doMain( const int argc, const char *argv[] )
 
     functional->SetInputImage( inputImage );
     
-    if ( ImportBiasFieldAdd )
+    if ( !ImportBiasFieldAdd.empty() )
       {
       cmtk::UniformVolume::SmartPtr biasAdd( cmtk::VolumeIO::ReadOriented( ImportBiasFieldAdd ) );
       if ( ! biasAdd || ! biasAdd->GetData() )
@@ -228,7 +228,7 @@ doMain( const int argc, const char *argv[] )
       functional->SetBiasFieldAdd( *biasAdd );
       }
 
-    if ( ImportBiasFieldMul )
+    if ( !ImportBiasFieldMul.empty() )
       {
       cmtk::UniformVolume::SmartPtr biasMul( cmtk::VolumeIO::ReadOriented( ImportBiasFieldMul ) );
       if ( ! biasMul || ! biasMul->GetData() )
@@ -299,7 +299,7 @@ doMain( const int argc, const char *argv[] )
     outputImage = functional->GetOutputImage( v, false/*foregroundOnly*/ );
     }
   
-  if ( FNameOutputImage )
+  if ( !FNameOutputImage.empty() )
     {
     if ( ! OutputFloatImage )
       {
@@ -310,7 +310,7 @@ doMain( const int argc, const char *argv[] )
     cmtk::VolumeIO::Write( *outputImage, FNameOutputImage );
 
 #ifdef CMTK_USE_SQLITE
-    if ( updateDB )
+    if ( !updateDB.empty() )
       {
       cmtk::ImageXformDB db( updateDB );
       db.AddImage( FNameOutputImage, FNameInputImage );
@@ -318,13 +318,13 @@ doMain( const int argc, const char *argv[] )
 #endif
     }
 
-  if ( FNameBiasFieldAdd && PolynomialDegreeAdd )
+  if ( PolynomialDegreeAdd && !FNameBiasFieldAdd.empty() )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldAdd( true /*completeImage*/ ) );
     cmtk::VolumeIO::Write( *biasField, FNameBiasFieldAdd );
 
 #ifdef CMTK_USE_SQLITE
-    if ( updateDB )
+    if ( !updateDB.empty() )
       {
       cmtk::ImageXformDB db( updateDB );
       db.AddImage( FNameBiasFieldAdd, FNameInputImage );
@@ -332,13 +332,13 @@ doMain( const int argc, const char *argv[] )
 #endif
     }
 
-  if ( FNameBiasFieldMul && PolynomialDegreeMul )
+  if ( PolynomialDegreeMul && !FNameBiasFieldMul.empty() )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldMul( true /*completeImage*/ ) );
     cmtk::VolumeIO::Write( *biasField, FNameBiasFieldMul );
 
 #ifdef CMTK_USE_SQLITE
-    if ( updateDB )
+    if ( !updateDB.empty() )
       {
       cmtk::ImageXformDB db( updateDB );
       db.AddImage( FNameBiasFieldMul, FNameInputImage );

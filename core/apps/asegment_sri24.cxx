@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -102,7 +102,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   std::string atlasImageName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + channelSRI24 + ".nii";
-  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName.c_str() ) );
+  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName ) );
   if ( !atlasImg ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
@@ -110,7 +110,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   std::string atlasLabelName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + labelsSRI24 + ".nii";
-  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName.c_str() ) );
+  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName ) );
   if ( !atlasLbl ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";

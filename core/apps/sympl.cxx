@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,32 +76,28 @@ cmtk::Types::Coordinate Rho;
 cmtk::Units::Degrees Theta;
 cmtk::Units::Degrees Phi;
 
-bool DoWriteMirror = false;
-const char* MirrorOutFile = "symmetry_mirror.nii";
+std::string MirrorOutFile;
 
-bool DoWriteAligned = false;
-const char* AlignedOutFile = "symmetry_aligned.nii";
+std::string AlignedOutFile;
 bool MarkPlaneAligned = false;
 
-bool DoWriteMarked = false;
-const char* MarkedOutFile = "symmetry_marked.nii";
+std::string MarkedOutFile;
 
-bool DoWriteDifference = false;
-const char* DifferenceOutFile = "symmetry_diff.nii";
+std::string DifferenceOutFile;
 
-const char* WriteXformPath = NULL;
+std::string WriteXformPath;
 
 cmtk::Types::DataItem MarkPlaneValue = 4095;
 
 bool PadOutValueSet = false;
 cmtk::Types::DataItem PadOutValue = 0;
 
-const char* SymmetryOutFileName = NULL;
+std::string SymmetryOutFileName;
 
-const char* SymmetryParameters = NULL;
-const char* SymmetryParametersFile = NULL;
+std::string SymmetryParameters;
+std::string SymmetryParametersFile;
 
-const char* InFileName = NULL;
+std::string InFileName;
 
 /// Constants for initial plane orientation.
 typedef enum
@@ -166,15 +162,15 @@ ParseCommandLine ( const int argc, const char* argv[] )
     interpGroup->AddSwitch( Key( 'S', "sinc" ), cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
     
     cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
-    cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane.", &DoWriteMarked );
-    cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane.", &DoWriteMarked )
+    cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane." );
+    cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-aligned" ), &AlignedOutFile, "File name for symmetry plane-aligned output image.", &DoWriteAligned )
+    cl.AddOption( Key( "write-aligned" ), &AlignedOutFile, "File name for symmetry plane-aligned output image." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddSwitch( Key( "mark-aligned" ), &MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
-    cl.AddOption( Key( "write-subtract" ), &DifferenceOutFile, "File name for mirror subtraction image.", &DoWriteDifference )
+    cl.AddOption( Key( "write-subtract" ), &DifferenceOutFile, "File name for mirror subtraction image." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane.", &DoWriteMirror )
+    cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
 
@@ -189,10 +185,10 @@ ParseCommandLine ( const int argc, const char* argv[] )
     
     if ( ! cl.Parse( argc, argv ) ) return false;
     
-    if ( SymmetryParameters ) 
+    if ( !SymmetryParameters.empty() ) 
       {
       double rho, theta, phi;
-      if ( 3 == sscanf( SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
+      if ( 3 == sscanf( SymmetryParameters.c_str(), "%lf %lf %lf", &rho, &theta, &phi ) ) 
 	{
 	Rho = rho; 
 	Theta = cmtk::Units::Degrees( theta );
@@ -200,7 +196,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
 	}
       }
     
-    if ( SymmetryParametersFile ) 
+    if ( !SymmetryParametersFile.empty() ) 
       {
       cmtk::ClassStreamInput inStream( SymmetryParametersFile );
       if ( inStream.IsValid() ) 
@@ -214,7 +210,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
 	} 
       else
 	{
-	cmtk::StdErr.printf( "ERROR: Could not open symmetry parameter file %s\n", SymmetryParametersFile );
+	cmtk::StdErr.printf( "ERROR: Could not open symmetry parameter file %s\n", SymmetryParametersFile.c_str() );
 	}
       }
     }
@@ -229,7 +225,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
 
 void
 WriteDifference
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const std::string& outFileName )
 {
   cmtk::UniformVolume::SmartPtr diffVolume( originalVolume->CloneGrid() );
   const cmtk::TypedArray* originalData = originalVolume->GetData();
@@ -266,7 +262,7 @@ WriteDifference
 
 void
 WriteMirror
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const std::string& outFileName )
 {
   cmtk::TypedArray::SmartPtr mirrorData = cmtk::TypedArray::Create( originalVolume->GetData()->GetType(), originalVolume->GetData()->GetDataSize() );
 
@@ -299,7 +295,7 @@ WriteMirror
 
 void
 WriteMarkPlane
-( const cmtk::UniformVolume* originalVolume, const cmtk::ParametricPlane& parametricPlane, const cmtk::Types::DataItem markPlaneValue, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::ParametricPlane& parametricPlane, const cmtk::Types::DataItem markPlaneValue, const std::string& outFileName )
 {
   cmtk::UniformVolume::SmartPtr markVolume( originalVolume->CloneGrid() );
   cmtk::TypedArray::SmartPtr markData( originalVolume->GetData()->Clone() );
@@ -326,8 +322,7 @@ WriteMarkPlane
 
 void
 WriteAligned
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const InitialPlaneEnum initialPlane, 
-  const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const InitialPlaneEnum initialPlane, const std::string& outFileName )
 {
   const cmtk::TypedArray* originalData = originalVolume->GetData();
 
@@ -388,7 +383,7 @@ doMain ( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartPtr originalVolume( cmtk::VolumeIO::ReadOriented( InFileName ) );
   if ( !originalVolume ) 
     {
-    cmtk::StdErr.printf( "Could not read image file %s\n", InFileName );
+    cmtk::StdErr.printf( "Could not read image file %s\n", InFileName.c_str() );
     throw cmtk::ExitException(1);
     }
 
@@ -477,7 +472,7 @@ doMain ( const int argc, const char* argv[] )
   cmtk::ParametricPlane parametricPlane;
   parametricPlane.SetParameters( v );
   
-  if ( SymmetryOutFileName )
+  if ( !SymmetryOutFileName.empty() )
     {
     cmtk::ClassStreamOutput stream( SymmetryOutFileName, cmtk::ClassStreamOutput::MODE_WRITE );
     stream << parametricPlane;
@@ -486,19 +481,19 @@ doMain ( const int argc, const char* argv[] )
 
   const cmtk::UniformVolumeInterpolatorBase::SmartPtr interpolator( cmtk::ReformatVolume::CreateInterpolator( Interpolation, originalVolume ) );;
   
-  if ( DoWriteAligned ) 
+  if ( !AlignedOutFile.empty() ) 
     WriteAligned( originalVolume, interpolator, parametricPlane, InitialPlane, AlignedOutFile );
 
-  if ( DoWriteMarked ) 
+  if ( !MarkedOutFile.empty() ) 
     WriteMarkPlane( originalVolume, parametricPlane, MarkPlaneValue, MarkedOutFile );
 
-  if ( DoWriteDifference )
+  if ( !DifferenceOutFile.empty() )
     WriteDifference( originalVolume, interpolator, parametricPlane, DifferenceOutFile );
 
-  if ( DoWriteMirror )
+  if ( !MirrorOutFile.empty() )
     WriteMirror( originalVolume, interpolator, parametricPlane, MirrorOutFile );
 
-  if ( WriteXformPath )
+  if ( !WriteXformPath.empty() )
     {
     cmtk::AffineXform::SmartPtr alignment( parametricPlane.GetAlignmentXform( 0 ) );
     cmtk::XformIO::Write( alignment, WriteXformPath );

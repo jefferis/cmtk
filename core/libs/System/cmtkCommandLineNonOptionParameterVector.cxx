@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,10 +64,10 @@ cmtk::CommandLine::NonOptionParameterVector
 
   if ( node )
     {
-    if ( this->m_Name )
+    if ( ! this->m_Name.empty() )
       {
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name );
-      mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name );
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name.c_str() );
+      mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name.c_str() );
       }
     
     if ( ! this->m_Comment.empty() )

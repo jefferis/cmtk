@@ -229,7 +229,7 @@ doMain( const int argc, const char* argv[] )
     std::vector<cmtk::SplineWarpXform::SmartPtr> vWarpXform;
     for ( std::list<std::string>::const_iterator it = pathList.begin(); it != pathList.end(); ++it )
       {
-      cmtk::SplineWarpXform::SmartPtr xform = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( cmtk::Xform::SmartPtr( cmtk::XformIO::Read( it->c_str() ) ) );
+      cmtk::SplineWarpXform::SmartPtr xform = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( cmtk::Xform::SmartPtr( cmtk::XformIO::Read( *it ) ) );
       if ( ! xform )
 	{
 	cmtk::StdErr << "ERROR: transformation '" << *it << "' is either invalid or not a spline warp xform\n";
@@ -297,7 +297,7 @@ doMain( const int argc, const char* argv[] )
     std::vector<cmtk::UniformVolume::SmartPtr> vVolume;
     for ( std::list<std::string>::const_iterator it = pathList.begin(); it != pathList.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( it->c_str() ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *it ) );
       if ( ! volume )
 	{
 	cmtk::StdErr << "ERROR: image '" << *it << "' could not be read\n";

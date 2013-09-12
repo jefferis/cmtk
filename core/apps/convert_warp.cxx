@@ -42,8 +42,8 @@
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkDeformationField.h>
 
-const char* inXformPath = NULL;
-const char* outXformPath = NULL;
+std::string inXformPath;
+std::string outXformPath;
 
 float Fractional = -1;
 bool DeformationOnly = false;

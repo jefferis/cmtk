@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,8 +43,8 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* inputPath = NULL;
-  const char* outputPath = NULL;
+  std::string inputPath;
+  std::string outputPath;
 
   cmtk::Types::Coordinate sphereRadius = 1;
   int filterMargin = 2;

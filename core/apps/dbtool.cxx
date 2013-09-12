@@ -44,8 +44,8 @@ addImages( const int argc, const char* argv[] )
 {
   try
     {
-    const char* dbpath = NULL;
-    const char* space = NULL;
+    std::string dbpath;
+    std::string space;
     std::vector<std::string> images;
 
     cmtk::CommandLine cl;
@@ -90,8 +90,8 @@ listSpace( const int argc, const char* argv[] )
 {
   try
     {
-    const char* dbpath = NULL;
-    const char* image = NULL;
+    std::string dbpath;
+    std::string image;
 
     bool sortById = false;
 
@@ -139,9 +139,9 @@ getXform( const int argc, const char* argv[] )
 {
   try
     {
-    const char* dbpath = NULL;
-    const char* rimage = NULL;
-    const char* fimage = NULL;
+    std::string dbpath;
+    std::string rimage;
+    std::string fimage;
     
     bool all = false;
 
@@ -221,7 +221,7 @@ doMain( const int argc, const char* argv[] )
 
   try
     {
-    const char* command;
+    std::string command;
 
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image/transformation database maintenance and query tool" );
@@ -238,16 +238,16 @@ doMain( const int argc, const char* argv[] )
     // get effective argc and argv for command
     const size_t cargc = argc-cl.GetNextIndex()+1;
     std::vector<const char*> cargv( cargc );
-    cargv[0] = command;
+    cargv[0] = command.c_str();
     for ( size_t i = 1; i < cargc; ++i )
       cargv[i] = cl.GetNext();
     
     // run commands
-    if ( !strcmp( command, "add_images" ) )
+    if ( command == "add_images" )
       exitCode = addImages( cargc, &cargv[0] );
-    else if ( ! strcmp( command, "list_space" ) )
+    else if ( command == "list_space" )
       exitCode = listSpace( cargc, &cargv[0] );
-    else if ( ! strcmp( command, "get_xform" ) )
+    else if ( command == "get_xform" )
       exitCode = getXform( cargc, &cargv[0] );
     else
       {

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,14 +72,14 @@ cmtk::UniformVolume::SmartPtr Volume1;
 
 bool OutsideBG = false;
 
-const char *imagePath0 = NULL;
-const char *imagePath1 = NULL;
+std::string imagePath0;
+std::string imagePath1;
 
-const char* MaskFileName = NULL;
+std::string MaskFileName;
 
 unsigned int ForceMaxLabel = 0;
 
-const char* HistogramTextFileName = NULL;
+std::string HistogramTextFileName;
 
 bool 
 ParseCommandLine( const int argc, const char* argv[] )
@@ -262,7 +262,7 @@ doMain ( const int argc, const char* argv[] )
     }
   
   cmtk::TypedArray::SmartPtr mask;
-  if ( MaskFileName ) 
+  if ( !MaskFileName.empty() ) 
     {
     cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( maskVolume )
@@ -302,9 +302,9 @@ doMain ( const int argc, const char* argv[] )
   fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
 	   countVoxelsUnequal, maxDifference, maxRelDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
   
-  if ( HistogramTextFileName )
+  if ( !HistogramTextFileName.empty() )
     {
-    FILE *file = fopen( HistogramTextFileName, "w" );
+    FILE *file = fopen( HistogramTextFileName.c_str(), "w" );
     if ( file ) 
       {
       unsigned int binsX = histogram->GetNumBinsX();

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,7 +106,7 @@ private:
    * that was actually used (the one specified with "--initial"). This is used when the optional
    * image/transformation database is updated.
    */
-  const char* m_InitialXformPath;
+  std::string m_InitialXformPath;
 
   /// Number of levels for automatic parameter generation.
   unsigned int m_AutoMultiLevels;
@@ -135,12 +135,12 @@ private:
   /** Name of first study to be registered.
    * This is given as the first non-option command line paramter.
    */
-  const char *Study1;
+  std::string Study1;
 
   /** Name of second study to be registered.
    * This is given as the second non-option command line paramter.
    */
-  const char *Study2;
+  std::string Study2;
 
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.

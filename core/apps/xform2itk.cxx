@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,16 +48,16 @@
 int 
 doMain( const int argc, const char* argv[] )
 {
-  const char* inputPath = NULL;
-  const char* outputPath = NULL;
+  std::string inputPath;
+  std::string outputPath;
 
   bool invertInputXform = false;
 
-  const char* fixedImagePath = NULL;
-  const char* movingImagePath = NULL;
+  std::string fixedImagePath;
+  std::string movingImagePath;
 
-  const char* fixedImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
-  const char* movingImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
+  std::string fixedImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
+  std::string movingImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
   
   try 
     {
@@ -99,24 +99,24 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( !fixedImagePath )
+  if ( fixedImagePath.empty() )
     {
     if ( !xform->MetaKeyExists( cmtk::META_XFORM_FIXED_IMAGE_PATH ) )
       {
       cmtk::StdErr << "ERROR: could not deduce fixed image path from transformation; must be explicitly provided on the command line instead\n";
       throw cmtk::ExitException( 1 );
       }
-    fixedImagePath = xform->GetMetaInfo( cmtk::META_XFORM_FIXED_IMAGE_PATH ).c_str();
+    fixedImagePath = xform->GetMetaInfo( cmtk::META_XFORM_FIXED_IMAGE_PATH );
     }
 
-  if ( !movingImagePath )
+  if ( movingImagePath.empty() )
     {
     if ( !xform->MetaKeyExists( cmtk::META_XFORM_MOVING_IMAGE_PATH ) )
       {
       cmtk::StdErr << "ERROR: could not deduce moving image path from transformation; must be explicitly provided on the command line instead\n";
       throw cmtk::ExitException( 1 );
       }
-    movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH ).c_str();
+    movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH );
     }
 
   cmtk::UniformVolume::SmartPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ) );
@@ -126,7 +126,7 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( fixedImageSpace )
+  if ( !fixedImageSpace.empty() )
     {
     fixedImage->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, fixedImageSpace );
     }
@@ -138,7 +138,7 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  if ( movingImageSpace )
+  if ( !movingImageSpace.empty() )
     {
     movingImage->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, movingImageSpace );
     }

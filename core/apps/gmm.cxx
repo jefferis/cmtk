@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,9 +47,9 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* inputImagePath = NULL;
-  const char* maskImagePath = NULL;
-  const char* outputImagePath = NULL;
+  std::string inputImagePath;
+  std::string maskImagePath;
+  std::string outputImagePath;
 
   bool writeProbMaps = false;
   bool priorsInitOnly = false;
@@ -106,7 +106,7 @@ doMain
   cmtk::UniformVolume::SmartPtr inputImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
 
   cmtk::UniformVolume::SmartConstPtr maskImage = inputImage;
-  if ( maskImagePath )
+  if ( !maskImagePath.empty() )
     {
     maskImage = cmtk::VolumeIO::ReadOriented( maskImagePath );
     if ( ! inputImage->GridMatches( *(maskImage) ) )
@@ -121,7 +121,7 @@ doMain
   std::vector<cmtk::UniformVolume::SmartConstPtr> priorImages( nClasses );
   for ( size_t k = 0; k < nClasses; ++k )
     {
-    priorImages[k] = cmtk::VolumeIO::ReadOriented( priorImagePaths[k].c_str() );
+    priorImages[k] = cmtk::VolumeIO::ReadOriented( priorImagePaths[k] );
 
     if ( ! inputImage->GridMatches( *(priorImages[k]) ) )
       {
@@ -226,7 +226,7 @@ doMain
     char path[PATH_MAX+1];
     for ( size_t k = 0; k < nClasses; ++k )
       {
-      strncpy( path, outputImagePath, PATH_MAX );
+      strncpy( path, outputImagePath.c_str(), PATH_MAX );
       path[PATH_MAX] = 0; // for safety - terminate string
 
       char* slash = strrchr( path, '/' );
@@ -237,7 +237,7 @@ doMain
       if ( ! period )
 	period = path + strlen( path );
       
-      snprintf( period, PATH_MAX - (period-path), "_prob%d%s", static_cast<int>( 1+k ), outputImagePath + (period-path) );
+      snprintf( period, PATH_MAX - (period-path), "_prob%d%s", static_cast<int>( 1+k ), outputImagePath.c_str() + (period-path) );
       cmtk::VolumeIO::Write( *(pMaps[k]), path );
       }
     }

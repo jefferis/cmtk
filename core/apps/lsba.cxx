@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,7 @@ int
 doMain
 ( const int argc, const char *argv[] )
 {
-  const char* targetImagePath = NULL;
+  std::string targetImagePath;
   std::vector<std::string> atlasImagesLabels;
 
   bool detectLocalOutliers = false;
@@ -56,7 +56,7 @@ doMain
   size_t patchRadius = 5;
   size_t searchRadius = 0;
 
-  const char* outputImagePath = "lsbo.nii";
+  std::string outputImagePath = "lsbo.nii";
 
   cmtk::Types::DataItem paddingValue = 0;
   bool paddingFlag = false;
@@ -114,8 +114,8 @@ doMain
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {
-    cmtk::UniformVolume::SmartPtr atlasImage = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() );
-    cmtk::UniformVolume::SmartPtr atlasLabels = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() );
+    cmtk::UniformVolume::SmartPtr atlasImage = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx] );
+    cmtk::UniformVolume::SmartPtr atlasLabels = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1] );
     
     if ( paddingFlag )
       {
@@ -130,7 +130,7 @@ doMain
   
   targetImage->SetData( lsba.GetResult() );
 
-  if ( outputImagePath )
+  if ( !outputImagePath.empty() )
     {
     cmtk::VolumeIO::Write( *targetImage, outputImagePath );
     }

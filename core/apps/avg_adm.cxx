@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -201,7 +201,7 @@ doMain( int argc, const char* argv[] )
 
       if ( OutImageName && !Jacobian ) 
 	// no out image, no need for input images
-	nextVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
+	nextVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( actualPath ) );
 
       if ( OutImageName && !Jacobian && !nextVolume ) 
 	{
@@ -235,7 +235,7 @@ doMain( int argc, const char* argv[] )
     }
   
   std::string actualPath = cmtk::StrReplaceByRules( studylist.GetReferenceStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
+  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath ) );
   
   if ( ! refVolume ) 
     {

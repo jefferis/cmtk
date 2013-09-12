@@ -89,10 +89,10 @@ protected:
   bool m_Binarize;
   
   /// Input image path.
-  const char* m_InFile;
+  std::string m_InFile;
 
   /// Output image path.
-  const char* m_OutFile;
+  std::string m_OutFile;
 
   /// The input image volume.
   UniformVolume::SmartConstPtr m_Volume;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,16 +71,16 @@ float IntensityGaussianSigma = 0.0;
 float Radius = 2.0;
 float IntensityBinWidth = 10.0;
 
-const char* InputFileName = NULL;
-const char* OutputFileName = NULL;
+std::string InputFileName;
+std::string OutputFileName;
 
-const char* AverageFileName = NULL;
-const char* SubjectFileName = NULL;
-const char* MaskFileName = NULL;
-std::list<const char*> ImageNameList;
+std::string AverageFileName;
+std::string SubjectFileName;
+std::string MaskFileName;
+std::list<std::string> ImageNameList;
 
 #ifdef CMTK_USE_SQLITE
-const char* updateDB = NULL;
+std::string updateDB;
 #endif
 
 int 
@@ -156,7 +156,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   cmtk::TypedArray::SmartPtr maskData( NULL );
-  if ( MaskFileName ) 
+  if ( !MaskFileName.empty() ) 
     {
     cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( maskVolume )
@@ -185,7 +185,7 @@ doMain( const int argc, const char* argv[] )
       }
 
     std::list<cmtk::TypedArray::SmartPtr> imageList;
-    for ( std::list<const char*>::const_iterator it = ImageNameList.begin(); it != ImageNameList.end(); ++it ) 
+    for ( std::list<std::string>::const_iterator it = ImageNameList.begin(); it != ImageNameList.end(); ++it ) 
       {
       cmtk::UniformVolume::SmartPtr next( cmtk::VolumeIO::ReadOriented( *it ) );
       if ( ! next || ! next->GetData() ) 
@@ -238,7 +238,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::VolumeIO::Write( *volume, OutputFileName );
 
 #ifdef CMTK_USE_SQLITE
-  if ( updateDB )
+  if ( !updateDB.empty() )
     {
     cmtk::ImageXformDB db( updateDB );
     db.AddImage( OutputFileName, InputFileName  );

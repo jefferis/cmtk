@@ -58,12 +58,12 @@
 bool Mask = false;
 bool OutputAbsolute = false;
 
-const char* RefFileName = NULL;
-const char *OutFileName = NULL;
+std::string RefFileName;
+std::string OutFileName;
 
 std::vector<std::string> InputXformPaths;
 
-const char* Downsample = NULL;
+std::string Downsample;
 
 cmtk::Types::Coordinate InversionToleranceFactor = 0.1;
 
@@ -116,10 +116,10 @@ doMain ( const int argc, const char *argv[] )
   
   const cmtk::XformList& xformListRef = xformList; // need this to work around GCD bug
 
-  if ( Downsample )
+  if ( !Downsample.empty() )
     {
     int factors[3] = { 1, 1, 1 };
-    const size_t nFactors = sscanf( Downsample, "%d,%d,%d", factors, factors+1, factors+2 );
+    const size_t nFactors = sscanf( Downsample.c_str(), "%d,%d,%d", factors, factors+1, factors+2 );
     if ( nFactors == 1 )
       {
       factors[1] = factors[2] = factors[0];

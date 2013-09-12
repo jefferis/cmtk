@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,7 +93,7 @@ AddVolumeStudyVector
   if ( ! referenceVolume )
     {
     const std::string actualPath = cmtk::StrReplaceByRules( studylist.GetReferenceStudyPath(), ReplaceMap );
-    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str() ) );
+    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath ) );
     if ( ! referenceVolume )
       {
       cmtk::StdErr << "WARNING: could not read reference volume " << actualPath.c_str() << "\n";
@@ -102,7 +102,7 @@ AddVolumeStudyVector
     }
 
   const std::string actualPath = cmtk::StrReplaceByRules( studylist.GetFloatingStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
+  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath ) );
 
   if ( PaddingFlag )
     {

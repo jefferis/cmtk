@@ -103,22 +103,22 @@ private:
    * This is defined by the --inlist command line parameter (not currently
    * supported).
    */
-  const char *InputStudylist;
+  std::string InputStudylist;
 
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.
    */
-  const char *Studylist;
+  std::string Studylist;
 
   /** Name of first study to be registered.
    * This is given as the first non-option command line paramter.
    */
-  char *Study1;
+  std::string Study1;
 
   /** Name of second study to be registered.
    * This is given as the second non-option command line paramter.
    */
-  char *Study2;
+  std::string Study2;
   
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.

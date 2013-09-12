@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,17 +106,18 @@ ImagePairAffineRegistrationCommandLine
   this->m_MaxStepSize = 8;
   this->m_MinStepSize = 0.1;
   this->m_Sampling = 1.0;
-  OutParametersName = OutMatrixName = Studylist = Time = NULL;
+  OutParametersName = OutMatrixName = Time = NULL;
 
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
 
-  const char* inStudylist = NULL;
-  const char *InitialStudylist = NULL;
-  Study1 = Study2 = NULL;
+  std::string inStudylist;
+  std::string InitialStudylist;
+  std::string Study1;
+  std::string Study2;
 
-  const char* clArg1 = NULL; // input studylist or reference image
-  const char* clArg2 = NULL; // empty or floating image
+  std::string clArg1; // input studylist or reference image
+  std::string clArg2; // empty or floating image
 
   try 
     {
@@ -235,15 +236,15 @@ ImagePairAffineRegistrationCommandLine
     throw cmtk::ExitException( 1 );
     }
 
-  if ( clArg2 ) 
+  if ( ! clArg2.empty() ) 
     {
-    Study1 = const_cast<char*>( clArg1 );
-    Study2 = const_cast<char*>( clArg2 );
+    this->Study1 = clArg1;
+    this->Study2 = clArg2;
     } 
   else
     {
     inStudylist = clArg1;
-    if ( InitialStudylist ) 
+    if ( ! InitialStudylist.empty() ) 
       {
       StdErr << "WARNING: transformation of input studylist will be overriden by transformation provided with '--initial'.\n";
       }
@@ -260,7 +261,7 @@ ImagePairAffineRegistrationCommandLine
     typedStream.Seek ( "registration" );
     Study1 = typedStream.ReadString( "reference_study" );
     Study2 = typedStream.ReadString( "floating_study" );
-    if ( Study2 )
+    if ( ! Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
@@ -278,19 +279,19 @@ ImagePairAffineRegistrationCommandLine
     typedStream.Close();
     }
 
-  if ( !Study1 )
+  if ( this->Study1.empty() )
     {
-    StdErr << "ERROR: reference image path resolved to NULL.\n";
+    StdErr << "ERROR: reference image path is empty.\n";
     throw cmtk::ExitException( 1 );
     }
   
-  if ( !Study2 )
+  if ( this->Study2.empty() )
     {
-    StdErr << "ERROR: floating image path resolved to NULL.\n";
+    StdErr << "ERROR: floating image path is empty.\n";
     throw cmtk::ExitException( 1 );
     }
   
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( this->Study1 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
@@ -298,7 +299,7 @@ ImagePairAffineRegistrationCommandLine
     }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->Study2 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
@@ -306,7 +307,7 @@ ImagePairAffineRegistrationCommandLine
     }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
-  if ( InitialStudylist ) 
+  if ( ! InitialStudylist.empty() ) 
     {
     Xform::SmartPtr xform( XformIO::Read( InitialStudylist ) );
     if ( ! xform ) 
@@ -334,7 +335,7 @@ ImagePairAffineRegistrationCommandLine
   
   if ( this->m_Initializer != MakeInitialAffineTransformation::NONE ) 
     {
-    if ( inStudylist || InitialStudylist ) 
+    if ( ! (inStudylist.empty() && InitialStudylist.empty()) ) 
       {
       StdErr << "INFO: initial transformation was provided. Selected transformation initializer will be ignored.\n";
       } 
@@ -476,7 +477,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
     this->OutputResultParameters( path.c_str(), *v );
     }
 
-  if ( this->Studylist ) 
+  if ( ! this->Studylist.empty() ) 
     {
     std::string path( this->Studylist );
     if ( irq != CALLBACK_OK )
@@ -516,9 +517,9 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
 	}
       
-      if ( this->Studylist )
+      if ( ! this->Studylist.empty() )
 	{
-	if ( this->m_InitialXformPath ) 
+	if ( ! this->m_InitialXformPath.empty() ) 
 	  {
 	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath, this->m_InitialXformIsInverse );
 	  }

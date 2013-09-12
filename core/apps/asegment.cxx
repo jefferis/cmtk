@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,10 +48,10 @@ doMain( const int argc, const char* argv[] )
 {
   bool fast = false;
   
-  const char* targetImageName = NULL;
-  const char* atlasImageName = NULL;
-  const char* atlasLabelName = NULL;
-  const char* outImageName = NULL;
+  std::string targetImageName;
+  std::string atlasImageName;
+  std::string atlasLabelName;
+  std::string outImageName;
 
   try
     {

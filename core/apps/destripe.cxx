@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,8 +49,8 @@ int TruncateKernel = 0;
 
 bool WriteFloat = false;
 
-const char* InputFilePath = NULL;
-const char* OutputFilePath = NULL;
+std::string InputFilePath;
+std::string OutputFilePath;
 
 int
 doMain ( const int argc, const char* argv[] ) 
@@ -198,7 +198,7 @@ doMain ( const int argc, const char* argv[] )
       }
     }
 
-  if ( OutputFilePath )
+  if ( ! OutputFilePath.empty() )
     cmtk::VolumeIO::Write( *volume, OutputFilePath );
   
   return 0;

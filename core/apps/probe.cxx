@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -150,7 +150,7 @@ typedef enum
 int
 doMain( const int argc, const char *argv[] )
 {
-  const char* inputImagePath = NULL;
+  std::string inputImagePath;
   const char* readOrientation = "RAS";
 
   CoordinateModeEnum mode = COORDINATES_ABSOLUTE;

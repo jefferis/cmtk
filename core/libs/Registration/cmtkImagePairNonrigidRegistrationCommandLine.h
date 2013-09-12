@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,10 +106,10 @@ protected:
 private:
   /** Name of input studylist.
    */
-  const char *InputStudylist;
+  std::string InputStudylist;
 
   /// Initial transformation file.
-  const char *m_InitialTransformationFile;
+  std::string m_InitialTransformationFile;
 
   /// Flag whether initial transformation is inverted.
   bool m_InitialTransformationInverse;
@@ -117,17 +117,17 @@ private:
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.
    */
-  const char *Studylist;
+  std::string Studylist;
 
   /** Name of first study to be registered.
    * This is given as the first non-option command line paramter.
    */
-  char *Study1;
+  std::string Study1;
 
   /** Name of second study to be registered.
    * This is given as the second non-option command line paramter.
    */
-  char *Study2;
+  std::string Study2;
   
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.

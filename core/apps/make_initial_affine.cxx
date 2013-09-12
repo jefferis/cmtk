@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,9 +55,9 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* referenceImagePath = NULL;
-  const char* floatingImagePath = NULL;
-  const char* outputXformPath = NULL;
+  std::string referenceImagePath;
+  std::string floatingImagePath;
+  std::string outputXformPath;
   
   bool centerXform = false;
 
@@ -70,7 +70,7 @@ doMain( const int argc, const char* argv[] )
   int mode = 0;
 
 #ifdef CMTK_USE_SQLITE
-  const char* updateDB = NULL;
+  std::string updateDB;
 #endif
 
   try
@@ -157,7 +157,7 @@ doMain( const int argc, const char* argv[] )
       }
 
 #ifdef CMTK_USE_SQLITE
-    if ( updateDB )
+    if ( !updateDB.empty() )
       {
       cmtk::ImageXformDB db( updateDB );
       db.AddImagePairXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );

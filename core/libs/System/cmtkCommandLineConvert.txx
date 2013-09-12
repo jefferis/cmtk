@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -139,6 +139,15 @@ const char*
 CommandLine::Item::Convert<const char*>( const char* str ) 
 {
   return str; 
+}
+
+/// Convert string to STL string.
+template<> 
+inline
+std::string
+CommandLine::Item::Convert<std::string>( const char* str ) 
+{
+  return std::string(str); 
 }
 
 /// Convert string to vector.

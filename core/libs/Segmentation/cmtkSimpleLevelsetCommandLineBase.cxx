@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -95,7 +95,7 @@ cmtk::SimpleLevelsetCommandLineBase::Init( const int argc, const char* argv[] )
     return 1;
     }
   
-  this->m_Volume = cmtk::VolumeIO::ReadOriented( this->m_InFile);
+  this->m_Volume = cmtk::VolumeIO::ReadOriented( this->m_InFile );
 
   if ( !this->m_Volume )
     return 1;

@@ -84,8 +84,8 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* imagePathIn = NULL;
-  const char* imagePathOut = NULL;
+  std::string imagePathIn;
+  std::string imagePathOut;
 
 #ifdef CMTK_USE_SQLITE
   const char* updateDB = NULL;

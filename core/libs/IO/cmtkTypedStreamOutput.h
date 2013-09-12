@@ -119,7 +119,7 @@ public:
    *\param section Name of the new section.
    *\return Error condition.
    */
-  Self::Condition Begin( const std::string& section = NULL );
+  Self::Condition Begin( const std::string& section );
 
   /** End a section.
    * In the open archive, this function will close the last section and 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,7 +65,6 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     m_SymmetryOutFileName( NULL ),
     m_SymmetryParameters( NULL ),
     m_SymmetryParametersFile( NULL ),
-    m_InFileName( NULL ),
     m_InitialPlane( SYMPL_INIT_YZ ),
     m_CommandLine( CommandLine::PROPS_XML )
 {
@@ -141,7 +140,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   UniformVolume::SmartPtr originalVolume( VolumeIO::ReadOriented( this->m_InFileName ) );
   if ( !originalVolume ) 
     {
-    StdErr.printf( "Could not read image file %s\n", this->m_InFileName );
+    StdErr.printf( "Could not read image file %s\n", this->m_InFileName.c_str() );
     return 1;
     }
 

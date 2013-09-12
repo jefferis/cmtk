@@ -52,20 +52,20 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  const char* inputPhantomPath = NULL;
-  const char* inputImagePath = NULL;
+  std::string inputPhantomPath;
+  std::string inputImagePath;
 
   cmtk::Types::Coordinate residualThreshold = 5.0;
 
   bool fitInverse = false;
-  const char* gridDims = NULL;
+  std::string gridDims;
   cmtk::Types::Coordinate gridSpacing = 0;
 
   cmtk::FitSplineWarpToLandmarks::Parameters fittingParameters;
   
   bool affineFirst = true;
 
-  const char* outputXform = NULL;
+  std::string outputXform;
 
   try
     {
@@ -107,7 +107,7 @@ doMain( const int argc, const char* argv[] )
     }
 
   // check for inconsistent parameters
-  if ( gridDims && gridSpacing )
+  if ( gridSpacing && !gridDims.empty() )
     {
     cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
     throw cmtk::ExitException( 1 );
@@ -157,10 +157,10 @@ doMain( const int argc, const char* argv[] )
   else
     {
     // or fit by final control point grid dimension
-    if ( gridDims )
+    if ( !gridDims.empty() )
       {
       double dims[3];
-      if ( 3 != sscanf( gridDims, "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
+      if ( 3 != sscanf( gridDims.c_str(), "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
 	{
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );
