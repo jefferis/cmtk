@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,7 +60,7 @@ MountPoints::Translate( const std::string& path )
     }
 
   const char* pathStr = path.c_str();
-  strcpy( buffer, pathStr );
+  strncpy( buffer, pathStr, PATH_MAX );
 
   char searchStr[256], replaceStr[256];
   const char *delim;
@@ -104,7 +104,7 @@ MountPoints::Translate( const std::string& path )
 	  {
 	  // Yes, it does: Substitute prefix accordingly and return pointer
 	  // to buffer containing modified path.
-	  strcat( strcpy( buffer, replaceStr ), pathStr+strlen(searchStr)-1 );
+	  strcat( strncpy( buffer, replaceStr, PATH_MAX ), pathStr+strlen(searchStr)-1 );
 	  return buffer;
 	  }
 	} 
@@ -119,7 +119,7 @@ MountPoints::Translate( const std::string& path )
 	  char tmpPath[PATH_MAX];
 	  memset( tmpPath, 0, sizeof( tmpPath ) );
 	  strcat( strcat( strncpy( tmpPath, buffer, found-buffer ), replaceStr ), found + strlen(searchStr) );
-	  strcpy( buffer, tmpPath );
+	  strncpy( buffer, tmpPath, PATH_MAX );
 	  }
 	}
       }

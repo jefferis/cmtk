@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -99,8 +99,8 @@ VolumeFromFile::ReadVanderbilt( const std::string& path )
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientation );
 
   // generate image filename from header file path.
-  char imageFilename[PATH_MAX], *lastSlash;
-  strcpy( imageFilename, path.c_str() );
+  char imageFilename[PATH_MAX+1], *lastSlash;
+  strncpy( imageFilename, path.c_str(), PATH_MAX );
   if ( (lastSlash = strrchr( imageFilename, '/' ) ) )
     ++lastSlash;
   else

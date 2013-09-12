@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -119,7 +119,7 @@ public:
    *\param section Name of the new section.
    *\return Error condition.
    */
-  Self::Condition Begin( const char* section = NULL );
+  Self::Condition Begin( const std::string& section = NULL );
 
   /** End a section.
    * In the open archive, this function will close the last section and 

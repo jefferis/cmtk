@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,7 +87,7 @@ public:
   Self& Compose( const Types::Coordinate params[15], const bool logScaleFactors = false );
   
   /// Decompose into affine parameters.
-  bool Decompose( Types::Coordinate params[12], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
+  bool Decompose( Types::Coordinate params[15], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
 
   /** Change reference coordinate system.
    */

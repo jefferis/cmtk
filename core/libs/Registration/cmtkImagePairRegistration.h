@@ -225,7 +225,7 @@ protected:
 
   private:
     /// Store the name that identifies this instance ("Reference" or "Floating")
-    const char* m_Name;
+    std::string m_Name;
 
     /// Store the key that identifies this instance ("ref" or "flt")
     const char* m_Key;

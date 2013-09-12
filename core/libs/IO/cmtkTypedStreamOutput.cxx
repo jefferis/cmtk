@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -239,7 +239,7 @@ TypedStreamOutput
 TypedStreamOutput::Condition 
 TypedStreamOutput
 ::Begin
-( const char* section )
+( const std::string& section )
 {
   if ( !File && !GzFile)
     {
@@ -247,26 +247,20 @@ TypedStreamOutput
     return Self::CONDITION_ERROR;
     }
 
-  if ( !section) 
-    {
-    this->m_Status = Self::ERROR_ARG;
-    return Self::CONDITION_ERROR;
-    }
-  
   int streamLevel = LevelStack.size();
   if ( GzFile ) 
     {
     for ( int level = 0; level < streamLevel; level++)
       gzputs( GzFile, "\t" );
     
-    gzprintf( GzFile, "%s {\n", section );
+    gzprintf( GzFile, "%s {\n", section.c_str() );
     }
   else
     {
     for ( int level = 0; level < streamLevel; level++)
       fputs( "\t", File );
     
-    fprintf( File, "%s {\n", section );
+    fprintf( File, "%s {\n", section.c_str() );
     }
   
   if ( GzFile )

@@ -1167,7 +1167,7 @@ public:
   };
 
   /// Begin parameter group.
-  KeyActionGroupType::SmartPtr& BeginGroup( const char* name, const char* description );
+  KeyActionGroupType::SmartPtr& BeginGroup( const std::string& name, const std::string& description );
 
   /// End last parameter group.
   void EndGroup();

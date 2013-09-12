@@ -106,7 +106,7 @@ CommandLine::CallbackInternal()
 
 CommandLine::KeyActionGroupType::SmartPtr&
 CommandLine
-::BeginGroup( const char* name, const char* description ) 
+::BeginGroup( const std::string& name, const std::string& description ) 
 { 
   this->m_KeyActionGroupList.push_back( KeyActionGroupType::SmartPtr( new KeyActionGroupType( name, description ) ) );
   this->m_KeyActionList = &(this->m_KeyActionGroupList.back()->m_KeyActionList);
