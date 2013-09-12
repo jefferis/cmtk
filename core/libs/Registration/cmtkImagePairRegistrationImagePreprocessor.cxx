@@ -40,7 +40,7 @@ namespace
 cmtk
 {
 
-ImagePairRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, const char* key )
+ImagePairRegistration::ImagePreprocessor::ImagePreprocessor( const std::string& name, const std::string& key )
   : m_DataClassString( NULL ),
     m_DataClass( DATACLASS_GREY ),
     m_PaddingFlag( false ),

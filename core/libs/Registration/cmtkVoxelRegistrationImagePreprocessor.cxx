@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,7 @@ namespace
 cmtk
 {
 
-VoxelRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, const char* key )
+VoxelRegistration::ImagePreprocessor::ImagePreprocessor( const std::string& name, const std::string& key )
   : m_DataClassString( NULL ),
     m_DataClass( DATACLASS_GREY ),
     m_PaddingFlag( false ),
@@ -67,21 +67,20 @@ void
 VoxelRegistration::ImagePreprocessor::AttachToCommandLine
 ( CommandLine& cl )
 {
-  char buffer[64];
-  cl.BeginGroup( this->m_Name, strcat( strcpy( buffer, this->m_Name ), " Image Preprocessing" ) )->SetProperties( CommandLine::PROPS_NOXML );
+  cl.BeginGroup( this->m_Name, this->m_Name + " Image Preprocessing" )->SetProperties( CommandLine::PROPS_NOXML );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "class-" ), this->m_Key ) ), &this->m_DataClassString, "Data class: grey (default) or label" );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "pad-" ), this->m_Key ) ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
+  cl.AddOption( CommandLine::Key( std::string( "class-" ) + this->m_Key ), &this->m_DataClassString, "Data class: grey (default) or label" );
+  cl.AddOption( CommandLine::Key( std::string( "pad-" ) + this->m_Key ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
 
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-min-" ), this->m_Key ) ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), this->m_Key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
+  cl.AddOption( CommandLine::Key( std::string( "thresh-min-" ) + this->m_Key ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
+  cl.AddOption( CommandLine::Key( std::string( "thresh-max-" ) + this->m_Key ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning", &this->m_UsePruneHistogramBins );
-  cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "histogram-equalization-" ), this->m_Key ) ), &this->m_HistogramEqualization, true, "Apply histogram equalization" );
-  cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "sobel-filter-" ), this->m_Key ) ), &this->m_SobelFilter, true, "Apply Sobel edge detection filter" );
+  cl.AddOption( CommandLine::Key( std::string( "prune-histogram-" ) + this->m_Key ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning", &this->m_UsePruneHistogramBins );
+  cl.AddSwitch( CommandLine::Key( std::string( "histogram-equalization-" ) + this->m_Key ), &this->m_HistogramEqualization, true, "Apply histogram equalization" );
+  cl.AddSwitch( CommandLine::Key( std::string( "sobel-filter-" ) + this->m_Key ), &this->m_SobelFilter, true, "Apply Sobel edge detection filter" );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), this->m_Key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1]" );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), this->m_Key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1]" );
+  cl.AddOption( CommandLine::Key( std::string( "crop-index-" ) + this->m_Key ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1]" );
+  cl.AddOption( CommandLine::Key( std::string( "crop-world-" ) + this->m_Key ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1]" );
   
   cl.EndGroup();
 }
@@ -179,8 +178,7 @@ void
 VoxelRegistration::ImagePreprocessor::WriteSettings
 ( ClassStreamOutput& stream ) const
 {
-  char buffer[64];
-  stream.Begin( strcat( strcpy( buffer, "preprocessing_" ), this->m_Key ) );
+  stream.Begin( std::string( "preprocessing_" ) + this->m_Key );
   switch ( this->m_DataClass ) 
     {
     case DATACLASS_GREY:

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -211,8 +211,8 @@ protected:
     Types::DataItem m_AutoCropLevel;
     
     /// Constructor.
-    ImagePreprocessor( const char* name /*!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.*/,
-		       const char* key /*!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.*/ );
+    ImagePreprocessor( const std::string& name /*!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.*/,
+		       const std::string& key /*!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.*/ );
     
     /// Attach this preprocessor to a command line parse.
     void AttachToCommandLine( CommandLine& cl /*!< The command line object to add our options to.*/ ); 
@@ -228,7 +228,7 @@ protected:
     std::string m_Name;
 
     /// Store the key that identifies this instance ("ref" or "flt")
-    const char* m_Key;
+    std::string m_Key;
   };
 
   /// Image preprocessor for reference image.
