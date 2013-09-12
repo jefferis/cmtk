@@ -316,7 +316,7 @@ AffineRegistrationCommandLine
     this->m_Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
     }
   
-  if ( Protocol ) 
+  if ( !Protocol.empty() ) 
     {
     RegistrationCallback::SmartPtr callback( new ProtocolCallback( Protocol ) );
     this->SetCallback( callback );
@@ -518,9 +518,9 @@ AffineRegistrationCommandLine::Register ()
   CallbackResult Result = Superclass::Register();
   const int elapsed = static_cast<int>( Timers::GetTimeProcess() - baselineTime );
 
-  if ( Time ) 
+  if ( !this->Time.empty() ) 
     {
-    FILE *tfp = fopen( Time, "w" );
+    FILE *tfp = fopen( this->Time.c_str(), "w" );
     
     if ( tfp ) 
       {
@@ -529,7 +529,7 @@ AffineRegistrationCommandLine::Register ()
       } 
     else 
       {
-      StdErr << "Could not open time file " << Time << "\n";
+      StdErr << "Could not open time file " << this->Time << "\n";
       }
     }
   return Result;

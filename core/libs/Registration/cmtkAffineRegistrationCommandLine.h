@@ -150,12 +150,12 @@ private:
   /** Name of protocol output file.
    * This is defined by the -p or --protocol command line option.
    */
-  const char *Protocol;
+  std::string Protocol;
 
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */
-  const char *Time;
+  std::string Time;
 
   /** Flag for initial center-of-mass translation.
    * This defaults to 'no' and is set to 'yes' by -i or --initxlate command
