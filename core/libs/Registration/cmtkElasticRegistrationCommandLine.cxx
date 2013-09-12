@@ -93,26 +93,17 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
-( const int argc, const char *argv[] ) :
-#ifdef CMTK_USE_SQLITE
-  m_UpdateDB( NULL ),
-#endif
-  m_OutputPathITK( NULL ),
-  m_ReformattedImagePath( NULL )
+( const int argc, const char *argv[] )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;
 
   this->m_GridSpacing = 15;
   this->m_ExactGridSpacing = 0;
-  Studylist = Protocol = Time = NULL;
-
   this->m_OutputIntermediate = 0;
 
   std::string initialTransformationFile;
   IntermediateResultIndex = 0;
-
-  this->RigidityConstraintMapFilename = NULL;
 
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
@@ -315,7 +306,7 @@ ElasticRegistrationCommandLine
       }
     }
   
-  if ( this->RigidityConstraintMapFilename )
+  if ( !this->RigidityConstraintMapFilename.empty() )
     {
     UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename ) );
     if ( rigidityWeightMap )
@@ -334,7 +325,7 @@ ElasticRegistrationCommandLine
     this->SetForceOutside( true, forceOutsideValue );
     }
 
-  if ( Protocol )
+  if ( !Protocol.empty() )
     {
     RegistrationCallback::SmartPtr callback( new ProtocolCallback( Protocol ) );
     this->SetCallback( callback );
@@ -383,32 +374,30 @@ ElasticRegistrationCommandLine
     this->OutputWarp( path.c_str() );
     }
 
-  if ( this->m_OutputPathITK ) 
+  if ( !this->m_OutputPathITK.empty() ) 
     {
-    std::string path( this->m_OutputPathITK );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    SplineWarpXformITKIO::Write( path.c_str(), *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+      SplineWarpXformITKIO::Write( this->m_OutputPathITK + "-partial", *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+    else
+      SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
     }
 
-  if ( this->m_ReformattedImagePath )
+  if ( !this->m_ReformattedImagePath.empty() )
     {
-    std::string path( this->m_ReformattedImagePath );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), path.c_str() );
+      VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath + "-partial" );
+    else
+      VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
     }
 
 #ifdef CMTK_USE_SQLITE
-  if ( this->m_UpdateDB && (irq == CALLBACK_OK) )
+  if ( (irq == CALLBACK_OK) && !this->m_UpdateDB.empty() )
     {
     try
       {
       ImageXformDB db( this->m_UpdateDB );
       
-      if ( this->m_ReformattedImagePath )
+      if ( !this->m_ReformattedImagePath.empty() )
 	{
 	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
 	}
@@ -453,7 +442,7 @@ ElasticRegistrationCommandLine::DoneResolution
 }
 
 void
-ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
+ElasticRegistrationCommandLine::OutputWarp ( const std::string& path ) const
 {
   ClassStreamOutput classStream( path, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( ! classStream.IsValid() ) return;
@@ -487,7 +476,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteInt( "ignore_edge", IgnoreEdge );
   classStream.WriteDouble( "jacobian_constraint_weight", this->m_JacobianConstraintWeight );
   classStream.WriteDouble( "rigidity_constraint_weight", this->m_RigidityConstraintWeight );
-  if ( this->RigidityConstraintMapFilename )
+  if ( !this->RigidityConstraintMapFilename.empty() )
     {
     classStream.WriteString( "rigidity_constraint_map_filename", RigidityConstraintMapFilename );
     }
@@ -574,9 +563,9 @@ CallbackResult ElasticRegistrationCommandLine::Register ()
   CallbackResult Result = this->Superclass::Register();
   const int elapsed = static_cast<int>( Timers::GetTimeProcess() - baselineTime );
 
-  if ( Time ) 
+  if ( !this->Time.empty() ) 
     {
-    FILE *tfp = fopen( Time, "w" );
+    FILE *tfp = fopen( this->Time.c_str(), "w" );
     
     if ( tfp ) 
       {

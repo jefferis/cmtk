@@ -90,13 +90,6 @@ cmtk
 AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
 ( const int argc, const char* argv[] ) 
-  : m_InitialXformPath( NULL ),
-    m_ReformattedImagePath( NULL ),
-    m_OutputPathITK( NULL ),
-#ifdef CMTK_USE_SQLITE
-    m_UpdateDB( NULL ),
-#endif
-    Protocol( NULL )
 {
   this->m_Metric = 0;
 
@@ -105,7 +98,6 @@ AffineRegistrationCommandLine
   this->m_Exploration = 8;
   this->m_Accuracy = 0.1;
   this->m_Sampling = 1.0;
-  OutParametersName = OutMatrixName = Studylist = Time = NULL;
   InitXlate = 0;
   this->m_NoSwitch = 0;
 
@@ -339,11 +331,11 @@ AffineRegistrationCommandLine::InitRegistration ()
 }
 	
 void
-AffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) const
+AffineRegistrationCommandLine::OutputResultMatrix( const std::string& matrixName ) const
 {
   const AffineXform::MatrixType& matrix = this->GetTransformation()->Matrix;
   
-  FILE* mfile = fopen( matrixName, "w" );
+  FILE* mfile = fopen( matrixName.c_str(), "w" );
   if ( mfile )
     {
     for ( int i = 0; i < 4; ++i )
@@ -356,9 +348,9 @@ AffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) cons
 
 void
 AffineRegistrationCommandLine::OutputResultParameters
-( const char* paramsName, const CoordinateVector& v ) const
+( const std::string& paramsName, const CoordinateVector& v ) const
 {
-  FILE* pfile = fopen( paramsName, "w" );
+  FILE* pfile = fopen( paramsName.c_str(), "w" );
   if ( pfile )
     {
     for ( unsigned int idx=0; idx < v.Dim; ++idx )
@@ -368,7 +360,7 @@ AffineRegistrationCommandLine::OutputResultParameters
 }
 
 void
-AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
+AffineRegistrationCommandLine::OutputResultList( const std::string& studyList ) const
 {
   ClassStreamOutput classStream( studyList, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( !classStream.IsValid() ) return;
@@ -437,65 +429,60 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const C
   for ( unsigned int idx=0; idx<v->Dim; ++idx )
     DebugOutput( 1 ).GetStream().printf( "#%d: %f\n", idx, v->Elements[idx] );
   
-  if ( this->OutMatrixName )
+  if ( !this->OutMatrixName.empty() )
     {
-    std::string path( this->OutMatrixName );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-
-    this->OutputResultMatrix( path.c_str() );
+      this->OutputResultMatrix( this->OutMatrixName + "-partial" );
+    else
+      this->OutputResultMatrix( this->OutMatrixName );
     }
 
-  if ( this->OutParametersName )
+  if ( !this->OutParametersName.empty() )
     {
-    std::string path( this->OutParametersName );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    this->OutputResultParameters( path.c_str(), *v );
+      this->OutputResultParameters( this->OutParametersName + "-partial", *v );
+    else
+      this->OutputResultParameters( this->OutParametersName, *v );
     }
 
-  if ( this->Studylist ) 
+  if ( !this->Studylist.empty() ) 
     {
-    std::string path( this->Studylist );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-
-    this->OutputResultList( path.c_str() );
+      this->OutputResultList( this->Studylist + "-partial" );
+    else
+      this->OutputResultList( this->Studylist );
     }
 
-  if ( this->m_OutputPathITK ) 
+  if ( !this->m_OutputPathITK.empty() ) 
     {
-    std::string path( this->m_OutputPathITK );
-    if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
     TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2), AnatomicalOrientationBase::SPACE_ITK );
-    AffineXformITKIO::Write( path.c_str(), toNative.GetTransformation() );
+    if ( irq != CALLBACK_OK )
+      AffineXformITKIO::Write( this->m_OutputPathITK + "-partial", toNative.GetTransformation() );
+    else
+      AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
   
-  if ( this->m_ReformattedImagePath )
+  if ( !this->m_ReformattedImagePath.empty() )
     {
-    std::string path( this->m_ReformattedImagePath );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), path.c_str() );
+      VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath + "-partial" );
+    else
+      VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
     }
 
 #ifdef CMTK_USE_SQLITE
-  if ( this->m_UpdateDB && (irq == CALLBACK_OK) )
+  if ( (irq == CALLBACK_OK) && !this->m_UpdateDB.empty() )
     {
     try
       {
       ImageXformDB db( this->m_UpdateDB );
       
-      if ( this->m_ReformattedImagePath )
+      if ( !this->m_ReformattedImagePath.empty() )
 	{
 	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
 	}
       
-      if ( this->Studylist )
+      if ( !this->Studylist.empty() )
 	{
 	if ( ! this->m_InitialXformPath.empty() )
 	  {

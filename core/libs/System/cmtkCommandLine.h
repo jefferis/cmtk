@@ -611,7 +611,7 @@ private:
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const
     {
       // by default, simply return stream unchanged.
-      if ( this->Var )
+      if ( this->Var && !this->Var->empty() )
 	fmt << "\n[Default: " << *(this->Var) << "]";
       else
 	fmt << "\n[There is no default for this parameter]";
@@ -622,7 +622,7 @@ private:
     virtual void PrintWiki() const
     {
       // by default, simply return stream unchanged.
-      if ( this->Var )
+      if ( this->Var && !this->Var->empty() )
 	StdOut << " '''[Default: " << *(this->Var) << "]'''\n";
       else
 	StdOut << " '''[There is no default for this parameter]'''\n";
@@ -632,7 +632,7 @@ private:
     virtual void PrintMan() const
     {
       // by default, simply return stream unchanged.
-      if ( this->Var )
+      if ( this->Var && !this->Var->empty() )
 	StdOut << "\\fB[Default: " << *(this->Var) << "]\\fR\n";
       else
 	StdOut << "\\fB[There is no default for this parameter]\\fR\n";

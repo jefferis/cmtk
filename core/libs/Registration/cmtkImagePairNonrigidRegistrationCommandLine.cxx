@@ -87,17 +87,8 @@ ImagePairNonrigidRegistrationCommandLine* ImagePairNonrigidRegistrationCommandLi
 
 ImagePairNonrigidRegistrationCommandLine
 ::ImagePairNonrigidRegistrationCommandLine
-( const int argc, const char *argv[] ) :
-  m_InitialTransformationFile( NULL ),
-  m_InitialTransformationInverse( false ),
-#ifdef CMTK_USE_SQLITE
-  m_UpdateDB( NULL ),
-#endif
-  m_OutputPathITK( NULL ),
-  m_ReformattedImagePath( NULL )
+( const int argc, const char *argv[] )
 {
-  Studylist = Time = NULL;
-
   this->m_OutputIntermediate = 0;
 
   IntermediateResultIndex = 0;
@@ -347,41 +338,38 @@ ImagePairNonrigidRegistrationCommandLine
 ::OutputResult
 ( const CoordinateVector*, const CallbackResult irq )
 {
-  if ( ! this->Studylist.empty() ) 
+  if ( !this->Studylist.empty() ) 
     {
-    std::string path( this->Studylist );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-
-    this->OutputWarp( path.c_str() );
+      this->OutputWarp( this->Studylist + "-partial" );
+    else
+      this->OutputWarp( this->Studylist );
     }
 
-  if ( this->m_OutputPathITK ) 
+  if ( !this->m_OutputPathITK.empty() ) 
     {
-    std::string path( this->m_OutputPathITK );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    SplineWarpXformITKIO::Write( path.c_str(), *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+      SplineWarpXformITKIO::Write( this->m_OutputPathITK + "-partial", *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+    else
+      SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
     }
   
-  if ( this->m_ReformattedImagePath )
+  if ( !this->m_ReformattedImagePath.empty() )
     {
-    std::string path( this->m_ReformattedImagePath );
     if ( irq != CALLBACK_OK )
-      path.append( "-partial" );
-    
-    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), path.c_str() );
+      VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath + "-partial" );
+    else
+      VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath );
     }
 
 #ifdef CMTK_USE_SQLITE
-  if ( this->m_UpdateDB && (irq == CALLBACK_OK) )
+  if ( (irq == CALLBACK_OK) && !this->m_UpdateDB.empty() )
     {
     try
       {
       ImageXformDB db( this->m_UpdateDB );
       
-      if ( this->m_ReformattedImagePath )
+      if ( !this->m_ReformattedImagePath.empty() )
 	{
 	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
 	}
@@ -416,8 +404,7 @@ ImagePairNonrigidRegistrationCommandLine
 void
 ImagePairNonrigidRegistrationCommandLine
 ::EnterResolution
-( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
-  const int index, const int total )
+( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int index, const int total )
 {
   DebugOutput( 1 ).GetStream().printf( "\rEntering resolution level %d out of %d...\n", index, total );
   this->Superclass::EnterResolution( v, f, index, total );
@@ -433,7 +420,7 @@ ImagePairNonrigidRegistrationCommandLine::DoneResolution
 }
 
 void
-ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
+ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const std::string& path ) const
 {
   ClassStreamOutput classStream( path, "studylist", ClassStreamOutput::MODE_WRITE );
   if ( ! classStream.IsValid() ) return;

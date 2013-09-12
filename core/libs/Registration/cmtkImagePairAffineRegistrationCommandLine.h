@@ -109,7 +109,7 @@ private:
   std::string m_InitialXformPath;
   
   /// Path for reformatted floating image.
-  const char* m_ReformattedImagePath;
+  std::string m_ReformattedImagePath;
 
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.
@@ -119,15 +119,15 @@ private:
   /** Name of the output matrix file.
     * This is defined by the "--out-matrix" command line argument.
     */
-  const char* OutMatrixName;
+  std::string OutMatrixName;
 
   /** Name of the output parameter file.
     * This is defined by the "--out-params" command line argument.
     */
-  const char* OutParametersName;
+  std::string OutParametersName;
 
   /// Name of output transformation file in ITK format.
-  const char* m_OutputPathITK;
+  std::string m_OutputPathITK;
 
   /** Name of first study to be registered.
    * This is given as the first non-option command line paramter.
@@ -141,25 +141,25 @@ private:
 
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.
-  const char* m_UpdateDB;
+  std::string m_UpdateDB;
 #endif
 
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */
-  const char *Time;
+  std::string Time;
 
   /// Protocol file name.
-  const char* m_ProtocolFileName;
+  std::string m_ProtocolFileName;
 
   /// Output result as matrix (text) file.
-  void OutputResultMatrix( const char* matrixName ) const;
+  void OutputResultMatrix( const std::string& matrixName ) const;
 
   /// Output result (and statistics) as studylist archive.
-  void OutputResultParameters( const char* paramsName, const CoordinateVector& v ) const;
+  void OutputResultParameters( const std::string& paramsName, const CoordinateVector& v ) const;
 
   /// Output result (and statistics) as studylist archive.
-  void OutputResultList( const char* studyList ) const;
+  void OutputResultList( const std::string& studyList ) const;
 };
 
 //@}

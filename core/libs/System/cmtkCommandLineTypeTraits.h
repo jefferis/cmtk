@@ -119,6 +119,23 @@ public:
   { 
     return "string";
   }
+
+  static std::string ValueToString( const std::string& value )
+  {
+    std::ostringstream stream;
+    if ( value.length() )
+      stream << "\"" << value << "\"";
+    else
+      stream << "NONE";
+    return stream.str();
+  }
+
+  static std::string ValueToStringMinimal( const std::string& value )
+  {
+    std::ostringstream stream;
+    stream << value;
+    return stream.str();
+  }
 };
 
 template<>

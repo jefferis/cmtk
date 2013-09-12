@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +50,7 @@ class ProtocolCallback :
 {
 public:
   /// Open protocol stream if filename is given.
-  ProtocolCallback ( const char *filename = NULL, const bool debug = false );
+  ProtocolCallback ( const std::string& filename = "", const bool debug = false );
 
   /** Destructor. 
    * Closes protocol stream.
@@ -60,7 +61,7 @@ public:
   virtual CallbackResult ExecuteWithData ( const CoordinateVector& v, const double metric );
 
   /// Write comment to protocol file.
-  virtual void Comment ( const char* comment = NULL );
+  virtual void Comment ( const std::string& comment = "" );
 
 private:
   /// Protocol stream.

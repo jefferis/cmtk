@@ -139,18 +139,18 @@ private:
   bool m_OutputIntermediate;
 
   /// Write deformation to studylist archive.
-  void OutputWarp ( const char* ) const;
+  void OutputWarp ( const std::string& ) const;
 
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.
-  const char* m_UpdateDB;
+  std::string m_UpdateDB;
 #endif
 
   /// Name of output transformation file in ITK format.
-  const char* m_OutputPathITK;
+  std::string m_OutputPathITK;
 
   /// Path for reformatted floating image.
-  const char* m_ReformattedImagePath;
+  std::string m_ReformattedImagePath;
 
 public:
   /// Static pointer to this object.

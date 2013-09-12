@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,34 +122,34 @@ private:
   
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.
-  const char* m_UpdateDB;
+  std::string m_UpdateDB;
 #endif
 
   /// Filename for rigidity constraint map.
-  const char* RigidityConstraintMapFilename;
+  std::string RigidityConstraintMapFilename;
 
   /** Name of protocol output file.
    * This is defined by the -p or --protocol command line option.
    */
-  const char *Protocol;
+  std::string Protocol;
 
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */
-  const char *Time;
+  std::string Time;
 
   /** Select whether too create intermediate warp output files (level-xx.list).
    */
   bool m_OutputIntermediate;
 
   /// Write deformation to studylist archive.
-  void OutputWarp ( const char* ) const;
+  void OutputWarp ( const std::string& ) const;
 
   /// Name of output transformation file in ITK format.
-  const char* m_OutputPathITK;
+  std::string m_OutputPathITK;
 
   /// Path for reformatted floating image.
-  const char* m_ReformattedImagePath;
+  std::string m_ReformattedImagePath;
 
 public:
   /// Static pointer to this object.

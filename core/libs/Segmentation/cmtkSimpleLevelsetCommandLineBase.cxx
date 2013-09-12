@@ -44,8 +44,6 @@ cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
     m_NumberOfIterations( 100 ),
     m_ForceIterations( false ),
     m_Binarize( false ),    
-    m_InFile( NULL ),
-    m_OutFile( NULL ),
     m_CommandLine( cmtk::CommandLine::PROPS_XML )
 {
 #ifdef CMTK_USE_SQLITE

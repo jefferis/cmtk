@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,11 +42,11 @@ cmtk
 //@{
 
 ProtocolCallback::ProtocolCallback
-( const char *filename, const bool debug ) 
+( const std::string& filename, const bool debug ) 
 { 
-  if (filename) 
+  if ( !filename.empty() ) 
     {
-    if ( (fp = fopen( filename, "w" )) ) 
+    if ( (fp = fopen( filename.c_str(), "w" )) ) 
       {
       fputs( "4\n1 3 3 3\n", fp );
       fflush( fp );
@@ -90,13 +91,13 @@ ProtocolCallback::ExecuteWithData
 }
 
 void
-ProtocolCallback::Comment ( const char* comment )
+ProtocolCallback::Comment ( const std::string& comment )
 {
   if ( fp ) 
     {
-    if ( comment ) 
+    if ( !comment.empty() ) 
       {
-      fprintf( fp, "# %s\n", comment );
+      fprintf( fp, "# %s\n", comment.c_str() );
       fflush( fp );
       } 
     else
@@ -108,8 +109,8 @@ ProtocolCallback::Comment ( const char* comment )
   
   if ( Debug )
     {
-    if ( comment )
-      fprintf( stderr, "# %s\n", comment );
+    if ( !comment.empty() )
+      fprintf( stderr, "# %s\n", comment.c_str() );
     else
       fputs( "#\n", stderr );
     }
