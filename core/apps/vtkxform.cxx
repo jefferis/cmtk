@@ -133,7 +133,7 @@ doMain( const int argc, const char* argv[] )
     
     // Repeat npoints times
     cmtk::Xform::SpaceVectorType xyz;
-    for ( size_t n = 0; n<npoints; ++n )
+    for ( size_t n = 0; (n<npoints) && !std::cin.eof(); ++n )
       {
       // Read original point coordinates from file
       if ( binaryMode )
