@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -126,7 +126,7 @@ public:
   }
   
   /// Constructor: allocate and create cross-references.
-  Matrix2D( const size_t dims1, const size_t dims0, const T* data = NULL )
+  Matrix2D( const size_t dims1, const size_t dims0, const T* dataPtr = NULL )
     : Superclass( dims1 )
   { 
     this->m_NumberOfColumns = dims0;
@@ -137,8 +137,8 @@ public:
     for ( size_t i = 1; i < this->m_NumberOfRows; ++i )
       (*this)[i] = (*this)[i-1] + this->m_NumberOfColumns;
     
-    if ( data )
-      memcpy( (*this)[0], data, this->m_NumberOfElements * sizeof( T ) );
+    if ( dataPtr )
+      memcpy( (*this)[0], dataPtr, this->m_NumberOfElements * sizeof( T ) );
   }
   
   /// Copy constructor.

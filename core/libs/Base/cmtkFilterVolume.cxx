@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -203,11 +203,11 @@ FilterVolume
 	if ( maskData )
 	  maskData->Get( maskValue, offset );
 	    
-	Types::DataItem valueSubj;
-	if ( maskValue && subjectData->Get( valueSubj, offset ) ) 
+	Types::DataItem valueSubjCenter;
+	if ( maskValue && subjectData->Get( valueSubjCenter, offset ) ) 
 	  {
 	  histogram.Reset();
-	  histogram.AddWeightedSymmetricKernel( histogram.ValueToBin( valueSubj ), iKernelRadius, &(iKernel[0]) );
+	  histogram.AddWeightedSymmetricKernel( histogram.ValueToBin( valueSubjCenter ), iKernelRadius, &(iKernel[0]) );
 	  
 	  for (  FilterMask<3>::const_iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
@@ -227,7 +227,7 @@ FilterVolume
 		  const size_t bin = histogram.ValueToBin( valueSubj );
 		  const Types::DataItem prob = it->Coefficient * histogram[bin];
 		  
-		  average += value * prob;
+		  average += valueSubj * prob;
 		  weight += prob;
 		  }
 		}

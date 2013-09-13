@@ -72,16 +72,16 @@ MountPoints::Translate( const std::string& path )
     delim = strchr( nextRule, '=' );
     if ( delim ) 
       {
-      int cplen = delim - nextRule;
+      const int cplen = delim - nextRule;
       strncpy( searchStr, nextRule, cplen );
       searchStr[cplen] = 0;
       
       nextRule = strchr( delim, ',' );
       if ( nextRule ) 
 	{
-	int cplen = nextRule - delim - 1;
-	strncpy( replaceStr, delim+1, cplen );
-	replaceStr[cplen] = 0;
+	const int cplenNext = nextRule - delim - 1;
+	strncpy( replaceStr, delim+1, cplenNext );
+	replaceStr[cplenNext] = 0;
 	nextRule++;
 	} 
       else

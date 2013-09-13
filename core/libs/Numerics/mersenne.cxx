@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,7 @@ void CRandomMersenne::RandomInitByArray(int const seeds[], int NumSeeds) {
 
    // Randomize some more
    mti = 0;
-   for (int i = 0; i <= MERS_N; i++) BRandom();
+   for (int ii = 0; ii <= MERS_N; ii++) BRandom();
 }
 
 

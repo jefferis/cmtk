@@ -92,15 +92,15 @@ DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
 	    char maxCount = 0;
 	    Types::DataItem maxValue = 0;
 	    
-	    for ( int it = 0; it < 256; ++it )
+	    for ( int it2 = 0; it2 < 256; ++it2 )
 	      {
-	      if ( valueMap[it] > maxCount )
+	      if ( valueMap[it2] > maxCount )
 		{
-		maxCount = static_cast<char>( valueMap[it] );
-		maxValue = it;
+		maxCount = static_cast<char>( valueMap[it2] );
+		maxValue = it2;
 		}
 	      else
-		if ( valueMap[it] == maxCount )
+		if ( valueMap[it2] == maxCount )
 		  {
 		  maxValue = dataPadding;
 		  }

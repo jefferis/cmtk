@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -95,10 +95,10 @@ ActiveShapeModel::Construct
       {
       Types::Coordinate ccXY = 0;
       
-      const Types::Coordinate* meanPtr = Mean->Elements;
-      for ( unsigned int point = 0; point < NumberOfPoints; ++point, ++meanPtr )
+      const Types::Coordinate* meanPtr2 = Mean->Elements;
+      for ( unsigned int point = 0; point < NumberOfPoints; ++point, ++meanPtr2 )
 	{
-	ccXY += ( trainingSet[sampleX][point] - (*meanPtr) ) * ( trainingSet[sampleY][point] - (*meanPtr) );
+	ccXY += ( trainingSet[sampleX][point] - (*meanPtr2) ) * ( trainingSet[sampleY][point] - (*meanPtr2) );
 	}
       cc(sampleX,sampleY) = ccXY / numberOfSamples;
       }
