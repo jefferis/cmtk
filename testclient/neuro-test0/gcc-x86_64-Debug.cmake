@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -53,7 +53,7 @@ CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
 BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Debug
-CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wshadow -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage
 CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
 CMAKE_C_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage

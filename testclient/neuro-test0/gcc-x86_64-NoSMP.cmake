@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -53,7 +53,7 @@ BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMTK_USE_SMP:BOOL=OFF
 CMAKE_BUILD_TYPE:STRING=Release
-CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wshadow -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
 

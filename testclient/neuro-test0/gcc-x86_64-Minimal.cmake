@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -50,7 +50,7 @@ BUILDNAME:STRING=Linux-gcc--x86_64-Minimal
 BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
 CMAKE_BUILD_TYPE:STRING=
-CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wshadow -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
 CMTK_BUILD_NRRD:BOOL=OFF
