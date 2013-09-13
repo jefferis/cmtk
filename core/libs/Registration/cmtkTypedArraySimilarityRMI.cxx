@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,7 +51,7 @@ TypedArraySimilarity::GetMutualInformation
   const size_t dim1 = data1.size();
   const size_t dim = dim0 + dim1;
   
-  double* pts = Memory::ArrayC::Allocate<double>( N*dim );  
+  std::vector<double> pts( N*dim );  
   
   Types::DataItem tmp;
   
