@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,7 +59,12 @@ cmtk
 VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
   : VoxelMatchingFunctional( reference, floating ),
-    m_ActiveCoordinates( NULL )
+    m_ActiveCoordinates( NULL ),
+    m_JacobianConstraintWeight( 0.0 ),
+    m_RigidityConstraintWeight( 0.0 ),
+    m_GridEnergyWeight( 0.0 ),
+    m_Regularize( false ),
+    WarpNeedsFixUpdate( false )
 {
   Dim = 0;
 
