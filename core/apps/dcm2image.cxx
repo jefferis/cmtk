@@ -328,18 +328,15 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
   static int progress = 0;
   const char progress_chars[] = "-\\|/";
 
-  char fullname[PATH_MAX];
-
   std::vector<ImageFileDICOM::SmartConstPtr> fileList;
 
 #ifdef _MSC_VER
   WIN32_FIND_DATA fData;
-  char pattern[PATH_MAX];
-  snprintf( pattern, sizeof( pattern ), "%s\\%s", path.c_str(), wildcard );
-  HANDLE hFind = FindFirstFile( pattern, &fData);
+  const std::string pattern = path + "\\" + wildcard;
+  HANDLE hFind = FindFirstFile( pattern.c_str(), &fData);
   do
     {
-    snprintf( fullname, sizeof( fullname ), "%s\\%s", path.c_str(), fData.cFileName );
+    const std::string fullname = path + "\\" + fData.cFileName;
     if ( fData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
       {
       if ( Recursive && (fData.cFileName[0] != '.') )
@@ -379,14 +376,14 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 
     while ( (entry_pointer = readdir(dir_pointer)) ) 
       {
-      strcat( strcat( strcpy( fullname, path.c_str() ), "/"), entry_pointer->d_name );
+      const std::string fullname = path + "/" + entry_pointer->d_name;
+
       struct stat entry_status;
-      if ( !stat(fullname, &entry_status) ) 
+      if ( !stat(fullname.c_str(), &entry_status) ) 
 	{
 	if ( S_ISDIR( entry_status.st_mode ) && Recursive && (entry_pointer->d_name[0] != '.') ) 
 	  {
-	  strcat( fullname, "/" );
-	  this->AppendFromDirectory( fullname, wildcard );
+	  this->AppendFromDirectory( fullname + "/" , wildcard );
 	  } 
 	else
 	  {
