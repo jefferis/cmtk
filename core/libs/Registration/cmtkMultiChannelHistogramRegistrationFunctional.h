@@ -108,7 +108,7 @@ protected:
     typedef MetricData Self;
 
     /// Default constructor.
-    MetricData() : m_TotalNumberOfSamples( 0 ) {}
+    MetricData() : m_Parent( NULL ), m_TotalNumberOfSamples( 0 ) {}
 
     /** Initialize metric object and local storage. */
     void Init( Parent *const parent );

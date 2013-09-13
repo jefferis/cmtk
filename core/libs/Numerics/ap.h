@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -426,6 +426,8 @@ public:
         m_iHigh1 = -1;
         m_iLow2 = 0;
         m_iHigh2 = -1;
+	m_iConstOffset = 0;
+	m_iLinearMember = 0;
     };
 
     ~template_2d_array()
@@ -447,6 +449,8 @@ public:
         m_iHigh1 = -1;
         m_iLow2 = 0;
         m_iHigh2 = -1;
+	m_iConstOffset = 0;
+	m_iLinearMember = 0;
         if( rhs.m_iVecSize!=0 )
         {
             setbounds(rhs.m_iLow1, rhs.m_iHigh1, rhs.m_iLow2, rhs.m_iHigh2);
