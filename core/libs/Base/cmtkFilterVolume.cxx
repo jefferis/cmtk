@@ -227,7 +227,7 @@ FilterVolume
 		  const size_t bin = histogram.ValueToBin( valueSubj );
 		  const Types::DataItem prob = it->Coefficient * histogram[bin];
 		  
-		  average += valueSubj * prob;
+		  average += value * prob;
 		  weight += prob;
 		  }
 		}
