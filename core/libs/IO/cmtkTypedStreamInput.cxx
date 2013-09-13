@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012, 2013 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -486,6 +486,19 @@ TypedStreamInput
     }
   
   return value;
+}
+
+std::string
+TypedStreamInput
+::ReadStdString( const char* key, const std::string& defaultValue, const bool forward )
+{
+  char *value;
+  if ( this->GenericReadArray( key, Self::TYPE_STRING, &value, 1, forward ) != Self::CONDITION_OK )
+    {
+    return std::string( defaultValue );
+    }
+  
+  return std::string( value );
 }
 
 TypedStreamInput::Condition

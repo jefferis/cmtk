@@ -241,8 +241,8 @@ ImagePairNonrigidRegistrationCommandLine
       }
     
     classStream.Seek ( "registration" );
-    Study1 = classStream.ReadString( "reference_study" );
-    Study2 = classStream.ReadString( "floating_study" );
+    Study1 = classStream.ReadStdString( "reference_study" );
+    Study2 = classStream.ReadStdString( "floating_study" );
     if ( ! Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
@@ -252,7 +252,7 @@ ImagePairNonrigidRegistrationCommandLine
     else
       {
       // legacy studylists have inverse transformation stored in them
-      Study2 = classStream.ReadString( "model_study" );
+      Study2 = classStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       classStream >> affineXform;
       this->SetInitialTransformation( affineXform->GetInverse() );

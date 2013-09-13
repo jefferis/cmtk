@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -281,6 +281,14 @@ public:
   char* ReadString( const char* key /*!< The name of the field in the archive.*/, 
 		    const char* defaultValue = NULL /*!< Default value returned if the field is not found in the archive. */, 
 		    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+
+  /** Read STL string from an open archive.
+   *\return The string that was read. If no valid entry could be read from the archive, a copy of
+   * the string given as "defaultValue" parameter is returned.
+   */
+  std::string ReadStdString( const char* key /*!< The name of the field in the archive.*/, 
+			     const std::string& defaultValue = "" /*!< Default value returned if the field is not found in the archive. */, 
+			     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
 private:
   /** Utility function: Read an array of arbitrary type.

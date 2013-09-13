@@ -219,8 +219,8 @@ AffineRegistrationCommandLine
       }
 
     typedStream.Seek ( "registration" );
-    Study1 = typedStream.ReadString( "reference_study" );
-    Study2 = typedStream.ReadString( "floating_study" );
+    Study1 = typedStream.ReadStdString( "reference_study" );
+    Study2 = typedStream.ReadStdString( "floating_study" );
     if ( ! Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
@@ -230,7 +230,7 @@ AffineRegistrationCommandLine
     else
       {
       // legacy studylists have inverse transformation in them
-      Study2 = typedStream.ReadString( "model_study" );
+      Study2 = typedStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
       this->SetInitialTransformation( affineXform->GetInverse() );
