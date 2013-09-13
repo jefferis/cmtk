@@ -105,8 +105,6 @@ ImagePairAffineRegistrationCommandLine
 
   std::string inStudylist;
   std::string InitialStudylist;
-  std::string Study1;
-  std::string Study2;
 
   std::string clArg1; // input studylist or reference image
   std::string clArg2; // empty or floating image
@@ -251,9 +249,9 @@ ImagePairAffineRegistrationCommandLine
       }
 
     typedStream.Seek ( "registration" );
-    Study1 = typedStream.ReadStdString( "reference_study" );
-    Study2 = typedStream.ReadStdString( "floating_study" );
-    if ( ! Study2.empty() )
+    this->Study1 = typedStream.ReadStdString( "reference_study" );
+    this->Study2 = typedStream.ReadStdString( "floating_study" );
+    if ( !this->Study2.empty() )
       {
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
@@ -262,7 +260,7 @@ ImagePairAffineRegistrationCommandLine
     else
       {
       // legacy studylists have inverse transformation in them
-      Study2 = typedStream.ReadStdString( "model_study" );
+      this->Study2 = typedStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
       this->SetInitialTransformation( affineXform->GetInverse() );
