@@ -48,8 +48,8 @@ doMain( const int argc, const char* argv[] )
 {
   bool fast = false;
   
-  const char* targetImageName = NULL;
-  const char* outImageName = NULL;
+  std::string targetImageName;
+  std::string outImageName;
 
   std::string channelSRI24( "spgr" );
   std::string labelsSRI24( "tzo116plus" );
