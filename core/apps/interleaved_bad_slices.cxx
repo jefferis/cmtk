@@ -54,7 +54,10 @@ doMain
 
   int sliceAxis = cmtk::AXIS_Z;
 
+  cmtk::TypedArraySimilarity::ID metric = cmtk::TypedArraySimilarity::CC;
   cmtk::Types::DataItem standardDeviationsThreshold = 3.0;
+
+  size_t badSlicesThresh = 0;
 
   try
     {
@@ -77,7 +80,14 @@ doMain
     cl.EndGroup();
 
     cl.BeginGroup( "detection", "Bad Slice Detection" );
+    cmtk::CommandLine::EnumGroup<cmtk::TypedArraySimilarity::ID>::SmartPtr metricGroup = cl.AddEnum( "metric", &metric, "Image-to-image similarity metric to compare neighbouring slices." );
+    metricGroup->AddSwitch( Key( "ncc" ), cmtk::TypedArraySimilarity::CC, "Normalized cross correlation." );
+    metricGroup->AddSwitch( Key( "rms" ), cmtk::TypedArraySimilarity::MSD, "Root of mean squared differences." );
     cl.AddOption( Key( "stdev-thresh" ), &standardDeviationsThreshold, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "output", "Output Options" );
+    cl.AddOption( Key( "bad-slices-thresh" ), &badSlicesThresh, "Minimum number of detected bad slices before reporting a volume (only number of detected bad slices is reported in this case, rather than each slice separately)." );
     cl.EndGroup();
 
     cl.Parse( argc, argv );
@@ -109,7 +119,18 @@ doMain
     slicePairSamples[slice].resize( images.size() );
     for ( size_t i = 0; i < images.size(); ++i )
       {    
-      const double difference = cmtk::TypedArraySimilarity::GetCrossCorrelation( images[i]->ExtractSlice( sliceAxis, slice )->GetData(), images[i]->ExtractSlice( sliceAxis, slice+1 )->GetData() );
+      double difference = 0;
+      switch ( metric )
+	{
+	case cmtk::TypedArraySimilarity::CC:
+	  difference = cmtk::TypedArraySimilarity::GetCrossCorrelation( images[i]->ExtractSlice( sliceAxis, slice )->GetData(), images[i]->ExtractSlice( sliceAxis, slice+1 )->GetData() );
+	  break;
+	case cmtk::TypedArraySimilarity::MSD:
+	  difference = sqrt( fabs( cmtk::TypedArraySimilarity::GetMinusMeanSquaredDifference( images[i]->ExtractSlice( sliceAxis, slice )->GetData(), images[i]->ExtractSlice( sliceAxis, slice+1 )->GetData() ) ) );
+	  break;
+	default:
+	  break;
+	}
 
       slicePairSamples[slice][i] = difference;
       slicePairStatistics[slice].Proceed( difference );
@@ -126,14 +147,32 @@ doMain
     }
 
   for ( size_t i = 0; i < images.size(); ++i )
-    {    
-    for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
+    { 
+    if ( badSlicesThresh )
       {
-      if ( fabs( slicePairSamples[slice][i]-means[slice] ) / sdevs[slice] > standardDeviationsThreshold )
-	cmtk::StdOut << imagePaths[i] << "\t" << slice << "\n";
+      size_t badSlices = 0;
+      for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
+	{
+	if ( fabs( slicePairSamples[slice][i]-means[slice] ) / sdevs[slice] > standardDeviationsThreshold )
+	  ++badSlices;
+	}
+
+      if ( badSlices > badSlicesThresh )
+	{
+	cmtk::StdOut << imagePaths[i] << "\t" << badSlices << "\n";
+	}
+      }
+    else
+      {
+      for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
+	{
+	if ( fabs( slicePairSamples[slice][i]-means[slice] ) / sdevs[slice] > standardDeviationsThreshold )
+	  cmtk::StdOut << imagePaths[i] << "\t" << slice << "\n";
+	}
       }
     }
-    
+  
+
   return 0;
 }
 
