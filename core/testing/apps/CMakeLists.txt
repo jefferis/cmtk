@@ -449,6 +449,14 @@ LIST(APPEND testList
   imagemathMatchHistogramsPaddingUnset)
 
 # ==========================================
+# Tests for "interleaved_bad_slices" tool
+LIST(APPEND testList
+  interleaved_bad_slicesDefault
+  interleaved_bad_slicesStdDev1
+  interleaved_bad_slicesRMS
+  interleaved_bad_slicesBulk)
+
+# ==========================================
 # Tests for "jidb" tool
 LIST(APPEND testList
   jidbGaussian

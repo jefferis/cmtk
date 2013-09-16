@@ -74,7 +74,7 @@ run()
 {
     cmd=$*
 
-    echo "pushd $PWD; ${BINDIR}/$cmd; popd"
+    echo "pushd $PWD; ${BINDIR}/$cmd; popd" 1>&2
     if ${VALGRIND} ${BINDIR}/$cmd; then
 	return
     else
@@ -1397,6 +1397,22 @@ case ${RUNTEST} in
         run imagemath --set-padding-value 0 --in spgr_brain_1.hdr --unset-padding --in spgr_brain_2.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
         ;;
+    interleaved_bad_slicesDefault)
+	run interleaved_bad_slices rsfMRI-motion/*.nii* > ${tmpdir}/badSlices.txt
+	check_results badSlices.txt
+	;;
+    interleaved_bad_slicesStdDev1)
+	run interleaved_bad_slices --stdev-thresh 1 rsfMRI-motion/*.nii* > ${tmpdir}/badSlices.txt
+	check_results badSlices.txt
+	;;
+    interleaved_bad_slicesRMS)
+	run interleaved_bad_slices --rms rsfMRI-motion/*.nii* > ${tmpdir}/badSlices.txt
+	check_results badSlices.txt
+	;;
+    interleaved_bad_slicesBulk)
+	run interleaved_bad_slices --bad-slices-thresh 1 rsfMRI-motion/*.nii* > ${tmpdir}/badSlices.txt
+	check_results badSlices.txt
+	;;
     jidbBoxFourthOrder)
         run jidb --coronal --nmi --psf box --fourth-order-error --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img

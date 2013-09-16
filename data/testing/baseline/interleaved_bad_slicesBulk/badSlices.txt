@@ -1,0 +1,4 @@
+rsfMRI-motion/image102.nii.gz	5
+rsfMRI-motion/image142.nii.gz	1
+rsfMRI-motion/image170.nii.gz	1
+rsfMRI-motion/image188.nii.gz	2
