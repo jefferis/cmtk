@@ -157,7 +157,7 @@ doMain
 	  ++badSlices;
 	}
 
-      if ( badSlices > badSlicesThresh )
+      if ( badSlices >= badSlicesThresh )
 	{
 	cmtk::StdOut << imagePaths[i] << "\t" << badSlices << "\n";
 	}
