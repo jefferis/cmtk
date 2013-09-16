@@ -64,6 +64,7 @@ SET(APPS avg_adm
   hausdorff
   histogram
   imagemath
+  interleaved_bad_slices
   jidb
   levelset
   lsba
