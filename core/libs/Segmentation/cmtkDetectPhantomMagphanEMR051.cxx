@@ -623,10 +623,7 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
     }
 
   detected->m_EstimatedNonLinear /= countSpheresNonLinear;
-
-  detected->m_FallbackCentroidCNR = this->m_StatusFlags.m_FallbackCentroidCNR;
-  detected->m_DistanceSNRtoCNR = this->m_StatusFlags.m_DistanceSNRtoCNR;
-  detected->m_FallbackOrientationCNR = this->m_StatusFlags.m_FallbackOrientationCNR;
+  detected->m_StatusFlags = this->m_StatusFlags;
 
   // get SNR estimate
   Types::DataItem mean, stdev;

@@ -175,25 +175,8 @@ private:
   /// Parameters that control the phantom detection
   Self::Parameters m_Parameters;
 
-  /// Private class for status flags that cover a variety of internal conditions.
-  class StatusFlags
-  {
-  public:
-    /// Default constructor.
-    StatusFlags() : m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ), m_DistanceSNRtoCNR( 0.0 ) {}
-
-    /// Flag for using CNR orientation as a fallback for missing/undetected 15mm spheres.
-    bool m_FallbackOrientationCNR;
-
-    /// Flag for using CNR center of mass as a fallback for SNR sphere centroid
-    bool m_FallbackCentroidCNR;
-
-    /// Distance between SNR center and CNR centroid.
-    Types::Coordinate m_DistanceSNRtoCNR;
-  };
-
   /// Status flags that cover a variety of internal conditions.
-  Self::StatusFlags m_StatusFlags;
+  DetectedPhantomMagphanEMR051::StatusFlags m_StatusFlags;
 
   /// Image of the phantom.
   UniformVolume::SmartConstPtr m_PhantomImage;

@@ -65,7 +65,7 @@ public:
 
   /// Constructor.
   DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : 
-    m_LinearFitXform( linearFitXform ), m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ), m_DistanceSNRtoCNR( 0.0 ) {}
+    m_LinearFitXform( linearFitXform ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.
@@ -112,14 +112,25 @@ public:
   /// Vector of landmark pairs.
   std::list<LandmarkPair> m_LandmarkPairs;
 
-  /// Flag for using CNR orientation as a fallback for missing/undetected 15mm spheres.
-  bool m_FallbackOrientationCNR;
+  /// Class for status flags that cover a variety of internal conditions.
+  class StatusFlags
+  {
+  public:
+    /// Default constructor.
+    StatusFlags() : m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ), m_DistanceSNRtoCNR( 0.0 ) {}
 
-  /// Flag for using CNR center of mass as a fallback for SNR sphere centroid
-  bool m_FallbackCentroidCNR;
+    /// Flag for using CNR orientation as a fallback for missing/undetected 15mm spheres.
+    bool m_FallbackOrientationCNR;
 
-  /// Distance between SNR center and CNR centroid.
-  Types::Coordinate m_DistanceSNRtoCNR;
+    /// Flag for using CNR center of mass as a fallback for SNR sphere centroid
+    bool m_FallbackCentroidCNR;
+
+    /// Distance between SNR center and CNR centroid.
+    Types::Coordinate m_DistanceSNRtoCNR;
+  };
+
+  /// The status flags for the detected phantom result.
+  Self::StatusFlags m_StatusFlags;
 };
 
 //@}
