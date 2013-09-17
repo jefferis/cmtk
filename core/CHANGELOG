@@ -1,12 +1,12 @@
 Release CMTK-2.4.0:
 
-(r4852) Added: new tool, "interleaved_bad_slices" identifies volumes (and
-	slices) in a time series such as rs-fMRI where the entire volume
-	is bad due to motion during the interleaved acquisition.
-(r4822) Added: "detect_adni_phantom" tool (and library classes) now state
+(r4855) Added: "detect_adni_phantom" tool (and library classes) now state
 	in the output XML file whether certain fallback conditions were
 	triggered. These usually hint at problems with the imaging
 	phantom, e.g., missing spheres.
+(r4852) Added: new tool, "interleaved_bad_slices" identifies volumes (and
+	slices) in a time series such as rs-fMRI where the entire volume
+	is bad due to motion during the interleaved acquisition.
 (r4819)	Added: "describe" tool can now describe transformation files as
 	well as images.
 (r4797) Changed: "dcm2image" tool now enforces uniform volume spacing up
