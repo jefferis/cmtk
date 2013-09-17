@@ -104,7 +104,10 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
     }
   if ( phantom.m_FallbackCentroidCNR )
     {
-    mxmlNewElement( x_phantom, "fallbackCentroidCNR" );
+    mxml_node_t *x_fallback_centroid = mxmlNewElement( x_phantom, "fallbackCentroidCNR" );
+    char distStr[10];
+    snprintf( distStr, 10, "%8f", phantom.m_DistanceSNRtoCNR );
+    mxmlElementSetAttr( x_fallback_centroid, "distance", distStr );
     }
 
   mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR ); 

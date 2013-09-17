@@ -65,7 +65,7 @@ public:
 
   /// Constructor.
   DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : 
-    m_LinearFitXform( linearFitXform ), m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ) {}
+    m_LinearFitXform( linearFitXform ), m_FallbackOrientationCNR( false ), m_FallbackCentroidCNR( false ), m_DistanceSNRtoCNR( 0.0 ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.
@@ -117,6 +117,9 @@ public:
 
   /// Flag for using CNR center of mass as a fallback for SNR sphere centroid
   bool m_FallbackCentroidCNR;
+
+  /// Distance between SNR center and CNR centroid.
+  Types::Coordinate m_DistanceSNRtoCNR;
 };
 
 //@}

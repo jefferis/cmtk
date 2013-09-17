@@ -131,7 +131,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 
     // Use the phantom center estimate with the smallest angle cosine, i.e., the one generating the closest to an orthogonal coordinate system
     Types::Coordinate minAngleCosine;
-    if ( angleCosineSNR < angleCosineCNR )
+    if ( angleCosineSNR <= angleCosineCNR )
       {
       minAngleCosine = angleCosineSNR;
       phantomCenter = this->m_Landmarks[0].m_Location;
@@ -140,6 +140,8 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       {
       // Set flag to mark that we could not use the SNR sphere.
       this->m_StatusFlags.m_FallbackCentroidCNR = true;
+      this->m_StatusFlags.m_DistanceSNRtoCNR = (cnrCenter - this->m_Landmarks[0].m_Location).RootSumOfSquares();
+
       minAngleCosine = angleCosineCNR;
       phantomCenter = cnrCenter;
       }
@@ -623,6 +625,7 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
   detected->m_EstimatedNonLinear /= countSpheresNonLinear;
 
   detected->m_FallbackCentroidCNR = this->m_StatusFlags.m_FallbackCentroidCNR;
+  detected->m_DistanceSNRtoCNR = this->m_StatusFlags.m_DistanceSNRtoCNR;
   detected->m_FallbackOrientationCNR = this->m_StatusFlags.m_FallbackOrientationCNR;
 
   // get SNR estimate

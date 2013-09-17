@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phantom>
 <phantomType>MagphanEMR051</phantomType>
-<fallbackCentroidCNR />
+<fallbackCentroidCNR distance="2.732651" />
 <snr>53.085523</snr>
 <cnr>21.567644 1.694292 5.911896 8.135168</cnr>
 <scale>0.999546 1.009786 0.996964</scale>
