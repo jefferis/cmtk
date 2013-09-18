@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -206,7 +206,7 @@ SplineWarpCongealingFunctional
 		
 		xform->GetTransformedGridRow( pixelsPerLineVOI, &(threadStorage->m_VectorList[0]), voi->From()[0], y, z );
 		
-		size_t ofs = rowofs;
+		ofs = rowofs;
 		for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++ofs )
 		  {
 		  if ( threadStorage->m_Count[x] == numberOfImagesIncludingTemplate ) // full count?

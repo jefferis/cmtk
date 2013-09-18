@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2011, 2012 SRI International
+//  Copyright 2011-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -477,14 +477,14 @@ cmtk::EchoPlanarUnwarpFunctional
       const DataGrid::RegionType region = insideRegion;
       {
 #else // _OPENMP
-      const int sliceFrom = insideRegion.From()[function.m_ReadoutDirection];
-      const int sliceTo = insideRegion.To()[function.m_ReadoutDirection];
+      const int sliceInsideFrom = insideRegion.From()[function.m_ReadoutDirection];
+      const int sliceInsideTo = insideRegion.To()[function.m_ReadoutDirection];
 #pragma omp parallel for reduction(+:smooth)
-      for ( int slice = sliceFrom; slice < sliceTo; ++slice )
+      for ( int sliceInside = sliceInsideFrom; sliceInside < sliceInsideTo; ++sliceInside )
 	{
 	DataGrid::RegionType region = insideRegion;
-	region.From()[function.m_ReadoutDirection] = slice;
-	region.To()[function.m_ReadoutDirection] = slice+1;
+	region.From()[function.m_ReadoutDirection] = sliceInside;
+	region.To()[function.m_ReadoutDirection] = sliceInside+1;
 #endif
 	for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
 	  {
@@ -516,14 +516,14 @@ cmtk::EchoPlanarUnwarpFunctional
 #ifndef _OPENMP
     const DataGrid::RegionType region = insideRegion;
 #else // _OPENMP
-    const int sliceFrom = insideRegion.From()[function.m_ReadoutDirection];
-    const int sliceTo = insideRegion.To()[function.m_ReadoutDirection];
+    const int sliceInsideFrom = insideRegion.From()[function.m_ReadoutDirection];
+    const int sliceInsideTo = insideRegion.To()[function.m_ReadoutDirection];
 #pragma omp parallel for reduction(+:fold)
-    for ( int slice = sliceFrom; slice < sliceTo; ++slice )
+    for ( int sliceInside = sliceInsideFrom; sliceInside < sliceInsideTo; ++sliceInside )
       {
       DataGrid::RegionType region = insideRegion;
-      region.From()[function.m_ReadoutDirection] = slice;
-      region.To()[function.m_ReadoutDirection] = slice+1;
+      region.From()[function.m_ReadoutDirection] = sliceInside;
+      region.To()[function.m_ReadoutDirection] = sliceInside+1;
 #endif
       for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
 	{

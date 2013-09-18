@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -786,9 +786,9 @@ SplineWarpXform::RelaxToUnfold()
 	  }
 	
 	// copy modified control point position component back
-	for ( size_t cp = 0; cp < this->m_NumberOfControlPoints; ++cp )
+	for ( size_t cp2 = 0; cp2 < this->m_NumberOfControlPoints; ++cp2 )
 	  {
-	  pureDeformation[dim+cp*3] = smoothed[cp];
+	  pureDeformation[dim+cp2*3] = smoothed[cp2];
 	  }
 	}
       

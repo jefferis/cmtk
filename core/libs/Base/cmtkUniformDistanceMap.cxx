@@ -4,7 +4,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -244,7 +244,7 @@ UniformDistanceMap<TDistanceDataType>
     if ( This->VoronoiEDT( &f[0], ThisConst->m_DistanceMap->m_Dims[2], static_cast<DistanceDataType>( ThisConst->m_DistanceMap->m_Delta[2] ), This->m_G[threadIdx], This->m_H[threadIdx] ) ) 
       {
       p = params->m_Distance + i;
-      DistanceDataType *q = &f[0];
+      q = &f[0];
       for ( int k = 0; k < ThisConst->m_DistanceMap->m_Dims[2]; k++, p += nXY, q++ ) 
 	{
 	*p = *q;
@@ -300,7 +300,7 @@ UniformDistanceMap<TDistanceDataType>
     /* reverse pass */
     if ( *(--p) != Self::EDT_MAX_DISTANCE_SQUARED ) 
       {
-      DistanceDataType d = static_cast<DistanceDataType>( Self::EDT_MAX_DISTANCE_SQUARED );
+      d = static_cast<DistanceDataType>( Self::EDT_MAX_DISTANCE_SQUARED );
       for ( int i = this->m_DistanceMap->m_Dims[0] - 1; i >= 0; i--, p-- ) 
 	{
 	/* set d = 0 when we encounter a feature voxel */
@@ -334,7 +334,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     /* fill array f with D_1 distances in column */
     /* this is essentially line 4 in Procedure VoronoiEDT() in tPAMI paper */
-    DistanceDataType *p = plane + i;
+    p = plane + i;
     DistanceDataType *q = &f[0];
     for ( int j = 0; j < this->m_DistanceMap->m_Dims[1]; j++, p += this->m_DistanceMap->m_Dims[0], q++) 
       {
@@ -344,8 +344,8 @@ UniformDistanceMap<TDistanceDataType>
     /* call edtVoronoiEDT */
     if ( this->VoronoiEDT( &f[0], this->m_DistanceMap->m_Dims[1], static_cast<DistanceDataType>( this->m_DistanceMap->m_Delta[1] ), gTemp, hTemp  ) ) 
       {
-      DistanceDataType *p = plane + i;
-      DistanceDataType *q = &f[0];
+      p = plane + i;
+      q = &f[0];
       for ( int j = 0; j < this->m_DistanceMap->m_Dims[1]; j++, p += this->m_DistanceMap->m_Dims[0], q++ ) 
 	{
 	*p = *q;
