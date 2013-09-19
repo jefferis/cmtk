@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -118,8 +118,11 @@ Import
     }
 
   FieldNames.clear();
+
   std::string line;
   getline( ctlFile, line );
+
+  {
   std::istringstream lineStream( line );
   std::string nextFieldName;
   lineStream >> nextFieldName; // skip ID field
@@ -139,6 +142,7 @@ Import
 
     FieldNames.push_back( nextFieldName );
     }
+  }
   
   FieldNames.push_back( "CONST" );
 
@@ -411,11 +415,11 @@ doMain( const int argc, const char* argv[] )
   
     cmtk::DebugOutput( 1 ) << "\n\nParameter correlation matrix:\n";
     cmtk::Matrix2D<double>* cc = glm.GetCorrelationMatrix();
-    for ( size_t p = 0; p < nParameters[0]; ++p ) 
+    for ( size_t ppp = 0; ppp < nParameters[0]; ++ppp ) 
       {
       for ( size_t pp = 0; pp < nParameters[0]; ++pp ) 
 	{
-	cmtk::DebugOutput( 1 ).GetStream().printf( "%.2f\t", (*cc)[p][pp] );
+	cmtk::DebugOutput( 1 ).GetStream().printf( "%.2f\t", (*cc)[ppp][pp] );
 	}
       cmtk::DebugOutput( 1 ) << "\n";
       }
