@@ -150,6 +150,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 
   std::vector<Types::DataItemRange> valueRange( this->m_NumberOfChannels, Types::DataItemRange( 0,0 ) );
 
+  {
   size_t channel = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref, ++channel )
     {
@@ -159,6 +160,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     {
     valueRange[channel] = this->m_FloatingChannels[flt]->GetData()->GetRange();
     }
+  }
   
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
 

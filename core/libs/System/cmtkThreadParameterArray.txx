@@ -141,7 +141,7 @@ ThreadParameterArray<TClass,TParam>
       }
 
     /* Cleanup phase -- Collect remaining thread results. */
-    for ( size_t threadIdx = 0; (threadIdx < this->m_NumberOfThreads) && (threadIdx < numberOfThreadsTotal); ++threadIdx ) 
+    for ( threadIdx = 0; (threadIdx < this->m_NumberOfThreads) && (threadIdx < numberOfThreadsTotal); ++threadIdx ) 
       {
 #ifndef _MSC_VER
       void *resultThread;
