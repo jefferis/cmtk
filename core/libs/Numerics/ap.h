@@ -216,7 +216,6 @@ const complex operator*(const real_value_type& lhs, const complex& rhs);
 const complex operator/(const complex& lhs, const complex& rhs);
 const complex operator/(const real_value_type& lhs, const complex& rhs);
 const complex operator/(const complex& lhs, const real_value_type& rhs);
-real_value_type abscomplex(const complex &z);
 const complex conj(const complex &z);
 const complex csqr(const complex &z);
 
@@ -235,9 +234,6 @@ complex vdotproduct(const complex *v1, const complex *v2, int N);
 void vmove(double *vdst, const double* vsrc, int N);
 void vmove(float *vdst, const float* vsrc, int N);
 void vmove(complex *vdst, const complex* vsrc, int N);
-
-void vmoveneg(real_value_type *vdst, const real_value_type *vsrc, int N);
-void vmoveneg(complex *vdst, const complex *vsrc, int N);
 
 void vmove(double *vdst, const double *vsrc, int N, double alpha);
 void vmove(float *vdst, const float *vsrc, int N, float alpha);
@@ -630,12 +626,9 @@ extern const real_value_type maxrealnumber;
 extern const real_value_type minrealnumber;
 
 int sign(real_value_type x);
-real_value_type randomreal();
-int randominteger(int maxv);
 int round(real_value_type x);
 int trunc(real_value_type x);
 int ifloor(real_value_type x);
-int iceil(real_value_type x);
 real_value_type pi();
 real_value_type sqr(real_value_type x);
 int maxint(int m1, int m2);

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -186,26 +187,6 @@ const ap::complex ap::operator/(const ap::real_value_type& lhs, const ap::comple
 const ap::complex ap::operator/(const ap::complex& lhs, const ap::real_value_type& rhs)
 { return ap::complex(lhs.x/rhs, lhs.y/rhs); }
 
-ap::real_value_type ap::abscomplex(const ap::complex &z)
-{
-    ap::real_value_type w;
-    ap::real_value_type xabs;
-    ap::real_value_type yabs;
-    ap::real_value_type v;
-
-    xabs = fabs(z.x);
-    yabs = fabs(z.y);
-    w = xabs>yabs ? xabs : yabs;
-    v = xabs<yabs ? xabs : yabs; 
-    if( v==0 )
-        return w;
-    else
-    {
-        ap::real_value_type t = v/w;
-        return w*sqrt(1+t*t);
-    }
-}
-
 const ap::complex ap::conj(const ap::complex &z)
 { return ap::complex(z.x, -z.y); }
 
@@ -256,23 +237,6 @@ void ap::vmove(float *vdst, const float* vsrc, int N)
 void ap::vmove(ap::complex *vdst, const ap::complex* vsrc, int N)
 {
     ap::_vmove<ap::complex>(vdst, vsrc, N);
-}
-
-void ap::vmoveneg(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N)
-{
-#ifdef AP_WIN32
-    if( dmoveneg1!=NULL )
-    {
-        dmoveneg1(vdst, vsrc, N);
-        return;
-    }
-#endif
-    ap::_vmoveneg<ap::real_value_type>(vdst, vsrc, N);
-}
-
-void ap::vmoveneg(ap::complex *vdst, const ap::complex *vsrc, int N)
-{
-    ap::_vmoveneg<ap::complex>(vdst, vsrc, N);
 }
 
 void ap::vmove(double *vdst, const double *vsrc, int N, double alpha)
@@ -419,17 +383,6 @@ int ap::sign(ap::real_value_type x)
     return 0;
 }
 
-ap::real_value_type ap::randomreal()
-{
-    int i = rand();
-    while(i==RAND_MAX)
-        i =rand();
-    return ap::real_value_type(i)/ap::real_value_type(RAND_MAX);
-}
-
-int ap::randominteger(int maxv)
-{  return rand()%maxv; }
-
 int ap::round(ap::real_value_type x)
 { return int(floor(x+0.5)); }
 
@@ -438,9 +391,6 @@ int ap::trunc(ap::real_value_type x)
 
 int ap::ifloor(ap::real_value_type x)
 { return int(floor(x)); }
-
-int ap::iceil(ap::real_value_type x)
-{ return int(ceil(x)); }
 
 ap::real_value_type ap::pi()
 { return 3.14159265358979323846; }

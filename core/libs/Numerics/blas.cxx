@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,49 +64,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "blas.h"
 
-ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2)
-{
-    ap::real_value_type result;
-    int n;
-    int ix;
-    ap::real_value_type absxi;
-    ap::real_value_type scl;
-    ap::real_value_type ssq;
-
-    n = i2-i1+1;
-    if( n<1 )
-    {
-        result = 0;
-        return result;
-    }
-    if( n==1 )
-    {
-        result = fabs(x(i1));
-        return result;
-    }
-    scl = 0;
-    ssq = 1;
-    for(ix = i1; ix <= i2; ix++)
-    {
-        if( x(ix)!=0 )
-        {
-            absxi = fabs(x(ix));
-            if( scl<absxi )
-            {
-                ssq = 1+ssq*ap::sqr(scl/absxi);
-                scl = absxi;
-            }
-            else
-            {
-                ssq = ssq+ap::sqr(absxi/scl);
-            }
-        }
-    }
-    result = scl*sqrt(ssq);
-    return result;
-}
-
-
 int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2)
 {
     int result;
@@ -135,23 +92,6 @@ int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j)
         if( fabs(x(i,j))>fabs(x(result,j)) )
         {
             result = i;
-        }
-    }
-    return result;
-}
-
-
-int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i)
-{
-    int result;
-    int j;
-
-    result = j1;
-    for(j = j1+1; j <= j2; j++)
-    {
-        if( fabs(x(i,j))>fabs(x(i,result)) )
-        {
-            result = j;
         }
     }
     return result;

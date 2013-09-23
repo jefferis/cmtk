@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,16 +66,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2);
-
-
 int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2);
 
 
 int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j);
-
-
-int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i);
 
 
 ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
