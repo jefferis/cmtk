@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -95,7 +95,7 @@ const char* cropReferenceFromIndex = NULL;
 const char* cropReferenceToIndex = NULL;
 
 cmtk::UniformVolume::SmartPtr
-MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample, const cmtk::Types::Coordinate smoothSigmaFactor )
+MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample )
 {
   if ( downsampleWithAverage )
     return cmtk::UniformVolume::SmartPtr( image->GetDownsampled( downsample * image->GetMinDelta() ) );
@@ -173,14 +173,14 @@ DoRegistration()
     functional->ClearAllChannels();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
+      cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample );
       image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
       functional->AddReferenceChannel( image );
       }
 
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
+      cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample );
       image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
       functional->AddFloatingChannel( image );
       }
