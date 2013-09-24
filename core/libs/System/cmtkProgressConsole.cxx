@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +46,8 @@ cmtk
 //@{
 
 ProgressConsole::ProgressConsole( const std::string& programName )
-  : m_ProgramName( programName )
+  : m_ProgramName( programName ),
+    m_TimeAtStart( 0.0 )
 {
   this->m_InsideSlicer3 = ( getenv( "Slicer3_HOME" ) != NULL );
     

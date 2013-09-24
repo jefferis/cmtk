@@ -256,7 +256,7 @@ Threads::RunThreads
     
     if ( status ) 
       {
-      fprintf( stderr, "Creation of thread #%d failed with status %d.\n", threadIdx, status );
+      fprintf( stderr, "Creation of thread #%u failed with status %d.\n", threadIdx, status );
 #if defined(CMTK_USE_SMP) && defined(CMTK_USE_PTHREADS)
       Thread[threadIdx] = 0;
 #endif

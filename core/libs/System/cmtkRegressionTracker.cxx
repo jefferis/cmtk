@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,7 +73,7 @@ cmtk::RegressionTracker::CompareChecksum( const unsigned char *const data, size_
   else
     {
     unsigned int baseline;
-    fscanf( this->m_File, "%u", &baseline );
+    fscanf( this->m_File, "%20u", &baseline );
     
     if ( checksum != baseline )
       this->Trap();

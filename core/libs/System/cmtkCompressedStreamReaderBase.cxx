@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,22 +39,20 @@ cmtk::CompressedStream::ReaderBase::Seek( const long int offset, int whence )
     this->Rewind();
   
   char buffer[Self::SeekBlockSize];
-  int result = 0;
   
   for ( int stillToRead = offset; stillToRead > 0; ) 
     {
     if ( static_cast<size_t>( stillToRead ) < Self::SeekBlockSize )
       {
-      result += this->Read( buffer, sizeof(char), stillToRead );
+      this->Read( buffer, sizeof(char), stillToRead );
       stillToRead = 0;
       } 
     else
       {
-      result += this->Read( buffer, sizeof(char), Self::SeekBlockSize );
+      this->Read( buffer, sizeof(char), Self::SeekBlockSize );
       stillToRead -= Self::SeekBlockSize;
       }
     }
-
   return this->m_BytesRead;
 }
 

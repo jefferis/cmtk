@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,7 +92,7 @@ ThreadPoolThreads::StartThreads()
       
       if ( status ) 
 	{
-	StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
+	StdErr.printf( "Creation of pooled thread #%u failed with status %d.\n", idx, status );
 	exit( 1 );
 	}
       }
@@ -118,7 +118,7 @@ ThreadPoolThreads::StartThreads()
       
       if ( status ) 
 	{
-	StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
+	StdErr.printf( "Creation of pooled thread #%u failed with status %d.\n", idx, status );
 	exit( 1 );
 	}
       }
