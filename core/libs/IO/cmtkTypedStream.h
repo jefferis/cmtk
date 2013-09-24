@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -165,11 +165,6 @@ public:
   /// Default constructor.
   TypedStream();
 
-  /** Destructor.
-   * Close() is called to close a possibly open archive.
-   */
-  virtual ~TypedStream();
-
   /** Return validity of archive.
    *\return 1 if an archive is currently open, 0 if not.
    */
@@ -194,12 +189,6 @@ public:
 protected:
   /// Internal: Length of the read buffer for one archive line.  
   static const int LIMIT_BUFFER = 1024;
-
-  /** Initialize internal data structures.
-   * This function is called from both constructors to initialize the internal
-   * data structures of this object.
-   */
-  void InitInternals();
 
   /// Pointer to the actual file.
   FILE *File;

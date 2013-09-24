@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,6 +53,7 @@ SplineWarpXform::SplineWarpXform()
 void SplineWarpXform::Init () 
 {
   this->m_GlobalScaling = 1.0;
+  memset( this->GridPointOffset, 0, sizeof( this->GridPointOffset ) );
 }
 
 SplineWarpXform::SplineWarpXform 
@@ -598,11 +599,10 @@ SplineWarpXform::GetTransformedGridRow
   std::vector<Types::Coordinate> phiHat( 3*numberOfCells );
 #endif
 
-  const int *gpo;
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += nextI ) 
     {
-    gpo = &this->GridPointOffset[0];
+    const int *gpo = &this->GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiComp = coeff[ *gpo ] * sml[0];

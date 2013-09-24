@@ -119,7 +119,7 @@ doMain ( const int argc, const char *argv[] )
   if ( !Downsample.empty() )
     {
     int factors[3] = { 1, 1, 1 };
-    const size_t nFactors = sscanf( Downsample.c_str(), "%d,%d,%d", factors, factors+1, factors+2 );
+    const size_t nFactors = sscanf( Downsample.c_str(), "%6d,%6d,%6d", factors, factors+1, factors+2 );
     if ( nFactors == 1 )
       {
       factors[1] = factors[2] = factors[0];

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -113,11 +113,10 @@ MathUtil::SVDLinearRegression( const Matrix2D<double>& U, const std::vector<doub
   // (Scientific Computing: An Introductory Survey, 2nd Ed., 2002)
   for ( size_t i = 0; i < n; i++ )
     lm_params[i] = 0.0;
-  double ut_times_b; 
-  
+
   for ( size_t i = 0; i < n; i++ )
     {
-    ut_times_b = 0.0;
+    double ut_times_b = 0.0;
     for ( size_t j = 0; j < m; j++ )
       ut_times_b += U[j][i] * b[j];
     ut_times_b *= svi(i);

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -147,11 +147,10 @@ cmtk::SplineWarpXformUniformVolume::GetTransformedGridRow
   Types::Coordinate phiComp;
   std::vector<Types::Coordinate> phiHat( 3*numberOfCells );
 
-  const int *gpo;
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += xform.nextI ) 
     {
-    gpo = &this->GridPointOffset[0];
+    const int *gpo = &this->GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiComp = coeff[ *gpo ] * sml[0];

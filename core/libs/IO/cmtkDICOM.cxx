@@ -343,9 +343,9 @@ DICOM::DemosaicAndGetNormal
 	const DcmTagKey mosaicTag(0x0051,0x100b);
 	if ( this->Document().getValue( mosaicTag, tmpStr ) )
 	  {
-	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	  if ( 2 != sscanf( tmpStr, "%6dp*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
 	    {
-	    if ( 2 != sscanf( tmpStr, "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	    if ( 2 != sscanf( tmpStr, "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
 	      {
 	      StdErr << "ERROR: unable to parse mosaic size from (0x0051,0x100b): " << tmpStr << "\n";
 	      }
@@ -405,9 +405,9 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
     SiemensCSAHeader::const_iterator it = csaHeader.find( "AcquisitionMatrixText" );
     if ( (it != csaHeader.end()) && !it->second.empty() )
       {
-      if ( 2 != sscanf( it->second[0].c_str(), "%dp*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+      if ( 2 != sscanf( it->second[0].c_str(), "%6dp*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
 	{
-	if ( 2 != sscanf( it->second[0].c_str(), "%d*%ds", &unmosaicImageRows, &unmosaicImageCols) )
+	if ( 2 != sscanf( it->second[0].c_str(), "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
 	  {
 	  StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << " in file " << this->m_Path << "\n";
 	  }

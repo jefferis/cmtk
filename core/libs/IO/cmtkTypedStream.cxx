@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,13 +61,6 @@ cmtk
 
 TypedStream::TypedStream()
 {
-  this->InitInternals();
-}
-
-void
-TypedStream
-::InitInternals()
-{
   File = NULL;
   GzFile = NULL;
 
@@ -77,13 +70,10 @@ TypedStream
   this->m_Status = Self::ERROR_NONE;
   this->m_DebugFlag = Self::DEBUG_OFF;
 
-  SplitPosition = NULL;
-}
+  memset( this->Buffer, 0, sizeof( this->Buffer ) );
+  this->BufferKey = this->BufferValue = NULL;
 
-TypedStream
-::~TypedStream()
-{
-  this->InitInternals();
+  SplitPosition = NULL;
 }
 
 int

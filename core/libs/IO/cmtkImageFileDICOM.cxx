@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -72,8 +72,8 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
   if ( ! disableCheckOrientation )
     {
     double orientThis[6], orientOther[6];
-    sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
-    sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
+    sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
+    sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
 
     for ( int i = 0; i < 6; ++i )
       {
@@ -282,7 +282,6 @@ ImageFileDICOM::DoVendorTagsSiemens()
 void
 ImageFileDICOM::DoVendorTagsGE()
 {
-  const char* tmpStr = NULL;
   int tmpInt = 0;
 
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
@@ -306,6 +305,7 @@ ImageFileDICOM::DoVendorTagsGE()
     
     // dwi information
     this->m_IsDWI = false;
+    const char* tmpStr = NULL;
     if ( this->m_Document->getValue( DcmTagKey(0x0019,0x10e0), tmpStr ) > 0 ) // Number of Diffusion Directions
       {
       const int nDirections = atoi( tmpStr );
@@ -315,7 +315,7 @@ ImageFileDICOM::DoVendorTagsGE()
 	
 	if ( this->m_Document->getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	  {
-	  if ( 1 == sscanf( tmpStr, "%d\\%*c", &tmpInt ) )
+	  if ( 1 == sscanf( tmpStr, "%6d\\%*c", &tmpInt ) )
 	    {
 	    this->m_BValue = static_cast<Sint16>( tmpInt );
 
@@ -341,14 +341,13 @@ ImageFileDICOM::DoVendorTagsGE()
 bool
 ImageFileDICOM::MatchAnyPattern( const std::map<DcmTagKey,std::string>& patterns ) const
 {
-  const char* tmpStr = NULL;
-
   // check for positive include list
   if ( !patterns.empty() )
     {
     for ( std::map<DcmTagKey,std::string>::const_iterator it = patterns.begin(); it != patterns.end(); ++it )
       {
       // if tag not found, do not include
+      const char* tmpStr = NULL;
       if ( this->m_Document->getValue( it->first, tmpStr ) )
 	{
 	// if tag value matches, then return true
@@ -364,14 +363,13 @@ ImageFileDICOM::MatchAnyPattern( const std::map<DcmTagKey,std::string>& patterns
 bool
 ImageFileDICOM::MatchAllPatterns( const std::map<DcmTagKey,std::string>& patterns ) const
 {
-  const char* tmpStr = NULL;
-
   // check for positive include list
   if ( !patterns.empty() )
     {
     for ( std::map<DcmTagKey,std::string>::const_iterator it = patterns.begin(); it != patterns.end(); ++it )
       {
       // if tag not found, do not include
+      const char* tmpStr = NULL;
       if ( this->m_Document->getValue( it->first, tmpStr ) )
 	{
 	// if tag value matches, then return true

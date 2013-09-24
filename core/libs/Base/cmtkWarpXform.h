@@ -178,6 +178,7 @@ public:
     this->m_FastMode = false; 
     this->m_Dims[0] = this->m_Dims[1] = this->m_Dims[2] = 0;
     this->m_InverseSpacing[0] = this->m_InverseSpacing[1] = this->m_InverseSpacing[2] = 0.0;
+    this->nextI = this->nextJ = this->nextK = this->nextIJ = this->nextIK = this->nextJK = this->nextIJK = 0;
   }
 
   /// Destructor.

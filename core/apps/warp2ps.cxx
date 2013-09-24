@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,7 +67,7 @@ int CropRegion[4] = { 0, 0, 0, 0 };
 void
 SetCropRegion( const char* arg )
 {
-  if ( 4 == sscanf( arg, "%d,%d:%d,%d", &CropRegion[0], &CropRegion[1], &CropRegion[2], &CropRegion[3] ) )
+  if ( 4 == sscanf( arg, "%6d,%6d:%6d,%6d", &CropRegion[0], &CropRegion[1], &CropRegion[2], &CropRegion[3] ) )
     Crop = true;
   else
     Crop = false;

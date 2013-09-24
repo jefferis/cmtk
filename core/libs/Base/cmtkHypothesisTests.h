@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,10 +69,6 @@ public:
   /// Test mean of Jacobian map of a single population for difference from zero.
   static TypedArray::SmartPtr 
   GetOneSampleTTest( std::vector<TypedArray::SmartPtr>& dataX, TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, const TypedArray* mask = NULL );
-
-  /// Get pixelwise heritability of two populations.
-  static TypedArray::SmartPtr 
-  GetHeritability( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
   
   /** Get pixelwise z-scores.
     * The X distribution is taken as the "true" or "reference" distribution.

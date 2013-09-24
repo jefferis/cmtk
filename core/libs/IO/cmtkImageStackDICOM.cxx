@@ -347,7 +347,6 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       case EMBED_STUDYID_STUDYDATE:
 	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_StudyID ) + "_" + first->GetTagValue( DCM_StudyDate ) );
 	break;
-	break;
       case EMBED_PATIENTNAME:
 	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientsName ) );
 	break;

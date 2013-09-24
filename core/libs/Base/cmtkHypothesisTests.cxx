@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -320,31 +320,6 @@ HypothesisTests::GetOneSampleTTest
   }
   
   return probData;
-}
-
-TypedArray::SmartPtr
-HypothesisTests::GetHeritability
-( std::vector<TypedArray::SmartPtr>& dataX, 
-  std::vector<TypedArray::SmartPtr>& dataY,
-  const TypedArray* mask )
-{
-  const size_t length = dataX[0]->GetDataSize();
-
-  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
-  
-  const unsigned int dataXsize = dataX.size();
-  std::vector<float> valuesX( dataXsize );
-  const unsigned int dataYsize = dataY.size();
-  std::vector<float> valuesY( dataYsize );
-
-  for ( size_t idx = 0; idx < length; ++idx ) {
-
-    Types::DataItem maskValue;
-    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) {
-    }
-  }
-  
-  return outData;
 }
 
 TypedArray::SmartPtr

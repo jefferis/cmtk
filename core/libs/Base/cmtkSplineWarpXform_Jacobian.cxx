@@ -85,11 +85,10 @@ SplineWarpXform::GetJacobianRow
   std::vector<Types::Coordinate> phiHatZ(3*numberOfCells);
 #endif
 
-  const int *gpo;
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += nextI ) 
     {
-    gpo = &GridPointOffset[0];
+    const int *gpo = &GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiCompX = phiCompY = phiCompZ = 0;
@@ -418,11 +417,10 @@ SplineWarpXform::GetJacobianDeterminantRow
   std::vector<Types::Coordinate> phiHatZ(3*numberOfCells);
 #endif
 
-  const int *gpo;
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += nextI ) 
     {
-    gpo = &GridPointOffset[0];
+    const int *gpo = &GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiCompX = phiCompY = phiCompZ = 0;

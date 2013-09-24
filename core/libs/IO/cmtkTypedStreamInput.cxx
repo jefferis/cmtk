@@ -152,7 +152,7 @@ TypedStreamInput
     return;
     }
   int releaseMinor, releaseMajor;
-  if (2 != sscanf( Buffer+1, " TYPEDSTREAM %d.%d", &releaseMajor, &releaseMinor)) 
+  if (2 != sscanf( Buffer+1, " TYPEDSTREAM %4d.%4d", &releaseMajor, &releaseMinor)) 
     {
     this->m_Status = Self::ERROR_FORMAT;
     if ( GzFile )
