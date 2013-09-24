@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,75 +73,6 @@ static void lrinternal(const ap::real_2d_array& xy,
      int& info,
      ap::linearmodel& lm,
      ap::lrreport& ar);
-
-/*************************************************************************
-Linear regression
-
-Subroutine builds model:
-
-    Y = A(0)*X[0] + ... + A(N-1)*X[N-1] + A(N)
-
-and model found in ALGLIB format, covariation matrix, training set  errors
-(rms,  average,  average  relative)   and  leave-one-out  cross-validation
-estimate of the generalization error. CV  estimate calculated  using  fast
-algorithm with O(NPoints*NVars) complexity.
-
-When  covariation  matrix  is  calculated  standard deviations of function
-values are assumed to be equal to RMS error on the training set.
-
-INPUT PARAMETERS:
-    XY          -   training set, array [0..NPoints-1,0..NVars]:
-                    * NVars columns - independent variables
-                    * last column - dependent variable
-    NPoints     -   training set size, NPoints>NVars+1
-    NVars       -   number of independent variables
-
-OUTPUT PARAMETERS:
-    Info        -   return code:
-                    * -255, in case of unknown internal error
-                    * -4, if internal SVD subroutine haven't converged
-                    * -1, if incorrect parameters was passed (NPoints<NVars+2, NVars<1).
-                    *  1, if subroutine successfully finished
-    LM          -   linear model in the ALGLIB format. Use subroutines of
-                    this unit to work with the model.
-    AR          -   additional results
-
-
-  -- ALGLIB --
-     Copyright 02.08.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrbuild(const ap::real_2d_array& xy,
-     int npoints,
-     int nvars,
-     int& info,
-     ap::linearmodel& lm,
-     ap::lrreport& ar)
-{
-    ap::real_1d_array s;
-    int i;
-    ap::real_value_type sigma2;
-
-    if( npoints<=nvars+1||nvars<1 )
-    {
-        info = -1;
-        return;
-    }
-    s.setbounds(0, npoints-1);
-    for(i = 0; i <= npoints-1; i++)
-    {
-        s(i) = 1;
-    }
-    lrbuilds(xy, s, npoints, nvars, info, lm, ar);
-    if( info<0 )
-    {
-        return;
-    }
-    sigma2 = ap::sqr(ar.rmserror)*npoints/(npoints-nvars-1);
-    for(i = 0; i <= nvars; i++)
-    {
-        ap::vmul(&ar.c(i, 0), ap::vlen(0,nvars), sigma2);
-    }
-}
 
 
 /*************************************************************************
@@ -389,104 +320,6 @@ void lrbuildzs(const ap::real_2d_array& xy,
 
 
 /*************************************************************************
-Like LRBuild but builds model
-
-    Y = A(0)*X[0] + ... + A(N-1)*X[N-1]
-
-i.e. with zero constant term.
-
-  -- ALGLIB --
-     Copyright 30.10.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrbuildz(const ap::real_2d_array& xy,
-     int npoints,
-     int nvars,
-     int& info,
-     ap::linearmodel& lm,
-     ap::lrreport& ar)
-{
-    ap::real_1d_array s;
-    int i;
-    ap::real_value_type sigma2;
-
-    if( npoints<=nvars+1||nvars<1 )
-    {
-        info = -1;
-        return;
-    }
-    s.setbounds(0, npoints-1);
-    for(i = 0; i <= npoints-1; i++)
-    {
-        s(i) = 1;
-    }
-    lrbuildzs(xy, s, npoints, nvars, info, lm, ar);
-    if( info<0 )
-    {
-        return;
-    }
-    sigma2 = ap::sqr(ar.rmserror)*npoints/(npoints-nvars-1);
-    for(i = 0; i <= nvars; i++)
-    {
-        ap::vmul(&ar.c(i, 0), ap::vlen(0,nvars), sigma2);
-    }
-}
-
-
-/*************************************************************************
-Unpacks coefficients of linear model.
-
-INPUT PARAMETERS:
-    LM          -   linear model in ALGLIB format
-
-OUTPUT PARAMETERS:
-    V           -   coefficients, array[0..NVars]
-    NVars       -   number of independent variables (one less than number
-                    of coefficients)
-
-  -- ALGLIB --
-     Copyright 30.08.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrunpack(const ap::linearmodel& lm, ap::real_1d_array& v, int& nvars)
-{
-    int offs;
-
-    ap::ap_error::make_assertion(ap::round(lm.w(1))==lrvnum, "LINREG: Incorrect LINREG version!");
-    nvars = ap::round(lm.w(2));
-    offs = ap::round(lm.w(3));
-    v.setbounds(0, nvars);
-    ap::vmove(&v(0), &lm.w(offs), ap::vlen(0,nvars));
-}
-
-
-/*************************************************************************
-"Packs" coefficients and creates linear model in ALGLIB format (LRUnpack
-reversed).
-
-INPUT PARAMETERS:
-    V           -   coefficients, array[0..NVars]
-    NVars       -   number of independent variables
-
-OUTPUT PAREMETERS:
-    LM          -   linear model.
-
-  -- ALGLIB --
-     Copyright 30.08.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrpack(const ap::real_1d_array& v, int nvars, ap::linearmodel& lm)
-{
-    int offs;
-
-    lm.w.setbounds(0, 4+nvars);
-    offs = 4;
-    lm.w(0) = 4+nvars+1;
-    lm.w(1) = lrvnum;
-    lm.w(2) = nvars;
-    lm.w(3) = offs;
-    ap::vmove(&lm.w(offs), &v(0), ap::vlen(offs,offs+nvars));
-}
-
-
-/*************************************************************************
 Procesing
 
 INPUT PARAMETERS:
@@ -639,74 +472,6 @@ ap::real_value_type lravgrelerror(const ap::linearmodel& lm,
     }
     return result;
 }
-
-
-/*************************************************************************
-Copying of LinearModel strucure
-
-INPUT PARAMETERS:
-    LM1 -   original
-
-OUTPUT PARAMETERS:
-    LM2 -   copy
-
-  -- ALGLIB --
-     Copyright 15.03.2009 by Bochkanov Sergey
-*************************************************************************/
-void lrcopy(const ap::linearmodel& lm1, ap::linearmodel& lm2)
-{
-    int k;
-
-    k = ap::round(lm1.w(0));
-    lm2.w.setbounds(0, k-1);
-    ap::vmove(&lm2.w(0), &lm1.w(0), ap::vlen(0,k-1));
-}
-
-
-/*************************************************************************
-Serialization of LinearModel strucure
-
-INPUT PARAMETERS:
-    LM      -   original
-
-OUTPUT PARAMETERS:
-    RA      -   array of real numbers which stores model,
-                array[0..RLen-1]
-    RLen    -   RA lenght
-
-  -- ALGLIB --
-     Copyright 15.03.2009 by Bochkanov Sergey
-*************************************************************************/
-void lrserialize(const ap::linearmodel& lm, ap::real_1d_array& ra, int& rlen)
-{
-
-    rlen = ap::round(lm.w(0))+1;
-    ra.setbounds(0, rlen-1);
-    ra(0) = lrvnum;
-    ap::vmove(&ra(1), &lm.w(0), ap::vlen(1,rlen-1));
-}
-
-
-/*************************************************************************
-Unserialization of DecisionForest strucure
-
-INPUT PARAMETERS:
-    RA      -   real array which stores decision forest
-
-OUTPUT PARAMETERS:
-    LM      -   unserialized structure
-
-  -- ALGLIB --
-     Copyright 15.03.2009 by Bochkanov Sergey
-*************************************************************************/
-void lrunserialize(const ap::real_1d_array& ra, ap::linearmodel& lm)
-{
-
-    ap::ap_error::make_assertion(ap::round(ra(0))==lrvnum, "LRUnserialize: incorrect array!");
-    lm.w.setbounds(0, ap::round(ra(1))-1);
-    ap::vmove(&lm.w(0), &ra(1), ap::vlen(0,ap::round(ra(1))-1));
-}
-
 
 /*************************************************************************
 Internal linear regression subroutine

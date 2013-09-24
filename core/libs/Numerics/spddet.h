@@ -90,24 +90,4 @@ Result:
 ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array& a, int n);
 
 
-/*************************************************************************
-Determinant calculation of the symmetric positive definite matrix.
-
-Input parameters:
-    A       -   matrix. Array with elements [0..N-1, 0..N-1].
-    N       -   size of matrix A.
-    IsUpper -   if IsUpper = True, then the symmetric matrix A is given by
-                its upper triangle, and the lower triangle isn’t used by
-                subroutine. Similarly, if IsUpper = False, then A is given
-                by its lower triangle.
-
-Result:
-    determinant of matrix A.
-    If matrix A is not positive definite, then subroutine returns -1.
-
-  -- ALGLIB --
-     Copyright 2005-2008 by Bochkanov Sergey
-*************************************************************************/
-ap::real_value_type spdmatrixdet(ap::real_2d_array a, int n, bool isupper);
-
 #endif

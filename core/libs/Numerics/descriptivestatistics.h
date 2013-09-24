@@ -1,3 +1,35 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 2004-2010, 2013 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 1871 $
+//
+//  $LastChangedDate: 2010-06-22 12:57:14 -0700 (Tue, 22 Jun 2010) $
+//
+//  $LastChangedBy: torstenrohlfing $
+//
+*/
+
 /*************************************************************************
 Copyright (c) 2007, Sergey Bochkanov (ALGLIB project).
 
@@ -57,55 +89,5 @@ void calculatemoments(const ap::real_1d_array& x,
      ap::real_value_type& variance,
      ap::real_value_type& skewness,
      ap::real_value_type& kurtosis);
-
-
-/*************************************************************************
-ADev
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size
-    
-Output parameters:
-    ADev-   ADev
-
-  -- ALGLIB --
-     Copyright 06.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void calculateadev(const ap::real_1d_array& x, int n, ap::real_value_type& adev);
-
-
-/*************************************************************************
-Median calculation.
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size
-
-Output parameters:
-    Median
-
-  -- ALGLIB --
-     Copyright 06.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void calculatemedian(ap::real_1d_array x, int n, ap::real_value_type& median);
-
-
-/*************************************************************************
-Percentile calculation.
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size, N>1
-    P   -   percentile (0<=P<=1)
-
-Output parameters:
-    V   -   percentile
-
-  -- ALGLIB --
-     Copyright 01.03.2008 by Bochkanov Sergey
-*************************************************************************/
-void calculatepercentile(ap::real_1d_array x, int n, ap::real_value_type p, ap::real_value_type& v);
-
 
 #endif

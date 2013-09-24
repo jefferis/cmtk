@@ -1,3 +1,35 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 2004-2010, 2013 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 1871 $
+//
+//  $LastChangedDate: 2010-06-22 12:57:14 -0700 (Tue, 22 Jun 2010) $
+//
+//  $LastChangedBy: torstenrohlfing $
+//
+*/
+
 /*************************************************************************
 Copyright (c) 2007, Sergey Bochkanov (ALGLIB project).
 
@@ -122,314 +154,3 @@ void calculatemoments(const ap::real_1d_array& x,
         kurtosis = kurtosis/n-3;
     }
 }
-
-
-/*************************************************************************
-ADev
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size
-    
-Output parameters:
-    ADev-   ADev
-
-  -- ALGLIB --
-     Copyright 06.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void calculateadev(const ap::real_1d_array& x, int n, ap::real_value_type& adev)
-{
-    int i;
-    ap::real_value_type mean;
-
-    mean = 0;
-    adev = 0;
-    if( n<=0 )
-    {
-        return;
-    }
-    
-    //
-    // Mean
-    //
-    for(i = 0; i <= n-1; i++)
-    {
-        mean = mean+x(i);
-    }
-    mean = mean/n;
-    
-    //
-    // ADev
-    //
-    for(i = 0; i <= n-1; i++)
-    {
-        adev = adev+fabs(x(i)-mean);
-    }
-    adev = adev/n;
-}
-
-
-/*************************************************************************
-Median calculation.
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size
-
-Output parameters:
-    Median
-
-  -- ALGLIB --
-     Copyright 06.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void calculatemedian(ap::real_1d_array x, int n, ap::real_value_type& median)
-{
-    int i;
-    int ir;
-    int j;
-    int l;
-    int midp;
-    int k;
-    ap::real_value_type a;
-    ap::real_value_type temp;
-    ap::real_value_type tval;
-
-    
-    //
-    // Some degenerate cases
-    //
-    median = 0;
-    if( n<=0 )
-    {
-        return;
-    }
-    if( n==1 )
-    {
-        median = x(0);
-        return;
-    }
-    if( n==2 )
-    {
-        median = 0.5*(x(0)+x(1));
-        return;
-    }
-    
-    //
-    // Common case, N>=3.
-    // Choose X[(N-1)/2]
-    //
-    l = 0;
-    ir = n-1;
-    k = (n-1)/2;
-    while(true)
-    {
-        if( ir<=l+1 )
-        {
-            
-            //
-            // 1 or 2 elements in partition
-            //
-            if( ir==l+1&&x(ir)<x(l) )
-            {
-                tval = x(l);
-                x(l) = x(ir);
-                x(ir) = tval;
-            }
-            break;
-        }
-        else
-        {
-            midp = (l+ir)/2;
-            tval = x(midp);
-            x(midp) = x(l+1);
-            x(l+1) = tval;
-            if( x(l)>x(ir) )
-            {
-                tval = x(l);
-                x(l) = x(ir);
-                x(ir) = tval;
-            }
-            if( x(l+1)>x(ir) )
-            {
-                tval = x(l+1);
-                x(l+1) = x(ir);
-                x(ir) = tval;
-            }
-            if( x(l)>x(l+1) )
-            {
-                tval = x(l);
-                x(l) = x(l+1);
-                x(l+1) = tval;
-            }
-            i = l+1;
-            j = ir;
-            a = x(l+1);
-            while(true)
-            {
-                do
-                {
-                    i = i+1;
-                }
-                while(x(i)<a);
-                do
-                {
-                    j = j-1;
-                }
-                while(x(j)>a);
-                if( j<i )
-                {
-                    break;
-                }
-                tval = x(i);
-                x(i) = x(j);
-                x(j) = tval;
-            }
-            x(l+1) = x(j);
-            x(j) = a;
-            if( j>=k )
-            {
-                ir = j-1;
-            }
-            if( j<=k )
-            {
-                l = i;
-            }
-        }
-    }
-    
-    //
-    // If N is odd, return result
-    //
-    if( n%2==1 )
-    {
-        median = x(k);
-        return;
-    }
-    a = x(n-1);
-    for(i = k+1; i <= n-1; i++)
-    {
-        if( x(i)<a )
-        {
-            a = x(i);
-        }
-    }
-    median = 0.5*(x(k)+a);
-}
-
-
-/*************************************************************************
-Percentile calculation.
-
-Input parameters:
-    X   -   sample (array indexes: [0..N-1])
-    N   -   sample size, N>1
-    P   -   percentile (0<=P<=1)
-
-Output parameters:
-    V   -   percentile
-
-  -- ALGLIB --
-     Copyright 01.03.2008 by Bochkanov Sergey
-*************************************************************************/
-void calculatepercentile(ap::real_1d_array x, int n, ap::real_value_type p, ap::real_value_type& v)
-{
-    int i1;
-    ap::real_value_type t;
-
-    ap::ap_error::make_assertion(n>1, "CalculatePercentile: N<=1!");
-    ap::ap_error::make_assertion(p>=0&&p<=1, "CalculatePercentile: incorrect P!");
-    internalstatheapsort(x, n);
-    if( p==0 )
-    {
-        v = x(0);
-        return;
-    }
-    if( p==1 )
-    {
-        v = x(n-1);
-        return;
-    }
-    t = p*(n-1);
-    i1 = ap::ifloor(t);
-    t = t-ap::ifloor(t);
-    v = x(i1)*(1-t)+x(i1+1)*t;
-}
-
-
-static void internalstatheapsort(ap::real_1d_array& arr, int n)
-{
-    int i;
-    int j;
-    int k;
-    int t;
-    ap::real_value_type tmp;
-
-    if( n==1 )
-    {
-        return;
-    }
-    i = 2;
-    do
-    {
-        t = i;
-        while(t!=1)
-        {
-            k = t/2;
-            if( arr(k-1)>=arr(t-1) )
-            {
-                t = 1;
-            }
-            else
-            {
-                tmp = arr(k-1);
-                arr(k-1) = arr(t-1);
-                arr(t-1) = tmp;
-                t = k;
-            }
-        }
-        i = i+1;
-    }
-    while(i<=n);
-    i = n-1;
-    do
-    {
-        tmp = arr(i);
-        arr(i) = arr(0);
-        arr(0) = tmp;
-        t = 1;
-        while(t!=0)
-        {
-            k = 2*t;
-            if( k>i )
-            {
-                t = 0;
-            }
-            else
-            {
-                if( k<i )
-                {
-                    if( arr(k)>arr(k-1) )
-                    {
-                        k = k+1;
-                    }
-                }
-                if( arr(t-1)>=arr(k-1) )
-                {
-                    t = 0;
-                }
-                else
-                {
-                    tmp = arr(k-1);
-                    arr(k-1) = arr(t-1);
-                    arr(t-1) = tmp;
-                    t = k;
-                }
-            }
-        }
-        i = i-1;
-    }
-    while(i>=1);
-}
-
-
-

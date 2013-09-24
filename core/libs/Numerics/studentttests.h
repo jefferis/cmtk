@@ -29,6 +29,7 @@
 //  $LastChangedBy$
 //
 */
+
 /*************************************************************************
 Copyright (c) 2007, Sergey Bochkanov (ALGLIB project).
 
@@ -76,51 +77,6 @@ alglib
 {
 
 /*************************************************************************
-One-sample t-test
-
-This test checks three hypotheses about the mean of the given sample.  The
-following tests are performed:
-    * two-tailed test (null hypothesis - the mean is equal  to  the  given
-      value)
-    * left-tailed test (null hypothesis - the  mean  is  greater  than  or
-      equal to the given value)
-    * right-tailed test (null hypothesis - the mean is less than or  equal
-      to the given value).
-
-The test is based on the assumption that  a  given  sample  has  a  normal
-distribution and  an  unknown  dispersion.  If  the  distribution  sharply
-differs from normal, the test will work incorrectly.
-
-Input parameters:
-    X       -   sample. Array whose index goes from 0 to N-1.
-    N       -   size of sample.
-    Mean    -   assumed value of the mean.
-
-Output parameters:
-    T           -   Value of T statistic
-    BothTails   -   p-value for two-tailed test.
-                    If BothTails is less than the given significance level
-                    the null hypothesis is rejected.
-    LeftTail    -   p-value for left-tailed test.
-                    If LeftTail is less than the given significance level,
-                    the null hypothesis is rejected.
-    RightTail   -   p-value for right-tailed test.
-                    If RightTail is less than the given significance level
-                    the null hypothesis is rejected.
-
-  -- ALGLIB --
-     Copyright 08.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void studentttest1(const ap::real_1d_array& x,
-     int n,
-     ap::real_value_type mean,
-     ap::real_value_type& t,
-     ap::real_value_type& bothtails,
-     ap::real_value_type& lefttail,
-     ap::real_value_type& righttail);
-
-
-/*************************************************************************
 Two-sample pooled test
 
 This test checks three hypotheses about the mean of the given samples. The
@@ -166,52 +122,6 @@ void studentttest2(const ap::real_1d_array& x,
      ap::real_value_type& lefttail,
      ap::real_value_type& righttail);
 
-
-/*************************************************************************
-Two-sample unpooled test
-
-This test checks three hypotheses about the mean of the given samples. The
-following tests are performed:
-    * two-tailed test (null hypothesis - the means are equal)
-    * left-tailed test (null hypothesis - the mean of the first sample  is
-      greater than or equal to the mean of the second sample)
-    * right-tailed test (null hypothesis - the mean of the first sample is
-      less than or equal to the mean of the second sample).
-
-Test is based on the following assumptions:
-    * given samples have normal distributions
-    * samples are independent.
-Dispersion equality is not required
-
-Input parameters:
-    X - sample 1. Array whose index goes from 0 to N-1.
-    N - size of the sample.
-    Y - sample 2. Array whose index goes from 0 to M-1.
-    M - size of the sample.
-
-Output parameters:
-    T           -   Value of T statistic
-    BothTails   -   p-value for two-tailed test.
-                    If BothTails is less than the given significance level
-                    the null hypothesis is rejected.
-    LeftTail    -   p-value for left-tailed test.
-                    If LeftTail is less than the given significance level,
-                    the null hypothesis is rejected.
-    RightTail   -   p-value for right-tailed test.
-                    If RightTail is less than the given significance level
-                    the null hypothesis is rejected.
-
-  -- ALGLIB --
-     Copyright 18.09.2006 by Bochkanov Sergey
-*************************************************************************/
-void unequalvariancettest(const ap::real_1d_array& x,
-     int n,
-     const ap::real_1d_array& y,
-     int m,
-     ap::real_value_type& t,
-     ap::real_value_type& bothtails,
-     ap::real_value_type& lefttail,
-     ap::real_value_type& righttail);
 
 } // namespace alglib
 
