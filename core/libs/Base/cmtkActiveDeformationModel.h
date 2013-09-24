@@ -63,7 +63,7 @@ public:
    * arrangement of control points, and must be defined on the same
    * domain (reference image).
    */
-  ActiveDeformationModel( const std::list< SmartPointer<W> > deformationList, const unsigned int numberOfModes, const bool includeScaleInModel = true,
+  ActiveDeformationModel( const std::list< SmartPointer<W> >& deformationList, const unsigned int numberOfModes, const bool includeScaleInModel = true,
 			  const bool includeReferenceInModel = true );
 
   /// Compose deformation from mean deformation and modes of variation.

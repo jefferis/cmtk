@@ -46,7 +46,7 @@ cmtk
 
 template<class W>
 ActiveDeformationModel<W>::ActiveDeformationModel
-( const std::list< SmartPointer<W> > deformationList, 
+( const std::list< SmartPointer<W> >& deformationList, 
   const unsigned int numberOfModes,
   const bool includeScaleInModel,
   const bool includeReferenceInModel )
