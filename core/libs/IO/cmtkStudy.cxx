@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,9 +46,7 @@ cmtk
 //@{
 
 Study::Study()
-  : m_FileSystemPath( NULL ),
-    m_Name( NULL ),
-    m_Modality( NULL ),
+  : m_Modality( NULL ),
     m_Volume( NULL ),
     m_MinimumValue( 0.0 ),
     m_MaximumValue( 0.0 ),
@@ -59,10 +57,8 @@ Study::Study()
 {
 }
 
-Study::Study( const char* fileSystemPath, const char *name )
-  : m_FileSystemPath( NULL ),
-    m_Name( NULL ),
-    m_Modality( NULL ),
+Study::Study( const std::string& fileSystemPath, const std::string& name )
+  : m_Modality( NULL ),
     m_Volume( NULL ),
     m_MinimumValue( 0.0 ),
     m_MaximumValue( 0.0 ),
@@ -71,35 +67,32 @@ Study::Study( const char* fileSystemPath, const char *name )
     m_Black( 0.0 ),
     m_White( 0.0 )
 {
-  if ( fileSystemPath ) 
+  if ( ! fileSystemPath.empty() ) 
     {
-    this->m_FileSystemPath = strdup( fileSystemPath );
+    this->m_FileSystemPath = fileSystemPath;
     this->m_Description = FileFormat::Describe( this->m_FileSystemPath );
 
     // cut trailing '/'s off the study path.
-    char *endp = this->m_FileSystemPath + strlen( this->m_FileSystemPath ) - 1;
-    while ( endp > this->m_FileSystemPath ) 
+    const size_t lastChar = this->m_FileSystemPath.find_last_not_of( "/" );
+    if ( lastChar != std::string::npos )
       {
-      if ( *endp == '/' ) 
-	*endp = 0;
-      else
-	break;
+      this->m_FileSystemPath = this->m_FileSystemPath.substr( 0, lastChar+1 );
       }
     
     this->SetMakeName( name );
   }
 }
 
-const char*
-Study::SetMakeName( const char* name, const int suffix )
+std::string
+Study::SetMakeName( const std::string& name, const int suffix )
 {
-  if ( name )
+  char suffixStr[10];
+  snprintf( suffixStr, 9, "<%d>", suffix );
+  if ( !name.empty() )
     {
     if ( suffix )
       {
-      char fullname[PATH_MAX];
-      snprintf( fullname, sizeof( fullname ), "%s <%d>", name, suffix );
-      this->SetName( fullname );
+      this->SetName( name + suffixStr );
       }
     else
       {
@@ -108,45 +101,37 @@ Study::SetMakeName( const char* name, const int suffix )
     }
   else
     {
-    char buffer[PATH_MAX+1];
-    strncpy( buffer, this->m_FileSystemPath, PATH_MAX );
-    buffer[PATH_MAX] = 0; // safety - add null at end of buffer
+    std::string studyName = name;
 
-    char* lastChar = buffer + strlen( buffer ) - 1;
-    while ( (lastChar != buffer) && // not yet empty string
-	    (*lastChar =='/') ) 
+    const size_t lastChar = studyName.find_last_not_of( "/" );
+    if ( lastChar != std::string::npos )
       {
-      *lastChar = 0;
-      --lastChar;
+      studyName = studyName.substr( 0, lastChar+1 );
       }
-    
-    const char *slash = strrchr( buffer, '/' );
-    if ( slash )
-      strcpy( buffer, slash+1 );
-    else 
-      strcpy( buffer, this->m_FileSystemPath );
-    
-    char* dot = strchr( buffer, '.' );
-    if ( dot )
-      *dot = 0;
+
+    const size_t lastSlash = studyName.rfind( "/" );
+    if ( lastSlash != std::string::npos )
+      {
+      studyName = studyName.substr( lastSlash+1 );
+      }
     else
-      dot = buffer + strlen(buffer);
-    
-    if ( suffix ) 
       {
-      snprintf( dot, sizeof( buffer ) - (dot-buffer), "<%d>", suffix );
+      studyName = this->m_FileSystemPath;
+      }
+    
+    const size_t dot = studyName.find( "." );
+    if ( dot != std::string::npos )
+      {
+      studyName = studyName.substr( 0, dot );
       }
 
-    this->SetName( buffer );
+    if ( suffix )
+      studyName = studyName + suffixStr;
+
+    this->SetName( studyName );
     }
 
   return this->m_Name;
-}
-
-Study::~Study() 
-{
-  free( this->m_FileSystemPath );
-  free( this->m_Name );
 }
 
 bool 
@@ -195,12 +180,6 @@ Study::ReadVolume( const bool reRead, const char* orientation )
   
   this->m_Volume = oldVolume;
   return false;
-}
-
-Study* 
-Study::Read( const char* path )
-{
-  return new Study( path );
 }
 
 void

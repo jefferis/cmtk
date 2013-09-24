@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,105 +45,118 @@ cmtk
 const Study*
 StudyList::GetStudy( const unsigned int studyIndex ) const
 {
-  if ( studyIndex < this->size() ) {
+  if ( studyIndex < this->size() ) 
+    {
     const_iterator it = this->begin();
     for ( unsigned int i = 0; i < studyIndex; ++i ) ++it;
     return it->first;
-  } else
+    } 
+  else
     return NULL;
 }
 
 Study::SmartPtr
 StudyList::GetStudy( const unsigned int studyIndex )
 {
-  if ( studyIndex < this->size() ) {
+  if ( studyIndex < this->size() ) 
+    {
     const_iterator it = this->begin();
     for ( unsigned int i = 0; i < studyIndex; ++i ) ++it;
     return it->first;
-  } else
+    } 
+  else
     return Study::SmartPtr::Null();
 }
 
 const Study*
-StudyList::FindStudyPath( const char *fileSystemPath ) const
+StudyList::FindStudyPath( const std::string& fileSystemPath ) const
 {
-  if ( ! fileSystemPath ) return NULL;
+  if ( fileSystemPath.empty() ) 
+    return NULL;
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) {
-    if ( ! strcmp( it->first->GetFileSystemPath(), fileSystemPath ) )
+  while ( it != this->end() ) 
+    {
+    if ( it->first->GetFileSystemPath() == fileSystemPath )
       return it->first;
     ++it;
-  }
+    }
   
   // not found: return NULL;
   return NULL;
 }
 
 Study::SmartPtr
-StudyList::FindStudyPath( const char *fileSystemPath, const bool create )
+StudyList::FindStudyPath( const std::string& fileSystemPath, const bool create )
 {
-  if ( ! fileSystemPath ) return Study::SmartPtr::Null();
+  if ( fileSystemPath.empty() ) 
+    return Study::SmartPtr::Null();
 
   iterator it = this->begin();
-  while ( it != this->end() ) {
-    if ( ! strcmp( it->first->GetFileSystemPath(), fileSystemPath ) )
+  while ( it != this->end() ) 
+    {
+    if ( it->first->GetFileSystemPath() == fileSystemPath )
       return it->first;
     ++it;
-  }
+    }
   
   // not found: return NULL or create;
   if ( !create )
     return Study::SmartPtr::Null();
   
-  Study::SmartPtr newStudy;
+  Study::SmartPtr newStudy( new Study );
   newStudy->SetFileSystemPath( fileSystemPath );
   this->AddStudy( newStudy );
   return newStudy;
 }
 
 const Study*
-StudyList::FindStudyName( const char *name ) const
+StudyList::FindStudyName( const std::string& name ) const
 {
-  if ( ! name ) return NULL;
+  if ( name.empty() ) 
+    return NULL;
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) {
-    if ( ! strcmp( it->first->GetName(), name ) )
+  while ( it != this->end() ) 
+    {
+    if ( it->first->GetName() == name )
       return it->first;
     ++it;
-  }
+    }
   
   // not found: return NULL;
   return NULL;
 }
 
 Study::SmartPtr
-StudyList::FindStudyName( const char *name )
+StudyList::FindStudyName( const std::string& name )
 {
-  if ( ! name ) return Study::SmartPtr::Null();
+  if ( name.empty() ) 
+    return Study::SmartPtr::Null();
 
   iterator it = this->begin();
-  while ( it != this->end() ) {
-    if ( ! strcmp( it->first->GetName(), name ) )
+  while ( it != this->end() ) 
+    {
+    if ( it->first->GetName() == name )
       return it->first;
     ++it;
-  }
+    }
   
   // not found: return NULL;
   return Study::SmartPtr::Null();
 }
 
 Study::SmartPtr
-StudyList::AddStudy( const char *fileSystemPath )
+StudyList::AddStudy( const std::string& fileSystemPath )
 {
-  if ( ! fileSystemPath ) return Study::SmartPtr::Null();
+  if ( fileSystemPath.empty() ) 
+    return Study::SmartPtr::Null();
 
   const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
     // if this study is already in the list, we're done.
-    if ( ! strcmp( it->first->GetFileSystemPath(), fileSystemPath ) )
+    if ( it->first->GetFileSystemPath() == fileSystemPath )
       return Study::SmartPtr::Null();
     ++it;
     }
@@ -153,7 +166,7 @@ StudyList::AddStudy( const char *fileSystemPath )
     {
     int suffix = 0;
     while ( this->FindStudyName( newStudy->GetName() ) ) {
-    newStudy->SetMakeName( NULL, suffix++ );
+    newStudy->SetMakeName( "", suffix++ );
     }
     
     (*this)[newStudy];
@@ -167,15 +180,16 @@ StudyList::AddStudy( Study::SmartPtr& study )
 {
   if ( !study ) return;
 
-  const char* newStudyPath = study->GetFileSystemPath();
+  const std::string& newStudyPath = study->GetFileSystemPath();
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) {
+  while ( it != this->end() ) 
+    {
     // if this study is already in the list, we're done.
-    if ( ! strcmp( it->first->GetFileSystemPath(), newStudyPath ) )
+    if ( it->first->GetFileSystemPath() == newStudyPath )
       return;
     ++it;
-  }
+    }
   
   // insert new study into map.
   (*this)[study];
@@ -183,7 +197,7 @@ StudyList::AddStudy( Study::SmartPtr& study )
 
 void 
 StudyList::AddXform
-( const char *fromStudyPath, const char *toStudyPath, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform )
+( const std::string& fromStudyPath, const std::string& toStudyPath, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform )
 {
   Study::SmartPtr fromStudy = this->FindStudyPath( fromStudyPath, true /*create*/ );
   Study::SmartPtr toStudy = this->FindStudyPath( toStudyPath, true /*create*/ );
@@ -213,12 +227,14 @@ void
 StudyList::DeleteStudy( const Study* study )
 {
   iterator it = this->begin();
-  while ( it != this->end() ) {
-    if ( it->first == study ) {
+  while ( it != this->end() ) 
+    {
+    if ( it->first == study ) 
+      {
       this->erase( it );
-    }
+      }
     break;
-  }
+    }
 }
 
 } // namespace cmtk

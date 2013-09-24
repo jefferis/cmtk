@@ -101,7 +101,7 @@ void
 QtTriplanarViewer::slotAddStudy( const char* fname )
 {
   Study::SmartPtr newStudy( new Study( fname ) );
-  this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
+  this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath().c_str() ) );
 
   this->m_Studies.push_back( newStudy );
   this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
@@ -121,12 +121,12 @@ QtTriplanarViewer::slotLoadFile()
   
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
-    Study::SmartPtr newStudy( new Study( path.toLatin1() ) );
+    Study::SmartPtr newStudy( new Study( path.toLocal8Bit().constData() ) );
 
     this->m_Studies.push_back( newStudy );
     this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
     
-    this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
+    this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath().c_str() ) );
     this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
 
     this->slotSwitchToStudy( newStudy );
@@ -148,7 +148,7 @@ QtTriplanarViewer::slotSwitchStudy( const QString& study )
 {
   for ( size_t idx = 0; idx < this->m_Studies.size(); ++idx )
     {
-    if ( study == QString( this->m_Studies[idx]->GetFileSystemPath() ) )
+    if ( study.toLocal8Bit().constData() == this->m_Studies[idx]->GetFileSystemPath() )
       {
       this->slotSwitchToStudyInternal( this->m_Studies[idx] );
       return;

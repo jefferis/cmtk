@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -84,20 +84,20 @@ public:
   Study::SmartPtr GetStudy( const unsigned int studyIndex );  
 
   /// Find constant Study object by file system path.
-  const Study *FindStudyPath( const char *fileSystemPath ) const;
+  const Study *FindStudyPath( const std::string& fileSystemPath ) const;
 
   /** Find non-constant Study object by file system path.
     */
-  Study::SmartPtr FindStudyPath( const char *fileSystemPath /*!< Path of study to find in filesystem */, const bool create = false /*!< Flag whether to create a study that does not exist already */ );
+  Study::SmartPtr FindStudyPath( const std::string& fileSystemPath /*!< Path of study to find in filesystem */, const bool create = false /*!< Flag whether to create a study that does not exist already */ );
 
   /// Find constant Study object by file system path.
-  const Study *FindStudyName( const char *name /*!< Name of the study to find.*/ ) const;
+  const Study *FindStudyName( const std::string& name /*!< Name of the study to find.*/ ) const;
 
   /// Find non-constant Study object by file system path.
-  Study::SmartPtr FindStudyName( const char *name /*!< Name of the study to find.*/ );
+  Study::SmartPtr FindStudyName( const std::string& name /*!< Name of the study to find.*/ );
 
   /// Add a new study entry.
-  Study::SmartPtr AddStudy( const char *fileSystemPath /*!< Name of the study to add.*/ );
+  Study::SmartPtr AddStudy( const std::string& fileSystemPath /*!< Name of the study to add.*/ );
   
   /// Add an existing study object.
   void AddStudy( Study::SmartPtr& study /*!< Existing study object to add to the study list.*/ );
@@ -106,8 +106,8 @@ public:
   void AddXform( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null() );
 
   /// Add a coordinate transformation between two studies.
-  void AddXform( const char *fromStudyPath /*!< Path of the study that the transformation maps from.*/, 
-		 const char *toStudyPath /*!< Path of the study that the transformation maps to.*/, 
+  void AddXform( const std::string& fromStudyPath /*!< Path of the study that the transformation maps from.*/, 
+		 const std::string& toStudyPath /*!< Path of the study that the transformation maps to.*/, 
 		 AffineXform::SmartPtr& affineXform /*!< Affine coordinate transformation between the given studies. */, 
 		 WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null() /*!< Optional nonrigid transformation between the two given studies. */);
   

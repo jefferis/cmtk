@@ -76,11 +76,15 @@ enum
  */
 class Study
 {
+public:
+  /// This class.
+  typedef Study Self;
+
   /// Path of this study in the file system.
-  cmtkGetSetMacroString(FileSystemPath);
+  cmtkGetSetMacro(std::string,FileSystemPath);
 
   /// Short, memorable name assigned to this study.
-  cmtkGetSetMacroString(Name);
+  cmtkGetSetMacro(std::string,Name);
 
   /// Textual description of study file type.
   cmtkGetSetMacro(std::string,Description);
@@ -144,10 +148,10 @@ public:
   Study();
 
   /// Constructor: Construct study from image file.
-  Study( const char* fileSystemPath, const char* name = NULL );
+  Study( const std::string& fileSystemPath, const std::string& name = "" );
 
-  /// Destructor.
-  virtual ~Study();
+  /// Virtual destructor.
+  virtual ~Study() {}
 
   /** Read volume data.
    *\param reRead If this is false, then the volume is only read if it has not
@@ -156,21 +160,24 @@ public:
    *\return True if reading was successful; the "Volume" field has a pointer to
    * the resulting image volume.
    */
-  virtual bool ReadVolume( const bool reRead = false, const char* orientation = NULL );
+  bool ReadVolume( const bool reRead = false, const char* orientation = NULL );
 
   /** Set study name; create name if no name given.
    * This function sets the name of this study. If no name is given (name
    * parameter is NULL pointer), then a name is constructed from the file 
    * system path of this study.
    */
-  const char* SetMakeName( const char* name = NULL /*!< New study name */, const int suffix = 0 /*!< Unique numerical suffix to be added to study name if other studies with the same name exist. */ );
+  std::string SetMakeName( const std::string& name = "" /*!< New study name */, const int suffix = 0 /*!< Unique numerical suffix to be added to study name if other studies with the same name exist. */ );
 
   /// Static study reader function.
-  static Study* Read( const char* path );
+  static Self* Read( const std::string& path )
+  {
+    return new Self( path );
+  }
 
   /** Copy colormap information from another study object.
    */
-  virtual void CopyColormap( const Study* other );
+  void CopyColormap( const Self* other );
 
   /** Get colormap from label list.
    */

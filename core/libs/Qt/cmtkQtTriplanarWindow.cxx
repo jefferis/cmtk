@@ -510,7 +510,7 @@ QtTriplanarWindow::UpdateDialog()
       }
     
     QString caption;
-    this->setWindowTitle( caption.sprintf( "CMTK Triplanar Viewer: %s", this->m_Study->GetName() ) );
+    this->setWindowTitle( (std::string( "CMTK Triplanar Viewer: " ) + this->m_Study->GetName()).c_str() );
     this->show();
     }
 }
