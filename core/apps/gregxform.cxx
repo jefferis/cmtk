@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -185,7 +185,7 @@ doMain( const int argc, const char *argv[] )
 	{
 	break;
 	}
-      numRead = sscanf( line, "%f %f %f", xyz, xyz+1, xyz+2 );
+      numRead = sscanf( line, "%20f %20f %20f", xyz, xyz+1, xyz+2 );
       }
     
     if ( numRead == 3 ) 

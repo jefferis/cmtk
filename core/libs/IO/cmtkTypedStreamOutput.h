@@ -82,7 +82,7 @@ public:
   } Mode;
   
   /// Default constructor.
-  TypedStreamOutput() : TypedStream() {}
+  TypedStreamOutput() : TypedStream(), m_Mode( MODE_UNSET ) {}
 
   /** Open constructor.
    *\param filename Name of the archive to open.
@@ -245,7 +245,6 @@ public:
 private:
   /// Mode the current archive was opened with.
   Self::Mode m_Mode;
-
 };
 
 //@}

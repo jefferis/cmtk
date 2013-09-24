@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,9 +76,6 @@ doMain( const int argc, const char* argv[] )
   const char* TranslateStr = NULL;
   const char* PixelSizeStr = NULL;
   
-  const char* Reference = "reference";
-  const char* Floating = "floating";
-  
   const char* OutList = NULL;
   bool AppendToOutput = false;
   
@@ -149,7 +146,7 @@ doMain( const int argc, const char* argv[] )
   if ( PixelSizeStr )
     {
     float pixel[4] = { 1.0, 1.0, 1.0, 1.0 };
-    if ( 3 == sscanf( PixelSizeStr, "%f,%f,%f", pixel+0, pixel+1, pixel+2 ) )
+    if ( 3 == sscanf( PixelSizeStr, "%15f,%15f,%15f", pixel+0, pixel+1, pixel+2 ) )
       {
       for ( int row = 0; row < 4; ++row )
 	for ( int col = 0; col < 4; ++col )
@@ -162,7 +159,7 @@ doMain( const int argc, const char* argv[] )
   if ( CenterStr )
     {
     float center[3];
-    if ( 3 == sscanf( CenterStr, "%f,%f,%f", center+0, center+1, center+2 ) )
+    if ( 3 == sscanf( CenterStr, "%15f,%15f,%15f", center+0, center+1, center+2 ) )
       {
       xform->ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( center ) );
       }
@@ -171,7 +168,7 @@ doMain( const int argc, const char* argv[] )
   if ( OffsetStr )
     {
     float offset[3];
-    if ( 3 == sscanf( OffsetStr, "%f,%f,%f", offset+0, offset+1, offset+2 ) )
+    if ( 3 == sscanf( OffsetStr, "%15f,%15f,%15f", offset+0, offset+1, offset+2 ) )
       {
       xform->Translate( xform->RotateScaleShear( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( offset ) ) );
       }
@@ -180,7 +177,7 @@ doMain( const int argc, const char* argv[] )
   if ( TranslateStr )
     {
     float xlate[3];
-    if ( 3 == sscanf( TranslateStr, "%f,%f,%f", xlate+0, xlate+1, xlate+2 ) )
+    if ( 3 == sscanf( TranslateStr, "%15f,%15f,%15f", xlate+0, xlate+1, xlate+2 ) )
       {
       xform->Translate( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( xlate ) );
       }
@@ -200,16 +197,19 @@ doMain( const int argc, const char* argv[] )
       {
       cmtk::StudyList studyList;
       
-      studyList.AddStudy( Reference );
-      studyList.AddStudy( Floating );
+      const char* strReference = "reference";
+      const char* strFloating = "floating";
+  
+      studyList.AddStudy( strReference );
+      studyList.AddStudy( strFloating );
 
       if ( Inverse )
 	{
 	cmtk::AffineXform::SmartPtr inverse( xform->GetInverse() );
-	studyList.AddXform( Reference, Floating, inverse );
+	studyList.AddXform( strReference, strFloating, inverse );
 	}
       else
-	studyList.AddXform( Reference, Floating, xform );
+	studyList.AddXform( strReference, strFloating, xform );
       
       cmtk::ClassStreamStudyList::Write( OutList, &studyList );
       }

@@ -286,7 +286,7 @@ doMain( const int argc, const char* argv[] )
   if ( cropReferenceFromIndex )
     {
     int xyz[3];
-    if ( 3 != sscanf( cropReferenceFromIndex, "%d,%d,%d", &xyz[0], &xyz[1], &xyz[2] ) )
+    if ( 3 != sscanf( cropReferenceFromIndex, "%6d,%6d,%6d", &xyz[0], &xyz[1], &xyz[2] ) )
       {
       cmtk::StdErr << "ERROR: reference crop from index could not parse index '" << cropReferenceFromIndex << "' as valid x,y,z index.\n";
       throw cmtk::ExitException( 1 );
@@ -300,7 +300,7 @@ doMain( const int argc, const char* argv[] )
   if ( cropReferenceToIndex )
     {
     int xyz[3];
-    if ( 3 != sscanf( cropReferenceToIndex, "%d,%d,%d", &xyz[0], &xyz[1], &xyz[2] ) )
+    if ( 3 != sscanf( cropReferenceToIndex, "%6d,%6d,%6d", &xyz[0], &xyz[1], &xyz[2] ) )
       {
       cmtk::StdErr << "ERROR: reference crop to index could not parse index '" << cropReferenceFromIndex << "' as valid x,y,z index.\n";
       throw cmtk::ExitException( 1 );
