@@ -134,24 +134,4 @@ void rmatrixlqunpackq(const ap::real_2d_array& a,
      ap::real_2d_array& q);
 
 
-/*************************************************************************
-Unpacking of matrix L from the LQ decomposition of a matrix A
-
-Input parameters:
-    A       -   matrices Q and L in compact form.
-                Output of RMatrixLQ subroutine.
-    M       -   number of rows in given matrix A. M>=0.
-    N       -   number of columns in given matrix A. N>=0.
-
-Output parameters:
-    L       -   matrix L, array[0..M-1, 0..N-1].
-
-  -- ALGLIB --
-     Copyright 2005 by Bochkanov Sergey
-*************************************************************************/
-void rmatrixlqunpackl(const ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_2d_array& l);
-
 #endif
