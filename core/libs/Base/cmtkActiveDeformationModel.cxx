@@ -105,7 +105,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   
   // Set global scaling to average of individual scale factors, unless it
   // was preserved as part of the actual model.
-  if ( ! IncludeScaleInModel ) 
+  if ( sample && !IncludeScaleInModel ) 
     {
     this->m_GlobalScaling = exp( globalScaling / sample );
     } 
