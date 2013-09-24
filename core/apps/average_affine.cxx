@@ -52,8 +52,6 @@ int
 doMain( const int argc, const char* argv[] )
 {
   std::list<cmtk::AffineXform::SmartPtr> xformList;
-  const cmtk::AffineXform* firstXform = NULL;
-
   try 
     {
     cmtk::CommandLine cl;
@@ -70,6 +68,7 @@ doMain( const int argc, const char* argv[] )
 
     cl.Parse( argc, argv );
 
+    const cmtk::AffineXform* firstXform = NULL;
     const char* next = cl.GetNextOptional();
     while ( next ) 
       {

@@ -187,10 +187,10 @@ doMain
       classSigma[k] = sqrt( classSigma[k] / pTotal[k] );
       }
     
-    cmtk::StdOut.printf( "Iteration %d\n", i );
+    cmtk::StdOut.printf( "Iteration %u\n", i );
     for ( size_t k = 0; k < nClasses; ++k )
       {
-      cmtk::StdOut.printf( "Class %d: %f +/- %f\t", k, classMu[k], classSigma[k] );
+      cmtk::StdOut.printf( "Class %u: %f +/- %f\t", k, classMu[k], classSigma[k] );
       }
     cmtk::StdOut << "\n";
 

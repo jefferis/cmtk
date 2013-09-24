@@ -186,7 +186,7 @@ doMain( int argc, const char* argv[] )
       {
       if ( strcmp( studylist.GetReferenceStudyPath(), referenceStudy ) ) 
 	{
-	cmtk::StdErr.printf( "ERROR: Studylist #%d has a different reference study.\n", idx );
+	cmtk::StdErr.printf( "ERROR: Studylist #%u has a different reference study.\n", idx );
 	//continue;
 	throw cmtk::ExitException( 1 );
 	}
@@ -205,7 +205,7 @@ doMain( int argc, const char* argv[] )
 
       if ( OutImageName && !Jacobian && !nextVolume ) 
 	{
-	cmtk::StdErr.printf( "WARNING: Cannot read volume %s in studylist #%d.\n", actualPath.c_str(), idx );
+	cmtk::StdErr.printf( "WARNING: Cannot read volume %s in studylist #%u.\n", actualPath.c_str(), idx );
 	} 
       else
 	{	
@@ -229,7 +229,7 @@ doMain( int argc, const char* argv[] )
       } 
     else 
       {
-      cmtk::StdErr.printf( "ERROR: Studylist #%d has no spline warp.\n", idx );
+      cmtk::StdErr.printf( "ERROR: Studylist #%u has no spline warp.\n", idx );
       throw cmtk::ExitException( 1 );
       }
     }

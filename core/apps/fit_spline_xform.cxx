@@ -115,7 +115,7 @@ doMain ( const int argc, const char *argv[] )
     if ( !gridDims.empty() )
       {
       double dims[3];
-      if ( 3 != sscanf( gridDims.c_str(), "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
+      if ( 3 != sscanf( gridDims.c_str(), "%20lf,%20lf,%20lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
 	{
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );

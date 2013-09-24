@@ -94,7 +94,7 @@ CallbackSetPassWeight( const char* argv )
 {
   int pass = 0;
   float weight = 1.0;
-  if ( 2 == sscanf( argv, "%d:%f", &pass, &weight ) )
+  if ( 2 == sscanf( argv, "%3d:%10f", &pass, &weight ) )
     {
     PassWeights[pass] = weight;
     }

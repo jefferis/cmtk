@@ -92,7 +92,7 @@ void
 CallbackCropImages( const char* arg )
 {
   int cropFrom[3], cropTo[3];
-  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
+  CropImages = (6 == sscanf( arg, "%4d,%4d,%4d,%4d,%4d,%4d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
 
   if ( CropImages )
     {
