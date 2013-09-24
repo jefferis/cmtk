@@ -41,8 +41,8 @@ cmtk
 
 VoxelMatchingCrossCorrelation
 ::VoxelMatchingCrossCorrelation( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
-  VoxelMatchingMetricShort( refVolume, fltVolume )
-  : SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 )
+  VoxelMatchingMetricShort( refVolume, fltVolume ),
+  SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 )
 {}
 
 VoxelMatchingCrossCorrelation::ReturnType
