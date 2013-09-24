@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -80,7 +80,7 @@ VolumeFromFile::ReadDICOM( const std::string& path )
     m4[3][i] = imageOrigin[i];
 
   volume->m_IndexToPhysicalMatrix = m4;
-  const std::string orientationString0 = volume->GetOrientationFromDirections();
+//  const std::string orientationString0 = volume->GetOrientationFromDirections();
   volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   const std::string orientationString = volume->GetOrientationFromDirections();

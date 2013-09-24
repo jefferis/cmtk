@@ -32,6 +32,7 @@
 
 #include "cmtkVolumeFromFile.h"
 
+#include <System/cmtkExitException.h>
 #include <System/cmtkCompressedStream.h>
 
 namespace
@@ -99,26 +100,34 @@ VolumeFromFile::ReadVanderbilt( const std::string& path )
   volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientation );
 
   // generate image filename from header file path.
-  char imageFilename[PATH_MAX+1], *lastSlash;
-  strncpy( imageFilename, path.c_str(), PATH_MAX );
-  if ( (lastSlash = strrchr( imageFilename, '/' ) ) )
-    ++lastSlash;
+  std::string imagePath = path;
+
+  const size_t lastSlashPos = path.rfind( '/' );
+  if ( lastSlashPos == std::string::npos )
+    imagePath = "image.bin";
   else
-    lastSlash = imageFilename;
-  strcpy( lastSlash, "image.bin" );
+    imagePath = path.substr( 0, lastSlashPos+1 ) + "image.bin";
 
   // open image file and read data.
-  CompressedStream imageStream( imageFilename );
-  TypedArray::SmartPtr data = TypedArray::Create( TYPE_SHORT, dims[0] * dims[1] * dims[2] );
-  imageStream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() );
+  CompressedStream imageStream( imagePath );
+  if ( imageStream.IsValid() ) 
+    {
+    TypedArray::SmartPtr data = TypedArray::Create( TYPE_SHORT, dims[0] * dims[1] * dims[2] );
+    imageStream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() );
   
 #ifndef WORDS_BIGENDIAN
-  // change endianness from Sun to whatever we're currently on.
-  data->ChangeEndianness();
+    // change endianness from Sun to whatever we're currently on.
+    data->ChangeEndianness();
 #endif
-  
-  // set volume data array with what we just read.
-  volume->SetData( TypedArray::SmartPtr( data ) );
+    
+    // set volume data array with what we just read.
+    volume->SetData( TypedArray::SmartPtr( data ) );
+    }
+  else
+    {
+    StdErr << "ERROR: cannot open image file " << imagePath << "\n";
+    throw ExitException( 1 );
+    }
   
   return volume;
 }
