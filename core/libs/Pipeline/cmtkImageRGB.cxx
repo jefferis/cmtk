@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -163,22 +163,6 @@ void ImageRGB::SetPixel( const int index, const RGB& rgb )
   pixelPtr[0] = rgb.R;
   pixelPtr[1] = rgb.G;
   pixelPtr[2] = rgb.B;
-}
-
-bool 
-ImageRGB::IsGreyscale() const
-{
-  unsigned int numPixels = this->GetNumPixels();
-  const byte *data = this->GetDataPtr();
-  byte increment = (this->GetAlphaChannel() == IMAGE_RGB) ? 3 : 4;
-
-  for ( unsigned int idx = 0; idx < numPixels; ++idx, data += increment ) 
-    {
-    if ( (data[0] != data[1]) || (data[1] != data[2]) )
-      return 0;
-    }
-  
-  return 1;
 }
 
 } // namespace cmtk

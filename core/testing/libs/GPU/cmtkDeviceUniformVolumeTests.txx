@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010, 2012 SRI International
+//  Copyright 2010, 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,11 +46,11 @@ testDeviceUniformVolume()
 
     // second, allocate pixel data and create another device instance.
     volume.CreateDataArray( cmtk::TYPE_INT );
-    volumeDevice = cmtk::DeviceUniformVolume::Create( volume );    
+    cmtk::DeviceUniformVolume::SmartPtr volumeDevice2 = cmtk::DeviceUniformVolume::Create( volume );    
 
     // third, change pixel data to double precision float and create another device instance.
     volume.CreateDataArray( cmtk::TYPE_DOUBLE );
-    volumeDevice = cmtk::DeviceUniformVolume::Create( volume );    
+    cmtk::DeviceUniformVolume::SmartPtr volumeDevice3 = cmtk::DeviceUniformVolume::Create( volume );    
     }
   catch ( std::bad_alloc )
     {

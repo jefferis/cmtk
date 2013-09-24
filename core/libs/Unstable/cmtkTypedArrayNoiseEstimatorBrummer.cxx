@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2012 SRI International
+//  Copyright 2008-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -291,14 +291,13 @@ TypedArrayNoiseEstimatorBrummer::EstimateNumBinsToUse
   UNUSED(data);
 
   double bestK = 0;
-  double curKMinimizer;
   double minKMinimizer = std::numeric_limits<double>::max(); 
  
   double maxK = histogram->GetNumberOfBins() / 2;
   
   for ( int curK = 1; curK < maxK; curK++ )
     {
-    curKMinimizer = SijbersBiasHat( histogram, sigmaHat, curK )+ SijbersVarHat( histogram, sigmaHat, curK );
+    const double curKMinimizer = SijbersBiasHat( histogram, sigmaHat, curK )+ SijbersVarHat( histogram, sigmaHat, curK );
 //std::cout << "minKMinimizer: " << minKMinimizer << std::endl;
 //std::cout << "curKMinimizer: " << curKMinimizer << std::endl;
     if ( curKMinimizer < minKMinimizer ) 

@@ -88,7 +88,7 @@ public:
 #endif
 
   /// Create stream object without opening any files.
-  CompressedStream() : m_Reader( NULL ), m_Compress( false ) {};
+  CompressedStream() : m_Reader( NULL ), m_Compressed( false ) {};
   
   /// Create stream from filename.
   CompressedStream ( const std::string& filename );

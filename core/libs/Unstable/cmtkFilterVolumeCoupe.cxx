@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -659,7 +659,7 @@ FilterVolumeCoupe::CoupeFilter
           int offset = x + dimX * ( y + dimY * z );
           NLsPerVoxelHist[NLsPerVoxel.at( offset )->size()]++;
           Types::DataItem curNLSum = 0.0;
-          for ( std::vector<Types::DataItem>::iterator it = NLsPerVoxel.at( offset )->begin(); it != NLsPerVoxel.at( offset )->end(); it++ )
+          for ( std::vector<Types::DataItem>::iterator it = NLsPerVoxel.at( offset )->begin(); it != NLsPerVoxel.at( offset )->end(); ++it )
             curNLSum += *it;
 
           Types::DataItem restoredVoxel = curNLSum / NLsPerVoxel.at( offset )->size();
@@ -671,7 +671,7 @@ FilterVolumeCoupe::CoupeFilter
             {
             std::cout << std::endl;
             std::cout << std::endl;
-            for ( std::vector<Types::DataItem>::iterator it = NLsPerVoxel.at( offset )->begin(); it != NLsPerVoxel.at( offset )->end(); it++ )
+            for ( std::vector<Types::DataItem>::iterator it = NLsPerVoxel.at( offset )->begin(); it != NLsPerVoxel.at( offset )->end(); ++it )
               {
               std::cout << *it << "..." << "\n";
               }

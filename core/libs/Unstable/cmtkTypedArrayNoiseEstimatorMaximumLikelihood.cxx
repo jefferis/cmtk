@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2011 SRI International
+//  Copyright 2008-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,7 +85,6 @@ TypedArrayNoiseEstimatorMaximumLikelihood::TypedArrayNoiseEstimatorMaximumLikeli
     std::cout << "K: " << numBinsToUse << "\tprevMaxLikelySigma: " << prevMaxLikelySigma << "\tmaxLikelySigma: " << maxLikelySigma << std::endl;
     prevMaxLikelySigma = maxLikelySigma;
 
-    double curSigmaMinimizer;
     double minSigmaMinimizer = std::numeric_limits<double>::max(); 
 
     const double bin0Squared = pow( histogram->BinToValue( 0 ), 2 );
@@ -99,7 +98,6 @@ TypedArrayNoiseEstimatorMaximumLikelihood::TypedArrayNoiseEstimatorMaximumLikeli
       {
       const double twoSigmaSquared = 2 * pow( sigma, 2 );
       double sumForSearch = 0.0; 
-//      double productForSearch = 1.0; 
   
       for ( int j = 1; j <= numBinsToUse; j++ )
         {
@@ -109,8 +107,7 @@ TypedArrayNoiseEstimatorMaximumLikelihood::TypedArrayNoiseEstimatorMaximumLikeli
         sumForSearch += curAddend;
         }
       
-      curSigmaMinimizer = /*binsSum 
-                        * */( exp( -bin0Squared / twoSigmaSquared ) - exp( -binKSquared / twoSigmaSquared ) ) - sumForSearch;
+      const double curSigmaMinimizer = ( exp( -bin0Squared / twoSigmaSquared ) - exp( -binKSquared / twoSigmaSquared ) ) - sumForSearch;
       
       if ( curSigmaMinimizer < minSigmaMinimizer ) 
         {
