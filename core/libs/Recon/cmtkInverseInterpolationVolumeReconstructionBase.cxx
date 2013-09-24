@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,10 @@ InverseInterpolationVolumeReconstructionBase
     m_RegionalIntensityTruncation( true ),
     m_LowestMaxError( 1e12 ),
     m_FourthOrderError( false ),
-    m_ConstraintWeightLNorm( 0.0 )
+    m_ConstraintWeightLNorm( 0.0 ),
+    m_MeanSquaredError( 0.0 ),
+    m_MaximumError( 0.0 ),
+    m_FunctionAndGradient( NULL )
 {
 }
 
@@ -57,7 +60,10 @@ InverseInterpolationVolumeReconstructionBase
     m_RegionalIntensityTruncation( true ),
     m_LowestMaxError( 1e12 ),
     m_FourthOrderError( false ),
-    m_ConstraintWeightLNorm( 0.0 )
+    m_ConstraintWeightLNorm( 0.0 ),
+    m_MeanSquaredError( 0.0 ),
+    m_MaximumError( 0.0 ),
+    m_FunctionAndGradient( NULL )
 {
 }
 

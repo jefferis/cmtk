@@ -111,7 +111,8 @@ public:
       Padding( DataTypeTraits<T>::ChoosePaddingValue() ), 
       Data( NULL ), 
       DataArray( NULL ), 
-      m_ValueRange( 0, 0 )
+      m_ValueRange( 0, 0 ),
+      NumberOfSamples( 0 )
     {
       nextJ = nextK = nextIJ = nextJK = nextIK = nextIJK = 0;
     }

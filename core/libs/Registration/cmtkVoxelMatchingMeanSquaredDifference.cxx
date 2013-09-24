@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,9 @@ cmtk
 
 VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
 ( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
-  VoxelMatchingMetricShort( refVolume, fltVolume )
+  VoxelMatchingMetricShort( refVolume, fltVolume ),
+  Sum( 0.0 ),
+  Samples( 0 )
 {}
 
 } // namespace cmtk

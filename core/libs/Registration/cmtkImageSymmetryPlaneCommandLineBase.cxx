@@ -46,8 +46,8 @@
 
 cmtk::ImageSymmetryPlaneCommandLineBase
 ::ImageSymmetryPlaneCommandLineBase()
-  : m_MinValueSet( false ),
-    m_MaxValueSet( false ),
+  : m_MinValue( 0.0 ), m_MinValueSet( false ),
+    m_MaxValue( 0.0 ), m_MaxValueSet( false ),
     m_Sampling( 1.0 ),
     m_Accuracy( 0.1 ),
     m_Interpolation( Interpolators::LINEAR ),
@@ -270,7 +270,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     if ( this->m_SymmetryParameters ) 
       {
       double rho, theta, phi;
-      if ( 3 == sscanf( this->m_SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
+      if ( 3 == sscanf( this->m_SymmetryParameters, "%20lf %20lf %20lf", &rho, &theta, &phi ) ) 
 	{
 	this->m_Rho = rho; 
 	this->m_Theta = Units::Degrees( theta );

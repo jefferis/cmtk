@@ -427,7 +427,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const C
 {
   DebugOutput( 1 ) << "Resulting transformation parameters: \n";
   for ( unsigned int idx=0; idx<v->Dim; ++idx )
-    DebugOutput( 1 ).GetStream().printf( "#%d: %f\n", idx, v->Elements[idx] );
+    DebugOutput( 1 ).GetStream().printf( "#%ud: %f\n", idx, v->Elements[idx] );
   
   if ( !this->OutMatrixName.empty() )
     {

@@ -374,7 +374,7 @@ ImagePairAffineRegistrationCommandLine::OutputResultParameters
   if ( pfile )
     {
     for ( unsigned int idx=0; idx < v.Dim; ++idx )
-      fprintf( pfile, "#%d: %f\n", idx, v.Elements[idx] );
+      fprintf( pfile, "#%u: %f\n", idx, v.Elements[idx] );
     fclose( pfile );
     }
 }
@@ -447,7 +447,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 {
   DebugOutput( 1 ) << "Resulting transformation parameters: \n";
   for ( unsigned int idx=0; idx<v->Dim; ++idx )
-    DebugOutput( 1 ).GetStream().printf( "#%d: %f\n", idx, v->Elements[idx] );
+    DebugOutput( 1 ).GetStream().printf( "#%u: %f\n", idx, v->Elements[idx] );
   
   if ( !this->OutMatrixName.empty() )
     {

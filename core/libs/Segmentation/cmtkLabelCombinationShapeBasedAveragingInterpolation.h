@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,7 +79,7 @@ public:
   
   /// Constructor: compute label combination.
   LabelCombinationShapeBasedAveragingInterpolation( const std::vector<UniformVolume::SmartConstPtr>& labelImages /*!< Input label images. */,
-						    const std::vector<cmtk::XformUniformVolume::SmartConstPtr> xformsToLabelImages /*!< Transformations with pre-assigned reference image grid.*/,
+						    const std::vector<cmtk::XformUniformVolume::SmartConstPtr>& xformsToLabelImages /*!< Transformations with pre-assigned reference image grid.*/,
 						    const UniformVolume::SmartConstPtr& targetGrid /*!< Target grid for all transformations. */,
 						    const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
   

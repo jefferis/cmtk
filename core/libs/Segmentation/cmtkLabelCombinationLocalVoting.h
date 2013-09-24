@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,7 +71,7 @@ public:
   typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
+  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ), m_UseGlobalAtlasWeights( false ) {}
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
   void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );

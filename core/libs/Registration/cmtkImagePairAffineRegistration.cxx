@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -223,7 +223,7 @@ ImagePairAffineRegistration::DoneResolution
 {
   this->Superclass::DoneResolution( v, f, level, total );
   
-  NumberDOFsIterator++;
+  ++NumberDOFsIterator;
   return (*NumberDOFsIterator < 0);
 }
 

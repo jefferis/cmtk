@@ -63,8 +63,8 @@ public:
    * accordingly.
    */
   TypedArraySimilarityMemory( const bool repeatCheck = true )
-    : ValidX( false ), RangeX( 0, 0 ),
-      ValidY( false ), RangeY( 0, 0 ),
+    : ValidX( false ), RangeX( 0, 0 ), NumberBinsX( 0 ),
+      ValidY( false ), RangeY( 0, 0 ), NumberBinsY( 0 ),
       MinNumBins( 8 ), 
       MaxNumBins( 128 )
   {  

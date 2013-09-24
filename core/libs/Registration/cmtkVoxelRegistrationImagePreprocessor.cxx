@@ -125,7 +125,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
   if ( this->m_CropIndex )
     {
     int cropFrom[3], cropTo[3];
-    if ( 6 != sscanf( this->m_CropIndex, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo, cropTo+1, cropTo+2 ) ) 
+    if ( 6 != sscanf( this->m_CropIndex, "%6d,%6d,%6d,%6d,%6d,%6d", cropFrom, cropFrom+1, cropFrom+2, cropTo, cropTo+1, cropTo+2 ) ) 
       {
       StdErr << "Option index coordinate cropping expects six integer parameters but got '" << this->m_CropIndex << "'\n";
       exit( 1 );
@@ -144,7 +144,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
   if ( this->m_CropWorld )
     {
     float crop[6];
-    if ( 6 != sscanf( this->m_CropWorld, "%f,%f,%f,%f,%f,%f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
+    if ( 6 != sscanf( this->m_CropWorld, "%15f,%15f,%15f,%15f,%15f,%15f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
       {
       StdErr << "Option world coordinate cropping expects six floating-point parameters but got '" << this->m_CropWorld << "'\n";
       exit( 1 );

@@ -688,7 +688,7 @@ QtTriplanarWindow
 ::slotSetWindowLevel( const QString& wl )
 {
   float window, level;
-  if ( 2 != sscanf( wl.toLatin1(), "%f:%f", &window, &level ) )
+  if ( 2 != sscanf( wl.toLatin1(), "%15f:%15f", &window, &level ) )
     {
     qWarning( "QtTriplanarWindow::slotSetWindowLevel needs 'window:level'.\n" );
     }

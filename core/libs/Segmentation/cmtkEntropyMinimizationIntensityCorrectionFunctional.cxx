@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,7 +66,7 @@ CreateEntropyMinimizationIntensityCorrectionFunctional
       functional = FunctionalPointer( new EntropyMinimizationIntensityCorrectionFunctional<4,NDegreeMul> );
       break;
     default:
-      StdErr.printf( "ERROR: combination of polynomial degrees %d (add) and %d (mul) not supported.\n", polynomialDegreeAdd, NDegreeMul );
+      StdErr.printf( "ERROR: combination of polynomial degrees %u (add) and %u (mul) not supported.\n", polynomialDegreeAdd, NDegreeMul );
       exit( 1 );
     }
 
@@ -98,7 +98,7 @@ CreateEntropyMinimizationIntensityCorrectionFunctional
       functional = CreateEntropyMinimizationIntensityCorrectionFunctional<4>( polynomialDegreeAdd );
       break;
     default:
-      StdErr.printf( "ERROR: polynomial degree %d (mul) not supported.\n", polynomialDegreeMul );
+      StdErr.printf( "ERROR: polynomial degree %u (mul) not supported.\n", polynomialDegreeMul );
       exit( 1 );
     }
   

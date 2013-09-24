@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -188,7 +188,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
     m4[3][i] = this->FirstImagePosition[i];
 
   Result->m_IndexToPhysicalMatrix = m4;
-  const std::string orientationString0 = Result->GetOrientationFromDirections();
+//  const std::string orientationString0 = Result->GetOrientationFromDirections();
   Result->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   const std::string orientationString = Result->GetOrientationFromDirections();

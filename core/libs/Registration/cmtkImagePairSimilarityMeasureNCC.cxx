@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,8 @@ cmtk
 
 ImagePairSimilarityMeasureNCC::ImagePairSimilarityMeasureNCC
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation )
+  : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation ),
+    SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 )
 {}
 
 ImagePairSimilarityMeasureNCC

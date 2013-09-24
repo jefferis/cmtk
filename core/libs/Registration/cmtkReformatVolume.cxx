@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -325,10 +325,10 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
 	const bool success = splineXform->ApplyInverse( xyz, v, 0.1 * minDelta );
 	u = v;
 	
-	bool valid = false;
 	unsigned int toIdx = 0;
 	if ( success ) 
 	  {
+	  bool valid = false;
 	  if ( params->IncludeReferenceData ) 
 	    {
 	    valid = thisObject->ReferenceVolume->ProbeNoXform( probe[toIdx], v );

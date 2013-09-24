@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,7 +64,7 @@ public:
   typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalBinaryShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
+  LabelCombinationLocalBinaryShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ), m_DetectLocalOutliers( false ) {}
 
   /// Set flag to detect local outliers at each pixel in the co-registered distance maps.
   void SetDetectLocalOutliers( const bool detectOutliers = true )
