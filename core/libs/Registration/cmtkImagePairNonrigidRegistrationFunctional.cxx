@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -54,7 +54,11 @@ cmtk
 ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
 ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
   : ImagePairRegistrationFunctional( reference, floating ),
-    m_ActiveCoordinates( NULL )
+    m_ActiveCoordinates( NULL ),
+    m_JacobianConstraintWeight( 0.0 ),
+    m_GridEnergyWeight( 0.0 ),
+    m_InverseConsistencyWeight( 0.0 ),
+    m_Regularize( false )
 {
   this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
   this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;

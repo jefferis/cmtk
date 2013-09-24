@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -82,7 +82,8 @@ public:
 
   /// Constructor.
   ImagePairNonrigidRegistrationFunctionalTemplate<VM>( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
-    : ImagePairNonrigidRegistrationFunctional( reference, floating )
+  : ImagePairNonrigidRegistrationFunctional( reference, floating ),
+    WarpNeedsFixUpdate( false )
   {
     this->m_InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->m_InfoTaskComplete.resize( this->m_NumberOfTasks );

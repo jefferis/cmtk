@@ -111,6 +111,8 @@ public:
       Padding( DataTypeTraits<T>::ChoosePaddingValue() ), 
       Data( NULL ), 
       DataArray( NULL ), 
+      BinOffset( 0 ),
+      BinWidth( 0 ),
       m_ValueRange( 0, 0 ),
       NumberOfSamples( 0 )
     {

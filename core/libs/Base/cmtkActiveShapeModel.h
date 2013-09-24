@@ -76,7 +76,7 @@ public:
   CoordinateVector::SmartPtr ModeVariances;
 
   /// Default constructor.
-  ActiveShapeModel() : Mean( NULL ), NumberOfModes( 0 ), Modes( NULL ) {}
+  ActiveShapeModel() : NumberOfPoints( 0 ), Mean( NULL ), NumberOfModes( 0 ), Modes( NULL ) {}
 
   /// Construct using given mean and modes.
   ActiveShapeModel( CoordinateVector::SmartPtr& mean, DirectionSet::SmartPtr& modes, CoordinateVector::SmartPtr& modeVariances );
