@@ -213,7 +213,7 @@ doMain( const int argc, const char *argv[] )
   while ( ! feof( infile ) )
     {
     double xyz[3];
-    if ( 3 == fscanf( infile, "%lf %lf %lf", xyz, xyz+1, xyz+2 ) )
+    if ( 3 == fscanf( infile, "%20lf %20lf %20lf", xyz, xyz+1, xyz+2 ) )
       {
       cmtk::UniformVolume::SpaceVectorType v = cmtk::UniformVolume::SpaceVectorType::FromPointer( xyz );
       

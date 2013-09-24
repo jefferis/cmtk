@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,7 +54,7 @@ int Dims[3] = { 256, 256, 256 };
 void
 SetDims( const char* arg )
 {
-  sscanf( arg, "%d,%d,%d", &Dims[0], &Dims[1], &Dims[2] );
+  sscanf( arg, "%6d,%6d,%6d", &Dims[0], &Dims[1], &Dims[2] );
 }
 
 float Delta[3] = { 1.0, 1.0, 1.0 };
@@ -62,7 +62,7 @@ float Delta[3] = { 1.0, 1.0, 1.0 };
 void
 SetDeltas( const char* arg )
 {
-  sscanf( arg, "%f,%f,%f", &Delta[0], &Delta[1], &Delta[2] );
+  sscanf( arg, "%15f,%15f,%15f", &Delta[0], &Delta[1], &Delta[2] );
 }
 
 cmtk::ScalarDataType DataType = cmtk::TYPE_USHORT;
@@ -147,7 +147,7 @@ doMain( const int argc, const char* argv[] )
 	const char* value = cl.GetNextOptional();
 
 	float cc[3];
-	if ( sscanf( center, "%f,%f,%f", &cc[0], &cc[1], &cc[2] ) != 3 )
+	if ( sscanf( center, "%15f,%15f,%15f", &cc[0], &cc[1], &cc[2] ) != 3 )
 	  {
 	  cmtk::StdErr << "Parameter 'center' of 'sphere' command must be x,y,z\n";
 	  return 1;
@@ -162,12 +162,12 @@ doMain( const int argc, const char* argv[] )
 	const char* value = cl.GetNextOptional();
 	
 	float boxFrom[3], boxTo[3];
-	if ( sscanf( fromCorner, "%f,%f,%f", &boxFrom[0], &boxFrom[1], &boxFrom[2] ) != 3 )
+	if ( sscanf( fromCorner, "%15f,%15f,%15f", &boxFrom[0], &boxFrom[1], &boxFrom[2] ) != 3 )
 	  {
 	  cmtk::StdErr << "Parameter 'corner0' of 'box' command must be three number x,y,z\n";
 	  return 1;
 	  }
-	if ( sscanf( toCorner, "%f,%f,%f", &boxTo[0], &boxTo[1], &boxTo[2] ) != 3 )
+	if ( sscanf( toCorner, "%15f,%15f,%15f", &boxTo[0], &boxTo[1], &boxTo[2] ) != 3 )
 	  {
 	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three numbers x,y,z\n";
 	  return 1;

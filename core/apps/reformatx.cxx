@@ -79,10 +79,10 @@ CallbackTargetVolume( const char* arg )
   float gridDelta[3] = { 0, 0, 0 };
   float gridOffset[3] = { 0, 0, 0 };
 
-  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOffset, gridOffset+1, gridOffset+2 );
+  const size_t numArgs = sscanf( arg, "%6d,%6d,%6d:%15f,%15f,%15f:%15f,%15f,%15f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOffset, gridOffset+1, gridOffset+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
-    cmtk::StdErr.printf( "ERROR: target volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
+    cmtk::StdErr << "ERROR: target volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n";
     throw cmtk::ExitException( 1 );
     }
   
@@ -121,7 +121,7 @@ void
 CallbackCropImages( const char* arg )
 {
   int cropFrom[3], cropTo[3];
-  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
+  CropImages = (6 == sscanf( arg, "%6d,%6d,%6d,%6d,%6d,%6d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
 
   if ( CropImages )
     {
@@ -137,7 +137,7 @@ void
 CallbackTargetImageOffset( const char* arg )
 {
   float x, y, z;
-  if ( 3 != sscanf( arg, "%f,%f,%f", &x, &y, &z ) )
+  if ( 3 != sscanf( arg, "%15f,%15f,%15f", &x, &y, &z ) )
     {
     x = y = z = 0;
     }
@@ -154,7 +154,7 @@ void
 CallbackTargetImageOffsetPixels( const char* arg )
 {
   float x, y, z;
-  if ( 3 != sscanf( arg, "%f,%f,%f", &x, &y, &z ) )
+  if ( 3 != sscanf( arg, "%15f,%15f,%15f", &x, &y, &z ) )
     {
     x = y = z = 0;
     }

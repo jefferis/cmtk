@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -146,7 +146,7 @@ doMain ( const int argc, const char* argv[] )
 	if ( line[0] != '#' )
 	  {
 	  float value;
-	  if ( 1 == sscanf( line.c_str(), "%f", &value ) )
+	  if ( 1 == sscanf( line.c_str(), "%10f", &value ) )
 	    {
 	    data.push_back( value );
 	    }
@@ -174,7 +174,7 @@ doMain ( const int argc, const char* argv[] )
 	if ( line[0] != '#' )
 	  {
 	  float value;
-	  if ( 1 == sscanf( line.c_str(), "%f", &value ) )
+	  if ( 1 == sscanf( line.c_str(), "%10f", &value ) )
 	    {
 	    data.push_back( value );
 	    }

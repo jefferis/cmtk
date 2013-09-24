@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -105,7 +105,7 @@ doMain( const int argc, const char* argv[] )
   
   const size_t totalNumberOfValues = seq.GetNValues() + countOverThreshold;
   printf( "Number of Values:\t%d\n", (int)totalNumberOfValues );
-  printf( "Values over Threshold:\t%d (%.2f%%)\n", countOverThreshold, 100.0 * countOverThreshold / totalNumberOfValues );
+  printf( "Values over Threshold:\t%u (%.2f%%)\n", countOverThreshold, 100.0 * countOverThreshold / totalNumberOfValues );
 
   char format[120];
   snprintf( format, sizeof( format ), "\nSTAT\tMin\tMax\tMean\tStdDev\nSTATval\t%s\t%s\t%s\t%s\n", OutputFormat, OutputFormat, OutputFormat, OutputFormat );

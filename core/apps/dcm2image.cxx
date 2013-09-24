@@ -325,12 +325,12 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
 void
 VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
 {
-  static int progress = 0;
-  const char progress_chars[] = "-\\|/";
-
   std::vector<ImageFileDICOM::SmartConstPtr> fileList;
 
 #ifdef _MSC_VER
+  static int progress = 0;
+  const char progress_chars[] = "-\\|/";
+
   WIN32_FIND_DATA fData;
   const std::string pattern = path + "\\" + wildcard;
   HANDLE hFind = FindFirstFile( pattern.c_str(), &fData);
@@ -372,6 +372,8 @@ VolumeList::AppendFromDirectory( const std::string& path, const char *wildcard )
   DIR *dir_pointer = opendir ( path.c_str() );
   if ( dir_pointer != NULL ) 
     {
+    static int progress = 0;
+    const char progress_chars[] = "-\\|/";
     struct dirent *entry_pointer;
 
     while ( (entry_pointer = readdir(dir_pointer)) ) 

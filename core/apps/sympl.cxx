@@ -188,7 +188,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
     if ( !SymmetryParameters.empty() ) 
       {
       double rho, theta, phi;
-      if ( 3 == sscanf( SymmetryParameters.c_str(), "%lf %lf %lf", &rho, &theta, &phi ) ) 
+      if ( 3 == sscanf( SymmetryParameters.c_str(), "%20lf %20lf %20lf", &rho, &theta, &phi ) ) 
 	{
 	Rho = rho; 
 	Theta = cmtk::Units::Degrees( theta );

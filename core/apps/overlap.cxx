@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -144,7 +144,7 @@ doMain ( const int argc, const char* argv[] )
       { 
       if ( overlapMeasures.ComputeGroupwiseOverlap( label, 1 /*numberOfLabels*/, overlapEqual, overlapVolume, overlapInverse ) > 0 )
 	{
-	fprintf( stdout, "%d\t%lf\t%lf\t %lf\n", label, overlapEqual, overlapVolume, overlapInverse  );
+	fprintf( stdout, "%u\t%lf\t%lf\t %lf\n", label, overlapEqual, overlapVolume, overlapInverse  );
 	}
       }
     }

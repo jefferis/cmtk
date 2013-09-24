@@ -110,7 +110,7 @@ doMain( const int argc, const char *argv[] )
     }
 
   cmtk::FixedVector<3,int> radius;
-  if ( 3 != sscanf( radiusStr, "%d,%d,%d", &radius[0], &radius[1], &radius[2] ) )
+  if ( 3 != sscanf( radiusStr, "%6d,%6d,%6d", &radius[0], &radius[1], &radius[2] ) )
     {
     radius[0] = radius[1] = radius[2] = atof( radiusStr );
     }

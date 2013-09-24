@@ -297,9 +297,9 @@ doMain ( const int argc, const char* argv[] )
   histogram->GetMarginalEntropies( hX, hY );
   const double hXY = histogram->GetJointEntropy();
   
-  fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
+  fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%u\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
   
-  fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
+  fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%u\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
 	   countVoxelsUnequal, maxDifference, maxRelDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
   
   if ( !HistogramTextFileName.empty() )
@@ -362,7 +362,7 @@ doMain ( const int argc, const char* argv[] )
 
 	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
 	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
-	fprintf( stdout, "\n%06d\t%d\t%d\t%.5lf\t%d\t%.5lf\t%d\t%.5lf\t%.5lf\t%.5lf", 
+	fprintf( stdout, "\n%06u\t%d\t%d\t%.5lf\t%d\t%.5lf\t%d\t%.5lf\t%.5lf\t%.5lf", 
 		 i, totalRef, correct, 1.0 * correct / totalRef, falseNeg, 1.0 * falseNeg / totalRef, falsePos, 1.0 * falsePos / totalRef, SI, J );
 	
 	if ( i )
@@ -378,13 +378,13 @@ doMain ( const int argc, const char* argv[] )
 	{
 	// this label does not exist in the reference image
 	if ( i <= ForceMaxLabel ) 
-	  fprintf( stdout, "\nLabel #%d\t<n/a>", i );
+	  fprintf( stdout, "\nLabel #%u\t<n/a>", i );
 	}
       }
     avgRecog /= (countLabels+1);
     
     fputs( "\n\n\tsumTot\tsumCorr\t%corr\tavgSI\tWmeanSI\n", stdout );
-    fprintf( stdout, "Total:\t%d\t%d\t%.2lf\t%.4lf\t%.4lf\n\n", sumTotal, sumCorrect, 100.0 * sumCorrect / sumTotal, sumSI / countLabels, sumSIweighted / sumTotal );
+    fprintf( stdout, "Total:\t%u\t%u\t%.2lf\t%.4lf\t%.4lf\n\n", sumTotal, sumCorrect, 100.0 * sumCorrect / sumTotal, sumSI / countLabels, sumSIweighted / sumTotal );
     fprintf( stdout, "AvgRecog:\t%.6f\n", avgRecog );
     }
 

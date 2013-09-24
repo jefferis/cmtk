@@ -275,7 +275,7 @@ doMain( const int argc, const char *argv[] )
 	}
       functional->GetParamVector( v );
       
-      cmtk::DebugOutput( 1 ).GetStream().printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "Estimating bias field with order %u multiplicative / %u additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
 
       if ( (PolynomialDegreeAdd > 0) || (PolynomialDegreeMul > 0) )
 	{

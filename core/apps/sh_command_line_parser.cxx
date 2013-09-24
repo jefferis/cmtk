@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,7 +57,7 @@ doMain( const int argc, const char* argv[] )
 
     cl.Parse( argc, argv );
     }
-  catch ( cmtk::CommandLine::Exception ex )
+  catch ( cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
     throw cmtk::ExitException( 1 );

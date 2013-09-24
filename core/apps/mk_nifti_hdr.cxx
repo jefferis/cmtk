@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
@@ -55,7 +55,7 @@ bool DetachedHeader = true;
 void
 SetDims( const char* arg )
 {
-  sscanf( arg, "%d,%d,%d", &DimsX, &DimsY, &DimsZ );
+  sscanf( arg, "%6d,%6d,%6d", &DimsX, &DimsY, &DimsZ );
   PutDims = true;
 }
 
@@ -67,7 +67,7 @@ bool PutDeltas = false;
 void
 SetDeltas( const char* arg )
 {
-  sscanf( arg, "%f,%f,%f", &DeltaX, &DeltaY, &DeltaZ );
+  sscanf( arg, "%15f,%15f,%15f", &DeltaX, &DeltaY, &DeltaZ );
   PutDeltas = true;
 }
 

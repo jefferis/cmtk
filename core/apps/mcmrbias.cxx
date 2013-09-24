@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -264,7 +264,7 @@ doMain( const int argc, const char *argv[] )
 	}
       functional->GetParamVector( v );
       
-      cmtk::DebugOutput( 1 ).GetStream().printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "Estimating bias field with order %u multiplicative / %u additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
 
       if ( (PolynomialDegreeAdd > 0) || (PolynomialDegreeMul > 0) )
 	{
