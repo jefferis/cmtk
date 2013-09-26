@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -88,7 +88,7 @@ public:
   bool WriteGroupwiseArchive( const char* path ) const;  
   
   /// Write each transformations to a different typedstream archive.
-  bool WriteXformsSeparateArchives( const char* path, const char* templatePath );
+  bool WriteXformsSeparateArchives( const std::string& path, const std::string& templatePath );
   
   /// Reformat and write average image.
   bool WriteAverageImage( const char* path /*<! Path of output image.*/,

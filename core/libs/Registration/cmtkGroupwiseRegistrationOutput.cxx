@@ -41,7 +41,9 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <limits.h>
+
 #include <vector>
+#include <sstream>
 
 namespace
 cmtk
@@ -77,20 +79,17 @@ GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
 
 bool 
 GroupwiseRegistrationOutput::WriteXformsSeparateArchives
-( const char* path, const char* templatePath )
+( const std::string& path, const std::string& templatePath )
 { 
-  if ( path )
+  if ( !path.empty() )
     {
-    char fullPath[PATH_MAX];
-    
     for ( size_t img = 0; img < this->m_Functional->GetNumberOfTargetImages(); ++img )
       {
       StudyList slist;
       Study::SmartPtr refstudy;
       if ( this->m_OutputRootDirectory  && ! this->m_ExistingTemplatePath )
 	{
-	snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, templatePath );
-	refstudy = slist.AddStudy( fullPath );
+	refstudy = slist.AddStudy( std::string( this->m_OutputRootDirectory ) + CMTK_PATH_SEPARATOR + templatePath );
 	}
       else
 	{
@@ -112,15 +111,18 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	slist.AddXform( refstudy, imgstudy, affineXform );
 	}
       
+      std::ostringstream fullPath;
       if ( this->m_OutputRootDirectory )
 	{
-	snprintf( fullPath, sizeof( fullPath ), "%s%c%s%ctarget-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
+	fullPath << this->m_OutputRootDirectory << CMTK_PATH_SEPARATOR;
 	}
-      else
-	{
-	snprintf( fullPath, sizeof( fullPath ), "%s%ctarget-%03d.list", path, CMTK_PATH_SEPARATOR, (int)img );
-	}
-      ClassStreamStudyList::Write( fullPath, &slist );
+
+      fullPath << path << CMTK_PATH_SEPARATOR << "target-";
+      fullPath.fill( '0' );
+      fullPath.width( 3 );
+      fullPath << img << ".list";
+
+      ClassStreamStudyList::Write( fullPath.str(), &slist );
       }
     }
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,7 @@ namespace cmtk { static StackBacktrace StackBacktraceInstance; }
 #include <string>
 
 int
-main( int argc, char* argv[] )
+doMain( int argc, char* argv[] )
 {
   QApplication app( argc, argv );
   app.setStyle( new QPlastiqueStyle );
@@ -85,4 +85,29 @@ main( int argc, char* argv[] )
     }
   
   return 0;
+}
+
+int
+main( const int argc, char* argv[] )
+{
+#ifdef _MSC_VER
+   _set_output_format( _TWO_DIGIT_EXPONENT );
+#endif
+
+  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
+
+#ifdef CMTK_BUILD_STACKTRACE
+  cmtk::StackBacktrace::Static();
+#endif
+
+  int exitCode = 0;
+  try
+    {
+    exitCode = doMain( argc, argv );
+    }
+  catch ( const cmtk::ExitException& ex )
+    {
+    exitCode = ex.ExitCode();
+    }
+  return exitCode;
 }

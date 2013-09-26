@@ -75,7 +75,7 @@ bool UseNumberOfHistogramBins = false;
 unsigned int NumberOfHistogramBins = 0;
 bool CropImageHistograms = false;
 
-const char* PreDefinedTemplatePath = NULL;
+std::string PreDefinedTemplatePath = "";
 cmtk::UniformVolume::SmartPtr PreDefinedTemplate;
 bool UseTemplateData = false;
 bool TransformationsFromArchive = false;
@@ -230,7 +230,7 @@ doMain( int argc, const char* argv[] )
     if ( inStream.IsValid() )
       {
       inStream >> *functional;
-      if ( ! PreDefinedTemplatePath )
+      if ( PreDefinedTemplatePath.empty() )
 	{
 	PreDefinedTemplate = functional->GetTemplateGrid();
 	}
@@ -261,7 +261,7 @@ doMain( int argc, const char* argv[] )
       }
     }
     
-  if ( PreDefinedTemplatePath )
+  if ( !PreDefinedTemplatePath.empty() )
     {
     if ( UseTemplateData )
       {

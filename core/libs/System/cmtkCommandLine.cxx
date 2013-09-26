@@ -38,7 +38,6 @@
 #include <System/cmtkThreads.h>
 
 #include <string.h>
-#include <sstream>
 
 namespace
 cmtk

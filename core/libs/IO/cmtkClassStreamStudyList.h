@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,6 +37,8 @@
 
 #include <IO/cmtkStudyList.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -50,7 +52,7 @@ class ClassStreamStudyList
 {
 public:
   /// Write studylist.
-  static void Write( const char *path, const StudyList *studyList );
+  static void Write( const std::string& path, const StudyList *studyList );
 };
 
 //@}
