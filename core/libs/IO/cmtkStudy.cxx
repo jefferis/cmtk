@@ -51,9 +51,16 @@ Study::Study()
     m_MinimumValue( 0.0 ),
     m_MaximumValue( 0.0 ),
     m_Padding( false ),
+    m_PaddingValue( 0.0 ),
     m_HaveUserColorMap( false ),
+    m_StandardColormap( 0 ),
+    m_ReverseColormap( false ),
     m_Black( 0.0 ),
-    m_White( 0.0 )
+    m_White( 0.0 ),
+    m_Gamma( 1.0 ),
+    m_DisplayedImageIndex( -1 ),
+    m_ZoomFactor( 1 ),
+    m_SliceNormal( 2 )
 {
 }
 
@@ -63,9 +70,16 @@ Study::Study( const std::string& fileSystemPath, const std::string& name )
     m_MinimumValue( 0.0 ),
     m_MaximumValue( 0.0 ),
     m_Padding( false ),
+    m_PaddingValue( 0.0 ),
     m_HaveUserColorMap( false ),
+    m_StandardColormap( 0 ),
+    m_ReverseColormap( false ),
     m_Black( 0.0 ),
-    m_White( 0.0 )
+    m_White( 0.0 ),
+    m_Gamma( 1.0 ),
+    m_DisplayedImageIndex( -1 ),
+    m_ZoomFactor( 1 ),
+    m_SliceNormal( 2 )
 {
   if ( ! fileSystemPath.empty() ) 
     {
