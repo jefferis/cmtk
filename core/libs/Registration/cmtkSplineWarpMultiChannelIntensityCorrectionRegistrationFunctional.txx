@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,11 +44,7 @@ void
 SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctional>
 ::ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector )
 {
-#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
-  Types::DataItem values[ this->m_NumberOfChannels ];
-#else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
-#endif
   
   size_t idx = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref )
@@ -70,7 +66,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     values[idx] *= jacobian;
     }
   
-  metricData += &(values[0]);
+  metricData += values;
 }
 
 template<class TMetricFunctional>
@@ -78,11 +74,7 @@ void
 SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctional>
 ::ContinueMetricStoreReformatted( MetricData& metricData, const size_t rindex, const Vector3D& fvector )
 {
-#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
-  Types::DataItem values[ this->m_NumberOfChannels ];
-#else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
-#endif
   
   size_t idx = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref )
@@ -110,7 +102,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     this->m_ReformattedFloatingChannels[flt][rindex] = static_cast<float>( values[idx] );
     }
 
-  metricData += &(values[0]);
+  metricData += values;
 }
 
 } // namespace cmtk

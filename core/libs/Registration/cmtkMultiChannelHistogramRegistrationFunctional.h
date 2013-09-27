@@ -138,10 +138,10 @@ protected:
     Self& operator-=( const Self& other );
 
     /** In-place single sample addition operator. */
-    void operator+=( const Types::DataItem* values );
+    void operator+=( const std::vector<Types::DataItem>& values );
 
     /** In-place single sample subtraction operator. */
-    void operator-=( const Types::DataItem* values );
+    void operator-=( const std::vector<Types::DataItem>& values );
   };
 
   /// Global data structure for metric computation.

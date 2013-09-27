@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -117,10 +117,10 @@ protected:
     Self& operator-=( const Self& other );
 
     /** In-place single sample addition operator. */
-    void operator+=( const Types::DataItem* values );
+    void operator+=( const std::vector<Types::DataItem>& values );
 
     /** In-place single sample subtraction operator. */
-    void operator-=( const Types::DataItem* values );
+    void operator-=( const std::vector<Types::DataItem>& values );
   };
 
   /// Global data structure for metric computation.

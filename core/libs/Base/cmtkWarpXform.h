@@ -172,6 +172,7 @@ public:
   WarpXform () : 
     m_InitialAffineXform( NULL ), 
     m_NumberOfControlPoints( 0 ),
+    m_GlobalScaling( 1.0 ),
     m_ActiveFlags( NULL )
   { 
     this->m_IgnoreEdge = 0; 

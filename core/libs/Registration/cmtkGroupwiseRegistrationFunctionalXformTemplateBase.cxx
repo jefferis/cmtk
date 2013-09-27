@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +49,7 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>::GroupwiseRegistrationF
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
   m_MaxRelativeNumberOutsidePixels( 0.99f ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
+  m_PrivateUserBackgroundValue( 0.0 ),
   m_CropImageHistograms( false )
 {}
 

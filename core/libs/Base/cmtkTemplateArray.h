@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -117,7 +117,8 @@ public:
   /** Constructor.
    * Allocate an array of a given size.
    */
-  TemplateArray ( const size_t datasize = 0 ) 
+  TemplateArray ( const size_t datasize = 0 )  
+    : Padding( 0 )
   {
     m_DataType = TypeTraits::DataTypeID;
     Data = NULL;

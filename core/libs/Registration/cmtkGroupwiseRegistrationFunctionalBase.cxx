@@ -61,6 +61,8 @@ GroupwiseRegistrationFunctionalBase
     m_ActiveXformsFrom( 0 ),
     m_ActiveXformsTo( 0 ),
     m_TemplateNumberOfPixels( 0 ), 
+    m_TemplateNumberOfSamples( 0 ), 
+    m_UseTemplateData( false ),
     m_ProbabilisticSampleDensity( -1.0 ),
     m_ProbabilisticSampleUpdatesAfter( 1000000 ),
     m_ProbabilisticSampleUpdatesSince( 0 ),

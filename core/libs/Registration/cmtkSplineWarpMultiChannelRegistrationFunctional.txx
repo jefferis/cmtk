@@ -366,11 +366,7 @@ void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 ::ContinueMetricStoreReformatted( MetricData& metricData, const size_t rindex, const Vector3D& fvector )
 {
-#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
-  Types::DataItem values[ this->m_NumberOfChannels ];
-#else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
-#endif
   
   size_t idx = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref )
@@ -392,7 +388,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     this->m_ReformattedFloatingChannels[flt][rindex] = static_cast<float>( values[idx] );
   
-  metricData += &(values[0]);
+  metricData += values;
 }
 
 template<class TMetricFunctional>
@@ -400,11 +396,7 @@ void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 ::BacktraceMetric( MetricData& metricData, const DataGrid::RegionType& region )
 {
-#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
-  Types::DataItem values[ this->m_NumberOfChannels ];
-#else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
-#endif
   
   for ( int pZ = region.From()[2]; pZ < region.To()[2]; ++pZ ) 
     {
@@ -431,7 +423,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 
 	if ( allChannelsValid )
 	  {
-	  metricData -= &(values[0]);
+	  metricData -= values;
 	  }
 	}
       }

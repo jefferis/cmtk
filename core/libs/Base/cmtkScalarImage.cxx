@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,7 +53,7 @@ ScalarImage::ScalarImage()
 {
   this->m_Dims[0] = this->m_Dims[1] = 0;
   this->m_NumberOfFrames = 1;
-  this->m_ImageSlicePosition = this->m_ImageTiltAngle = 0;
+  this->m_ImageSlicePosition = 0;
   this->m_FrameToFrameSpacing = 0;
 }
 
@@ -67,7 +67,7 @@ ScalarImage::ScalarImage
 
   this->m_PixelSize[0] = this->m_PixelSize[1] = 1;
 
-  this->m_ImageSlicePosition = this->m_ImageTiltAngle = 0;
+  this->m_ImageSlicePosition = 0;
 }
 
 ScalarImage::ScalarImage

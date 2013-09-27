@@ -52,8 +52,9 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     m_ImageRev( imageRev ), 
     m_SmoothImageFwd( imageFwd ), 
     m_SmoothImageRev( imageRev ), 
-    m_PhaseEncodeDirection( phaseEncodeDirection )
-  
+    m_PhaseEncodeDirection( phaseEncodeDirection ),
+    m_SmoothnessConstraintWeight( 0.0 ),
+    m_FoldingConstraintWeight( 0.0 )
 {
   if ( ! this->m_ImageFwd->GridMatches( *(this->m_ImageRev) ) )
     {

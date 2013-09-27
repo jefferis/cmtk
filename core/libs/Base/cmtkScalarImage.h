@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -154,12 +154,6 @@ public:
    * This field is only meaningful if this 2D image is part of a 3D image.
    */
   cmtkGetSetMacro(Types::Coordinate,ImageSlicePosition);
-
-  /** Image tilt with respect to axial position.
-   * This field is only meaningful if this is an axial 2D image that is part of
-   * a 3D image.
-   */
-  cmtkGetSetMacro(Types::Coordinate,ImageTiltAngle);
 
   /// Get number of pixels.
   int GetNumberOfPixels() const 

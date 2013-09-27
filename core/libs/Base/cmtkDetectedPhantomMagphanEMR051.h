@@ -65,7 +65,7 @@ public:
 
   /// Constructor.
   DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : 
-    m_LinearFitXform( linearFitXform ) {}
+    m_EstimatedSNR( 0.0 ), m_LinearFitXform( linearFitXform ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.

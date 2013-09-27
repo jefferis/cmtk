@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,7 +69,9 @@ public:
 
   /// Constructor.
   EntropyMinimizationIntensityCorrectionFunctionalBase() 
-    : m_SamplingDensity( 1.0 ),
+    : m_InputImageRange( 0.0 ),
+      m_NumberOfPixels( 0 ),
+      m_SamplingDensity( 1.0 ),
       m_NumberOfHistogramBins( 256 ),
       m_UseLogIntensities( false )
   {}

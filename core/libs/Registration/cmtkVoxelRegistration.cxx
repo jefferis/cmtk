@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,6 +75,9 @@ VoxelRegistration::VoxelRegistration ()
   UseMaxNorm = true;
   OptimizerStepFactor = 0.5;
 
+  this-> SwitchVolumes = false;
+
+  this->TimeStartRegistration = this->TimeStartLevel = this->WalltimeStartRegistration = this->WalltimeStartLevel = this->ThreadTimeStartRegistration = this->ThreadTimeStartLevel = 0.0;
 }
 
 VoxelRegistration::~VoxelRegistration () 

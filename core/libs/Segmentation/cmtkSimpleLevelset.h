@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,7 @@ class SimpleLevelset
 {
 public:
   /// Constructor.
-  SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ) {}
+  SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ), m_ScaleInitialSphere( 1.0 ), m_TimeDelta( 1.0 ), m_LevelsetThreshold( 0.0 ) {}
 
   /// Set initial sphere scale factor.
   void SetScaleInitialSphere( const Types::Coordinate scale )

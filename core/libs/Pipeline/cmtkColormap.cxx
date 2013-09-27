@@ -68,6 +68,7 @@ Colormap::Colormap()
   SaturationRange[0] = 0;
   SaturationRange[1] = 4095;
   Reverse = false;
+  this->InvDataRangeWidth = 4095;
 
   CreateSystemLabelColorMap( this->LabelColorMap );
 

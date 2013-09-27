@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -280,7 +280,9 @@ private:
     public ThreadParameters<ReformatVolume>
   {
   public:
-    GetTransformedReferenceTP() : m_Offset( 0 ), m_Stride( 1 ) {};
+    GetTransformedReferenceTP() : 
+      splineXform( NULL ), m_Offset( 0 ), m_Stride( 1 ), delta( NULL ), bbFrom( NULL ),  numberOfImages( 0 ), xformList( NULL ), volumeList( NULL ), interpolatorList( NULL ), 
+      referenceInterpolator( NULL ), maxLabel( 0 ), avgMode( MODE_MEAN ), IncludeReferenceData( false ) {}
     TypedArray::SmartPtr dataArray;
     const SplineWarpXform* splineXform;
     DataGrid::IndexType dims;

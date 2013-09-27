@@ -63,14 +63,19 @@ cmtk
 /** \addtogroup Registration */
 //@{
 ReformatVolume::ReformatVolume() 
-  : m_UserDataType( TYPE_NONE ),
+  : m_LowerThresholdReference( 0.0 ),
+    m_LowerThresholdFloating( 0.0 ),
+    m_UpperThresholdReference( 0.0 ),
+    m_UpperThresholdFloating( 0.0 ),
+    m_UsePaddingValue( false ),
+    m_PaddingValue( 0.0 ),
+    Interpolation( cmtk::Interpolators::LINEAR ),
+    m_UserDataType( TYPE_NONE ),
     ReferenceVolume( NULL ),
     FloatingVolume( NULL ),
     m_AffineXform( NULL ),
     m_WarpXform( NULL )
 {
-  Interpolation = cmtk::Interpolators::LINEAR;
-  this->m_UsePaddingValue = false;
 }
 
 void

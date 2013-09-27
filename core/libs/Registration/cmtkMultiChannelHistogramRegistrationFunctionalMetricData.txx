@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -118,7 +118,7 @@ MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType
 template<class TDataType,class TInterpolator,class THashKeyType,char NBitsPerChannel>
 void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>::MetricData::operator+=
-( const Types::DataItem* values )
+( const std::vector<Types::DataItem>& values )
 {
   THashKeyType hashKeyRef = 0, hashKeyFlt = 0;
   size_t idx = 0;
@@ -143,7 +143,7 @@ MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType
 template<class TDataType,class TInterpolator,class THashKeyType,char NBitsPerChannel>
 void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>::MetricData::operator-=
-( const Types::DataItem* values )
+( const std::vector<Types::DataItem>& values )
 {
   THashKeyType hashKeyRef = 0, hashKeyFlt = 0;
   size_t idx = 0;

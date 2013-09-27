@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,9 +44,10 @@ cmtk
 //@{
 
 QtWindowLevelControls::QtWindowLevelControls
-( QWidget *const parent )
-  : QWidget( parent ),
-    m_Study( NULL )
+( QWidget *const myParent )
+  : QWidget( myParent ),
+    m_Study( NULL ),
+    RangeFrom( 0.0 ), RangeTo( 1.0 ), RangeWidth( 1.0 )
 {
   Layout = new QVBoxLayout( this );
   Layout->setContentsMargins( 5, 5, 5, 5 );

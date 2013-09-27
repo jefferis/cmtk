@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -125,7 +125,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
 template<class TRealType,class TDataType,class TInterpolator>
 void
 MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::MetricData::operator+=
-( const Types::DataItem* values )
+( const std::vector<Types::DataItem>& values )
 {
   const size_t numberOfChannels = this->m_Sums.size();
   for ( size_t j = 0; j < numberOfChannels; ++j )
@@ -148,7 +148,7 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::Metric
 template<class TRealType,class TDataType,class TInterpolator>
 void
 MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>::MetricData::operator-=
-( const Types::DataItem* values )
+( const std::vector<Types::DataItem>& values )
 {
   const size_t numberOfChannels = this->m_Sums.size();
   for ( size_t j = 0; j < numberOfChannels; ++j )

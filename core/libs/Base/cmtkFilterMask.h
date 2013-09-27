@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,7 +75,9 @@ public:
   ( const FixedVector<DIM,int>& location, const int relativeIndex, const Types::DataItem coefficient ) 
     : Location( location ),
       RelativeIndex ( relativeIndex ),
-      Coefficient( coefficient )
+      Coefficient( coefficient ),
+      PixelIndex( 0 ),
+      Valid( false )
   {}
 
   /// Relative location of this pixel.

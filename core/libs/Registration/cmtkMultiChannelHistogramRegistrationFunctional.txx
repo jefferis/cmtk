@@ -120,11 +120,7 @@ void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>
 ::ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector )
 {
-#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
-  Types::DataItem values[ this->m_NumberOfChannels ];
-#else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
-#endif
   
   size_t idx = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref )
@@ -137,7 +133,7 @@ MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) ) return;
     }
 
-  metricData += &(values[0]);
+  metricData += values;
 }
 
 template<class TDataType,class TInterpolator,class THashKeyType,char NBitsPerChannel>
