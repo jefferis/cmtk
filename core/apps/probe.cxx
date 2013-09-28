@@ -96,9 +96,10 @@ MakeInterpolator( const cmtk::UniformVolume& volume, const cmtk::Interpolators::
       return new TInterpolator( volume );  
       }      
       default:
-	cmtk::StdErr.printf( "ERROR: Sinc window radius %d is not supported.\n", (int)interpolationWindowRadius );
+	cmtk::StdErr.printf( "ERROR: Sinc window radius %d is not supported.\n", (int)interpolationWindowRadius );	
       }
     }
+    break;
 
     case cmtk::Interpolators::HAMMING_SINC:
     {
@@ -128,15 +129,15 @@ MakeInterpolator( const cmtk::UniformVolume& volume, const cmtk::Interpolators::
 	cmtk::StdErr.printf( "ERROR: Sinc window radius %d is not supported.\n", (int)interpolationWindowRadius );
       }
     }
+    break;
 
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef cmtk::UniformVolumeInterpolatorPartialVolume TInterpolator;
     return new TInterpolator( volume );
     }
-
-    return NULL;
     }
+    return NULL;
 }
 
 typedef enum
