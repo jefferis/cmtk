@@ -78,9 +78,9 @@ CallbackAddPercentile( const double arg )
 }
 
 void
-AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData ) 
+AnalyzeLabels( const cmtk::UniformVolume& volume, const cmtk::TypedArray* maskData ) 
 {
-  const cmtk::TypedArray* data = volume->GetData();
+  const cmtk::TypedArray* data = volume.GetData();
   cmtk::Types::DataItemRange range = data->GetRange();
   
   if ( MaskOutputAllUpTo )
@@ -102,11 +102,11 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 
   int index = 0;
   cmtk::Types::DataItem value, neighbor, maskValue;
-  for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
+  for ( int z = 0; z < volume.GetDims()[cmtk::AXIS_Z]; ++z ) 
     {
-    for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
+    for ( int y = 0; y < volume.GetDims()[cmtk::AXIS_Y]; ++y ) 
       {
-      for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
+      for ( int x = 0; x < volume.GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	{
 	if ( maskData && !(maskData->Get( maskValue, index ) && (maskValue != 0) ) )
 	  continue;
@@ -116,16 +116,16 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	  const int labelIdx = static_cast<int>( value - range.m_LowerBound );
 
 	  ++count[labelIdx];
-	  centerOfMass[labelIdx] += volume->GetGridLocation( x, y, z );
+	  centerOfMass[labelIdx] += volume.GetGridLocation( x, y, z );
 	  
 	  bool isSurface = false;
 	  for ( int dz = -1; (dz < 2) && !isSurface; ++dz )
 	    for ( int dy = -1; (dy < 2) && !isSurface; ++dy )
 	      for ( int dx = -1; (dx < 2) && !isSurface; ++dx )
 		if ( dx || dy || dz )
-		  if ( (dx+x)>=0 && (dx+x)<volume->GetDims()[cmtk::AXIS_X] && (dy+y)>=0 && (dy+y)<volume->GetDims()[cmtk::AXIS_Y] && (dz+z)>=0 && (dz+z)<volume->GetDims()[cmtk::AXIS_Z] ) 
+		  if ( (dx+x)>=0 && (dx+x)<volume.GetDims()[cmtk::AXIS_X] && (dy+y)>=0 && (dy+y)<volume.GetDims()[cmtk::AXIS_Y] && (dz+z)>=0 && (dz+z)<volume.GetDims()[cmtk::AXIS_Z] ) 
 		    {
-		    const int offset = (x+dx) + volume->GetDims()[cmtk::AXIS_X] * ( ( y+dy ) + volume->GetDims()[cmtk::AXIS_Y] * (z+dz) );
+		    const int offset = (x+dx) + volume.GetDims()[cmtk::AXIS_X] * ( ( y+dy ) + volume.GetDims()[cmtk::AXIS_Y] * (z+dz) );
 		    if ( data->Get( neighbor, offset ) && ( neighbor != value ) )
 		      isSurface = true;
 		    }
@@ -139,7 +139,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   
   cmtk::DebugOutput( 1 ) << "idx\t\tcount\t\tsurface\t\tvolume\tCenterOfMass\n";
 
-  const cmtk::Types::Coordinate voxelVolume = volume->m_Delta[0] * volume->m_Delta[1] * volume->m_Delta[2];
+  const cmtk::Types::Coordinate voxelVolume = volume.m_Delta[0] * volume.m_Delta[1] * volume.m_Delta[2];
 
   size_t totalCount = 0;
   for ( unsigned int idx = 0; idx < numberOfLabels; ++idx ) 
@@ -179,24 +179,24 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 }
 
 void
-AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData ) 
+AnalyzeGrey( const cmtk::UniformVolume& volume, const cmtk::TypedArray& maskData ) 
 {
-  const cmtk::TypedArray* data = volume->GetData();
+  const cmtk::TypedArray* data = volume.GetData();
 
   cmtk::Histogram<unsigned int> histogram( NumberOfHistogramBins );
   histogram.SetRange( data->GetRange() );
   
-  int maxLabel = static_cast<int>( maskData->GetRange().m_UpperBound );
+  int maxLabel = static_cast<int>( maskData.GetRange().m_UpperBound );
   if ( MaskOutputAllUpTo )
     maxLabel = MaskOutputAllUpTo;
     
   std::vector<bool> maskFlags( maxLabel+1 );
   std::fill( maskFlags.begin(), maskFlags.end(), false );
   
-  for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
+  for ( size_t i = 0; i < maskData.GetDataSize(); ++i )
     {
     cmtk::Types::DataItem l;
-    if ( maskData->Get( l, i ) && (l <= maxLabel) )
+    if ( maskData.Get( l, i ) && (l <= maxLabel) )
       maskFlags[static_cast<int>( l )] = true;
     }
   
@@ -213,13 +213,13 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
       cmtk::Types::DataItem value, maskValue;
       
       size_t index = 0;
-      for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
+      for ( int z = 0; z < volume.GetDims()[cmtk::AXIS_Z]; ++z ) 
 	{
-	for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
+	for ( int y = 0; y < volume.GetDims()[cmtk::AXIS_Y]; ++y ) 
 	  {
-	  for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
+	  for ( int x = 0; x < volume.GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	    {
-	    if ( maskData && maskData->Get( maskValue, index ) && (maskValue == maskSelect) )
+	    if ( maskData.Get( maskValue, index ) && (maskValue == maskSelect) )
 	      {
 	      if ( data->Get( value, index ) ) 
 		{
@@ -248,9 +248,9 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
 }
 
 void
-AnalyzeGrey( const cmtk::UniformVolume* volume ) 
+AnalyzeGrey( const cmtk::UniformVolume& volume ) 
 {
-  const cmtk::TypedArray* data = volume->GetData();
+  const cmtk::TypedArray* data = volume.GetData();
 
   if ( ! WriteAsColumn )
     fprintf( stdout, "min\tmax\tmean\tsdev\tn\tEntropy\tsum\n" );
@@ -259,11 +259,11 @@ AnalyzeGrey( const cmtk::UniformVolume* volume )
   cmtk::ValueSequence<cmtk::Types::DataItem> seq;
   
   size_t index = 0;
-  for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
+  for ( int z = 0; z < volume.GetDims()[cmtk::AXIS_Z]; ++z ) 
     {
-    for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
+    for ( int y = 0; y < volume.GetDims()[cmtk::AXIS_Y]; ++y ) 
       {
-      for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
+      for ( int x = 0; x < volume.GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	{
 	if ( data->Get( value, index ) ) 
 	  {
@@ -403,7 +403,7 @@ doMain ( const int argc, const char* argv[] )
     
     if ( Label ) 
       {
-      AnalyzeLabels( volume, maskData );
+      AnalyzeLabels( *volume, maskData );
       } 
     else 
       {
@@ -412,9 +412,9 @@ doMain ( const int argc, const char* argv[] )
       if ( ExpData )
 	volumeData->ApplyFunctionDouble( cmtk::Wrappers::Exp );
       if ( maskData )
-	AnalyzeGrey( volume, maskData );
+	AnalyzeGrey( *volume, *maskData );
       else
-	AnalyzeGrey( volume );
+	AnalyzeGrey( *volume );
       }
     }
   return 0;

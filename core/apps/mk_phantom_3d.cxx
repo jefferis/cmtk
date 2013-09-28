@@ -178,8 +178,8 @@ doMain( const int argc, const char* argv[] )
 #ifdef CMTK_USE_DCMTK
       if ( ! strcmp( nextCmd, "mrs-voxel" ) )
 	{
-	const char* dicom = cl.GetNextOptional();
-	const char* value = cl.GetNextOptional();
+	const char* dicom = cl.GetNext();
+	const char* value = cl.GetNext();
 	
 	std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
 	
