@@ -185,6 +185,7 @@ doMain( const int argc, const char* argv[] )
       default:
 	header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_NONE );
 	header.StoreField<short>( 72, 0 );
+	break;
       case cmtk::TYPE_BYTE:
 	header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_UNSIGNED_CHAR );
 	header.StoreField<short>( 72, 8 * sizeof( byte ) );
