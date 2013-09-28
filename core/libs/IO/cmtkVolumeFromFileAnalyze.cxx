@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -117,8 +117,7 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
   UniformVolume::SmartPtr volume( new UniformVolume( dims, fabs( pixelDim[0] ), fabs( pixelDim[1] ), fabs( pixelDim[2] ) ) );
 
   const byte orient = header.GetField<byte>( 252 );
-
-  const char* orientString = NULL;
+  std::string orientString = "";
 
   const bool legacyMode = !header.CompareFieldStringN( 344, "SRI1", 4 );
   if ( legacyMode )
@@ -132,6 +131,7 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
       {
       default:
 	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr.c_str() );
+	break;
       case cmtk::ANALYZE_AXIAL:
 	orientString = "RAS"; // INCORRECT LEGACY ORIENTATION
 	break;
@@ -159,6 +159,7 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
       {
       default:
 	StdErr.printf( "WARNING: unsupported slice orientation %d in Analyze file %s\n", orient, pathHdr.c_str() );
+	break;
       case cmtk::ANALYZE_AXIAL:
 	orientString = "LAS";
 	break;
@@ -179,14 +180,17 @@ VolumeFromFile::ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian
 	break;
       }
     }
-  
-  volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientString );
-  volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientString );
 
-  // Analyze is medical data, which we always treat in RAS space.
-  volume->SetMetaInfo( META_SPACE, orientString );
-  volume->SetMetaInfo( META_SPACE_ORIGINAL, orientString );
-  volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
+  if ( !orientString.empty() )
+    {
+    volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientString );
+    volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientString );
+    
+    // Analyze is medical data, which we always treat in RAS space.
+    volume->SetMetaInfo( META_SPACE, orientString );
+    volume->SetMetaInfo( META_SPACE_ORIGINAL, orientString );
+    volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
+    }
 
   // fill "description" header field
   if ( header.GetField<char>( 148 ) )
@@ -342,6 +346,7 @@ VolumeFromFile::WriteAnalyzeHdr
     default:
       header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_NONE );
       header.StoreField<short>( 72, 0 );
+      break;
     case TYPE_BYTE:
       header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_UNSIGNED_CHAR );
       header.StoreField<short>( 72, 8 * sizeof( byte ) );

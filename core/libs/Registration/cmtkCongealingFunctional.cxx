@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -378,7 +378,7 @@ CongealingFunctional<TXform>
 	  }
 	}
       
-      if ( count )
+      if ( count > 1 ) // count>0 not enough for unbiased estimate of sdev below
 	{
 	const double mu = sum / count;
 	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );

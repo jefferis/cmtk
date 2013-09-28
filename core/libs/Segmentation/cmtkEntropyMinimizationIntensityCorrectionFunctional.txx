@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,14 +100,21 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     }
 
   // Normalization according to (A8)
-  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+  if ( foregroundNumberOfPixels )
     {
-    this->m_AddCorrectionAdd[i] /= foregroundNumberOfPixels;
+    for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+      {
+      this->m_AddCorrectionAdd[i] /= foregroundNumberOfPixels;
+      }
     }
+
   // Normalization according to (A12)
-  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+  if ( totalImageEnergy != 0 )
     {
-    this->m_AddCorrectionMul[i] /= totalImageEnergy;
+    for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+      {
+      this->m_AddCorrectionMul[i] /= totalImageEnergy;
+      }
     }
 
   // Now, compute multiplicative correction factors according to
