@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,77 +40,82 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-template<class T>                                                                     
-T                                                                                     
-MathUtil::Mean                                                                                  
-( const unsigned int nValues, const T* values )                                       
+template<class T>
+T
+MathUtil::Mean
+( const unsigned int nValues, const T* values )
 {                                                                                     
-  T mean = 0.0;                                                                       
+  T mean = 0.0;
                                                                                       
-  for ( unsigned int j = 0; j < nValues; j++ )                                        
-    mean += values[j];                                                                
-  mean /= nValues;                                                                    
-                                                                                      
-  return mean;                                                                        
-}                                                                                     
-                                                                                      
-template<class T>                                                                     
-T                                                                                     
-MathUtil::Variance                                                                              
-( const unsigned int nValues, const T* values, const T mean, const bool unbiased )           
-{                                                                                            
-  T sumOfSquares = 0.0;                                                                          
-                                                                                             
-  T sum = 0.0;                                                                               
-  for ( unsigned int j = 0; j < nValues; j++ ) 
-    { 
-    const T s = values[j] - mean;                                                                  
-    sum += s;                                                                                
-    sumOfSquares += s*s;                                                                         
-    }                                                                                          
-  
-  if ( unbiased )                                                                            
-    return (sumOfSquares - sum*sum/nValues) / (nValues-1);                                   
-  else                                                                                       
-    return (sumOfSquares - sum*sum/nValues) / (nValues);                                     
-}        
+  for ( unsigned int j = 0; j < nValues; j++ )
+    mean += values[j];
+  mean /= nValues;
 
-template<class T>                                                                     
-T                                                                                     
-MathUtil::Mean                                                                                  
-( const std::vector<T>& values )                                       
-{                                                                                     
+  return mean;
+}                                                                                     
+
+template<class T>
+T
+MathUtil::Variance
+( const unsigned int nValues, const T* values, const T mean, const bool unbiased )
+{
+  T sumOfSquares = 0.0;
+
+  T sum = 0.0;
+  for ( unsigned int j = 0; j < nValues; j++ )
+    { 
+    const T s = values[j] - mean;
+    sum += s;
+    sumOfSquares += s*s;
+    }
+  
+  if ( unbiased && (nValues>1) )
+    return (sumOfSquares - sum*sum/nValues) / (nValues-1);
+  else
+    if ( nValues > 0 )
+      return (sumOfSquares - sum*sum/nValues) / (nValues);
+  return 0;
+}
+
+template<class T>
+T
+MathUtil::Mean
+( const std::vector<T>& values )
+{
   const size_t nValues = values.size();
   
   T mean = 0.0;
-  for ( size_t j = 0; j < nValues; j++ )                                        
-    mean += values[j];                                                                
-  mean /= nValues;                                                                    
-                                                                                      
-  return mean;                                                                        
-}                                                                                     
-                                                                                      
-template<class T>                                                                     
-T                                                                                     
-MathUtil::Variance                                                                              
-( const std::vector<T>& values, const T mean, const bool unbiased )           
-{                                                                                            
+  for ( size_t j = 0; j < nValues; j++ )
+    mean += values[j];
+  mean /= nValues;
+
+  return mean;
+}
+
+template<class T>
+T
+MathUtil::Variance
+( const std::vector<T>& values, const T mean, const bool unbiased )
+{
   const size_t nValues = values.size();
 
-  T sumOfSquares = 0.0;                                                                          
-  T sum = 0.0;                                                                               
+  T sumOfSquares = 0.0;
+  T sum = 0.0;
   for ( size_t j = 0; j < nValues; j++ ) 
     { 
-    const T s = values[j] - mean;                                                                  
-    sum += s;                                                                                
-    sumOfSquares += s*s;                                                                         
-    }                                                                                          
+    const T s = values[j] - mean;
+    sum += s;
+    sumOfSquares += s*s;
+    }
   
-  if ( unbiased )                                                                            
-    return (sumOfSquares - sum*sum/nValues) / (nValues-1);                                   
-  else                                                                                       
-    return (sumOfSquares - sum*sum/nValues) / (nValues);                                     
-}        
+  if ( unbiased && (nValues>1) )
+    return (sumOfSquares - sum*sum/nValues) / (nValues-1);
+  else
+    if ( nValues > 0 )
+      return (sumOfSquares - sum*sum/nValues) / (nValues);
+
+  return 0;
+}
 
 template<class T>
 T
