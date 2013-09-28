@@ -302,7 +302,7 @@ doMain( const int argc, const char* argv[] )
     int xyz[3];
     if ( 3 != sscanf( cropReferenceToIndex, "%6d,%6d,%6d", &xyz[0], &xyz[1], &xyz[2] ) )
       {
-      cmtk::StdErr << "ERROR: reference crop to index could not parse index '" << cropReferenceFromIndex << "' as valid x,y,z index.\n";
+      cmtk::StdErr << "ERROR: reference crop to index could not parse index '" << cropReferenceToIndex << "' as valid x,y,z index.\n";
       throw cmtk::ExitException( 1 );
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )

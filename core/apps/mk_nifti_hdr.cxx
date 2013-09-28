@@ -201,6 +201,7 @@ doMain( const int argc, const char* argv[] )
       default:
 	header.datatype = DT_UNKNOWN;
 	header.bitpix = 0;
+	break;
       case cmtk::TYPE_BYTE:
 	header.datatype = DT_UNSIGNED_CHAR;
 	header.bitpix = 8 * sizeof(byte);
