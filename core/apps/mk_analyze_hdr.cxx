@@ -176,6 +176,12 @@ doMain( const int argc, const char* argv[] )
     header.StoreField<short>( 50, 0 ); // just for safety
     }
 
+  if ( !ImportHdrFile && DataType == cmtk::TYPE_NONE )
+    {
+    cmtk::StdErr << "ERROR: you must either select a data type (e.g., byte, float) or import an existing header file.";
+    return 1;
+    }
+
   if ( !ImportHdrFile || DataType != cmtk::TYPE_NONE )
     {
     cmtk::DebugOutput( 1 ) << "Setting data type\n";
