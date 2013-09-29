@@ -239,6 +239,12 @@ doMain( const int argc, const char* argv[] )
     }
 
   // slice orientation
+  if ( !ImportHdrFile && Orientation == cmtk::ANALYZE_UNKNOWN )
+    {
+    cmtk::StdErr << "ERROR: you must either select a slice orientation (e.g., axial, sagittal) or import an existing header file.";
+    return 1;
+    }
+
   if ( !ImportHdrFile || Orientation != cmtk::ANALYZE_UNKNOWN )
     {
     cmtk::DebugOutput( 1 ) << "Setting image orientation\n";
