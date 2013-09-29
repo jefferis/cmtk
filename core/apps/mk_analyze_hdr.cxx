@@ -98,8 +98,8 @@ doMain( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'O', "offset" ), &Offset, "Binary data file offset", &PutOffset );
 
+    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned (this is the default)" );
     cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
-    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );
     cl.AddSwitch( Key( 's', "short" ), &DataType, cmtk::TYPE_SHORT, "16 bits, signed" );
     cl.AddSwitch( Key( 'u', "ushort" ), &DataType, cmtk::TYPE_USHORT, "16 bits, unsigned" );
     cl.AddSwitch( Key( 'i', "int" ), &DataType, cmtk::TYPE_INT, "32 bits signed" );
@@ -109,7 +109,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'B', "big-endian" ), &LittleEndian, false, "Big endian data" );
     cl.AddSwitch( Key( 'L', "little-endian" ), &LittleEndian, true, "Little endian data" );
 
-    cl.AddSwitch( Key( "axial" ), &Orientation, cmtk::ANALYZE_AXIAL, "Set slice orientation to axial" );
+    cl.AddSwitch( Key( "axial" ), &Orientation, cmtk::ANALYZE_AXIAL, "Set slice orientation to axial (this is the default)" );
     cl.AddSwitch( Key( "axial-flip" ), &Orientation, cmtk::ANALYZE_AXIAL_FLIP, "Set slice orientation to reverse axial" );
     cl.AddSwitch( Key( "sagittal" ), &Orientation, cmtk::ANALYZE_SAGITTAL, "Set slice orientation to sagittal" );
     cl.AddSwitch( Key( "sagittal-flip" ), &Orientation, cmtk::ANALYZE_SAGITTAL_FLIP, "Set slice orientation to reverse sagittal" );
@@ -176,12 +176,6 @@ doMain( const int argc, const char* argv[] )
     header.StoreField<short>( 50, 0 ); // just for safety
     }
 
-  if ( !ImportHdrFile && DataType == cmtk::TYPE_NONE )
-    {
-    cmtk::StdErr << "ERROR: you must either select a data type (e.g., byte, float) or import an existing header file.";
-    return 1;
-    }
-
   if ( !ImportHdrFile || DataType != cmtk::TYPE_NONE )
     {
     cmtk::DebugOutput( 1 ) << "Setting data type\n";
@@ -189,9 +183,6 @@ doMain( const int argc, const char* argv[] )
     switch ( DataType ) 
       {
       default:
-	header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_NONE );
-	header.StoreField<short>( 72, 0 );
-	break;
       case cmtk::TYPE_BYTE:
 	header.StoreField<short>( 70, cmtk::ANALYZE_TYPE_UNSIGNED_CHAR );
 	header.StoreField<short>( 72, 8 * sizeof( byte ) );
@@ -239,16 +230,14 @@ doMain( const int argc, const char* argv[] )
     }
 
   // slice orientation
-  if ( !ImportHdrFile && Orientation == cmtk::ANALYZE_UNKNOWN )
-    {
-    cmtk::StdErr << "ERROR: you must either select a slice orientation (e.g., axial, sagittal) or import an existing header file.";
-    return 1;
-    }
-
   if ( !ImportHdrFile || Orientation != cmtk::ANALYZE_UNKNOWN )
     {
     cmtk::DebugOutput( 1 ) << "Setting image orientation\n";
-    header.StoreField<byte>( 252, Orientation );
+
+    if ( Orientation == cmtk::ANALYZE_UNKNOWN )
+      header.StoreField<byte>( 252, cmtk::ANALYZE_AXIAL );
+    else
+      header.StoreField<byte>( 252, Orientation );
     }
 
   if ( (!ImportHdrFile && LegacyMode == 0) || (LegacyMode < 0) )

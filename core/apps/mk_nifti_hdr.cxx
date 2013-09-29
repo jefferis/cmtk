@@ -99,8 +99,8 @@ doMain( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'O', "offset" ), &Offset, "Binary data file offset", &PutOffset );
 
+    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned (this is the default)" );
     cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
-    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );
     cl.AddSwitch( Key( 's', "short" ), &DataType, cmtk::TYPE_SHORT, "16 bits, signed" );
     cl.AddSwitch( Key( 'u', "ushort" ), &DataType, cmtk::TYPE_USHORT, "16 bits, unsigned" );
     cl.AddSwitch( Key( 'i', "int" ), &DataType, cmtk::TYPE_INT, "32 bits signed" );
@@ -192,12 +192,6 @@ doMain( const int argc, const char* argv[] )
       }
     }
   
-  if ( !ImportHdrFile && DataType == cmtk::TYPE_NONE )
-    {
-    cmtk::StdErr << "ERROR: you must either select a data type (e.g., byte, float) or import an existing header file.";
-    return 1;
-    }
-
   if ( !ImportHdrFile || DataType != cmtk::TYPE_NONE )
     {
     cmtk::DebugOutput( 1 ) << "Setting data type\n";
@@ -205,9 +199,6 @@ doMain( const int argc, const char* argv[] )
     switch ( DataType ) 
       {
       default:
-	header.datatype = DT_UNKNOWN;
-	header.bitpix = 0;
-	break;
       case cmtk::TYPE_BYTE:
 	header.datatype = DT_UNSIGNED_CHAR;
 	header.bitpix = 8 * sizeof(byte);
