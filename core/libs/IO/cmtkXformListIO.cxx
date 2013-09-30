@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,8 @@
 
 #include <IO/cmtkXformIO.h>
 
+#include <System/cmtkExitException.h>
+
 cmtk::XformList
 cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringList )
 {
@@ -47,6 +49,7 @@ cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringLis
       if ( it == stringList.end() )
 	{
 	cmtk::StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
+	throw ExitException( 1 );
 	}
       }
     
@@ -54,7 +57,7 @@ cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringLis
     if ( ! xform ) 
       {
       cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
-      exit( 1 );
+      throw ExitException( 1 );
       }
     
     xformList.Add( xform, inverse );
