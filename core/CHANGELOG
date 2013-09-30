@@ -1,5 +1,8 @@
 Release CMTK-2.4.0:
 
+(r4892) Changed: by default, "mk_analyze_hdr" and "mk_nifti_hdr" now
+	create a header with "Byte" as the image pixel data type, and
+	"axial" as the orientation (for "mk_analyze_hdr" only).
 (r4855) Added: "detect_adni_phantom" tool (and library classes) now state
 	in the output XML file whether certain fallback conditions were
 	triggered. These usually hint at problems with the imaging
