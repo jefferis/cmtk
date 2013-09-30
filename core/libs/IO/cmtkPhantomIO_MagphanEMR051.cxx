@@ -30,6 +30,8 @@
 
 #include "cmtkPhantomIO.h"
 
+#include <System/cmtkCoverity.h>
+
 #include <stdio.h>
 
 const char *
@@ -95,12 +97,12 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
   
   mxml_node_t *x_phantom = mxmlNewElement( x_root, "phantom" );
-  mxmlNewText( mxmlNewElement( x_phantom, "phantomType" ), 0, "MagphanEMR051" );
+  Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_phantom, "phantomType" ), 0, "MagphanEMR051" ) );
 
   // put fallback flags into output as a warning
   if ( phantom.m_StatusFlags.m_FallbackOrientationCNR )
     {
-    mxmlNewElement( x_phantom, "fallbackOrientationCNR" );
+    Coverity::FakeFree( mxmlNewElement( x_phantom, "fallbackOrientationCNR" ) );
     }
   if ( phantom.m_StatusFlags.m_FallbackCentroidCNR )
     {
@@ -108,25 +110,26 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
     char distStr[10];
     snprintf( distStr, 10, "%8f", phantom.m_StatusFlags.m_DistanceSNRtoCNR );
     mxmlElementSetAttr( x_fallback_centroid, "distance", distStr );
+    Coverity::FakeFree( x_fallback_centroid );
     }
 
-  mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR ); 
+  Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_phantom, "snr" ), phantom.m_EstimatedSNR ) ); 
 
   mxml_node_t *x_cnr = mxmlNewElement( x_phantom, "cnr" );
   for ( size_t i=0; i < phantom.m_EstimatedCNR.Size(); ++i )
-    mxmlNewReal( x_cnr, phantom.m_EstimatedCNR[i] ); 
+    Coverity::FakeFree( mxmlNewReal( x_cnr, phantom.m_EstimatedCNR[i] ) );
     
   FixedVector<3,Types::Coordinate> scales = phantom.m_LinearFitXform.GetScales(); 
   mxml_node_t *x_scale= mxmlNewElement( x_phantom, "scale");
   for ( size_t idx = 0; idx < 3; ++idx )
     {
-    mxmlNewReal( x_scale, scales[idx] );
+    Coverity::FakeFree( mxmlNewReal( x_scale, scales[idx] ) );
     }
   
   mxml_node_t *x_nonlinear= mxmlNewElement( x_phantom, "nonlinear");
   for ( size_t idx = 0; idx < 3; ++idx )
     {
-    mxmlNewReal( x_nonlinear, phantom.m_EstimatedNonLinear[idx] );
+    Coverity::FakeFree( mxmlNewReal( x_nonlinear, phantom.m_EstimatedNonLinear[idx] ) );
     }
   
   mxml_node_t *x_lmpairs = mxmlNewElement( x_phantom, "landmarkList" );
@@ -146,17 +149,17 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
     mxml_node_t *x_expected = mxmlNewElement( x_lm, "expected");
     for ( size_t idx = 0; idx < 3; ++idx )
       {
-      mxmlNewReal( x_expected, it->m_Location[idx] );
+      Coverity::FakeFree( mxmlNewReal( x_expected, it->m_Location[idx] ) );
       }
     
     mxml_node_t *x_detected= mxmlNewElement( x_lm, "detected");
     for ( size_t idx = 0; idx < 3; ++idx )
       {
-      mxmlNewReal( x_detected, it->m_TargetLocation[idx] );
+      Coverity::FakeFree( mxmlNewReal( x_detected, it->m_TargetLocation[idx] ) );
       }
     
-    mxmlNewText( mxmlNewElement( x_lm, "isPrecise" ), 0, it->m_Precise ? "yes" : "no" );
-    mxmlNewReal( mxmlNewElement( x_lm, "fitResidual" ), it->m_Residual );    
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_lm, "isPrecise" ), 0, it->m_Precise ? "yes" : "no" ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_lm, "fitResidual" ), it->m_Residual ) );
     }
   
   FILE *file = fopen( fpath.c_str(), "w" );

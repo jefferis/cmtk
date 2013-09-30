@@ -81,7 +81,19 @@ public:
   typedef VolumeFromSlices Self;
 
   /// Default constructor.
-  VolumeFromSlices( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ), VolumeDataArray( NULL ) {}
+  VolumeFromSlices( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : 
+    m_Tolerance( tolerance ), 
+    DataSize( 0 ),
+    RawData( NULL ),
+    VolumeDataArray( NULL ),
+    BytesPerPixel( 0 ),
+    SignBit( false ),
+    DataType( TYPE_NONE ),
+    IncX( 0 ), IncY( 0 ), BlockSize( 0 ),
+    Padding( false )
+  { 
+    Points[0] = Points[1] = Points[2] = NULL;
+  }
 
   /// Virtual dummy destructor.
   virtual ~VolumeFromSlices() {}
