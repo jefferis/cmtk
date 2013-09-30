@@ -12,6 +12,10 @@ repository.
 unwarp_image_phantom default behaviour has been changed to multi-iteration
 fitting. Also now supports residual-controlled fitting.
 
+mk_analyze_hdr and mk_nifti_hdr default behaviour has changed - data type now
+defaults to "byte" and orientation (for Analyze) now defaults to "axial",
+rather than being "UNKNOWN"
+
 
 Platform Support
 ================
