@@ -44,6 +44,11 @@
 #define CMTK_DCMDICTPATH "@CMTK_DCMDICTPATH_CONFIG@"
 #define CMTK_DCMDICTPATH_INSTALL "@CMTK_DCMDICTPATH_INSTALL_CONFIG@"
 
+// Unless in "DEBUG" build, turn off AlgLib assertions
+#ifndef DEBUG
+#define NO_AP_ASSERT 1
+#endif
+
 //
 // Configuration options
 //

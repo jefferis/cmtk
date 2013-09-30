@@ -267,15 +267,23 @@ ElasticRegistrationCommandLine
   /// Was an initial studylist given? If so, get warp 
   if ( ! initialTransformationFile.empty() ) 
     {
-    Xform::SmartPtr initialXform( XformIO::Read( initialTransformationFile ) );
-    AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
-    if ( affineXform )
+    try
       {
-      this->SetInitialTransformation( affineXform );
+      Xform::SmartPtr initialXform( XformIO::Read( initialTransformationFile ) );
+      AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
+      if ( affineXform )
+	{
+	this->SetInitialTransformation( affineXform );
+	}
+      else
+	{
+	InitialWarpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( initialXform );
+	}
       }
-    else
+    catch ( const Exception& ex )
       {
-      InitialWarpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( initialXform );
+      StdErr << "Initializing transformation from " << initialTransformationFile << " failed: " << ex.what() << "\n";
+      throw( ExitException( 1 ) );
       }
     }
 

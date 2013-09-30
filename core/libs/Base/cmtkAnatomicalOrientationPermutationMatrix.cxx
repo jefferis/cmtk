@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include "cmtkAnatomicalOrientation.h"
+
+#include <System/cmtkExitException.h>
 
 #include <string>
 #include <iostream>
@@ -88,7 +90,15 @@ AnatomicalOrientation::PermutationMatrix::GetMatrix() const
     permutation[3][j] = this->m_Offsets[j];
     }
 
-  return permutation.GetInverse();
+  try
+    {
+    return permutation.GetInverse();
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: orientation permutation matrix connot be inverted.\n";
+    throw ExitException( 1 );
+    }
 }
 
 AffineXform::MatrixType
