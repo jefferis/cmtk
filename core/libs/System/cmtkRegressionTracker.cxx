@@ -33,6 +33,8 @@
 #include <stdlib.h>
 
 cmtk::RegressionTracker::RegressionTracker()
+  : m_File( NULL ),
+    m_WriteFlag( false )
 {
   const char *env = getenv( "CMTK_RTRACKER" );
   if ( env )

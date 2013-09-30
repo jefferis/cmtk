@@ -35,7 +35,9 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalize
       m_ImageDims( image.m_Dims ),
       m_PixelSize( image.m_Delta ),
       m_SphereRadius( 0 ),
-      m_MarginWidth( -1 )
+      m_MarginWidth( -1 ),
+      m_SumFilter( 0.0 ),
+      m_SumFilterMask( 0.0 )
 {
   this->m_ImageFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );
   this->m_ImageSquareFT = static_cast<fftw_complex*>( fftw_malloc( sizeof( fftw_complex ) * this->m_NumberOfPixels ) );

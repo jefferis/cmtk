@@ -272,7 +272,7 @@ Threads::RunThreads
   // So we collect the shorter running ones first and give more time to the
   // longer running ones while dealing with the administrational overhead of
   // the ones that are already finished.
-  for ( int threadIdx = numberOfThreads-1; threadIdx; --threadIdx ) 
+  for ( unsigned threadIdx = numberOfThreads-1; threadIdx; --threadIdx ) 
     {
 #ifdef CMTK_USE_SMP
 #  ifdef _MSC_VER

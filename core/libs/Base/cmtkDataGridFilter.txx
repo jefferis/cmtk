@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ cmtk::TypedArray::SmartPtr
 cmtk::DataGridFilter::ApplyRegionFilter( const int radiusX, const int radiusY, const int radiusZ ) const
 {
   const TypedArray* data = this->m_DataGrid->GetData();
+  if ( !data )
+    return TypedArray::SmartPtr( NULL );
+
   TypedArray::SmartPtr result = TypedArray::Create( data->GetType(), data->GetDataSize() );
   
   const int widthX = 1 + 2*radiusX;

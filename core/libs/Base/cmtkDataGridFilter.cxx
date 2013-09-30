@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,12 +43,7 @@ cmtk
 {
 
 DataGridFilter
-::DataGridFilter( DataGrid::SmartConstPtr dataGrid )
-  : m_DataGrid( dataGrid )
-{
-  if ( !this->m_DataGrid->GetData() )
-    throw Exception( "ERROR: DataGrid object given to DataGridFilter constructor does not have a data array" );
-}
+::DataGridFilter( DataGrid::SmartConstPtr dataGrid ) : m_DataGrid( dataGrid ) {}
 
 cmtk::Types::DataItem
 cmtk::DataGridFilter::MedianOperator::Reduce( std::vector<Types::DataItem>& regionData )
@@ -86,13 +81,16 @@ DataGridFilter::RegionMeanFilter( const int radiusX, const int radiusY, const in
 TypedArray::SmartPtr
 DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
 {
+  const DataGrid& dataGrid = *(this->m_DataGrid);
+  if ( !dataGrid.GetData() )
+    return TypedArray::SmartPtr( NULL );
+
+  const TypedArray& dataArray = *(dataGrid.GetData());  
+
   DataGrid::IndexType radius;
   radius[0] = radiusX;
   radius[1] = radiusY;
   radius[2] = radiusZ;
-
-  const DataGrid& dataGrid = *(this->m_DataGrid);
-  const TypedArray& dataArray = *(dataGrid.GetData());  
 
   const size_t nPixels = dataGrid.GetNumberOfPixels();
   const DataGrid::RegionType wholeImageRegion = dataGrid.GetWholeImageRegion();
@@ -194,6 +192,9 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
 TypedArray::SmartPtr
 DataGridFilter::FastRegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const
 {
+  if ( !this->m_DataGrid->GetData() )
+    return TypedArray::SmartPtr( NULL );
+
   //
   // see http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
   //
@@ -330,6 +331,9 @@ TypedArray::SmartPtr
 DataGridFilter::GetDataSobelFiltered() const
 {
   const TypedArray* data = this->m_DataGrid->GetData();
+  if ( !data )
+    return TypedArray::SmartPtr( NULL );
+
   TypedArray::SmartPtr result = TypedArray::Create( data->GetType(), data->GetDataSize() );
 
   Types::DataItem value = 0;
@@ -393,6 +397,9 @@ DataGridFilter::GetDataKernelFiltered
   const std::vector<Types::DataItem>& filterZ,
   const bool normalize ) const
 {
+  if ( !this->m_DataGrid->GetData() )
+    return TypedArray::SmartPtr( NULL );
+
   // create and initialize result (data are copied at this point from the source array)
   TypedArray::SmartPtr result( this->m_DataGrid->GetData()->Clone() );
   

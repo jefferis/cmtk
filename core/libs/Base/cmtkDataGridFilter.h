@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
