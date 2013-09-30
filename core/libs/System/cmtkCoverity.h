@@ -36,15 +36,14 @@
 namespace cmtk
 {
 
-namespace
+class
 Coverity
 {
-
+public:
 /// Pretend to free allocated memory to suppress CoverityScan false positives.
 // coverity[+free : arg-0]
-void FakeFree( void *const ) {}
-
-} // namespace Coverity
+  static void FakeFree( void *const ) {}
+};
 
 } // namespace cmtk
 

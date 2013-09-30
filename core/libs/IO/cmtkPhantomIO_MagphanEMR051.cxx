@@ -145,7 +145,7 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
     {
     mxml_node_t *x_lm = mxmlNewElement( x_lmpairs, "landmark");
     
-    mxmlNewText( mxmlNewElement( x_lm, "name" ), 0, it->m_Name.c_str() ); 
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_lm, "name" ), 0, it->m_Name.c_str() ) );
     mxml_node_t *x_expected = mxmlNewElement( x_lm, "expected");
     for ( size_t idx = 0; idx < 3; ++idx )
       {

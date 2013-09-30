@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,7 +29,10 @@
 //  $LastChangedBy$
 //
 */
+
 #include "cmtkCommandLine.h"
+
+#include <System/cmtkCoverity.h>
 
 void 
 cmtk::CommandLine::Callback::Evaluate
@@ -143,7 +147,7 @@ cmtk::CommandLine::Callback
     {
     node = mxmlNewElement( parent, "boolean" );
     mxml_node_t *dflt = mxmlNewElement( node, "default" );
-    mxmlNewText( dflt, 0, "false" );
+    Coverity::FakeFree( mxmlNewText( dflt, 0, "false" ) );
     }
   else if ( this->m_FuncArg )
     {

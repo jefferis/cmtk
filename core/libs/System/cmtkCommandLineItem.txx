@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,6 +29,8 @@
 */
 
 #include <typeinfo>
+
+#include <System/cmtkCoverity.h>
 
 template<class T>
 mxml_node_t* 
@@ -64,9 +66,9 @@ cmtk::CommandLine::Item::Helper<T>
 	node = mxmlNewElement( parent, "string" );
       
       if ( item->m_Properties & PROPS_OUTPUT )
-	mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
+	Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" ) );
       else
-	mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
+	Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" ) );
       }
     else
       node = mxmlNewElement( parent, typeName );

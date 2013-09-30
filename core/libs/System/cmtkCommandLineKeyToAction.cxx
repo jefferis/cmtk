@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include "cmtkCommandLine.h"
+
+#include <System/cmtkCoverity.h>
 
 #include <sstream>
 
@@ -65,22 +67,22 @@ cmtk::CommandLine::KeyToAction
     
     if ( this->m_Comment.length() )
       {
-      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() ) );
       }
     
     if ( this->m_Key.m_KeyString.length() )
       {
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
-      mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() ) );
       }
     if ( this->m_Key.m_KeyChar )
       {
       const char keyStr[] = { '-', this->m_Key.m_KeyChar, 0 };
-      mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr ) );
       }
     if ( this->m_Key.m_KeyString.length() )
       {
-      mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() ) );
       }
     
     return node;

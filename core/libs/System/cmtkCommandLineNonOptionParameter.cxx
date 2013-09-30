@@ -30,6 +30,8 @@
 
 #include "cmtkCommandLine.h"
 
+#include <System/cmtkCoverity.h>
+
 #include <sstream>
 
 void
@@ -61,20 +63,20 @@ cmtk::CommandLine::NonOptionParameter
     {
     if ( ! this->m_Name.empty() )
       {
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name.c_str() );
-      mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name.c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name.c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name.c_str() ) );
       }
     
     if ( ! this->m_Comment.empty() )
       {
-      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() ) );
       }
     
     if ( index >= 0 )
       {
       std::ostringstream strm;
       strm << index;
-      mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() ) );
       }
     }
 

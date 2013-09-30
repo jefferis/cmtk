@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009, 2011 SRI International
+//  Copyright 2009, 2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,6 +29,8 @@
 */
 
 #include <typeinfo>
+
+#include <System/cmtkCoverity.h>
 
 template<class T>
 void
@@ -64,7 +66,7 @@ cmtk::CommandLine::Option<T>
     if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
       {
       mxml_node_t *dflt = mxmlNewElement( node, "default" );
-      mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( *(this->Var) ).c_str() );
+      Coverity::FakeFree( mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( *(this->Var) ).c_str() ) );
       }
     return node;
     }
