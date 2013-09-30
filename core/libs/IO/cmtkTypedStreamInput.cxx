@@ -606,19 +606,22 @@ TypedStreamInput
 	  do 
 	    {
 	    buffer = strtok( BufferValue, "\t\n " );
-	    int idx = 0;
-	    while ( (buffer[idx]=='0') || (buffer[idx]=='1') ) 
+	    if ( buffer )
 	      {
-	      if ( i >= arraySize )
-		return Self::CONDITION_OK;
-	      if ( buffer[idx] == '0' )
-		arrayInt[i/8] &= ~(1<<(i%8));
-	      else
-		arrayInt[i/8] |= (1<<(i%8));
-	      ++i;
-	      ++idx;
+	      int idx = 0;
+	      while ( (buffer[idx]=='0') || (buffer[idx]=='1') ) 
+		{
+		if ( i >= arraySize )
+		  return Self::CONDITION_OK;
+		if ( buffer[idx] == '0' )
+		  arrayInt[i/8] &= ~(1<<(i%8));
+		else
+		  arrayInt[i/8] |= (1<<(i%8));
+		++i;
+		++idx;
+		}
 	      }
-	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
+	    } while ( buffer && i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize ) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;

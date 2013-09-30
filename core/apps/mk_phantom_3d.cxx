@@ -142,9 +142,9 @@ doMain( const int argc, const char* argv[] )
       {
       if ( ! strcmp( nextCmd, "sphere" ) )
 	{
-	const char* center = cl.GetNextOptional();
-	const char* radius = cl.GetNextOptional();
-	const char* value = cl.GetNextOptional();
+	const char* center = cl.GetNext();
+	const char* radius = cl.GetNext();
+	const char* value = cl.GetNext();
 
 	float cc[3];
 	if ( sscanf( center, "%15f,%15f,%15f", &cc[0], &cc[1], &cc[2] ) != 3 )
@@ -157,9 +157,9 @@ doMain( const int argc, const char* argv[] )
 
       if ( ! strcmp( nextCmd, "box" ) )
 	{
-	const char* fromCorner = cl.GetNextOptional();
-	const char* toCorner = cl.GetNextOptional();
-	const char* value = cl.GetNextOptional();
+	const char* fromCorner = cl.GetNext();
+	const char* toCorner = cl.GetNext();
+	const char* value = cl.GetNext();
 	
 	float boxFrom[3], boxTo[3];
 	if ( sscanf( fromCorner, "%15f,%15f,%15f", &boxFrom[0], &boxFrom[1], &boxFrom[2] ) != 3 )
