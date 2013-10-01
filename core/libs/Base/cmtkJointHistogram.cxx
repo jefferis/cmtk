@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,26 +47,33 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
 {
   const T sampleCount = this->SampleCount();
 
-  HX = HY = 0;
-  for ( size_t i=0; i<NumBinsX; ++i ) 
+  if ( sampleCount > 0 )
     {
-    const double project = this->ProjectToX( i );
-    if ( project ) 
+    HX = HY = 0;
+    for ( size_t i=0; i<NumBinsX; ++i ) 
       {
-      const double pX = project / sampleCount;
-      HX -= pX * log(pX);
+      const double project = this->ProjectToX( i );
+      if ( project ) 
+	{
+	const double pX = project / sampleCount;
+	HX -= pX * log(pX);
+	}
+      }
+  
+    for ( size_t j=0; j<NumBinsY; ++j ) 
+      {
+      const double project = this->ProjectToY( j );
+      if ( project ) 
+	{
+	const double pY = project / sampleCount;
+	HY -= pY * log(pY);
+	}
       }
     }
-  
-  for ( size_t j=0; j<NumBinsY; ++j ) 
+  else
     {
-    const double project = this->ProjectToY( j );
-    if ( project ) 
-      {
-      const double pY = project / sampleCount;
-      HY -= pY * log(pY);
-      }
-  }
+    HX = HY = 0.0;
+    }
 }
 
 template<class T> double
@@ -75,15 +82,18 @@ JointHistogram<T>::GetJointEntropy() const
   double HXY = 0;
   
   const T sampleCount = this->SampleCount();
-  for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
+  if ( sampleCount > 0 )
     {
-    if ( JointBins[idx] ) 
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       {
-      const double pXY = ((double)JointBins[idx]) / sampleCount;
-      HXY -= pXY * log(pXY);
+      if ( JointBins[idx] ) 
+	{
+	const double pXY = ((double)JointBins[idx]) / sampleCount;
+	HXY -= pXY * log(pXY);
+	}
       }
     }
-  
+
   return HXY;
 }
 

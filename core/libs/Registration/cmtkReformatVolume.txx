@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,10 +72,13 @@ ReformatVolume::GetTransformedReference
     const Types::DataItemRange rangeRef = ReferenceVolume->GetData()->GetRange();
     maxLabel = static_cast<int>( rangeRef.m_UpperBound );
     
-    for ( unsigned int img = 0; img < numberOfImages-1; ++img ) 
+    if ( volumeList )
       {
-      const Types::DataItemRange rangeFlt = (*volumeList)[img]->GetData()->GetRange();
-      maxLabel = std::max( maxLabel, static_cast<int>( rangeFlt.m_UpperBound ) );
+      for ( unsigned int img = 0; img < numberOfImages-1; ++img ) 
+	{
+	const Types::DataItemRange rangeFlt = (*volumeList)[img]->GetData()->GetRange();
+	maxLabel = std::max( maxLabel, static_cast<int>( rangeFlt.m_UpperBound ) );
+	}
       }
     }
   

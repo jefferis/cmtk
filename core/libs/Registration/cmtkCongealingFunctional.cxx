@@ -426,7 +426,7 @@ CongealingFunctional<TXform>
 	  }
 	}
       
-      if ( count )
+      if ( count > 1 )
 	{
 	const double mu = sum / count;
 	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );

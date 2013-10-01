@@ -38,6 +38,7 @@
 #include <System/cmtkThreadPool.h>
 #include <System/cmtkThreadParameterArray.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 
 #include <algorithm>
 
@@ -174,7 +175,13 @@ SplineWarpCongealingFunctional
       {
       for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
 	{
-	constraint += dynamic_cast<const SplineWarpXform*>( this->m_XformVector[i].GetPtr() )->GetJacobianConstraint();
+	const SplineWarpXform* splineWarp = dynamic_cast<const SplineWarpXform*>( this->m_XformVector[i].GetPtr() );
+	if ( ! splineWarp )
+	  {
+	  StdErr << "ERROR: dynamic_cast to SplineWarpXform failed in SplineWarpCongealingFunctional::Evaluate()\n";
+	  throw ExitException( 1 );
+	  }
+	constraint += splineWarp->GetJacobianConstraint();
 	}
       }
     return result - this->m_JacobianConstraintWeight * constraint;

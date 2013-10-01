@@ -226,12 +226,12 @@ ReformatPullback()
       targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( TargetVolumeName ) );
     else
       targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( TargetVolumeName ) );
-    }
 
-  if ( ! targetVolume ) 
-    {
-    cmtk::StdErr << "ERROR: could not read target volume " << TargetVolumeName << "\n";
-    throw cmtk::ExitException( 1 );
+    if ( ! targetVolume ) 
+      {
+      cmtk::StdErr << "ERROR: could not read target volume " << TargetVolumeName << "\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
 
   if ( CropImages )
