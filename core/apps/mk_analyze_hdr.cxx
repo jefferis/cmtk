@@ -142,7 +142,7 @@ doMain( const int argc, const char* argv[] )
       {
       if ( 1 != fread( buffer, 1, sizeof( buffer ), hdrIn ) )
 	{
-	StdErr << "ERROR: could not read " << sizeof( buffer ) << " bytes from file " << ImportHdrFile << "\n";
+	cmtk::StdErr << "ERROR: could not read " << sizeof( buffer ) << " bytes from file " << ImportHdrFile << "\n";
 	throw cmtk::ExitException( 1 );
 	}	
       fclose( hdrIn );
