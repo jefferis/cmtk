@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012, 2013 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -201,8 +201,10 @@ DICOM::GetImageOrientation() const
 #endif
       {
       // ImageOrientation tag not present, try ImageOrientationPatient instead
-      this->Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
+      if ( ! this->Document().getValue( DCM_ImageOrientationPatient, image_orientation_s ) )
+	image_orientation_s = NULL;
       }
+
   if ( image_orientation_s ) 
     {
     double dx[3], dy[3];
