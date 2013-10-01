@@ -399,6 +399,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   cmtk::GeneralLinearModel glm( nParameters[0], allImages.size(), allParameters );
+  cmtk::Memory::ArrayC::Delete( allParameters );
   
   if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
