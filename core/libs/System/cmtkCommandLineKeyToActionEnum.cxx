@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include "cmtkCommandLine.h"
+
+#include <System/cmtkCoverity.h>
 
 void
 cmtk::CommandLine::KeyToActionEnum
@@ -127,12 +129,12 @@ cmtk::CommandLine::KeyToActionEnum
     mxml_node_t *node = mxmlNewElement( parent, "string-enumeration" );
     
     mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
-    mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() );
+    Coverity::FakeFree( mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() ) );
     
     for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
       {      
       mxml_node_t* element = mxmlNewElement( node, "element" );
-      mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() );
+      Coverity::FakeFree( mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() ) );
       }
     
     return this->Superclass::MakeXML( node );
