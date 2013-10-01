@@ -165,11 +165,14 @@ DICOM::GetImageOrigin() const
     {
     // ImagePositionPatient tag not present, try ImagePosition instead
 #ifdef DCM_ImagePosition
-    this->Document().getValue( DCM_ImagePosition, image_position_s );
+    if ( ! this->Document().getValue( DCM_ImagePosition, image_position_s ) )
+      image_position_s = NULL;
 #else
-    this->Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
+    if ( ! this->Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s ) )
+      image_position_s = NULL;
 #endif
     }
+
   if ( image_position_s ) 
     {
     double xyz[3];
