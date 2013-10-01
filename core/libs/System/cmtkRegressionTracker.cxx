@@ -75,7 +75,10 @@ cmtk::RegressionTracker::CompareChecksum( const unsigned char *const data, size_
   else
     {
     unsigned int baseline;
-    fscanf( this->m_File, "%20u", &baseline );
+    if ( 1 != fscanf( this->m_File, "%20u", &baseline ) )
+      {
+      this->Trap();
+      }
     
     if ( checksum != baseline )
       this->Trap();

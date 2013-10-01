@@ -72,7 +72,11 @@ VolumeFromFile::ReadVanderbilt( const std::string& path )
 	} 
       else if ( ! strcmp( key, "Pixel size " ) ) 
 	{
-	sscanf( value, "%20lf : %20lf", calib, calib+1 );
+	if ( 2 != sscanf( value, "%20lf : %20lf", calib, calib+1 ) )
+	  {
+	  StdErr << "WARNING: could not determine pixel size from line '" << line << "'\n";
+	  calib[0] = calib[1] = 1.0;
+	  }
 	} 
       else if ( ! strcmp( key, "Slice thickness " ) ) 
 	{

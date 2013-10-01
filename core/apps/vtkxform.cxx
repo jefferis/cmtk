@@ -187,10 +187,10 @@ doMain( const int argc, const char* argv[] )
     }
 
   // Everything else remains unchanged, so copy from input to output.
-  char c = std::cin.get();
+  int c = std::cin.get();
   while ( std::cin.good() )
     {
-    std::cout << c;
+    std::cout << static_cast<char>( c );
     c = std::cin.get();
     }
 
