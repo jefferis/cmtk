@@ -233,7 +233,7 @@ doMain( const int argc, const char* argv[] )
   if ( Description )
     {
     cmtk::DebugOutput( 1 ) << "Setting image description\n";    
-    strncpy( header.descrip, Description, 80 );
+    memcpy( header.descrip, Description, std::min<size_t>( strlen( Description )+1, 80 ) );
     }
 
 #ifdef _MSC_VER

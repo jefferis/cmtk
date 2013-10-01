@@ -254,7 +254,7 @@ doMain( const int argc, const char* argv[] )
   if ( Description )
     {
     cmtk::DebugOutput( 1 ) << "Setting image description\n";
-    header.StoreFieldString( 148, Description, 80 );
+    header.StoreFieldString( 148, Description, std::min<size_t>( strlen( Description )+1, 80 ) );
     }
 
   // write header info
