@@ -208,7 +208,7 @@ TypedStreamInput
 
   if ( GzFile )
     {
-    if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+    if ( -1 == gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
       {
       this->m_Status = Self::ERROR_SYSTEM;
       return Self::CONDITION_ERROR;
@@ -290,7 +290,7 @@ TypedStreamInput
       {
       if ( initialLevel ) 
 	{
-	if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+	if ( -1 == gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
 	  {
 	  this->m_Status = Self::ERROR_SYSTEM;
 	  return Self::CONDITION_ERROR;
@@ -298,7 +298,7 @@ TypedStreamInput
 	} 
       else 
 	{
-	if ( gzseek( GzFile, 0, SEEK_SET) )
+	if ( -1 == gzseek( GzFile, 0, SEEK_SET) )
 	  {
 	  this->m_Status = Self::ERROR_SYSTEM;
 	  return Self::CONDITION_ERROR;
@@ -547,7 +547,7 @@ TypedStreamInput
       {
       if ( currentLevel )
 	{
-	if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+	if ( -1 == gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
 	  {
 	  this->m_Status = Self::ERROR_SYSTEM;
 	  return Self::CONDITION_ERROR;
@@ -555,7 +555,7 @@ TypedStreamInput
 	}
       else
 	{
-	if ( gzseek( GzFile, 0, SEEK_SET ) )
+	if ( -1 == gzseek( GzFile, 0, SEEK_SET ) )
 	  {
 	  this->m_Status = Self::ERROR_SYSTEM;
 	  return Self::CONDITION_ERROR;
