@@ -207,9 +207,22 @@ TypedStreamInput
     }
 
   if ( GzFile )
-    gzseek( GzFile, LevelStack.top(), SEEK_SET );
+    {
+    if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+      {
+      this->m_Status = Self::ERROR_SYSTEM;
+      return Self::CONDITION_ERROR;
+      }
+    }
   else
-    fseek( File, LevelStack.top(), SEEK_SET );
+    {
+    if ( fseek( File, LevelStack.top(), SEEK_SET ) )
+      {
+      this->m_Status = Self::ERROR_SYSTEM;
+      return Self::CONDITION_ERROR;
+      }
+    }
+
   return Self::CONDITION_OK;
 }
 
@@ -277,21 +290,37 @@ TypedStreamInput
       {
       if ( initialLevel ) 
 	{
-	gzseek( GzFile, LevelStack.top(), SEEK_SET );
+	if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
 	} 
       else 
 	{
-	gzseek( GzFile, 0, SEEK_SET);
+	if ( gzseek( GzFile, 0, SEEK_SET) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
 	}
       } 
     else
       if ( initialLevel ) 
 	{
-	fseek( File, LevelStack.top(), SEEK_SET );
+	if ( fseek( File, LevelStack.top(), SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
 	} 
       else 
 	{
-	fseek( File, 0, SEEK_SET);
+	if ( fseek( File, 0, SEEK_SET) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
 	}
     }
 
@@ -517,15 +546,41 @@ TypedStreamInput
     if ( GzFile ) 
       {
       if ( currentLevel )
-	gzseek( GzFile, LevelStack.top(), SEEK_SET );
+	{
+	if ( gzseek( GzFile, LevelStack.top(), SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
+	}
       else
-	gzseek( GzFile, 0, SEEK_SET );
+	{
+	if ( gzseek( GzFile, 0, SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
+	}	  
       }
     else
+      {
       if ( currentLevel )
-	fseek( File, LevelStack.top(), SEEK_SET );
+	{
+	if ( fseek( File, LevelStack.top(), SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
+	}
       else
-	fseek( File, 0, SEEK_SET );
+	{
+	if ( fseek( File, 0, SEEK_SET ) )
+	  {
+	  this->m_Status = Self::ERROR_SYSTEM;
+	  return Self::CONDITION_ERROR;
+	  }
+	}
+      }
     }
   
   int line;

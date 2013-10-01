@@ -71,9 +71,13 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
 
   if ( ! disableCheckOrientation )
     {
-    double orientThis[6], orientOther[6];
-    sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 );
-    sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 );
+    double orientThis[6];
+    if ( 6 != sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 ) )
+      return false;
+
+    double orientOther[6];
+    if ( 6 != sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf%*c%15lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 ) )
+      return false;
 
     for ( int i = 0; i < 6; ++i )
       {
