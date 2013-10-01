@@ -140,7 +140,11 @@ doMain( const int argc, const char* argv[] )
     FILE *hdrIn = fopen( ImportHdrFile, "r" );
     if ( hdrIn )
       {
-      fread( buffer, sizeof( buffer ), sizeof( *buffer ), hdrIn );
+      if ( 1 != fread( buffer, 1, sizeof( buffer ), hdrIn ) )
+	{
+	StdErr << "ERROR: could not read " << sizeof( buffer ) << " bytes from file " << ImportHdrFile << "\n";
+	throw cmtk::ExitException( 1 );
+	}	
       fclose( hdrIn );
 
       cmtk::DebugOutput( 1 ) << "Imported header file " << ImportHdrFile << "\n";
