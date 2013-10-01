@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkCoverity.h>
 
 #include <IO/cmtkStudy.h>
 #include <IO/cmtkStudyImageSet.h>
@@ -165,10 +166,10 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   if ( includeIdentifiers )
     {
     mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
-    mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() );
-    mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() );
-    mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() );
-    mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() ) );
     }
 
   std::string modality = this->front()->GetTagValue( DCM_Modality );
@@ -177,52 +178,52 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
-    mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) );
-    mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) );
-    mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) );
-    mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) ) );
 
     if ( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ) != "" )
       {
-      mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) );
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) ) );
       }
 
     if ( this->front()->GetTagValue( DCM_SequenceName ) != "" && includeIdentifiers )
       {
-      mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() ) );
       }
     
     if ( this->front()->GetTagValue( DCM_GE_PulseSequenceName ) != "" )
       {
-      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() ) );
       }
     
     if ( this->front()->GetTagValue( DCM_GE_PulseSequenceDate ) != "" && includeIdentifiers )
       {
-      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() ) );
       }
     
     if ( this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" )
       {
-      mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() ) );
       }
     
     if ( this->front()->m_RawDataType != "unknown" )
       {
-      mxmlNewText( mxmlNewElement( x_modality, "type"), 0, this->front()->m_RawDataType.c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "type"), 0, this->front()->m_RawDataType.c_str() ) );
       }
     
     if ( this->front()->m_IsDWI )
       {
       mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
       
-      mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), this->front()->m_BValue );
+      Coverity::FakeFree( mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), this->front()->m_BValue ) );
       
       mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
       mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
-	mxmlNewReal( x_bvec, this->front()->m_BVector[idx] );
+	Coverity::FakeFree( mxmlNewReal( x_bvec, this->front()->m_BVector[idx] ) );
 	}
 
       // Determine bVector in image LPS coordinate space:
@@ -237,7 +238,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
-	mxmlNewReal( x_bvec_image, bVectorImage[idx] );
+	Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
 	}
 
       // Determine bVector in image RAS standard coordinate space:
@@ -250,7 +251,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
       mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
       for ( size_t idx = 0; idx < 3; ++idx )
 	{
-	mxmlNewReal( x_bvec_std, bVectorStandard[idx] );
+	Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
 	}
       }
     }
@@ -259,33 +260,33 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
 
   if ( includeIdentifiers )
     {
-    mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() );
-    mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() );
-    mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() ) );
 
     if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
       {
-      mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() ) );
       }
     }
 
-  mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() );
+  Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() ) );
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
 
-    mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() );
-    mxmlNewText( mxmlNewElement( x_image, "dicom:ImagePositionPatient" ), 0, (*it)->GetTagValue( DCM_ImagePositionPatient ).c_str() );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dicom:ImagePositionPatient" ), 0, (*it)->GetTagValue( DCM_ImagePositionPatient ).c_str() ) );
 
     if ( (*it)->GetTagValue( DCM_RescaleIntercept, "missing" ) != "missing" )
       {
-      mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleIntercept" ), atof( (*it)->GetTagValue( DCM_RescaleIntercept ).c_str() ) );
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleIntercept" ), atof( (*it)->GetTagValue( DCM_RescaleIntercept ).c_str() ) ) );
       }
       
     if ( (*it)->GetTagValue( DCM_RescaleSlope, "missing" ) != "missing" )
       {
-      mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) );
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) ) );
       }
     }
 
@@ -300,6 +301,8 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     {
     cmtk::StdErr << "ERROR: could not open file " << fname << " for writing\n";
     }
+
+  Coverity::FakeFree( x_modality );
   
   mxmlDelete( x_root );
 }
