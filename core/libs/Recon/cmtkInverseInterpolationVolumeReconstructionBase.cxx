@@ -88,7 +88,8 @@ InverseInterpolationVolumeReconstructionBase
     for ( int idx = 0; idx < numberOfPixels; ++idx )
       {
       Types::DataItem originalData, interpolatedData;    
-      this->m_OriginalPassImages[pass]->GetDataAt( originalData, idx );
+      if ( !this->m_OriginalPassImages[pass]->GetDataAt( originalData, idx ) )
+	originalData = 0.0;
 
       if ( this->m_InterpolatedPassImages[pass]->GetDataAt( interpolatedData, idx ) )
 	{
