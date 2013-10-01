@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,6 +33,8 @@
 
 #include "cmtkCommandLine.h"
 
+#include <System/cmtkCoverity.h>
+
 #include <mxml.h>
 
 #include <stdio.h>
@@ -51,7 +53,7 @@ CommandLine::AddProgramInfoXML( mxml_node_t *const parent, const ProgramProperti
   if ( it != this->m_ProgramInfo.end() )
     {
     mxml_node_t *node = mxmlNewElement( parent, name );
-    mxmlNewText( node, 0, it->second.c_str() );
+    Coverity::FakeFree( mxmlNewText( node, 0, it->second.c_str() ) );
     return node;
     }
   return NULL;
@@ -110,8 +112,8 @@ CommandLine::WriteXML
 	const std::string& name = (*grp)->m_Name;
 	if ( name == "MAIN" )
 	  {
-	  mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" );
-	  mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" );
+	  Coverity::FakeFree( mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" ) );
+	  Coverity::FakeFree( mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" ) );
 	  
 	  int index = 0;
 	  for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
@@ -121,8 +123,8 @@ CommandLine::WriteXML
 	  }
 	else
 	  {
-	  mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, name.c_str() );
-	  mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, (*grp)->m_Description.c_str() );
+	  Coverity::FakeFree( mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, name.c_str() ) );
+	  Coverity::FakeFree( mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, (*grp)->m_Description.c_str() ) );
 	  }
 	
 	const KeyActionListType& kal = (*grp)->m_KeyActionList;
