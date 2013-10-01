@@ -34,8 +34,11 @@
 
 #include <Base/cmtkHistogramBase.h>
 #include <Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+
 #include <IO/cmtkVolumeIO.h>
+
 #include <System/cmtkProgress.h>
+#include <System/cmtkExitException.h>
 
 #include <algorithm>
 
@@ -394,7 +397,11 @@ VolumeInjectionReconstruction
 	    }
 	  else
 	    {
-	    this->m_TransformationsToPassImages[pass]->ApplyInverse( v, v );
+	    if ( ! this->m_TransformationsToPassImages[pass]->ApplyInverse( v, v ) )
+	      {
+	      StdErr << "ERROR: failed to apply inverse transformation in VolumeInjectionReconstruction::VolumeInjectionIsotropic\n";
+	      throw ExitException( 1 );
+	      }
 	    }
 	  
 	  int targetGridPosition[3];
