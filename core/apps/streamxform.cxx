@@ -119,7 +119,7 @@ doMain( const int argc, const char* argv[] )
     xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
     }
 
-  std::cout << std::setprecision( precision );
+  const std::streamsize originalPrecision = std::cout.precision( precision );
   
   cmtk::Xform::SpaceVectorType xyz;
   std::string restOfLine;
@@ -143,6 +143,8 @@ doMain( const int argc, const char* argv[] )
       std::cout << separator << restOfLine << std::endl;
       }
     }
+
+  std::cout.precision( originalPrecision );
   
   // if we got here, the program probably ran
   return 0;

@@ -260,23 +260,22 @@ ReformatPullback()
     }
   
   cmtk::UniformVolume::SmartPtr floatingVolume;
+  cmtk::TypedArray::SmartPtr floatingData( NULL );
   if ( FloatingVolumeName )
     {
     floatingVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FloatingVolumeName ) );
-    if ( ! floatingVolume ) 
+    if ( floatingVolume ) 
+      {
+      floatingData = floatingVolume->GetData();
+      if ( ! floatingData ) 
+	{
+	cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " seems to have no data\n";
+	throw cmtk::ExitException( 1 );
+	}
+      }
+    else
       {
       cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " could not be read\n";
-      throw cmtk::ExitException( 1 );
-      }
-    }
-  
-  cmtk::TypedArray::SmartPtr floatingData( NULL );
-  if ( floatingVolume ) 
-    {
-    floatingData = floatingVolume->GetData();
-    if ( ! floatingData ) 
-      {
-      cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " seems to have no data\n";
       throw cmtk::ExitException( 1 );
       }
     }

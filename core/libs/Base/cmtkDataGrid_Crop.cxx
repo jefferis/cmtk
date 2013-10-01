@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -156,7 +156,7 @@ DataGrid::GetRegionData( const Self::RegionType& region ) const
 {
   const TypedArray* srcData = this->GetData();
   if ( ! srcData ) 
-    throw( Exception( "No input data in DataGrid::GetRegionData()" ) );
+    return TypedArray::SmartPtr( NULL );
 
   TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), region.Size() );
   

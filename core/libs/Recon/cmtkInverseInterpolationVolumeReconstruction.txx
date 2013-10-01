@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <Base/cmtkHistogramBase.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 namespace
 cmtk 
@@ -58,7 +59,13 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     const DataGrid::IndexType& correctedImageDims = this->m_CorrectedImage->GetDims();
     const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1], correctedImageDimsZ = correctedImageDims[2];    
 
-    const AffineXform* passXform = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() )->GetInverse();
+    const AffineXform* inversePassXform = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() );
+    if ( ! inversePassXform )
+      {
+      StdErr << "ERROR: dynamic_cast to AffineXform ptr failed in InverseInterpolationVolumeReconstruction<TInterpolator>::Interpolation";
+      throw ExitException( 1 );
+      }
+    const AffineXform* passXform = inversePassXform->GetInverse();
     
 #pragma omp parallel for
     for ( int x = 0; x < passImageDimsX; ++x )
@@ -149,6 +156,12 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     const UniformVolume* interpolatedPassImage = this->m_InterpolatedPassImages[pass];
 
     const AffineXform* transformationToPassImage = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() );
+    if ( ! transformationToPassImage )
+      {
+      StdErr << "ERROR: dynamic_cast to AffineXform ptr failed in InverseInterpolationVolumeReconstruction<TInterpolator>::ComputeErrorGradientImage";
+      throw ExitException( 1 );
+      }
+
     const AffineXform* inverseTransformationToPassImage = transformationToPassImage->GetInverse();
     const DataGrid::IndexType& passImageDims = this->m_InterpolatedPassImages[pass]->GetDims();
 
