@@ -160,7 +160,14 @@ doMain( const int argc, const char* argv[] )
     if ( !updateDB.empty() )
       {
       cmtk::ImageXformDB db( updateDB );
-      db.AddImagePairXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
+      try
+	{
+	db.AddImagePairXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
+	}
+      catch ( const cmtk::SQLite::Exception& ex )
+	{
+	cmtk::StdErr << "ERROR adding transformation to database: " << ex.what() << "\n";	
+	}
       }
 #endif
     }
