@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,6 +32,8 @@
 
 #include "cmtkTransformChangeToSpaceAffine.h"
 
+#include <System/cmtkExitException.h>
+
 cmtk::TransformChangeToSpaceAffine
 ::TransformChangeToSpaceAffine
 ( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating, const char* forceSpace )
@@ -55,9 +57,17 @@ cmtk::TransformChangeToSpaceAffine
   // now determine image-to-physical transformations and concatenate these.
   const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix();
   const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix();
-  
-  const AffineXform::MatrixType concatMatrix = (refMatrix.GetInverse() * xform.Matrix) * fltMatrix;
-  
-  // create output transformation and write
-  this->m_NewXform.SetMatrix( concatMatrix );
+
+  try
+    {
+    const AffineXform::MatrixType concatMatrix = (refMatrix.GetInverse() * xform.Matrix) * fltMatrix;
+    
+    // create output transformation and write
+    this->m_NewXform.SetMatrix( concatMatrix );
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: singular matrix in TransformChangeToSpaceAffine constructor.\n";
+    throw ExitException( 1 );
+    }
 }
