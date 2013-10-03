@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -282,18 +282,24 @@ doMain( int argc, const char* argv[] )
   if ( HistogramMatching )
     {
     const cmtk::TypedArray* referenceDataForHistogramMatching = NULL; 
+
+    bool useTemplateForHistogramMatching = true;
     if ( PreDefinedTemplate && UseTemplateData )
       {
       referenceDataForHistogramMatching = PreDefinedTemplate->GetData();
       }
     if ( !referenceDataForHistogramMatching )
       {
+      useTemplateForHistogramMatching = false;
       referenceDataForHistogramMatching = imageListOriginal[0]->GetData();
       }
     
-    for ( size_t idx = referenceDataForHistogramMatching?0:1; idx < imageListOriginal.size(); ++idx )
+    if ( referenceDataForHistogramMatching )
       {
-      imageListOriginal[idx]->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(imageListOriginal[idx]->GetData()), *referenceDataForHistogramMatching ) );
+      for ( size_t idx = useTemplateForHistogramMatching?0:1; idx < imageListOriginal.size(); ++idx )
+	{
+	imageListOriginal[idx]->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(imageListOriginal[idx]->GetData()), *referenceDataForHistogramMatching ) );
+	}
       }
     }
   
