@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010, 2012 SRI International
+//  Copyright 2010, 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,7 +75,14 @@ cmtk::SimpleLevelsetDevice
     float insideSum, outsideSum;
     SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
 
+    if ( nInside == 0 )
+      throw Self::DegenerateLevelsetException();
+    
     const int nOutside = numberOfPixels - nInside;
+
+    if ( nOutside == 0 )
+      throw Self::DegenerateLevelsetExcetion();
+
     SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0f * nInside / nOutside, 
 			static_cast<float>( this->m_TimeDelta ), static_cast<float>( this->m_LevelsetThreshold ) );
 

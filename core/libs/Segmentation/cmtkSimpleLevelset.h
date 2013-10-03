@@ -36,6 +36,8 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUnits.h>
 
+#include <System/cmtkException.h>
+
 namespace
 cmtk
 {
@@ -48,6 +50,12 @@ cmtk
 class SimpleLevelset
 {
 public:
+  /// This class.
+  typedef SimpleLevelset Self;
+
+  /// Exception that is thrown for degenerate levelsets, i.e., all foreground or all background.
+  class DegenerateLevelsetException : public Exception {};
+
   /// Constructor.
   SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ), m_ScaleInitialSphere( 1.0 ), m_TimeDelta( 1.0 ), m_LevelsetThreshold( 0.0 ) {}
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkProgressConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <Segmentation/cmtkSimpleLevelsetCommandLineBase.h>
 
@@ -79,7 +80,16 @@ public:
     levelset.SetLevelsetThreshold( this->m_LevelsetThreshold );
     
     levelset.InitializeCenteredSphere();
-    levelset.Evolve( this->m_NumberOfIterations, this->m_ForceIterations );
+
+    try
+      {
+      levelset.Evolve( this->m_NumberOfIterations, this->m_ForceIterations );
+      }
+    catch ( const SimpleLevelset::DegenerateLevelsetException& ex )
+      {
+      StdErr << "ERROR: degenerate levelset (all foreground or all background).\n";
+      throw ExitException( 1 );
+      }
     
     cmtk::VolumeIO::Write( *levelset.GetLevelset( this->m_Binarize ), this->m_OutFile );
     

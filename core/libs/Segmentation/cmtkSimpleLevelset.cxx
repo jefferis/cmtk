@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2012 SRI International
+//  Copyright 2010-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,7 +87,14 @@ cmtk::SimpleLevelset
 	outsideSum += this->m_Volume->GetDataAt( n );
       }
 
+    if ( nInside == 0 )
+      throw Self::DegenerateLevelsetException();
+
     const size_t nOutside = numberOfPixels - nInside;
+
+    if ( nOutside == 0 )
+      throw Self::DegenerateLevelsetException();
+
     const Types::DataItem ratioInOut = 1.0 * nInside / nOutside;
     
     const Types::DataItem mInside = insideSum / nInside;
