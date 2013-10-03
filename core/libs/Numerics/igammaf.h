@@ -114,43 +114,4 @@ Copyright 1985, 1987, 2000 by Stephen L. Moshier
 ap::real_value_type incompletegammac(ap::real_value_type a, ap::real_value_type x);
 
 
-/*************************************************************************
-Inverse of complemented imcomplete gamma integral
-
-Given p, the function finds x such that
-
- igamc( a, x ) = p.
-
-Starting with the approximate value
-
-        3
- x = a t
-
- where
-
- t = 1 - d - ndtri(p) sqrt(d)
-
-and
-
- d = 1/9a,
-
-the routine performs up to 10 Newton iterations to find the
-root of igamc(a,x) - p = 0.
-
-ACCURACY:
-
-Tested at random a, p in the intervals indicated.
-
-               a        p                      Relative error:
-arithmetic   domain   domain     # trials      peak         rms
-   IEEE     0.5,100   0,0.5       100000       1.0e-14     1.7e-15
-   IEEE     0.01,0.5  0,0.5       100000       9.0e-14     3.4e-15
-   IEEE    0.5,10000  0,0.5        20000       2.3e-13     3.8e-14
-
-Cephes Math Library Release 2.8:  June, 2000
-Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
-*************************************************************************/
-ap::real_value_type invincompletegammac(ap::real_value_type a, ap::real_value_type y0);
-
-
 #endif

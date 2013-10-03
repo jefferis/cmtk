@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,11 +76,6 @@ StrNStr( const char* haystack, const size_t nBytes, const char* needle )
     }
   
   return NULL;
-}
-
-int StrPrefixCmp( const char *s, const char* prefix )
-{
-  return (0 == strncmp( s, prefix, strlen( prefix ) ));
 }
 
 std::string

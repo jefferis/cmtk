@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -208,60 +208,6 @@ ap::real_value_type erfc(ap::real_value_type x)
     q = 4958.82756472114071495438422+x*q;
     q = 1826.3348842295112595576438+x*q;
     result = exp(-ap::sqr(x))*p/q;
-    return result;
-}
-
-
-/*************************************************************************
-Normal distribution function
-
-Returns the area under the Gaussian probability density
-function, integrated from minus infinity to x:
-
-                           x
-                            -
-                  1        | |          2
-   ndtr(x)  = ---------    |    exp( - t /2 ) dt
-              sqrt(2pi)  | |
-                          -
-                         -inf.
-
-            =  ( 1 + erf(z) ) / 2
-            =  erfc(z) / 2
-
-where z = x/sqrt(2). Computation is via the functions
-erf and erfc.
-
-
-ACCURACY:
-
-                     Relative error:
-arithmetic   domain     # trials      peak         rms
-   IEEE     -13,0        30000       3.4e-14     6.7e-15
-
-Cephes Math Library Release 2.8:  June, 2000
-Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
-*************************************************************************/
-ap::real_value_type normaldistribution(ap::real_value_type x)
-{
-    ap::real_value_type result;
-
-    result = 0.5*(erf(x/1.41421356237309504880)+1);
-    return result;
-}
-
-
-/*************************************************************************
-Inverse of the error function
-
-Cephes Math Library Release 2.8:  June, 2000
-Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
-*************************************************************************/
-ap::real_value_type inverf(ap::real_value_type e)
-{
-    ap::real_value_type result;
-
-    result = invnormaldistribution(0.5*(e+1))/sqrt(ap::real_value_type(2));
     return result;
 }
 

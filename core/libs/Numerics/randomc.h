@@ -204,7 +204,6 @@ public:
    CRandomMersenne(int seed) {         // Constructor
       RandomInit(seed); LastInterval = 0;}
    void RandomInit(int seed);          // Re-seed
-   void RandomInitByArray(int const seeds[], int NumSeeds); // Seed by more than 32 bits
    ap::real_value_type Random();                    // Output random float
    uint32_t BRandom();                 // Output random bits
 private:

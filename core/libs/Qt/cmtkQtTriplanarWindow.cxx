@@ -642,7 +642,7 @@ QtTriplanarWindow
 ::slotGoToPixel( const QString& xyz )
 {
   int x, y, z;
-  if ( 3 != sscanf( xyz.toLatin1(), "%d,%d,%d", &x, &y, &z ) )
+  if ( 3 != sscanf( xyz.toLatin1(), "%10d,%10d,%10d", &x, &y, &z ) )
     {
     qWarning( "QtTriplanarWindow::slotGoToPixel needs pixel index as 'x,y,z'.\n" );
     }
@@ -658,7 +658,7 @@ void
 QtTriplanarWindow::slotGoToLocation( const QString& xyz )
 {
   float v[3];
-  if ( 3 != sscanf( xyz.toLatin1(), "%f,%f,%f", v, v+1, v+2 ) )
+  if ( 3 != sscanf( xyz.toLatin1(), "%15f,%15f,%15f", v, v+1, v+2 ) )
     {
     qWarning( "QtTriplanarWindow::slotGoToLocation needs 3D coordinate as 'x,y,z'.\n" );
     }

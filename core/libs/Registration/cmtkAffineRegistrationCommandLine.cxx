@@ -354,7 +354,7 @@ AffineRegistrationCommandLine::OutputResultParameters
   if ( pfile )
     {
     for ( unsigned int idx=0; idx < v.Dim; ++idx )
-      fprintf( pfile, "#%d: %f\n", idx, v.Elements[idx] );
+      fprintf( pfile, "#%u: %f\n", idx, v.Elements[idx] );
     fclose( pfile );
     }
 }

@@ -184,37 +184,3 @@ void unpackqfromupperhessenberg(const ap::real_2d_array& a,
 }
 
 
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixHessenbergUnpackH for 0-based replacement.
-*************************************************************************/
-void unpackhfromupperhessenberg(const ap::real_2d_array& a,
-     int n,
-     const ap::real_1d_array&, //tau
-     ap::real_2d_array& h)
-{
-    int i;
-    int j;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
-//    int ip1;
-//    int nmi;
-
-    if( n==0 )
-    {
-        return;
-    }
-    h.setbounds(1, n, 1, n);
-    for(i = 1; i <= n; i++)
-    {
-        for(j = 1; j <= i-2; j++)
-        {
-            h(i,j) = 0;
-        }
-        j = ap::maxint(1, i-1);
-        ap::vmove(&h(i, j), &a(i, j), ap::vlen(j,n));
-    }
-}
-
-
-

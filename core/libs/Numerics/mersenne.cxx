@@ -73,34 +73,6 @@ void CRandomMersenne::RandomInit(int seed) {
 }
 
 
-void CRandomMersenne::RandomInitByArray(int const seeds[], int NumSeeds) {
-   // Seed by more than 32 bits
-   int i, j, k;
-
-   // Initialize
-   Init0(19650218);
-
-   if (NumSeeds <= 0) return;
-
-   // Randomize mt[] using whole seeds[] array
-   i = 1;  j = 0;
-   k = (MERS_N > NumSeeds ? MERS_N : NumSeeds);
-   for (; k; k--) {
-      mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL)) + (uint32_t)seeds[j] + j;
-      i++; j++;
-      if (i >= MERS_N) {mt[0] = mt[MERS_N-1]; i=1;}
-      if (j >= NumSeeds) j=0;}
-   for (k = MERS_N-1; k; k--) {
-      mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL)) - i;
-      if (++i >= MERS_N) {mt[0] = mt[MERS_N-1]; i=1;}}
-   mt[0] = 0x80000000UL;  // MSB is 1; assuring non-zero initial array
-
-   // Randomize some more
-   mti = 0;
-   for (int ii = 0; ii <= MERS_N; ii++) BRandom();
-}
-
-
 uint32_t CRandomMersenne::BRandom() {
    // Generate 32 random bits
    uint32_t y;

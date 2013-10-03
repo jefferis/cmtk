@@ -568,7 +568,8 @@ LIST(APPEND testList
   mk_phantom_3dSphereRelative2
   mk_phantom_3dBoxSphere 
   mk_phantom_3dImport
-  mk_phantom_3dImportGrid)
+  mk_phantom_3dImportGrid
+  mk_phantom_3dMRSVoxel)
 
 # ==========================================
 # Tests for "reorient" tool

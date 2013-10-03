@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,16 +60,6 @@ StrNStr( const char* haystack, const size_t nBytes, const char* needle );
  * other string except the NULL pointer itself.
  */
 int StrCmp( const char *s1, const char* s2 );
-
-/** Compare string prefix.
- * This function tests whether a given string contains another string as its
- * intial character sequence.
- *\param s The string.
- *\param prefix The initial sequence to be tested.
- *\return A non-zero value is returned if and only if the string 's' starts
- * with the string 'prefix'.
- */
-int StrPrefixCmp( const char *s, const char* prefix );
 
 /** Replace string components.
  *\todo This is highly unsafe, since we're not checking for infinite loops and

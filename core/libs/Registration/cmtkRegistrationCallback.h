@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,9 +82,6 @@ public:
   /// Notify callback of an annotation.
   virtual void Comment ( const char* comment = NULL );
 
-  /// Notify callback of an annotation with variable parameters.
-  virtual void FormatComment ( const char* format, ... );
-  
   /// Default constructor.
   RegistrationCallback();
 

@@ -1721,6 +1721,10 @@ case ${RUNTEST} in
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --import-grid spgr_3t_mask.hdr sphere 30,40,30 20 10
 	check_results phantom.nii
 	;;
+    mk_phantom_3dMRSVoxel)
+	run mk_phantom_3d --echo -v --bg 0 -o ${tmpdir}/voxel.nii --import-grid ge-mrs/recon.nii mrs-voxel ge-mrs/I0001.dcm 100
+	check_results voxel.nii
+	;;
     mrbiasMulIncremental)
 	run mrbias --incremental -M 2 --write-bias-mul ${tmpdir}/bias_mul.hdr --thresh-min 100 spgr_3t.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img bias_mul.img

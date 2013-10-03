@@ -93,32 +93,6 @@ Threads::GetNumberOfThreads()
   return Threads::NumberOfThreads;
 }
 
-bool
-Threads::Available()
-{
-#ifndef CMTK_USE_SMP
-  // Threads are not activated in this library.
-  return false;
-#else
-
-#ifdef _MSC_VER
-  // we know that threads are available on Windows32.
-  return true;
-#elif defined (__APPLE__)
-	// GJ Apple doesn't seem to provide these _SC_THREADS etc constants 
-	// in unistd.h -  I don't know how you get the info dynamically
-	// so just get it statically at compile time
-#ifdef _POSIX_THREADS
-  return true;
-#else
-  return false;
-#endif
-#else
-  return (sysconf(_SC_THREADS) == -1);
-#endif
-#endif
-}
-
 void
 Threads::SetNumberOfThreads( const long int numberOfThreads )
 {

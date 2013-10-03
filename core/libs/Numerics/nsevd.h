@@ -155,16 +155,5 @@ bool rmatrixevd(ap::real_2d_array a,
      ap::real_2d_array& vr);
 
 
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-bool nonsymmetricevd(ap::real_2d_array a,
-     int n,
-     int vneeded,
-     ap::real_1d_array& wr,
-     ap::real_1d_array& wi,
-     ap::real_2d_array& vl,
-     ap::real_2d_array& vr);
-
 
 #endif

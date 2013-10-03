@@ -90,15 +90,4 @@ void unpackqfromupperhessenberg(const ap::real_2d_array& a,
      const ap::real_1d_array& tau,
      ap::real_2d_array& q);
 
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixHessenbergUnpackH for 0-based replacement.
-*************************************************************************/
-void unpackhfromupperhessenberg(const ap::real_2d_array& a,
-     int n,
-     const ap::real_1d_array& tau,
-     ap::real_2d_array& h);
-
-
 #endif
