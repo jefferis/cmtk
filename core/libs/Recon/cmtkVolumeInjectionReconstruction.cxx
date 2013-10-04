@@ -528,7 +528,11 @@ VolumeInjectionReconstruction
     this->m_CorrectedImageLaplacians[idx-1] = l;
     lnorm += l*l;
     }
-  return lnorm / correctedImageNumPixels;
+
+  if ( correctedImageNumPixels )
+    lnorm /= correctedImageNumPixels;
+  
+  return lnorm;
 }
 
 void
