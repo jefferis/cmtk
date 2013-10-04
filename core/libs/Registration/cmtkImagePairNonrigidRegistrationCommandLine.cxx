@@ -39,6 +39,7 @@
 #include <System/cmtkThreads.h>
 #include <System/cmtkCompressedStream.h>
 #include <System/cmtkMountPoints.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkClassStreamInput.h>
@@ -265,17 +266,26 @@ ImagePairNonrigidRegistrationCommandLine
   if ( ! this->m_InitialTransformationFile.empty() ) 
     {
     Xform::SmartPtr initialXform( XformIO::Read( this->m_InitialTransformationFile ) );
-    AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
-    if ( affineXform )
+
+    if ( initialXform )
       {
-      if ( this->m_InitialTransformationInverse )
-	this->SetInitialTransformation( affineXform->GetInverse() );
+      AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
+      if ( affineXform )
+	{
+	if ( this->m_InitialTransformationInverse )
+	  this->SetInitialTransformation( affineXform->GetInverse() );
+	else
+	  this->SetInitialTransformation( affineXform );
+	}
       else
-	this->SetInitialTransformation( affineXform );
+	{
+	InitialWarpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( initialXform );
+	}
       }
     else
       {
-      InitialWarpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( initialXform );
+      StdErr << "ERROR: could not read initial transformation from " << this->m_InitialTransformationFile << "\n";
+      throw ExitException( 1 );
       }
     }
 
