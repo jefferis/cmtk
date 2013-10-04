@@ -60,8 +60,11 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-DICOM::DICOM( const std::string& path ) : m_Path( path )
+void
+DICOM::InitFromFile( const std::string& path )
 {
+  this->m_Path = path;
+  
 #ifdef CMTK_USE_DCMTK_JPEG
   // register global decompression codecs
   static bool decodersRegistered = false;

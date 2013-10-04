@@ -43,21 +43,30 @@ cmtk
 const UniformVolume::SmartPtr
 VolumeFromFile::ReadDICOM( const std::string& path )
 {
-  DICOM dicom( path );
+  DICOM dicom;
+  try
+    {
+    dicom.InitFromFile( path );
+    }
+  catch ( const cmtk::Exception& ex )
+    {
+    StdErr << "ERROR: " << ex.what() << "\n";
+    return UniformVolume::SmartPtr( NULL );
+    }
 
   FixedVector<3,int> dims = dicom.GetDims();
   FixedVector<3,double> pixelSize = dicom.GetPixelSize();
-
+  
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
-
+  
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
-
+  
   UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
   FixedArray< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
   
   // without further information, we "guess" the image normal vector
-  UniformVolume::CoordinateVectorType sliceNormal = dicom.DemosaicAndGetNormal( imageOrientation, pixelSize, dims, pixelDataArray, imageOrigin );
-
+  UniformVolume::CoordinateVectorType sliceNormal = dicom.DemosaicAndGetNormal( imageOrientation, pixelSize, dims, pixelDataArray, imageOrigin );   
+    
   // Construct volume and set the DICOM coordinates
   UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], pixelDataArray ) );
   volume->SetMetaInfo( META_SPACE, "LPS" );

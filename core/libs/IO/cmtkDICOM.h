@@ -58,9 +58,14 @@ public:
   /// This class.
   typedef DICOM Self;
 
-  /** Constructor.
-   */
-  DICOM( const std::string& path );
+  /// Default constructor.
+  DICOM() : m_Dataset( NULL ) {}
+
+  /// Read file constructor.
+  DICOM( const std::string& path ) { this->InitFromFile( path ); }
+
+  /// Read object from DICOM file.
+  void InitFromFile( const std::string& path );
 
   /// Get image dimensions (number of pixels per axis).
   const FixedVector<3,int> GetDims() const;
