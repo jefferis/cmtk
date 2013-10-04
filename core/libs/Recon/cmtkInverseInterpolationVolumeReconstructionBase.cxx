@@ -111,7 +111,13 @@ InverseInterpolationVolumeReconstructionBase
     
     this->m_DifferencePassImages.push_back( differencePassImage );
     }
-  return (this->m_MeanSquaredError = squaredError / totalNumberOfPixels);
+
+  if ( totalNumberOfPixels )
+    this->m_MeanSquaredError = squaredError / totalNumberOfPixels;
+  else
+    this->m_MeanSquaredError = 0.0;
+
+  return this->m_MeanSquaredError;
 }
 
 void
