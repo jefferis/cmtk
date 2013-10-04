@@ -81,7 +81,7 @@ cmtk::SimpleLevelsetDevice
     const int nOutside = numberOfPixels - nInside;
 
     if ( nOutside == 0 )
-      throw Self::DegenerateLevelsetExcetion();
+      throw Self::DegenerateLevelsetException();
 
     SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0f * nInside / nOutside, 
 			static_cast<float>( this->m_TimeDelta ), static_cast<float>( this->m_LevelsetThreshold ) );
