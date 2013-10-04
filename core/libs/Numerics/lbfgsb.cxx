@@ -2374,10 +2374,6 @@ lbfgsbminimize
 	}
       else
 	{
-	if( internalinfo==0 )
-	  {
-	  nfgv = nfgv-1;
-	  }
 	internalinfo = 0;
 	col = 0;
 	head = 1;
