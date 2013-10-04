@@ -83,23 +83,27 @@ WarpXform::GetDerivativeLandmarksMSD
 {
   upperMSD = lowerMSD = 0;
 
-  Types::Coordinate pOld = this->m_Parameters[idx];
-
-  this->m_Parameters[idx] += step;
-  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
+  const size_t numberOfLandmarks = ll.size();
+  if ( numberOfLandmarks )
     {
-    upperMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
+    Types::Coordinate pOld = this->m_Parameters[idx];
+    
+    this->m_Parameters[idx] += step;
+    for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
+      {
+      upperMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
+      }
+    
+    this->m_Parameters[idx] = pOld - step;
+    for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
+      {
+      lowerMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
+      }
+    this->m_Parameters[idx] = pOld;
+    
+    upperMSD /= numberOfLandmarks;
+    lowerMSD /= numberOfLandmarks;
     }
-  
-  this->m_Parameters[idx] = pOld - step;
-  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
-    {
-    lowerMSD += (this->Apply( it->m_Location ) - it->m_TargetLocation).SumOfSquares();
-    }
-  this->m_Parameters[idx] = pOld;
-  
-  upperMSD /= ll.size();
-  lowerMSD /= ll.size();
 }
 
 Types::Coordinate
