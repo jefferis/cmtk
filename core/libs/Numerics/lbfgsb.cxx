@@ -2196,7 +2196,7 @@ lbfgsbminimize
   ap::real_value_type ddum;
   ap::real_value_type dtd;
   ap::real_value_type gd;
-  ap::real_value_type gdold;
+  ap::real_value_type gdold = 0;
   ap::real_value_type stp;
   ap::real_value_type stpmx;
   ap::real_value_type tf;
