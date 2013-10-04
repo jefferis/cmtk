@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -125,8 +125,12 @@ LabelCombinationMultiClassSTAPLE
 	}
       }
     }
-  for ( int l = 0; l < numberOfClasses; ++l )
-    this->m_Priors[l] /= totalMass;
+
+  if ( totalMass )
+    {
+    for ( int l = 0; l < numberOfClasses; ++l )
+      this->m_Priors[l] /= totalMass;
+    }
 
   // initialize result using simple voting.
   { LabelCombinationVoting voting( data ); this->m_Result = voting.GetResult(); } // use local scope to free voting object storage right away
