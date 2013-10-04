@@ -1722,7 +1722,7 @@ case ${RUNTEST} in
 	check_results phantom.nii
 	;;
     mk_phantom_3dMRSVoxel)
-	run mk_phantom_3d --echo -v --bg 0 -o ${tmpdir}/voxel.nii --import-grid ge-mrs/recon.nii mrs-voxel ge-mrs/I0001.dcm 100
+	run mk_phantom_3d --echo -v --bg 0 -o ${tmpdir}/voxel.nii --import-grid ge-mrs/lfse.nii mrs-voxel ge-mrs/spectro.dcm 100
 	check_results voxel.nii
 	;;
     mrbiasMulIncremental)
