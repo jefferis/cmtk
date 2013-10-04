@@ -307,10 +307,18 @@ ElasticRegistrationCommandLine
     {
     if ( affineXform->MetaKeyExists( META_SPACE ) && (affineXform->GetMetaInfo( META_SPACE ) != AnatomicalOrientation::ORIENTATION_STANDARD ) )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *(this->m_Volume_1), *(this->m_Volume_2), affineXform->GetMetaInfo(META_SPACE).c_str() );
-      *affineXform = toStandardSpace.GetTransformation();
-      affineXform->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
-      this->SetInitialTransformation( affineXform );
+      try 
+	{
+	TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *(this->m_Volume_1), *(this->m_Volume_2), affineXform->GetMetaInfo(META_SPACE).c_str() );
+	*affineXform = toStandardSpace.GetTransformation();
+	affineXform->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
+	this->SetInitialTransformation( affineXform );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in ElasticRegistrationCommandLine constructor.\n";
+	throw ExitException( 1 );
+	}
       }
     }
   
