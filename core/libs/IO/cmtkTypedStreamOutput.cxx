@@ -144,8 +144,8 @@ TypedStreamOutput
     case Self::MODE_WRITE:	modestr = "w"; break;
     case Self::MODE_WRITE_ZLIB:	modestr = "w"; break;
     case Self::MODE_APPEND:	modestr = "a"; break;
-#endif
-    default: modestr = ""; break;
+#endif      
+    default: modestr = ""; break; // cannot really get here due to earlier if's, but gcc doesn't understand that
     }
   
   if ( mode == Self::MODE_WRITE_ZLIB )

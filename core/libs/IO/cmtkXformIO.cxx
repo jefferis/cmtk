@@ -164,6 +164,7 @@ XformIO::Write
     }
     break;
     default:
+      // cannot really get here, but gcc doesn't know that
       break;
     }
 }
