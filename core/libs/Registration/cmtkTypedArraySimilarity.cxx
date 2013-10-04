@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -255,8 +255,11 @@ TypedArraySimilarity::GetCrossCorrelation
       }
     }
 
-  mean0 /= count;
-  mean1 /= count;
+  if ( count )
+    {
+    mean0 /= count;
+    mean1 /= count;
+    }
 
   for ( int idx = 0; idx < static_cast<int>( numberOfPixels ); ++idx ) 
     {
