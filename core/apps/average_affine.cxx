@@ -119,7 +119,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform average;
   average.SetUseLogScaleFactors( true );
 
-  const numberOfXforms = xformList.size();
+  const size_t numberOfXforms = xformList.size();
   if ( numberOfXforms )
     {
     cmtk::CoordinateVector v, vx;
