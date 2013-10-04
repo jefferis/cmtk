@@ -77,14 +77,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /********************************************************************
 Array bounds check
 ********************************************************************/
-#define AP_ASSERT
 
-#ifndef AP_ASSERT     //
-#define NO_AP_ASSERT  // This code avoids definition of the
+#ifndef NO_AP_ASSERT     //
+#define AP_ASSERT  // This code avoids definition of the
 #endif                // both AP_ASSERT and NO_AP_ASSERT symbols
-#ifdef NO_AP_ASSERT   //
-#ifdef AP_ASSERT      //
-#undef NO_AP_ASSERT   //
+#ifdef AP_ASSERT   //
+#ifdef NO_AP_ASSERT      //
+#undef AP_ASSERT   //
 #endif                //
 #endif                //
 
