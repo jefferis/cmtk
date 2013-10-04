@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,12 +104,18 @@ Xform::GetLandmarksMSD( const LandmarkPairList& ll ) const
 {
   Types::Coordinate msd = 0;
 
-  for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
+  const size_t numberOfLandmarks = ll.size();
+  if ( numberOfLandmarks )
     {
-    msd += ( this->Apply( it->m_Location ) - it->m_TargetLocation ).SumOfSquares();
+    for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
+      {
+      msd += ( this->Apply( it->m_Location ) - it->m_TargetLocation ).SumOfSquares();
+      }
+    
+    msd /= numberOfLandmarks;
     }
-  
-  return msd / ll.size();
+
+  return msd;
 }
 
 } // namespace cmtk
