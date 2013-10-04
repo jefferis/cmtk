@@ -202,7 +202,7 @@ class CRandomMersenne {                // Encapsulate random number generator
 
 public:
    CRandomMersenne(int seed) {         // Constructor
-      RandomInit(seed); LastInterval = 0;}
+      RandomInit(seed); }
    void RandomInit(int seed);          // Re-seed
    ap::real_value_type Random();                    // Output random float
    uint32_t BRandom();                 // Output random bits
@@ -210,8 +210,6 @@ private:
    void Init0(int seed);               // Basic initialization procedure
    uint32_t mt[MERS_N];                // State vector
    int mti;                            // Index into mt
-   uint32_t LastInterval;              // Last interval length for IRandomX
-   uint32_t RLimit;                    // Rejection limit used by IRandomX
 };    
 
 
