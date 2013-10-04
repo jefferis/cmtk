@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,16 @@ XformIO::Read( const std::string& path )
     stream.Open( realPath );
 
     AffineXform affineXform;
-    stream >> affineXform;
+    try 
+      {
+      stream >> affineXform;
+      }
+    catch ( const cmtk::Exception& ex )
+      {
+      StdErr << "ERROR: " << ex.what() << "\n";
+      return Xform::SmartPtr( NULL );
+      }
+    
     return Xform::SmartPtr( new AffineXform( affineXform ) );
     }
     default:
