@@ -119,7 +119,8 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform average;
   average.SetUseLogScaleFactors( true );
 
-  if ( !xformList.empty() )
+  const numberOfXforms = xformList.size();
+  if ( numberOfXforms )
     {
     cmtk::CoordinateVector v, vx;
     for ( std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit = xformList.begin(); xit != xformList.end(); ++xit )
@@ -141,9 +142,9 @@ doMain( const int argc, const char* argv[] )
     for ( size_t p = 0; p < 12; ++p )
       {
       if ( IncludeReference )
-	v[p] /= (xformList.size()+1);
+	v[p] /= numberOfXforms+1;
       else
-	v[p] /= xformList.size();
+	v[p] /= numberOfXforms;
       }
     
     average.SetParamVector( v );
