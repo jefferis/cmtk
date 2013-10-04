@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,29 +79,32 @@ cmtk::SphereDetectionBipolarMatchedFilterFFT::GetFilteredImageData( const Types:
 
   const size_t cnt = this->MakeFilter( sphereRadius, marginWidth );
 
-  // compute filter kernel FT
-  fftw_execute( this->m_PlanFilter );
-
-  // apply FT'ed filter to FT'ed image
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+  if ( cnt )
     {
-    this->m_FilterFT[n][1] *= -1;  // correlation is multiplication with complex conjugate of filter, but we can also just conjugate the image
-    multiply( this->m_FilterFT[n], this->m_ImageFT[n] );
+    // compute filter kernel FT
+    fftw_execute( this->m_PlanFilter );
+    
+    // apply FT'ed filter to FT'ed image
+    for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+      {
+      this->m_FilterFT[n][1] *= -1;  // correlation is multiplication with complex conjugate of filter, but we can also just conjugate the image
+      multiply( this->m_FilterFT[n], this->m_ImageFT[n] );
+      
+      this->m_FilterFT[n][0] /= cnt;
+      this->m_FilterFT[n][1] /= cnt;
+      }
+    
+    // transform filtered spectral data back into space domain
+    fftw_execute( this->m_PlanBackward );
+    }    
 
-    this->m_FilterFT[n][0] /= cnt;
-    this->m_FilterFT[n][1] /= cnt;
-    }
-  
-  // transform filtered spectral data back into space domain
-  fftw_execute( this->m_PlanBackward );
-  
   // return filtered magnitude image
   TypedArray::SmartPtr result = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
   for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
     {
     result->Set( FFTW::Magnitude( this->m_FilterFT[n] ) / this->m_NumberOfPixels, n );
     }
-  
+
   return result;
 }
 
