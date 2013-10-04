@@ -192,6 +192,12 @@ doMain( const int argc, const char* argv[] )
     }
 
   const size_t nData = pathList.size();
+  if ( ! nData )
+    {
+    cmtk::StdErr << "ERROR: control file must contain at least one valid entry.\n";
+    throw cmtk::ExitException( 1 );
+    }
+
   cmtk::GeneralLinearModel glm( 1+nParameters, nData, &(design[0]) );
 
   for ( size_t i = 0; i < meanParam.size(); ++i )
