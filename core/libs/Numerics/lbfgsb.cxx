@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -2359,13 +2359,6 @@ lbfgsbminimize
       f = fold;
       if( col==0 )
 	{
-	if( internalinfo==0 )
-	  {
-	  internalinfo = -9;
-	  nfgv = nfgv-1;
-	  ifun = ifun-1;
-	  iback = iback-1;
-	  }
 	task = 2;
 	iter = iter+1;
 	functionAndGradient->NextIteration( iter );
