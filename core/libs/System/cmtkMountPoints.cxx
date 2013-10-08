@@ -46,8 +46,6 @@ cmtk
 std::string
 MountPoints::Translate( const std::string& path )
 {
-  char buffer[PATH_MAX];
-
   // Get environment variable defining mount points.
   const char *mountpoints = getenv( CMTK_MOUNTPOINTSVAR );
   if ( ! mountpoints )
@@ -59,40 +57,36 @@ MountPoints::Translate( const std::string& path )
       return path;
     }
 
-  const char* pathStr = path.c_str();
-  strncpy( buffer, pathStr, PATH_MAX );
-
-  char searchStr[256], replaceStr[256];
-  const char *delim;
+  std::string buffer = path;
 
   const char *nextRule = mountpoints;
-
   while ( nextRule ) 
     {
-    delim = strchr( nextRule, '=' );
+    // find the equation sign between pattern and replacement
+    const char* delim = strchr( nextRule, '=' );
     if ( delim ) 
       {
       const int cplen = delim - nextRule;
-      strncpy( searchStr, nextRule, cplen );
-      searchStr[cplen] = 0;
-      
+      const std::string pattern = std::string( nextRule ).substr( 0, cplen );
+      std::string replacement = std::string( delim+1 );
+
+      // see if there's another replacement rule following
       nextRule = strchr( delim, ',' );
       if ( nextRule ) 
 	{
+	/// if there is, remove it from the replacement string
 	const int cplenNext = nextRule - delim - 1;
-	strncpy( replaceStr, delim+1, cplenNext );
-	replaceStr[cplenNext] = 0;
+	replacement = replacement.substr( 0, cplenNext );
 	nextRule++;
 	} 
       else
 	{
-	strcpy( replaceStr, delim+1 );
 	nextRule = NULL;
 	}
       
       // check for beginning-of-line token
       bool checkPrefixOnly = false;
-      if ( searchStr[0] == '^' ) 
+      if ( pattern[0] == '^' ) 
 	{
 	checkPrefixOnly = true;
 	}
@@ -100,32 +94,27 @@ MountPoints::Translate( const std::string& path )
       if ( checkPrefixOnly ) 
 	{
 	// Check if rule applies to given path.
-	if ( !strncmp( pathStr, searchStr+1, strlen( searchStr ) - 1 ) ) 
+	if ( path.substr( 0, pattern.length() - 1 ) == pattern.substr( 1 ) ) 
 	  {
 	  // Yes, it does: Substitute prefix accordingly and return pointer
 	  // to buffer containing modified path.
-	  strcat( strncpy( buffer, replaceStr, PATH_MAX ), pathStr+strlen(searchStr)-1 );
-	  return buffer;
+	  buffer = buffer.replace( 0, pattern.length() - 1, replacement );
 	  }
 	} 
       else
 	{
 	// Substitute non-prefix occurences as well
-	char *found = NULL;
-	if ( ( found = strstr( buffer, searchStr ) ) ) 
+	size_t found = buffer.find( pattern );
+	while ( found != std::string::npos )
 	  {
-	  // Yes, it does: Substitute accordingly and return pointer
-	  // to buffer containing modified path.
-	  char tmpPath[PATH_MAX];
-	  memset( tmpPath, 0, sizeof( tmpPath ) );
-	  strcat( strcat( strncpy( tmpPath, buffer, found-buffer ), replaceStr ), found + strlen(searchStr) );
-	  strncpy( buffer, tmpPath, PATH_MAX );
+	  buffer = buffer.replace( found, pattern.length(), replacement );
+	  found = buffer.find( pattern, found + replacement.length() ); // search after replaced string to avoid infinite recursive replacement
 	  }
 	}
       }
     }
   
-  return std::string( buffer );
+  return buffer;
 }
 
 } // namespace cmtk
