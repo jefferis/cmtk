@@ -310,7 +310,7 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 
   if ( ! pixelDataArray ) 
     {
-    throw( "Could not read pixel data from DICOM file" );
+    throw Exception( "Could not read pixel data from DICOM file" );
     }
     
   if ( haveRescaleIntercept || haveRescaleSlope ) 
