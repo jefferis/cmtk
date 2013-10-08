@@ -74,7 +74,9 @@ public:
     return v;
   }
 
-  /// Default constructor.
+  /** Default constructor. 
+    * note for improved efficiency, this does NOT initialize the data array.
+    */
   FixedArray() {}
 
   /// Initialization constructor.
