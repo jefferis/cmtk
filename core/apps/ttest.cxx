@@ -337,7 +337,15 @@ doMain ( const int argc, const char* argv[] )
       
       if ( !dataY.empty() )
 	{
-	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	try
+	  {
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	  }
+	catch ( const cmtk::Exception& ex )
+	  {
+	  cmtk::StdErr << "ERROR: " << ex.what() << "\n";
+	  throw cmtk::ExitException( 1 );
+	  }
 	}
       
       if ( refVolume && TStatFileName )
@@ -366,7 +374,15 @@ doMain ( const int argc, const char* argv[] )
       cmtk::TypedArray::SmartPtr pData;
       if ( !dataY.empty() )
 	{
-	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
+	try
+	  {
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
+	  }
+	catch ( const cmtk::Exception& ex )
+	  {
+	  cmtk::StdErr << "ERROR: " << ex.what() << "\n";
+	  throw cmtk::ExitException( 1 );
+	  }
 	}
       
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
