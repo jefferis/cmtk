@@ -39,6 +39,10 @@
 #include <stdlib.h>
 #include <limits.h>
 
+#ifdef HAVE_FCNTL_H
+#  include <fcntl.h>
+#endif
+
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #endif
@@ -98,10 +102,15 @@ TypedStreamOutput
 #ifndef _MSC_VER
   // check if this is an existing directory; if it is, set access/modification time.
   // this is useful for dependency checking using file system timestamps.
-  struct stat buf;
-  if ( !stat( dir.c_str(), &buf ) && S_ISDIR( buf.st_mode ) )
+  int fd = open( dir.c_str(), O_RDONLY );
+  if ( fd != -1 )
     {
-    utimes( dir.c_str(), NULL );
+    struct stat buf;
+    if ( !fstat( fd, &buf ) && S_ISDIR( buf.st_mode ) )
+      {
+      futimes( fd, NULL );
+      }
+    close( fd );
     }
 #endif
 
