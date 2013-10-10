@@ -1,4 +1,4 @@
-*
+/*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
