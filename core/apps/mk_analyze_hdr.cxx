@@ -54,8 +54,15 @@ int LegacyMode = 0;
 void
 SetDims( const char* arg )
 {
-  sscanf( arg, "%6d,%6d,%6d", &DimsX, &DimsY, &DimsZ );
-  PutDims = true;
+  if ( 3 == sscanf( arg, "%6d,%6d,%6d", &DimsX, &DimsY, &DimsZ ) )
+    {
+    PutDims = true;
+    }
+  else
+    {
+    cmtk::StdErr << "ERROR: could not parse X,Y,Z dimensions from argument '" << arg << "'\n";
+    throw cmtk::ExitException( 1 );
+    }
 }
 
 float DeltaX = 1.0;
@@ -66,8 +73,15 @@ bool PutDeltas = false;
 void
 SetDeltas( const char* arg )
 {
-  sscanf( arg, "%15f,%15f,%15f", &DeltaX, &DeltaY, &DeltaZ );
-  PutDeltas = true;
+  if ( 3 == sscanf( arg, "%15f,%15f,%15f", &DeltaX, &DeltaY, &DeltaZ ) )
+    {
+    PutDeltas = true;
+    }
+  else
+    {
+    cmtk::StdErr << "ERROR: could not parse X,Y,Z pixel size from argument '" << arg << "'\n";
+    throw cmtk::ExitException( 1 );
+    }
 }
 
 bool LittleEndian = false;
