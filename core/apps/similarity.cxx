@@ -228,16 +228,23 @@ AnalyseStudies
 	countVoxelsUnequal++;
       }
     }
-  
-  fprintf( stdout, "\nCL\trecog\tsubst\treject\treliab\nCL-all\t%.4f\t%.4f\t%.4f\t%.4f\n",
-	   1.0*recog / numberOfVoxels, 1.0*subst / numberOfVoxels, 1.0*reject / numberOfVoxels, 1.0 * recog / (numberOfVoxels - reject) );
-  fprintf( stdout, "CL-fg\t%.4f\t%.4f\t%.4f\t%.4f\n",
-	   1.0 * recogFG / voxelCountFG, 1.0 * substFG / voxelCountFG, 1.0 * rejectFG / voxelCountFG, 1.0 * recogFG / (voxelCountFG - rejectFG) );
+
+  if ( numberOfVoxels && (numberOfVoxels != reject) )
+    {
+    fprintf( stdout, "\nCL\trecog\tsubst\treject\treliab\nCL-all\t%.4f\t%.4f\t%.4f\t%.4f\n", 1.0*recog / numberOfVoxels, 1.0*subst / numberOfVoxels, 1.0*reject / numberOfVoxels, 1.0 * recog / (numberOfVoxels - reject) );
+    }
+
+  if ( voxelCountFG && (voxelCountFG != rejectFG ) )
+    {
+    fprintf( stdout, "CL-fg\t%.4f\t%.4f\t%.4f\t%.4f\n", 1.0 * recogFG / voxelCountFG, 1.0 * substFG / voxelCountFG, 1.0 * rejectFG / voxelCountFG, 1.0 * recogFG / (voxelCountFG - rejectFG) );
+    }
   
   if ( mask ) 
     {
-    fprintf( stdout, "CL-mask\t%.4f\t%.4f\t%.4f\t%.4f\n",
-	     1.0 * recogM / voxelCountM, 1.0 * substM / voxelCountM, 1.0 * rejectM / voxelCountM, 1.0 * recogM / (voxelCountM - rejectM) );
+    if ( voxelCountM && (voxelCountM != rejectM ) )
+      {
+      fprintf( stdout, "CL-mask\t%.4f\t%.4f\t%.4f\t%.4f\n", 1.0 * recogM / voxelCountM, 1.0 * substM / voxelCountM, 1.0 * rejectM / voxelCountM, 1.0 * recogM / (voxelCountM - rejectM) );
+      }
     }
   fputs( "\n", stdout );
   
@@ -298,9 +305,12 @@ doMain ( const int argc, const char* argv[] )
   const double hXY = histogram->GetJointEntropy();
   
   fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%u\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
-  
-  fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%u\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
-	   countVoxelsUnequal, maxDifference, maxRelDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
+
+  if ( voxelCount )
+    {
+    fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%u\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
+	     countVoxelsUnequal, maxDifference, maxRelDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
+    }
   
   if ( !HistogramTextFileName.empty() )
     {
@@ -362,8 +372,12 @@ doMain ( const int argc, const char* argv[] )
 
 	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
 	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
-	fprintf( stdout, "\n%06u\t%u\t%u\t%.5lf\t%u\t%.5lf\t%u\t%.5lf\t%.5lf\t%.5lf", 
-		 i, totalRef, correct, 1.0 * correct / totalRef, falseNeg, 1.0 * falseNeg / totalRef, falsePos, 1.0 * falsePos / totalRef, SI, J );
+
+	if ( totalRef )
+	  {
+	  fprintf( stdout, "\n%06u\t%u\t%u\t%.5lf\t%u\t%.5lf\t%u\t%.5lf\t%.5lf\t%.5lf", 
+		   i, totalRef, correct, 1.0 * correct / totalRef, falseNeg, 1.0 * falseNeg / totalRef, falsePos, 1.0 * falsePos / totalRef, SI, J );
+	  }
 	
 	if ( i )
 	  { // assume background is label #0 and exclude this
@@ -384,7 +398,10 @@ doMain ( const int argc, const char* argv[] )
     avgRecog /= (countLabels+1);
     
     fputs( "\n\n\tsumTot\tsumCorr\t%corr\tavgSI\tWmeanSI\n", stdout );
-    fprintf( stdout, "Total:\t%u\t%u\t%.2lf\t%.4lf\t%.4lf\n\n", sumTotal, sumCorrect, 100.0 * sumCorrect / sumTotal, sumSI / countLabels, sumSIweighted / sumTotal );
+    if ( sumTotal && countLabels )
+      {
+      fprintf( stdout, "Total:\t%u\t%u\t%.2lf\t%.4lf\t%.4lf\n\n", sumTotal, sumCorrect, 100.0 * sumCorrect / sumTotal, sumSI / countLabels, sumSIweighted / sumTotal );
+      }
     fprintf( stdout, "AvgRecog:\t%.6f\n", avgRecog );
     }
 
