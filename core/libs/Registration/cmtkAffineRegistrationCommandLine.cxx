@@ -1,4 +1,4 @@
-/*
+*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -286,9 +286,17 @@ AffineRegistrationCommandLine
 
     if ( affine->GetMetaInfo( META_SPACE ) != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( *affine, *(this->m_Volume_1), *(this->m_Volume_2) );
-      *affine = toStandardSpace.GetTransformation();
-      affine->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
+      try
+	{
+	TransformChangeFromSpaceAffine toStandardSpace( *affine, *(this->m_Volume_1), *(this->m_Volume_2) );
+	*affine = toStandardSpace.GetTransformation();
+	affine->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in AffineRegistrationCommandLine constructor.\n";
+	throw ExitException( 1 );
+	}
       }
     
     this->SetInitialTransformation( affine );
@@ -455,11 +463,19 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const C
 
   if ( !this->m_OutputPathITK.empty() ) 
     {
-    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2), AnatomicalOrientationBase::SPACE_ITK );
-    if ( irq != CALLBACK_OK )
-      AffineXformITKIO::Write( this->m_OutputPathITK + "-partial", toNative.GetTransformation() );
-    else
-      AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
+    try
+      {
+      TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2), AnatomicalOrientationBase::SPACE_ITK );
+      if ( irq != CALLBACK_OK )
+	AffineXformITKIO::Write( this->m_OutputPathITK + "-partial", toNative.GetTransformation() );
+      else
+	AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
+      }
+    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in AffineRegistrationCommandLine::OutputResult\n";
+      throw ExitException( 1 );
+      }
     }
   
   if ( !this->m_ReformattedImagePath.empty() )
