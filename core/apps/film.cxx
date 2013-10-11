@@ -301,8 +301,16 @@ doMain( const int argc, const char* argv[] )
       cmtk::AffineXform xform;
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
-	stream >> xform;
-	xformsToPassImages.push_back( cmtk::Xform::SmartPtr( xform.Clone() ) );
+	try
+	  {
+	  stream >> xform;
+	  }
+	catch ( const cmtk::Exception& ex )
+	  {
+	  cmtk::StdErr << "ERROR: reading transformation failed - " << ex.what() << "\n";
+	  throw cmtk::ExitException( 1 );
+	  }
+	xformsToPassImages.push_back( cmtk::Xform::SmartPtr( xform.Clone() ) );	  
 	}
       }
     else

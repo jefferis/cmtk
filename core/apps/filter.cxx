@@ -240,8 +240,15 @@ doMain( const int argc, const char* argv[] )
 #ifdef CMTK_USE_SQLITE
   if ( !updateDB.empty() )
     {
-    cmtk::ImageXformDB db( updateDB );
-    db.AddImage( OutputFileName, InputFileName  );
+    try
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddImage( OutputFileName, InputFileName  );
+      }
+    catch ( const cmtk::SQLite::Exception& ex )
+      {
+      cmtk::StdErr << "ERROR: " << ex.what() << "\n";      
+      }
     }
 #endif
 

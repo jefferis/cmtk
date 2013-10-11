@@ -122,7 +122,16 @@ doMain( const int argc, const char* argv[] )
       cmtk::AffineXform xform;
       cmtk::Types::Coordinate xlate[3] = {0,0,0};
       xlate[Axis] = -i * volume->m_Delta[Axis];
-      xform.SetXlate( xlate );
+
+      try
+	{
+	xform.SetXlate( xlate );
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: singular matrix in cmtk::AffineXform::SetXlate()\n";
+	throw cmtk::ExitException( 1 );
+	}
 
       cmtk::ClassStreamOutput stream( path, cmtk::ClassStreamOutput::MODE_WRITE );
       if ( stream.IsValid() )
