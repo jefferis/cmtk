@@ -356,8 +356,15 @@ VolumeIO::Write
     if ( volume.MetaKeyExists( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) &&
 	 (volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ) != volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) ) )
       {
-      reorientedVolume = cmtk::UniformVolume::SmartConstPtr( volume.GetReoriented( volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() ) );
-      actualVolume = reorientedVolume;
+      try
+	{
+	reorientedVolume = cmtk::UniformVolume::SmartConstPtr( volume.GetReoriented( volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() ) );
+	actualVolume = reorientedVolume;
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix in cmtk::UniformVolume::GetReoriented(). Writing volume in current orientation.";
+	}
       }
     }
     
