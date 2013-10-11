@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -149,10 +149,11 @@ bool rmatrixsvd(ap::real_2d_array a,
     {
         return result;
     }
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(uneeded>=0&&uneeded<=2, "SVDDecomposition: wrong parameters!");
     ap::ap_error::make_assertion(vtneeded>=0&&vtneeded<=2, "SVDDecomposition: wrong parameters!");
     ap::ap_error::make_assertion(additionalmemory>=0&&additionalmemory<=2, "SVDDecomposition: wrong parameters!");
-    
+#endif
     //
     // initialize
     //
