@@ -96,8 +96,15 @@ public:
 #ifdef CMTK_USE_SQLITE
     if ( this->m_UpdateDB )
       {
-      cmtk::ImageXformDB db( this->m_UpdateDB );
-      db.AddImage( this->m_OutFile, this->m_InFile );
+      try
+	{
+	cmtk::ImageXformDB db( this->m_UpdateDB );
+	db.AddImage( this->m_OutFile, this->m_InFile );
+	}
+      catch ( const cmtk::SQLite::Exception& ex )
+	{
+	StdErr << "ERROR: cmtk::SQLite threw exception - " << ex.what() << "\n";	
+	}
       }
 #endif
   }
