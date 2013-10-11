@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -280,8 +280,11 @@ void rmatrixbdunpackq(const ap::real_2d_array& qp,
     int i;
     int j;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(qcolumns<=m, "RMatrixBDUnpackQ: QColumns>M!");
     ap::ap_error::make_assertion(qcolumns>=0, "RMatrixBDUnpackQ: QColumns<0!");
+#endif
+
     if( m==0||n==0||qcolumns==0 )
     {
         return;
@@ -364,7 +367,10 @@ void rmatrixbdmultiplybyq(const ap::real_2d_array& qp,
     {
         return;
     }
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion( (fromtheright&&zcolumns==m) || (!fromtheright&&zrows==m), "RMatrixBDMultiplyByQ: incorrect Z size!");
+#endif
     
     //
     // init
@@ -503,8 +509,11 @@ void rmatrixbdunpackpt(const ap::real_2d_array& qp,
     int i;
     int j;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(ptrows<=n, "RMatrixBDUnpackPT: PTRows>N!");
     ap::ap_error::make_assertion(ptrows>=0, "RMatrixBDUnpackPT: PTRows<0!");
+#endif
+
     if( m==0||n==0||ptrows==0 )
     {
         return;
@@ -587,7 +596,10 @@ void rmatrixbdmultiplybyp(const ap::real_2d_array& qp,
     {
         return;
     }
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion((fromtheright&&zcolumns==n)||(!fromtheright&&zrows==n), "RMatrixBDMultiplyByP: incorrect Z size!");
+#endif
     
     //
     // init
