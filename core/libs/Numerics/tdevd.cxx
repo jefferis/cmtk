@@ -204,7 +204,9 @@ bool smatrixtdevd(ap::real_1d_array& d,
             ap::vmove(&z(0, 0), &z1(1, 1), ap::vlen(0,n-1));
             return result;
         }
+#ifndef NO_AP_ASSERT
         ap::ap_error::make_assertion(false, "SMatrixTDEVD: Incorrect ZNeeded!");
+#endif
     }
     return result;
 }
@@ -269,8 +271,9 @@ bool tridiagonalevd(ap::real_1d_array& d,
     int zrows;
     bool wastranspose;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(zneeded>=0&&zneeded<=3, "TridiagonalEVD: Incorrent ZNeeded");
-    
+#endif    
     //
     // Quick return if possible
     //

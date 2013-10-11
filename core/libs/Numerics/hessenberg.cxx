@@ -85,7 +85,9 @@ void toupperhessenberg(ap::real_2d_array& a, int n, ap::real_1d_array& tau)
     ap::real_1d_array t;
     ap::real_1d_array work;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(n>=0, "ToUpperHessenberg: incorrect N!");
+#endif
     
     //
     // Quick return if possible

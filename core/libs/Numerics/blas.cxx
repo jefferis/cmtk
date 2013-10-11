@@ -109,7 +109,10 @@ ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
     int i;
     int j;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(i2-i1==j2-j1, "UpperHessenberg1Norm: I2-I1<>J2-J1!");
+#endif
+
     for(j = j1; j <= j2; j++)
     {
         work(j) = 0;
@@ -148,8 +151,11 @@ void copymatrix(const ap::real_2d_array& a,
     {
         return;
     }
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(is2-is1==id2-id1, "CopyMatrix: different sizes!");
     ap::ap_error::make_assertion(js2-js1==jd2-jd1, "CopyMatrix: different sizes!");
+#endif
+
     for(isrc = is1; isrc <= is2; isrc++)
     {
         idst = isrc-is1+id1;
@@ -175,7 +181,11 @@ void inplacetranspose(ap::real_2d_array& a,
     {
         return;
     }
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(i1-i2==j1-j2, "InplaceTranspose error: incorrect array size!");
+#endif
+
     for(i = i1; i <= i2-1; i++)
     {
         j = j1+i-i1;
@@ -207,8 +217,10 @@ void copyandtranspose(const ap::real_2d_array& a,
     {
         return;
     }
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(is2-is1==jd2-jd1, "CopyAndTranspose: different sizes!");
     ap::ap_error::make_assertion(js2-js1==id2-id1, "CopyAndTranspose: different sizes!");
+#endif
     for(isrc = is1; isrc <= is2; isrc++)
     {
         jdst = isrc-is1+jd1;
@@ -245,8 +257,10 @@ void matrixvectormultiply(const ap::real_2d_array& a,
         {
             return;
         }
+#ifndef NO_AP_ASSERT
         ap::ap_error::make_assertion(j2-j1==ix2-ix1, "MatrixVectorMultiply: A and X dont match!");
         ap::ap_error::make_assertion(i2-i1==iy2-iy1, "MatrixVectorMultiply: A and Y dont match!");
+#endif
         
         //
         // beta*y
@@ -282,8 +296,10 @@ void matrixvectormultiply(const ap::real_2d_array& a,
         {
             return;
         }
+#ifndef NO_AP_ASSERT
         ap::ap_error::make_assertion(i2-i1==ix2-ix1, "MatrixVectorMultiply: A and X dont match!");
         ap::ap_error::make_assertion(j2-j1==iy2-iy1, "MatrixVectorMultiply: A and Y dont match!");
+#endif
         
         //
         // beta*y
@@ -393,7 +409,9 @@ void matrixmatrixmultiply(const ap::real_2d_array& a,
         brows = bj2-bj1+1;
         bcols = bi2-bi1+1;
     }
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(acols==brows, "MatrixMatrixMultiply: incorrect matrix sizes!");
+#endif
     if( arows<=0||acols<=0||brows<=0||bcols<=0 )
     {
         return;

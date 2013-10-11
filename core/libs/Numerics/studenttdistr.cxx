@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -128,7 +128,10 @@ ap::real_value_type studenttdistribution(int k, ap::real_value_type t)
     ap::real_value_type xsqk;
     int j;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(k>0, "Domain error in StudentTDistribution");
+#endif
+
     if( t==0 )
     {
         result = 0.5;

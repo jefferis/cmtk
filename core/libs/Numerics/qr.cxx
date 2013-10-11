@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -187,7 +187,10 @@ void rmatrixqrunpackq(const ap::real_2d_array& a,
     ap::real_1d_array v;
     ap::real_1d_array work;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(qcolumns<=m, "UnpackQFromQR: QColumns>M!");
+#endif
+
     if( m<=0||n<=0||qcolumns<=0 )
     {
         return;

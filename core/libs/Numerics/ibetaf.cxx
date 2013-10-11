@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -148,8 +148,12 @@ ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b,
     maxgam = 171.624376956302725;
     minlog = log(ap::minrealnumber);
     maxlog = log(ap::maxrealnumber);
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(a>0&&b>0, "Domain error in IncompleteBeta");
     ap::ap_error::make_assertion(x>=0&&x<=1, "Domain error in IncompleteBeta");
+#endif
+
     if( x==0 )
     {
         result = 0;

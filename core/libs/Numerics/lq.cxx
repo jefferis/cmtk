@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -169,7 +169,10 @@ void rmatrixlqunpackq(const ap::real_2d_array& a,
     ap::real_1d_array v;
     ap::real_1d_array work;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(qrows<=n, "RMatrixLQUnpackQ: QRows>N!");
+#endif
+
     if( m<=0||n<=0||qrows<=0 )
     {
         return;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -107,7 +107,10 @@ bool smatrixevd(ap::real_2d_array a,
     ap::real_1d_array tau;
     ap::real_1d_array e;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(zneeded==0||zneeded==1, "SMatrixEVD: incorrect ZNeeded");
+#endif
+
     smatrixtd(a, n, isupper, tau, d, e);
     if( zneeded==1 )
     {

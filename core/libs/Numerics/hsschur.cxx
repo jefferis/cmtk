@@ -179,9 +179,13 @@ void internalschurdecomposition(ap::real_2d_array& h,
     workv3.setbounds(1, 3);
     tmpwr.setbounds(1, ap::maxint(n, 1));
     tmpwi.setbounds(1, ap::maxint(n, 1));
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(n>=0, "InternalSchurDecomposition: incorrect N!");
     ap::ap_error::make_assertion(tneeded==0||tneeded==1, "InternalSchurDecomposition: incorrect TNeeded!");
     ap::ap_error::make_assertion(zneeded==0||zneeded==1||zneeded==2, "InternalSchurDecomposition: incorrect ZNeeded!");
+#endif
+
     wantt = tneeded==1;
     initz = zneeded==2;
     wantz = zneeded!=0;

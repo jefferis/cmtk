@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -142,7 +142,10 @@ void rmatrixlu(ap::real_2d_array& a,
     int nb;
     ap::real_value_type v;
 
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(lunb>=1, "RMatrixLU internal error");
+#endif
+
     nb = lunb;
     
     //
@@ -282,7 +285,10 @@ void rmatrixlu2(ap::real_2d_array& a,
 
     pivots.setbounds(0, ap::minint(m-1, n-1));
     t1.setbounds(0, ap::maxint(m-1, n-1));
+
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(m>=0&&n>=0, "Error in LUDecomposition: incorrect function arguments");
+#endif
     
     //
     // Quick return if possible

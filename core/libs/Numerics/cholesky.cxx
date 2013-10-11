@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,7 +114,9 @@ bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper)
     //
     //     Test the input parameters.
     //
+#ifndef NO_AP_ASSERT
     ap::ap_error::make_assertion(n>=0, "Error in SMatrixCholesky: incorrect function arguments");
+#endif
     
     //
     //     Quick return if possible
