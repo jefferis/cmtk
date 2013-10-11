@@ -1,5 +1,12 @@
 Release CMTK-2.4.0:
 
+(r4978) Changed: "dcm2image" tool no longer embeds study information into
+	Nifti header; this is for subject privacy when data are going to
+	be shared.
+(r4977) Improved: "detect_adni_phantom" tool has new options,
+	"--refine-xform", "--refine-outliers", and
+	"--exclude-outliers". Detection has also been made more robust by
+	ordering 10mm spheres by increasing distance from phantom center.
 (r4892) Changed: by default, "mk_analyze_hdr" and "mk_nifti_hdr" now
 	create a header with "Byte" as the image pixel data type, and
 	"axial" as the orientation (for "mk_analyze_hdr" only).
