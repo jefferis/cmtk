@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -174,8 +174,15 @@ XformIO::ReadNrrd( const std::string& path )
       for ( int i = 0; i < 3; ++i )
 	m4[3][i] = nrrd->spaceOrigin[i];
 
-      AffineXform::SmartPtr xform( new AffineXform( m4 ) ) ;
-      dfield->SetInitialAffineXform( xform );
+      try
+	{
+	AffineXform::SmartPtr xform( new AffineXform( m4 ) ) ;
+	dfield->SetInitialAffineXform( xform );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )	
+	{
+	StdErr << "ERROR: space directions in Nrrd file cause singular matrix exception in XformIO::ReadNrrd(). Using identity matrix instead.\n";
+	}
       
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, orientationSpace );
