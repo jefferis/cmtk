@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,6 +38,7 @@
 #include <Registration/cmtkReformatVolume.h>
 
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 
 cmtk::AtlasSegmentation::AtlasSegmentation
 ( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels ) :
@@ -71,8 +72,16 @@ cmtk::AtlasSegmentation
   (DebugOutput( 1 ) << "Affine registration...").flush();
   ar.Register();
   DebugOutput( 1 ) << " done.\n";
-  
-  this->m_AffineXform = ar.GetTransformation();
+
+  try
+    {
+    this->m_AffineXform = ar.GetTransformation();
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: singular matrix in AffineRegistration::GetTransformation()\n";
+    throw ExitException( 1 );
+    }
 }
 
 void
