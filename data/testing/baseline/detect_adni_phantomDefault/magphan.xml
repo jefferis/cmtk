@@ -57,102 +57,207 @@
 		<fitResidual>1.337617</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_01</name>
-		<expected>-89.268558 28.810000 -32.152421</expected>
-		<detected>-90.150615 29.636384 -32.378080</detected>
+		<name>10mm_0_23</name>
+		<expected>-31.149784 27.954668 26.177987</expected>
+		<detected>-31.203133 28.355374 25.650068</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.155524</fitResidual>
+		<fitResidual>0.519000</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_02</name>
-		<expected>-87.511653 26.641345 27.782629</expected>
-		<detected>-87.903454 26.918713 26.699436</detected>
+		<name>10mm_0_24</name>
+		<expected>-32.906689 30.123323 -33.757063</expected>
+		<detected>-32.748542 31.040374 -34.079931</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.948066</fitResidual>
+		<fitResidual>0.984917</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_03</name>
-		<expected>83.414616 32.833798 -37.068772</expected>
-		<detected>82.941527 32.998819 -37.156787</detected>
+		<name>10mm_0_25</name>
+		<expected>28.809652 29.351820 24.470921</expected>
+		<detected>28.561404 29.514156 24.359167</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.597390</fitResidual>
+		<fitResidual>0.346341</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_04</name>
-		<expected>85.171521 30.665143 22.866278</expected>
-		<detected>85.223279 30.296279 22.105709</detected>
+		<name>10mm_0_26</name>
+		<expected>27.052746 31.520475 -35.464129</expected>
+		<detected>26.993583 32.234607 -35.335525</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.921706</fitResidual>
+		<fitResidual>0.764761</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_05</name>
-		<expected>-64.810247 25.892443 61.827678</expected>
-		<detected>-63.489294 26.328355 61.229216</detected>
+		<name>10mm_1_01</name>
+		<expected>-0.210279 -1.680456 34.209579</expected>
+		<detected>-0.253816 -2.136382 34.053461</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.234326</fitResidual>
+		<fitResidual>0.255084</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_06</name>
-		<expected>-68.599306 30.569508 -67.432247</expected>
-		<detected>-67.684005 31.531523 -67.623704</detected>
+		<name>10mm_1_02</name>
+		<expected>-2.552819 1.211084 -45.703821</expected>
+		<detected>-2.640333 -0.252406 -45.701693</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.388455</fitResidual>
+		<fitResidual>1.148187</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_07</name>
-		<expected>64.502269 28.905634 58.146104</expected>
-		<detected>64.052954 28.613175 57.585363</detected>
+		<name>10mm_1b_13</name>
+		<expected>37.716704 59.199932 10.273575</expected>
+		<detected>38.077553 59.431516 10.528706</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.790375</fitResidual>
+		<fitResidual>0.430917</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_08</name>
-		<expected>60.713210 33.582700 -71.113820</expected>
-		<detected>59.387915 34.151966 -71.255531</detected>
+		<name>10mm_1b_14</name>
+		<expected>36.838251 60.284260 -19.693950</expected>
+		<detected>37.110496 60.588626 -19.516267</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.437894</fitResidual>
+		<fitResidual>0.376277</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_09</name>
-		<expected>-29.498293 25.916132 82.516934</expected>
-		<detected>-27.969955 25.846307 81.809593</detected>
+		<name>10mm_1b_15</name>
+		<expected>-42.229210 57.337063 12.549664</expected>
+		<detected>-42.302828 57.761604 12.370095</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.413278</fitResidual>
+		<fitResidual>0.147059</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_10</name>
-		<expected>-34.558180 32.161858 -90.096010</expected>
-		<detected>-33.489225 33.133894 -90.601051</detected>
+		<name>10mm_1b_16</name>
+		<expected>-43.107663 58.421390 -17.417861</expected>
+		<detected>-43.387337 59.177369 -17.385106</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.717769</fitResidual>
+		<fitResidual>0.488708</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_11</name>
-		<expected>30.461143 27.313285 80.809868</expected>
-		<detected>29.000310 26.713805 80.034335</detected>
+		<name>10mm_1_15</name>
+		<expected>29.476621 -0.620437 23.366871</expected>
+		<detected>29.593860 -0.778706 23.119843</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.820916</fitResidual>
+		<fitResidual>0.225719</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_12</name>
-		<expected>25.401255 33.559011 -91.803076</expected>
-		<detected>23.921007 34.240942 -92.365431</detected>
+		<name>10mm_1_16</name>
+		<expected>27.719716 1.548217 -36.568179</expected>
+		<detected>27.548567 0.517163 -36.450027</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.757105</fitResidual>
+		<fitResidual>0.702046</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_13</name>
-		<expected>0.630762 26.430373 86.757880</expected>
-		<detected>0.353935 26.333841 85.639765</detected>
+		<name>10mm_1_17</name>
+		<expected>-30.482814 -2.017590 25.073937</expected>
+		<detected>-30.323718 -2.413006 24.805736</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.968048</fitResidual>
+		<fitResidual>0.171339</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_14</name>
-		<expected>-4.727799 33.044770 -96.044023</expected>
-		<detected>-4.970085 34.061027 -96.325494</detected>
+		<name>10mm_1_18</name>
+		<expected>-32.239719 0.151065 -34.861113</expected>
+		<detected>-32.489870 -1.276497 -35.213424</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.214067</fitResidual>
+		<fitResidual>1.219616</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_01</name>
+		<expected>13.612059 57.533458 40.952378</expected>
+		<detected>13.240621 57.576094 41.237081</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.580896</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_04</name>
+		<expected>10.976701 60.786441 -48.950197</expected>
+		<detected>10.569897 61.773207 -48.934587</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.818474</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_07</name>
+		<expected>-16.367659 56.834882 41.805911</expected>
+		<detected>-15.938241 57.187480 41.737424</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.388043</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_10</name>
+		<expected>-19.003017 60.087864 -48.096664</expected>
+		<detected>-19.223631 60.968168 -47.870353</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.616971</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_27</name>
+		<expected>-0.291613 27.568917 55.291979</expected>
+		<detected>-0.334887 27.652083 54.745714</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.399174</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_01</name>
+		<expected>12.066636 88.590043 12.088903</expected>
+		<detected>11.974213 89.056762 11.870275</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.338977</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_02</name>
+		<expected>11.188184 89.674371 -17.878622</expected>
+		<detected>11.415291 90.396776 -17.475112</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.448507</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_03</name>
+		<expected>-17.913081 87.891467 12.942436</expected>
+		<detected>-18.194355 88.372284 12.797901</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.311591</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_04</name>
+		<expected>-18.791534 88.975795 -17.025089</expected>
+		<detected>-18.574630 89.605960 -16.601504</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.450805</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_01</name>
+		<expected>14.714506 -30.399819 7.705825</expected>
+		<detected>14.630444 -30.823731 7.772738</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.322356</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_02</name>
+		<expected>13.836053 -29.315492 -22.261700</expected>
+		<detected>14.079068 -30.349998 -22.129374</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.488272</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_03</name>
+		<expected>-15.265212 -31.098396 8.559358</expected>
+		<detected>-15.461014 -31.720949 8.685292</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.460983</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_04</name>
+		<expected>-16.143665 -30.014068 -21.408167</expected>
+		<detected>-16.631332 -30.967334 -21.369634</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.690807</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_05</name>
+		<expected>0.375356 -2.403341 54.187929</expected>
+		<detected>0.704936 -2.309343 53.967994</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.383413</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_06</name>
+		<expected>-3.138454 1.933969 -65.682171</expected>
+		<detected>-2.822930 0.597877 -65.571429</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.073094</fitResidual>
 	</landmark>
 	<landmark>
 		<name>10mm_0_15</name>
@@ -211,116 +316,60 @@
 		<fitResidual>0.666625</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_23</name>
-		<expected>-31.149784 27.954668 26.177987</expected>
-		<detected>-31.203133 28.355374 25.650068</detected>
+		<name>10mm_1b_17</name>
+		<expected>43.591776 58.232034 40.098845</expected>
+		<detected>43.146103 58.216614 39.962955</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.519000</fitResidual>
+		<fitResidual>0.563189</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_24</name>
-		<expected>-32.906689 30.123323 -33.757063</expected>
-		<detected>-32.748542 31.040374 -34.079931</detected>
+		<name>10mm_1b_18</name>
+		<expected>40.956418 61.485017 -49.803730</expected>
+		<detected>40.619849 62.079631 -49.305042</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.984917</fitResidual>
+		<fitResidual>0.471731</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_25</name>
-		<expected>28.809652 29.351820 24.470921</expected>
-		<detected>28.561404 29.514156 24.359167</detected>
+		<name>10mm_1b_19</name>
+		<expected>-46.347377 56.136306 42.659444</expected>
+		<detected>-45.815297 56.479599 42.456400</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.346341</fitResidual>
+		<fitResidual>0.472396</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_26</name>
-		<expected>27.052746 31.520475 -35.464129</expected>
-		<detected>26.993583 32.234607 -35.335525</detected>
+		<name>10mm_1b_20</name>
+		<expected>-48.982735 59.389288 -47.243131</expected>
+		<detected>-48.519541 60.358984 -47.012916</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.764761</fitResidual>
+		<fitResidual>0.885173</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_27</name>
-		<expected>-0.291613 27.568917 55.291979</expected>
-		<detected>-0.334887 27.652083 54.745714</detected>
+		<name>10mm_1b_02</name>
+		<expected>14.197694 56.810573 60.930728</expected>
+		<detected>14.101113 56.611532 60.521341</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.399174</fitResidual>
+		<fitResidual>0.621356</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_0_28</name>
-		<expected>-93.486658 27.606914 -2.039795</expected>
-		<detected>-94.065808 28.454782 -2.454530</detected>
+		<name>10mm_1b_05</name>
+		<expected>10.391066 61.509326 -68.928547</expected>
+		<detected>9.781825 62.169172 -68.456008</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.994614</fitResidual>
+		<fitResidual>0.638643</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_1_01</name>
-		<expected>-0.210279 -1.680456 34.209579</expected>
-		<detected>-0.253816 -2.136382 34.053461</detected>
+		<name>10mm_1b_08</name>
+		<expected>-15.782024 56.111997 61.784261</expected>
+		<detected>-15.785764 55.893431 61.334006</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.255084</fitResidual>
+		<fitResidual>0.638476</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_1_02</name>
-		<expected>-2.552819 1.211084 -45.703821</expected>
-		<detected>-2.640333 -0.252406 -45.701693</detected>
+		<name>10mm_1b_11</name>
+		<expected>-19.588652 60.810749 -68.075014</expected>
+		<detected>-19.393112 61.444164 -68.101589</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.148187</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_03</name>
-		<expected>1.151323 -3.361164 80.659243</expected>
-		<detected>1.250096 -2.588557 80.356597</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.009677</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_04</name>
-		<expected>-3.914421 2.891791 -92.153485</expected>
-		<detected>-3.835672 1.442667 -91.956584</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.114981</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_05</name>
-		<expected>0.375356 -2.403341 54.187929</expected>
-		<detected>0.704936 -2.309343 53.967994</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.383413</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_06</name>
-		<expected>-3.138454 1.933969 -65.682171</expected>
-		<detected>-2.822930 0.597877 -65.571429</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.073094</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_07</name>
-		<expected>30.972919 -2.467409 74.411555</expected>
-		<detected>29.999796 -1.627915 74.398063</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.615107</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_08</name>
-		<expected>26.223418 3.395189 -87.612864</expected>
-		<detected>25.155837 2.355795 -87.275259</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.157248</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_09</name>
-		<expected>-28.986517 -3.864561 76.118621</expected>
-		<detected>-27.835462 -3.253670 76.169410</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.308634</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_10</name>
-		<expected>-33.736017 1.998036 -85.905797</expected>
-		<detected>-32.644308 0.521355 -85.995377</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.668767</fitResidual>
+		<fitResidual>0.569661</fitResidual>
 	</landmark>
 	<landmark>
 		<name>10mm_1_11</name>
@@ -351,34 +400,6 @@
 		<fitResidual>1.440057</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_1_15</name>
-		<expected>29.476621 -0.620437 23.366871</expected>
-		<detected>29.593860 -0.778706 23.119843</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.225719</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_16</name>
-		<expected>27.719716 1.548217 -36.568179</expected>
-		<detected>27.548567 0.517163 -36.450027</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.702046</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_17</name>
-		<expected>-30.482814 -2.017590 25.073937</expected>
-		<detected>-30.323718 -2.413006 24.805736</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.171339</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_18</name>
-		<expected>-32.239719 0.151065 -34.861113</expected>
-		<detected>-32.489870 -1.276497 -35.213424</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.219616</fitResidual>
-	</landmark>
-	<landmark>
 		<name>10mm_1_19</name>
 		<expected>59.456339 0.078139 22.513337</expected>
 		<detected>59.682758 0.228908 22.680395</detected>
@@ -405,496 +426,6 @@
 		<detected>-62.299988 -1.624237 -34.209902</detected>
 		<isPrecise>yes</isPrecise>
 		<fitResidual>0.843232</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_23</name>
-		<expected>61.363397 -1.019047 53.451329</expected>
-		<detected>60.743204 -0.391235 53.636754</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.237159</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_24</name>
-		<expected>57.791023 3.390551 -68.416606</expected>
-		<detected>56.981204 2.387850 -68.059897</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.935738</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_25</name>
-		<expected>-60.554121 -3.859923 56.922364</expected>
-		<detected>-59.213660 -3.481863 56.797686</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.300561</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_26</name>
-		<expected>-64.126495 0.549675 -64.945571</expected>
-		<detected>-63.405121 -0.705601 -64.661894</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.278539</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_27</name>
-		<expected>80.542074 0.569471 21.913019</expected>
-		<detected>81.122513 0.991711 21.951004</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.939063</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_28</name>
-		<expected>78.785168 2.738126 -38.022031</expected>
-		<detected>79.013634 2.413374 -37.921597</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.315585</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_29</name>
-		<expected>-81.548267 -3.207498 26.527789</expected>
-		<detected>-81.862843 -3.453697 25.973821</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.516403</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_30</name>
-		<expected>-83.305172 -1.038843 -33.407261</expected>
-		<detected>-83.341878 -1.742580 -33.321902</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.541570</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_31</name>
-		<expected>85.059970 1.779542 -8.208142</expected>
-		<detected>85.339527 1.416842 -8.136866</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.289366</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1_32</name>
-		<expected>-87.823068 -2.248914 -3.286101</expected>
-		<detected>-88.684520 -2.687967 -3.376929</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.000391</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_01</name>
-		<expected>13.612059 57.533458 40.952378</expected>
-		<detected>13.240621 57.576094 41.237081</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.580896</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_02</name>
-		<expected>14.197694 56.810573 60.930728</expected>
-		<detected>14.101113 56.611532 60.521341</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.621356</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_03</name>
-		<expected>14.789185 56.080459 81.108862</expected>
-		<detected>14.273986 55.727789 80.946565</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.922884</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_04</name>
-		<expected>10.976701 60.786441 -48.950197</expected>
-		<detected>10.569897 61.773207 -48.934587</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.818474</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_05</name>
-		<expected>10.391066 61.509326 -68.928547</expected>
-		<detected>9.781825 62.169172 -68.456008</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.638643</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_06</name>
-		<expected>9.799574 62.239439 -89.106680</expected>
-		<detected>9.231754 63.088120 -88.798877</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.727110</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_07</name>
-		<expected>-16.367659 56.834882 41.805911</expected>
-		<detected>-15.938241 57.187480 41.737424</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.388043</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_08</name>
-		<expected>-15.782024 56.111997 61.784261</expected>
-		<detected>-15.785764 55.893431 61.334006</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.638476</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_09</name>
-		<expected>-15.190533 55.381883 81.962395</expected>
-		<detected>-14.371668 54.977373 81.854935</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.048092</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_10</name>
-		<expected>-19.003017 60.087864 -48.096664</expected>
-		<detected>-19.223631 60.968168 -47.870353</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.616971</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_11</name>
-		<expected>-19.588652 60.810749 -68.075014</expected>
-		<detected>-19.393112 61.444164 -68.101589</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.569661</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_12</name>
-		<expected>-20.180144 61.540863 -88.253147</expected>
-		<detected>-20.077061 62.180877 -87.923731</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.497825</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_13</name>
-		<expected>37.716704 59.199932 10.273575</expected>
-		<detected>38.077553 59.431516 10.528706</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.430917</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_14</name>
-		<expected>36.838251 60.284260 -19.693950</expected>
-		<detected>37.110496 60.588626 -19.516267</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.376277</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_15</name>
-		<expected>-42.229210 57.337063 12.549664</expected>
-		<detected>-42.302828 57.761604 12.370095</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.147059</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_16</name>
-		<expected>-43.107663 58.421390 -17.417861</expected>
-		<detected>-43.387337 59.177369 -17.385106</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.488708</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_17</name>
-		<expected>43.591776 58.232034 40.098845</expected>
-		<detected>43.146103 58.216614 39.962955</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.563189</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_18</name>
-		<expected>40.956418 61.485017 -49.803730</expected>
-		<detected>40.619849 62.079631 -49.305042</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.471731</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_19</name>
-		<expected>-46.347377 56.136306 42.659444</expected>
-		<detected>-45.815297 56.479599 42.456400</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.472396</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_20</name>
-		<expected>-48.982735 59.389288 -47.243131</expected>
-		<detected>-48.519541 60.358984 -47.012916</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.885173</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_21</name>
-		<expected>44.177411 57.509149 60.077195</expected>
-		<detected>43.981561 57.341241 60.270740</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.564408</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_22</name>
-		<expected>-49.568370 60.112173 -67.221481</expected>
-		<detected>-49.311072 61.068450 -67.227397</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.789391</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_23</name>
-		<expected>40.110176 62.529586 -78.672446</expected>
-		<detected>39.186899 63.135568 -78.163750</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.835788</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_24</name>
-		<expected>-45.501134 55.091737 71.528160</expected>
-		<detected>-44.232499 55.255147 71.523352</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.205944</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_25</name>
-		<expected>60.443235 61.939091 -50.358527</expected>
-		<detected>60.666130 62.246282 -50.049897</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.408641</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_26</name>
-		<expected>-65.834193 55.682231 43.214241</expected>
-		<detected>-65.902523 55.747191 42.579646</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.538800</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_27</name>
-		<expected>72.472238 58.904996 39.276608</expected>
-		<detected>72.211380 58.456681 38.865575</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.889598</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_28</name>
-		<expected>-77.863196 58.716327 -46.420894</expected>
-		<detected>-78.040539 59.500651 -46.363017</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.454455</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_29</name>
-		<expected>82.886145 60.252454 8.987585</expected>
-		<detected>83.684472 60.204801 9.132576</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.903176</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_30</name>
-		<expected>82.007693 61.336781 -20.979940</expected>
-		<detected>82.747732 61.408301 -21.061265</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.948601</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_31</name>
-		<expected>-87.398651 56.284541 13.835654</expected>
-		<detected>-88.073966 56.806649 13.480319</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.733285</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_1b_32</name>
-		<expected>-88.277104 57.368869 -16.131871</expected>
-		<detected>-89.103546 58.391445 -15.875122</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.087486</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_01</name>
-		<expected>14.714506 -30.399819 7.705825</expected>
-		<detected>14.630444 -30.823731 7.772738</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.322356</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_02</name>
-		<expected>13.836053 -29.315492 -22.261700</expected>
-		<detected>14.079068 -30.349998 -22.129374</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.488272</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_03</name>
-		<expected>-15.265212 -31.098396 8.559358</expected>
-		<detected>-15.461014 -31.720949 8.685292</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.460983</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_04</name>
-		<expected>-16.143665 -30.014068 -21.408167</expected>
-		<detected>-16.631332 -30.967334 -21.369634</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.690807</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_05</name>
-		<expected>15.592958 -31.484147 37.673350</expected>
-		<detected>15.587112 -31.620343 37.634547</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.500812</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_06</name>
-		<expected>12.957600 -28.231164 -52.229225</expected>
-		<detected>12.909924 -29.550628 -52.120955</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.689826</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_07</name>
-		<expected>-14.386759 -32.182723 38.526883</expected>
-		<detected>-14.205906 -32.699722 37.886681</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.358894</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_08</name>
-		<expected>-17.022117 -28.929741 -51.375692</expected>
-		<detected>-16.846962 -30.425911 -51.320966</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.911337</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_09</name>
-		<expected>16.245941 -32.290164 59.949210</expected>
-		<detected>15.877758 -32.427377 60.216899</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.901706</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_10</name>
-		<expected>12.304617 -27.425148 -74.505085</expected>
-		<detected>12.014028 -28.842147 -74.489763</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.816338</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_11</name>
-		<expected>-13.733776 -32.988740 60.802743</expected>
-		<detected>-13.227687 -32.747333 61.025185</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.993390</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_12</name>
-		<expected>-17.675100 -28.123724 -73.651552</expected>
-		<detected>-17.711733 -29.727102 -73.667115</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.990225</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_13</name>
-		<expected>44.694223 -29.701243 6.852292</expected>
-		<detected>45.031113 -29.945581 7.052307</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.514589</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_14</name>
-		<expected>43.815771 -28.616916 -23.115233</expected>
-		<detected>43.941460 -29.494376 -22.958007</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.273509</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_15</name>
-		<expected>-45.244930 -31.796972 9.412891</expected>
-		<detected>-45.360272 -32.571789 9.469335</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.482069</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_16</name>
-		<expected>-46.123382 -30.712644 -20.554634</expected>
-		<detected>-45.832674 -31.714297 -20.355630</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.618629</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_17</name>
-		<expected>49.378517 -30.833147 40.410542</expected>
-		<detected>49.069060 -30.689363 40.507509</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.917033</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_18</name>
-		<expected>46.526474 -27.312697 -56.884022</expected>
-		<detected>46.150514 -28.561085 -56.699005</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.677073</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_19</name>
-		<expected>-47.955633 -33.101191 43.181680</expected>
-		<detected>-47.185100 -33.436843 42.822006</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.580455</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_20</name>
-		<expected>-50.807676 -29.580741 -54.112884</expected>
-		<detected>-50.340505 -31.347942 -54.064788</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>1.283760</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_21</name>
-		<expected>66.979147 -29.181968 6.217832</expected>
-		<detected>67.308263 -29.616957 6.062205</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.357967</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_22</name>
-		<expected>66.100694 -28.097641 -23.749693</expected>
-		<detected>66.158048 -28.754007 -23.342412</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.319215</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_23</name>
-		<expected>-67.529853 -32.316247 10.047351</expected>
-		<detected>-67.655602 -33.168083 9.793427</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.456409</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2_24</name>
-		<expected>-68.408306 -31.231919 -19.920174</expected>
-		<detected>-68.686656 -32.478453 -20.105208</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.820234</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_01</name>
-		<expected>12.066636 88.590043 12.088903</expected>
-		<detected>11.974213 89.056762 11.870275</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.338977</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_02</name>
-		<expected>11.188184 89.674371 -17.878622</expected>
-		<detected>11.415291 90.396776 -17.475112</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.448507</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_03</name>
-		<expected>-17.913081 87.891467 12.942436</expected>
-		<detected>-18.194355 88.372284 12.797901</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.311591</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_04</name>
-		<expected>-18.791534 88.975795 -17.025089</expected>
-		<detected>-18.574630 89.605960 -16.601504</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.450805</fitResidual>
 	</landmark>
 	<landmark>
 		<name>10mm_2b_05</name>
@@ -925,34 +456,6 @@
 		<fitResidual>0.417408</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_09</name>
-		<expected>13.598072 86.699699 64.332288</expected>
-		<detected>13.349405 86.614996 64.227818</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.751344</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_10</name>
-		<expected>9.656748 91.564715 -70.122007</expected>
-		<detected>9.417267 92.454236 -69.344112</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.565137</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_11</name>
-		<expected>-16.381646 86.001123 65.185821</expected>
-		<detected>-15.916617 86.389307 65.278166</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.545682</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_2b_12</name>
-		<expected>-20.322970 90.866139 -69.268474</expected>
-		<detected>-20.471085 91.942848 -68.790506</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.562456</fitResidual>
-	</landmark>
-	<landmark>
 		<name>10mm_2b_13</name>
 		<expected>42.046354 89.288619 11.235370</expected>
 		<detected>42.623720 89.564574 11.474153</detected>
@@ -981,116 +484,95 @@
 		<fitResidual>0.525252</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_17</name>
-		<expected>46.730648 88.156716 44.793620</expected>
-		<detected>46.678684 88.288687 45.115984</detected>
+		<name>10mm_2_05</name>
+		<expected>15.592958 -31.484147 37.673350</expected>
+		<detected>15.587112 -31.620343 37.634547</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.497925</fitResidual>
+		<fitResidual>0.500812</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_18</name>
-		<expected>43.878605 91.677166 -52.500944</expected>
-		<detected>43.879286 92.265278 -51.872087</detected>
+		<name>10mm_2_06</name>
+		<expected>12.957600 -28.231164 -52.229225</expected>
+		<detected>12.909924 -29.550628 -52.120955</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.347145</fitResidual>
+		<fitResidual>0.689826</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_19</name>
-		<expected>-50.603502 85.888672 47.564758</expected>
-		<detected>-50.372354 86.432619 47.125648</detected>
+		<name>10mm_2_07</name>
+		<expected>-14.386759 -32.182723 38.526883</expected>
+		<detected>-14.205906 -32.699722 37.886681</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.380872</fitResidual>
+		<fitResidual>0.358894</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_20</name>
-		<expected>-53.455545 89.409122 -49.729806</expected>
-		<detected>-53.892510 90.315001 -49.364838</detected>
+		<name>10mm_2_08</name>
+		<expected>-17.022117 -28.929741 -51.375692</expected>
+		<detected>-16.846962 -30.425911 -51.320966</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.464349</fitResidual>
+		<fitResidual>0.911337</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_21</name>
-		<expected>64.331277 89.807894 10.600910</expected>
-		<detected>64.969914 90.118549 10.709951</detected>
+		<name>10mm_2_13</name>
+		<expected>44.694223 -29.701243 6.852292</expected>
+		<detected>45.031113 -29.945581 7.052307</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.780787</fitResidual>
+		<fitResidual>0.514589</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_22</name>
-		<expected>63.452825 90.892222 -19.366615</expected>
-		<detected>64.359200 91.311117 -18.678358</detected>
+		<name>10mm_2_14</name>
+		<expected>43.815771 -28.616916 -23.115233</expected>
+		<detected>43.941460 -29.494376 -22.958007</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>1.134190</fitResidual>
+		<fitResidual>0.273509</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_23</name>
-		<expected>-70.177723 86.673616 14.430429</expected>
-		<detected>-70.889574 87.425387 14.372299</detected>
+		<name>10mm_2_15</name>
+		<expected>-45.244930 -31.796972 9.412891</expected>
+		<detected>-45.360272 -32.571789 9.469335</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.686221</fitResidual>
+		<fitResidual>0.482069</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_2b_24</name>
-		<expected>-71.056175 87.757944 -15.537096</expected>
-		<detected>-72.021129 88.498671 -15.456272</detected>
+		<name>10mm_2_16</name>
+		<expected>-46.123382 -30.712644 -20.554634</expected>
+		<detected>-45.832674 -31.714297 -20.355630</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.886115</fitResidual>
+		<fitResidual>0.618629</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3_01</name>
-		<expected>28.888519 -52.750306 19.796031</expected>
-		<detected>29.041168 -53.170730 20.135284</detected>
+		<name>10mm_1b_25</name>
+		<expected>60.443235 61.939091 -50.358527</expected>
+		<detected>60.666130 62.246282 -50.049897</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.646993</fitResidual>
+		<fitResidual>0.408641</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3_02</name>
-		<expected>27.231171 -50.704542 -36.742700</expected>
-		<detected>27.345782 -51.479572 -36.346879</detected>
+		<name>10mm_1b_26</name>
+		<expected>-65.834193 55.682231 43.214241</expected>
+		<detected>-65.902523 55.747191 42.579646</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.409183</fitResidual>
+		<fitResidual>0.538800</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3_03</name>
-		<expected>-27.673215 -54.068287 21.406364</expected>
-		<detected>-27.581281 -54.417562 21.607832</detected>
+		<name>10mm_1b_21</name>
+		<expected>44.177411 57.509149 60.077195</expected>
+		<detected>43.981561 57.341241 60.270740</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.656018</fitResidual>
+		<fitResidual>0.564408</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3_04</name>
-		<expected>-29.330563 -52.022522 -35.132367</expected>
-		<detected>-28.856957 -53.165974 -34.818191</detected>
+		<name>10mm_1b_22</name>
+		<expected>-49.568370 60.112173 -67.221481</expected>
+		<detected>-49.311072 61.068450 -67.227397</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.683457</fitResidual>
+		<fitResidual>0.789391</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3_05</name>
-		<expected>0.639969 -59.084657 17.091320</expected>
-		<detected>1.003650 -59.580980 17.258222</detected>
+		<name>10mm_3b_09</name>
+		<expected>-4.018302 118.255639 -1.382444</expected>
+		<detected>-3.953232 118.657531 -0.775910</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.562593</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_3_06</name>
-		<expected>-0.824118 -57.277445 -32.854555</expected>
-		<detected>-0.312181 -58.585565 -32.433035</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.786887</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_3_07</name>
-		<expected>24.891024 -57.598904 -8.592895</expected>
-		<detected>25.436648 -58.081094 -8.208311</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.761829</fitResidual>
-	</landmark>
-	<landmark>
-		<name>10mm_3_08</name>
-		<expected>-25.075173 -58.763198 -7.170340</expected>
-		<detected>-24.556136 -59.651046 -6.637924</detected>
-		<isPrecise>yes</isPrecise>
-		<fitResidual>0.839344</fitResidual>
+		<fitResidual>0.678491</fitResidual>
 	</landmark>
 	<landmark>
 		<name>10mm_3_09</name>
@@ -1156,11 +638,529 @@
 		<fitResidual>0.582655</fitResidual>
 	</landmark>
 	<landmark>
-		<name>10mm_3b_09</name>
-		<expected>-4.018302 118.255639 -1.382444</expected>
-		<detected>-3.953232 118.657531 -0.775910</detected>
+		<name>10mm_2b_17</name>
+		<expected>46.730648 88.156716 44.793620</expected>
+		<detected>46.678684 88.288687 45.115984</detected>
 		<isPrecise>yes</isPrecise>
-		<fitResidual>0.678491</fitResidual>
+		<fitResidual>0.497925</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_18</name>
+		<expected>43.878605 91.677166 -52.500944</expected>
+		<detected>43.879286 92.265278 -51.872087</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.347145</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_19</name>
+		<expected>-50.603502 85.888672 47.564758</expected>
+		<detected>-50.372354 86.432619 47.125648</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.380872</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_20</name>
+		<expected>-53.455545 89.409122 -49.729806</expected>
+		<detected>-53.892510 90.315001 -49.364838</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.464349</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_09</name>
+		<expected>13.598072 86.699699 64.332288</expected>
+		<detected>13.349405 86.614996 64.227818</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.751344</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_10</name>
+		<expected>9.656748 91.564715 -70.122007</expected>
+		<detected>9.417267 92.454236 -69.344112</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.565137</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_11</name>
+		<expected>-16.381646 86.001123 65.185821</expected>
+		<detected>-15.916617 86.389307 65.278166</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.545682</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_12</name>
+		<expected>-20.322970 90.866139 -69.268474</expected>
+		<detected>-20.471085 91.942848 -68.790506</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.562456</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_21</name>
+		<expected>64.331277 89.807894 10.600910</expected>
+		<detected>64.969914 90.118549 10.709951</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.780787</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_22</name>
+		<expected>63.452825 90.892222 -19.366615</expected>
+		<detected>64.359200 91.311117 -18.678358</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.134190</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_23</name>
+		<expected>-70.177723 86.673616 14.430429</expected>
+		<detected>-70.889574 87.425387 14.372299</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.686221</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2b_24</name>
+		<expected>-71.056175 87.757944 -15.537096</expected>
+		<detected>-72.021129 88.498671 -15.456272</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.886115</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_03</name>
+		<expected>14.789185 56.080459 81.108862</expected>
+		<detected>14.273986 55.727789 80.946565</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.922884</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_06</name>
+		<expected>9.799574 62.239439 -89.106680</expected>
+		<detected>9.231754 63.088120 -88.798877</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.727110</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_09</name>
+		<expected>-15.190533 55.381883 81.962395</expected>
+		<detected>-14.371668 54.977373 81.854935</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.048092</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_12</name>
+		<expected>-20.180144 61.540863 -88.253147</expected>
+		<detected>-20.077061 62.180877 -87.923731</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.497825</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_29</name>
+		<expected>82.886145 60.252454 8.987585</expected>
+		<detected>83.684472 60.204801 9.132576</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.903176</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_30</name>
+		<expected>82.007693 61.336781 -20.979940</expected>
+		<detected>82.747732 61.408301 -21.061265</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.948601</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_31</name>
+		<expected>-87.398651 56.284541 13.835654</expected>
+		<detected>-88.073966 56.806649 13.480319</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.733285</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_32</name>
+		<expected>-88.277104 57.368869 -16.131871</expected>
+		<detected>-89.103546 58.391445 -15.875122</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.087486</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_23</name>
+		<expected>40.110176 62.529586 -78.672446</expected>
+		<detected>39.186899 63.135568 -78.163750</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.835788</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_24</name>
+		<expected>-45.501134 55.091737 71.528160</expected>
+		<detected>-44.232499 55.255147 71.523352</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.205944</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_27</name>
+		<expected>72.472238 58.904996 39.276608</expected>
+		<detected>72.211380 58.456681 38.865575</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.889598</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1b_28</name>
+		<expected>-77.863196 58.716327 -46.420894</expected>
+		<detected>-78.040539 59.500651 -46.363017</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.454455</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_23</name>
+		<expected>61.363397 -1.019047 53.451329</expected>
+		<detected>60.743204 -0.391235 53.636754</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.237159</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_24</name>
+		<expected>57.791023 3.390551 -68.416606</expected>
+		<detected>56.981204 2.387850 -68.059897</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.935738</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_25</name>
+		<expected>-60.554121 -3.859923 56.922364</expected>
+		<detected>-59.213660 -3.481863 56.797686</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.300561</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_26</name>
+		<expected>-64.126495 0.549675 -64.945571</expected>
+		<detected>-63.405121 -0.705601 -64.661894</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.278539</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_17</name>
+		<expected>49.378517 -30.833147 40.410542</expected>
+		<detected>49.069060 -30.689363 40.507509</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.917033</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_18</name>
+		<expected>46.526474 -27.312697 -56.884022</expected>
+		<detected>46.150514 -28.561085 -56.699005</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.677073</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_19</name>
+		<expected>-47.955633 -33.101191 43.181680</expected>
+		<detected>-47.185100 -33.436843 42.822006</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.580455</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_20</name>
+		<expected>-50.807676 -29.580741 -54.112884</expected>
+		<detected>-50.340505 -31.347942 -54.064788</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.283760</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_09</name>
+		<expected>16.245941 -32.290164 59.949210</expected>
+		<detected>15.877758 -32.427377 60.216899</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.901706</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_10</name>
+		<expected>12.304617 -27.425148 -74.505085</expected>
+		<detected>12.014028 -28.842147 -74.489763</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.816338</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_11</name>
+		<expected>-13.733776 -32.988740 60.802743</expected>
+		<detected>-13.227687 -32.747333 61.025185</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.993390</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_12</name>
+		<expected>-17.675100 -28.123724 -73.651552</expected>
+		<detected>-17.711733 -29.727102 -73.667115</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.990225</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_21</name>
+		<expected>66.979147 -29.181968 6.217832</expected>
+		<detected>67.308263 -29.616957 6.062205</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.357967</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_22</name>
+		<expected>66.100694 -28.097641 -23.749693</expected>
+		<detected>66.158048 -28.754007 -23.342412</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.319215</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_23</name>
+		<expected>-67.529853 -32.316247 10.047351</expected>
+		<detected>-67.655602 -33.168083 9.793427</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.456409</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_2_24</name>
+		<expected>-68.408306 -31.231919 -19.920174</expected>
+		<detected>-68.686656 -32.478453 -20.105208</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.820234</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_01</name>
+		<expected>28.888519 -52.750306 19.796031</expected>
+		<detected>29.041168 -53.170730 20.135284</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.646993</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_02</name>
+		<expected>27.231171 -50.704542 -36.742700</expected>
+		<detected>27.345782 -51.479572 -36.346879</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.409183</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_03</name>
+		<expected>-27.673215 -54.068287 21.406364</expected>
+		<detected>-27.581281 -54.417562 21.607832</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.656018</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_04</name>
+		<expected>-29.330563 -52.022522 -35.132367</expected>
+		<detected>-28.856957 -53.165974 -34.818191</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.683457</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_09</name>
+		<expected>-29.498293 25.916132 82.516934</expected>
+		<detected>-27.969955 25.846307 81.809593</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.413278</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_10</name>
+		<expected>-34.558180 32.161858 -90.096010</expected>
+		<detected>-33.489225 33.133894 -90.601051</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.717769</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_11</name>
+		<expected>30.461143 27.313285 80.809868</expected>
+		<detected>29.000310 26.713805 80.034335</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.820916</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_12</name>
+		<expected>25.401255 33.559011 -91.803076</expected>
+		<detected>23.921007 34.240942 -92.365431</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.757105</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_01</name>
+		<expected>-89.268558 28.810000 -32.152421</expected>
+		<detected>-90.150615 29.636384 -32.378080</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.155524</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_02</name>
+		<expected>-87.511653 26.641345 27.782629</expected>
+		<detected>-87.903454 26.918713 26.699436</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.948066</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_03</name>
+		<expected>83.414616 32.833798 -37.068772</expected>
+		<detected>82.941527 32.998819 -37.156787</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.597390</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_04</name>
+		<expected>85.171521 30.665143 22.866278</expected>
+		<detected>85.223279 30.296279 22.105709</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.921706</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_05</name>
+		<expected>0.639969 -59.084657 17.091320</expected>
+		<detected>1.003650 -59.580980 17.258222</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.562593</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_06</name>
+		<expected>-0.824118 -57.277445 -32.854555</expected>
+		<detected>-0.312181 -58.585565 -32.433035</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.786887</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_07</name>
+		<expected>24.891024 -57.598904 -8.592895</expected>
+		<detected>25.436648 -58.081094 -8.208311</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.761829</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_3_08</name>
+		<expected>-25.075173 -58.763198 -7.170340</expected>
+		<detected>-24.556136 -59.651046 -6.637924</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.839344</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_05</name>
+		<expected>-64.810247 25.892443 61.827678</expected>
+		<detected>-63.489294 26.328355 61.229216</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.234326</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_06</name>
+		<expected>-68.599306 30.569508 -67.432247</expected>
+		<detected>-67.684005 31.531523 -67.623704</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.388455</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_07</name>
+		<expected>64.502269 28.905634 58.146104</expected>
+		<detected>64.052954 28.613175 57.585363</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.790375</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_08</name>
+		<expected>60.713210 33.582700 -71.113820</expected>
+		<detected>59.387915 34.151966 -71.255531</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.437894</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_13</name>
+		<expected>0.630762 26.430373 86.757880</expected>
+		<detected>0.353935 26.333841 85.639765</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.968048</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_14</name>
+		<expected>-4.727799 33.044770 -96.044023</expected>
+		<detected>-4.970085 34.061027 -96.325494</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.214067</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_0_28</name>
+		<expected>-93.486658 27.606914 -2.039795</expected>
+		<detected>-94.065808 28.454782 -2.454530</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.994614</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_07</name>
+		<expected>30.972919 -2.467409 74.411555</expected>
+		<detected>29.999796 -1.627915 74.398063</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.615107</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_08</name>
+		<expected>26.223418 3.395189 -87.612864</expected>
+		<detected>25.155837 2.355795 -87.275259</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.157248</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_09</name>
+		<expected>-28.986517 -3.864561 76.118621</expected>
+		<detected>-27.835462 -3.253670 76.169410</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.308634</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_10</name>
+		<expected>-33.736017 1.998036 -85.905797</expected>
+		<detected>-32.644308 0.521355 -85.995377</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.668767</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_27</name>
+		<expected>80.542074 0.569471 21.913019</expected>
+		<detected>81.122513 0.991711 21.951004</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.939063</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_28</name>
+		<expected>78.785168 2.738126 -38.022031</expected>
+		<detected>79.013634 2.413374 -37.921597</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.315585</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_29</name>
+		<expected>-81.548267 -3.207498 26.527789</expected>
+		<detected>-81.862843 -3.453697 25.973821</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.516403</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_30</name>
+		<expected>-83.305172 -1.038843 -33.407261</expected>
+		<detected>-83.341878 -1.742580 -33.321902</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.541570</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_03</name>
+		<expected>1.151323 -3.361164 80.659243</expected>
+		<detected>1.250096 -2.588557 80.356597</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.009677</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_04</name>
+		<expected>-3.914421 2.891791 -92.153485</expected>
+		<detected>-3.835672 1.442667 -91.956584</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.114981</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_31</name>
+		<expected>85.059970 1.779542 -8.208142</expected>
+		<detected>85.339527 1.416842 -8.136866</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>0.289366</fitResidual>
+	</landmark>
+	<landmark>
+		<name>10mm_1_32</name>
+		<expected>-87.823068 -2.248914 -3.286101</expected>
+		<detected>-88.684520 -2.687967 -3.376929</detected>
+		<isPrecise>yes</isPrecise>
+		<fitResidual>1.000391</fitResidual>
 	</landmark>
 </landmarkList>
 </phantom>
