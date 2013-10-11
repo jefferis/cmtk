@@ -212,14 +212,14 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 			  {
 			  if ( img2 == img ) 
 			    {
-			    const int otherData = ThisConst->m_Data[otherImg][rowofs+x];
+			    const byte otherData = ThisConst->m_Data[otherImg][rowofs+x];
 			    dstSumOfProducts[midx] -= baselineData * otherData;
 			    }
 			  else
 			    {
 			    if ( otherImg == img )
 			      {
-			      const int otherData = ThisConst->m_Data[img2][rowofs+x];
+			      const byte otherData = ThisConst->m_Data[img2][rowofs+x];
 			      dstSumOfProducts[midx] -= baselineData * otherData;
 			      }
 			    }
@@ -248,7 +248,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 			      }
 			    else
 			      {
-			      const int otherData = ThisConst->m_Data[otherImg][rowofs+x];
+			      const byte otherData = ThisConst->m_Data[otherImg][rowofs+x];
 			      dstSumOfProducts[midx] += newData * otherData;
 			      }
 			    }
@@ -256,7 +256,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 			    {
 			    if ( otherImg == img )
 			      {
-			      const int otherData = ThisConst->m_Data[img2][rowofs+x];
+			      const byte otherData = ThisConst->m_Data[img2][rowofs+x];
 			      dstSumOfProducts[midx] += newData * otherData;
 			      }
 			    }
