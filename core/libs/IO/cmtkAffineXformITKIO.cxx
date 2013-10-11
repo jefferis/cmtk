@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2010, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -118,9 +118,16 @@ cmtk::AffineXformITKIO
 	{
 	stream >> matrix[3][i];
 	}
-      AffineXform::SmartPtr xform( new AffineXform( matrix ) );
-      xform->SetMetaInfo( META_SPACE, AnatomicalOrientationBase::SPACE_ITK );
-      return xform;
+      try
+	{	
+	AffineXform::SmartPtr xform( new AffineXform( matrix ) );
+	xform->SetMetaInfo( META_SPACE, AnatomicalOrientationBase::SPACE_ITK );
+	return xform;
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix in cmtk::AffineXformITKIO::Read()\n";
+	}
       }
     }
   
