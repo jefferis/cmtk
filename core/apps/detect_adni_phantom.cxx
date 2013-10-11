@@ -70,6 +70,9 @@ doMain( const int argc, const char* argv[] )
     cl.AddSwitch( Key( "any-orientation" ), &detectionParameters.m_StandardOrientation, false, "Do not assume standard orientation of the phantom, i.e., allow phantoms scanned upside-down. This makes detection of defective phantoms less robust." );
     cl.AddOption( Key( "erode-snr" ), &detectionParameters.m_ErodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
     cl.AddOption( Key( "erode-cnr" ), &detectionParameters.m_ErodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
+    cl.AddSwitch( Key( "refine-xform" ), &detectionParameters.m_RefineXformEachLandmark, true, "Refine estimated affine transformation after each new landmark is added." );
+    cl.AddSwitch( Key( "refine-outliers" ), &detectionParameters.m_RefineOutliers, true, "Refine outlier landmarks based on estimated transformation after first sphere detection pass." );
+    cl.AddSwitch( Key( "exclude-outliers" ), &detectionParameters.m_ExcludeOutliers, true, "Exclude outlier landmarks before fitting final transformations." );
     cl.AddSwitch( Key( "no-bias-correct-spheres" ), &detectionParameters.m_CorrectSphereBiasField, false, "Disable intensity bias field correction for each detected sphere. This will likely reduce accuracy of SNR/CNR estimates and also affect "
 		  "localication accuracy of smaller spheres, but may be helpful in extreme cases where bias correction fails completely." )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.EndGroup();

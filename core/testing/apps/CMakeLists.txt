@@ -115,7 +115,15 @@ LIST(APPEND testList
 # Tests for "detect_adni_phantom" tool
 IF(CMTK_USE_FFTW)
   LIST(APPEND testList 
-    detect_adni_phantomDefault detect_adni_phantomErodeNonStd detect_adni_phantomBadFOV detect_adni_phantomTolerantBadFOV detect_adni_phantomMissingSphere detect_adni_phantomBrokenSNR)
+    detect_adni_phantomDefault 
+    detect_adni_phantomRefineXform
+    detect_adni_phantomRefineOutliers
+    detect_adni_phantomExcludeOutliers
+    detect_adni_phantomErodeNonStd 
+    detect_adni_phantomBadFOV 
+    detect_adni_phantomTolerantBadFOV 
+    detect_adni_phantomMissingSphere 
+    detect_adni_phantomBrokenSNR)
 ENDIF(CMTK_USE_FFTW)
 
 # ==========================================

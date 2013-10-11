@@ -76,7 +76,9 @@ public:
       m_SphereExcludeSafetyMargin( 10.0 ),
       m_ErodeSNR( 10.0 ), 
       m_ErodeCNR( 5.0 ),
+      m_RefineXformEachLandmark( false ),
       m_RefineOutliers( false ),
+      m_ExcludeOutliers( false ),
       m_LandmarkFitResidualThreshold( 5.0 )
     {}
 
@@ -110,8 +112,14 @@ public:
     /// Erode CNR spheres by this many pixels for SNR computation
     Types::Coordinate m_ErodeCNR;
 
+    /// Flag for optional refinement of transformation after each new landmark has been added.
+    bool m_RefineXformEachLandmark;
+    
     /// Flag for optional refinement of outlier landmarks
     bool m_RefineOutliers;
+
+    /// Flag for optional exclusion of outlier landmarks from the final, fitted transformation
+    bool m_ExcludeOutliers;
     
     /// Threshold for detecting outliers based on landmark fitting residuals.
     Types::Coordinate m_LandmarkFitResidualThreshold;

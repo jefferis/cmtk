@@ -864,6 +864,18 @@ case ${RUNTEST} in
         run detect_adni_phantom --write-labels ${tmpdir}/labels.nii --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan.nii ${tmpdir}/magphan.xml
         check_results labels.nii rigid.xform affine.xform magphan.xml
 	;;
+    detect_adni_phantomRefineXform)
+        run detect_adni_phantom --tolerant --refine-xform --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan_lowcontrast.nii ${tmpdir}/magphan.xml
+        check_results rigid.xform affine.xform magphan.xml
+	;;
+    detect_adni_phantomRefineOutliers)
+        run detect_adni_phantom --tolerant --refine-outliers --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan_lowcontrast.nii ${tmpdir}/magphan.xml
+        check_results rigid.xform affine.xform magphan.xml
+	;;
+    detect_adni_phantomExcludeOutliers)
+        run detect_adni_phantom --tolerant --exclude-outliers --write-rigid ${tmpdir}/rigid.xform --write-affine ${tmpdir}/affine.xform spgr_magphan_lowcontrast.nii ${tmpdir}/magphan.xml
+        check_results rigid.xform affine.xform magphan.xml
+	;;
     detect_adni_phantomErodeNonStd)
         run detect_adni_phantom --erode-snr 20 --erode-cnr 2 spgr_magphan.nii ${tmpdir}/magphan.xml
         check_results magphan.xml

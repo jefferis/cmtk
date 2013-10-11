@@ -249,7 +249,14 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
     
     if ( this->m_Landmarks[i].m_Valid )
+      {
       landmarkList.push_back( LandmarkPair( MagphanEMR051::SphereName( i ), MagphanEMR051::SphereCenter( i ), this->m_Landmarks[i].m_Location ) );
+      // optional: refine initial xform using current landmark list
+      if ( this->m_Parameters.m_RefineXformEachLandmark )
+	{
+	intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+	}
+      }
     }
 
   // remove unreliable SNR sphere or CNR centroid before making final fit
@@ -281,13 +288,22 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 	}
       }
     
-    this->ExcludeOutlierLandmarks();
-    
     this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
     this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
     
     this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
     this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+    }
+
+  if ( this->m_Parameters.m_ExcludeOutliers )
+    {
+    this->ExcludeOutlierLandmarks();
+
+    this->m_PhantomToImageTransformationAffine = FitAffineToLandmarks( landmarkList ).GetAffineXform();
+    this->m_PhantomToImageTransformationAffine->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation
+    
+    this->m_PhantomToImageTransformationRigid = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+    this->m_PhantomToImageTransformationRigid->ChangeCenter( MagphanEMR051::SphereCenter( 0 ) ); // SNR sphere center as center of rotation    
     }
 
   this->ComputeLandmarkFitResiduals( *(this->m_PhantomToImageTransformationAffine) );
