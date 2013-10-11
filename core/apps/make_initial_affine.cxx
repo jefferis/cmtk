@@ -159,9 +159,9 @@ doMain( const int argc, const char* argv[] )
 #ifdef CMTK_USE_SQLITE
     if ( !updateDB.empty() )
       {
-      cmtk::ImageXformDB db( updateDB );
       try
 	{
+	cmtk::ImageXformDB db( updateDB );
 	db.AddImagePairXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
 	}
       catch ( const cmtk::SQLite::Exception& ex )
