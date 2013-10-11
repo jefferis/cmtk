@@ -314,7 +314,6 @@ IF(CMTK_USE_DCMTK)
     dcm2imageEmbedPatientNameNifti
     dcm2imageEmbedSeriesDescriptionNifti
     dcm2imageEmbedStudyIDDateNifti
-    dcm2imageEmbedDefaultNifti
     dcm2imageMosaic
     dcm2imageMosaicPACS
     dcm2imageDiffusionGEXML

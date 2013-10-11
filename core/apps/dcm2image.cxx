@@ -146,7 +146,7 @@ using cmtk::ImageFileDICOM;
 using cmtk::ImageStackDICOM;
 
 /// Selector for embedded image information.
-ImageStackDICOM::EmbedInfoEnum EmbedInfo = ImageStackDICOM::EMBED_STUDYID_STUDYDATE;
+ImageStackDICOM::EmbedInfoEnum EmbedInfo = ImageStackDICOM::EMBED_NONE;
 
 /// Class handling a list of image stacks, i.e., volumes.
 class VolumeList : 

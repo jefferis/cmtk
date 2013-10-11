@@ -639,19 +639,19 @@ case ${RUNTEST} in
       check_results xform.txt
       ;;
     dcm2image)
-	run dcm2image --embed None -O ${tmpdir}/00%n.hdr dcm/
+	run dcm2image -O ${tmpdir}/00%n.hdr dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
     dcm2imageSubs)
-        run dcm2image --embed None -O ${tmpdir}/%D_%R_%E%N.nii dcm/
+        run dcm2image -O ${tmpdir}/%D_%R_%E%N.nii dcm/
 	check_results 3-plane-localizer_5.104_1.52-1.nii 3-plane-localizer_5.104_1.52-2.nii 3-plane-localizer_5.104_1.52-3.nii
 	;;
     dcm2imageZ)
-	run dcm2image --embed None -O ${tmpdir}/00%n.nii dcmz/
+	run dcm2image -O ${tmpdir}/00%n.nii dcmz/
 	check_results 001.nii 002.nii 003.nii
 	;;
     dcm2imageNrrd)
-	run dcm2image --embed None -O ${tmpdir}/00%n.nhdr dcm/
+	run dcm2image -O ${tmpdir}/00%n.nhdr dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
     dcm2imageEmbedPatientNameAnalyze)
@@ -670,44 +670,40 @@ case ${RUNTEST} in
         run dcm2image --embed StudyID_StudyDate -O ${tmpdir}/00%n.nii dcm/
 	check_results 001.nii
 	;;
-    dcm2imageEmbedDefaultNifti)
-	run dcm2image -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
-	check_results 001.nii
-	;;
     dcm2imageEmbedPatientNameNrrd)
 	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nhdr dcm/
 	check_results 001.nhdr 002.nhdr 003.nhdr
 	;;
     dcm2imageMosaic)
-	run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/00.nii mr-mosaic/
+	run dcm2image -x --include-identifiers -O ${tmpdir}/00.nii mr-mosaic/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageMosaicPACS)
-	run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
+	run dcm2image -x --include-identifiers -O ${tmpdir}/00.nii mr-mosaic-pacs/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXML)
-        run dcm2image -x --tolerance 1e-4 --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+        run dcm2image -x --tolerance 1e-4 --include-identifiers -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     dcm2imageDiffusionSiemensXML)
-        run dcm2image -x --include-identifiers --embed None -O ${tmpdir}/%n.nii mr-dwi-siemens/
+        run dcm2image -x --include-identifiers -O ${tmpdir}/%n.nii mr-dwi-siemens/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml 3.nii 3.nii.xml 4.nii 4.nii.xml
 	;;
     dcm2imageMosaicAnon)
-	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic/
+	run dcm2image -x -O ${tmpdir}/00.nii mr-mosaic/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageMosaicPACSAnon)
-	run dcm2image -x --embed None -O ${tmpdir}/00.nii mr-mosaic-pacs/
+	run dcm2image -x -O ${tmpdir}/00.nii mr-mosaic-pacs/
 	check_results 00.nii 00.nii.xml
 	;;
     dcm2imageDiffusionGEXMLAnon)
-        run dcm2image -x --tolerance 1e-4 --embed None -O ${tmpdir}/%n.nii mr-dwi-ge/
+        run dcm2image -x --tolerance 1e-4 -O ${tmpdir}/%n.nii mr-dwi-ge/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml
 	;;
     dcm2imageDiffusionSiemensXMLAnon)
-        run dcm2image -x --embed None -O ${tmpdir}/%n.nii mr-dwi-siemens/
+        run dcm2image -x -O ${tmpdir}/%n.nii mr-dwi-siemens/
 	check_results 1.nii 1.nii.xml 2.nii 2.nii.xml 3.nii 3.nii.xml 4.nii 4.nii.xml
 	;;
     dcm2imageExclude)
@@ -719,7 +715,7 @@ case ${RUNTEST} in
 	check_results image.nii
 	;;
     dcm2imageSubsDirName)
-        run dcm2image -x --tolerance 1e-4 --include-identifiers --embed None -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
+        run dcm2image -x --tolerance 1e-4 --include-identifiers -O ${tmpdir}/%1/%0.nii mr-dwi-ge/ mr-dwi-siemens/
 	check_results mr-dwi-ge/I0150.dcm.nii mr-dwi-ge/I0150.dcm.nii.xml mr-dwi-ge/I0280.dcm.nii mr-dwi-ge/I0280.dcm.nii.xml
 	check_results mr-dwi-siemens/I0001.dcm.nii mr-dwi-siemens/I0001.dcm.nii.xml mr-dwi-siemens/I0002.dcm.nii mr-dwi-siemens/I0002.dcm.nii.xml 
 	check_results mr-dwi-siemens/I0003.dcm.nii mr-dwi-siemens/I0003.dcm.nii.xml mr-dwi-siemens/I0004.dcm.nii mr-dwi-siemens/I0004.dcm.nii.xml
