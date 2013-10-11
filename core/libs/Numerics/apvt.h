@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,7 +123,9 @@ Dot product
 template<class T>
 T vdotproduct(const_raw_vector<T> v1, const_raw_vector<T> v2)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(v1.GetLength()==v2.GetLength());
+#endif
     if( v1.GetStep()==1 && v2.GetStep()==1 )
     {
         //
@@ -199,7 +202,9 @@ Copy one vector into another
 template<class T>
 void vmove(raw_vector<T> vdst, const_raw_vector<T> vsrc)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
@@ -277,7 +282,9 @@ Copy one vector multiplied by -1 into another.
 template<class T>
 void vmoveneg(raw_vector<T> vdst, const_raw_vector<T> vsrc)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
@@ -357,7 +364,9 @@ Copy one vector multiplied by a number into another vector.
 template<class T, class T2>
 void vmove(raw_vector<T> vdst, const_raw_vector<T> vsrc, T2 alpha)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
@@ -441,7 +450,9 @@ Vector addition
 template<class T>
 void vadd(raw_vector<T> vdst, const_raw_vector<T> vsrc)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
@@ -525,7 +536,9 @@ Add one vector multiplied by a number to another vector.
 template<class T, class T2>
 void vadd(raw_vector<T> vdst, const_raw_vector<T> vsrc, T2 alpha)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
@@ -609,7 +622,9 @@ Vector subtraction
 template<class T>
 void vsub(raw_vector<T> vdst, const_raw_vector<T> vsrc)
 {
+#ifndef NO_AP_ASSERT
     ap_error::make_assertion(vdst.GetLength()==vsrc.GetLength());
+#endif
     if( vdst.GetStep()==1 && vsrc.GetStep()==1 )
     {
         //
