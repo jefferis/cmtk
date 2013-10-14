@@ -48,19 +48,27 @@ cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringLis
       ++it;
       if ( it == stringList.end() )
 	{
-	cmtk::StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
+	StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
 	throw ExitException( 1 );
 	}
       }
     
-    Xform::SmartPtr xform( XformIO::Read( it->c_str() ) );
-    if ( ! xform ) 
+    try
       {
-      cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
+      Xform::SmartPtr xform( XformIO::Read( it->c_str() ) );
+      if ( ! xform ) 
+	{
+	StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
+	throw ExitException( 1 );
+	}
+
+      xformList.Add( xform, inverse );
+      }
+    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      StdErr << "ERROR: singular matrix encountered reading transformation from " << *it << "\n";
       throw ExitException( 1 );
       }
-    
-    xformList.Add( xform, inverse );
     }
   
   return xformList;
