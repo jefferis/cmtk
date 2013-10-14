@@ -192,7 +192,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 	      byte* rowDataPtr = ThisConst->m_Data[img] + rowofs;
 	      for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++rowDataPtr )
 		{
-		const int baselineData = *rowDataPtr;
+		const byte baselineData = *rowDataPtr;
 		if ( (count[x] == numberOfImages) || 
 		     ((count[x] == numberOfImages-1) && (baselineData == paddingValue) ) ) // full count?
 		  {
