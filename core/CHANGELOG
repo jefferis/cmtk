@@ -1,5 +1,7 @@
 Release CMTK-2.4.0:
 
+(r4983) Added: new "stream_pixels" tool should make it easier to stream image
+        data through pipeline-based tools such as Camino's.
 (r4978) Changed: "dcm2image" tool no longer embeds study information into
 	Nifti header; this is for subject privacy when data are going to
 	be shared.
