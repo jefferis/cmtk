@@ -909,6 +909,22 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/dof2mat --transpose parc1_parc2_9dof.xform > ${tmpdir}/matrix"
 	check_results matrix
         ;;
+    stream_pixels)
+        run_eval "${BINDIR}/stream_pixels jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
+	check_results stream.raw
+	;;
+    stream_pixelsConvert)
+        run_eval "${BINDIR}/stream_pixels --convert int jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
+	check_results stream.raw
+	;;
+    stream_pixelsReorient)
+        run_eval "${BINDIR}/stream_pixels --reorient RIP jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
+	check_results stream.raw
+	;;
+    stream_pixelsEndian)
+        run_eval "${BINDIR}/stream_pixels --change-endian jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
+	check_results stream.raw
+	;;
     epiunwarp)
         export CMTK_NUM_THREADS=1
         run epiunwarp --no-init-shift-com --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd

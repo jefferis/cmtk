@@ -786,6 +786,14 @@ LIST(APPEND testList
   statisticsLabelsAllUpToLo)
 
 # ==========================================
+# Tests for "stream_pixels" tool
+LIST(APPEND testList 
+	    stream_pixels
+	    stream_pixelsConvert
+	    stream_pixelsReorient
+	    stream_pixelsEndian)
+
+# ==========================================
 # Tests for "ttest" tool
 LIST(APPEND testList ttestDefault ttestLog ttestAbsLog ttestInvert
   ttestPaired ttestCrossCorrelation ttestZScores
