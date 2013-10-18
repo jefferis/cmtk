@@ -546,8 +546,15 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
       {
       regionMaskVectorErode[i] = ( regionMask->GetDataAt( i ) != 0 );
       }
-    
-    regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVectorErode, 1 /* polynomial degree */ ).GetCorrectedData() );
+
+    try
+      {
+      regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVectorErode, 1 /* polynomial degree */ ).GetCorrectedData() );
+      }
+    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& ex )
+      {
+      // nothing to do; regionVolume still has its data
+      }
     }
   
   // threshold to mask out background in bias-corrected region
@@ -689,7 +696,15 @@ cmtk::DetectPhantomMagphanEMR051::GetSphereMeanStdDeviation( Types::DataItem& me
   // if bias correction is requested by caller, replace data with corrected data
   if ( biasFieldDegree )
     {
-    dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
+    try
+      {
+      dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
+      }
+    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& ex )
+      {
+      // dataArray should still be the original data, but doesn't hurt to assign again, just in case.
+      dataArray = dataVolume->GetData();
+      }
     }
 
 
