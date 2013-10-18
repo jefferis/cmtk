@@ -399,8 +399,15 @@ ReformatPullback()
       {
       if ( TargetVolumeName )
 	{
-	cmtk::ImageXformDB db( updateDB );
-	db.AddImage( OutputImageName, TargetVolumeName );
+	try 
+	  {
+	  cmtk::ImageXformDB db( updateDB );
+	  db.AddImage( OutputImageName, TargetVolumeName );
+	  }
+	catch ( const cmtk::SQLite::Exception& ex )
+	  {
+	  cmtk::StdErr << "ERROR: updating SQLite database failed - " << ex.what() <<  "\n";
+	  }	
 	}
       }
 #endif

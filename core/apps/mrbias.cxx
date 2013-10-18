@@ -312,8 +312,15 @@ doMain( const int argc, const char *argv[] )
 #ifdef CMTK_USE_SQLITE
     if ( !updateDB.empty() )
       {
-      cmtk::ImageXformDB db( updateDB );
-      db.AddImage( FNameOutputImage, FNameInputImage );
+      try
+	{
+	cmtk::ImageXformDB db( updateDB );
+	db.AddImage( FNameOutputImage, FNameInputImage );
+	}
+      catch ( const cmtk::SQLite::Exception& ex )
+	{
+	cmtk::StdErr << "ERROR: updating SQLite database failed - " << ex.what() <<  "\n";
+	}	
       }
 #endif
     }
@@ -326,8 +333,15 @@ doMain( const int argc, const char *argv[] )
 #ifdef CMTK_USE_SQLITE
     if ( !updateDB.empty() )
       {
-      cmtk::ImageXformDB db( updateDB );
-      db.AddImage( FNameBiasFieldAdd, FNameInputImage );
+      try
+	{
+	cmtk::ImageXformDB db( updateDB );
+	db.AddImage( FNameBiasFieldAdd, FNameInputImage );
+	}
+      catch ( const cmtk::SQLite::Exception& ex )
+	{
+	cmtk::StdErr << "ERROR: updating SQLite database failed - " << ex.what() <<  "\n";
+	}	
       }
 #endif
     }
@@ -340,8 +354,15 @@ doMain( const int argc, const char *argv[] )
 #ifdef CMTK_USE_SQLITE
     if ( !updateDB.empty() )
       {
-      cmtk::ImageXformDB db( updateDB );
-      db.AddImage( FNameBiasFieldMul, FNameInputImage );
+      try
+	{
+	cmtk::ImageXformDB db( updateDB );
+	db.AddImage( FNameBiasFieldMul, FNameInputImage );
+	}
+      catch ( const cmtk::SQLite::Exception& ex )
+	{
+	cmtk::StdErr << "ERROR: updating SQLite database failed - " << ex.what() <<  "\n";
+	}	
       }
 #endif
     }
