@@ -36,6 +36,7 @@
 #include <Base/cmtkUniformVolume.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <algorithm>
 
@@ -53,7 +54,15 @@ AffineXform::MakeIdentityXform ()
   Types::Coordinate* scales = this->RetScales();
   if ( ! m_LogScaleFactors )
     scales[0] = scales[1] = scales[2] = 1;
-  this->ComposeMatrix();
+  try
+    {
+    this->ComposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: identify matrix construction created singular matrix - this should not happen! Aborting...\n";
+    throw ExitException( 1 );
+    }
 }
 
 AffineXform::AffineXform ( const AffineXform& other ) :
