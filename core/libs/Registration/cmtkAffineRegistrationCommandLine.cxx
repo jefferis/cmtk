@@ -233,7 +233,15 @@ AffineRegistrationCommandLine
       Study2 = typedStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
-      this->SetInitialTransformation( affineXform->GetInverse() );
+      try
+	{
+	this->SetInitialTransformation( affineXform->GetInverse() );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix read from initialization file\n";
+	throw ExitException( 1 );
+	}
       }
 
     typedStream.Close();
