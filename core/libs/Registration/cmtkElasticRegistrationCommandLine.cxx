@@ -258,7 +258,16 @@ ElasticRegistrationCommandLine
       Study2 = classStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       classStream >> affineXform;
-      this->SetInitialTransformation( affineXform->GetInverse() );
+
+      try
+	{
+	this->SetInitialTransformation( affineXform->GetInverse() );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )	
+	{
+	StdErr << "ERROR: singular matrix read from initialization file in cmtk::ElasticRegistrationCommandLine constructor\n";
+	throw ExitException( 1 );
+	}
       }
     
     classStream.Close();
