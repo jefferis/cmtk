@@ -297,7 +297,15 @@ doMain( int argc, const char* argv[] )
   if ( InWarpName ) 
     {
     cmtk::ClassStreamInput stream( InWarpName );
-    stream >> warpXform;
+    if ( stream.IsValid() )
+      {
+      stream >> warpXform;
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: cannot read transformation from " << InWarpName << "\n";
+      throw cmtk::ExitException( 1 );
+      }
     } 
   else
     {
@@ -314,7 +322,14 @@ doMain( int argc, const char* argv[] )
       }
       
     cmtk::ClassStreamOutput stream( OutWarpName, cmtk::ClassStreamOutput::MODE_WRITE );
-    stream << warpXform;
+    if ( stream.IsValid() )
+      {
+      stream << warpXform;
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: cannot write to " << OutWarpName << "\n";      
+      }
     }
 
   if ( OutImageName ) 
