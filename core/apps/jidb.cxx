@@ -247,7 +247,7 @@ doMain( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    return 1;
+    throw cmtk::ExitException( 1 );
     }
 
   /*
@@ -257,7 +257,7 @@ doMain( const int argc, const char* argv[] )
   if ( ! volume || ! volume->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read image " << InputFilePath << "\n";
-    return 1;
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr refImage;
@@ -267,7 +267,7 @@ doMain( const int argc, const char* argv[] )
     if ( ! refImage || ! refImage->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << ReferenceImagePath << "\n";
-      return 1;
+      throw cmtk::ExitException( 1 );
       }
     }
 
@@ -282,13 +282,22 @@ doMain( const int argc, const char* argv[] )
       cmtk::AffineXform xform;
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
-	stream >> xform;
+	try
+	  {
+	  stream >> xform;
+	  }
+	catch ( const cmtk::Exception& ex )
+	  {
+	  cmtk::StdErr << "ERROR: " << ex.what() << "\n";
+	  throw cmtk::ExitException( 1 );
+	  }
 	xformsToPassImages.push_back( cmtk::Xform::SmartPtr( xform.Clone() ) );
 	}
       }
     else
       {
       cmtk::StdErr << "ERROR: Could not open transformation file" << ImportXformsPath << "\n";
+      throw cmtk::ExitException( 1 );
       }
     }
 
