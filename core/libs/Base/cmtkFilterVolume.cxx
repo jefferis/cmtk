@@ -39,7 +39,6 @@
 
 #include <System/cmtkProgress.h>
 #include <System/cmtkThreads.h>
-#include <System/cmtkException.h>
 
 #ifdef _OPENMP
 #  include <omp.h>
@@ -58,7 +57,7 @@ FilterVolume::GaussianFilter
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) 
-    throw( Exception( "Missing image data" ) );
+    return TypedArray::SmartPtr( NULL );
   
   TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
@@ -138,8 +137,8 @@ FilterVolume
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData )
-    throw( Exception( "Missing image data" ) );
- 
+    return TypedArray::SmartPtr( NULL );
+  
   const Types::DataItemRange rangeSubj = subjectData->GetRange();
   
   const size_t numBins = 1024;
@@ -260,7 +259,7 @@ FilterVolume::StudholmeFilter
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData )
-    throw( Exception( "Missing image data" ) );
+    return TypedArray::SmartPtr( NULL );
  
   const Types::DataItemRange range = averageData->GetRange();
   const size_t numBins = std::min( 128, 1 + static_cast<int>((range.Width()) / binWidth) );
@@ -405,7 +404,7 @@ FilterVolume::StudholmeFilter
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) 
-    throw( Exception( "Missing image data" ) );
+    return TypedArray::SmartPtr( NULL );
  
   const Types::DataItemRange range = averageData->GetRange();
 
