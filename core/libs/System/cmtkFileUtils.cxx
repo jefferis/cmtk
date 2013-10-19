@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,7 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 
 #ifdef HAVE_UNISTD_H
@@ -83,7 +84,6 @@ RecursiveMkPrefixDir
 ( const std::string& filename, const int permissions )
 {
   char prefix[PATH_MAX];
-  struct stat buf;
   for ( unsigned i=0; filename[i]; ++i ) 
     {
     if ( (filename[i] == CMTK_PATH_SEPARATOR) || (filename[i] == '/') ) 
@@ -100,15 +100,13 @@ RecursiveMkPrefixDir
 	prefix[i] = '\\';
 	}
 #endif
-      if ( stat( prefix, &buf ) != 0 ) 
-	{
 #ifdef _MSC_VER
-	int result = _mkdir( prefix );
+      const int result = _mkdir( prefix );
 #else
-	int result = mkdir( prefix, permissions );
+      const int result = mkdir( prefix, permissions );
 #endif
-	if ( result ) return result;
-	}
+      if ( result && result != EEXIST ) 
+	return result;
       }
     prefix[i] = filename[i];
     }
