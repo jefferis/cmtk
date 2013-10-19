@@ -54,6 +54,8 @@
 #  include <windows.h>
 #endif
 
+#include <iostream>
+
 namespace 
 cmtk
 {
@@ -105,8 +107,10 @@ RecursiveMkPrefixDir
 #else
       const int result = mkdir( prefix, permissions );
 #endif
-      if ( result && result != EEXIST ) 
+      if ( result && errno != EEXIST ) 
+	{
 	return result;
+	}
       }
     prefix[i] = filename[i];
     }
