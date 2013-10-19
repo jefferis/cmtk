@@ -209,13 +209,13 @@ ElasticRegistrationCommandLine
   catch ( const CommandLine::Exception& ex )
     {
     StdErr << ex << "\n";
-    exit( 1 );
+    throw ExitException( 1 );
     }
 
   if ( (OptimizerStepFactor <= 0) || (OptimizerStepFactor >= 1) ) 
     {
     StdErr << "ERROR: step factor value " << OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
-    exit( 1 );
+    throw ExitException( 1 );
     }
 
   if ( ! clArg2.empty() ) 
@@ -240,7 +240,7 @@ ElasticRegistrationCommandLine
     if ( ! classStream.IsValid() ) 
       {
       StdErr << "ERROR: Could not open studylist archive " << InputStudylist << ".\n";
-      exit( 1 );
+      throw ExitException( 1 );
       }
     
     classStream.Seek ( "registration" );
@@ -341,7 +341,7 @@ ElasticRegistrationCommandLine
     else
       {
       StdErr << "ERROR: rigidity constraint mapcould not be read from " << this->RigidityConstraintMapFilename << "\n";
-      exit( 1 );
+      throw ExitException( 1 );
       }
     }
 
