@@ -107,7 +107,7 @@ RecursiveMkPrefixDir
 #else
       const int result = mkdir( prefix, permissions );
 #endif
-      if ( result && errno != EEXIST ) 
+      if ( result && errno != EEXIST && errno != EISDIR ) 
 	{
 	return result;
 	}
