@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,7 +73,15 @@ AffineXform::AffineXform ( const AffineXform& other ) :
   (*this->m_ParameterVector) = (*other.m_ParameterVector);
   this->m_LogScaleFactors = other.m_LogScaleFactors;
   this->NumberDOFs = other.NumberDOFs;
-  this->ComposeMatrix();
+  try
+    {
+    this->ComposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: construction from existing AffineXform object created singular matrix - this should not happen! Aborting...\n";
+    throw ExitException( 1 );
+    }
 }
 
 AffineXform::AffineXform
@@ -112,7 +120,16 @@ AffineXform::operator=( const AffineXform& other )
   (*this->m_ParameterVector) = (*other.m_ParameterVector);
   this->NumberDOFs = other.NumberDOFs;
   this->m_LogScaleFactors = other.m_LogScaleFactors;
-  this->ComposeMatrix();
+  try
+    {
+    this->ComposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: assignment from existing AffineXform object created singular matrix - this should not happen! Aborting...\n";
+    throw ExitException( 1 );
+    }
+
   return *this;
 }
 
