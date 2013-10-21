@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -464,6 +464,21 @@ public:
   virtual void BlockCopy( Self& target, const size_t toOffset, const size_t fromOffset, const size_t blockLength ) const 
   {
     this->ConvertSubArray( target.GetDataPtr( toOffset ), target.GetType(), fromOffset, blockLength );
+  }
+
+  /// Exception class for array size mismatched.
+  class SizeMismatchException : public Exception {};
+
+  /** Copy other array.
+   * This is a convenience wrapper for ConvertSubArray().
+   */
+  virtual void Copy( const Self& other )
+  {
+    if ( this->GetDataSize() != other.GetDataSize() )
+      {
+      throw SizeMismatchException();
+      }
+    other.ConvertSubArray( this->GetDataPtr(), this->GetType(), 0, this->GetDataSize() );
   }
 
   /** Exchange two data blocks.
