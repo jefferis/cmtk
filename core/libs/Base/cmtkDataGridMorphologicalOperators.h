@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -60,12 +60,6 @@ public:
 
   /// Constructor: link to DataGrid object.
   DataGridMorphologicalOperators( const DataGrid::SmartConstPtr& dataGrid );
-
-  /** Eliminating padding data by neighborhood voting.
-   *\return Returns "true" if data was actually changed, "false" if no change
-   *  was necessary or possible.
-   */
-  bool EliminatePaddingVoting( const int iterations = 1 /*!< Number of elimination iterations.*/ );
 
   /** Return map of region boundaries.
    * This function returns a byte data array where each pixel is one if it is
