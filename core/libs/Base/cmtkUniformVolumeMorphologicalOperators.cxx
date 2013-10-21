@@ -45,14 +45,14 @@ cmtk
 UniformVolumeMorphologicalOperators
 ::UniformVolumeMorphologicalOperators( const UniformVolume::SmartConstPtr& uniformVolume ) 
   : m_UniformVolume( uniformVolume ) 
-{
-  if ( !this->m_UniformVolume->GetData() )
-    throw Exception( "ERROR: UniformVolume object given to UniformVolumeMorphologicalOperators constructor does not have a data array" );
-}
+{}
 
 TypedArray::SmartPtr
 UniformVolumeMorphologicalOperators::GetErodedByDistance( const Types::Coordinate erodeBy ) const
 {
+  if ( !this->m_UniformVolume->GetData() )
+    return TypedArray::SmartPtr( NULL );
+  
   TypedArray::SmartPtr erodedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume), DistanceMap::INSIDE ).Get()->GetData();
   erodedData->Binarize( erodeBy + 0.5 );
   return erodedData->Convert( TYPE_BYTE );
@@ -61,6 +61,9 @@ UniformVolumeMorphologicalOperators::GetErodedByDistance( const Types::Coordinat
 TypedArray::SmartPtr
 UniformVolumeMorphologicalOperators::GetDilatedByDistance( const Types::Coordinate dilateBy ) const
 {
+  if ( !this->m_UniformVolume->GetData() )
+    return TypedArray::SmartPtr( NULL );
+  
   TypedArray::SmartPtr dilatedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume) ).Get()->GetData();
   dilatedData->Binarize( dilateBy + 0.5 );
   dilatedData->Rescale( -1 /*scale*/, +1 /*offset*/ ); // this is binary inversion, 0->1, 1->0
