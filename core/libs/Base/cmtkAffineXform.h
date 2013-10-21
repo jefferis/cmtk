@@ -162,7 +162,9 @@ public:
    */
   AffineXform ( const MatrixType& matrix, const Types::Coordinate* center = NULL );
 
-  /// Copy transform by reference.
+  /** Copy transform by reference.
+   *\todo This is calling this->ComposeMatrix(), which can throw an exception and is probably not necessary.
+   */
   AffineXform ( const AffineXform& other );
   
   /** Virtual destructor.
@@ -454,7 +456,9 @@ public:
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate step_mm = 1 ) const;
   
-  /// Assignment operator.
+  /** Assignment operator.
+   *\todo This is calling this->ComposeMatrix(), which can throw an exception and is probably not necessary.
+   */
   AffineXform& operator=( const AffineXform& other );
 
 protected:
