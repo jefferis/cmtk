@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,7 +33,8 @@
 #include "cmtkDataGridMorphologicalOperators.h"
 
 #include <Base/cmtkTemplateArray.h>
-#include <System/cmtkException.h>
+
+#include <System/cmtkExitException.h>
 
 #include <vector>
 
@@ -44,21 +45,20 @@ cmtk
 DataGridMorphologicalOperators
 ::DataGridMorphologicalOperators( const DataGrid::SmartConstPtr& dataGrid ) 
   : m_DataGrid( dataGrid ) 
-{
-  if ( !this->m_DataGrid->GetData() )
-    throw Exception( "ERROR: DataGrid object given to DataGridMorphologicalOperators constructor does not have a data array" );
-}
+{}
 
 bool
 DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
 {
+  TypedArray::SmartPtr data = this->m_DataGrid->GetData();
+  if ( ! (data && data->GetPaddingFlag()) )
+    return false;
+
+  TypedArray::SmartPtr result( data->Clone() );
   bool changed = false;
+
   for ( int it = 0; (it < iterations) && changed; ++it )
     {
-    const TypedArray* data = this->m_DataGrid->GetData();
-    TypedArray::SmartPtr result = data->Clone();
-    
-    if ( !data->GetPaddingFlag() ) return changed;
     const Types::DataItem dataPadding = data->GetPaddingValue();
     
     short valueMap[256];  
@@ -115,6 +115,16 @@ DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
 	  } // for x
 	} // for y
       } // for z
+
+    try
+      {
+      data->Copy( *result );
+      }
+    catch ( const TypedArray::SizeMismatchException& ex )
+      {
+      StdErr << "ERROR: array sizes should match in cmtk::DataGridMorphologicalOperators::ElimninatePaddingVoting\n";
+      throw ExitException( 1 );
+      }
     }
   
   return changed;
@@ -124,9 +134,13 @@ TypedArray::SmartPtr
 DataGridMorphologicalOperators::GetEroded( const int iterations ) const
 {
   TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
+  if ( ! dataArray )
+    return TypedArray::SmartPtr( NULL );
+
+  // if not byte array, convert first (copy will be de-allocated automatically upon exiting this function).
   if ( dataArray->GetType() != TYPE_BYTE ) 
     {
-    throw Exception( "ERROR: convert data to byte before calling DataGridMorphologicalOperators::GetDataErode()" );
+    dataArray = dataArray->Convert( TYPE_BYTE );
     }
 
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
@@ -181,9 +195,13 @@ TypedArray::SmartPtr
 DataGridMorphologicalOperators::GetDilated( const int iterations ) const
 {
   TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
+  if ( ! dataArray )
+    return TypedArray::SmartPtr( NULL );
+
+  // if not byte array, convert first (copy will be de-allocated automatically upon exiting this function).
   if ( dataArray->GetType() != TYPE_BYTE ) 
     {
-    throw Exception( "ERROR: convert data to byte before calling DataGridMorphologicalOperators::GetDataDilate()" );
+    dataArray = dataArray->Convert( TYPE_BYTE );
     }
   
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
@@ -237,6 +255,9 @@ TypedArray::SmartPtr
 DataGridMorphologicalOperators::GetBoundaryMap( const bool multiValued ) const
 {
   TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
+  if ( ! dataArray )
+    return TypedArray::SmartPtr( NULL );
+
   ShortArray::SmartPtr boundaryArray = ShortArray::Create( dataArray->GetDataSize() );
   short* boundary = boundaryArray->GetDataPtrConcrete();
 
