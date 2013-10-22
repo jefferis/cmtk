@@ -73,11 +73,17 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
     {
     double orientThis[6];
     if ( 6 != sscanf( this->GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%30lf%*c%30lf%*c%30lf%*c%30lf%*c%30lf%*c%30lf", orientThis, orientThis+1, orientThis+2, orientThis+3, orientThis+4, orientThis+5 ) )
+      {
+      StdErr << "ERROR: unable to parse image orientation from '" << this->GetTagValue( DCM_ImageOrientationPatient ).c_str() << "'\n";
       return false;
+      }
 
     double orientOther[6];
     if ( 6 != sscanf( other.GetTagValue( DCM_ImageOrientationPatient ).c_str(), "%30lf%*c%30lf%*c%30lf%*c%30lf%*c%30lf%*c%30lf", orientOther, orientOther+1, orientOther+2, orientOther+3, orientOther+4, orientOther+5 ) )
+      {
+      StdErr << "ERROR: unable to parse image orientation from '" << other.GetTagValue( DCM_ImageOrientationPatient ).c_str() << "'\n";
       return false;
+      }
 
     for ( int i = 0; i < 6; ++i )
       {
@@ -319,7 +325,7 @@ ImageFileDICOM::DoVendorTagsGE()
 	
 	if ( this->m_Document->getValue( DcmTagKey(0x0043,0x1039), tmpStr ) > 0 ) // bValue tag
 	  {
-	  if ( 1 == sscanf( tmpStr, "%6d\\%*c", &tmpInt ) )
+	  if ( 1 == sscanf( tmpStr, "%10d\\%*c", &tmpInt ) )
 	    {
 	    this->m_BValue = static_cast<Sint16>( tmpInt );
 
