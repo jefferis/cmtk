@@ -281,9 +281,21 @@ ImagePairNonrigidRegistrationCommandLine
       if ( affineXform )
 	{
 	if ( this->m_InitialTransformationInverse )
-	  this->SetInitialTransformation( affineXform->GetInverse() );
+	  {
+	  try
+	    {
+	    this->SetInitialTransformation( affineXform->GetInverse() );
+	    }
+	  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	    {
+	    StdErr << "ERROR: singular matrix from initialization file in cmtk::ImagePairNonrigidRegistrationCommandLine constructor\n";
+	    throw ExitException( 1 );
+	    }
+	  }
 	else
+	  {
 	  this->SetInitialTransformation( affineXform );
+	  }
 	}
       else
 	{
