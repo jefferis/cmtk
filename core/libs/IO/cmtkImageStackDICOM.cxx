@@ -121,6 +121,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:ImageOrientationPatient",      { "\t", NULL, NULL, "\n" } },
     { "image",                              { "\t", "\n", "\t", "\n" } },
     { "dcmFile",                            { "\t\t", NULL, NULL, "\n" } },
+    { "dicom:AcquisitionTime",              { "\t\t", NULL, NULL, "\n" } },
     { "dicom:ImagePositionPatient",         { "\t\t", NULL, NULL, "\n" } },
     { "dicom:RescaleIntercept",             { "\t\t", NULL, NULL, "\n" } },
     { "dicom:RescaleSlope",                 { "\t\t", NULL, NULL, "\n" } },
@@ -277,6 +278,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
 
     Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dicom:AcquisitionTime" ), 0, (*it)->GetTagValue( DCM_AcquisitionTime ).c_str() ) );
     Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dicom:ImagePositionPatient" ), 0, (*it)->GetTagValue( DCM_ImagePositionPatient ).c_str() ) );
 
     if ( (*it)->GetTagValue( DCM_RescaleIntercept, "missing" ) != "missing" )

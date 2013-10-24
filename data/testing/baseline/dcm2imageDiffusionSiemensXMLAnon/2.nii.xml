@@ -15,6 +15,7 @@
 	<dicom:ImageOrientationPatient>1\0\0\0\1\0</dicom:ImageOrientationPatient>
 	<image>
 		<dcmFile>I0004.dcm</dcmFile>
+		<dicom:AcquisitionTime>095307.062500</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-1079.2911111712\-1082.3832666874\-52.805274963379</dicom:ImagePositionPatient>
 	</image>
 </stack>

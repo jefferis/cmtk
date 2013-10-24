@@ -19,14 +19,17 @@
 	<dicom:ImageOrientationPatient>1\-0\0\-0\1\0</dicom:ImageOrientationPatient>
 	<image>
 		<dcmFile>I0280.dcm</dcmFile>
+		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\0.599747</dicom:ImagePositionPatient>
 	</image>
 	<image>
 		<dcmFile>I0281.dcm</dcmFile>
+		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\-1.90025</dicom:ImagePositionPatient>
 	</image>
 	<image>
 		<dcmFile>I0282.dcm</dcmFile>
+		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\-4.40025</dicom:ImagePositionPatient>
 	</image>
 </stack>

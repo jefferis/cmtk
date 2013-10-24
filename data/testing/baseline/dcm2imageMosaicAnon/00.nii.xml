@@ -9,6 +9,7 @@
 	<dicom:ImageOrientationPatient>1\0\0\0\0.95212939539477\-0.3056952967011</dicom:ImageOrientationPatient>
 	<image>
 		<dcmFile>fmri.dcm</dcmFile>
+		<dicom:AcquisitionTime>144307.010000</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-315.36324739456\-340.71552136397\89.11576887014</dicom:ImagePositionPatient>
 	</image>
 </stack>

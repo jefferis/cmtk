@@ -174,7 +174,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     }
 
   // read the string tags that we need for later
-  const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName,
+  const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName, DCM_AcquisitionTime,
 					  DCM_PatientsName, 
 					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_InversionTime, DCM_ImagingFrequency, DCM_SequenceName,
 					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName,
