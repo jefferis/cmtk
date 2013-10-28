@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -68,6 +68,7 @@ SET(cmtkBase_SRCS
   cmtkImageOperationHistogramEqualization.cxx
   cmtkImageOperationMapValues.cxx
   cmtkImageOperationRegionFilter.cxx
+  cmtkImageOperationResampleIsotropic.cxx
   cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx
   cmtkImageOperationOtsuThreshold.cxx

@@ -241,6 +241,7 @@ LIST(APPEND testList
   convertxCropThresholdWriteRegion
   convertxCropRegion1
   convertxCropRegion2
+  convertxResample
   convertxDownsample
   convertxDownsampleSelect
   convertxDistanceUnsigned

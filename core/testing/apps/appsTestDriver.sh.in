@@ -396,6 +396,10 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/convertx --crop-by-index 10,10,10,-10,-10,-10 spgr_brain_1.hdr ${tmpdir}/cropped.nii"
 	check_results cropped.nii
 	;;
+    convertxResample)
+	run convertx --resample 1.0 phantom_ax.nii ${tmpdir}/resample.nii
+	check_results resample.nii
+	;;
     convertxDownsample)
 	run convertx --downsample-average 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
 	check_results downsample.hdr downsample.img
