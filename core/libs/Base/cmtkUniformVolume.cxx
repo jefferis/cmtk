@@ -106,7 +106,7 @@ UniformVolume::GetResampled
   UniformVolume* newVolume = new UniformVolume( newDims, newSize );
   newVolume->SetData( TypedArray::SmartPtr( newVolume->Resample( *this ) ) );
   
-  newVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
+  newVolume->SetImageToPhysicalMatrix( this->GetImageToPhysicalMatrix() );
   newVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
   newVolume->SetOffset( this->m_Offset );
   newVolume->CopyMetaInfo( *this );
