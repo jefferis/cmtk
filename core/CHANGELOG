@@ -1,5 +1,7 @@
 Release CMTK-2.4.0:
 
+(r5008) Added: new "resample" operator for "convertx" tool to create
+        near-isotropic resampled images with the same FOV as the original.
 (r4983) Added: new "stream_pixels" tool should make it easier to stream image
         data through pipeline-based tools such as Camino's.
 (r4978) Changed: "dcm2image" tool no longer embeds study information into
