@@ -109,6 +109,7 @@ ImageFileDICOM::Match( const Self& other, const Types::Coordinate numericalToler
 ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   :m_IsMultislice( false ),
    m_IsDWI( false ),   
+   m_DwellTime( 0.0 ),
    m_BValue( 0 ),
    m_BVector( 0.0 ),
    m_RawDataType( "unknown" )
@@ -177,7 +178,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName, DCM_AcquisitionTime,
 					  DCM_PatientsName, 
 					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_InversionTime, DCM_ImagingFrequency, DCM_SequenceName,
-					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName,
+					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName, DCM_GE_AssetRFactors,
 					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
 					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,
 					  DCM_ImagePositionPatient, DCM_ImageOrientationPatient, 
@@ -239,6 +240,23 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	this->m_RawDataType = "real";
       }
 
+    // Get dwell time if cas header exists and contains it
+    const Uint8* csaImageHeaderInfo = NULL;
+    unsigned long csaImageHeaderLength = 0;
+    if ( this->m_Dataset->findAndGetUint8Array ( DcmTagKey(0x0029,0x1010), csaImageHeaderInfo, &csaImageHeaderLength ).status() == OF_ok ) // the "Image" CSA header, not the "Series" header.
+      {
+      SiemensCSAHeader csaImageHeader( (const char*)csaImageHeaderInfo, csaImageHeaderLength );
+      SiemensCSAHeader::const_iterator it = csaImageHeader.find( "RealDwellTime" );
+      if ( (it != csaImageHeader.end()) && !it->second.empty() )
+	{
+	this->m_DwellTime = 1.0 / atof( it->second[0].c_str() );
+	}
+      else
+	{
+	this->m_DwellTime = 0.0;
+	}
+      }
+
     // for DWI, first check standard DICOM vendor tags
     if ( (this->m_IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {
@@ -259,25 +277,23 @@ ImageFileDICOM::DoVendorTagsSiemens()
     else
       {
       // no hint of DWI in standard tags, look into CSA header to confirm
-      const Uint8* csaHeaderInfo = NULL;
-      unsigned long csaHeaderLength = 0;
-      if ( this->m_Dataset->findAndGetUint8Array ( DcmTagKey(0x0029,0x1010), csaHeaderInfo, &csaHeaderLength ).status() == OF_ok ) // this is expected in the "Image" CSA header, not the "Series" header.
+      if ( csaImageHeaderInfo )
 	{
-	SiemensCSAHeader csaHeader( (const char*)csaHeaderInfo, csaHeaderLength );
-	SiemensCSAHeader::const_iterator it = csaHeader.find( "DiffusionDirectionality" );
-	if ( (it != csaHeader.end()) && !it->second.empty() )
+	SiemensCSAHeader csaImageHeader( (const char*)csaImageHeaderInfo, csaImageHeaderLength );
+	SiemensCSAHeader::const_iterator it = csaImageHeader.find( "DiffusionDirectionality" );
+	if ( (it != csaImageHeader.end()) && !it->second.empty() )
 	  {
 	  this->m_IsDWI = (0 == it->second[0].compare( 0, 11, "DIRECTIONAL" ));
 	  }
 
-	it = csaHeader.find( "B_value" );
-	if ( (it != csaHeader.end()) && !it->second.empty() )
+	it = csaImageHeader.find( "B_value" );
+	if ( (it != csaImageHeader.end()) && !it->second.empty() )
 	  {
 	  this->m_BValue = atof( it->second[0].c_str() );
 	  }
 
-	it = csaHeader.find( "DiffusionGradientDirection" );	
-	if ( (it != csaHeader.end()) && (it->second.size() >= 3) )
+	it = csaImageHeader.find( "DiffusionGradientDirection" );	
+	if ( (it != csaImageHeader.end()) && (it->second.size() >= 3) )
 	  {
 	  for ( int idx = 0; idx < 3; ++idx )
 	    {
@@ -311,6 +327,21 @@ ImageFileDICOM::DoVendorTagsGE()
       std::ostringstream ss;
       ss << effEchoSpacing;
       this->m_TagToStringMap[DCM_GE_EffectiveEchoSpacing] = ss.str();
+
+      // Default (no acceleration) - dwell time is effective echo spacing (convert microseconds to seconds here)
+      this->m_DwellTime = 1e-6 * effEchoSpacing;
+
+      // Check for "asset" acceleration
+      const std::string asset = this->GetTagValue( DCM_GE_AssetRFactors, "" );
+      if ( asset != "" )
+	{
+	float rFactor;
+	if ( 1 == sscanf( asset.c_str(), "%10f\\%*c", &rFactor ) )
+	  {
+	  // With acceleration - dwell time is effective echo spacing multiplied by acceleration factor (e.g., 0.5 for 2-fold acceleration)
+	  this->m_DwellTime *= rFactor;
+	  }
+	}
       }
     
     // dwi information

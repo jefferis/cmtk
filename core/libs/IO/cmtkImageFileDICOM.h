@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -43,11 +43,13 @@
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmimgle/didocu.h>
 
+#define DCM_GE_EffectiveEchoSpacing DcmTagKey(0x0043,0x102c)
+#define DCM_GE_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
+#define DCM_GE_AssetRFactors DcmTagKey(0x0043,0x1083)
+
 #define DCM_GE_PulseSequenceName DcmTagKey(0x0019,0x109c)
 #define DCM_GE_PulseSequenceDate DcmTagKey(0x0019,0x109d)
 #define DCM_GE_InternalPulseSequenceName DcmTagKey(0x0019,0x109e)
-#define DCM_GE_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
-#define DCM_GE_EffectiveEchoSpacing DcmTagKey(0x0043,0x102c)
 
 #ifndef DCM_ManufacturerModelName
 #define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)
@@ -98,6 +100,9 @@ public:
 
   /// Flag for diffusion-weighted images.
   bool m_IsDWI;
+
+  /// Dwell time for EPI
+  double m_DwellTime;
 
   /// B value for DWI.
   Sint16 m_BValue;

@@ -103,6 +103,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:EchoTime",                     { "\t", NULL, NULL, "\n" } },
     { "dicom:InversionTime",                { "\t", NULL, NULL, "\n" } },
     { "dicom:ImagingFrequency",             { "\t", NULL, NULL, "\n" } },
+    { "DwellTime",                          { "\t", NULL, NULL, "\n" } },
     { "dicom:SequenceName",                 { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:PulseSequenceName",         { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:PulseSequenceDate",         { "\t", NULL, NULL, "\n" } },
@@ -183,6 +184,11 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) ) );
     Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) ) );
     Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) ) );
+
+    if ( this->front()->m_DwellTime > 0 )
+      {
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "DwellTime"), this->front()->m_DwellTime ) );
+      }
 
     if ( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ) != "" )
       {
