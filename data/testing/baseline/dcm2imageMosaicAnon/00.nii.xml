@@ -4,6 +4,7 @@
 	<dicom:EchoTime>30.000000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260759</dicom:ImagingFrequency>
+	<DwellTime>0.000286</DwellTime>
 </mr>
 <stack>
 	<dicom:ImageOrientationPatient>1\0\0\0\0.95212939539477\-0.3056952967011</dicom:ImageOrientationPatient>

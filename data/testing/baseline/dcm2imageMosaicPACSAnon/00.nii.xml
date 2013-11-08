@@ -4,6 +4,7 @@
 	<dicom:EchoTime>30.000000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.250616</dicom:ImagingFrequency>
+	<DwellTime>0.000278</DwellTime>
 	<type>magnitude</type>
 </mr>
 <stack>

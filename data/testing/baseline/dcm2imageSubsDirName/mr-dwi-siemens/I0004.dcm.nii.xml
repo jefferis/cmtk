@@ -10,6 +10,7 @@
 	<dicom:EchoTime>87.000000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.250600</dicom:ImagingFrequency>
+	<DwellTime>0.000357</DwellTime>
 	<dicom:SequenceName>*ep_b1000#2</dicom:SequenceName>
 	<dwi>
 		<bValue>1000</bValue>
@@ -26,7 +27,7 @@
 	<dicom:ImageOrientationPatient>1\0\0\0\1\0</dicom:ImageOrientationPatient>
 	<image>
 		<dcmFile>I0004.dcm</dcmFile>
-	<dicom:AcquisitionTime>095307.062500</dicom:AcquisitionTime>
+		<dicom:AcquisitionTime>095307.062500</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-1079.2911111712\-1082.3832666874\-52.805274963379</dicom:ImagePositionPatient>
 	</image>
 </stack>

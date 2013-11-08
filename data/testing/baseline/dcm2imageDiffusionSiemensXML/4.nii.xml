@@ -10,6 +10,7 @@
 	<dicom:EchoTime>87.000000</dicom:EchoTime>
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260136</dicom:ImagingFrequency>
+	<DwellTime>0.000323</DwellTime>
 	<dicom:SequenceName>*ep_b1000#34</dicom:SequenceName>
 	<type>magnitude</type>
 	<dwi>
