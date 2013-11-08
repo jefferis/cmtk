@@ -176,7 +176,10 @@ private:
 std::string
 PutNumberAndSanitize( const std::string& path, const std::string& numberString )
 {
-  return cmtk::StrReplace( cmtk::StrReplace( path, "%n", numberString ), "%N", "-" + numberString );
+  if ( numberString.empty() )
+    return cmtk::StrReplace( cmtk::StrReplace( path, "%n", "" ), "%N", "" );
+  else
+    return cmtk::StrReplace( cmtk::StrReplace( path, "%n", numberString ), "%N", "-" + numberString );
 }
 
 void
