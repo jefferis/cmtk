@@ -64,6 +64,7 @@ SET(cmtkIO_SRCS
   cmtkXformIO.cxx
   cmtkXformListIO.cxx
   cmtkXformIONrrd.cxx
+  nifti1_io_math.c
 )
 
 IF(CMTK_USE_DCMTK)
