@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -163,6 +163,10 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform::MatrixType xformMatrix = volumes[0]->GetImageToPhysicalMatrix();
   // and copy to output
   stacked->m_IndexToPhysicalMatrix *= xformMatrix;
+  for ( std::map<std::string,cmtk::AffineXform::MatrixType>::iterator it = stacked->m_AlternativeIndexToPhysicalMatrices.begin(); it != stacked->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    it->second *= xformMatrix;
+    }
   stacked->CopyMetaInfo( *(volumes[0]) );
   
   if ( outputFilePath )
