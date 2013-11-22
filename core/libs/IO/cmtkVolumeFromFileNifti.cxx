@@ -134,6 +134,8 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     
     Matrix4x4<Types::Coordinate> m4( directions );      
     volume->m_IndexToPhysicalMatrix = m4;
+    // NIFTI says, sform_code must be > 0, so should be safe to use "abs" and make negative to distinguish from qform (below)
+    volume->m_AlternativeIndexToPhysicalMatrices[-abs(sform_code)] = m4;
     }
   
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
@@ -162,6 +164,8 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
 
     // qform overrides sform if both exist
     volume->m_IndexToPhysicalMatrix = m4;
+    // NIFTI says, qform_code must be > 0, so should be safe to use "abs"
+    volume->m_AlternativeIndexToPhysicalMatrices[abs(qform_code)] = m4;
     }
 
   char orientationImage[4];
@@ -317,39 +321,70 @@ VolumeFromFile::WriteNifti
   header.pixdim[4] = 0.0;
   header.pixdim[5] = 0.0;
   
-  AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
-
-#ifdef IGNORE
-  mat44 R;
-  for ( int j = 0; j < 4; ++j )
+  for ( std::map<int,cmtk::AffineXform::MatrixType>::const_iterator it = volume.m_AlternativeIndexToPhysicalMatrices.begin(); it != volume.m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
-    for ( int i = 0; i < 4; ++i )
+    const AffineXform::MatrixType m4 = it->second;
+    if ( it->first > 0 ) // this came from a qform
       {
-      R.m[i][j] = m4[j][i];
+      mat44 R;
+      for ( int j = 0; j < 4; ++j )
+	{
+	for ( int i = 0; i < 4; ++i )
+	  {
+	  R.m[i][j] = m4[j][i];
+	  }
+	}
+      
+      header.qform_code = it->first;
+      float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
+      nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
+      
+      header.pixdim[0] = qfac;
+      header.quatern_b = qb;
+      header.quatern_c = qc;
+      header.quatern_d = qd;
+      header.qoffset_x = qx;
+      header.qoffset_y = qy;
+      header.qoffset_z = qz;
+      }
+
+    if ( it->first < 0 ) // this came from an sform
+      {
+      header.sform_code = abs( it->first );
+      for ( int i = 0; i < 4; ++i )
+	{
+	header.srow_x[i] = static_cast<float>( m4[i][0] );
+	header.srow_y[i] = static_cast<float>( m4[i][1] );
+	header.srow_z[i] = static_cast<float>( m4[i][2] );
+	}
       }
     }
 
-  header.qform_code = 1;
-  float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
-  nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
-  
-  header.pixdim[0] = qfac;
-  header.quatern_b = qb;
-  header.quatern_c = qc;
-  header.quatern_d = qd;
-  header.qoffset_x = qx;
-  header.qoffset_y = qy;
-  header.qoffset_z = qz;
-#else
-  header.qform_code = 0;
-#endif
-
-  header.sform_code = 1;
-  for ( int i = 0; i < 4; ++i )
+  // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
+  if ( ! (header.qform_code || header.qform_code) )
     {
-    header.srow_x[i] = static_cast<float>( m4[i][0] );
-    header.srow_y[i] = static_cast<float>( m4[i][1] );
-    header.srow_z[i] = static_cast<float>( m4[i][2] );
+    const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
+    
+    mat44 R;
+    for ( int j = 0; j < 4; ++j )
+      {
+      for ( int i = 0; i < 4; ++i )
+	{
+	R.m[i][j] = m4[j][i];
+	}
+      }
+    
+    header.qform_code = 1;
+    float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
+    nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
+    
+    header.pixdim[0] = qfac;
+    header.quatern_b = qb;
+    header.quatern_c = qc;
+    header.quatern_d = qd;
+    header.qoffset_x = qx;
+    header.qoffset_y = qy;
+    header.qoffset_z = qz;
     }
   
   switch ( data->GetType() ) 
