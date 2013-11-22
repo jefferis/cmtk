@@ -43,6 +43,7 @@
 #include <Base/cmtkAnatomicalOrientation.h>
 
 #include "nifti1.h"
+#include "nifti1_io_math.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -115,6 +116,26 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
   volume->SetMetaInfo( META_SPACE, niftiSpace );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, niftiSpace );
 
+  const short sform_code = header.GetField<short>( offsetof(nifti_1_header,sform_code) );
+  if ( sform_code > 0 )
+    {
+    float srow_x[4], srow_y[4], srow_z[4];
+    header.GetArray( srow_x, offsetof(nifti_1_header,srow_x), 4 );
+    header.GetArray( srow_y, offsetof(nifti_1_header,srow_y), 4 );
+    header.GetArray( srow_z, offsetof(nifti_1_header,srow_z), 4 );
+    
+    const Types::Coordinate directions[4][4] = 	
+      {
+	{ srow_x[0], srow_y[0], srow_z[0], 0 },
+	{ srow_x[1], srow_y[1], srow_z[1], 0 },
+	{ srow_x[2], srow_y[2], srow_z[2], 0 },
+	{ srow_x[3], srow_y[3], srow_z[3], 1 }
+      };
+    
+    Matrix4x4<Types::Coordinate> m4( directions );      
+    volume->m_IndexToPhysicalMatrix = m4;
+    }
+  
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
   if ( qform_code > 0 )
     {
@@ -123,7 +144,7 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     const float qd = header.GetField<float>( offsetof(nifti_1_header,quatern_d) );
     const double qa = sqrt( std::max( 0.0, 1.0 - (qb*qb + qc*qc + qd*qd) ) );
 
-    const float qfac = (header.GetField<float>( offsetof(nifti_1_header,pixdim) ) >= 0) ? 1.0f : -1.0f;
+   const float qfac = (header.GetField<float>( offsetof(nifti_1_header,pixdim) ) >= 0) ? 1.0f : -1.0f;
 
     const Types::Coordinate directions[3][3] = 
       {
@@ -139,46 +160,14 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     m4[3][1] = header.GetField<float>( offsetof(nifti_1_header,qoffset_y) );
     m4[3][2] = header.GetField<float>( offsetof(nifti_1_header,qoffset_z) );
 
+    // qform overrides sform if both exist
     volume->m_IndexToPhysicalMatrix = m4;
-    
-    char orientationImage[4];
-    AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-    volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
-    volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
     }
-  else
-    {
-    const short sform_code = header.GetField<short>( offsetof(nifti_1_header,sform_code) );
-    if ( sform_code > 0 )
-      {
-      float srow_x[4], srow_y[4], srow_z[4];
-      header.GetArray( srow_x, offsetof(nifti_1_header,srow_x), 4 );
-      header.GetArray( srow_y, offsetof(nifti_1_header,srow_y), 4 );
-      header.GetArray( srow_z, offsetof(nifti_1_header,srow_z), 4 );
 
-      const Types::Coordinate directions[4][4] = 	
-      {
-	{ srow_x[0], srow_y[0], srow_z[0], 0 },
-	{ srow_x[1], srow_y[1], srow_z[1], 0 },
-	{ srow_x[2], srow_y[2], srow_z[2], 0 },
-	{ srow_x[3], srow_y[3], srow_z[3], 1 }
-      };
-      
-      Matrix4x4<Types::Coordinate> m4( directions );      
-      volume->m_IndexToPhysicalMatrix = m4;
-    
-      char orientationImage[4];
-      AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-      volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
-      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
-      }
-    else
-      {
-      // no orientation info, default to nifti standard space
-      volume->SetMetaInfo( META_IMAGE_ORIENTATION, niftiSpace );
-      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, niftiSpace );
-      }
-    }
+  char orientationImage[4];
+  AnatomicalOrientation::GetOrientationFromDirections( orientationImage, volume->m_IndexToPhysicalMatrix, niftiSpace );
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
   
   if ( header.GetField<char>( 148 ) )
     {
@@ -321,10 +310,41 @@ VolumeFromFile::WriteNifti
   header.dim[6] = 0;
   header.dim[7] = 0;
 
-  header.qform_code = 0;
-  header.sform_code = 1;
-
+  header.pixdim[0] = 1.0;
+  header.pixdim[1] = static_cast<float>( writeVolume->m_Delta[AXIS_X] );
+  header.pixdim[2] = static_cast<float>( writeVolume->m_Delta[AXIS_Y] );
+  header.pixdim[3] = static_cast<float>( writeVolume->m_Delta[AXIS_Z] );
+  header.pixdim[4] = 0.0;
+  header.pixdim[5] = 0.0;
+  
   AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
+
+#ifdef IGNORE
+  mat44 R;
+  for ( int j = 0; j < 4; ++j )
+    {
+    for ( int i = 0; i < 4; ++i )
+      {
+      R.m[i][j] = m4[j][i];
+      }
+    }
+
+  header.qform_code = 1;
+  float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
+  nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
+  
+  header.pixdim[0] = qfac;
+  header.quatern_b = qb;
+  header.quatern_c = qc;
+  header.quatern_d = qd;
+  header.qoffset_x = qx;
+  header.qoffset_y = qy;
+  header.qoffset_z = qz;
+#else
+  header.qform_code = 0;
+#endif
+
+  header.sform_code = 1;
   for ( int i = 0; i < 4; ++i )
     {
     header.srow_x[i] = static_cast<float>( m4[i][0] );
@@ -371,13 +391,6 @@ VolumeFromFile::WriteNifti
       header.bitpix = 8 * sizeof(double);
       break;
     }  
-  
-  header.pixdim[0] = 1;
-  header.pixdim[1] = static_cast<float>( writeVolume->m_Delta[AXIS_X] );
-  header.pixdim[2] = static_cast<float>( writeVolume->m_Delta[AXIS_Y] );
-  header.pixdim[3] = static_cast<float>( writeVolume->m_Delta[AXIS_Z] );
-  header.pixdim[4] = 0.0;
-  header.pixdim[5] = 0.0;
   
   // determine data range;
   const Types::DataItemRange dataRange = data->GetRange();
