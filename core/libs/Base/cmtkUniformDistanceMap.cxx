@@ -70,6 +70,7 @@ UniformDistanceMap<TDistanceDataType>
     }
   
   this->m_DistanceMap->m_IndexToPhysicalMatrix = volume.m_IndexToPhysicalMatrix;
+  this->m_DistanceMap->m_AlternativeIndexToPhysicalMatrices = volume.m_AlternativeIndexToPhysicalMatrices;
 
   this->m_DistanceMap->SetOffset( volume.m_Offset );
   this->m_DistanceMap->CopyMetaInfo( volume );
