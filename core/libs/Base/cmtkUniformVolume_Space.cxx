@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,6 +61,11 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
 
+  for ( std::map<std::string,AffineXform::MatrixType>::const_iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    result->m_AlternativeIndexToPhysicalMatrices[it->first] = pmatrix.GetPermutedMatrix( it->second );
+    }
+
   result->CopyMetaInfo( *temp );
   return result;
 }
@@ -99,6 +104,25 @@ UniformVolume
   
   this->SetMetaInfo( META_SPACE, newSpace );
   this->m_IndexToPhysicalMatrix = newMatrix;
+
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    newMatrix = AffineXform::MatrixType::Identity();
+    for ( int j = 0; j < 3; ++j )
+      {
+      for ( int j2 = 0; j2 < 3; ++j2 )
+	{
+	if ( axesPermutation[j][j2] != 0 )
+	  {
+	  for ( int i = 0; i < 4; ++i )
+	    {
+	    newMatrix[i][j] = axesPermutation[j][j2] * (it->second)[i][j2];
+	    }
+	  }
+	}
+      }
+    it->second = newMatrix;
+    }
 }
 
 std::string

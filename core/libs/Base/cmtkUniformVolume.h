@@ -140,6 +140,9 @@ public:
    *  space back into physical space.
    */
   AffineXform::MatrixType m_IndexToPhysicalMatrix;
+
+  /// Some images (notably those read from NIFTI files) may have several alternative transformations to different spaces (e.g., physical and atlas spaces).
+  std::map<std::string,AffineXform::MatrixType> m_AlternativeIndexToPhysicalMatrices;
   
   /** Change volume coordinate space.
    * Re-arrange volume's direction vectors to refer to a different coordinate space.

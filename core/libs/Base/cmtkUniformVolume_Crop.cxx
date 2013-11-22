@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,8 +100,24 @@ UniformVolume::GetCroppedVolume( const Self::RegionType& region ) const
   // prepare new index-to-physical transformation.
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   for ( int i = 0; i < 3; ++i )
+    {
     for ( int j = 0; j < 3; ++j )
+      {
       volume->m_IndexToPhysicalMatrix[3][i] += region.From()[j] * volume->m_IndexToPhysicalMatrix[j][i];
+      }
+    }
+
+  volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    for ( int i = 0; i < 3; ++i )
+      {
+      for ( int j = 0; j < 3; ++j )
+	{
+	(it->second)[3][i] += region.From()[j] * (it->second)[j][i];
+	}
+      }
+    }
   
   // use m_Offset to keep track of new volume origin
   Self::CoordinateVectorType volumeOffset = this->m_Offset;

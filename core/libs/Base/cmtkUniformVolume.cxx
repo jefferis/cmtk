@@ -40,7 +40,7 @@ cmtk
 {
 
 UniformVolume::UniformVolume 
-( const UniformVolume& other ) : Volume( other ), m_Delta( other.m_Delta ), m_IndexToPhysicalMatrix( other.m_IndexToPhysicalMatrix ) {}
+( const UniformVolume& other ) : Volume( other ), m_Delta( other.m_Delta ), m_IndexToPhysicalMatrix( other.m_IndexToPhysicalMatrix ), m_AlternativeIndexToPhysicalMatrices( other.m_AlternativeIndexToPhysicalMatrices ) {}
 
 UniformVolume::UniformVolume
 ( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data )
@@ -156,6 +156,7 @@ UniformVolume::CloneGridVirtual() const
   clone->SetOffset( this->m_Offset );
   clone->CopyMetaInfo( *this );
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
+  clone->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
   return clone;
 }
 
@@ -202,12 +203,30 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 
   // apply offset shift to index-to-physical matrix
   for ( int axis = 0; axis < 3; ++axis )
+    {
     for ( int i = 0; i < 3; ++i )
       {
       dsVolume->m_IndexToPhysicalMatrix[3][i] += (downsample[i]-1) * dsVolume->m_IndexToPhysicalMatrix[axis][i] / 2;
       // also update voxel size
       dsVolume->m_IndexToPhysicalMatrix[axis][i] *= downsample[i];
       }
+    }
+
+  // do the same for any alternative matrices
+  dsVolume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    // apply offset shift to index-to-physical matrix
+    for ( int axis = 0; axis < 3; ++axis )
+      {
+      for ( int i = 0; i < 3; ++i )
+	{
+	(it->second)[3][i] += (downsample[i]-1) * (it->second)[axis][i] / 2;
+	// also update voxel size
+	(it->second)[axis][i] *= downsample[i];
+	}
+      }
+    }
   
   return dsVolume;
 }
@@ -254,6 +273,22 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
       dsVolume->m_IndexToPhysicalMatrix[axis][i] *= downsample[i];
       }
   
+  // do the same for any alternative matrices
+  dsVolume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    // apply offset shift to index-to-physical matrix
+    for ( int axis = 0; axis < 3; ++axis )
+      {
+      for ( int i = 0; i < 3; ++i )
+	{
+	(it->second)[3][i] += (downsample[i]-1) * (it->second)[axis][i] / 2;
+	// also update voxel size
+	(it->second)[axis][i] *= downsample[i];
+	}
+      }
+    }
+
   return dsVolume;
 }
 
@@ -295,6 +330,18 @@ UniformVolume::GetInterleavedSubVolume
   for ( int i = 0; i < 3; ++i )
     volume->m_IndexToPhysicalMatrix[axis][i] *= factor;
 
+  // do the same for any alternative matrices
+  volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    // update coordinate offset according to sub-volume index
+    for ( int i = 0; i < 3; ++i )
+      (it->second)[3][i] += idx * (it->second)[axis][i];
+    // scale direction vector along axis
+    for ( int i = 0; i < 3; ++i )
+      (it->second)[axis][i] *= factor;
+    }  
+
   if ( this->GetData()->GetPaddingFlag() )
     {
     volume->GetData()->SetPaddingValue( this->GetData()->GetPaddingValue() );
@@ -323,6 +370,17 @@ UniformVolume::GetInterleavedPaddedSubVolume
   
   volume->CopyMetaInfo( *this );
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
+  volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
+  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+    {
+    // update coordinate offset according to sub-volume index
+    for ( int i = 0; i < 3; ++i )
+      (it->second)[3][i] += idx * (it->second)[axis][i];
+    // scale direction vector along axis
+    for ( int i = 0; i < 3; ++i )
+      (it->second)[axis][i] *= factor;
+    }
+
   return volume;
 }
 
