@@ -64,6 +64,34 @@ cmtk
 /** \addtogroup IO */
 //@{
 
+/// Helper function - make qform in NIFTI header from affine matrix
+void
+__matrixToNiftiQform( nifti_1_header& header, const AffineXform::MatrixType matrix )
+{  
+  // transpose and put into nifti_io's mat44 struct
+  mat44 R;
+  for ( int j = 0; j < 4; ++j )
+    {
+    for ( int i = 0; i < 4; ++i )
+      {
+      R.m[i][j] = matrix[j][i];
+      }
+    }
+
+  // compute quaternion representation
+  float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
+  nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
+  
+  // set header fields
+  header.pixdim[0] = qfac;
+  header.quatern_b = qb;
+  header.quatern_c = qc;
+  header.quatern_d = qd;
+  header.qoffset_x = qx;
+  header.qoffset_y = qy;
+  header.qoffset_z = qz;
+}
+
 const UniformVolume::SmartPtr
 VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, const bool readData )
 {
@@ -324,31 +352,16 @@ VolumeFromFile::WriteNifti
   for ( std::map<int,cmtk::AffineXform::MatrixType>::const_iterator it = volume.m_AlternativeIndexToPhysicalMatrices.begin(); it != volume.m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     const AffineXform::MatrixType m4 = it->second;
-    if ( it->first > 0 ) // this came from a qform
-      {
-      mat44 R;
-      for ( int j = 0; j < 4; ++j )
-	{
-	for ( int i = 0; i < 4; ++i )
-	  {
-	  R.m[i][j] = m4[j][i];
-	  }
-	}
-      
-      header.qform_code = it->first;
-      float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
-      nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
-      
-      header.pixdim[0] = qfac;
-      header.quatern_b = qb;
-      header.quatern_c = qc;
-      header.quatern_d = qd;
-      header.qoffset_x = qx;
-      header.qoffset_y = qy;
-      header.qoffset_z = qz;
-      }
 
-    if ( it->first < 0 ) // this came from an sform
+    // this came from a qform
+    if ( it->first > 0 ) 
+      {
+      header.qform_code = it->first;
+      __matrixToNiftiQform( header, it->second );
+      }
+    
+    // this came from an sform
+    if ( it->first < 0 ) 
       {
       header.sform_code = abs( it->first );
       for ( int i = 0; i < 4; ++i )
@@ -363,28 +376,8 @@ VolumeFromFile::WriteNifti
   // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
   if ( ! (header.qform_code || header.qform_code) )
     {
-    const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
-    
-    mat44 R;
-    for ( int j = 0; j < 4; ++j )
-      {
-      for ( int i = 0; i < 4; ++i )
-	{
-	R.m[i][j] = m4[j][i];
-	}
-      }
-    
     header.qform_code = 1;
-    float qb, qc, qd, qx, qy, qz, dx, dy, dz, qfac;
-    nifti_mat44_to_quatern( R, &qb, &qc, &qd, &qx, &qy, &qz, &dx, &dy, &dz, &qfac ) ;
-    
-    header.pixdim[0] = qfac;
-    header.quatern_b = qb;
-    header.quatern_c = qc;
-    header.quatern_d = qd;
-    header.qoffset_x = qx;
-    header.qoffset_y = qy;
-    header.qoffset_z = qz;
+    __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
     }
   
   switch ( data->GetType() ) 
