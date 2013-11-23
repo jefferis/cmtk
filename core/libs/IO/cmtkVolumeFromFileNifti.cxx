@@ -374,7 +374,7 @@ VolumeFromFile::WriteNifti
     }
 
   // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
-  if ( ! (header.qform_code || header.qform_code) )
+  if ( ! (header.qform_code || header.sform_code) )
     {
     header.qform_code = 1;
     __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
