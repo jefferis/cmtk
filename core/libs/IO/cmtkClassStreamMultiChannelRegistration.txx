@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,7 +32,9 @@
 
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
+
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 namespace
 cmtk
@@ -81,7 +83,7 @@ ClassStreamInput& operator >>
       if ( !volume || !volume->GetData() )
 	{
 	StdErr << "ERROR: Cannot read image " << channel << "\n";
-	exit( 1 );
+	throw ExitException( 1 );
 	}
       functional.AddReferenceChannel( volume );
       }
@@ -97,13 +99,21 @@ ClassStreamInput& operator >>
       if ( !volume || !volume->GetData() )
 	{
 	StdErr << "ERROR: Cannot read image " << channel << "\n";
-	exit( 1 );
+	throw ExitException( 1 );
 	}
       functional.AddFloatingChannel( volume );
       }
     }
   
-  stream >> functional.GetTransformation();
+  try
+    {
+    stream >> functional.GetTransformation();
+    }
+  catch ( const Exception& ex )
+    {
+    StdErr << "ERROR: could not get transformation from file - " << ex.what() << "\n";
+    throw ExitException( 1 );
+    }
   stream.End();
   
   return stream;
