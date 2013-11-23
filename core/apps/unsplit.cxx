@@ -163,7 +163,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform::MatrixType xformMatrix = volumes[0]->GetImageToPhysicalMatrix();
   // and copy to output
   stacked->m_IndexToPhysicalMatrix *= xformMatrix;
-  for ( std::map<std::string,cmtk::AffineXform::MatrixType>::iterator it = stacked->m_AlternativeIndexToPhysicalMatrices.begin(); it != stacked->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,cmtk::AffineXform::MatrixType>::iterator it = stacked->m_AlternativeIndexToPhysicalMatrices.begin(); it != stacked->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     it->second *= xformMatrix;
     }

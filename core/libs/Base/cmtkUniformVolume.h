@@ -141,8 +141,10 @@ public:
    */
   AffineXform::MatrixType m_IndexToPhysicalMatrix;
 
-  /// Some images (notably those read from NIFTI files) may have several alternative transformations to different spaces (e.g., physical and atlas spaces).
-  std::map<std::string,AffineXform::MatrixType> m_AlternativeIndexToPhysicalMatrices;
+  /** Some images (notably those read from NIFTI files) may have several alternative transformations to different spaces (e.g., physical and atlas spaces).
+   * The map key is an integer that identifies the type of transformation by some coding system (e.g., we use positive values for NIFTI qforms, negative ones for sforms).
+   */
+  std::map<int,AffineXform::MatrixType> m_AlternativeIndexToPhysicalMatrices;
   
   /** Change volume coordinate space.
    * Re-arrange volume's direction vectors to refer to a different coordinate space.

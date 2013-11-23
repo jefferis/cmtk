@@ -61,7 +61,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
 
-  for ( std::map<std::string,AffineXform::MatrixType>::const_iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::const_iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     result->m_AlternativeIndexToPhysicalMatrices[it->first] = pmatrix.GetPermutedMatrix( it->second );
     }
@@ -105,7 +105,7 @@ UniformVolume
   this->SetMetaInfo( META_SPACE, newSpace );
   this->m_IndexToPhysicalMatrix = newMatrix;
 
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = this->m_AlternativeIndexToPhysicalMatrices.begin(); it != this->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     newMatrix = AffineXform::MatrixType::Identity();
     for ( int j = 0; j < 3; ++j )

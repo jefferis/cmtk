@@ -108,7 +108,7 @@ UniformVolume::GetCroppedVolume( const Self::RegionType& region ) const
     }
 
   volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     for ( int i = 0; i < 3; ++i )
       {

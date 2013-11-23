@@ -214,7 +214,7 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 
   // do the same for any alternative matrices
   dsVolume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     // apply offset shift to index-to-physical matrix
     for ( int axis = 0; axis < 3; ++axis )
@@ -275,7 +275,7 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   
   // do the same for any alternative matrices
   dsVolume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = dsVolume->m_AlternativeIndexToPhysicalMatrices.begin(); it != dsVolume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     // apply offset shift to index-to-physical matrix
     for ( int axis = 0; axis < 3; ++axis )
@@ -332,7 +332,7 @@ UniformVolume::GetInterleavedSubVolume
 
   // do the same for any alternative matrices
   volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     // update coordinate offset according to sub-volume index
     for ( int i = 0; i < 3; ++i )
@@ -371,7 +371,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
   volume->CopyMetaInfo( *this );
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   volume->m_AlternativeIndexToPhysicalMatrices = this->m_AlternativeIndexToPhysicalMatrices;
-  for ( std::map<std::string,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
+  for ( std::map<int,AffineXform::MatrixType>::iterator it = volume->m_AlternativeIndexToPhysicalMatrices.begin(); it != volume->m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
     // update coordinate offset according to sub-volume index
     for ( int i = 0; i < 3; ++i )
