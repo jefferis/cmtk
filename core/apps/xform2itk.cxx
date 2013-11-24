@@ -90,14 +90,23 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath ) );
-  if ( invertInputXform )
-    xform = xform->GetInverse();
-
   if ( !xform )
     {
     cmtk::StdErr << "ERROR: could not read transformation from '" << inputPath << "'\n";
     throw cmtk::ExitException( 1 );
     }
+
+  if ( invertInputXform )
+    {
+    try
+      {
+      xform = xform->GetInverse();
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
+      throw cmtk::ExitException( 1 );
+      }
 
   if ( fixedImagePath.empty() )
     {
