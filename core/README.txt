@@ -16,13 +16,17 @@ mk_analyze_hdr and mk_nifti_hdr default behaviour has changed - data type now
 defaults to "byte" and orientation (for Analyze) now defaults to "axial",
 rather than being "UNKNOWN"
 
+Handling of NIFTI qform and sform has changed in a way that breaks regression
+tests, but should otherwise be benign. This should also make CMTK largely
+NIFTI-compliant in the it puts image-to-physical coordinates into the header's
+qform fields, rather than sform as before.
 
 Platform Support
 ================
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 64bit (Fedora 19), gcc 4.8.1, CUDA 3.2
+- Linux 64bit (Fedora 19), gcc 4.8.2, CUDA 3.2
 - Linux 64bit (Fedora 19), clang 3.3
 - Linux 64bit (Fedora 17), gcc 4.7.2, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
