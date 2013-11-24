@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkAffineXform.h>
@@ -164,7 +165,11 @@ doMain ( const int argc, const char* argv[] )
 	    {
 	    // Transform current location also using affine transformation
 	    cmtk::Vector3D vAffine( v0 );
-	    xformListAffineRef.ApplyInPlace( vAffine );
+	    if ( ! xformListAffineRef.ApplyInPlace( vAffine ) )
+	      {
+	      cmtk::StdErr << "ERROR: applying affine transformation sequence failed.\n";
+	      throw cmtk::ExitException( 1 );
+	      }
 	    vAffine -= v0;
 	    
 	    // subtract affine-transformed from total transformed
