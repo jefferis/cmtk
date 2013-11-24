@@ -155,29 +155,35 @@ doMain ( const int argc, const char* argv[] )
 	const cmtk::UniformVolume::CoordinateVectorType v0( v );
 
 	// Apply transformation and subtract original coordinate
-	xformListRef.ApplyInPlace( v );
-	v -= v0;
-
-	// Is this is a B-spline warp and we're only interesting in the nonrigid component?
-	if ( WarpOnly )
+	if ( xformListRef.ApplyInPlace( v ) )
 	  {
-	  // Transform current location also using affine transformation
-	  cmtk::Vector3D vAffine( v0 );
-	  xformListAffineRef.ApplyInPlace( vAffine );
-	  vAffine -= v0;
+	  v -= v0;
 	  
-	  // subtract affine-transformed from total transformed
-	  v -= vAffine;
+	  // Is this is a B-spline warp and we're only interesting in the nonrigid component?
+	  if ( WarpOnly )
+	    {
+	    // Transform current location also using affine transformation
+	    cmtk::Vector3D vAffine( v0 );
+	    xformListAffineRef.ApplyInPlace( vAffine );
+	    vAffine -= v0;
+	    
+	    // subtract affine-transformed from total transformed
+	    v -= vAffine;
+	    }
+	  
+	  switch ( Mode )
+	    {
+	    case cmtk::X2S_EXTRACT_X: image->SetDataAt( v[0], offset ); break;
+	    case cmtk::X2S_EXTRACT_Y: image->SetDataAt( v[1], offset ); break;
+	    case cmtk::X2S_EXTRACT_Z: image->SetDataAt( v[2], offset ); break;
+	    case cmtk::X2S_MAGNITUDE: image->SetDataAt( v.RootSumOfSquares(), offset ); break;
+	    default: break;
+	    }
 	  }
-	
-	switch ( Mode )
+	else
 	  {
-	  case cmtk::X2S_EXTRACT_X: image->SetDataAt( v[0], offset ); break;
-	  case cmtk::X2S_EXTRACT_Y: image->SetDataAt( v[1], offset ); break;
-	  case cmtk::X2S_EXTRACT_Z: image->SetDataAt( v[2], offset ); break;
-	  case cmtk::X2S_MAGNITUDE: image->SetDataAt( v.RootSumOfSquares(), offset ); break;
-	  default: break;
-	  }
+	  image->GetData()->SetPaddingAt( offset );
+	  }	  
 	}
       }
     }
