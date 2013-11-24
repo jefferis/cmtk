@@ -92,6 +92,15 @@ __matrixToNiftiQform( nifti_1_header& header, const AffineXform::MatrixType matr
   header.qoffset_z = qz;
 }
 
+/**\note If the imported NIFTI file contains a qform and/or sform, and the resulting image object is later written back to a new NIFTI file (via VolumeFromFile::WriteNifti), then these transformations will be stored in the output file's qform and sform fields, 
+  * respectively.
+  * \note If the header contains only a qform, then the qform will be used to initialize cmtk::UniformVolume::m_IndexToPhysicalMatrix, which determines the anatomy-based gross alignment of the image
+  * \note If the header contains only an sform, then the sform will be used instead.
+  * \note If the header contains both sform and qform, then qform will be used and sform will be ignored for the purpose of determining gross image orientation.
+  * \note If the header contains neither a qform or an sform, then it is assumed that the image is oriented "RAS", i.e., fastest-moving array index from Left to Right, second fastest from Posterior to Anterior, and third fastest from Inferior to Superior.
+  *\warning In keeping with the nifti1.h documentation, it is assumed that qform_code and sform_code will always be non-negative. If this assumption is violated, qform and sform will be switched in the output file (as written by VolumeFromFile::WriteNifti), or
+  *   one of them may be missing.
+  */
 const UniformVolume::SmartPtr
 VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, const bool readData )
 {
@@ -376,8 +385,19 @@ VolumeFromFile::WriteNifti
   // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
   if ( ! (header.qform_code || header.sform_code) )
     {
-    header.qform_code = 1;
-    __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
+#ifdef IGNORE
+    // This piece of code, when replacing the next two lines (qform stuff) would make CMTK entirely backward-compatible, but non-NIFTI-compliant.
+    const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
+      header.sform_code = 1;
+      for ( int i = 0; i < 4; ++i )
+	{
+	header.srow_x[i] = static_cast<float>( m4[i][0] );
+	header.srow_y[i] = static_cast<float>( m4[i][1] );
+	header.srow_z[i] = static_cast<float>( m4[i][2] );
+	}
+#endif
+      header.qform_code = 1;
+      __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
     }
   
   switch ( data->GetType() ) 
