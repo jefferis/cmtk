@@ -107,6 +107,7 @@ doMain( const int argc, const char* argv[] )
       cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
       throw cmtk::ExitException( 1 );
       }
+    }
 
   if ( fixedImagePath.empty() )
     {
