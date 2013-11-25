@@ -237,7 +237,22 @@ doMain( const int argc, const char* argv[] )
   else
     {
     cmtk::CoordinateVector v;
-    xform->GetParamVector( v );
+    if ( Inverse )
+      {
+      try 
+	{
+	xform->GetInverse()->GetParamVector( v );
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
+	throw cmtk::ExitException( 1 );
+	}
+      }
+    else
+      {
+      xform->GetParamVector( v );
+      }
     for ( unsigned int idx = 0; idx < v.Dim; ++idx )
       std::cout << "#" << idx << "\t" << v.Elements[idx] << "\n";
     }
