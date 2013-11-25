@@ -279,6 +279,7 @@ FileFormat::IsXform( const FileFormatID& id )
   switch ( id )
     {
     case FILEFORMAT_STUDYLIST:
+    case FILEFORMAT_TYPEDSTREAM:
       return true;
     default:
       break;
