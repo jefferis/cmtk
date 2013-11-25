@@ -385,7 +385,7 @@ VolumeFromFile::WriteNifti
   // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
   if ( ! (header.qform_code || header.sform_code) )
     {
-#ifdef IGNORE
+#ifndef IGNORE
     // This piece of code, when replacing the next two lines (qform stuff) would make CMTK entirely backward-compatible, but non-NIFTI-compliant.
     const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
       header.sform_code = 1;
@@ -395,9 +395,10 @@ VolumeFromFile::WriteNifti
 	header.srow_y[i] = static_cast<float>( m4[i][1] );
 	header.srow_z[i] = static_cast<float>( m4[i][2] );
 	}
-#endif
+#else
       header.qform_code = 1;
       __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
+#endif
     }
   
   switch ( data->GetType() ) 
