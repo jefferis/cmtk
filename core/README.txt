@@ -21,6 +21,10 @@ tests, but should otherwise be benign. This should also make CMTK largely
 NIFTI-compliant in the it puts image-to-physical coordinates into the header's
 qform fields, rather than sform as before.
 
+xform2scalar now puts padding pixels where application of transformation
+sequence failed (e.g., due to failed numerical inversion of nonrigid
+transformation).
+
 Platform Support
 ================
 
