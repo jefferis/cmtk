@@ -55,16 +55,24 @@ ReadMatrix( cmtk::Types::Coordinate (&matrix)[4][4], std::istream& stream, const
 
   if ( matrix3x3 )
     {
-    for ( int row = 0; row < 3; ++row )
-      for ( int col = 0; col < 3; ++col )
-	stream >> matrix[col][row];
+    for ( int j = 0; j < 3; ++j )
+      {
+      for ( int i = 0; i < 3; ++i )
+	{
+	stream >> matrix[j][i];
+	}
+      }
     matrix[3][3] = 1.0;
     }
   else
     {
-    for ( int row = 0; row < 4; ++row )
-      for ( int col = 0; col < 4; ++col )
-	stream >> matrix[col][row];
+    for ( int j = 0; j < 4; ++j )
+      {
+      for ( int i = 0; i < 4; ++i )
+	{
+	stream >> matrix[j][i];
+	}
+      }
     }
 }
 
@@ -134,7 +142,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( Transpose )
     {
-    for ( int row = 0; row < 3; ++row )
+    for ( int row = 0; row < 4; ++row )
       for ( int col = 0; col < row; ++col )
 	{
 	const cmtk::Types::Coordinate tmp = matrix[col][row];
