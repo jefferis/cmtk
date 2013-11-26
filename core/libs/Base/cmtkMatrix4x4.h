@@ -86,6 +86,9 @@ public:
   /// Compose from canonical parameters.
   Self& Compose( const Types::Coordinate params[15], const bool logScaleFactors = false );
   
+  /// Compose from canonical parameters.
+  Self& ComposeFromLegacyParameters( const Types::Coordinate params[15], const bool logScaleFactors = false );
+  
   /// Decompose into affine parameters.
   bool Decompose( Types::Coordinate params[15], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
 
