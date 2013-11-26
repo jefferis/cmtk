@@ -161,13 +161,15 @@ Matrix4x4<T>::ComposeFromLegacyParameters
   this->m_Matrix[3][3] = static_cast<T>( 1.0 );
 
   // generate shears
+  Self shears = Self::Identity();
   for ( int i = 2; i >= 0; --i )
     { 
     Self shear = Self::Identity();
     shear[i/2][(i/2)+(i%2)+1] = params[9+i];
     *this *= shear;
+    shears *= shear;
     }
-  
+
   // transform rotation center
   const Types::Coordinate cM[3] = 
     {
@@ -229,8 +231,17 @@ Matrix4x4<T>::Decompose
       matrix2d[i][j] = matrix[j][i];
 
   QRDecomposition<T> qr( matrix2d );
-
   const Matrix2D<T> R = qr.GetR();
+  const Matrix2D<T> Q = qr.GetQ();
+
+  for ( int i = 0; i < 3; ++i )
+    {
+    for ( int j = 0; j < 3; ++j )
+      {
+      std::cerr << R[j][i] << "\t";
+      }
+    std::cerr << std::endl;
+    }
 
   Self shearScale = Self::Identity();
   for ( int i=0; i<3; ++i ) 
@@ -250,11 +261,14 @@ Matrix4x4<T>::Decompose
     {
     const int i = k / 2;           // i.e. i := { 0, 0, 1 }
     const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
-    shearScale[i][j] = (params[9+k] = R[i][j]);
+    params[9+k] = R[j][i];
+
+    // remove contribution from transformation matrix
+    Self shear = Self::Identity();
+    shear[i][j] = params[9+k];
+    matrix *= shear.GetInverse();
     }
 
-  matrix *= shearScale.GetInverse();
-  
 /*=========================================================================
 
 THE FOLLOWING CODE WAS ADOPTED AND MODIFIED FROM VTK, The Visualization
@@ -322,13 +336,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   
   // rotation
   // first rotate about y axis
-  x2 = Q[0][1] / params[6];
-  y2 = Q[0][2] / params[6];
-  z2 = Q[0][0] / params[6];
+  x2 = matrix[0][1] / params[6];
+  y2 = matrix[0][2] / params[6];
+  z2 = matrix[0][0] / params[6];
     
-  x3 = Q[2][1] / params[8];
-  y3 = Q[2][2] / params[8];
-  z3 = Q[2][0] / params[8];
+  x3 = matrix[2][1] / params[8];
+  y3 = matrix[2][2] / params[8];
+  z3 = matrix[2][0] / params[8];
     
   dot = x2 * x2 + z2 * z2;
   d1 = sqrt (dot);
