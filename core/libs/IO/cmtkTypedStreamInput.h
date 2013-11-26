@@ -290,6 +290,32 @@ public:
 			     const std::string& defaultValue = "" /*!< Default value returned if the field is not found in the archive. */, 
 			     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
+  /// Get open stream major version.
+  int GetReleaseMajor() const
+  {
+    if ( this->m_Status == Self::ERROR_NONE )
+      {
+      return this->m_ReleaseMajor;
+      }
+    else
+      {
+      return -1;
+      }
+  }
+
+  /// Get open stream minor version.
+  int GetReleaseMinor() const
+  {
+    if ( this->m_Status == Self::ERROR_NONE )
+      {
+      return this->m_ReleaseMinor;
+      }
+    else
+      {
+      return -1;
+      }
+  }
+
 private:
   /** Utility function: Read an array of arbitrary type.
    * This function is called by all reader functions. Internally, a "switch"
@@ -305,6 +331,12 @@ private:
   
   /// Read the next archive line to the buffer.
   Self::Token ReadLineToken();
+
+  /// Release major version.
+  int m_ReleaseMajor;
+
+  /// Release minor version.
+  int m_ReleaseMinor;
 };
 
 //@}
