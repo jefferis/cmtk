@@ -124,7 +124,7 @@ IF(NOT CMTK_INSTALL_DATA_DIR)
 ENDIF(NOT CMTK_INSTALL_DATA_DIR)
 
 IF(NOT CMTK_INSTALL_INCLUDE_DIR)
-  SET(CMTK_INSTALL_INCLUDE_DIR "include/cmtk" CACHE PATH "Data files will be installed here")
+  SET(CMTK_INSTALL_INCLUDE_DIR "include/cmtk" CACHE PATH "Include files will be installed here")
 ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
 
 #-----------------------------------------------------------------------------
@@ -642,7 +642,6 @@ IF(BUILD_GUI)
 ENDIF(BUILD_GUI)    
 
 SUBDIRS(scripts)
-ADD_SUBDIRECTORY(data)
 
 #-----------------------------------------------------------------------------
 # Configure this tree
