@@ -69,8 +69,6 @@ Matrix4x4<T>&
 Matrix4x4<T>::Compose
 ( const Types::Coordinate params[15], const bool logScaleFactors )
 {
-  return this->ComposeFromLegacyParameters( params, logScaleFactors );
-#ifdef IGNORE
   const Units::Radians alpha = Units::Degrees( params[3] );
   const Units::Radians theta = Units::Degrees( params[4] );
   const Units::Radians   phi = Units::Degrees( params[5] );
@@ -82,92 +80,44 @@ Matrix4x4<T>::Compose
   const double sin0xsin1 = sin0 * sin1;
   const double cos0xsin1 = cos0 * sin1;
 
-  this->m_Matrix[0][0] = static_cast<T>( cos1*cos2 );
-  this->m_Matrix[0][1] = static_cast<T>( -cos1*sin2 );                     
-  this->m_Matrix[0][2] = static_cast<T>( -sin1 );
-  this->m_Matrix[0][3] = static_cast<T>( 0 );
-  this->m_Matrix[1][0] = static_cast<T>(  (sin0xsin1*cos2 + cos0*sin2) );
-  this->m_Matrix[1][1] = static_cast<T>( (-sin0xsin1*sin2 + cos0*cos2) ); 
-  this->m_Matrix[1][2] = static_cast<T>(  sin0*cos1 );
-  this->m_Matrix[1][3] = static_cast<T>( 0 );
-  this->m_Matrix[2][0] = static_cast<T>(  (cos0xsin1*cos2 - sin0*sin2) );
-  this->m_Matrix[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) );
-  this->m_Matrix[2][2] = static_cast<T>(  cos0*cos1 );
-  this->m_Matrix[2][3] = static_cast<T>( 0 );
+  Self rotation = Self::Identity();
+  rotation[0][0] = static_cast<T>( cos1*cos2 );
+  rotation[0][1] = static_cast<T>( -cos1*sin2 );                     
+  rotation[0][2] = static_cast<T>( -sin1 );
+  rotation[1][0] = static_cast<T>(  (sin0xsin1*cos2 + cos0*sin2) );
+  rotation[1][1] = static_cast<T>( (-sin0xsin1*sin2 + cos0*cos2) ); 
+  rotation[1][2] = static_cast<T>(  sin0*cos1 );
+  rotation[2][0] = static_cast<T>(  (cos0xsin1*cos2 - sin0*sin2) );
+  rotation[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) );
+  rotation[2][2] = static_cast<T>(  cos0*cos1 );
 
-  this->m_Matrix[3][0] = this->m_Matrix[3][1] = this->m_Matrix[3][2] = static_cast<T>( 0 );
-  this->m_Matrix[3][3] = static_cast<T>( 1.0 );
+  std::cerr << "rot\n";
+  for ( int i = 0; i < 3; ++i )
+    {
+    for ( int j = 0; j < 3; ++j )
+      {
+      std::cerr << rotation[j][i] << "\t";
+      }
+    std::cerr << std::endl;
+    }
 
   // generate shears
   Self scaleShear = Self::Identity();
   for ( int i = 0; i < 3; ++i )
     {    
     scaleShear[i][i] = (logScaleFactors) ? exp( params[6+i] ) : params[6+i];
-    scaleShear[i/2][(i/2)+(i%2)+1] = params[9+i];
+    scaleShear[(i/2)+(i%2)+1][i/2] = params[9+i];
     }
-  *this *= scaleShear;
+  *this = scaleShear * rotation;
   
-  // transform rotation center
-  const Types::Coordinate cM[3] = 
+  std::cerr << "scaleShear\n";
+  for ( int i = 0; i < 3; ++i )
     {
-      params[12]*this->m_Matrix[0][0] + params[13]*this->m_Matrix[1][0] + params[14]*this->m_Matrix[2][0],
-      params[12]*this->m_Matrix[0][1] + params[13]*this->m_Matrix[1][1] + params[14]*this->m_Matrix[2][1],
-      params[12]*this->m_Matrix[0][2] + params[13]*this->m_Matrix[1][2] + params[14]*this->m_Matrix[2][2]
-    };
-  
-  // set translations
-  this->m_Matrix[3][0] = params[0] - cM[0] + params[12];
-  this->m_Matrix[3][1] = params[1] - cM[1] + params[13];
-  this->m_Matrix[3][2] = params[2] - cM[2] + params[14];
-  
-  return *this;
-#endif
-}
-
-template<class T>
-Matrix4x4<T>&
-Matrix4x4<T>::ComposeFromLegacyParameters
-( const Types::Coordinate params[15], const bool logScaleFactors )
-{
-  const Units::Radians alpha = Units::Degrees( params[3] );
-  const Units::Radians theta = Units::Degrees( params[4] );
-  const Units::Radians   phi = Units::Degrees( params[5] );
-
-  const double cos0 = MathUtil::Cos(alpha), sin0 = MathUtil::Sin(alpha);
-  const double cos1 = MathUtil::Cos(theta), sin1 = MathUtil::Sin(theta);
-  const double cos2 = MathUtil::Cos(  phi), sin2 = MathUtil::Sin(  phi);
-
-  const double sin0xsin1 = sin0 * sin1;
-  const double cos0xsin1 = cos0 * sin1;
-
-  const double scaleX = (logScaleFactors) ? exp( params[6] ) : params[6];
-  const double scaleY = (logScaleFactors) ? exp( params[7] ) : params[7];
-  const double scaleZ = (logScaleFactors) ? exp( params[8] ) : params[8];
-
-  this->m_Matrix[0][0] = static_cast<T>( cos1*cos2 * scaleX );
-  this->m_Matrix[0][1] = static_cast<T>( -cos1*sin2 * scaleX );                     
-  this->m_Matrix[0][2] = static_cast<T>( -sin1 * scaleX );
-  this->m_Matrix[0][3] = static_cast<T>( 0 );
-  this->m_Matrix[1][0] = static_cast<T>(  (sin0xsin1*cos2 + cos0*sin2) * scaleY );
-  this->m_Matrix[1][1] = static_cast<T>( (-sin0xsin1*sin2 + cos0*cos2) * scaleY ); 
-  this->m_Matrix[1][2] = static_cast<T>(  sin0*cos1 * scaleY );
-  this->m_Matrix[1][3] = static_cast<T>( 0 );
-  this->m_Matrix[2][0] = static_cast<T>(  (cos0xsin1*cos2 - sin0*sin2) * scaleZ );
-  this->m_Matrix[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) * scaleZ );
-  this->m_Matrix[2][2] = static_cast<T>(  cos0*cos1 * scaleZ );
-  this->m_Matrix[2][3] = static_cast<T>( 0 );
-
-  this->m_Matrix[3][0] = this->m_Matrix[3][1] = this->m_Matrix[3][2] = static_cast<T>( 0 );
-  this->m_Matrix[3][3] = static_cast<T>( 1.0 );
-
-  // generate shears
-  Self shears = Self::Identity();
-  for ( int i = 2; i >= 0; --i )
-    { 
-    Self shear = Self::Identity();
-    shear[i/2][(i/2)+(i%2)+1] = params[9+i];
-    *this *= shear;
-    shears *= shear;
+    for ( int j = 0; j < 3; ++j )
+      {
+      std::cerr << scaleShear[j][i] << "\t";
+      }
+    std::cerr << std::endl;
     }
 
   // transform rotation center
@@ -191,21 +141,18 @@ bool
 Matrix4x4<T>::Decompose
 ( Types::Coordinate params[15], const Types::Coordinate *center, const bool logScaleFactor ) const
 {
-  // make a working copy of the matrix for step-by-step decomposition
-  Self matrix( *this );
-
   // translation entries
-  params[0] = matrix[3][0];
-  params[1] = matrix[3][1];
-  params[2] = matrix[3][2];
+  params[0] = this->m_Matrix[3][0];
+  params[1] = this->m_Matrix[3][1];
+  params[2] = this->m_Matrix[3][2];
 
   if ( center )
     {
     const Types::Coordinate cM[3] = 
       {
-	center[0]*matrix[0][0] + center[1]*matrix[1][0] + center[2]*matrix[2][0],
-	center[0]*matrix[0][1] + center[1]*matrix[1][1] + center[2]*matrix[2][1],
-	center[0]*matrix[0][2] + center[1]*matrix[1][2] + center[2]*matrix[2][2],
+	center[0]*this->m_Matrix[0][0] + center[1]*this->m_Matrix[1][0] + center[2]*this->m_Matrix[2][0],
+	center[0]*this->m_Matrix[0][1] + center[1]*this->m_Matrix[1][1] + center[2]*this->m_Matrix[2][1],
+	center[0]*this->m_Matrix[0][2] + center[1]*this->m_Matrix[1][2] + center[2]*this->m_Matrix[2][2],
       };
     
     params[0] += cM[0] - center[0];
@@ -228,46 +175,69 @@ Matrix4x4<T>::Decompose
   Matrix2D<T> matrix2d( 3, 3 );
   for ( int i = 0; i < 3; ++i )
     for ( int j = 0; j < 3; ++j )
-      matrix2d[i][j] = matrix[j][i];
+      matrix2d[i][j] = this->m_Matrix[j][i];
 
   QRDecomposition<T> qr( matrix2d );
   const Matrix2D<T> R = qr.GetR();
   const Matrix2D<T> Q = qr.GetQ();
 
+  Self scaleShear = Self::Identity();
+  for ( int k=0; k<3; ++k ) 
+    {
+    if ( R[k][k] < 0 )
+      {
+      for ( int i=0; i<3; ++i ) 
+	{
+	R[k][i] = -R[k][i];
+	Q[i][k] = -Q[i][k];
+	}
+      }
+
+    // scale
+    scaleShear[k][k] = params[6 + k] = R[k][k];
+    
+    // report error on singular matrices.
+    if ( params[6+k]  < std::numeric_limits<T>::epsilon() ) 
+      {
+      throw typename Self::SingularMatrixException();
+      }
+
+    const int i = k / 2;           // i.e. i := { 0, 0, 1 }
+    const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
+    scaleShear[j][i] = params[9+k] = R[i][j];
+    }
+
+  std::cerr << "Q\n";
   for ( int i = 0; i < 3; ++i )
     {
     for ( int j = 0; j < 3; ++j )
       {
-      std::cerr << R[j][i] << "\t";
+      std::cerr << Q[i][j] << "\t";
       }
     std::cerr << std::endl;
     }
 
-  Self shearScale = Self::Identity();
-  for ( int i=0; i<3; ++i ) 
+  std::cerr << "R\n";
+  for ( int i = 0; i < 3; ++i )
     {
-    // scale
-    shearScale[i][i] = (params[6 + i] = fabs( R[i][i] ));
-    
-    // report error on singular matrices.
-    if ( fabs( params[6+i] ) < std::numeric_limits<T>::epsilon() ) 
+    for ( int j = 0; j < 3; ++j )
       {
-      throw typename Self::SingularMatrixException();
+      std::cerr << R[i][j] << "\t";
       }
+    std::cerr << std::endl;
     }
 
-  // shear
-  for ( int k = 0; k<3; ++k ) 
+
+  std::cerr << "scaleShear\n";
+  for ( int i = 0; i < 3; ++i )
     {
-    const int i = k / 2;           // i.e. i := { 0, 0, 1 }
-    const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
-    params[9+k] = R[j][i];
-
-    // remove contribution from transformation matrix
-    Self shear = Self::Identity();
-    shear[i][j] = params[9+k];
-    matrix *= shear.GetInverse();
+    for ( int j = 0; j < 3; ++j )
+      {
+      std::cerr << scaleShear[j][i] << "\t";
+      }
+    std::cerr << std::endl;
     }
+
 
 /*=========================================================================
 
@@ -322,7 +292,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   double   x3, y3, z3;
   double   x3p, y3p;
     
-  // if negative determinant, negate x scale
   const Types::Coordinate determinant = 
     this->m_Matrix[0][0]*this->m_Matrix[1][1]*this->m_Matrix[2][2] + 
     this->m_Matrix[0][1]*this->m_Matrix[1][2]*this->m_Matrix[2][0] + 
@@ -331,18 +300,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     this->m_Matrix[0][0]*this->m_Matrix[1][2]*this->m_Matrix[2][1] - 
     this->m_Matrix[0][1]*this->m_Matrix[1][0]*this->m_Matrix[2][2];
 
+  // if negative determinant, this is not a true rotation
   if ( determinant < 0 )
+    {
+    // negate x scale
     params[6] = -params[6];
+    // also negative shears related to x
+    params[9] = -params[9];
+    params[10] = -params[10];
+    }
   
-  // rotation
-  // first rotate about y axis
-  x2 = matrix[0][1] / params[6];
-  y2 = matrix[0][2] / params[6];
-  z2 = matrix[0][0] / params[6];
+  // Now deal with the rotation Q:
+  //  First rotate about y axis
+  x2 = Q[1][0] / params[6];
+  y2 = Q[2][0] / params[6];
+  z2 = Q[0][0] / params[6];
     
-  x3 = matrix[2][1] / params[8];
-  y3 = matrix[2][2] / params[8];
-  z3 = matrix[2][0] / params[8];
+  x3 = Q[1][2] / params[8];
+  y3 = Q[2][2] / params[8];
+  z3 = Q[0][2] / params[8];
     
   dot = x2 * x2 + z2 * z2;
   d1 = sqrt (dot);
