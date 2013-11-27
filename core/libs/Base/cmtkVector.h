@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -171,7 +171,7 @@ public:
     
     return *this;
   }
-  
+
   /** Adjust vector dimension.
    * Unlike SetDim(), this function preserves the values of elements in the
    * vector if they are still in the valid index range after size adjustment.
@@ -299,6 +299,17 @@ public:
   void Clear() 
   { 
     memset( Elements, 0, Dim * sizeof( *Elements ) ); 
+  }
+
+  /// Set vector from C-style array of arbitrary type (that can be converted to vector's element type).
+  template<class T2>
+  void SetFromArray( const T2* ptr, const size_t dim = 0 )
+  {
+    const size_t nCopy = dim ? std::min( dim, this->Dim ) : this->Dim;
+    for ( size_t i = 0; i < nCopy; ++i )
+      {
+      this->Elements[i] = static_cast<T>( ptr[i] );
+      }
   }
 
   /// Set all vector elements to constant value.
