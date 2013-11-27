@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include "cmtkClassStreamAffineXform.h"
+
+#include <Base/cmtkCompatibilityMatrix4x4.h>
 
 namespace
 cmtk
@@ -126,6 +128,15 @@ operator >> ( ClassStreamInput& stream, AffineXform& affineXform )
     parameters[12] = parameters[13] = parameters[14] = 0;
     }
   stream.End();
+
+  if ( stream.GetReleaseMajor() < 2 )
+    {
+    CompatibilityMatrix4x4<Types::Coordinate> matrix( pVector, logScaleFactors );
+
+    Types::Coordinate newParameters[15];
+    matrix.Decompose( newParameters, pVector.Elements+12, logScaleFactors );
+    pVector.SetFromArray( newParameters, 15 );
+    }
 
   affineXform.SetUseLogScaleFactors( logScaleFactors );
   affineXform.SetParamVector( pVector );
