@@ -166,6 +166,13 @@ TypedStreamInput
       File = NULL;
       }
     }
+  else
+    {
+    if ( (this->m_ReleaseMajor > CMTK_VERSION_MAJOR) || ( (this->m_ReleaseMajor == CMTK_VERSION_MAJOR) && (this->m_ReleaseMinor > CMTK_VERSION_MINOR)) )
+      {
+      StdErr << "WARNING: input archive was written by newer version of CMTK (" << this->m_ReleaseMajor << "." << this->m_ReleaseMinor << " or higher) - proceed with caution.\n";
+      }
+    }
 }
 
 void
