@@ -91,16 +91,6 @@ Matrix4x4<T>::Compose
   rotation[2][1] = static_cast<T>( (-cos0xsin1*sin2 - sin0*cos2) );
   rotation[2][2] = static_cast<T>(  cos0*cos1 );
 
-  std::cerr << "rot\n";
-  for ( int i = 0; i < 3; ++i )
-    {
-    for ( int j = 0; j < 3; ++j )
-      {
-      std::cerr << rotation[j][i] << "\t";
-      }
-    std::cerr << std::endl;
-    }
-
   // generate shears
   Self scaleShear = Self::Identity();
   for ( int i = 0; i < 3; ++i )
@@ -110,16 +100,6 @@ Matrix4x4<T>::Compose
     }
   *this = scaleShear * rotation;
   
-  std::cerr << "scaleShear\n";
-  for ( int i = 0; i < 3; ++i )
-    {
-    for ( int j = 0; j < 3; ++j )
-      {
-      std::cerr << scaleShear[j][i] << "\t";
-      }
-    std::cerr << std::endl;
-    }
-
   // transform rotation center
   const Types::Coordinate cM[3] = 
     {
@@ -181,9 +161,9 @@ Matrix4x4<T>::Decompose
   const Matrix2D<T> R = qr.GetR();
   const Matrix2D<T> Q = qr.GetQ();
 
-  Self scaleShear = Self::Identity();
   for ( int k=0; k<3; ++k ) 
     {
+    // if scale is negative, make positive and correct Q and R accordingly (we will figure out later if the overall transformation is a true rotation or has a negative determinant)
     if ( R[k][k] < 0 )
       {
       for ( int i=0; i<3; ++i ) 
@@ -194,7 +174,7 @@ Matrix4x4<T>::Decompose
       }
 
     // scale
-    scaleShear[k][k] = params[6 + k] = R[k][k];
+    params[6 + k] = R[k][k];
     
     // report error on singular matrices.
     if ( params[6+k]  < std::numeric_limits<T>::epsilon() ) 
@@ -202,42 +182,11 @@ Matrix4x4<T>::Decompose
       throw typename Self::SingularMatrixException();
       }
 
+    // shear
     const int i = k / 2;           // i.e. i := { 0, 0, 1 }
     const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
-    scaleShear[j][i] = params[9+k] = R[i][j];
+    params[9+k] = R[i][j];
     }
-
-  std::cerr << "Q\n";
-  for ( int i = 0; i < 3; ++i )
-    {
-    for ( int j = 0; j < 3; ++j )
-      {
-      std::cerr << Q[i][j] << "\t";
-      }
-    std::cerr << std::endl;
-    }
-
-  std::cerr << "R\n";
-  for ( int i = 0; i < 3; ++i )
-    {
-    for ( int j = 0; j < 3; ++j )
-      {
-      std::cerr << R[i][j] << "\t";
-      }
-    std::cerr << std::endl;
-    }
-
-
-  std::cerr << "scaleShear\n";
-  for ( int i = 0; i < 3; ++i )
-    {
-    for ( int j = 0; j < 3; ++j )
-      {
-      std::cerr << scaleShear[j][i] << "\t";
-      }
-    std::cerr << std::endl;
-    }
-
 
 /*=========================================================================
 
