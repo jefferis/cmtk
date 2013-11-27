@@ -251,10 +251,12 @@ protected:
   /// Internal position pointer for "StringSplit()".
   mutable char* SplitPosition;
 
-  /// Return the identifier for the generated archive format (version).
+  /** Return the identifier for the generated archive format (version).
+   * This is the earliest CMTK version that can read this archive properly.
+   */
   static const char* GetTypedStreamIdent() 
   {
-    return "! TYPEDSTREAM 1.1\n";
+    return "! TYPEDSTREAM 2.4\n";
   }
   
   /// Debug flag.
