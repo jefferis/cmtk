@@ -38,6 +38,7 @@ SET(cmtkBase_SRCS
   cmtkAnatomicalOrientationBase.cxx
   cmtkAnatomicalOrientationPermutationMatrix.cxx
   cmtkBitVector.cxx
+  cmtkCompatibilityMatrix4x4.cxx
   cmtkDataGrid.cxx
   cmtkDataGrid_Crop.cxx
   cmtkDataGridFilter.cxx
