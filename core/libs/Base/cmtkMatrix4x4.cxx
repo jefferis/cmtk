@@ -150,12 +150,17 @@ Matrix4x4<T>::Decompose
     memset( params+12, 0, 3*sizeof( Types::Coordinate ) );
     }
 
-  // use QR decomposition to get shears (gets the scales, too, but we'll discard those 
-  // and do them explicitly later.
+  // use QR decomposition to separate rotation (Q) from shear and scales (R)
   Matrix2D<T> matrix2d( 3, 3 );
   for ( int i = 0; i < 3; ++i )
+    {
     for ( int j = 0; j < 3; ++j )
+      {
+      // We use QR decomposition, but because we do left-multiplication of coordinate vector times transformation matrix,
+      // the matrix is actually (RQ)^T, and we instead need to decompose the transformation matrix transpose.
       matrix2d[i][j] = this->m_Matrix[j][i];
+      }
+    }
 
   QRDecomposition<T> qr( matrix2d );
   const Matrix2D<T> R = qr.GetR();
