@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -201,7 +201,7 @@ AnalyzeGrey( const cmtk::UniformVolume& volume, const cmtk::TypedArray& maskData
     }
   
   if ( ! WriteAsColumn )
-    fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tH\tsum\n" );
+    fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tEntropy\tsum\n" );
   
   for ( int maskSelect = 0; maskSelect <= maxLabel; ++maskSelect )
     {
