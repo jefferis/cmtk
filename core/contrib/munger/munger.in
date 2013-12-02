@@ -34,14 +34,18 @@
 # v1.17 2009-10-27 - Add ability to specify multiple input images / dirs 
 # v1.18 2010-10-12 - fix duplicated stems in reformatted images
 # v1.19 2012-05-31 - Option to handle input from Amira Global Hough Transform
+# v1.20 2013-11-26 - Replaced command line tools by perl functions for better compatibility
 
 require 5.004;
 use strict;
 my $version= 1.19;
+my $isWin = $^O eq 'MSWin32'; # check for MSWin32 os
 use vars qw/ %opt /;  # for command line options - see init()
 use File::Find;
 use File::Basename;
 use File::Spec;
+use IO::Compress::Gzip qw(gzip $GzipError) ;
+use Cwd;
 
 # Autoflush stdout - so that it always keeps up with STDERR
 $|=1;
@@ -79,7 +83,11 @@ my $icweight=$opt{I}?$opt{I}:"0";
 # EDIT TO RECOGNISE YOUR MACHINE IF IT CAN HAVE DIFFERENT HOSTNAMES
 my $hostName=`hostname`; chomp($hostName); print STDERR "hostname = $hostName";
 print STDERR "; short hostname = $hostName\n";
-print `echo User path is \$PATH` if $opt{v};
+if( $isWin ){
+	print `echo User path is %PATH%` if $opt{v}; # User path is defined by %path% under Win32 systems. Martin
+} else {
+	print `echo User path is \$PATH` if $opt{v};
+}
 
 my $threads=$opt{T}?$opt{T}:"auto";
 
@@ -140,7 +148,10 @@ if($opt{d}){
 
 # Set default lock message
 #my $lockmessage=$opt{k}?$opt{k}:"";
-my $lockmessage=$opt{k}?$opt{k}:$hostName.":".getpgrp(0);
+my $lockmessage=$opt{k}?$opt{k}:"";
+if ( ! $isWin ) {
+	my $lockmessage=$opt{k}?$opt{k}:$hostName.":".getpgrp(0);
+}
 print "JOB ID = $lockmessage\n";
 
 my $deleteInputImage = $opt{x}?$opt{x}:"never";
@@ -164,7 +175,7 @@ if ($opt{p}){
 	die "Unable to open script file $opt{p} for writing" unless open SCRIPT, "> $opt{p}";
 }
 
-chomp($rootDir=`pwd`);
+$rootDir=getdcwd();
 print "Root directory is $rootDir\n";
 
 my $nargs=$#ARGV+1;
@@ -394,7 +405,11 @@ sub runWarp {
 	# Continue if outdir doesn't exist OR
 	# if age of indir > age of outdir & there is a registration
 	if( (! -d "$outlist") ){
-		myexec("mkdir -p \"$outlist\"") unless $opt{t};
+		if( $isWin ){
+			myexec("md \"$outlist\"") unless $opt{t}; # md creates folder tree by default. Martin
+	    } else {
+			myexec("mkdir -p \"$outlist\"") unless $opt{t};
+		}
 	} else {
 		print "outdir exists\n" if $opt{v};
 		# there is an output dir ... is there a registration?
@@ -425,7 +440,10 @@ sub runWarp {
 		#`gzip -f -9 \"${outlist}/registration\" \"${outlist}/level*/registration\"`;
 		# so try this:
 		# nb opt z indicates that we don't want to gzip; nb -f to over-write
-		myexec( "find", $outlist, "-name", "registration", "-exec", "gzip", "-f", "-9", "{}", ";" ) unless $opt{z};
+		# myexec( "find", $outlist, "-name", "registration", "-exec", "gzip", "-f", "-9", "{}", ";" ) unless $opt{z};
+
+		# generic solution that replaces the commandline calls. Martin
+		find(sub { gzip $_ => "$_.gz", -Level => 9 or die "gzip failed: $GzipError\n" if $_ eq "registration" && ! -d }, "$outlist");
 
 		removelock("$outlist/registration.lock");
 		return $outlist;
@@ -501,7 +519,11 @@ sub runReformat {
 	# Bail out if we have already reformatted 
 	if ( ! -d $outlist && $makedir){
 		# no output dir, so make one and continue
-		myexec("mkdir -p \"$outlist\"") unless $opt{t};
+		if( $isWin ){
+			myexec("md \"$outlist\"") unless $opt{t}; # md creates folder tree by default. Martin
+	    } else {
+			myexec("mkdir -p \"$outlist\"") unless $opt{t};
+		}
 	} else {
 		print "outdir exists\n" if $opt{v} && $makedir;
 		# there is an output dir ... is there an image file?
@@ -539,9 +561,9 @@ sub runReformat {
 	if(!$opt{t}){
 		print myexec(@cmd);
 		$reformatTotal++;
-		# note -f forces overwrite of existing gz
-		myexec ( "gzip", "-f", "-9", "${outlist}/image.bin" ) 
-			unless $opt{z} or ($outputType ne "bin");
+		# generic approach for gzip comandline call. Martin
+		gzip "${outlist}/image.bin" => "${outlist}/image.bin.gz", -Level => 9
+			or die "gzip failed: $GzipError\n" unless $opt{z} or ($outputType ne "bin");
 		removelock("${outlist}.lock");
 		truncatefile($inputimgfilepath) if($deleteInputImage =~ /^only/);
 		return $outlist;
@@ -875,7 +897,11 @@ sub makelock {
 
 	# check dir exists and make it if it doesn't
 	my $lockdir=dirname($lockfile);
-	myexec("mkdir","-p","$lockdir") unless -d $lockdir;
+	if( $isWin ){
+		myexec("md","$lockdir") unless -d $lockdir; # md creates folder tree by default. Martin
+	} else {
+		myexec("mkdir","-p","$lockdir") unless -d $lockdir;
+	}
 
 	# Bail if someone else has already made a lock file
 	return 0 if (-f "$lockfile");
