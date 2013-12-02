@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010-2012 SRI International
+##  Copyright 2010-2013 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -39,8 +39,8 @@ SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 SET(CMAKE_OSX_SYSROOT "/" CACHE STRING "OS-X architecture")
 
 # Select MacPorts compiler
-SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.7" CACHE FILEPATH "C++ compiler path")
-SET(CMAKE_C_COMPILER "/opt/local/bin/gcc-mp-4.7" CACHE FILEPATH "C compiler path")
+SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.8" CACHE FILEPATH "C++ compiler path")
+SET(CMAKE_C_COMPILER "/opt/local/bin/gcc-mp-4.8" CACHE FILEPATH "C compiler path")
 
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
