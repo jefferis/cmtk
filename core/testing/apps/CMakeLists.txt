@@ -336,7 +336,12 @@ ENDIF(CMTK_USE_DCMTK)
 
 # ==========================================
 # Tests for "dof2mat" tool
-LIST(APPEND testList dof2mat dof2matTranspose)
+LIST(APPEND testList 
+  dof2mat
+  dof2matTranspose
+  dof2matLegacy
+  dof2matLegacyFwd
+  dof2matFixed)
 
 # ==========================================
 # Tests for "filter" tool

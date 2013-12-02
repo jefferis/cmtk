@@ -913,6 +913,18 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/dof2mat --transpose parc1_parc2_9dof.xform > ${tmpdir}/matrix"
 	check_results matrix
         ;;
+    dof2matLegacy)
+        run_eval "${BINDIR}/dof2mat vol001_mr_t0t1.list > ${tmpdir}/matrix"
+	check_results matrix
+        ;;    
+    dof2matLegacyFwd)
+        run_eval "${BINDIR}/dof2mat vol001_mr_t0t1_fwd.list > ${tmpdir}/matrix"
+	check_results matrix
+        ;;    
+    dof2matFixed)
+        run_eval "${BINDIR}/dof2mat vol001_mr_t0t1_fwd24.list > ${tmpdir}/matrix"
+	check_results matrix
+        ;;    
     stream_pixels)
         run_eval "${BINDIR}/stream_pixels jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
 	check_results stream.raw
@@ -1584,7 +1596,7 @@ case ${RUNTEST} in
     mat2dofFile)
         run_eval "${BINDIR}/mat2dof --transpose --center -28,-48,-28 --offset 28,48,28 --pixel-size 1.06667,0.5,1.06667 -l ${tmpdir} rigid-air.mat"
 	check_results registration
-	;;
+	;;    
     mcaffine1)
 	export CMTK_NUM_THREADS=1
 	run mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --covariance -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
@@ -2005,15 +2017,15 @@ case ${RUNTEST} in
 	check_results registration xform.tfm
 	;;
     registrationxAutoLevelsRat4XY)
-        run registrationx -v --restrict-in-plane xy --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+        run registrationx -v --restrict-in-plane xy --auto-multi-levels 4 --dofs 6,9,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat4XZ)
-        run registrationx -v --restrict-in-plane xz --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+        run registrationx -v --restrict-in-plane xz --auto-multi-levels 4 --dofs 6,9,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat4YZ)
-        run registrationx -v --restrict-in-plane yz --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+        run registrationx -v --restrict-in-plane yz --auto-multi-levels 4 --dofs 6,9,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat4Symmetric)
