@@ -11,7 +11,7 @@ Bulk affine transformation:
 	Translation: 5.0625, -6.75, 0
 	Rotation angles: 8.75264, -0.560467, -1.75614
 	Scale factors: 1, 1, 1
-	Shear coefficients: 0, 0, 0
+	Shear coefficients: -1.38778e-17, 1.73472e-18, 2.77556e-17
 
 File: vol001_mr_t0t1.list
 Number of parameters: 15
@@ -19,7 +19,7 @@ Fixed image path: vol001_mr_t0.hdr
 Moving image path: vol001_mr_t1.hdr
 Transformation model: Affine
 Translation: -0.66, 1.51, -5.21
-Rotation angles: 0.0973539, 0.10223, -0.000173703
+Rotation angles: 0.102718, 0.10223, -0.000173703
 Scale factors: 0.995793, 0.991059, 1.018
-Shear coefficients: 5.85646e-19, 1.08878e-18, 2.02606e-16
+Shear coefficients: -1.65562e-07, -7.83754e-05, 9.53128e-05
 
