@@ -151,7 +151,7 @@ check_result()
     local diff="cmp"
     if file ${result} | fgrep text; then
 ##	diff="diff --strip-trailing-cr"
-	diff="${NUMDIFF} --relative-tolerance=1e-5 --absolute-tolerance=1e-10"
+	diff="${NUMDIFF} --relative-tolerance=1e-5 --absolute-tolerance=5e-7"
     fi
 
     echo "${diff} ${tmpdir}/$1 ${BASELINE}/$1"
