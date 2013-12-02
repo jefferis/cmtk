@@ -181,23 +181,22 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     const float qb = header.GetField<float>( offsetof(nifti_1_header,quatern_b) );
     const float qc = header.GetField<float>( offsetof(nifti_1_header,quatern_c) );
     const float qd = header.GetField<float>( offsetof(nifti_1_header,quatern_d) );
-    const double qa = sqrt( std::max( 0.0, 1.0 - (qb*qb + qc*qc + qd*qd) ) );
 
-   const float qfac = (header.GetField<float>( offsetof(nifti_1_header,pixdim) ) >= 0) ? 1.0f : -1.0f;
+    const float qx = header.GetField<float>( offsetof(nifti_1_header,qoffset_x) );
+    const float qy = header.GetField<float>( offsetof(nifti_1_header,qoffset_y) );
+    const float qz = header.GetField<float>( offsetof(nifti_1_header,qoffset_z) );
 
-    const Types::Coordinate directions[3][3] = 
+    const double qfac = (header.GetField<float>( offsetof(nifti_1_header,pixdim) ) >= 0) ? 1.0f : -1.0f;
+    const mat44 m44 = nifti_quatern_to_mat44( qb, qc, qd, qx, qy, qz, pixelDim[0], pixelDim[1], pixelDim[2], qfac );
+
+    Matrix4x4<Types::Coordinate> m4;
+    for ( int j = 0; j < 4; ++j )
       {
-	{        pixelDim[0] * (qa*qa+qb*qb-qc*qc-qd*qd),        pixelDim[0] * (2*qb*qc+2*qa*qd),                pixelDim[0] * (2*qb*qd-2*qa*qc) },
-	{        pixelDim[1] * (2*qb*qc-2*qa*qd),                pixelDim[1] * (qa*qa+qc*qc-qb*qb-qd*qd),        pixelDim[1] * (2*qc*qd+2*qa*qb) },
-	{ qfac * pixelDim[2] * (2*qb*qd+2*qa*qc),         qfac * pixelDim[2] * (2*qc*qd-2*qa*qb),         qfac * pixelDim[2] * (qa*qa+qd*qd-qc*qc-qb*qb) }
-      };
-    
-    const Matrix3x3<Types::Coordinate> m3( directions );
-    Matrix4x4<Types::Coordinate> m4( m3 );
-
-    m4[3][0] = header.GetField<float>( offsetof(nifti_1_header,qoffset_x) );
-    m4[3][1] = header.GetField<float>( offsetof(nifti_1_header,qoffset_y) );
-    m4[3][2] = header.GetField<float>( offsetof(nifti_1_header,qoffset_z) );
+      for ( int i = 0; i < 4; ++i )
+	{
+	m4[i][j] = m44.m[j][i];
+	}
+      }
 
     // qform overrides sform if both exist
     volume->m_IndexToPhysicalMatrix = m4;
@@ -385,8 +384,8 @@ VolumeFromFile::WriteNifti
   // fallback - we want at least a generic qform to be set to the volume's index-to-physical matrix
   if ( ! (header.qform_code || header.sform_code) )
     {
-#ifndef IGNORE
-    // This piece of code, when replacing the next two lines (qform stuff) would make CMTK entirely backward-compatible, but non-NIFTI-compliant.
+#ifdef IGNORE
+    // This piece of code, when replacing the next two lines (qform stuff) would make CMTK entirely backward-compatible (release 2.3 and earlier), but non-NIFTI-compliant.
     const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
       header.sform_code = 1;
       for ( int i = 0; i < 4; ++i )
