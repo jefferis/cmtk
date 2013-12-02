@@ -359,9 +359,9 @@ static const char gni_version[] = "nifti library version 1.44 (19 July, 2013)";
        nifti_mat44_to_orientation
 
 *//*-------------------------------------------------------------------------*/
-mat44 nifti_quatern_to_mat44( float qb, float qc, float qd,
-                              float qx, float qy, float qz,
-                              float dx, float dy, float dz, float qfac )
+mat44 nifti_quatern_to_mat44( const float qb, const float qc, const float qd,
+                              const float qx, const float qy, const float qz,
+                              const float dx, const float dy, const float dz, const float qfac )
 {
    mat44 R ;
    double a,b=qb,c=qc,d=qd , xd,yd,zd ;
@@ -389,15 +389,15 @@ mat44 nifti_quatern_to_mat44( float qb, float qc, float qd,
 
    if( qfac < 0.0 ) zd = -zd ;         /* left handedness? */
 
-   R.m[0][0] = (float)( (a*a+b*b-c*c-d*d) * xd) ;
+   R.m[0][0] = ( (a*a+b*b-c*c-d*d) * xd) ;
    R.m[0][1] = 2.0l * (b*c-a*d        ) * yd ;
    R.m[0][2] = 2.0l * (b*d+a*c        ) * zd ;
    R.m[1][0] = 2.0l * (b*c+a*d        ) * xd ;
-   R.m[1][1] = (float)( (a*a+c*c-b*b-d*d) * yd) ;
+   R.m[1][1] = ( (a*a+c*c-b*b-d*d) * yd) ;
    R.m[1][2] = 2.0l * (c*d-a*b        ) * zd ;
    R.m[2][0] = 2.0l * (b*d-a*c        ) * xd ;
    R.m[2][1] = 2.0l * (c*d+a*b        ) * yd ;
-   R.m[2][2] = (float)( (a*a+d*d-c*c-b*b) * zd) ;
+   R.m[2][2] = ( (a*a+d*d-c*c-b*b) * zd) ;
 
    /* load offsets */
 
@@ -483,9 +483,9 @@ void nifti_mat44_to_quatern( mat44 R ,
       will result in the inverse orthogonal matrix at this point.
       If we just orthogonalized the columns, this wouldn't necessarily hold. */
 
-   Q.m[0][0] = (float)r11 ; Q.m[0][1] = (float)r12 ; Q.m[0][2] = (float)r13 ; /* load Q */
-   Q.m[1][0] = (float)r21 ; Q.m[1][1] = (float)r22 ; Q.m[1][2] = (float)r23 ;
-   Q.m[2][0] = (float)r31 ; Q.m[2][1] = (float)r32 ; Q.m[2][2] = (float)r33 ;
+   Q.m[0][0] = r11 ; Q.m[0][1] = r12 ; Q.m[0][2] = r13 ; /* load Q */
+   Q.m[1][0] = r21 ; Q.m[1][1] = r22 ; Q.m[1][2] = r23 ;
+   Q.m[2][0] = r31 ; Q.m[2][1] = r32 ; Q.m[2][2] = r33 ;
 
    P = nifti_mat33_polar(Q) ;  /* P is orthog matrix closest to Q */
 
@@ -576,22 +576,22 @@ mat44 nifti_mat44_inverse( mat44 R )
 
    if( deti != 0.0l ) deti = 1.0l / deti ;
 
-   Q.m[0][0] = (float)( deti*( r22*r33-r32*r23) ) ;
-   Q.m[0][1] = (float)( deti*(-r12*r33+r32*r13) ) ;
-   Q.m[0][2] = (float)( deti*( r12*r23-r22*r13) ) ;
-   Q.m[0][3] = (float)( deti*(-r12*r23*v3+r12*v2*r33+r22*r13*v3
+   Q.m[0][0] = ( deti*( r22*r33-r32*r23) ) ;
+   Q.m[0][1] = ( deti*(-r12*r33+r32*r13) ) ;
+   Q.m[0][2] = ( deti*( r12*r23-r22*r13) ) ;
+   Q.m[0][3] = ( deti*(-r12*r23*v3+r12*v2*r33+r22*r13*v3
                      -r22*v1*r33-r32*r13*v2+r32*v1*r23) ) ;
 
-   Q.m[1][0] = (float)( deti*(-r21*r33+r31*r23) ) ;
-   Q.m[1][1] = (float)( deti*( r11*r33-r31*r13) ) ;
-   Q.m[1][2] = (float)( deti*(-r11*r23+r21*r13) ) ;
-   Q.m[1][3] = (float)( deti*( r11*r23*v3-r11*v2*r33-r21*r13*v3
+   Q.m[1][0] = ( deti*(-r21*r33+r31*r23) ) ;
+   Q.m[1][1] = ( deti*( r11*r33-r31*r13) ) ;
+   Q.m[1][2] = ( deti*(-r11*r23+r21*r13) ) ;
+   Q.m[1][3] = ( deti*( r11*r23*v3-r11*v2*r33-r21*r13*v3
                      +r21*v1*r33+r31*r13*v2-r31*v1*r23) ) ;
 
-   Q.m[2][0] = (float)( deti*( r21*r32-r31*r22) ) ;
-   Q.m[2][1] = (float)( deti*(-r11*r32+r31*r12) ) ;
-   Q.m[2][2] = (float)( deti*( r11*r22-r21*r12) ) ;
-   Q.m[2][3] = (float)( deti*(-r11*r22*v3+r11*r32*v2+r21*r12*v3
+   Q.m[2][0] = ( deti*( r21*r32-r31*r22) ) ;
+   Q.m[2][1] = ( deti*(-r11*r32+r31*r12) ) ;
+   Q.m[2][2] = ( deti*( r11*r22-r21*r12) ) ;
+   Q.m[2][3] = ( deti*(-r11*r22*v3+r11*r32*v2+r21*r12*v3
                      -r21*r32*v1-r31*r12*v2+r31*r22*v1) ) ;
 
    Q.m[3][0] = Q.m[3][1] = Q.m[3][2] = 0.0l ;
@@ -630,9 +630,9 @@ mat44 nifti_mat44_inverse( mat44 R )
    \sa nifti_quatern_to_mat44, nifti_mat44_to_quatern,
        nifti_mat44_to_orientation
 *//*-------------------------------------------------------------------------*/
-mat44 nifti_make_orthog_mat44( float r11, float r12, float r13 ,
-                               float r21, float r22, float r23 ,
-                               float r31, float r32, float r33  )
+mat44 nifti_make_orthog_mat44( const double r11, const double r12, const double r13 ,
+                               const double r21, const double r22, const double r23 ,
+                               const double r31, const double r32, const double r33  )
 {
    mat44 R ;
    mat33 Q , P ;
@@ -649,7 +649,7 @@ mat44 nifti_make_orthog_mat44( float r11, float r12, float r13 ,
    val = Q.m[0][0]*Q.m[0][0] + Q.m[0][1]*Q.m[0][1] + Q.m[0][2]*Q.m[0][2] ;
    if( val > 0.0l ){
      val = 1.0l / sqrt(val) ;
-     Q.m[0][0] *= (float)val ; Q.m[0][1] *= (float)val ; Q.m[0][2] *= (float)val ;
+     Q.m[0][0] *= val ; Q.m[0][1] *= val ; Q.m[0][2] *= val ;
    } else {
      Q.m[0][0] = 1.0l ; Q.m[0][1] = 0.0l ; Q.m[0][2] = 0.0l ;
    }
@@ -659,7 +659,7 @@ mat44 nifti_make_orthog_mat44( float r11, float r12, float r13 ,
    val = Q.m[1][0]*Q.m[1][0] + Q.m[1][1]*Q.m[1][1] + Q.m[1][2]*Q.m[1][2] ;
    if( val > 0.0l ){
      val = 1.0l / sqrt(val) ;
-     Q.m[1][0] *= (float)val ; Q.m[1][1] *= (float)val ; Q.m[1][2] *= (float)val ;
+     Q.m[1][0] *= val ; Q.m[1][1] *= val ; Q.m[1][2] *= val ;
    } else {
      Q.m[1][0] = 0.0l ; Q.m[1][1] = 1.0l ; Q.m[1][2] = 0.0l ;
    }
@@ -669,7 +669,7 @@ mat44 nifti_make_orthog_mat44( float r11, float r12, float r13 ,
    val = Q.m[2][0]*Q.m[2][0] + Q.m[2][1]*Q.m[2][1] + Q.m[2][2]*Q.m[2][2] ;
    if( val > 0.0l ){
      val = 1.0l / sqrt(val) ;
-     Q.m[2][0] *= (float)val ; Q.m[2][1] *= (float)val ; Q.m[2][2] *= (float)val ;
+     Q.m[2][0] *= val ; Q.m[2][1] *= val ; Q.m[2][2] *= val ;
    } else {
      Q.m[2][0] = Q.m[0][1]*Q.m[1][2] - Q.m[0][2]*Q.m[1][1] ;  /* cross */
      Q.m[2][1] = Q.m[0][2]*Q.m[1][0] - Q.m[0][0]*Q.m[1][2] ;  /* product */
@@ -702,17 +702,17 @@ mat33 nifti_mat33_inverse( mat33 R )   /* inverse of 3x3 matrix */
 
    if( deti != 0.0l ) deti = 1.0l / deti ;
 
-   Q.m[0][0] = (float)( deti*( r22*r33-r32*r23) ) ;
-   Q.m[0][1] = (float)( deti*(-r12*r33+r32*r13) ) ;
-   Q.m[0][2] = (float)( deti*( r12*r23-r22*r13) ) ;
+   Q.m[0][0] = ( deti*( r22*r33-r32*r23) ) ;
+   Q.m[0][1] = ( deti*(-r12*r33+r32*r13) ) ;
+   Q.m[0][2] = ( deti*( r12*r23-r22*r13) ) ;
 
-   Q.m[1][0] = (float)( deti*(-r21*r33+r31*r23) ) ;
-   Q.m[1][1] = (float)( deti*( r11*r33-r31*r13) ) ;
-   Q.m[1][2] = (float)( deti*(-r11*r23+r21*r13) ) ;
+   Q.m[1][0] = ( deti*(-r21*r33+r31*r23) ) ;
+   Q.m[1][1] = ( deti*( r11*r33-r31*r13) ) ;
+   Q.m[1][2] = ( deti*(-r11*r23+r21*r13) ) ;
 
-   Q.m[2][0] = (float)( deti*( r21*r32-r31*r22) ) ;
-   Q.m[2][1] = (float)( deti*(-r11*r32+r31*r12) ) ;
-   Q.m[2][2] = (float)( deti*( r11*r22-r21*r12) ) ;
+   Q.m[2][0] = ( deti*( r21*r32-r31*r22) ) ;
+   Q.m[2][1] = ( deti*(-r11*r32+r31*r12) ) ;
+   Q.m[2][2] = ( deti*( r11*r22-r21*r12) ) ;
 
    return Q ;
 }
@@ -720,7 +720,7 @@ mat33 nifti_mat33_inverse( mat33 R )   /* inverse of 3x3 matrix */
 /*----------------------------------------------------------------------*/
 /*! compute the determinant of a 3x3 matrix
 *//*--------------------------------------------------------------------*/
-float nifti_mat33_determ( mat33 R )   /* determinant of 3x3 matrix */
+double nifti_mat33_determ( mat33 R )   /* determinant of 3x3 matrix */
 {
    double r11,r12,r13,r21,r22,r23,r31,r32,r33 ;
                                                        /*  INPUT MATRIX:  */
@@ -728,20 +728,20 @@ float nifti_mat33_determ( mat33 R )   /* determinant of 3x3 matrix */
    r21 = R.m[1][0]; r22 = R.m[1][1]; r23 = R.m[1][2];  /* [ r21 r22 r23 ] */
    r31 = R.m[2][0]; r32 = R.m[2][1]; r33 = R.m[2][2];  /* [ r31 r32 r33 ] */
 
-   return (float)(r11*r22*r33-r11*r32*r23-r21*r12*r33
+   return (r11*r22*r33-r11*r32*r23-r21*r12*r33
          +r21*r32*r13+r31*r12*r23-r31*r22*r13) ;
 }
 
 /*----------------------------------------------------------------------*/
 /*! compute the max row norm of a 3x3 matrix
 *//*--------------------------------------------------------------------*/
-float nifti_mat33_rownorm( mat33 A )  /* max row norm of 3x3 matrix */
+double nifti_mat33_rownorm( mat33 A )  /* max row norm of 3x3 matrix */
 {
-   float r1,r2,r3 ;
+   double r1,r2,r3 ;
 
-   r1 = (float)( fabs(A.m[0][0])+fabs(A.m[0][1])+fabs(A.m[0][2]) ) ;
-   r2 = (float)( fabs(A.m[1][0])+fabs(A.m[1][1])+fabs(A.m[1][2]) ) ;
-   r3 = (float)( fabs(A.m[2][0])+fabs(A.m[2][1])+fabs(A.m[2][2]) ) ;
+   r1 = ( fabs(A.m[0][0])+fabs(A.m[0][1])+fabs(A.m[0][2]) ) ;
+   r2 = ( fabs(A.m[1][0])+fabs(A.m[1][1])+fabs(A.m[1][2]) ) ;
+   r3 = ( fabs(A.m[2][0])+fabs(A.m[2][1])+fabs(A.m[2][2]) ) ;
    if( r1 < r2 ) r1 = r2 ;
    if( r1 < r3 ) r1 = r3 ;
    return r1 ;
@@ -750,13 +750,13 @@ float nifti_mat33_rownorm( mat33 A )  /* max row norm of 3x3 matrix */
 /*----------------------------------------------------------------------*/
 /*! compute the max column norm of a 3x3 matrix
 *//*--------------------------------------------------------------------*/
-float nifti_mat33_colnorm( mat33 A )  /* max column norm of 3x3 matrix */
+double nifti_mat33_colnorm( mat33 A )  /* max column norm of 3x3 matrix */
 {
-   float r1,r2,r3 ;
+   double r1,r2,r3 ;
 
-   r1 = (float)( fabs(A.m[0][0])+fabs(A.m[1][0])+fabs(A.m[2][0]) ) ;
-   r2 = (float)( fabs(A.m[0][1])+fabs(A.m[1][1])+fabs(A.m[2][1]) ) ;
-   r3 = (float)( fabs(A.m[0][2])+fabs(A.m[1][2])+fabs(A.m[2][2]) ) ;
+   r1 = ( fabs(A.m[0][0])+fabs(A.m[1][0])+fabs(A.m[2][0]) ) ;
+   r2 = ( fabs(A.m[0][1])+fabs(A.m[1][1])+fabs(A.m[2][1]) ) ;
+   r3 = ( fabs(A.m[0][2])+fabs(A.m[1][2])+fabs(A.m[2][2]) ) ;
    if( r1 < r2 ) r1 = r2 ;
    if( r1 < r3 ) r1 = r3 ;
    return r1 ;
@@ -787,7 +787,7 @@ mat33 nifti_mat33_mul( mat33 A , mat33 B )  /* multiply 2 3x3 matrices */
 mat33 nifti_mat33_polar( mat33 A )
 {
    mat33 X , Y , Z ;
-   float alp,bet,gam,gmi , dif=1.0f ;
+   double alp,bet,gam,gmi , dif=1.0f ;
    int k=0 ;
 
    X = A ;
@@ -796,7 +796,7 @@ mat33 nifti_mat33_polar( mat33 A )
 
    gam = nifti_mat33_determ(X) ;
    while( gam == 0.0 ){        /* perturb matrix */
-     gam = (float)( 0.00001 * ( 0.001 + nifti_mat33_rownorm(X) ) ) ;
+     gam = ( 0.00001 * ( 0.001 + nifti_mat33_rownorm(X) ) ) ;
      X.m[0][0] += gam ; X.m[1][1] += gam ; X.m[2][2] += gam ;
      gam = nifti_mat33_determ(X) ;
    }
@@ -804,24 +804,24 @@ mat33 nifti_mat33_polar( mat33 A )
    while(1){
      Y = nifti_mat33_inverse(X) ;
      if( dif > 0.3 ){     /* far from convergence */
-       alp = (float)( sqrt( nifti_mat33_rownorm(X) * nifti_mat33_colnorm(X) ) ) ;
-       bet = (float)( sqrt( nifti_mat33_rownorm(Y) * nifti_mat33_colnorm(Y) ) ) ;
-       gam = (float)( sqrt( bet / alp ) ) ;
-       gmi = (float)( 1.0 / gam ) ;
+       alp = ( sqrt( nifti_mat33_rownorm(X) * nifti_mat33_colnorm(X) ) ) ;
+       bet = ( sqrt( nifti_mat33_rownorm(Y) * nifti_mat33_colnorm(Y) ) ) ;
+       gam = ( sqrt( bet / alp ) ) ;
+       gmi = ( 1.0 / gam ) ;
      } else {
        gam = gmi = 1.0f ;  /* close to convergence */
      }
-     Z.m[0][0] = (float)( 0.5 * ( gam*X.m[0][0] + gmi*Y.m[0][0] ) ) ;
-     Z.m[0][1] = (float)( 0.5 * ( gam*X.m[0][1] + gmi*Y.m[1][0] ) ) ;
-     Z.m[0][2] = (float)( 0.5 * ( gam*X.m[0][2] + gmi*Y.m[2][0] ) ) ;
-     Z.m[1][0] = (float)( 0.5 * ( gam*X.m[1][0] + gmi*Y.m[0][1] ) ) ;
-     Z.m[1][1] = (float)( 0.5 * ( gam*X.m[1][1] + gmi*Y.m[1][1] ) ) ;
-     Z.m[1][2] = (float)( 0.5 * ( gam*X.m[1][2] + gmi*Y.m[2][1] ) ) ;
-     Z.m[2][0] = (float)( 0.5 * ( gam*X.m[2][0] + gmi*Y.m[0][2] ) ) ;
-     Z.m[2][1] = (float)( 0.5 * ( gam*X.m[2][1] + gmi*Y.m[1][2] ) ) ;
-     Z.m[2][2] = (float)( 0.5 * ( gam*X.m[2][2] + gmi*Y.m[2][2] ) ) ;
+     Z.m[0][0] = ( 0.5 * ( gam*X.m[0][0] + gmi*Y.m[0][0] ) ) ;
+     Z.m[0][1] = ( 0.5 * ( gam*X.m[0][1] + gmi*Y.m[1][0] ) ) ;
+     Z.m[0][2] = ( 0.5 * ( gam*X.m[0][2] + gmi*Y.m[2][0] ) ) ;
+     Z.m[1][0] = ( 0.5 * ( gam*X.m[1][0] + gmi*Y.m[0][1] ) ) ;
+     Z.m[1][1] = ( 0.5 * ( gam*X.m[1][1] + gmi*Y.m[1][1] ) ) ;
+     Z.m[1][2] = ( 0.5 * ( gam*X.m[1][2] + gmi*Y.m[2][1] ) ) ;
+     Z.m[2][0] = ( 0.5 * ( gam*X.m[2][0] + gmi*Y.m[0][2] ) ) ;
+     Z.m[2][1] = ( 0.5 * ( gam*X.m[2][1] + gmi*Y.m[1][2] ) ) ;
+     Z.m[2][2] = ( 0.5 * ( gam*X.m[2][2] + gmi*Y.m[2][2] ) ) ;
 
-     dif = (float)( fabs(Z.m[0][0]-X.m[0][0])+fabs(Z.m[0][1]-X.m[0][1])
+     dif = ( fabs(Z.m[0][0]-X.m[0][0])+fabs(Z.m[0][1]-X.m[0][1])
           +fabs(Z.m[0][2]-X.m[0][2])+fabs(Z.m[1][0]-X.m[1][0])
           +fabs(Z.m[1][1]-X.m[1][1])+fabs(Z.m[1][2]-X.m[1][2])
           +fabs(Z.m[2][0]-X.m[2][0])+fabs(Z.m[2][1]-X.m[2][1])
