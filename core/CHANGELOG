@@ -1,4 +1,4 @@
-Release CMTK-2.4.0:
+Release CMTK-3.0.0:
 
 (r5012) Added: "dcm2image" tool (and cmtkIO library) now determine "dwell
         time" from DICOMs from both GE and Siemens scanners. This is necessary
