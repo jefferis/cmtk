@@ -189,7 +189,7 @@ Matrix4x4<T>::Decompose
 
     // shear
     const int i = k / 2;           // i.e. i := { 0, 0, 1 }
-    const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
+    const int j = i + (k%2) + 1;   // i.e. j := { 1, 2, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
     params[9+k] = R[i][j];
     }
 
