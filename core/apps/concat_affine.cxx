@@ -117,9 +117,21 @@ doMain( const int argc, const char* argv[] )
   if ( outStream.IsValid() )
     {
     if ( InvertOutput )
-      outStream << (*concat.GetInverse());
+      {
+      try
+	{
+	outStream << (*concat.GetInverse());
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: output transformation has singular matrix and cannot be inverted\n";
+	throw cmtk::ExitException( 1 );
+	}
+      }
     else
+      {
       outStream << concat;
+      }
     }
   else
     {
