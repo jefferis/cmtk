@@ -243,6 +243,9 @@ LIST(APPEND testList
   convertxCropRegion2
   convertxResample
   convertxDownsample
+  convertxDownsampleNiftiSform
+  convertxDownsampleNiftiQform
+  convertxDownsampleNiftiQformSform
   convertxDownsampleSelect
   convertxDistanceUnsigned
   convertxDistanceSigned

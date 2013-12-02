@@ -404,6 +404,24 @@ case ${RUNTEST} in
 	run convertx --downsample-average 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
 	check_results downsample.hdr downsample.img
 	;;
+    convertxDownsampleNiftiSform)
+	run convertx --downsample-average 8,4,1 phantom_ax_sform.nii ${tmpdir}/downsample_ax.nii
+	run convertx --downsample-average 1,8,4 phantom_sa_sform.nii ${tmpdir}/downsample_sa.nii
+	run convertx --downsample-average 4,1,8 phantom_co_sform.nii ${tmpdir}/downsample_co.nii
+	check_results downsample_ax.nii downsample_sa.nii downsample_co.nii
+	;;
+    convertxDownsampleNiftiQform)
+	run convertx --downsample-average 8,4,1 phantom_ax_qform.nii ${tmpdir}/downsample_ax.nii
+	run convertx --downsample-average 1,8,4 phantom_sa_qform.nii ${tmpdir}/downsample_sa.nii
+	run convertx --downsample-average 4,1,8 phantom_co_qform.nii ${tmpdir}/downsample_co.nii
+	check_results downsample_ax.nii downsample_sa.nii downsample_co.nii
+	;;
+    convertxDownsampleNiftiQformSform)
+	run convertx --downsample-average 8,4,1 phantom_ax_qform_sform.nii ${tmpdir}/downsample_ax.nii
+	run convertx --downsample-average 1,8,4 phantom_sa_qform_sform.nii ${tmpdir}/downsample_sa.nii
+	run convertx --downsample-average 4,1,8 phantom_co_qform_sform.nii ${tmpdir}/downsample_co.nii
+	check_results downsample_ax.nii downsample_sa.nii downsample_co.nii
+	;;
     convertxDownsampleNrrd)
 	run convertx --downsample-average 8,4,1 phantom_ax.nhdr ${tmpdir}/downsample.nhdr
 	check_results downsample.nhdr downsample.raw
