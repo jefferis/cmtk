@@ -146,7 +146,15 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform::SmartConstPtr affineXform;
   if ( affineFirst )
     {
-    affineXform = cmtk::FitAffineToLandmarks( pairList ).GetAffineXform();
+    try
+      {
+      affineXform = cmtk::FitAffineToLandmarks( pairList ).GetAffineXform();
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: fitted affine transformation has singular matrix\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
 
   // fit by final spacing
