@@ -756,7 +756,12 @@ LIST(APPEND testList sequenceDefault sequenceFormat sequenceThresh sequenceAbs s
 
 # ==========================================
 # Tests for "similarity" tool
-LIST(APPEND testList similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
+LIST(APPEND testList 
+	    similarityGrey 
+	    similarityWithInf
+	    similarityLabels 
+	    similarityGreyMask
+	    similarityLabelsMask)
 
 # ==========================================
 # Tests for "streamxform" tool

@@ -2246,6 +2246,10 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/similarity --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram.txt similarity.txt
 	;;
+    similarityWithInf)
+	run_eval "${BINDIR}/similarity float_with_inf.nii.gz float_with_inf.nii.gz > ${tmpdir}/similarity.txt"
+	check_results similarity.txt
+	;;
     similarityLabels)
 	run_eval "${BINDIR}/similarity --labels --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram.txt similarity.txt

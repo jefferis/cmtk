@@ -57,6 +57,10 @@
 #  include <sys/stat.h>
 #endif
 
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endif
+
 #include <algorithm>
 
 bool Padding0 = false;
@@ -162,9 +166,9 @@ AnalyseStudies
   bool insideMask = true;
   for ( size_t r = 0; r < numberOfVoxels; ++r ) 
     {
-    bool dataExist0 = data0->Get( value0, r );
-    
-    bool dataExist1 = data1->Get( value1, r );
+    const bool dataExist0 = data0->Get( value0, r ) && finite( value0 );
+
+    bool dataExist1 = data1->Get( value1, r ) && finite( value1 );
     if ( ! dataExist1 && OutsideBG )
       {
       value1 = 0;
