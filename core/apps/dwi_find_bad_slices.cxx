@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,8 +36,11 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkFileUtils.h>
 
 #include <IO/cmtkVolumeIO.h>
+
+#include <Base/cmtkRegionIndexIterator.h>
 
 #include <vector>
 #include <string>
@@ -51,7 +54,9 @@ doMain
   int sliceAxis = cmtk::AXIS_Z;
 
   cmtk::Types::DataItem standardDeviations = 3.0;
-  const char* outputPath = NULL;
+  const char* outputDir = NULL;
+  cmtk::Types::DataItem paddingValue = -1;
+  cmtk::ScalarDataType outputDataType = cmtk::TYPE_NONE;
 
   try
     {
@@ -74,12 +79,25 @@ doMain
     sliceGroup->AddSwitch( Key( "slice-z" ), (int)cmtk::AXIS_Z, "Z coordinate axis is slice direction" );
     cl.EndGroup();
 
+    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr typeGroup = 
+      cl.AddEnum( "convert-to", &outputDataType, "Scalar data type for the output images. If your padding value is negative but your input data unsigned, for example, make sure to select a signed data type for the output. "
+		  "By default, the output data type is the same as the input type.");
+    typeGroup->AddSwitch( Key( "char" ), cmtk::TYPE_CHAR, "8 bits, signed" );
+    typeGroup->AddSwitch( Key( "byte" ), cmtk::TYPE_BYTE, "8 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "short" ), cmtk::TYPE_SHORT, "16 bits, signed" );
+    typeGroup->AddSwitch( Key( "ushort" ), cmtk::TYPE_USHORT, "16 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "int" ), cmtk::TYPE_INT, "32 bits signed" );
+    typeGroup->AddSwitch( Key( "uint" ), cmtk::TYPE_UINT, "32 bits unsigned" );
+    typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
+    typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
+
     cl.BeginGroup( "detection", "Bad Slice Detection" );
     cl.AddOption( Key( "stdev" ), &standardDeviations, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
     cl.EndGroup();
 
     cl.BeginGroup( "output", "Output Options" );
-    cl.AddOption( Key( 'o', "output" ), &outputPath, "File system path for the output file that contains the list of identified bad slices." );
+    cl.AddOption( Key( 'p', "padding-value" ), &paddingValue, "Padding value to replace data of detected bad slices in output images." );
+    cl.AddOption( Key( 'o', "output-directory" ), &outputDir, "File system path for writing images with bad slices masked out (i.e., filled with a padding value)." );
     cl.EndGroup();
 
     cl.Parse( argc, argv );
@@ -96,15 +114,20 @@ doMain
     }
   
   // read all diffusion images and make sure their grids match
-  std::vector<cmtk::UniformVolume::SmartConstPtr> dwiImages( dwiImagePaths.size() );
+  std::vector<cmtk::UniformVolume::SmartPtr> dwiImages( dwiImagePaths.size() );
   for ( size_t i = 0; i < dwiImagePaths.size(); ++i )
     {
-    dwiImages[i] = cmtk::UniformVolume::SmartConstPtr( cmtk::VolumeIO::Read( dwiImagePaths[i] ) );
+    dwiImages[i] = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::Read( dwiImagePaths[i] ) );
 
     if ( i && ! dwiImages[0]->GridMatches( *dwiImages[i] ) )
       {
       cmtk::StdErr << "ERROR: geometry of image '" << dwiImagePaths[i] << "' does not match that of image '" << dwiImagePaths[0] << "'\n";
       throw cmtk::ExitException( 1 );
+      }
+
+    if ( outputDataType != cmtk::TYPE_NONE )
+      {
+      dwiImages[i]->SetData( dwiImages[i]->GetData()->Convert( outputDataType ) );
       }
     }
 
@@ -139,8 +162,28 @@ doMain
       if ( distance > standardDeviations )
 	{
 	cmtk::DebugOutput( 2 ) << "Bad slice #" << slice << " in image #" << i << " mean=" << sliceMeans[i] << " distance=" << distance << " filename " << dwiImagePaths[i] << "\n";
+
+	// if we have an image output path given, mark bad slice using user-provided padding value
+	if ( outputDir )
+	  {
+	  cmtk::DataGrid& image = *(dwiImages[i]);
+	  const cmtk::DataGrid::RegionType sliceRegion = dwiImages[i]->GetSliceRegion( sliceAxis, slice );
+	  for ( cmtk::RegionIndexIterator<cmtk::DataGrid::RegionType> it( sliceRegion ); it != it.end(); ++it )
+	    {
+	    image.SetDataAt( paddingValue, image.GetOffsetFromIndex( it.Index() ) );
+	    }
+	  }
 	}
       }    
+    }
+
+  if ( outputDir )
+    {
+    for ( size_t i = 0; i < dwiImages.size(); ++i )
+      {
+      const std::string outputPath = std::string( outputDir ) + CMTK_PATH_SEPARATOR + cmtk::FileUtils::Basename( dwiImagePaths[i] );
+      cmtk::VolumeIO::Write( *(dwiImages[i]), outputPath );
+      }
     }
 
   return 0;
