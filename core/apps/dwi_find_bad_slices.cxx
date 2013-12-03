@@ -50,10 +50,12 @@ doMain
 ( const int argc, const char *argv[] )
 {
   std::vector<std::string> dwiImagePaths;
+  int b0ImageCount = 0;
 
   int sliceAxis = cmtk::AXIS_Z;
 
   cmtk::Types::DataItem standardDeviations = 3.0;
+
   const char* outputDir = NULL;
   cmtk::Types::DataItem paddingValue = -1;
   cmtk::ScalarDataType outputDataType = cmtk::TYPE_NONE;
@@ -70,6 +72,8 @@ doMain
     typedef cmtk::CommandLine::Key Key;
 
     cl.BeginGroup( "Input", "Input Options" );
+    cl.AddOption( Key( "b0count" ), &b0ImageCount, "Number of b=0 images at the beginning of the image list. These are not included in the bad slice detection or masking, "
+		  "but are also written to the output directory for convenience. It is assumed that all b=0 images are at the beginning of the list of input images, but not at the end or in the middle." );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup = cl.AddEnum( "slice-orientation", &sliceAxis, "Define slice orientation of the diffusion images." );
     sliceGroup->AddSwitch( Key( "axial" ), (int)cmtk::AXIS_Z, "Axial slices" );
     sliceGroup->AddSwitch( Key( "sagittal" ),(int)cmtk::AXIS_X, "Sagittal slices" );
@@ -79,6 +83,11 @@ doMain
     sliceGroup->AddSwitch( Key( "slice-z" ), (int)cmtk::AXIS_Z, "Z coordinate axis is slice direction" );
     cl.EndGroup();
 
+    cl.BeginGroup( "detection", "Bad Slice Detection" );
+    cl.AddOption( Key( "stdev" ), &standardDeviations, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "output", "Output Options" );
     cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr typeGroup = 
       cl.AddEnum( "convert-to", &outputDataType, "Scalar data type for the output images. If your padding value is negative but your input data unsigned, for example, make sure to select a signed data type for the output. "
 		  "By default, the output data type is the same as the input type.");
@@ -91,11 +100,6 @@ doMain
     typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
     typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
-    cl.BeginGroup( "detection", "Bad Slice Detection" );
-    cl.AddOption( Key( "stdev" ), &standardDeviations, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
-    cl.EndGroup();
-
-    cl.BeginGroup( "output", "Output Options" );
     cl.AddOption( Key( 'p', "padding-value" ), &paddingValue, "Padding value to replace data of detected bad slices in output images." );
     cl.AddOption( Key( 'o', "output-directory" ), &outputDir, "File system path for writing images with bad slices masked out (i.e., filled with a padding value)." );
     cl.EndGroup();
@@ -136,18 +140,18 @@ doMain
     {
     // compute the mean intensity for this slice in each volume
     std::vector<cmtk::Types::DataItem> sliceMeans( dwiImages.size() );
-    for ( size_t i = 0; i < dwiImages.size(); ++i )
+    for ( size_t i = b0ImageCount; i < dwiImages.size(); ++i )
       {
       cmtk::Types::DataItem variance = 0; // dummy variable; don't need variance
       dwiImages[i]->ExtractSlice( sliceAxis, slice )->GetData()->GetStatistics( sliceMeans[i], variance );
       }
 
     // test for each image whether this slice is bad in it
-    for ( size_t i = 0; i < dwiImages.size(); ++i )
+    for ( size_t i = b0ImageCount; i < dwiImages.size(); ++i )
       {
       // get a vector of means without the current test image
       std::vector<cmtk::Types::DataItem> meansOtherImages;
-      for ( size_t ii = 0; ii < dwiImages.size(); ++ii )
+      for ( size_t ii = b0ImageCount; ii < dwiImages.size(); ++ii )
 	{
 	if ( i != ii )
 	  {
