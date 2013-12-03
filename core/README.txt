@@ -5,6 +5,31 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 3.0.0
 ===========================
 
+
+CHANGES THAT BREAK BACKWARD COMPATIBILITY:
+
+
+Affine transformation matrices were broken when shear and non-isotropic scale
+were used. Existing transformation files will continue to be read and generate
+the same matrices as before, but these matrices will not strictly be
+containing the specified scale and shear components. Newly-created
+transformation files will use a different meaning of the "shear" coefficients.
+
+https://www.nitrc.org/tracker/index.php?func=detail&aid=7179&group_id=212&atid=877
+
+
+
+Handling of NIFTI qform and sform has changed in a way that breaks regression
+tests, but should otherwise be benign. This should also make CMTK largely
+NIFTI-compliant in the it puts image-to-physical coordinates into the header's
+qform fields, rather than sform as before.
+
+https://www.nitrc.org/tracker/index.php?func=detail&aid=7169&group_id=212&atid=877
+
+
+OTHER USER-VISIBLE CHANGES
+
+
 Contributed pipeline scripts from the N-CANDA project, which briefly appeared
 in the CMTK code tree, have been moved into their own, project-specific
 repository.
@@ -16,14 +41,10 @@ mk_analyze_hdr and mk_nifti_hdr default behaviour has changed - data type now
 defaults to "byte" and orientation (for Analyze) now defaults to "axial",
 rather than being "UNKNOWN"
 
-Handling of NIFTI qform and sform has changed in a way that breaks regression
-tests, but should otherwise be benign. This should also make CMTK largely
-NIFTI-compliant in the it puts image-to-physical coordinates into the header's
-qform fields, rather than sform as before.
-
 xform2scalar now puts padding pixels where application of transformation
 sequence failed (e.g., due to failed numerical inversion of nonrigid
 transformation).
+
 
 Platform Support
 ================
