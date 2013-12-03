@@ -90,6 +90,17 @@ DataGrid::GetWholeImageRegion() const
   return Self::RegionType( Self::IndexType( 0 ), Self::IndexType( this->m_Dims ) );
 }
 
+const DataGrid::RegionType
+DataGrid::GetSliceRegion( const int axis, const int slice ) const
+{
+  Self::IndexType regionFrom( 0 ), regionTo( this->m_Dims );
+
+  regionFrom[axis] = slice;
+  regionTo[axis] = slice+1;
+
+  return Self::RegionType( regionFrom, regionTo );
+}
+
 TypedArray::SmartPtr
 DataGrid::CreateDataArray( const ScalarDataType dataType, const bool setToZero )
 {

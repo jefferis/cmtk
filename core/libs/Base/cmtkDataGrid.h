@@ -286,6 +286,9 @@ public:
   /// Get whole image region.
   const Self::RegionType GetWholeImageRegion() const;
 
+  /// Get region covering one slice of the image.
+  const Self::RegionType GetSliceRegion( const int axis /*!< Coordinate axis perpendicular to the slice, i.e., 0 for x, 1 for y, 2 for z.*/, const int slice /*!< Index of selected slice. */ ) const;
+
   /// Get index increments for crop region.
   const Self::IndexType GetCropRegionIncrements() const;
 
