@@ -88,7 +88,15 @@ doMain( const int argc, const char* argv[] )
 
       if ( inverse )
 	{
-	affine = affine->GetInverse();
+	try
+	  {
+	  affine = affine->GetInverse();
+	  }
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	  {
+	  cmtk::StdErr << "ERROR: input transformation " << next << " has singular matrix and cannot be inverted\n";
+	  throw cmtk::ExitException( 1 );
+	  }
 	}
 
       concat.Concat( *affine );
