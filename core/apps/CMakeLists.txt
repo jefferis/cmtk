@@ -47,7 +47,7 @@ SET(APPS avg_adm
   convert_warp
   destripe
   dof2mat
-  dwi_find_bad_slices
+  dwi_mask_bad_slices
   epiunwarp
   fibxform
   fib2image
