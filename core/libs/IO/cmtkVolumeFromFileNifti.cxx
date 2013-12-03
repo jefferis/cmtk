@@ -94,9 +94,9 @@ __matrixToNiftiQform( nifti_1_header& header, const AffineXform::MatrixType matr
 
 /**\note If the imported NIFTI file contains a qform and/or sform, and the resulting image object is later written back to a new NIFTI file (via VolumeFromFile::WriteNifti), then these transformations will be stored in the output file's qform and sform fields, 
   * respectively.
-  * \note If the header contains only a qform, then the qform will be used to initialize cmtk::UniformVolume::m_IndexToPhysicalMatrix, which determines the anatomy-based gross alignment of the image
-  * \note If the header contains only an sform, then the sform will be used instead.
-  * \note If the header contains both sform and qform, then qform will be used and sform will be ignored for the purpose of determining gross image orientation.
+  * \note If the header contains only a qform, then the qform will be used to initialize cmtk::UniformVolume::m_IndexToPhysicalMatrix, which determines the anatomy-based gross alignment of the image, regardless of qform_code
+  * \note If the header contains only an sform, then the sform will be used instead, regardless of sform_code.
+  * \note If the header contains both sform and qform, then the transformation is used whose code is NIFTI_XFORM_SCANNER_ANAT. If both sform_code and qform_code are NIFTI_XFORM_SCANNER_ANAT, then qform is used.
   * \note If the header contains neither a qform or an sform, then it is assumed that the image is oriented "RAS", i.e., fastest-moving array index from Left to Right, second fastest from Posterior to Anterior, and third fastest from Inferior to Superior.
   *\warning In keeping with the nifti1.h documentation, it is assumed that qform_code and sform_code will always be non-negative. If this assumption is violated, qform and sform will be switched in the output file (as written by VolumeFromFile::WriteNifti), or
   *   one of them may be missing.
@@ -153,8 +153,10 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
   volume->SetMetaInfo( META_SPACE, niftiSpace );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, niftiSpace );
 
+  const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
   const short sform_code = header.GetField<short>( offsetof(nifti_1_header,sform_code) );
-  if ( sform_code > 0 )
+
+  if ( sform_code > NIFTI_XFORM_UNKNOWN )
     {
     float srow_x[4], srow_y[4], srow_z[4];
     header.GetArray( srow_x, offsetof(nifti_1_header,srow_x), 4 );
@@ -170,13 +172,14 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
       };
     
     Matrix4x4<Types::Coordinate> m4( directions );      
-    volume->m_IndexToPhysicalMatrix = m4;
+    if ( (sform_code == NIFTI_XFORM_SCANNER_ANAT) || (qform_code == NIFTI_XFORM_UNKNOWN) )
+      volume->m_IndexToPhysicalMatrix = m4;
+
     // NIFTI says, sform_code must be > 0, so should be safe to use "abs" and make negative to distinguish from qform (below)
     volume->m_AlternativeIndexToPhysicalMatrices[-abs(sform_code)] = m4;
     }
   
-  const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
-  if ( qform_code > 0 )
+  if ( qform_code > NIFTI_XFORM_UNKNOWN )
     {
     const float qb = header.GetField<float>( offsetof(nifti_1_header,quatern_b) );
     const float qc = header.GetField<float>( offsetof(nifti_1_header,quatern_c) );
@@ -199,7 +202,8 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
       }
 
     // qform overrides sform if both exist
-    volume->m_IndexToPhysicalMatrix = m4;
+    if ( (qform_code == NIFTI_XFORM_SCANNER_ANAT) || (sform_code != NIFTI_XFORM_SCANNER_ANAT) )
+      volume->m_IndexToPhysicalMatrix = m4;
     // NIFTI says, qform_code must be > 0, so should be safe to use "abs"
     volume->m_AlternativeIndexToPhysicalMatrices[abs(qform_code)] = m4;
     }
@@ -387,7 +391,7 @@ VolumeFromFile::WriteNifti
 #ifdef IGNORE
     // This piece of code, when replacing the next two lines (qform stuff) would make CMTK entirely backward-compatible (release 2.3 and earlier), but non-NIFTI-compliant.
     const AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
-      header.sform_code = 1;
+      header.sform_code = NIFTI_XFORM_SCANNER_ANAT;
       for ( int i = 0; i < 4; ++i )
 	{
 	header.srow_x[i] = static_cast<float>( m4[i][0] );
@@ -395,7 +399,7 @@ VolumeFromFile::WriteNifti
 	header.srow_z[i] = static_cast<float>( m4[i][2] );
 	}
 #else
-      header.qform_code = 1;
+      header.qform_code = NIFTI_XFORM_SCANNER_ANAT;
       __matrixToNiftiQform( header, volume.m_IndexToPhysicalMatrix );
 #endif
     }
