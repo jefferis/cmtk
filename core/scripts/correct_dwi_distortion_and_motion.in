@@ -61,7 +61,7 @@ for bX in ${bXlist}; do
     xform=${outdir}/eddy/b0_${pref}.xform
     if CMTK_needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
 	echo "Computing eddy current correction for ${base}..."
-	cmtk registrationx --restrict-in-plane xy --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
+	cmtk registrationx --pad-flt -1 --restrict-in-plane xy --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
 	CMTK_lockfile_delete ${xform}
     fi
 done
@@ -106,7 +106,7 @@ for bX in ${bXlist}; do
     pref=`echo ${base} | sed 's/\..*//g'`
     xform=${outdir}/motion/xforms/b0Unwarp_${pref}.xform
     if CMTK_needs_update_and_lock ${xform} ${average} ${bXUnwarp} ; then
-	cmtk registrationx --linear --dofs 6 --auto-multi-levels 3 --ncc -o ${xform} ${average} ${bXUnwarp}
+	cmtk registrationx --pad-flt -1 --linear --dofs 6 --auto-multi-levels 3 --ncc -o ${xform} ${average} ${bXUnwarp}
 	CMTK_lockfile_delete ${xform}
     fi
 
