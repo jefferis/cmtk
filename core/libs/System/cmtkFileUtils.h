@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2013 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,9 @@ int RecursiveMkPrefixDir( const std::string& filename, const int permissions = 0
 
 /// Make an absolute path name from a (possibly) relative path.
 std::string GetAbsolutePath( const std::string& relPath );
+
+/// Return basename of a given path.
+std::string Basename( const std::string& path /*!< Complete path with directory and file name parts. */, const std::string& suffix = "" /*!< Optional argument: if given, this suffix is removed from the basename, if present. */ );
 }
 
 //@}

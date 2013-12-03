@@ -141,6 +141,34 @@ GetAbsolutePath( const std::string& relPath )
 #endif
 }
 
+std::string
+Basename( const std::string& path, const std::string& suffix )
+{
+  std::string basename = path;
+
+  // if given, and if present, remove suffix
+  if ( ! suffix.empty() && (basename.length() >= suffix.length() ) )
+    {
+    if ( basename.compare( basename.length() - suffix.length(), suffix.length(), suffix ) )
+      {
+      basename = basename.substr( 0, basename.length() - suffix.length() );
+      }
+    }
+
+  // split into dirname and basename now
+  const size_t separator = basename.rfind( CMTK_PATH_SEPARATOR );
+  if ( separator == std::string::npos )
+    {
+    // no separator, return the whole thing
+    return basename;
+    }
+  else
+    {
+    // seprator - return whatever comes after
+    return basename.substr( separator+1 );
+    }
+}
+
 } // namespace FileUtils
 
 } // namespace cmtk
