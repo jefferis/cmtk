@@ -113,7 +113,7 @@ cmtk::Types::DataItem OutPaddingValue = 0;
 bool OutPaddingValueFlag = true;
 
 cmtk::Types::DataItem FltPaddingValue = 0;
-bool FltPaddingValueFlag = true;
+bool FltPaddingValueFlag = false;
 
 const char* OutputImageName = "reformat.nii";
 
