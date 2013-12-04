@@ -80,7 +80,7 @@ for bX in ${bXlist}; do
     xform=${outdir}/eddy/b0_${pref}.xform
     if CMTK_needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
 	echo "Unwarping $bX"
-	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
+	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --pad-floating -1 --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
 	CMTK_lockfile_delete ${outdir}/${base}
     fi
 done
