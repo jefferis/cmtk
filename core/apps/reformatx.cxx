@@ -112,6 +112,9 @@ cmtk::ScalarDataType DataType = cmtk::TYPE_NONE;
 cmtk::Types::DataItem OutPaddingValue = 0;
 bool OutPaddingValueFlag = true;
 
+cmtk::Types::DataItem FltPaddingValue = 0;
+bool FltPaddingValueFlag = true;
+
 const char* OutputImageName = "reformat.nii";
 
 bool CropImages = false;
@@ -272,6 +275,11 @@ ReformatPullback()
 	cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " seems to have no data\n";
 	throw cmtk::ExitException( 1 );
 	}
+      else
+	{
+	if ( FltPaddingValueFlag )
+	  floatingData->SetPaddingValue( FltPaddingValue );
+	}
       }
     else
       {
@@ -279,7 +287,7 @@ ReformatPullback()
       throw cmtk::ExitException( 1 );
       }
     }
-  
+
   if ( !TargetMask ) 
     {
     // unless we're in mask mode, remove target pixel data.
@@ -458,6 +466,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Override target image offset and set to x,y,z mm" );
     cl.AddCallback( Key( "target-offset-pixels" ), CallbackTargetImageOffsetPixels, "Override target image offset and set to dx,dy,dz pixels" );
     cl.AddOption( Key( 'F', "floating" ), &FloatingVolumeName, "Format and path of floating image." );
+    cl.AddOption( Key( "pad-floating" ), &FltPaddingValue, "Padding value for the floating image", &FltPaddingValueFlag );
 
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( 'o', "outfile" ), &OutputImageName, "Format and path of output image." );
