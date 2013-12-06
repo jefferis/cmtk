@@ -315,7 +315,15 @@ void
 AffineXform::Concat( const Self& other )
 {
   this->Matrix *= other.Matrix;
-  this->DecomposeMatrix();
+  try
+    {
+    this->DecomposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: singular matrix in cmtk::AffineXform::Concat; this should not happen.\n";
+    throw ExitException( 1 );
+    }
 }
 
 void
@@ -324,7 +332,15 @@ AffineXform::Insert( const Self& other )
   Self::MatrixType composed( other.Matrix );
   composed *= this->Matrix;
   this->Matrix = composed;
-  this->DecomposeMatrix();
+  try
+    {
+    this->DecomposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: singular matrix in cmtk::AffineXform::Insert; this should not happen.\n";
+    throw ExitException( 1 );
+    }
 }
 
 void 
@@ -405,7 +421,16 @@ AffineXform::RotateWXYZ
 
   xlate = xlate.GetInverse();
   this->Matrix *= xlate;
-  this->DecomposeMatrix();
+
+  try
+    {
+    this->DecomposeMatrix();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: singular matrix in cmtk::AffineXform::WXYZ; this should not happen.\n";
+    throw ExitException( 1 );
+    }
 
   if ( accumulate ) 
     {
