@@ -92,7 +92,15 @@ doMain( const int argc, const char* argv[] )
       cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
       throw cmtk::ExitException( 1 );
       }
-    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
+    try
+      {
+      xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular source image-to-physical space matrix cannot be inverted.\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
   
   if ( targetImagePath )

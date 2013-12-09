@@ -118,7 +118,15 @@ doMain( const int argc, const char* argv[] )
   cmtk::DebugOutput( 5 ) << "INFO: read phantom with " << phantom->LandmarkPairsList().size() << " landmarks.\n";  
 
   cmtk::UniformVolume::SmartConstPtr unwarpImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
-  phantom->ApplyXformToLandmarks( cmtk::AffineXform( unwarpImage->GetImageToPhysicalMatrix().GetInverse() ) );
+  try
+    {
+    phantom->ApplyXformToLandmarks( cmtk::AffineXform( unwarpImage->GetImageToPhysicalMatrix().GetInverse() ) );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular image-to-physical space matrix cannot be inverted.\n";
+    throw cmtk::ExitException( 1 );
+    }
 
   cmtk::LandmarkPairList pairList;
   for ( std::list<cmtk::LandmarkPair>::const_iterator it = phantom->LandmarkPairsList().begin(); it != phantom->LandmarkPairsList().end(); ++it )
