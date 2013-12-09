@@ -263,7 +263,15 @@ ImagePairAffineRegistrationCommandLine
       this->Study2 = typedStream.ReadStdString( "model_study" );
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
-      this->SetInitialTransformation( affineXform->GetInverse() );
+      try
+	{
+	this->SetInitialTransformation( affineXform->GetInverse() );
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "ERROR: singular matrix from legacy transformation file cannot be inverted in ImagePairAffineRegistrationCommandLine constructor.\n";
+	throw ExitException( 1 );
+	}
       }
 
     typedStream.Close();
