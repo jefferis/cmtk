@@ -106,7 +106,7 @@ for bX in ${b0FwdCorr} ${bXlist}; do
     pref=`echo ${base} | sed 's/\..*//g'`
 
     if [ "${bX}" == "${b0FwdCorr}" ]; then
-	cmtk convertx ${b0FwdCorr} ${bXUnwarp}
+	cmtk convertx ${b0FwdCorr} ${outdir}/motion/${base}
     else
 	xform=${outdir}/motion/xforms/b0Unwarp_${pref}.xform
 	if CMTK_needs_update_and_lock ${xform} ${average} ${bXUnwarp} ; then
