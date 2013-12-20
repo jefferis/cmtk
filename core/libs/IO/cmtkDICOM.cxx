@@ -81,9 +81,7 @@ DICOM::InitFromFile( const std::string& path )
     throw Exception( "Could not create DICOM file format object." );
     }
   
-  fileformat->transferInit();
   OFCondition status = fileformat->loadFile( path.c_str() );
-  fileformat->transferEnd();
 
   if ( !status.good() ) 
     {

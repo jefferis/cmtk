@@ -151,10 +151,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     } 
   
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
-  
-  fileformat->transferInit();
   OFCondition status = fileformat->loadFile( filepath.c_str() );
-  fileformat->transferEnd();
   
   if ( !status.good() ) 
     {
