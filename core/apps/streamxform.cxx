@@ -55,6 +55,7 @@ doMain( const int argc, const char* argv[] )
 
   std::vector<std::string> inputXformPaths;
 
+  bool AffineOnly = false;
   const char* sourceImagePath = NULL;
   const char* targetImagePath = NULL;
 
@@ -71,6 +72,7 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Xform", "Transformation Options" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
+    cl.AddSwitch( Key( 'n', "affine" ), &AffineOnly, true, "Apply affine transformation even if warp studylist specified" );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
@@ -96,6 +98,10 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
+  if ( AffineOnly )
+    {
+      xformList = xformList.MakeAllAffine();
+    }
 
   if ( sourceImagePath )
     {
