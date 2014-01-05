@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -108,7 +108,15 @@ doMain ( const int argc, const char *argv[] )
   
   if ( gridSpacing )
     {
-    splineWarp = fitSpline.Fit( gridSpacing, levels, affineFirst );
+    try
+      {
+      splineWarp = fitSpline.Fit( gridSpacing, levels, affineFirst );
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitSplineWarpToXformList::Fit()\n";
+      throw cmtk::ExitException( 1 );
+      }   
     }
   else
     {
@@ -120,8 +128,16 @@ doMain ( const int argc, const char *argv[] )
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );
 	}
-      
-      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineFirst );
+
+      try
+	{
+	splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineFirst );
+	}
+      catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitSplineWarpToXformList::Fit()\n";
+	throw cmtk::ExitException( 1 );
+	}
       }
     else
       {

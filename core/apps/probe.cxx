@@ -244,7 +244,7 @@ doMain( const int argc, const char *argv[] )
 	  break;
 	case COORDINATES_PHYSICAL:
 	  // absolute image coordinate is physical transformed by inverse image-to-physical matrix
-	  v *= physicalToImageMatrix
+	  v *= physicalToImageMatrix;
 	  break;
 	}
       

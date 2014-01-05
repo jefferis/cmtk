@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,7 +92,15 @@ doMain( const int argc, const char* argv[] )
 
       if ( inverse )
 	{
-	affine = affine->GetInverse();
+	try
+	  {
+	  affine = affine->GetInverse();
+	  }
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	  {
+	  cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
+	  throw cmtk::ExitException( 1 );
+	  }
 	}
 
       if ( firstXform )
@@ -157,9 +165,21 @@ doMain( const int argc, const char* argv[] )
     outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_WRITE );
   
   if ( InvertOutput )
-    outStream << (*average.GetInverse());
+    {
+    try
+      {
+      outStream << (*average.GetInverse());
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
   else
+    {
     outStream << average;
+    }
 
   return 0;
 }

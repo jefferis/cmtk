@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -131,8 +131,16 @@ doMain( const int argc, const char *argv[] )
     }
   
   cmtk::AffineXform::SmartPtr inverseAffineXform( NULL );
-  if ( affineXform )
-    inverseAffineXform = affineXform->GetInverse();
+  try
+    {
+    if ( affineXform )
+      inverseAffineXform = affineXform->GetInverse();
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
+    throw cmtk::ExitException( 1 );
+    }
 
   const cmtk::Types::Coordinate globalScaling = (splineWarp) ? splineWarp->GetGlobalScaling() : affineXform->GetGlobalScaling();
 

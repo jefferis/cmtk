@@ -107,16 +107,18 @@ doMain ( const int argc, const char *argv[] )
   cmtk::LandmarkPairList landmarkPairs( sourceLandmarks, targetLandmarks );
   cmtk::DebugOutput( 5 ) << "Matched " << landmarkPairs.size() << " landmark pairs\n";
 
+  cmtk::AffineXform::SmartConstPtr xform;
   try 
     {
-    cmtk::AffineXform::SmartConstPtr xform = rigid ? cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform() : cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform();
-    cmtk::XformIO::Write( xform, outputPath );
+    xform = cmtk::AffineXform::SmartConstPtr( rigid ? cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform() : cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform() );
     }
   catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitRigidToLandmarks or cmtk::FitAffineToLandmarks\n";
     throw cmtk::ExitException( 1 );
     }      
+
+  cmtk::XformIO::Write( xform, outputPath );
 
   if ( cmtk::DebugOutput::GetGlobalLevel() >= 5 )
     {

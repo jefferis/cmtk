@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -98,7 +98,7 @@ doMain( const int argc, const char* argv[] )
       }
     catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
-      cmtk::StdErr << "ERROR: singular source image-to-physical space matrix cannot be inverted.\n";
+      cmtk::StdErr << "ERROR: singular source image-to-physical space matrix.\n";
       throw cmtk::ExitException( 1 );
       }
     }
@@ -111,7 +111,15 @@ doMain( const int argc, const char* argv[] )
       cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
       throw cmtk::ExitException( 1 );
       }
-    xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
+    try
+      {
+      xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular target image-to-physical space matrix.\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
   
   // Is VTK file stored in binary format?

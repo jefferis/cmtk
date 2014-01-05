@@ -134,8 +134,18 @@ doMain( const int argc, const char* argv[] )
       xform = cmtk::AffineXform::SmartPtr( new cmtk::AffineXform );
       break;
     case 0:
+    {
+    try
+      {
       xform = cmtk::AffineXform::SmartPtr( cmtk::MakeInitialAffineTransformation::AlignDirectionVectors( *referenceImage, *floatingImage, centerXform ) );
-      break;
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::MakeInitialAffineTransformation::AlignDirectionVectors()\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+    break;
     case 1:
       xform = cmtk::AffineXform::SmartPtr( cmtk::MakeInitialAffineTransformation::AlignCentersOfMass( *referenceImage, *floatingImage ) );
       break;
@@ -147,7 +157,7 @@ doMain( const int argc, const char* argv[] )
       }
     catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
-      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::MakeInitialAffineTransformation::AlignPrincipalAxes\n";
+      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::MakeInitialAffineTransformation::AlignPrincipalAxes()\n";
       throw cmtk::ExitException( 1 );
       }
     }

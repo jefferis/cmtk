@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,7 +162,16 @@ doMain( const int argc, const char* argv[] )
       }
     }
 
-  cmtk::AffineXform::SmartPtr xform( new cmtk::AffineXform( matrix ) );
+  cmtk::AffineXform::SmartPtr xform;
+  try
+    {
+    xform = cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( matrix ) );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform constructor.\n";
+    throw cmtk::ExitException( 1 );
+    }
 
   if ( CenterStr )
     {
