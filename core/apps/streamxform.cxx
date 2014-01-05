@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2013 SRI International
 //
+//  Copyright 2014 Greg Jefferis
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -51,6 +53,7 @@
 int
 doMain( const int argc, const char* argv[] )
 {
+  bool affineOnlyGlobal = false;
   cmtk::Types::Coordinate inversionTolerance = 1e-8;
 
   std::vector<std::string> inputXformPaths;
@@ -70,6 +73,7 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Xform", "Transformation Options" );
+    cl.AddSwitch( Key( "affine-only" ), &affineOnlyGlobal, true, "Apply only the affine component of each transformation (or its inverse, if specified) in the given series, even if the actual transformation is nonrigid." );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
     cl.EndGroup();
 
@@ -96,6 +100,10 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
+  if ( affineOnlyGlobal )
+    {
+    xformList = xformList.MakeAllAffine();
+    }
 
   if ( sourceImagePath )
     {

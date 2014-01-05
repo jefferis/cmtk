@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2013 SRI International
+##  Copyright 2004-2014 SRI International
 ##
 ##  Copyright 1997-2011 Torsten Rohlfing
 ##
@@ -765,7 +765,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "streamxform" tool
-LIST(APPEND testList streamxformFordwardBackward streamxformFordwardBackwardTolerance streamxformAffine streamxformAffineFromTo)
+LIST(APPEND testList streamxformFordwardBackward streamxformAffineForward streamxformAffineForwardBackward streamxformFordwardBackwardTolerance streamxformAffine streamxformAffineFromTo)
 
 # ==========================================
 # Tests for "sympl" tool
