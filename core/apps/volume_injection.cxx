@@ -293,7 +293,15 @@ doMain( const int argc, const char* argv[] )
 					     (float)ReconGrid->m_Offset[0], (float)ReconGrid->m_Offset[1], (float)ReconGrid->m_Offset[2] );
   
   cmtk::VolumeInjectionReconstruction injection( ReconGrid, Images );
-  injection.SetTransformationsToPassImages( Xforms );
+  try
+    {
+    injection.SetTransformationsToPassImages( Xforms );
+    }
+  catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::VolumeInjection::SetTransformationsToPassImages()\n";
+    throw cmtk::ExitException( 1 );
+    }
   
   for ( std::map<size_t,float>::const_iterator it = PassWeights.begin(); it != PassWeights.end(); ++it )
     {

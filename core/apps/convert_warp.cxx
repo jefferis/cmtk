@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,8 +79,16 @@ doMain ( const int argc, const char* argv[] )
     {
     cmtk::AffineXform::SmartPtr initialAffine = splineWarpXform->GetInitialAffineXform();
 
-    splineWarpXform->ReplaceInitialAffine();
-
+    try
+      {
+      splineWarpXform->ReplaceInitialAffine();
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
+      throw cmtk::ExitException( 1 );
+      }
+    
     if ( (Fractional >= 0) && (Fractional <= 1) )
       {
       const size_t numberOfControlPoints = splineWarpXform->GetNumberOfControlPoints();
@@ -97,7 +105,15 @@ doMain ( const int argc, const char* argv[] )
     
     if ( ! DeformationOnly )
       {
-      splineWarpXform->ReplaceInitialAffine( initialAffine );
+      try
+	{
+	splineWarpXform->ReplaceInitialAffine( initialAffine );
+	}
+      catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
+	throw cmtk::ExitException( 1 );
+	}
       }
     }
   

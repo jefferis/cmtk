@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -318,7 +318,15 @@ doMain( int argc, const char* argv[] )
     {
     if ( WriteIncludeAffine ) 
       {
-      warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
+      try
+	{
+	warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
+	}
+      catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
+	throw cmtk::ExitException( 1 );
+	}
       }
       
     cmtk::ClassStreamOutput stream( OutWarpName, cmtk::ClassStreamOutput::MODE_WRITE );
