@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,8 +68,16 @@ doMain ( const int argc, const char *argv[] )
   cmtk::WarpXform::SmartPtr warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
   
   cmtk::FitAffineToWarpXform fitAffine( warpXform );
-  cmtk::XformIO::Write( fitAffine.Fit(), OutputPath );
-  
+  try
+    {
+    cmtk::XformIO::Write( fitAffine.Fit(), OutputPath );
+    }
+  catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitAffineToWarpXform::Fit()\n";
+    return 1;
+    }
+
   return 0;
 }
 
