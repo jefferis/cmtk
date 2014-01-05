@@ -95,7 +95,15 @@ doMain( const int argc, const char* argv[] )
       }
     
     sourceImage->ChangeCoordinateSpace( sourceImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
-    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
+    try
+      {
+      xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular source image-to-physical space matrix encountered\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
 
   if ( targetImagePath )
@@ -108,7 +116,15 @@ doMain( const int argc, const char* argv[] )
       }
 
     targetImage->ChangeCoordinateSpace( targetImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
-    xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
+    try
+      {
+      xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular target image-to-physical space matrix encountered\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
   
   cmtk::Xform::SpaceVectorType xyz;    

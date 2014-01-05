@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011, 2013 SRI International
+//  Copyright 2004-2011, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,8 +140,18 @@ doMain( const int argc, const char* argv[] )
       xform = cmtk::AffineXform::SmartPtr( cmtk::MakeInitialAffineTransformation::AlignCentersOfMass( *referenceImage, *floatingImage ) );
       break;
     case 2:
+    {
+    try
+      {
       xform = cmtk::AffineXform::SmartPtr( cmtk::MakeInitialAffineTransformation::AlignPrincipalAxes( *referenceImage, *floatingImage ) );
-      break;
+      }
+    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::MakeInitialAffineTransformation::AlignPrincipalAxes\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+    break;
     }
 
   if ( xform )

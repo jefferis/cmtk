@@ -75,7 +75,7 @@ doMain ( const int argc, const char *argv[] )
   catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitAffineToWarpXform::Fit()\n";
-    return 1;
+    throw cmtk::ExitException( 1 );
     }
 
   return 0;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -242,8 +242,16 @@ doMain( const int argc, const char* argv[] )
     cmtk::AffineXform::SmartPtr affineXform( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
     if ( affineXform && (affineXform->GetMetaInfo( cmtk::META_SPACE ) != cmtk::AnatomicalOrientation::ORIENTATION_STANDARD) )
       {
-      cmtk::TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *ReconGrid, *image );
-      *affineXform = toStandardSpace.GetTransformation();
+      try
+	{
+	cmtk::TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *ReconGrid, *image );
+	*affineXform = toStandardSpace.GetTransformation();
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::TransformChangeFromSpaceAffine constructor\n";
+	throw cmtk::ExitException( 1 );
+	}      
       affineXform->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
       }
 
