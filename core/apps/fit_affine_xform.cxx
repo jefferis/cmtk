@@ -91,13 +91,12 @@ doMain ( const int argc, const char *argv[] )
 
   cmtk::UniformVolume::SmartPtr imageGrid( cmtk::VolumeIO::ReadGridOriented( inputImagePath ) );
   
-  cmtk::FitAffineToXformList fit( *imageGrid, xformList );
   try
     {
-    cmtk::AffineXform::SmartPtr xform = fit.Fit( fitRigid );
+    cmtk::AffineXform::SmartPtr xform = cmtk::FitAffineToXformList( *imageGrid, xformList ).Fit( fitRigid );
     cmtk::XformIO::Write( xform, outputPath );
     }
-  catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitAffineToXformList::Fit()\n";
     return 1;
