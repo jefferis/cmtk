@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -118,6 +118,17 @@ doMain( const int argc, const char *argv[] )
   cmtk::UniformVolume::SpaceVectorType v;
   std::string restOfLine;
 
+  cmtk::AffineXform::MatrixType physicalToImageMatrix;
+  try
+    {
+    physicalToImageMatrix = volume->GetImageToPhysicalMatrix().GetInverse();
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular image-to-physical matrix encountered\n";
+    throw cmtk::ExitException( 1 );
+    }    
+
   while ( ! std::cin.eof() )
     {
     std::cin >> v;
@@ -141,7 +152,7 @@ doMain( const int argc, const char *argv[] )
 	break;
       case COORDINATES_PHYSICAL:
 	// absolute image coordinate is physical transformed by inverse image-to-physical matrix
-	(v *= volume->GetImageToPhysicalMatrix().GetInverse()) /= volume->m_Delta;
+	(v *= physicalToImageMatrix) /= volume->m_Delta;
 	break;
       }
     
