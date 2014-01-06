@@ -1,5 +1,10 @@
 Release CMTK-3.0.0:
 
+(r5110) Fixed: fitting a B-spline transformation to an XformList that
+	contained a nonrigid transformation, specifically a numerically
+	inverted one, did not properly exclude locations where the
+	inversion failed or the input location was outside the B-spline
+	grid's support region.
 (r5097) Added: "streamxform" tool can now apply only affine components of all
         provided transformations, via the "--affine-only" option (contribution
         from Greg Jefferis).
