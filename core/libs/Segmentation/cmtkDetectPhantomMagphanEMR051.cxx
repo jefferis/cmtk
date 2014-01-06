@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012, 2013 SRI International
+//  Copyright 2012-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -180,7 +180,15 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
   if (  landmarkList.size() >= 3 )
     {
     // create initial rigid transformation to find approximate 10mm landmark sphere locations
-    intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+    try
+      {
+      intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
+      }
+    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      StdErr << "ERROR: singular matrix encountered while fitting intermediate rigid transformation\n";
+      throw ExitException( 1 );
+      }
 
     // Find 4x 30mm CNR spheres in the right order.
     for ( size_t i = 3; i < 7; ++i )
@@ -214,7 +222,15 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       }
 
     // create intermediate transform based on spheres so far
-    intermediateXform = FitRigidToLandmarks( temporaryLandmarkList ).GetRigidXform();
+    try
+      {
+      intermediateXform = FitRigidToLandmarks( temporaryLandmarkList ).GetRigidXform();
+      }
+    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      {
+      StdErr << "ERROR: singular matrix encountered while fitting intermediate rigid transformation\n";
+      throw ExitException( 1 );
+      }
 
     // Re-localize all CNR spheres, this time in the right place
     for ( size_t i = 3; i < 7; ++i )
