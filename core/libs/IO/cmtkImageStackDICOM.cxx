@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -160,7 +160,7 @@ static int cmtkWrapToLower( const int c )
 }
 
 void
-ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& volume, const bool includeIdentifiers ) const
+ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume, const bool includeIdentifiers ) const
 {
   mxmlSetWrapMargin( 120 ); // make enough room for indented bVectorStandard
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
@@ -235,30 +235,46 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
 
       // Determine bVector in image LPS coordinate space:
       // First, create copy of image grid
-      cmtk::UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
+      UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
       // Make sure still in LPS DICOM coordinate space
       gridLPS->ChangeCoordinateSpace( "LPS" );
-      // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
-      
-      mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
-      mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
-      for ( size_t idx = 0; idx < 3; ++idx )
+
+      try
 	{
-	Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
+	// Apply inverse of remaining image-to-space matrix to original bVector
+	const UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
+	
+	mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
+	mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
+	for ( size_t idx = 0; idx < 3; ++idx )
+	  {
+	  Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
+	  }
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in image space (bVectorImage).\n";
 	}
 
       // Determine bVector in image RAS standard coordinate space:
       // First, create copy of image grid
-      cmtk::UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
-      // Apply inverse of remaining image-to-space matrix to original bVector
-      const cmtk::UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * cmtk::Matrix3x3<cmtk::Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
-      
-      mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
-      mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str() );
-      for ( size_t idx = 0; idx < 3; ++idx )
+      UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
+
+      try
 	{
-	Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
+	// Apply inverse of remaining image-to-space matrix to original bVector
+	const UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
+	
+	mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
+	mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
+	for ( size_t idx = 0; idx < 3; ++idx )
+	  {
+	  Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
+	  }
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in standard space (bVectorStandard).\n";
 	}
       }
     }
@@ -307,7 +323,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const cmtk::UniformVolume& 
     }
   else
     {
-    cmtk::StdErr << "ERROR: could not open file " << fname << " for writing\n";
+    StdErr << "ERROR: could not open file " << fname << " for writing\n";
     }
 
   Coverity::FakeFree( x_modality );
@@ -320,12 +336,12 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 {
   const ImageFileDICOM *first = this->front();
     
-  cmtk::UniformVolume::SmartPtr volume;
+  UniformVolume::SmartPtr volume;
   if ( !first->m_IsMultislice )
     {
-    cmtk::StudyImageSet studyImageSet;
+    StudyImageSet studyImageSet;
     
-    studyImageSet.SetImageFormat( cmtk::FILEFORMAT_DICOM );
+    studyImageSet.SetImageFormat( FILEFORMAT_DICOM );
     studyImageSet.SetImageDirectory( first->m_FileDir.c_str() );
     studyImageSet.SetMultiFile( true );
     
@@ -334,7 +350,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       studyImageSet.push_back( (*it)->m_FileName );
       }
     
-    volume = cmtk::VolumeFromStudy::Read( &studyImageSet, this->m_Tolerance );
+    volume = VolumeFromStudy::Read( &studyImageSet, this->m_Tolerance );
     }
   else
     {
@@ -345,7 +361,7 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
     snprintf( fullPath, sizeof( fullPath ), "%s/%s", first->m_FileDir.c_str(), first->m_FileName.c_str() );
 #endif
 
-    volume = cmtk::VolumeFromFile::ReadDICOM( fullPath );
+    volume = VolumeFromFile::ReadDICOM( fullPath );
     }
 
   if ( volume )
@@ -356,27 +372,27 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       case EMBED_NONE:
 	break;
       case EMBED_STUDYID_STUDYDATE:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_StudyID ) + "_" + first->GetTagValue( DCM_StudyDate ) );
+	volume->SetMetaInfo( META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_StudyID ) + "_" + first->GetTagValue( DCM_StudyDate ) );
 	break;
       case EMBED_PATIENTNAME:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientsName ) );
+	volume->SetMetaInfo( META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_PatientsName ) );
 	break;
       case EMBED_SERIESDESCR:
-	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_SeriesDescription ) );
+	volume->SetMetaInfo( META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_SeriesDescription ) );
 	break;
       }
     
-    cmtk::VolumeIO::Write( *volume, fname.c_str() );
-    cmtk::DebugOutput( 1 ).GetStream().printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
+    VolumeIO::Write( *volume, fname.c_str() );
+    DebugOutput( 1 ).GetStream().printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
 					       fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
     }
   else
     {
     // No longer need to warn - now warn at lower level
-    //    cmtk::StdErr << "WARNING: No valid volume was read.\n";
+    //    StdErr << "WARNING: No valid volume was read.\n";
     }
   
-  cmtk::DebugOutput( 1 ) << "DICOM Information: \n"
+  DebugOutput( 1 ) << "DICOM Information: \n"
 			 << "  Description:   " << first->GetTagValue( DCM_SeriesDescription ) << "\n"
 			 << "  Series:        " << first->GetTagValue( DCM_SeriesInstanceUID ) << "\n"
 			 << "  Study:         " << first->GetTagValue( DCM_StudyInstanceUID ) << "\n"
@@ -386,12 +402,12 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 			 << "  Orientation:   " << first->GetTagValue( DCM_ImageOrientationPatient ) << "\n"
 			 << "  Raw Data Type: " << first->m_RawDataType << "\n";
     
-  cmtk::DebugOutput( 1 ) << "\nImage List:\n";
+  DebugOutput( 1 ) << "\nImage List:\n";
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
-    cmtk::DebugOutput( 1 ) << (*it)->m_FileName << " ";
+    DebugOutput( 1 ) << (*it)->m_FileName << " ";
     }
-  cmtk::DebugOutput( 1 ) << "\n====================================================\n";
+  DebugOutput( 1 ) << "\n====================================================\n";
 
   return volume;
 }
