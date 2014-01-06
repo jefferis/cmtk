@@ -175,7 +175,7 @@ if ($opt{p}){
 	die "Unable to open script file $opt{p} for writing" unless open SCRIPT, "> $opt{p}";
 }
 
-$rootDir=getdcwd();
+$rootDir = $isWin ? getdcwd() : getcwd();
 print "Root directory is $rootDir\n";
 
 my $nargs=$#ARGV+1;
