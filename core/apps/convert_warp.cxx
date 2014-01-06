@@ -83,7 +83,7 @@ doMain ( const int argc, const char* argv[] )
       {
       splineWarpXform->ReplaceInitialAffine();
       }
-    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
       cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
       throw cmtk::ExitException( 1 );
@@ -109,7 +109,7 @@ doMain ( const int argc, const char* argv[] )
 	{
 	splineWarpXform->ReplaceInitialAffine( initialAffine );
 	}
-      catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
 	{
 	cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
 	throw cmtk::ExitException( 1 );

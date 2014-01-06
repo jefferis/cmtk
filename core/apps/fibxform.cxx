@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -99,7 +99,7 @@ doMain( const int argc, const char* argv[] )
       {
       xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform(sourceImage->GetImageToPhysicalMatrix() ) ) );
       }
-    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
       cmtk::StdErr << "ERROR: singular source image-to-physical space matrix encountered\n";
       throw cmtk::ExitException( 1 );
@@ -120,7 +120,7 @@ doMain( const int argc, const char* argv[] )
       {
       xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix().GetInverse() ) ) );
       }
-    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
       cmtk::StdErr << "ERROR: singular target image-to-physical space matrix encountered\n";
       throw cmtk::ExitException( 1 );

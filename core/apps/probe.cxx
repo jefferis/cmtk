@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2014yy SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -216,7 +216,7 @@ doMain( const int argc, const char *argv[] )
     {
     physicalToImageMatrix = volume->GetImageToPhysicalMatrix().GetInverse();
     }
-  catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
     {
     cmtk::StdErr << "ERROR: singular image-to-physical space matrix encountered\n";
     throw cmtk::ExitException( 1 );

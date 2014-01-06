@@ -297,7 +297,7 @@ doMain( const int argc, const char* argv[] )
     {
     injection.SetTransformationsToPassImages( Xforms );
     }
-  catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::VolumeInjection::SetTransformationsToPassImages()\n";
     throw cmtk::ExitException( 1 );

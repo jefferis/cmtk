@@ -112,7 +112,7 @@ doMain ( const int argc, const char *argv[] )
       {
       splineWarp = fitSpline.Fit( gridSpacing, levels, affineFirst );
       }
-    catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
       cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitSplineWarpToXformList::Fit()\n";
       throw cmtk::ExitException( 1 );
@@ -133,7 +133,7 @@ doMain ( const int argc, const char *argv[] )
 	{
 	splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>::FromPointer( dims ), levels, affineFirst );
 	}
-      catch ( cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
 	{
 	cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitSplineWarpToXformList::Fit()\n";
 	throw cmtk::ExitException( 1 );
