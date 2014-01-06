@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -173,7 +173,16 @@ AffineXform::ComposeMatrix ()
     
   // Now build matrix.
   this->Matrix.Compose( this->m_Parameters, this->m_LogScaleFactors );
-  this->UpdateInverse();
+
+  try
+    {
+    this->UpdateInverse();
+    }
+  catch ( const Self::MatrixType::SingularMatrixException& ex )
+    {
+    StdErr << "ERROR: AffineXform::ComposeMatrix created singular matrix\n";
+    throw ExitException( 1 );
+    }
 }
 
 bool
