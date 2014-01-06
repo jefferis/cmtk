@@ -308,11 +308,19 @@ doMain( const int argc, const char* argv[] )
     injection.SetPassWeight( it->first, it->second );
     }
   
-  if ( VolumeInjectionIsotropic )
-    injection.VolumeInjectionIsotropic( VolumeInjectionSigma, VolumeInjectionRadius );
-  else
-    injection.VolumeInjectionAnisotropic( VolumeInjectionSigma, VolumeInjectionRadius );
-  
+  try
+    {
+    if ( VolumeInjectionIsotropic )
+      injection.VolumeInjectionIsotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    else
+      injection.VolumeInjectionAnisotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular coordinate transformation matrix encountered in volume injection function\n";
+    throw cmtk::ExitException( 1 );
+    }
+
   if ( OutputImagePath )
     {
     WriteOutputImage( injection.GetCorrectedImage(), OutputImagePath );
