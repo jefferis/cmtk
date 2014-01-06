@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,30 +100,38 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr phantomImage( cmtk::VolumeIO::ReadOriented( inputPath ) );
-  const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
 
   try
     {
     cmtk::DetectPhantomMagphanEMR051 detectionFilter( phantomImage, detectionParameters );
 
-    // get expected landmark locations
+    // get expected and actual landmark locations
     cmtk::LandmarkList expectedLandmarks = detectionFilter.GetExpectedLandmarks();
-    // bring expected landmark locations from phantom image into physical space
-    for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+    cmtk::LandmarkList detectedLandmarks = detectionFilter.GetDetectedLandmarks();
+
+    try
       {
-      it->m_Location = phantomToPhysical.Apply( it->m_Location );
-      }
+      // bring expected landmark locations from phantom image into physical space
+      const cmtk::AffineXform phantomToPhysical( phantomImage->GetImageToPhysicalMatrix() );
+      for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+	{
+	it->m_Location = phantomToPhysical.Apply( it->m_Location );
+	}
     
-    // get detected landmark locations
-    cmtk::LandmarkList actualLandmarks = detectionFilter.GetDetectedLandmarks();
-    // bring detected landmark locations from phantom image into physical space
-    for ( cmtk::LandmarkList::Iterator it = expectedLandmarks.begin(); it != expectedLandmarks.end(); ++it )
+      // bring detected landmark locations from phantom image into physical space
+      for ( cmtk::LandmarkList::Iterator it = detectedLandmarks.begin(); it != detectedLandmarks.end(); ++it )
+	{
+	it->m_Location = phantomToPhysical.Apply( it->m_Location );
+	}
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
       {
-      it->m_Location = phantomToPhysical.Apply( it->m_Location );
+      cmtk::StdErr << "ERROR: singular image-to-physical space matrix; cannot map landmarks to image space.\n";
+      throw cmtk::ExitException( 1 );
       }
-    
+      
     // match expected and detected landmarks
-    cmtk::LandmarkPairList pairList( expectedLandmarks, actualLandmarks );
+    cmtk::LandmarkPairList pairList( expectedLandmarks, detectedLandmarks );
     cmtk::DebugOutput( 2 ) << "INFO: detected and matched " << pairList.size() << " out of " << expectedLandmarks.size() << " expected landmarks.\n";
     
     if ( ! outputPath.empty() )
@@ -141,12 +149,12 @@ doMain( const int argc, const char* argv[] )
   catch ( const cmtk::DetectPhantomMagphanEMR051::OutsideFieldOfView& ex )
     {
     cmtk::StdErr << "ERROR: estimated location " << ex.m_Location << " puts landmark #" << ex.m_Idx << " (partly) outside image field of view.\n";
-    return 3;
+    throw cmtk::ExitException( 3 );
     }
   catch ( const cmtk::DetectPhantomMagphanEMR051::NoSphereInSearchRegion )
     {
     cmtk::StdErr << "ERROR: unable to find sphere near expected location - most likely insufficient field of view.\n";
-    return 3;
+    throw cmtk::ExitException( 3 );
     }
 
   return 0;
