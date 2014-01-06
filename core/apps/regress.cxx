@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011, 2013 SRI International
+//  Copyright 2004-2011, 2013, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -247,7 +247,15 @@ doMain( const int argc, const char* argv[] )
     cmtk::SplineWarpXform::SmartPtr referenceWarp = vWarpXform[0];
     for ( size_t i = 0; i < vWarpXform.size(); ++i )
       {
-      vWarpXform[i]->ReplaceInitialAffine();
+      try
+	{
+	vWarpXform[i]->ReplaceInitialAffine();
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	{
+	cmtk::StdErr << "ERROR: encountered singular matrix replacing warp initial affine transformation with identity.\n";
+	throw cmtk::ExitException( 1 );
+	}
       }
     
     const size_t nWarpParameters = vWarpXform[0]->m_NumberOfParameters;
