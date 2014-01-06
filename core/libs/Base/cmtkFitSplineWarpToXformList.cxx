@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +50,8 @@ cmtk::FitSplineWarpToXformList::ComputeResiduals( const SplineWarpXform& splineW
       {
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	this->m_Residuals[ofs] = this->m_XformField[ofs] - splineWarp.GetTransformedGrid( x, y, z );
+	if ( this->m_XformValidAt[ofs] )
+	  this->m_Residuals[ofs] = this->m_XformField[ofs] - splineWarp.GetTransformedGrid( x, y, z );
 	}
       }
     }
@@ -146,31 +147,34 @@ cmtk::FitSplineWarpToXformList::FitSpline( SplineWarpXform& splineWarp, const in
       {
       const DataGrid::IndexType voxelIdx = voxelIt.Index();
 
-      Types::Coordinate sumOfSquares = 0;
-      Types::Coordinate wklm[4][4][4], w2klm[4][4][4];
-      for ( int m = 0; m < 4; ++m )
+      const size_t voxelOfs = this->m_XformField.GetOffsetFromIndex( voxelIdx ) / 3;
+      if ( this->m_XformValidAt[voxelOfs] )
 	{
-	for ( int l = 0; l < 4; ++l )
+	Types::Coordinate sumOfSquares = 0;
+	Types::Coordinate wklm[4][4][4], w2klm[4][4][4];
+	for ( int m = 0; m < 4; ++m )
 	  {
-	  const Types::Coordinate wlm = splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
-	  for ( int k = 0; k < 4; ++k )
+	  for ( int l = 0; l < 4; ++l )
 	    {
-	    sumOfSquares += (w2klm[m][l][k] = MathUtil::Square( wklm[m][l][k] = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * wlm ) );
+	    const Types::Coordinate wlm = splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
+	    for ( int k = 0; k < 4; ++k )
+	      {
+	      sumOfSquares += (w2klm[m][l][k] = MathUtil::Square( wklm[m][l][k] = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * wlm ) );
+	      }
 	    }
 	  }
-	}
-      
-      for ( int m = 0; m < 4; ++m )
-	{ const size_t mOfs = splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m );
-	for ( int l = 0; l < 4; ++l )
-	  {
-	  const size_t mlOfs = splineWarp.m_Dims[0] * ( splineWarp.m_GridIndexes[1][voxelIdx[1]] + l + mOfs );
-	  for ( int k = 0; k < 4; ++k )
+	
+	for ( int m = 0; m < 4; ++m )
+	  { const size_t mOfs = splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m );
+	  for ( int l = 0; l < 4; ++l )
 	    {
-	    const size_t cpOfs = splineWarp.m_GridIndexes[0][voxelIdx[0]] + k + mlOfs;
-	    
-	    delta[cpOfs] += w2klm[m][l][k] * wklm[m][l][k] / sumOfSquares * this->m_Residuals[this->m_XformField.GetOffsetFromIndex( voxelIdx )/3];
-	    weight[cpOfs] += w2klm[m][l][k];
+	    const size_t mlOfs = splineWarp.m_Dims[0] * ( splineWarp.m_GridIndexes[1][voxelIdx[1]] + l + mOfs );
+	    for ( int k = 0; k < 4; ++k )
+	      {
+	      const size_t cpOfs = splineWarp.m_GridIndexes[0][voxelIdx[0]] + k + mlOfs;
+	      delta[cpOfs] += w2klm[m][l][k] * wklm[m][l][k] / sumOfSquares * this->m_Residuals[voxelOfs];
+	      weight[cpOfs] += w2klm[m][l][k];
+	      }
 	    }
 	  }
 	}
