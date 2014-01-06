@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -156,7 +156,16 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     }
 
   cmtk::DebugOutput( 2 ) << "Volume injection...\n";
-  volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
+  try
+    {
+    volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    {
+    cmtk::StdErr << "ERROR: singular coordinate transformation matrix encountered in cmtk::DeblurringVolumeReconstruction::VolumeInjectionIsotropic\n";
+    throw cmtk::ExitException( 1 );
+    }
+
   if ( !InjectedImagePath.empty() )
     {
     cmtk::UniformVolume::SmartPtr outputImage = volRecon.GetCorrectedImage();
