@@ -1,5 +1,7 @@
 Release CMTK-3.0.0:
 
+(r5111) Fixed: over 200 code defects identified by static analysis
+	(Coverity Scan) have been fixed over the past 200 or so commits.
 (r5110) Fixed: fitting a B-spline transformation to an XformList that
 	contained a nonrigid transformation, specifically a numerically
 	inverted one, did not properly exclude locations where the
