@@ -147,7 +147,7 @@ cmtk::FitSplineWarpToXformList::FitSpline( SplineWarpXform& splineWarp, const in
       {
       const DataGrid::IndexType voxelIdx = voxelIt.Index();
 
-      const size_t voxelOfs = this->m_XformField.GetOffsetFromIndex( voxelIdx ) / 3;
+      const size_t voxelOfs = this->m_XformField.GetOffsetFromIndex( voxelIdx );
       if ( this->m_XformValidAt[voxelOfs] )
 	{
 	Types::Coordinate sumOfSquares = 0;
@@ -165,7 +165,8 @@ cmtk::FitSplineWarpToXformList::FitSpline( SplineWarpXform& splineWarp, const in
 	  }
 	
 	for ( int m = 0; m < 4; ++m )
-	  { const size_t mOfs = splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m );
+	  {
+	  const size_t mOfs = splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m );
 	  for ( int l = 0; l < 4; ++l )
 	    {
 	    const size_t mlOfs = splineWarp.m_Dims[0] * ( splineWarp.m_GridIndexes[1][voxelIdx[1]] + l + mOfs );
