@@ -66,6 +66,7 @@ CompressedStream::Pipe::Pipe( const std::string& filename, const char* command )
     throw 0;
     } 
 #else
+  this->m_TempName[0] = 0;
   if ( snprintf( cmd, sizeof( cmd ), command, filename, tmpnam( this->m_TempName) ) >= sizeof( cmd ) )
     {
     StdErr << "WARNING: length of path exceeds system PATH_MAX in CompressedStream::OpenDecompressionPipe and will be truncated.\n";
@@ -106,10 +107,10 @@ CompressedStream::Pipe::Close()
     this->m_File = NULL;
     }
 #else
-  if ( this->m_TempName )
+  if ( this->m_TempName[0] )
     {
     remove( this->m_TempName );
-    this->m_TempName = NULL;
+    this->m_TempName[0] = 0;
     }
 #endif // # ifndef _MSC_VER
 }
