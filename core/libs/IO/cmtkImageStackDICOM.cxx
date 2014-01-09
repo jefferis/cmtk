@@ -251,7 +251,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 	  Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
 	  }
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in image space (bVectorImage).\n";
 	}
@@ -272,7 +272,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 	  Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
 	  }
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in standard space (bVectorStandard).\n";
 	}

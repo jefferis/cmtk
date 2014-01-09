@@ -179,7 +179,7 @@ XformIO::ReadNrrd( const std::string& path )
 	AffineXform::SmartPtr xform( new AffineXform( m4 ) ) ;
 	dfield->SetInitialAffineXform( xform );
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )	
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )	
 	{
 	StdErr << "ERROR: space directions in Nrrd file cause singular matrix exception in XformIO::ReadNrrd(). Using identity matrix instead.\n";
 	}

@@ -77,7 +77,7 @@ cmtk::AtlasSegmentation
     {
     this->m_AffineXform = ar.GetTransformation();
     }
-  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: singular matrix in AffineRegistration::GetTransformation()\n";
     throw ExitException( 1 );

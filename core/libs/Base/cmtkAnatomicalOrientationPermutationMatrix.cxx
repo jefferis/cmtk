@@ -94,7 +94,7 @@ AnatomicalOrientation::PermutationMatrix::GetMatrix() const
     {
     return permutation.GetInverse();
     }
-  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: orientation permutation matrix connot be inverted.\n";
     throw ExitException( 1 );

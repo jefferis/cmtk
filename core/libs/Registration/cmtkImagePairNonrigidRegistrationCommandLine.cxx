@@ -260,7 +260,7 @@ ImagePairNonrigidRegistrationCommandLine
 	{
 	this->SetInitialTransformation( affineXform->GetInverse() );
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "ERROR: singular matrix from initialization file in cmtk::ImagePairNonrigidRegistrationCommandLine constructor\n";
 	throw ExitException( 1 );
@@ -286,7 +286,7 @@ ImagePairNonrigidRegistrationCommandLine
 	    {
 	    this->SetInitialTransformation( affineXform->GetInverse() );
 	    }
-	  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+	  catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	    {
 	    StdErr << "ERROR: singular matrix from initialization file in cmtk::ImagePairNonrigidRegistrationCommandLine constructor\n";
 	    throw ExitException( 1 );
@@ -329,7 +329,7 @@ ImagePairNonrigidRegistrationCommandLine
 	affineXform->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
 	this->SetInitialTransformation( affineXform );
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in ElasticRegistrationCommandLine constructor.\n";
 	throw ExitException( 1 );

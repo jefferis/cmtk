@@ -136,7 +136,7 @@ doMain( const int argc, const char *argv[] )
     if ( affineXform )
       inverseAffineXform = affineXform->GetInverse();
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
     throw cmtk::ExitException( 1 );

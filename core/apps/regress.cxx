@@ -251,7 +251,7 @@ doMain( const int argc, const char* argv[] )
 	{
 	vWarpXform[i]->ReplaceInitialAffine();
 	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	{
 	cmtk::StdErr << "ERROR: encountered singular matrix replacing warp initial affine transformation with identity.\n";
 	throw cmtk::ExitException( 1 );

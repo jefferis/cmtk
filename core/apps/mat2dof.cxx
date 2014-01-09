@@ -167,7 +167,7 @@ doMain( const int argc, const char* argv[] )
     {
     xform = cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( matrix ) );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform constructor.\n";
     throw cmtk::ExitException( 1 );
@@ -211,7 +211,7 @@ doMain( const int argc, const char* argv[] )
 	  {
 	  outStream << *(xform->GetInverse());
 	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	  {
 	  cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
 	  throw cmtk::ExitException( 1 );
@@ -239,7 +239,7 @@ doMain( const int argc, const char* argv[] )
 	  cmtk::AffineXform::SmartPtr inverse( xform->GetInverse() );
 	  studyList.AddXform( strReference, strFloating, inverse );
 	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	  {
 	  cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
 	  throw cmtk::ExitException( 1 );
@@ -260,7 +260,7 @@ doMain( const int argc, const char* argv[] )
 	{
 	xform->GetInverse()->GetParamVector( v );
 	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	{
 	cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
 	throw cmtk::ExitException( 1 );

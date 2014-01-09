@@ -64,7 +64,7 @@ cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringLis
 
       xformList.Add( xform, inverse );
       }
-    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const AffineXform::MatrixType::SingularMatrixException& )
       {
       StdErr << "ERROR: singular matrix encountered reading transformation from " << *it << "\n";
       throw ExitException( 1 );

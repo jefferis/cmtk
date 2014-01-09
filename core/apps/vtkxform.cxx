@@ -96,7 +96,7 @@ doMain( const int argc, const char* argv[] )
       {
       xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
       }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
       {
       cmtk::StdErr << "ERROR: singular source image-to-physical space matrix.\n";
       throw cmtk::ExitException( 1 );
@@ -115,7 +115,7 @@ doMain( const int argc, const char* argv[] )
       {
       xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
       }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
       {
       cmtk::StdErr << "ERROR: singular target image-to-physical space matrix.\n";
       throw cmtk::ExitException( 1 );

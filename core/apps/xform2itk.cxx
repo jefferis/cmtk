@@ -102,7 +102,7 @@ doMain( const int argc, const char* argv[] )
       {
       xform = xform->GetInverse();
       }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
       {
       cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
       throw cmtk::ExitException( 1 );

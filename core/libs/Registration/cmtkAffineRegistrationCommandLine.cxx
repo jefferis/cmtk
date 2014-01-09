@@ -237,7 +237,7 @@ AffineRegistrationCommandLine
 	{
 	this->SetInitialTransformation( affineXform->GetInverse() );
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "ERROR: singular matrix read from initialization file\n";
 	throw ExitException( 1 );
@@ -300,7 +300,7 @@ AffineRegistrationCommandLine
 	*affine = toStandardSpace.GetTransformation();
 	affine->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in AffineRegistrationCommandLine constructor.\n";
 	throw ExitException( 1 );
@@ -479,7 +479,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const C
       else
 	AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
       }
-    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const AffineXform::MatrixType::SingularMatrixException& )
       {
       StdErr << "ERROR: singular matrix cannot be inverted to change transformation to standard space in AffineRegistrationCommandLine::OutputResult\n";
       throw ExitException( 1 );

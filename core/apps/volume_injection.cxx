@@ -247,7 +247,7 @@ doMain( const int argc, const char* argv[] )
 	cmtk::TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *ReconGrid, *image );
 	*affineXform = toStandardSpace.GetTransformation();
 	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	{
 	cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::TransformChangeFromSpaceAffine constructor\n";
 	throw cmtk::ExitException( 1 );
@@ -297,7 +297,7 @@ doMain( const int argc, const char* argv[] )
     {
     injection.SetTransformationsToPassImages( Xforms );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::VolumeInjection::SetTransformationsToPassImages()\n";
     throw cmtk::ExitException( 1 );
@@ -315,7 +315,7 @@ doMain( const int argc, const char* argv[] )
     else
       injection.VolumeInjectionAnisotropic( VolumeInjectionSigma, VolumeInjectionRadius );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular coordinate transformation matrix encountered in volume injection function\n";
     throw cmtk::ExitException( 1 );

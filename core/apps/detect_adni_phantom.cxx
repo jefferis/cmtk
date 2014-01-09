@@ -124,7 +124,7 @@ doMain( const int argc, const char* argv[] )
 	it->m_Location = phantomToPhysical.Apply( it->m_Location );
 	}
       }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
       {
       cmtk::StdErr << "ERROR: singular image-to-physical space matrix; cannot map landmarks to image space.\n";
       throw cmtk::ExitException( 1 );

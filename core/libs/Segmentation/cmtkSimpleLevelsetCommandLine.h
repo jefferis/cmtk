@@ -85,7 +85,7 @@ public:
       {
       levelset.Evolve( this->m_NumberOfIterations, this->m_ForceIterations );
       }
-    catch ( const SimpleLevelset::DegenerateLevelsetException& ex )
+    catch ( const SimpleLevelset::DegenerateLevelsetException& )
       {
       StdErr << "ERROR: degenerate levelset (all foreground or all background).\n";
       throw ExitException( 1 );

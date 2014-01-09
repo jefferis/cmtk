@@ -72,7 +72,7 @@ doMain ( const int argc, const char *argv[] )
     {
     cmtk::XformIO::Write( fitAffine.Fit(), OutputPath );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitAffineToWarpXform::Fit()\n";
     throw cmtk::ExitException( 1 );

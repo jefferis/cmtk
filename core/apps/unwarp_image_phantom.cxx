@@ -122,7 +122,7 @@ doMain( const int argc, const char* argv[] )
     {
     phantom->ApplyXformToLandmarks( cmtk::AffineXform( unwarpImage->GetImageToPhysicalMatrix().GetInverse() ) );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular image-to-physical space matrix cannot be inverted.\n";
     throw cmtk::ExitException( 1 );
@@ -158,7 +158,7 @@ doMain( const int argc, const char* argv[] )
       {
       affineXform = cmtk::FitAffineToLandmarks( pairList ).GetAffineXform();
       }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
       {
       cmtk::StdErr << "ERROR: fitted affine transformation has singular matrix\n";
       throw cmtk::ExitException( 1 );

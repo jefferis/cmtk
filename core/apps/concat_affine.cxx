@@ -92,7 +92,7 @@ doMain( const int argc, const char* argv[] )
 	  {
 	  affine = affine->GetInverse();
 	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	  {
 	  cmtk::StdErr << "ERROR: input transformation " << next << " has singular matrix and cannot be inverted\n";
 	  throw cmtk::ExitException( 1 );
@@ -130,7 +130,7 @@ doMain( const int argc, const char* argv[] )
 	{
 	outStream << (*concat.GetInverse());
 	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
 	{
 	cmtk::StdErr << "ERROR: output transformation has singular matrix and cannot be inverted\n";
 	throw cmtk::ExitException( 1 );

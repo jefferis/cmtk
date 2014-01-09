@@ -124,7 +124,7 @@ cmtk::AffineXformITKIO
 	xform->SetMetaInfo( META_SPACE, AnatomicalOrientationBase::SPACE_ITK );
 	return xform;
 	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
 	{
 	StdErr << "ERROR: singular matrix in cmtk::AffineXformITKIO::Read()\n";
 	}

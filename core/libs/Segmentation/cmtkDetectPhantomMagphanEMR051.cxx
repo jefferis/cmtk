@@ -184,7 +184,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       {
       intermediateXform = FitRigidToLandmarks( landmarkList ).GetRigidXform();
       }
-    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const AffineXform::MatrixType::SingularMatrixException& )
       {
       StdErr << "ERROR: singular matrix encountered while fitting intermediate rigid transformation\n";
       throw ExitException( 1 );
@@ -226,7 +226,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
       {
       intermediateXform = FitRigidToLandmarks( temporaryLandmarkList ).GetRigidXform();
       }
-    catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+    catch ( const AffineXform::MatrixType::SingularMatrixException& )
       {
       StdErr << "ERROR: singular matrix encountered while fitting intermediate rigid transformation\n";
       throw ExitException( 1 );
@@ -567,7 +567,7 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
       {
       regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVectorErode, 1 /* polynomial degree */ ).GetCorrectedData() );
       }
-    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& ex )
+    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& )
       {
       // nothing to do; regionVolume still has its data
       }
@@ -716,7 +716,7 @@ cmtk::DetectPhantomMagphanEMR051::GetSphereMeanStdDeviation( Types::DataItem& me
       {
       dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
       }
-    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& ex )
+    catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& )
       {
       // dataArray should still be the original data, but doesn't hurt to assign again, just in case.
       dataArray = dataVolume->GetData();

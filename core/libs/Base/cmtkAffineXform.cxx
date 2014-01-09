@@ -58,7 +58,7 @@ AffineXform::MakeIdentityXform ()
     {
     this->ComposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: identify matrix construction created singular matrix - this should not happen! Aborting...\n";
     throw ExitException( 1 );
@@ -77,7 +77,7 @@ AffineXform::AffineXform ( const AffineXform& other ) :
     {
     this->ComposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: construction from existing AffineXform object created singular matrix - this should not happen! Aborting...\n";
     throw ExitException( 1 );
@@ -124,7 +124,7 @@ AffineXform::operator=( const AffineXform& other )
     {
     this->ComposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: assignment from existing AffineXform object created singular matrix - this should not happen! Aborting...\n";
     throw ExitException( 1 );
@@ -178,7 +178,7 @@ AffineXform::ComposeMatrix ()
     {
     this->UpdateInverse();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: AffineXform::ComposeMatrix created singular matrix\n";
     throw ExitException( 1 );
@@ -328,7 +328,7 @@ AffineXform::Concat( const Self& other )
     {
     this->DecomposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: singular matrix in cmtk::AffineXform::Concat; this should not happen.\n";
     throw ExitException( 1 );
@@ -345,7 +345,7 @@ AffineXform::Insert( const Self& other )
     {
     this->DecomposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: singular matrix in cmtk::AffineXform::Insert; this should not happen.\n";
     throw ExitException( 1 );
@@ -435,7 +435,7 @@ AffineXform::RotateWXYZ
     {
     this->DecomposeMatrix();
     }
-  catch ( const Self::MatrixType::SingularMatrixException& ex )
+  catch ( const Self::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: singular matrix in cmtk::AffineXform::WXYZ; this should not happen.\n";
     throw ExitException( 1 );

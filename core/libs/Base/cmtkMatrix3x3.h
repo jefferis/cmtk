@@ -81,7 +81,7 @@ public:
   Self& Compose( const typename Self::ElementType params[8] );
   
   /// Decompose into affine parameters.
-  bool Decompose( Self::ElementType params[8], const typename Self::ElementType *center = NULL ) const;
+  bool Decompose( typename Self::ElementType params[8], const typename Self::ElementType *center = NULL ) const;
 
   /// Get determinant.
   typename Self::ElementType Determinant() const 

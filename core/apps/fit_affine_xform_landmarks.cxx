@@ -112,7 +112,7 @@ doMain ( const int argc, const char *argv[] )
     {
     xform = cmtk::AffineXform::SmartConstPtr( rigid ? cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform() : cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform() );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitRigidToLandmarks or cmtk::FitAffineToLandmarks\n";
     throw cmtk::ExitException( 1 );

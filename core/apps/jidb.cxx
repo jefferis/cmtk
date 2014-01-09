@@ -160,7 +160,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     {
     volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
     }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
     {
     cmtk::StdErr << "ERROR: singular coordinate transformation matrix encountered in cmtk::DeblurringVolumeReconstruction::VolumeInjectionIsotropic\n";
     throw cmtk::ExitException( 1 );

@@ -65,7 +65,7 @@ cmtk::TransformChangeToSpaceAffine
     // create output transformation and write
     this->m_NewXform.SetMatrix( concatMatrix );
     }
-  catch ( const AffineXform::MatrixType::SingularMatrixException& ex )
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
     {
     StdErr << "ERROR: singular matrix in TransformChangeToSpaceAffine constructor.\n";
     throw ExitException( 1 );
