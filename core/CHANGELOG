@@ -1,3 +1,6 @@
+Release CMTK-3.0.1:
+
+
 Release CMTK-3.0.0 (2014-01-09):
 
 (r5122) Fixed: wrong offset computation broke fitting of B-spline
