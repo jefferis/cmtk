@@ -7,7 +7,7 @@ Release Notes -- CMTK 3.0.0
 
 
 CHANGES THAT BREAK BACKWARD COMPATIBILITY:
-
+------------------------------------------
 
 1. Affine Transformations:
 
@@ -30,8 +30,9 @@ qform fields, rather than sform as before.
 https://www.nitrc.org/tracker/index.php?func=detail&aid=7169&group_id=212&atid=877
 
 
-OTHER USER-VISIBLE CHANGES
 
+OTHER USER-VISIBLE CHANGES:
+---------------------------
 
 1. Contributed pipeline scripts from the N-CANDA project, which briefly appeared
 in the CMTK code tree, have been moved into their own, project-specific
@@ -55,6 +56,7 @@ transformation).
 6. fit_spline_xform was broken due to two bugs in the spline fitting code. These
 have been fixed, but as a result, the tool now generates different output (as
 it should, since the previous output was plain invalid).
+
 
 
 Platform Support
