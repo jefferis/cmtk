@@ -9,6 +9,8 @@ Release Notes -- CMTK 3.0.0
 CHANGES THAT BREAK BACKWARD COMPATIBILITY:
 
 
+1. Affine Transformations:
+
 Affine transformation matrices were broken when shear and non-isotropic scale
 were used. Existing transformation files will continue to be read and generate
 the same matrices as before, but these matrices will not strictly be
@@ -18,6 +20,7 @@ transformation files will use a different meaning of the "shear" coefficients.
 https://www.nitrc.org/tracker/index.php?func=detail&aid=7179&group_id=212&atid=877
 
 
+2. NIFTI Image Import/Export:
 
 Handling of NIFTI qform and sform has changed in a way that breaks regression
 tests, but should otherwise be benign. This should also make CMTK largely
@@ -30,20 +33,28 @@ https://www.nitrc.org/tracker/index.php?func=detail&aid=7169&group_id=212&atid=8
 OTHER USER-VISIBLE CHANGES
 
 
-Contributed pipeline scripts from the N-CANDA project, which briefly appeared
+1. Contributed pipeline scripts from the N-CANDA project, which briefly appeared
 in the CMTK code tree, have been moved into their own, project-specific
 repository.
 
-unwarp_image_phantom default behaviour has been changed to multi-iteration
+2. unwarp_image_phantom default behaviour has been changed to multi-iteration
 fitting. Also now supports residual-controlled fitting.
 
-mk_analyze_hdr and mk_nifti_hdr default behaviour has changed - data type now
+3. mk_analyze_hdr and mk_nifti_hdr default behaviour has changed - data type now
 defaults to "byte" and orientation (for Analyze) now defaults to "axial",
 rather than being "UNKNOWN"
 
-xform2scalar now puts padding pixels where application of transformation
+4. dcm2image default behaviour has changed - potentially identifiable metadata is
+no longer embedded in the "Description" field of NIFTI or Analyze images
+created from DICOM files.
+
+5. xform2scalar now puts padding pixels where application of transformation
 sequence failed (e.g., due to failed numerical inversion of nonrigid
 transformation).
+
+6. fit_spline_xform was broken due to two bugs in the spline fitting code. These
+have been fixed, but as a result, the tool now generates different output (as
+it should, since the previous output was plain invalid).
 
 
 Platform Support
@@ -51,9 +62,9 @@ Platform Support
 
 CMTK has been built and tested on the following platforms:
 
+- Linux 64bit (Fedora 20), gcc 4.8.2, CUDA 3.2
+- Linux 64bit (Fedora 20), clang 3.3
 - Linux 64bit (Fedora 19), gcc 4.8.2, CUDA 3.2
-- Linux 64bit (Fedora 19), clang 3.3
-- Linux 64bit (Fedora 17), gcc 4.7.2, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 4.1
 - MacOSX 10.6, x86_64, MacPorts gcc 4.8.2, CUDA 4.1
