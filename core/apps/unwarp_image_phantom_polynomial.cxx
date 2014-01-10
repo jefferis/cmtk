@@ -88,7 +88,7 @@ doMain( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    return 1;
+    throw cmtk::ExitException( 1 );
     }
 
   // read phantom description
@@ -127,9 +127,19 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::DebugOutput( 2 ) << "INFO: using " << pairList.size() << " out of " << phantom->LandmarkPairsList().size() << " total phantom landmarks as fiducials.\n";
   
-  // fit polynomial transformation to landmark pairs.
-  cmtk::PolynomialXform::SmartConstPtr polyXform = cmtk::FitPolynomialToLandmarks( pairList, degree ).GetPolynomialXform();
-  
+  cmtk::PolynomialXform::SmartConstPtr polyXform;
+  try
+    {
+    // fit polynomial transformation to landmark pairs.
+    polyXform = cmtk::FitPolynomialToLandmarks( pairList, degree ).GetPolynomialXform();
+    }
+  catch ( cmtk::PolynomialHelper::DegreeUnsupported& ex )
+    {
+    cmtk::StdErr << "ERROR: library does not support polynomial degree " << degree << "\n";
+    cmtk::StdErr << ex.what() << "\n";
+    throw cmtk::ExitException( 1 );
+    }
+    
   // writing resulting transformation
   cmtk::XformIO::Write( polyXform, outputXform );
 
