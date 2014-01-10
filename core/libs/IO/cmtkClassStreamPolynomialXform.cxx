@@ -44,6 +44,7 @@ operator << ( ClassStreamOutput& stream, const PolynomialXform& xform )
 {
   stream.Begin( "polynomial_xform" );
   stream.WriteInt( "degree", xform.Degree() );
+  stream.WriteCoordinateArray( "center", xform.Center().begin(), 3 );
   stream.WriteCoordinateArray( "coefficients", xform.m_Parameters, xform.m_NumberOfParameters );
   stream.End();
 
@@ -80,6 +81,14 @@ operator >> ( ClassStreamInput& stream, PolynomialXform& xform )
     }
 
   xform = PolynomialXform( degree );
+
+  Types::Coordinate center[3];
+  if ( stream.ReadCoordinateArray( "center", center, 3 ) != TypedStream::CONDITION_OK )
+    {
+    throw Exception( "Could not read 'center' array from polynomial xform archive" );
+    }
+  xform.SetCenter( PolynomialXform::SpaceVectorType::FromPointer( center ) );
+
   if ( stream.ReadCoordinateArray( "coefficients", xform.m_Parameters, xform.m_NumberOfParameters ) != TypedStream::CONDITION_OK )
     {
     throw Exception( "Could not read 'coeffients' array from polynomial xform archive" );

@@ -99,6 +99,20 @@ public:
   { 
     return this->m_Degree;
   }
+
+  /** Set center of the transformation.  
+   *\warning This will change the meaning of the transformation.
+   */
+  void SetCenter( const Self::SpaceVectorType& center )
+  {
+    this->m_Center = center;
+  }
+
+  /// Get transformation center.
+  const Self::SpaceVectorType& Center() const
+  {
+    return this->m_Center;
+  }
   
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const
@@ -106,11 +120,14 @@ public:
     // initialize result vector as input vector (polynomial xform is a relative transformation)
     Self::SpaceVectorType result = v;
 
+    // remove "center" from input
+    const Self::SpaceVectorType vRel = v - this->m_Center;
+    
     // now apply actual monomials
     size_t paramIdx = 0;
     for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
       {
-      const Types::Coordinate monomialValue = Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
+      const Types::Coordinate monomialValue = Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, vRel[0], vRel[1], vRel[2] );
       for ( size_t dim = 0; dim < 3; ++dim, ++paramIdx )
 	result[dim] += this->m_Parameters[paramIdx] * monomialValue;
       }
@@ -138,6 +155,9 @@ public:
 protected:
   /// Polynomial degree.
   byte m_Degree;
+
+  /// Center of source coordinate space (all coordinates relative to this)
+  Self::SpaceVectorType m_Center;
 
   /// Number of monomials (per spatial dimension)
   size_t m_NumberOfMonomials;
