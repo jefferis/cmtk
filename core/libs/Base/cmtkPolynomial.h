@@ -511,19 +511,25 @@ public:
   typedef PolynomialHelper Self;
 
   /// Exception class thrown when unsupported degree is used.
-  class DegreeUnsupported : public Exception {};
+  class DegreeUnsupported : public Exception 
+  {
+  public: 
+    /// Constructor: take a message and had over to parent class.
+    DegreeUnsupported( const std::string& msg = "", const void *const fromObject = NULL ) : Exception( msg, fromObject ) {}
+  };
 
   /// Get number of monomials in a polynomial of given degree.
-  static unsigned int GetNumberOfMonomials( const unsigned int degree )
+  static unsigned int GetNumberOfMonomials( const int degree )
   {
     switch ( degree )
-      {
-      case 0: return Polynomial<0>::NumberOfMonomials; break;
-      case 1: return Polynomial<1>::NumberOfMonomials; break;
-      case 2: return Polynomial<2>::NumberOfMonomials; break;
-      case 3: return Polynomial<3>::NumberOfMonomials; break;
-      case 4: return Polynomial<4>::NumberOfMonomials; break;
-      default: throw Self::DegreeUnsupported();
+      {      
+      case -1: return 0; // this is only here so we can compute "relative" number of monomials easily, i.e., additional monomials at degree n on top of those at degree n-1
+      case  0: return Polynomial<0>::NumberOfMonomials;
+      case  1: return Polynomial<1>::NumberOfMonomials;
+      case  2: return Polynomial<2>::NumberOfMonomials;
+      case  3: return Polynomial<3>::NumberOfMonomials;
+      case  4: return Polynomial<4>::NumberOfMonomials;
+      default: throw Self::DegreeUnsupported( "Supported degrees are 0 through 4" );
       }
   }
 };
