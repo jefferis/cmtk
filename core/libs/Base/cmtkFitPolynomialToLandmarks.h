@@ -44,7 +44,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/** Fit affine transformation to a set of landmark pairs.
+/** Fit polynomial transformation to a set of landmark pairs.
  */
 class FitPolynomialToLandmarks
 {
@@ -53,7 +53,7 @@ public:
   typedef FitPolynomialToLandmarks Self;
 
   /// Constructor.
-  FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs );
+  FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs /*!< Landmark pairs to fit transformation to */, const byte degree /*!< Degree of the fitted polynomial */ );
 
   /// Return the affine transformation.
   PolynomialXform::SmartPtr GetPolynomialXform()

@@ -30,7 +30,7 @@
 
 #include "cmtkFitPolynomialToLandmarks.h"
 
-cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs )
+cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs, const byte degree )
 {
   // first, get the centroids in "from" and "to" space
   cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( 0.0 );
@@ -70,4 +70,7 @@ cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList
   Matrix3x3<Types::Coordinate> matrix = (xxT.GetInverse()*txT);
   
   // put everything together
+  this->m_PolynomialXform = PolynomialXform::SmartPtr( new PolynomialXform( degree ) );
+  for ( int dim = 0; dim < 3; ++dim )
+    this->m_PolynomialXform->m_Parameters[dim] = cTo[dim] - cFrom[dim];
 }

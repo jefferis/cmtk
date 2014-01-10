@@ -37,4 +37,13 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+CoordinateMatrix3x3 
+PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
+{
+  CoordinateMatrix3x3 J( 0.0 );
+
+  return J;
+}
+
+//@}
 } // namespace cmtk

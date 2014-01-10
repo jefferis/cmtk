@@ -99,6 +99,7 @@ SET(APPS avg_adm
   ttest
   unsplit
   unwarp_image_phantom
+  unwarp_image_phantom_polynomial
   vol2csv
   volume_injection
   volume_reconstruction

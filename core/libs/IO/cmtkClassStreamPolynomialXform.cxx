@@ -44,6 +44,7 @@ operator << ( ClassStreamOutput& stream, const PolynomialXform& xform )
 {
   stream.Begin( "polynomial_xform" );
   stream.WriteInt( "degree", xform.Degree() );
+  stream.WriteCoordinateArray( "coefficients", xform.m_Parameters, xform.m_NumberOfParameters );
   stream.End();
 
   return stream;
@@ -78,8 +79,8 @@ operator >> ( ClassStreamInput& stream, PolynomialXform& xform )
     throw Exception( "Did not find 'degree' value in polynomial xform archive" );
     }
 
-  Types::Coordinate parameters[35];
-  if ( stream.ReadCoordinateArray( "coefficients", parameters, 35 ) != TypedStream::CONDITION_OK )
+  xform = PolynomialXform( degree );
+  if ( stream.ReadCoordinateArray( "coefficients", xform.m_Parameters, xform.m_NumberOfParameters ) != TypedStream::CONDITION_OK )
     {
     throw Exception( "Could not read 'coeffients' array from polynomial xform archive" );
     }

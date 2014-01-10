@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +42,7 @@
 #include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkClassStreamPolynomialXform.h>
 #include <IO/cmtkTypedStreamStudylist.h>
 #include <IO/cmtkAffineXformITKIO.h>
 
@@ -93,6 +94,18 @@ XformIO::Read( const std::string& path )
     
     if ( warpXform ) 
       return Xform::SmartPtr( warpXform );
+    
+    stream.Open( realPath );
+
+    PolynomialXform polyXform;
+    try 
+      {
+      stream >> polyXform;
+      return Xform::SmartPtr( new PolynomialXform( polyXform ) );
+      }
+    catch ( const cmtk::Exception& ex )
+      {
+      }
     
     stream.Open( realPath );
 
@@ -166,6 +179,10 @@ XformIO::Write
     const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
     if ( affineXform )
       stream << *affineXform;
+    
+    const PolynomialXform* polyXform = dynamic_cast<const PolynomialXform*>( xform );
+    if ( polyXform )
+      stream << *polyXform;
     
     const SplineWarpXform* splineWarpXform = dynamic_cast<const SplineWarpXform*>( xform );
     if ( splineWarpXform )

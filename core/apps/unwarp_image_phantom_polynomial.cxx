@@ -22,11 +22,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision$
+//  $Revision: 5129 $
 //
-//  $LastChangedDate$
+//  $LastChangedDate: 2014-01-09 13:48:15 -0800 (Thu, 09 Jan 2014) $
 //
-//  $LastChangedBy$
+//  $LastChangedBy: torstenrohlfing $
 //
 */
 
@@ -44,8 +44,7 @@
 #include <Base/cmtkDetectedPhantomMagphanEMR051.h>
 #include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkLandmarkPairList.h>
-#include <Base/cmtkFitAffineToLandmarks.h>
-#include <Base/cmtkFitSplineWarpToLandmarks.h>
+#include <Base/cmtkFitPolynomialToLandmarks.h>
 
 #include <vector>
 
@@ -58,36 +57,22 @@ doMain( const int argc, const char* argv[] )
   cmtk::Types::Coordinate residualThreshold = 5.0;
 
   bool fitInverse = false;
-  std::string gridDims;
-  cmtk::Types::Coordinate gridSpacing = 0;
-
-  cmtk::FitSplineWarpToLandmarks::Parameters fittingParameters;
-  
-  bool affineFirst = true;
+  byte degree = 4;
 
   std::string outputXform;
 
   try
     {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unwarp T1-weighted MR image using a B-spline transformation based on a phantom description" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes a  B-spline free-form deformation to unwarp an image. The transformation is based on expected and detected landmarks in an image of a structural phantom "
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unwarp T1-weighted MR image using a polynomial transformation based on a phantom description" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes a  polynomial transformation to unwarp an image. The transformation is based on expected and detected landmarks in an image of a structural phantom "
 		       "acquired on the same scanner. Use the 'detect_adni_phantom' tool to detect landmarks of the ADNI Phantom in an image and generate a phantom description file suitable for use with this tool." );
 
     typedef cmtk::CommandLine::Key Key;    
     cl.BeginGroup( "Fitting", "Fitting Options" );
+    cl.AddOption( Key( "degree" ), &degree, "Degree of the fitted polynomial transformation." );
     cl.AddSwitch( Key( "fit-inverse" ), &fitInverse, true, "Fit inverse transformation - this is useful for computing a Jacobian volume correction map (using 'reformatx') without having to numerically invert the fitted unwarping "
 		  "transformation." );
-    cl.AddOption( Key( "levels" ), &fittingParameters.m_Levels, "Number of levels in the multi-level B-spline approximation procedure." );
-    cl.AddOption( Key( "iterations-per-level" ), &fittingParameters.m_IterationsPerLevel, "Maximum number of spline coefficient update iterations per level in the multi-level B-spline approximation procedure." );
-    cl.AddOption( Key( "rms-threshold" ), &fittingParameters.m_ResidualThreshold, "Threshold for relative improvement of the RMS fitting residual. "
-		  "The fitting iteration terminates if (rmsAfterUpdate-rmsBeforeUpdate)/rmsBeforeUpdate < threshold." );
-    cl.AddSwitch( Key( "no-fit-affine" ), &affineFirst, false, "Disable fitting of affine transformation to initialize spline. Instead, fit spline directly. This usually gives worse results and is discouraged." );
-    cl.EndGroup();
-
-    cl.BeginGroup( "Output", "Output Options" );
-    cl.AddOption( Key( "final-cp-spacing" ), &gridSpacing, "Final control point grid spacing of the output B-spline transformation." );
-    cl.AddOption( Key( "final-cp-dims" ), &gridDims, "Final control point grid dimensions (i.e., number of control points) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
     cl.EndGroup();
 
     cl.AddParameter( &inputPhantomPath, "InputPhantom", "Input path of the XML file describing a phantom previously detected in an image." );
@@ -104,13 +89,6 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::StdErr << e << "\n";
     return 1;
-    }
-
-  // check for inconsistent parameters
-  if ( gridSpacing && !gridDims.empty() )
-    {
-    cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
-    throw cmtk::ExitException( 1 );
     }
 
   // read phantom description
@@ -149,50 +127,11 @@ doMain( const int argc, const char* argv[] )
 
   cmtk::DebugOutput( 2 ) << "INFO: using " << pairList.size() << " out of " << phantom->LandmarkPairsList().size() << " total phantom landmarks as fiducials.\n";
   
-  // fit spline warp, potentially preceded by linear transformation, to landmark pairs.
-  cmtk::SplineWarpXform::SmartConstPtr splineWarp;
-  cmtk::AffineXform::SmartConstPtr affineXform;
-  if ( affineFirst )
-    {
-    try
-      {
-      affineXform = cmtk::FitAffineToLandmarks( pairList ).GetAffineXform();
-      }
-    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-      {
-      cmtk::StdErr << "ERROR: fitted affine transformation has singular matrix\n";
-      throw cmtk::ExitException( 1 );
-      }
-    }
-
-  // fit by final spacing
-  if ( gridSpacing )
-    {
-    splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, gridSpacing, affineXform.GetPtr(), fittingParameters );
-    }
-  else
-    {
-    // or fit by final control point grid dimension
-    if ( !gridDims.empty() )
-      {
-      double dims[3];
-      if ( 3 != sscanf( gridDims.c_str(), "%20lf,%20lf,%20lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
-	{
-	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
-	throw cmtk::ExitException( 1 );
-	}
-      
-      splineWarp = cmtk::FitSplineWarpToLandmarks( pairList ).Fit( unwarpImage->m_Size, cmtk::FixedVector<3,double>::FromPointer( dims ), affineXform.GetPtr(), fittingParameters );
-      }
-    else
-      {
-      cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions.\n";
-      throw cmtk::ExitException( 1 );
-      }
-    }
-
+  // fit polynomial transformation to landmark pairs.
+  cmtk::PolynomialXform::SmartConstPtr polyXform = cmtk::FitPolynomialToLandmarks( pairList, degree ).GetPolynomialXform();
+  
   // writing resulting transformation
-  cmtk::XformIO::Write( splineWarp, outputXform );
+  cmtk::XformIO::Write( polyXform, outputXform );
 
   return 0;
 }

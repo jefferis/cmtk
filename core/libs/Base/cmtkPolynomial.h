@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <stdlib.h>
+#include <System/cmtkException.h>
 
 namespace
 cmtk
@@ -500,6 +500,31 @@ public:
     mvec[32] = mvec[17] * z;
     mvec[33] = mvec[18] * z;
     mvec[34] = mvec[19] * z;
+  }
+};
+
+/// Polynomial helper class.
+class PolynomialHelper
+{
+public:
+  /// This class.
+  typedef PolynomialHelper Self;
+
+  /// Exception class thrown when unsupported degree is used.
+  class DegreeUnsupported : public Exception {};
+
+  /// Get number of monomials in a polynomial of given degree.
+  static unsigned int GetNumberOfMonomials( const unsigned int degree )
+  {
+    switch ( degree )
+      {
+      case 0: return Polynomial<0>::NumberOfMonomials; break;
+      case 1: return Polynomial<1>::NumberOfMonomials; break;
+      case 2: return Polynomial<2>::NumberOfMonomials; break;
+      case 3: return Polynomial<3>::NumberOfMonomials; break;
+      case 4: return Polynomial<4>::NumberOfMonomials; break;
+      default: throw Self::DegreeUnsupported();
+      }
   }
 };
 

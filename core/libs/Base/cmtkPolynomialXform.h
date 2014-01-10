@@ -40,7 +40,6 @@
 #include <Base/cmtkMatrix3x3.h>
 
 #include <System/cmtkSmartPtr.h>
-#include <System/cmtkException.h>
 
 namespace
 cmtk
@@ -68,9 +67,6 @@ public:
   /// Smart pointer-to-const for this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
   
-  /// Exception class thrown when unsupported degree is used.
-  class DegreeUnsupported : public Exception {};
-
   /// Copy constructor.
   PolynomialXform( const PolynomialXform& other )
     : Xform( other ),
@@ -83,18 +79,9 @@ public:
   PolynomialXform( const byte degree = 0 /*!< Polynomial degree - 0 through 4 are supported. */ ) : m_Degree( degree )
   {
     // Sort out how many monomials a polynomial of the given degree has.
-    this->m_NumberOfMonomials = 0;
-    switch ( this->m_Degree )
-      {
-      case 0: this->m_NumberOfMonomials = Polynomial<0>::NumberOfMonomials; break;
-      case 1: this->m_NumberOfMonomials = Polynomial<1>::NumberOfMonomials; break;
-      case 2: this->m_NumberOfMonomials = Polynomial<2>::NumberOfMonomials; break;
-      case 3: this->m_NumberOfMonomials = Polynomial<3>::NumberOfMonomials; break;
-      case 4: this->m_NumberOfMonomials = Polynomial<4>::NumberOfMonomials; break;
-      default: throw Self::DegreeUnsupported();
-      }
+    this->m_NumberOfMonomials = PolynomialHelper::GetNumberOfMonomials( this->m_Degree );
 
-    // add constant parameter (shift) to polynomial; allocate one set per spatial dimension
+    // Allocate one set per spatial dimension
     this->AllocateParameterVector( 3 * this->m_NumberOfMonomials );
   }
 
