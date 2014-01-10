@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2012, 2014 SRI International
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
@@ -34,6 +34,7 @@ SET(cmtkIO_SRCS
   cmtkSplineWarpXformITKIO.cxx
   cmtkClassStreamAffineXform.cxx
   cmtkClassStreamParametricPlane.cxx
+  cmtkClassStreamPolynomialXform.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx
   cmtkFileFormat.cxx

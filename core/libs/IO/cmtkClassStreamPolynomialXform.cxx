@@ -1,0 +1,98 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 2004-2014 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5046 $
+//
+//  $LastChangedDate: 2013-11-27 14:59:04 -0800 (Wed, 27 Nov 2013) $
+//
+//  $LastChangedBy: torsten_at_home $
+//
+*/
+
+#include "cmtkClassStreamPolynomialXform.h"
+
+namespace
+cmtk
+{
+
+/** \addtogroup IO */
+//@{
+
+ClassStreamOutput& 
+operator << ( ClassStreamOutput& stream, const PolynomialXform& xform )
+{
+  stream.Begin( "polynomial_xform" );
+  stream.WriteInt( "degree", xform.Degree() );
+  stream.End();
+
+  return stream;
+}
+ 
+ClassStreamInput& 
+operator >> ( ClassStreamInput& stream, PolynomialXform& xform )
+{
+  const char *fixedImage = NULL;
+  const char *movingImage = NULL;
+
+  if ( stream.Seek( "polynomial_xform", true /*forward*/ ) != TypedStream::CONDITION_OK )
+    {
+    stream.Rewind();
+    if ( stream.Seek( "registration", true /*forward*/ ) != TypedStream::CONDITION_OK )
+      {
+      throw Exception( "Did not find 'registration' section in archive" );
+      }
+    
+    fixedImage = stream.ReadString( "reference_study", NULL );
+    movingImage = stream.ReadString( "floating_study", NULL );
+
+    if ( stream.Seek( "polynomial_xform", false /*forward*/ ) != TypedStream::CONDITION_OK )
+      {
+      throw Exception( "Did not find 'polynomial_xform' section in archive" );
+      }
+    }
+
+  int degree = 0;
+  if ( stream.ReadInt( "degree", degree ) != TypedStream::CONDITION_OK )
+    {
+    throw Exception( "Did not find 'degree' value in polynomial xform archive" );
+    }
+
+  Types::Coordinate parameters[35];
+  if ( stream.ReadCoordinateArray( "coefficients", parameters, 35 ) != TypedStream::CONDITION_OK )
+    {
+    throw Exception( "Could not read 'coeffients' array from polynomial xform archive" );
+    }
+  stream.End();
+
+  xform.SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
+  if ( fixedImage )
+    xform.SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, fixedImage );
+
+  if ( movingImage )
+    xform.SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, movingImage );
+
+  return stream;
+}
+
+} // namespace cmtk

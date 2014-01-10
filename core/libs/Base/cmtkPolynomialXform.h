@@ -106,6 +106,12 @@ public:
 
   /// Virtual destructor.
   virtual ~PolynomialXform() {}
+
+  /// Get degree of the polynomial.
+  byte Degree() const 
+  { 
+    return this->m_Degree;
+  }
   
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const
