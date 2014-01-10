@@ -40,7 +40,22 @@ cmtk
 CoordinateMatrix3x3 
 PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
 {
-  CoordinateMatrix3x3 J( 0.0 );
+  CoordinateMatrix3x3 J = CoordinateMatrix3x3::Identity();
+
+  size_t paramIdx = 0;
+  for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
+    {
+    const Types::Coordinate monomialValueDX = Polynomial<4,Types::Coordinate>::EvaluateMonomialDXAt( monomialIdx, v[0], v[1], v[2] );
+    const Types::Coordinate monomialValueDY = Polynomial<4,Types::Coordinate>::EvaluateMonomialDYAt( monomialIdx, v[0], v[1], v[2] );
+    const Types::Coordinate monomialValueDZ = Polynomial<4,Types::Coordinate>::EvaluateMonomialDZAt( monomialIdx, v[0], v[1], v[2] );
+
+    for ( size_t i = 0; i < 3; ++i, ++paramIdx )
+      {
+      J[i][0] += this->m_Parameters[paramIdx] * monomialValueDX;
+      J[i][1] += this->m_Parameters[paramIdx] * monomialValueDY;
+      J[i][2] += this->m_Parameters[paramIdx] * monomialValueDZ;
+      }
+    }
 
   return J;
 }

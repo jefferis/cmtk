@@ -460,7 +460,7 @@ public:
       case 20 : return  0;
       case 21 : return  0;
       case 22 : return  x*x*x;
-      case 23 : return  ;
+      case 23 : return  0;
       case 24 : return  x*x*y;
       case 25 : return  x*x*2*z;
       case 26 : return  0;

@@ -103,8 +103,8 @@ public:
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const
   {
-    // initialize result vector
-    Self::SpaceVectorType result = Self::SpaceVectorType( 0.0 );
+    // initialize result vector as input vector (polynomial xform is a relative transformation)
+    Self::SpaceVectorType result = v;
 
     // now apply actual monomials
     size_t paramIdx = 0;
