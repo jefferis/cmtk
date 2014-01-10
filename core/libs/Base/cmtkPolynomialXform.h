@@ -120,14 +120,11 @@ public:
     // initialize result vector as input vector (polynomial xform is a relative transformation)
     Self::SpaceVectorType result = v;
 
-    // remove "center" from input
-    const Self::SpaceVectorType vRel = v - this->m_Center;
-    
     // now apply actual monomials
     size_t paramIdx = 0;
     for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
       {
-      const Types::Coordinate monomialValue = Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, vRel[0], vRel[1], vRel[2] );
+      const Types::Coordinate monomialValue = this->GetMonomialAt( monomialIdx, v );
       for ( size_t dim = 0; dim < 3; ++dim, ++paramIdx )
 	result[dim] += this->m_Parameters[paramIdx] * monomialValue;
       }
@@ -136,10 +133,11 @@ public:
   }
 
   /// Get monomial at coordinate.
-  Types::Coordinate GetMonomialAt( const size_t idx /*!< Index of the parameter to gert the monomial for. */, const Self::SpaceVectorType& v ) const
+  Types::Coordinate GetMonomialAt( const size_t idx /*!< Index of the monomial to get. */, const Self::SpaceVectorType& v ) const
   {
-    // first three are constant (translational components)
-    return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3), v[0], v[1], v[2] );
+    // remove "center" from input
+    const Self::SpaceVectorType vRel = v - this->m_Center;
+    return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( idx, vRel[0], vRel[1], vRel[2] );
   }
 
   /** Return inverse-transformed vector.

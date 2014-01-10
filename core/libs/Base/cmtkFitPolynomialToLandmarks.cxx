@@ -57,12 +57,39 @@ cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList
   for ( byte fitDegree = 1; fitDegree <= degree; ++fitDegree )
     {
     const size_t firstParameter = PolynomialHelper::GetNumberOfMonomials( fitDegree-1 );
-    const size_t numberParameter = PolynomialHelper::GetNumberOfMonomials( fitDegree ) - firstParameter;
-
-    for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
+    const size_t nParameters = PolynomialHelper::GetNumberOfMonomials( fitDegree ) - firstParameter;
+    
+    Matrix2D<double> U( nLandmarks, nParameters ); 
+    U.SetAllToZero();
+    
+    std::vector<PolynomialXform::SpaceVectorType> residuals( nLandmarks );
+    size_t lmIdx = 0;
+    for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it, ++lmIdx )
       {
-      const PolynomialXform::SpaceVectorType residual = this->m_PolynomialXform->Apply( it->m_Location ) - it->m_TargetLocation;
+      residuals[lmIdx] = this->m_PolynomialXform->Apply( it->m_Location ) - it->m_TargetLocation;
       
+      for ( size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx )
+	{
+	U[lmIdx][paramIdx] = this->m_PolynomialXform->GetMonomialAt( firstParameter+paramIdx, it->m_Location );
+	}
+      }
+    
+    Matrix2D<double> V( nParameters, nParameters );
+    std::vector<double> W( nParameters );
+    MathUtil::SVD( U, W, V );
+    
+    std::vector<double> params;
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      std::vector<double> dimResidual( nLandmarks );
+      for ( size_t lmIdx = 0; lmIdx < nLandmarks; ++lmIdx )
+	dimResidual[lmIdx] = residuals[lmIdx][dim];
+
+      MathUtil::SVDLinearRegression( U, W, V, dimResidual, params );
+      for ( size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx )
+	{
+	this->m_PolynomialXform->m_Parameters[3*(firstParameter+paramIdx) + dim] = params[paramIdx];
+	}
       }
     }
 }
