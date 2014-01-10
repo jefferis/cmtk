@@ -37,6 +37,7 @@
 
 #include <Base/cmtkXform.h>
 #include <Base/cmtkPolynomial.h>
+#include <Base/cmtkMatrix3x3.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkException.h>
@@ -122,12 +123,27 @@ public:
     return result;
   }
 
+  /// Get monomial at coordinate.
+  Types::Coordinate GetMonomialAt( const size_t idx /*!< Index of the parameter to gert the monomial for. */, const Self::SpaceVectorType& v ) const
+  {
+    // first three are constant (translational components)
+    if ( idx < 3 )
+      {
+      return 1;
+      }
+
+    return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3)-1, v[0], v[1], v[2] );
+  }
+
   /** Return inverse-transformed vector.
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const { return false; }
 
+  /// Get local Jacobian.
+  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
+
   /// Compute Jacobian determinant at a certain location.
-  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& ) const { return 0; }
+  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const { return this->GetJacobian( v ).Determinant() ; }
 
 protected:
   /// Polynomial degree.
