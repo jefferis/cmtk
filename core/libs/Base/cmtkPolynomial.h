@@ -86,13 +86,16 @@ public:
   /// Real value type.
   typedef TRealType RealValueType;
 
-  /// Number of monomials in x, y, and z of degree up to 1.
-  enum { NumberOfMonomials = 0 };
+  /// Number of monomials in x, y, and z of degree 0.
+  enum { NumberOfMonomials = 1 };
 
   /// Evaluate the idx'th monomial at (x,y,z).
   static TRealType EvaluateMonomialAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
   {
-    return 0.0;
+    if ( idx == 0 )
+      return 1.0;
+    else
+      return 0.0;
   }
 
   /** Evaluate all monomials at one point.
@@ -114,16 +117,17 @@ public:
   typedef TRealType RealValueType;
 
   /// Number of monomials in x, y, and z of degree up to 1.
-  enum { NumberOfMonomials = 3 };
+  enum { NumberOfMonomials = 4 };
 
   /// Evaluate the idx'th monomial at (x,y,z).
   static TRealType EvaluateMonomialAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
   {
     switch ( idx )
       {
-      case 0 : return  x;
-      case 1 : return  y;
-      case 2 : return  z;
+      case 0 : return 1.0;
+      case 1 : return x;
+      case 2 : return y;
+      case 3 : return z;
       }
     return 0.0;
   }
@@ -134,9 +138,10 @@ public:
    */
   static void EvaluateAllMonomials( TRealType *const mvec, const TRealType x, const TRealType y, const TRealType z )
   {
-    mvec[0] = x;
-    mvec[1] = y;
-    mvec[2] = z;
+    mvec[0] = 1.0;
+    mvec[1] = x;
+    mvec[2] = y;
+    mvec[3] = z;
   }
 };
 
@@ -152,23 +157,25 @@ public:
   typedef TRealType RealValueType;
 
   /// Number of monomials in x, y, and z of degree up to 2.
-  enum { NumberOfMonomials = 9 };
+  enum { NumberOfMonomials = 10 };
 
   /// Evaluate the idx'th monomial at (x,y,z).
   static TRealType EvaluateMonomialAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
   {
     switch ( idx )
       {
-      case 0 : return  x;
-      case 1 : return  y;
-      case 2 : return  z;
+      case 0 : return  1.0;
 
-      case 3 : return  x*x;
-      case 4 : return  x*y;
-      case 5 : return  x*z;
-      case 6 : return  y*y;
-      case 7 : return  y*z;
-      case 8 : return  z*z;
+      case 1 : return  x;
+      case 2 : return  y;
+      case 3 : return  z;
+
+      case 4 : return  x*x;
+      case 5 : return  x*y;
+      case 6 : return  x*z;
+      case 7 : return  y*y;
+      case 8 : return  y*z;
+      case 9 : return  z*z;
       }
     return 0.0;
   }
@@ -180,12 +187,12 @@ public:
   static void EvaluateAllMonomials( TRealType *const mvec, const TRealType x, const TRealType y, const TRealType z )
   {
     Polynomial<1,TRealType>::EvaluateAllMonomials( mvec, x, y, z );
-    mvec[3] = mvec[0]*x;
-    mvec[4] = mvec[0]*y;
-    mvec[5] = mvec[0]*z;
-    mvec[6] = mvec[1]*y;
-    mvec[7] = mvec[1]*z;
+    mvec[4] = mvec[1]*x;
+    mvec[5] = mvec[1]*y;
+    mvec[6] = mvec[1]*z;
+    mvec[7] = mvec[2]*y;
     mvec[8] = mvec[2]*z;
+    mvec[9] = mvec[3]*z;
   }
 };
 
@@ -201,34 +208,36 @@ public:
   typedef TRealType RealValueType;
 
   /// Number of monomials in x, y, and z of degree up to 3.
-  enum { NumberOfMonomials = 19 };
+  enum { NumberOfMonomials = 20 };
 
   /// Evaluate the idx'th monomial at (x,y,z).
   static TRealType EvaluateMonomialAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
   {
     switch ( idx )
       {
-      case  0 : return  x;
-      case  1 : return  y;
-      case  2 : return  z;
+      case 0 : return  1.0;
 
-      case  3 : return  x*x;
-      case  4 : return  x*y;
-      case  5 : return  x*z;
-      case  6 : return  y*y;
-      case  7 : return  y*z;
-      case  8 : return  z*z;
+      case 1 : return  x;
+      case 2 : return  y;
+      case 3 : return  z;
 
-      case  9 : return  x*x*x;
-      case 10 : return  x*x*y;
-      case 11 : return  x*x*z;
-      case 12 : return  x*y*y;
-      case 13 : return  x*y*z;
-      case 14 : return  x*z*z;
-      case 15 : return  y*y*y;
-      case 16 : return  y*y*z;
-      case 17 : return  y*z*z;
-      case 18 : return  z*z*z;
+      case 4 : return  x*x;
+      case 5 : return  x*y;
+      case 6 : return  x*z;
+      case 7 : return  y*y;
+      case 8 : return  y*z;
+      case 9 : return  z*z;
+
+      case 10 : return  x*x*x;
+      case 11 : return  x*x*y;
+      case 12 : return  x*x*z;
+      case 13 : return  x*y*y;
+      case 14 : return  x*y*z;
+      case 15 : return  x*z*z;
+      case 16 : return  y*y*y;
+      case 17 : return  y*y*z;
+      case 18 : return  y*z*z;
+      case 19 : return  z*z*z;
       }
     return 0.0;
   }
@@ -241,20 +250,20 @@ public:
   {
     Polynomial<2,TRealType>::EvaluateAllMonomials( mvec, x, y, z );
 
-    mvec[9]  = mvec[3]*x;
-    mvec[10] = mvec[3]*y;
-    mvec[11] = mvec[3]*z;
+    mvec[10] = mvec[4]*x;
+    mvec[11] = mvec[4]*y;
+    mvec[12] = mvec[4]*z;
 
-    mvec[12] = mvec[4]*y;
-    mvec[13] = mvec[4]*z;
-
+    mvec[13] = mvec[5]*y;
     mvec[14] = mvec[5]*z;
 
-    mvec[15] = mvec[6]*y;
-    mvec[16] = mvec[6]*z;
+    mvec[15] = mvec[6]*z;
 
+    mvec[16] = mvec[7]*y;
     mvec[17] = mvec[7]*z;
+
     mvec[18] = mvec[8]*z;
+    mvec[19] = mvec[9]*z;
   }
 };
 
@@ -270,51 +279,53 @@ public:
   typedef TRealType RealValueType;
 
   /// Number of monomials in x, y, and z of degree up to 4.
-  enum { NumberOfMonomials = 34 };
+  enum { NumberOfMonomials = 35 };
 
   /// Evaluate the idx'th monomial at (x,y,z).
   static TRealType EvaluateMonomialAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
   {
     switch ( idx )
       {
-      case  0 : return  x;
-      case  1 : return  y;
-      case  2 : return  z;
+      case 0 : return  1.0;
 
-      case  3 : return  x*x;
-      case  4 : return  x*y;
-      case  5 : return  x*z;
-      case  6 : return  y*y;
-      case  7 : return  y*z;
-      case  8 : return  z*z;
+      case 1 : return  x;
+      case 2 : return  y;
+      case 3 : return  z;
 
-      case  9 : return  x*x*x;
-      case 10 : return  x*x*y;
-      case 11 : return  x*x*z;
-      case 12 : return  x*y*y;
-      case 13 : return  x*y*z;
-      case 14 : return  x*z*z;
-      case 15 : return  y*y*y;
-      case 16 : return  y*y*z;
-      case 17 : return  y*z*z;
-      case 18 : return  z*z*z;
+      case 4 : return  x*x;
+      case 5 : return  x*y;
+      case 6 : return  x*z;
+      case 7 : return  y*y;
+      case 8 : return  y*z;
+      case 9 : return  z*z;
 
-      case 19 : return  x*x*x*x;
-      case 20 : return  x*x*x*y;
-      case 21 : return  x*x*x*z;
-      case 22 : return  x*x*y*y;
-      case 23 : return  x*x*y*z;
-      case 24 : return  x*x*z*z;
-      case 25 : return  x*y*y*y;
-      case 26 : return  x*y*y*z;
-      case 27 : return  x*y*z*z;
-      case 28 : return  x*z*z*z;
+      case 10 : return  x*x*x;
+      case 11 : return  x*x*y;
+      case 12 : return  x*x*z;
+      case 13 : return  x*y*y;
+      case 14 : return  x*y*z;
+      case 15 : return  x*z*z;
+      case 16 : return  y*y*y;
+      case 17 : return  y*y*z;
+      case 18 : return  y*z*z;
+      case 19 : return  z*z*z;
 
-      case 29 : return  y*y*y*y;
-      case 30 : return  y*y*y*z;
-      case 31 : return  y*y*z*z;
-      case 32 : return  y*z*z*z;
-      case 33 : return  z*z*z*z;
+      case 20 : return  x*x*x*x;
+      case 21 : return  x*x*x*y;
+      case 22 : return  x*x*x*z;
+      case 23 : return  x*x*y*y;
+      case 24 : return  x*x*y*z;
+      case 25 : return  x*x*z*z;
+      case 26 : return  x*y*y*y;
+      case 27 : return  x*y*y*z;
+      case 28 : return  x*y*z*z;
+      case 29 : return  x*z*z*z;
+
+      case 30 : return  y*y*y*y;
+      case 31 : return  y*y*y*z;
+      case 32 : return  y*y*z*z;
+      case 33 : return  y*z*z*z;
+      case 34 : return  z*z*z*z;
       }
     return 0.0;
   }
@@ -324,44 +335,46 @@ public:
   {
     switch ( idx )
       {
-      case  0 : return  1;
-      case  1 : return  0;
-      case  2 : return  0;
+      case  0 : return  0;
 
-      case  3 : return  2*x;
-      case  4 : return  y;
-      case  5 : return  z;
-      case  6 : return  0;
+      case  1 : return  1;
+      case  2 : return  0;
+      case  3 : return  0;
+
+      case  4 : return  2*x;
+      case  5 : return  y;
+      case  6 : return  z;
       case  7 : return  0;
       case  8 : return  0;
+      case  9 : return  0;
 
-      case  9 : return  3*x*x;
-      case 10 : return  2*x*y;
-      case 11 : return  2*x*z;
-      case 12 : return  y*y;
-      case 13 : return  y*z;
-      case 14 : return  z*z;
-      case 15 : return  0;
+      case 10 : return  3*x*x;
+      case 11 : return  2*x*y;
+      case 12 : return  2*x*z;
+      case 13 : return  y*y;
+      case 14 : return  y*z;
+      case 15 : return  z*z;
       case 16 : return  0;
       case 17 : return  0;
       case 18 : return  0;
+      case 19 : return  0;
 
-      case 19 : return  4*x*x*x;
-      case 20 : return  3*x*x*y;
-      case 21 : return  3*x*x*z;
-      case 22 : return  2*x*y*y;
-      case 23 : return  2*x*y*z;
-      case 24 : return  2*x*z*z;
-      case 25 : return  y*y*y;
-      case 26 : return  y*y*z;
-      case 27 : return  y*z*z;
-      case 28 : return  z*z*z;
+      case 20 : return  4*x*x*x;
+      case 21 : return  3*x*x*y;
+      case 22 : return  3*x*x*z;
+      case 23 : return  2*x*y*y;
+      case 24 : return  2*x*y*z;
+      case 25 : return  2*x*z*z;
+      case 26 : return  y*y*y;
+      case 27 : return  y*y*z;
+      case 28 : return  y*z*z;
+      case 29 : return  z*z*z;
 
-      case 29 : return  0;
       case 30 : return  0;
       case 31 : return  0;
       case 32 : return  0;
       case 33 : return  0;
+      case 34 : return  0;
       }
     return 0.0;
   }
@@ -372,43 +385,45 @@ public:
     switch ( idx )
       {
       case  0 : return  0;
-      case  1 : return  1;
-      case  2 : return  0;
 
+      case  1 : return  0;
+      case  2 : return  1;
       case  3 : return  0;
-      case  4 : return  x;
-      case  5 : return  0;
-      case  6 : return  2*y;
-      case  7 : return  z;
-      case  8 : return  0;
 
+      case  4 : return  0;
+      case  5 : return  x;
+      case  6 : return  0;
+      case  7 : return  2*y;
+      case  8 : return  z;
       case  9 : return  0;
-      case 10 : return  y;
-      case 11 : return  0;
-      case 12 : return  2*x*y;
-      case 13 : return  x*z;
-      case 14 : return  0;
-      case 15 : return  3*y*y;
-      case 16 : return  2*y*z;
-      case 17 : return  z*z;
-      case 18 : return  0;
 
+      case 10 : return  0;
+      case 11 : return  y;
+      case 12 : return  0;
+      case 13 : return  2*x*y;
+      case 14 : return  x*z;
+      case 15 : return  0;
+      case 16 : return  3*y*y;
+      case 17 : return  2*y*z;
+      case 18 : return  z*z;
       case 19 : return  0;
-      case 20 : return  x*x*x;
-      case 21 : return  0;
-      case 22 : return  2*y*x*x;
-      case 23 : return  x*x*z;
-      case 24 : return  x*x*z*z;
-      case 25 : return  x*3*y*y;
-      case 26 : return  x*2*y*z;
-      case 27 : return  x*z*z;
-      case 28 : return  0;
 
-      case 29 : return  4*y*y*y;
-      case 30 : return  3*y*y*z;
-      case 31 : return  2*y*z*z;
-      case 32 : return  z*z*z;
-      case 33 : return  0;
+      case 20 : return  0;
+      case 21 : return  x*x*x;
+      case 22 : return  0;
+      case 23 : return  2*y*x*x;
+      case 24 : return  x*x*z;
+      case 25 : return  x*x*z*z;
+      case 26 : return  x*3*y*y;
+      case 27 : return  x*2*y*z;
+      case 28 : return  x*z*z;
+      case 29 : return  0;
+
+      case 30 : return  4*y*y*y;
+      case 31 : return  3*y*y*z;
+      case 32 : return  2*y*z*z;
+      case 33 : return  z*z*z;
+      case 34 : return  0;
       }
     return 0.0;
   }
@@ -419,43 +434,45 @@ public:
     switch ( idx )
       {
       case  0 : return  0;
+
       case  1 : return  0;
-      case  2 : return  1;
+      case  2 : return  0;
+      case  3 : return  1;
 
-      case  3 : return  0;
       case  4 : return  0;
-      case  5 : return  x;
-      case  6 : return  0;
-      case  7 : return  y;
-      case  8 : return  2*z;
+      case  5 : return  0;
+      case  6 : return  x;
+      case  7 : return  0;
+      case  8 : return  y;
+      case  9 : return  2*z;
 
-      case  9 : return  0;
       case 10 : return  0;
-      case 11 : return  x*x;
-      case 12 : return  0;
-      case 13 : return  x*y;
-      case 14 : return  x*2*z;
-      case 15 : return  0;
-      case 16 : return  y*y;
-      case 17 : return  y*2*z;
-      case 18 : return  3*z*z;
+      case 11 : return  0;
+      case 12 : return  x*x;
+      case 13 : return  0;
+      case 14 : return  x*y;
+      case 15 : return  x*2*z;
+      case 16 : return  0;
+      case 17 : return  y*y;
+      case 18 : return  y*2*z;
+      case 19 : return  3*z*z;
 
-      case 19 : return  0;
       case 20 : return  0;
-      case 21 : return  x*x*x;
-      case 22 : return  ;
-      case 23 : return  x*x*y;
-      case 24 : return  x*x*2*z;
-      case 25 : return  0;
-      case 26 : return  x*y*y;
-      case 27 : return  x*y*2*z;
-      case 28 : return  x*3*z*z;
+      case 21 : return  0;
+      case 22 : return  x*x*x;
+      case 23 : return  ;
+      case 24 : return  x*x*y;
+      case 25 : return  x*x*2*z;
+      case 26 : return  0;
+      case 27 : return  x*y*y;
+      case 28 : return  x*y*2*z;
+      case 29 : return  x*3*z*z;
 
-      case 29 : return  y*y*y*y;
-      case 30 : return  y*y*y;
-      case 31 : return  y*y*2*z;
-      case 32 : return  y*3*z*z;
-      case 33 : return  3*z*z*z;
+      case 30 : return  y*y*y*y;
+      case 31 : return  y*y*y;
+      case 32 : return  y*y*2*z;
+      case 33 : return  y*3*z*z;
+      case 34 : return  3*z*z*z;
       }
     return 0.0;
   }
@@ -468,21 +485,21 @@ public:
   {
     Polynomial<3,TRealType>::EvaluateAllMonomials( mvec, x, y, z );
 
-    mvec[19] = mvec[9] * x;
-    mvec[20] = mvec[9] * y;
-    mvec[21] = mvec[9] * z;
-    mvec[22] = mvec[10] * y;
-    mvec[23] = mvec[10] * z;
+    mvec[20] = mvec[10] * x;
+    mvec[21] = mvec[10] * y;
+    mvec[22] = mvec[10] * z;
+    mvec[23] = mvec[11] * y;
     mvec[24] = mvec[11] * z;
-    mvec[25] = mvec[12] * y;
-    mvec[26] = mvec[12] * z;
+    mvec[25] = mvec[12] * z;
+    mvec[26] = mvec[13] * y;
     mvec[27] = mvec[13] * z;
     mvec[28] = mvec[14] * z;
-    mvec[29] = mvec[15] * y;
-    mvec[30] = mvec[15] * z;
+    mvec[29] = mvec[15] * z;
+    mvec[30] = mvec[16] * y;
     mvec[31] = mvec[16] * z;
     mvec[32] = mvec[17] * z;
     mvec[33] = mvec[18] * z;
+    mvec[34] = mvec[19] * z;
   }
 };
 

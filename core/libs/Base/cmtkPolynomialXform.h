@@ -74,7 +74,8 @@ public:
   /// Copy constructor.
   PolynomialXform( const PolynomialXform& other )
     : Xform( other ),
-      m_Degree( other.m_Degree )
+      m_Degree( other.m_Degree ),
+      m_NumberOfMonomials( other.m_NumberOfMonomials )
   {
   }
   
@@ -82,18 +83,19 @@ public:
   PolynomialXform( const byte degree = 0 /*!< Polynomial degree - 0 through 4 are supported. */ ) : m_Degree( degree )
   {
     // Sort out how many monomials a polynomial of the given degree has.
-    size_t numberOfMonomials = 0;
+    this->m_NumberOfMonomials = 0;
     switch ( this->m_Degree )
       {
-      case 1: numberOfMonomials = Polynomial<1>::NumberOfMonomials; break;
-      case 2: numberOfMonomials = Polynomial<2>::NumberOfMonomials; break;
-      case 3: numberOfMonomials = Polynomial<3>::NumberOfMonomials; break;
-      case 4: numberOfMonomials = Polynomial<4>::NumberOfMonomials; break;
+      case 0: this->m_NumberOfMonomials = Polynomial<0>::NumberOfMonomials; break;
+      case 1: this->m_NumberOfMonomials = Polynomial<1>::NumberOfMonomials; break;
+      case 2: this->m_NumberOfMonomials = Polynomial<2>::NumberOfMonomials; break;
+      case 3: this->m_NumberOfMonomials = Polynomial<3>::NumberOfMonomials; break;
+      case 4: this->m_NumberOfMonomials = Polynomial<4>::NumberOfMonomials; break;
       default: throw Self::DegreeUnsupported();
       }
 
     // add constant parameter (shift) to polynomial; allocate one set per spatial dimension
-    this->AllocateParameterVector( 3 * (1 + numberOfMonomials) );
+    this->AllocateParameterVector( 3 * this->m_NumberOfMonomials );
   }
 
   /// Clone and return smart pointer.
@@ -108,17 +110,15 @@ public:
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const
   {
-    // first three parameters are constant
-    Self::SpaceVectorType result;
-    for ( size_t idx = 0; idx < 3; ++idx )
-      result[idx] = this->m_Parameters[idx];
+    // initialize result vector
+    Self::SpaceVectorType result = Self::SpaceVectorType( 0.0 );
 
     // now apply actual monomials
-    size_t monomialIdx = 0;
-    for ( size_t idx = 3; idx < this->m_NumberOfParameters; ++monomialIdx )
+    size_t paramIdx = 0;
+    for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
       {
-      for ( size_t dim = 0; dim < 3; ++dim, ++idx )
-	result[dim] += this->m_Parameters[idx] * Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
+      for ( size_t dim = 0; dim < 3; ++dim, ++paramIdx )
+	result[dim] += this->m_Parameters[paramIdx] * Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
       }
 
     return result;
@@ -128,12 +128,7 @@ public:
   Types::Coordinate GetMonomialAt( const size_t idx /*!< Index of the parameter to gert the monomial for. */, const Self::SpaceVectorType& v ) const
   {
     // first three are constant (translational components)
-    if ( idx < 3 )
-      {
-      return 1.0;
-      }
-
-    return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3)-1, v[0], v[1], v[2] );
+    return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3), v[0], v[1], v[2] );
   }
 
   /** Return inverse-transformed vector.
@@ -149,6 +144,9 @@ public:
 protected:
   /// Polynomial degree.
   byte m_Degree;
+
+  /// Number of monomials (per spatial dimension)
+  size_t m_NumberOfMonomials;
 
   /// Actual virtual clone constructor function.
   virtual Self* CloneVirtual () const 

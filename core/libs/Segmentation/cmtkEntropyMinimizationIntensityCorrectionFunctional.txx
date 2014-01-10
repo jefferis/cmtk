@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011, 2013 SRI International
+//  Copyright 2004-2011, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,13 +42,13 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   const DataGrid::IndexType& dims = this->m_InputImage->GetDims();
 
   // All equation numbers refer to paper by Likar et al., IEEE-TMI 20(12):1398--1410, 2001.
-  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
     {
     this->m_AddCorrectionAdd[i] = 0;
     this->m_MulCorrectionAdd[i] = 0;
     }
 
-  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
     {
     this->m_AddCorrectionMul[i] = 0;
     this->m_MulCorrectionMul[i] = 0;
@@ -83,14 +83,14 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
 	  // Eq. (A8)
 	  PolynomialTypeAdd::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	    {
 	    this->m_AddCorrectionAdd[i] += this->m_MonomialsVec[i];
 	    }
 
 	  // Eq. (A12)
 	  PolynomialTypeMul::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	    {
 	    this->m_AddCorrectionMul[i] += value * this->m_MonomialsVec[i];
 	    }
@@ -102,7 +102,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   // Normalization according to (A8)
   if ( foregroundNumberOfPixels )
     {
-    for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+    for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
       {
       this->m_AddCorrectionAdd[i] /= foregroundNumberOfPixels;
       }
@@ -111,7 +111,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   // Normalization according to (A12)
   if ( totalImageEnergy != 0 )
     {
-    for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+    for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
       {
       this->m_AddCorrectionMul[i] /= totalImageEnergy;
       }
@@ -140,14 +140,14 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
 	  // Eq. (A8)
 	  PolynomialTypeAdd::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	    {
 	    this->m_MulCorrectionAdd[i] += fabs( this->m_MonomialsVec[i] - this->m_AddCorrectionAdd[i] );
 	    }
 
 	  // Eq. (A12)
 	  PolynomialTypeMul::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	    {
 	    this->m_MulCorrectionMul[i] += value * fabs( this->m_MonomialsVec[i] - this->m_AddCorrectionMul[i] );
 	    }
@@ -157,14 +157,14 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     }
 
   // Normalization according to (A14)
-  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
     {
     // invert for speedup of application
     this->m_MulCorrectionAdd[i] = foregroundNumberOfPixels / this->m_MulCorrectionAdd[i];
     this->m_StepSizeAdd[i] = 0.0;
     }
   // Normalization according to (A16)
-  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
     {
     // invert for speedup of application
     this->m_MulCorrectionMul[i] = foregroundNumberOfPixels / this->m_MulCorrectionMul[i];
@@ -193,14 +193,14 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
 	  // Eq. (A8)
 	  PolynomialTypeAdd::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	    {
 	    this->m_StepSizeAdd[i] += fabs( this->m_MulCorrectionAdd[i] * ( this->m_MonomialsVec[i] - this->m_AddCorrectionAdd[i] ) );
 	    }
 
 	  // Eq. (A12)
 	  PolynomialTypeMul::EvaluateAllMonomials( this->m_MonomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	    {
 	    this->m_StepSizeMul[i] += fabs( value * this->m_MulCorrectionMul[i] * ( this->m_MonomialsVec[i] - this->m_AddCorrectionMul[i] ) );
 	    }
@@ -210,13 +210,13 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     }
   
   // Normalization according to (11)
-  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
     {
     // invert for speedup of application
     this->m_StepSizeAdd[i] = foregroundNumberOfPixels / this->m_StepSizeAdd[i];
     }
   // Normalization according to (11)
-  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
     {
     // invert for speedup of application
     this->m_StepSizeMul[i] = foregroundNumberOfPixels / this->m_StepSizeMul[i];
@@ -245,7 +245,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
       
       v[dim] += stepScale;
       this->SetParamVector( v );
-      if ( dim < PolynomialTypeAdd::NumberOfMonomials )
+      if ( dim < PolynomialTypeAdd::NumberOfMonomials-1 )
 	this->UpdateBiasFieldAdd();
       else
 	this->UpdateBiasFieldMul();
@@ -254,7 +254,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
       
       v[dim] = v0 - stepScale;
       this->SetParamVector( v );
-      if ( dim < PolynomialTypeAdd::NumberOfMonomials )
+      if ( dim < PolynomialTypeAdd::NumberOfMonomials-1 )
 	this->UpdateBiasFieldAdd();
       else
 	this->UpdateBiasFieldMul();
@@ -340,12 +340,12 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	    {
 	    // Normalization according to Eq (13)
 	    PolynomialTypeMul::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	    for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	    for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	      {
 	      normMul += ThisConst->m_CoefficientsMul[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionMul[i] );
 	      }
 	    PolynomialTypeAdd::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	    for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	    for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	      {
 	      normAdd += ThisConst->m_CoefficientsAdd[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionAdd[i] );
 	      }
@@ -400,12 +400,12 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	  {
 	  // Normalization according to Eq (13)
 	  PolynomialTypeMul::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	    {
 	    normMul += ThisConst->m_CoefficientsMul[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionMul[i] );
 	    }
 	  PolynomialTypeAdd::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	    {
 	    normAdd += ThisConst->m_CoefficientsAdd[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionAdd[i] );
 	    }
@@ -478,7 +478,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	    {
 	    // Normalization according to Eq (13)
 	    PolynomialTypeAdd::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	    for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	    for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	      {
 	      normAdd += ThisConst->m_CoefficientsAdd[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionAdd[i] );
 	      }
@@ -529,7 +529,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	  {
 	  // Normalization according to Eq (13)
 	  PolynomialTypeAdd::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
 	    {
 	    normAdd += ThisConst->m_CoefficientsAdd[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionAdd[i] );
 	    }
@@ -601,7 +601,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	    {
 	    // Normalization according to Eq (13)
 	    PolynomialTypeMul::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	    for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	    for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	      {
 	      normMul += ThisConst->m_CoefficientsMul[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionMul[i] );
 	      }
@@ -652,7 +652,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	  {
 	  // Normalization according to Eq (13)
 	  PolynomialTypeMul::EvaluateAllMonomials( monomialsVec, X, Y, Z );
-	  for ( unsigned int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i )
+	  for ( unsigned int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i )
 	    {
 	    normMul += ThisConst->m_CoefficientsMul[i] * ( monomialsVec[i] - ThisConst->m_AddCorrectionMul[i] );
 	    }

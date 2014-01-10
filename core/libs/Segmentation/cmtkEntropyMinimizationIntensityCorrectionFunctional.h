@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -91,8 +91,8 @@ public:
     Memory::ArrayC::Delete( this->m_MonomialsVec );
   }
 
-  /// Total number of parameters is number of additive plus number of multiplicative parameters.
-  static const size_t m_NumberOfParameters = PolynomialTypeAdd::NumberOfMonomials + PolynomialTypeMul::NumberOfMonomials;
+  /// Total number of parameters is number of additive plus number of multiplicative parameters, each minus because we ignore the constant (zero-order) monomial.
+  static const size_t m_NumberOfParameters = PolynomialTypeAdd::NumberOfMonomials - 1 + PolynomialTypeMul::NumberOfMonomials - 1;
 
   /// Return parameter vector length.
   virtual size_t ParamVectorDim() const
@@ -104,33 +104,34 @@ public:
 #pragma GCC diagnostic ignored "-Wtype-limits"
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    if ( idx < PolynomialTypeAdd::NumberOfMonomials )
-      return (this->m_InputImageRange / 256) * this->m_StepSizeAdd[idx] * mmStep;
+    if ( idx < PolynomialTypeAdd::NumberOfMonomials-1 )
+      return (this->m_InputImageRange / 256) * this->m_StepSizeAdd[1+idx] * mmStep;
     else
-      return (this->m_InputImageRange / 256) * this->m_StepSizeMul[idx-PolynomialTypeAdd::NumberOfMonomials] * mmStep;
+      return (this->m_InputImageRange / 256) * this->m_StepSizeMul[1+idx-PolynomialTypeAdd::NumberOfMonomials+1] * mmStep;
   }
 
   /// Get number of additive monomials.
   virtual size_t GetNumberOfMonomialsAdd() const 
   {
-    return PolynomialTypeAdd::NumberOfMonomials;
+    return PolynomialTypeAdd::NumberOfMonomials - 1;
   }
 
   /// Get number of multiplicative monomials.
   virtual size_t GetNumberOfMonomialsMul() const 
   {
-    return PolynomialTypeMul::NumberOfMonomials;
+    return PolynomialTypeMul::NumberOfMonomials - 1;
   }
 
   /// Copy parameters to the two correction polynomials.
   virtual void SetParamVector( CoordinateVector& v )
   {
     this->m_ParameterVector = v;
-    for ( int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
-      this->m_CoefficientsAdd[i] = v[i] * this->m_MulCorrectionAdd[i];
+
+    size_t ofs = 0;
+    for ( int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i, ++ofs )
+      this->m_CoefficientsAdd[i] = v[ofs] * this->m_MulCorrectionAdd[i];
     
-    size_t ofs = PolynomialTypeAdd::NumberOfMonomials;
-    for ( int i = 0; i < PolynomialTypeMul::NumberOfMonomials; ++i, ++ofs )
+    for ( int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i, ++ofs )
       this->m_CoefficientsMul[i] = v[ofs] * this->m_MulCorrectionMul[i];
   }
 

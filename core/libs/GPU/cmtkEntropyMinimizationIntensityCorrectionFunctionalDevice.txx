@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -121,27 +121,27 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
   const int dims1 = this->m_InputImage->m_Dims[1];
   const int dims2 = this->m_InputImage->m_Dims[2];
 
-  if ( Self::PolynomialTypeMul::NumberOfMonomials )
+  if ( Self::PolynomialTypeMul::NumberOfMonomials > 1 )
     {
     std::vector<float> parameters( Self::PolynomialTypeMul::NumberOfMonomials ), corrections( Self::PolynomialTypeMul::NumberOfMonomials );
-    for ( size_t i = 0; i < Self::PolynomialTypeMul::NumberOfMonomials; ++i )
+    for ( size_t i = 1; i < Self::PolynomialTypeMul::NumberOfMonomials; ++i )
       {
       parameters[i] = static_cast<float>( this->m_CoefficientsMul[i] );
       corrections[i] = static_cast<float>( this->m_AddCorrectionMul[i] );
       }
-    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/, Self::PolynomialTypeMul::NumberOfMonomials, &parameters[0], &corrections[0] );
+    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/, Self::PolynomialTypeMul::NumberOfMonomials, &parameters[1], &corrections[1] );
     input = output; // if additive bias also, apply to output of multiplicative stage
     }
 
-  if ( Self::PolynomialTypeAdd::NumberOfMonomials )
+  if ( Self::PolynomialTypeAdd::NumberOfMonomials > 1 )
     {
     std::vector<float> parameters( Self::PolynomialTypeAdd::NumberOfMonomials ), corrections( Self::PolynomialTypeAdd::NumberOfMonomials );
-    for ( size_t i = 0; i < Self::PolynomialTypeAdd::NumberOfMonomials; ++i )
+    for ( size_t i = 1; i < Self::PolynomialTypeAdd::NumberOfMonomials; ++i )
       {
       parameters[i] = static_cast<float>( this->m_CoefficientsAdd[i] );
       corrections[i] = static_cast<float>( this->m_AddCorrectionAdd[i] );
       }
-    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
+    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[1], &corrections[1] );
     }
 }
 
@@ -152,8 +152,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
 {
   const Types::DataItemRange range = this->m_EntropyHistogram->GetRange();
   this->m_HistogramDevice->Reset();
-  this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, 
-		static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ), this->m_UseLogIntensities );
+  this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ), this->m_UseLogIntensities );
 
   return -this->m_HistogramDevice->GetEntropy();
 }
