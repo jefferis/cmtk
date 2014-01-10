@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -74,7 +74,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     }
 
   std::vector<Types::DataItem> dataVector( nPixelsMask );
-  Matrix2D<Types::DataItem> uMatrix( nPixelsMask, nVars );
+  Matrix2D<Types::DataItem> uMatrix( nPixelsMask, nVars-1 ); // nVars-1 because we ignore zero-order term
 
   size_t cntPx = 0;
   for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
@@ -85,9 +85,9 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
       {
       const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.m_Size );
       dataVector[cntPx] = image.GetDataAt( ofs ) / avg - 1.0;
-      for ( size_t n = 0; n < nVars; ++n )
+      for ( size_t n = 1; n < nVars; ++n )
 	{
-	uMatrix[cntPx][n] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
+	uMatrix[cntPx][n-1] = Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
 	}
       ++cntPx;
       }
@@ -107,9 +107,9 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
     const UniformVolume::CoordinateVectorType xyz = ComponentDivide( image.GetGridLocation( it.Index() ) - center, image.m_Size );    
     
     Types::DataItem bias = 1.0;
-    for ( size_t n = 0; n < nVars; ++n )
+    for ( size_t n = 1; n < nVars; ++n )
       {
-      bias += params[n] * Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
+      bias += params[n-1] * Polynomial<4,Types::DataItem>::EvaluateMonomialAt( n, xyz[0], xyz[1], xyz[2] );
       }
     
     this->m_BiasData->Set( bias, ofs );
