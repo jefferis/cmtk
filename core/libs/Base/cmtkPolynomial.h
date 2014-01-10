@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -315,6 +315,147 @@ public:
       case 31 : return  y*y*z*z;
       case 32 : return  y*z*z*z;
       case 33 : return  z*z*z*z;
+      }
+    return 0.0;
+  }
+
+  /// Evaluate the derivative of idx'th monomial w.r.t. x at (x,y,z).
+  static TRealType EvaluateMonomialDXAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
+  {
+    switch ( idx )
+      {
+      case  0 : return  1;
+      case  1 : return  0;
+      case  2 : return  0;
+
+      case  3 : return  2*x;
+      case  4 : return  y;
+      case  5 : return  z;
+      case  6 : return  0;
+      case  7 : return  0;
+      case  8 : return  0;
+
+      case  9 : return  3*x*x;
+      case 10 : return  2*x*y;
+      case 11 : return  2*x*z;
+      case 12 : return  y*y;
+      case 13 : return  y*z;
+      case 14 : return  z*z;
+      case 15 : return  0;
+      case 16 : return  0;
+      case 17 : return  0;
+      case 18 : return  0;
+
+      case 19 : return  4*x*x*x;
+      case 20 : return  3*x*x*y;
+      case 21 : return  3*x*x*z;
+      case 22 : return  2*x*y*y;
+      case 23 : return  2*x*y*z;
+      case 24 : return  2*x*z*z;
+      case 25 : return  y*y*y;
+      case 26 : return  y*y*z;
+      case 27 : return  y*z*z;
+      case 28 : return  z*z*z;
+
+      case 29 : return  0;
+      case 30 : return  0;
+      case 31 : return  0;
+      case 32 : return  0;
+      case 33 : return  0;
+      }
+    return 0.0;
+  }
+
+  /// Evaluate the derivative of idx'th monomial w.r.t. y at (x,y,z).
+  static TRealType EvaluateMonomialDYAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
+  {
+    switch ( idx )
+      {
+      case  0 : return  0;
+      case  1 : return  1;
+      case  2 : return  0;
+
+      case  3 : return  0;
+      case  4 : return  x;
+      case  5 : return  0;
+      case  6 : return  2*y;
+      case  7 : return  z;
+      case  8 : return  0;
+
+      case  9 : return  0;
+      case 10 : return  y;
+      case 11 : return  0;
+      case 12 : return  2*x*y;
+      case 13 : return  x*z;
+      case 14 : return  0;
+      case 15 : return  3*y*y;
+      case 16 : return  2*y*z;
+      case 17 : return  z*z;
+      case 18 : return  0;
+
+      case 19 : return  0;
+      case 20 : return  x*x*x;
+      case 21 : return  0;
+      case 22 : return  2*y*x*x;
+      case 23 : return  x*x*z;
+      case 24 : return  x*x*z*z;
+      case 25 : return  x*3*y*y;
+      case 26 : return  x*2*y*z;
+      case 27 : return  x*z*z;
+      case 28 : return  0;
+
+      case 29 : return  4*y*y*y;
+      case 30 : return  3*y*y*z;
+      case 31 : return  2*y*z*z;
+      case 32 : return  z*z*z;
+      case 33 : return  0;
+      }
+    return 0.0;
+  }
+
+  /// Evaluate the derivative of idx'th monomial w.r.t. z at (x,y,z).
+  static TRealType EvaluateMonomialDZAt( const size_t idx, const TRealType x, const TRealType y, const TRealType z )
+  {
+    switch ( idx )
+      {
+      case  0 : return  0;
+      case  1 : return  0;
+      case  2 : return  1;
+
+      case  3 : return  0;
+      case  4 : return  0;
+      case  5 : return  x;
+      case  6 : return  0;
+      case  7 : return  y;
+      case  8 : return  2*z;
+
+      case  9 : return  0;
+      case 10 : return  0;
+      case 11 : return  x*x;
+      case 12 : return  0;
+      case 13 : return  x*y;
+      case 14 : return  x*2*z;
+      case 15 : return  0;
+      case 16 : return  y*y;
+      case 17 : return  y*2*z;
+      case 18 : return  3*z*z;
+
+      case 19 : return  0;
+      case 20 : return  0;
+      case 21 : return  x*x*x;
+      case 22 : return  ;
+      case 23 : return  x*x*y;
+      case 24 : return  x*x*2*z;
+      case 25 : return  0;
+      case 26 : return  x*y*y;
+      case 27 : return  x*y*2*z;
+      case 28 : return  x*3*z*z;
+
+      case 29 : return  y*y*y*y;
+      case 30 : return  y*y*y;
+      case 31 : return  y*y*2*z;
+      case 32 : return  y*3*z*z;
+      case 33 : return  3*z*z*z;
       }
     return 0.0;
   }
