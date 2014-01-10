@@ -110,8 +110,9 @@ public:
     size_t paramIdx = 0;
     for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
       {
+      const Types::Coordinate monomialValue = Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
       for ( size_t dim = 0; dim < 3; ++dim, ++paramIdx )
-	result[dim] += this->m_Parameters[paramIdx] * Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
+	result[dim] += this->m_Parameters[paramIdx] * monomialValue;
       }
 
     return result;
