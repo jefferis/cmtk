@@ -114,10 +114,11 @@ public:
       result[idx] = this->m_Parameters[idx];
 
     // now apply actual monomials
-    for ( size_t idx = 3; idx < this->m_NumberOfParameters; )
+    size_t monomialIdx = 0;
+    for ( size_t idx = 3; idx < this->m_NumberOfParameters; ++monomialIdx )
       {
       for ( size_t dim = 0; dim < 3; ++dim, ++idx )
-	result[dim] += this->m_Parameters[idx] * Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3)-1, v[0], v[1], v[2] );
+	result[dim] += this->m_Parameters[idx] * Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( monomialIdx, v[0], v[1], v[2] );
       }
 
     return result;
@@ -129,7 +130,7 @@ public:
     // first three are constant (translational components)
     if ( idx < 3 )
       {
-      return 1;
+      return 1.0;
       }
 
     return Polynomial<4,Types::Coordinate>::EvaluateMonomialAt( (idx/3)-1, v[0], v[1], v[2] );
