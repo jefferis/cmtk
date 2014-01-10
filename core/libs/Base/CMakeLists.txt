@@ -52,6 +52,7 @@ SET(cmtkBase_SRCS
   cmtkFitAffineToLandmarks.cxx
   cmtkFitAffineToWarpXform.cxx
   cmtkFitAffineToXformList.cxx
+  cmtkFitPolynomialToLandmarks.cxx
   cmtkFitRigidToLandmarks.cxx
   cmtkFitSplineWarpToDeformationField.cxx
   cmtkFitSplineWarpToLandmarks.cxx
@@ -91,6 +92,7 @@ SET(cmtkBase_SRCS
   cmtkMatrix4x4.cxx
   cmtkMetaInformationObject.cxx
   cmtkParametricPlane.cxx
+  cmtkPolynomialXform.cxx
   cmtkScalarImage.cxx
   cmtkScalarImageGradientField.cxx
   cmtkSegmentationLabel.cxx
