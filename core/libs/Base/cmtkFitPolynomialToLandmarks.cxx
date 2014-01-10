@@ -33,8 +33,8 @@
 cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs, const byte degree )
 {
   // first, get the centroids in "from" and "to" space
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cFrom( 0.0 );
-  cmtk::FixedVector<3,cmtk::Types::Coordinate> cTo( 0.0 );
+  PolynomialXform::SpaceVectorType cFrom( 0.0 );
+  PolynomialXform::SpaceVectorType cTo( 0.0 );
   
   size_t nLandmarks = 0;
   for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
@@ -47,30 +47,22 @@ cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList
   cFrom /= nLandmarks;
   cTo /= nLandmarks;
   
-  // now compute the transformation matrix for rotation, scale, shear, using the previously computed centroids for reference
-  Matrix3x3<Types::Coordinate> txT = Matrix3x3<Types::Coordinate>::Zero(); // "t" is the 3xN matrix of transformation vectors (after removing global translation) at the control points
-  Matrix3x3<Types::Coordinate> xxT = Matrix3x3<Types::Coordinate>::Zero(); // "x" is the 3xN matrix of control point grid coordinates
-  
-  // build the two 3x3 matrices of (t*xT)(x*xT) on the fly.
-  for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
-    {
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> x = it->m_Location - cFrom;
-    const cmtk::FixedVector<3,cmtk::Types::Coordinate> t = it->m_TargetLocation - cTo;
-    
-    for ( size_t j = 0; j < 3; ++j )
-      {
-      for ( size_t i = 0; i < 3; ++i )
-	{
-	txT[i][j] += t[j] * x[i];
-	xxT[i][j] += x[j] * x[i];
-	}
-      }
-    }  
-  
-  Matrix3x3<Types::Coordinate> matrix = (xxT.GetInverse()*txT);
-  
   // put everything together
   this->m_PolynomialXform = PolynomialXform::SmartPtr( new PolynomialXform( degree ) );
+  this->m_PolynomialXform->SetCenter( cFrom );
   for ( int dim = 0; dim < 3; ++dim )
     this->m_PolynomialXform->m_Parameters[dim] = cTo[dim] - cFrom[dim];
+
+  // Fit incrementally - start with lower degrees.
+  for ( byte fitDegree = 1; fitDegree <= degree; ++fitDegree )
+    {
+    const size_t firstParameter = PolynomialHelper::GetNumberOfMonomials( fitDegree-1 );
+    const size_t numberParameter = PolynomialHelper::GetNumberOfMonomials( fitDegree ) - firstParameter;
+
+    for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
+      {
+      const PolynomialXform::SpaceVectorType residual = this->m_PolynomialXform->Apply( it->m_Location ) - it->m_TargetLocation;
+      
+      }
+    }
 }
