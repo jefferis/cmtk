@@ -96,7 +96,6 @@ XformIO::Read( const std::string& path )
       return Xform::SmartPtr( warpXform );
     
     stream.Open( realPath );
-
     PolynomialXform polyXform;
     try 
       {
@@ -108,7 +107,6 @@ XformIO::Read( const std::string& path )
       }
     
     stream.Open( realPath );
-
     AffineXform affineXform;
     try 
       {

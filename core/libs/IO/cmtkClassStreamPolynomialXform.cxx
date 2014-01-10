@@ -74,8 +74,8 @@ operator >> ( ClassStreamInput& stream, PolynomialXform& xform )
       }
     }
 
-  int degree = 0;
-  if ( stream.ReadInt( "degree", degree ) != TypedStream::CONDITION_OK )
+  int degree = stream.ReadInt( "degree", -1 );
+  if ( degree == -1 )
     {
     throw Exception( "Did not find 'degree' value in polynomial xform archive" );
     }
