@@ -40,14 +40,16 @@ cmtk
 CoordinateMatrix3x3 
 PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
 {
+  const Self::SpaceVectorType& vRel = v - this->m_Center;
+
   CoordinateMatrix3x3 J = CoordinateMatrix3x3::Identity();
 
   size_t paramIdx = 0;
   for ( size_t monomialIdx = 0; monomialIdx < this->m_NumberOfMonomials; ++monomialIdx )
     {
-    const Types::Coordinate monomialValueDX = Polynomial<4,Types::Coordinate>::EvaluateMonomialDXAt( monomialIdx, v[0], v[1], v[2] );
-    const Types::Coordinate monomialValueDY = Polynomial<4,Types::Coordinate>::EvaluateMonomialDYAt( monomialIdx, v[0], v[1], v[2] );
-    const Types::Coordinate monomialValueDZ = Polynomial<4,Types::Coordinate>::EvaluateMonomialDZAt( monomialIdx, v[0], v[1], v[2] );
+    const Types::Coordinate monomialValueDX = Polynomial<4,Types::Coordinate>::EvaluateMonomialDXAt( monomialIdx, vRel[0], vRel[1], vRel[2] );
+    const Types::Coordinate monomialValueDY = Polynomial<4,Types::Coordinate>::EvaluateMonomialDYAt( monomialIdx, vRel[0], vRel[1], vRel[2] );
+    const Types::Coordinate monomialValueDZ = Polynomial<4,Types::Coordinate>::EvaluateMonomialDZAt( monomialIdx, vRel[0], vRel[1], vRel[2] );
 
     for ( size_t i = 0; i < 3; ++i, ++paramIdx )
       {
