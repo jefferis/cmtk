@@ -71,6 +71,7 @@ public:
   PolynomialXform( const PolynomialXform& other )
     : Xform( other ),
       m_Degree( other.m_Degree ),
+      m_Center( other.m_Center ),
       m_NumberOfMonomials( other.m_NumberOfMonomials )
   {
   }
