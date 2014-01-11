@@ -45,6 +45,7 @@ cmtk
 //@{
 
 /** Fit polynomial transformation to a set of landmark pairs.
+ * The fitting algorithm uses SVD and works incrementally. That is, lower polynomial degrees are fitted first, followed by higher ones.
  */
 class FitPolynomialToLandmarks
 {
