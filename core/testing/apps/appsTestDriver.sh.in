@@ -2450,44 +2450,56 @@ case ${RUNTEST} in
         run unsplit --axial -o ${tmpdir}/unsplit.nii phantom_ax_downsampled_slice_0.nii phantom_ax_downsampled_slice_1.nii phantom_ax_downsampled_slice_2.nii
 	check_results unsplit.nii
 	;;
+    unwarp_image_phantomDefault)
+        run unwarp_image_phantom magphan.xml spgr_magphan.nii ${tmpdir}/poly.xform
+	check_results poly.xform
+	;;
+    unwarp_image_phantomPoly)
+        run unwarp_image_phantom --poly magphan.xml spgr_magphan.nii ${tmpdir}/poly.xform
+	check_results poly.xform
+	;;
+    unwarp_image_phantomPolyDegree2)
+        run unwarp_image_phantom --poly --degree 2 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+	check_results ffd.xform
+	;;
     unwarp_image_phantomSpacing)
-        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingInverse)
-        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 --fit-inverse magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --final-cp-spacing 80 --fit-inverse magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingLevels)
-        run unwarp_image_phantom --iterations-per-level 1 --final-cp-spacing 80 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --final-cp-spacing 80 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomSpacingDirect)
-        run unwarp_image_phantom --iterations-per-level 1 --no-fit-affine --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --no-fit-affine --final-cp-spacing 80 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDims)
-        run unwarp_image_phantom --iterations-per-level 1 --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsLevels)
-        run unwarp_image_phantom --iterations-per-level 1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsLevelsIterations)
-        run unwarp_image_phantom --iterations-per-level 10 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 10 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsLevelsThreshold)
-        run unwarp_image_phantom --iterations-per-level 1 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 1 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsLevelsIterationsThreshold)
-        run unwarp_image_phantom --iterations-per-level 10 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --iterations-per-level 10 --rms-threshold 0.1 --final-cp-dims 5,5,5 --levels 3 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     unwarp_image_phantomDimsDefault)
-        run unwarp_image_phantom --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
+        run unwarp_image_phantom --spline --final-cp-dims 5,5,5 magphan.xml spgr_magphan.nii ${tmpdir}/ffd.xform
 	check_results ffd.xform
 	;;
     volume_injection)
