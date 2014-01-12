@@ -1938,10 +1938,18 @@ case ${RUNTEST} in
 	check_results reformat.img
 	;;
     reformatxJacobian)
+	run reformatx --jacobian-correct-global -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian vol001_mr_t0t1_warp.xform
+	check_results jacobian.img
+	;;
+    reformatxJacobianDefault)
 	run reformatx -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian vol001_mr_t0t1_warp.xform
 	check_results jacobian.img
 	;;
     reformatxInverseJacobian)
+	run reformatx --jacobian-correct-global -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian --inverse vol001_mr_t0t1_warp.xform
+	check_results jacobian.img
+	;;
+    reformatxInverseJacobianDefault)
 	run reformatx -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian --inverse vol001_mr_t0t1_warp.xform
 	check_results jacobian.img
 	;;

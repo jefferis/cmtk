@@ -58,7 +58,7 @@
 #  include <Registration/cmtkImageXformDB.h>
 #endif
 
-bool JacobianCorrectGlobal = true;
+bool JacobianCorrectGlobal = false;
 bool MassPreservingReformat = false;
 
 bool TargetMask = false;

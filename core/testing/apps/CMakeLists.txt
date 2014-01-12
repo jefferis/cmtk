@@ -732,6 +732,8 @@ LIST(APPEND testList
   reformatxMassPreserving
   reformatxJacobian
   reformatxInverseJacobian
+  reformatxJacobianDefault
+  reformatxInverseJacobianDefault
   reformatxSincHamming
   reformatxTargetGrid
   reformatxTargetGridAnalyze
