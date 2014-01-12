@@ -62,5 +62,14 @@ PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
   return J;
 }
 
+const
+AffineXform::MatrixType
+PolynomialXform::GetGlobalAffineMatrix() const
+{
+  AffineXform::MatrixType m4x4;
+
+  return m4x4;
+}
+
 //@}
 } // namespace cmtk

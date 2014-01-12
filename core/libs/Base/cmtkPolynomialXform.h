@@ -38,6 +38,7 @@
 #include <Base/cmtkXform.h>
 #include <Base/cmtkPolynomial.h>
 #include <Base/cmtkMatrix3x3.h>
+#include <Base/cmtkAffineXform.h>
 
 #include <System/cmtkSmartPtr.h>
 
@@ -150,6 +151,13 @@ public:
 
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const { return this->GetJacobian( v ).Determinant() ; }
+
+  /** Get global affine sub-transformation matrix.
+   * The global affine sub-transformation comprises the zero- and first-order
+   * components of the polynomial transformation, i.e., the translational as well
+   * as rotational/scale/shear components.
+   */
+  const AffineXform::MatrixType GetGlobalAffineMatrix() const;
 
 protected:
   /// Polynomial degree.
