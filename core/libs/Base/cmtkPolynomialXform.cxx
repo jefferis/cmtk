@@ -37,6 +37,14 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+bool
+PolynomialXform::ApplyInverse
+( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy ) const
+{
+  return this->ApplyInverseWithInitial( v, u, v*this->GetGlobalAffineMatrix().GetInverse(), accuracy );
+}
+
+
 const CoordinateMatrix3x3 
 PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
 {
@@ -66,8 +74,19 @@ const
 AffineXform::MatrixType
 PolynomialXform::GetGlobalAffineMatrix() const
 {
-  AffineXform::MatrixType m4x4;
+  AffineXform::MatrixType m4x4 = AffineXform::MatrixType::Identity();
 
+#ifdef IGNORE // need to carefully verify order of parameters, as well as consider "center"
+  for ( size_t i = 0; i < 3; ++i )
+    {
+    m4x4[3][i] = this->m_Parameters[i];      
+
+    for ( size_t j = 0; j < 3; ++j )
+      {
+      m4x4[j][i] += this->m_Parameters[3+3*i+j];
+      }
+    }
+#endif
   return m4x4;
 }
 

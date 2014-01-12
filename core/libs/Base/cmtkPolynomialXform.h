@@ -143,8 +143,11 @@ public:
   }
 
   /** Return inverse-transformed vector.
+   * This uses the Jacobian-based search algorithm inherited from cmtk::Xform, with the
+   * initial estimate of the iverse derived from the inverse of the affine sub-transformation
+   * within this polynomial.
    */
-  virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const { return false; }
+  virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate = 0.01  ) const;
 
   /// Get local Jacobian.
   virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
@@ -158,6 +161,12 @@ public:
    * as rotational/scale/shear components.
    */
   const AffineXform::MatrixType GetGlobalAffineMatrix() const;
+
+  /// Get global scaling factor.
+  virtual Types::Coordinate GetGlobalScaling() const 
+  {  
+    return this->GetGlobalAffineMatrix().GetTopLeft3x3().Determinant();
+  }
 
 protected:
   /// Polynomial degree.
