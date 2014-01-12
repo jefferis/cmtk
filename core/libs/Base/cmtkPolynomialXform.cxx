@@ -70,23 +70,36 @@ PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
   return J;
 }
 
-const
-AffineXform::MatrixType
-PolynomialXform::GetGlobalAffineMatrix() const
+const CoordinateMatrix3x3
+PolynomialXform::GetLinearMatrix() const
 {
-  AffineXform::MatrixType m4x4 = AffineXform::MatrixType::Identity();
+  CoordinateMatrix3x3 m3 = CoordinateMatrix3x3::Identity();
 
 #ifdef IGNORE // need to carefully verify order of parameters, as well as consider "center"
   for ( size_t i = 0; i < 3; ++i )
     {
-    m4x4[3][i] = this->m_Parameters[i];      
-
     for ( size_t j = 0; j < 3; ++j )
       {
       m4x4[j][i] += this->m_Parameters[3+3*i+j];
       }
     }
 #endif
+  return m3;
+}
+
+const
+AffineXform::MatrixType
+PolynomialXform::GetGlobalAffineMatrix() const
+{
+  // initialize top-left 3x3 as the linear matrix.
+  AffineXform::MatrixType m4x4( this->GetLinearMatrix() );
+
+  // fill in translation parameters.
+  for ( size_t i = 0; i < 3; ++i )
+    {
+    m4x4[3][i] = this->m_Parameters[i];      
+    }
+
   return m4x4;
 }
 

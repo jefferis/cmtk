@@ -155,6 +155,11 @@ public:
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const { return this->GetJacobian( v ).Determinant() ; }
 
+  /** Get global linear transformation matrix.
+   * The global linear matrix comprises the first-order components of the polynomial transformation, i.e., the rotational/scale/shear components.
+   */
+  const CoordinateMatrix3x3 GetLinearMatrix() const;
+
   /** Get global affine sub-transformation matrix.
    * The global affine sub-transformation comprises the zero- and first-order
    * components of the polynomial transformation, i.e., the translational as well
