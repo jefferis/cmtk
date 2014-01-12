@@ -61,9 +61,9 @@ PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
 
     for ( size_t i = 0; i < 3; ++i, ++paramIdx )
       {
-      J[i][0] += this->m_Parameters[paramIdx] * monomialValueDX;
-      J[i][1] += this->m_Parameters[paramIdx] * monomialValueDY;
-      J[i][2] += this->m_Parameters[paramIdx] * monomialValueDZ;
+      J[0][i] += this->m_Parameters[paramIdx] * monomialValueDX;
+      J[1][i] += this->m_Parameters[paramIdx] * monomialValueDY;
+      J[2][i] += this->m_Parameters[paramIdx] * monomialValueDZ;
       }
     }
 
