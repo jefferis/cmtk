@@ -6,6 +6,13 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 3.0.1
 ===========================
 
+USER-VISIBLE CHANGES:
+
+1. The "reformatx" tool no longer corrects Jacobian maps for global
+scale by default. This seems like a more natural way to do this,
+avoiding surprises.  To force the old behaviour, add
+"--jacobian-correct-global" switch to the command  line.
+
 
 Release Notes -- CMTK 3.0.0
 ===========================
