@@ -37,7 +37,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-CoordinateMatrix3x3 
+const CoordinateMatrix3x3 
 PolynomialXform::GetJacobian( const Self::SpaceVectorType& v ) const
 {
   const Self::SpaceVectorType& vRel = v - this->m_Center;

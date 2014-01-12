@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +42,7 @@
 #include <Base/cmtkRegion.h>
 #include <Base/cmtkBitVector.h>
 #include <Base/cmtkLandmarkPairList.h>
+#include <Base/cmtkMatrix3x3.h>
 
 #include <System/cmtkSmartPtr.h>
 
@@ -104,6 +105,12 @@ public:
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Self::SpaceVectorType& ) const { return true; }
   
+  /** Project coordinate to domain of transformation (if bounded).
+   * We provide here an implementation for global transformations, i.e., we
+   * do nothing.
+   */
+  virtual void ProjectToDomain( Self::SpaceVectorType& ) const {}
+  
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const { return 0.0; }
 
@@ -115,11 +122,21 @@ public:
   virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
+   * Note that since not every class of transformation is closed under inversion,
+   * this function computes only a more or less accurate numerical 
+   * approximation to the actual origin of a transformed vector. Note also that this
+   * computation is everything but computationally efficient.
+   *\note This function expects that derived classes will implement the GetJacobian member function, since the iterative search relies on the Jacobian matrix.
+   *\param v Input location; is replaced with the inverse transformation applied to it upon return.
+   *\param initial Initial estimate for the original location. Search goes
+   * from here. This is useful for looking up the original locations of
+   * a large number of closely located vectors, for example all pixels in an
+   * image.
+   *\param accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
+   *\return True is the given inverse was succesfully comuted, false if the
+   * given warped vector was outside the target domain of this transformation.
    */
-  virtual bool ApplyInverseWithInitial( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Self::SpaceVectorType&, const Types::Coordinate error = 0.01 ) const
-  {
-    return this->ApplyInverse( v, u, error );
-  }
+  virtual bool ApplyInverseWithInitial( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
 
   /// Clone and return smart pointer.
   Self::SmartPtr Clone () const 
@@ -183,6 +200,9 @@ public:
     return step_mm;
   }
   
+  /// Get local Jacobian matrix.
+  virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& ) const = 0;
+
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& ) const = 0;
   

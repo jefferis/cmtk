@@ -127,6 +127,7 @@ SET(cmtkBase_SRCS
   cmtkVolumeGridToGridLookup.cxx
   cmtkWarpXform.cxx
   cmtkXform.cxx
+  cmtkXform_Inverse.cxx
   cmtkXformList.cxx
   cmtkXformListEntry.cxx
 )

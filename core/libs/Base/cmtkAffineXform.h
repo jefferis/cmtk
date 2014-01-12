@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -201,6 +201,15 @@ public:
       {
       return this->m_Parameters[6] * this->m_Parameters[7] * this->m_Parameters[8];
       }
+  }
+
+  /** Get local Jacobian matrix.
+   * For affine transformations, the Jacobian is the top-left 3x3 submatrix of the
+   * homogenous 4x4 transformation matrix.
+   */
+  virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& ) const 
+  {
+    return this->Matrix.GetTopLeft3x3();
   }
 
   /** Compute Jacobian determinant at a certain location.

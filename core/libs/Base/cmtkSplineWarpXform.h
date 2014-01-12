@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -196,22 +196,6 @@ public:
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy = 0.01  ) const;
 
-  /** Return origin of warped vector.
-   * Note that since this class of transformation is not closed under inversion
-   * this function computes only a more or less accurate numerical 
-   * approximation to the actual origin of a warped vector. Note also that this
-   * computation is everything but computationally efficient.
-   *\param v Input location; is replaced with the inverse transformation applied to it upon return.
-   *\param initial Initial estimate for the original location. Search goes
-   * from here. This is useful for looking up the original locations of
-   * a large number of closely located vectors, for example all pixels in an
-   * image.
-   *\param accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
-   *\return True is the given inverse was succesfully comuted, false if the
-   * given warped vector was outside the target domain of this transformation.
-   */
-  virtual bool ApplyInverseWithInitial( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
-
   /// Replace existing vector with transformed location.
   virtual Self::SpaceVectorType Apply( const Self::SpaceVectorType& v ) const 
   {
@@ -348,10 +332,10 @@ public:
   Types::Coordinate* GetPureDeformation( const bool includeScale = false ) const;
 
   /// Get local Jacobian.
-  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
+  virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
   /// Get local Jacobian at control point into existing matrix.
-  virtual CoordinateMatrix3x3 GetJacobianAtControlPoint( const Types::Coordinate* cp ) const;
+  virtual const CoordinateMatrix3x3 GetJacobianAtControlPoint( const Types::Coordinate* cp ) const;
 
   /// Get sequence of Jacobians for pixel row.
   virtual void GetJacobianRow( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;

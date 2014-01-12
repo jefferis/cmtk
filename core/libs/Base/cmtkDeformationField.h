@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -139,7 +139,7 @@ public:
   virtual void GetTransformedGridRow( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get Jacobian matrix.
-  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
+  virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const

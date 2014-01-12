@@ -65,6 +65,21 @@ Matrix4x4<T>::Matrix4x4( const Matrix3x3<T>& other )
 }
 
 template<class T>
+const Matrix3x3<T> 
+Matrix4x4<T>::GetTopLeft3x3() const
+{
+  Matrix3x3<T> m3;
+  for ( int j=0; j<3; ++j ) 
+    {
+    for ( int i=0; i<3; ++i ) 
+      {
+      m3[i][j] = this->m_Matrix[i][j];
+      }
+    }
+  return m3;
+}
+
+template<class T>
 Matrix4x4<T>&
 Matrix4x4<T>::Compose
 ( const Types::Coordinate params[15], const bool logScaleFactors )

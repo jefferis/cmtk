@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -156,7 +156,7 @@ SplineWarpXform::GetJacobianRow
   }
 }
 
-CoordinateMatrix3x3
+const CoordinateMatrix3x3
 SplineWarpXform::GetJacobianAtControlPoint
 ( const Types::Coordinate* cp ) const
 {
@@ -200,7 +200,7 @@ SplineWarpXform::GetJacobianAtControlPoint
   return J;
 }
 
-CoordinateMatrix3x3
+const CoordinateMatrix3x3
 SplineWarpXform::GetJacobian
 ( const Self::SpaceVectorType& v ) const
 {

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-CoordinateMatrix3x3
+const CoordinateMatrix3x3
 DeformationField::GetJacobian
 ( const Self::SpaceVectorType& v ) const
 {

@@ -210,6 +210,16 @@ public:
       ( v[1] >= 0 ) && ( v[1] <= this->m_Domain[1] ) &&
       ( v[2] >= 0 ) && ( v[2] <= this->m_Domain[2] );
   }
+
+  /** Project coordinate to domain of transformation.
+   */
+  virtual void ProjectToDomain( Self::SpaceVectorType& v ) const
+  {
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      v[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( v[dim], this->m_Domain[dim] ) );
+      }
+  }
   
   /// Update internal representation.
   virtual void Update( const bool exactDelta = false );

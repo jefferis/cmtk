@@ -89,6 +89,9 @@ public:
   /// Decompose into affine parameters.
   bool Decompose( Types::Coordinate params[15], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
 
+  /// Get top-left 3x3 submatrix.
+  const Matrix3x3<T> GetTopLeft3x3() const;
+
   /** Change reference coordinate system.
    */
   Self& ChangeCoordinateSystem( const FixedVector<3,T>& newX, const  FixedVector<3,T>& newY );

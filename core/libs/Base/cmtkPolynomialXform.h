@@ -146,7 +146,7 @@ public:
   virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const { return false; }
 
   /// Get local Jacobian.
-  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
+  virtual const CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
   /// Compute Jacobian determinant at a certain location.
   virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const { return this->GetJacobian( v ).Determinant() ; }
