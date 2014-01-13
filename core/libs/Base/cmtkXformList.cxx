@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,25 +53,17 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
     {
     if ( (*it)->Inverse ) 
       {
-      if ( (*it)->m_WarpXform ) 
+      // is this an affine transformation that has an inverse?
+      if ( (*it)->InverseAffineXform ) 
 	{
-	// yes: use approximate inverse
-	if ( ! (*it)->m_WarpXform->ApplyInverse( v, v, this->m_Epsilon ) ) 
-	  {
-	  // if that fails, return failure flag
-	  return false;
-	  }
-	} 
+	// apply inverse
+	v = (*it)->InverseAffineXform->Apply( v );
+	}
       else
 	{
-	// is this an affine transformation that has an inverse?
-	if ( (*it)->InverseAffineXform ) 
-	  // apply inverse
-	  v = (*it)->InverseAffineXform->Apply( v );
-	else
-	  // nothing else we can do: exit with failure flag
-	  return false;
-	}
+	// not affine: use approximate inverse
+	return (*it)->m_Xform->ApplyInverse( v, v, this->m_Epsilon );
+	} 
       } 
     else
       {
@@ -97,27 +89,21 @@ cmtk::XformList::GetJacobian
       if ( correctGlobalScale )
 	jacobian *= static_cast<Types::DataItem>( (*it)->GlobalScale );
 
-      // is this a spline transformation?
-      if ( (*it)->m_WarpXform ) 
+      // is this an affine transformation that has an inverse?
+      if ( (*it)->InverseAffineXform ) 
 	{
-	// yes: use approximate inverse
-	if ( (*it)->m_WarpXform->ApplyInverse( vv, vv, this->m_Epsilon ) ) 
-	  // compute Jacobian at destination and invert
-	  jacobian /= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );	
-	else
-	  // if that fails, return failure flag
-	  return false;
-	} 
+	// apply inverse
+	vv = (*it)->InverseAffineXform->Apply( vv );
+	}
       else
 	{
-	// is this an affine transformation that has an inverse?
-	if ( (*it)->InverseAffineXform ) 
-	  // apply inverse
-	  vv = (*it)->InverseAffineXform->Apply( vv );
-	else
-	  // nothing else we can do: exit with failure flag
+	// not affine: use approximate inverse
+	if ( ! (*it)->m_Xform->ApplyInverse( vv, vv, this->m_Epsilon ) )
 	  return false;
 	}
+
+      // compute Jacobian at destination and invert
+      jacobian /= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );
       } 
     else 
       {

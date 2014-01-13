@@ -767,7 +767,13 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "streamxform" tool
-LIST(APPEND testList streamxformFordwardBackward streamxformAffineForward streamxformAffineForwardBackward streamxformFordwardBackwardTolerance streamxformAffine streamxformAffineFromTo)
+LIST(APPEND testList streamxformFordwardBackward
+  streamxformFordwardBackwardPoly0 streamxformFordwardBackwardPoly1
+  streamxformFordwardBackwardPoly2 streamxformFordwardBackwardPoly3
+  streamxformFordwardBackwardPoly4 streamxformAffinePoly4
+  streamxformAffineForward
+  streamxformAffineForwardBackward streamxformFordwardBackwardTolerance
+  streamxformAffine streamxformAffineFromTo)
 
 # ==========================================
 # Tests for "sympl" tool

@@ -75,15 +75,15 @@ PolynomialXform::GetLinearMatrix() const
 {
   CoordinateMatrix3x3 m3 = CoordinateMatrix3x3::Identity();
 
-#ifdef IGNORE // need to carefully verify order of parameters, as well as consider "center"
-  for ( size_t i = 0; i < 3; ++i )
+  size_t paramIdx = 3;
+  for ( size_t j = 0; j < 3; ++j )
     {
-    for ( size_t j = 0; j < 3; ++j )
+    for ( size_t i = 0; i < 3; ++i, ++paramIdx )
       {
-      m4x4[j][i] += this->m_Parameters[3+3*i+j];
+      m3[j][i] += this->m_Parameters[paramIdx];
       }
     }
-#endif
+
   return m3;
 }
 
@@ -92,12 +92,18 @@ AffineXform::MatrixType
 PolynomialXform::GetGlobalAffineMatrix() const
 {
   // initialize top-left 3x3 as the linear matrix.
+  CoordinateMatrix3x3 m3( this->GetLinearMatrix() );
+
+  // transform center using linear matrix
+  const Self::SpaceVectorType cM = this->m_Center * m3;
+  
+  // initialize top-left 3x3 as the linear matrix.
   AffineXform::MatrixType m4x4( this->GetLinearMatrix() );
 
-  // fill in translation parameters.
+  // fill in translation parameters, accounting for center.
   for ( size_t i = 0; i < 3; ++i )
     {
-    m4x4[3][i] = this->m_Parameters[i];      
+    m4x4[3][i] = this->m_Parameters[i] - cM[i] + this->m_Center[i];
     }
 
   return m4x4;

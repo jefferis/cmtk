@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,6 +37,7 @@
 
 #include <Base/cmtkXform.h>
 #include <Base/cmtkAffineXform.h>
+#include <Base/cmtkPolynomialXform.h>
 #include <Base/cmtkWarpXform.h>
 
 #include <System/cmtkSmartPtr.h>
@@ -72,6 +73,9 @@ public:
   /// The actual inverse if transformation is affine.
   const AffineXform* InverseAffineXform;
   
+  /// The actual transformation as polynomial transformation.
+  const PolynomialXform* m_PolyXform;
+  
   /// The actual transformation as spline warp.
   const WarpXform* m_WarpXform;
   
@@ -84,7 +88,7 @@ public:
   /// Is this an affine transformation?
   bool IsAffine() const
   {
-    return (this->m_WarpXform == NULL);
+    return (this->m_WarpXform == NULL) && (this->m_PolyXform == NULL);
   }
 
   /// Make a copy of this entry in which all nonrigid transformations are replaced with their associated affine initializers.

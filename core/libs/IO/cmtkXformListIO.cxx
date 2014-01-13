@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010, 2013 SRI International
+//  Copyright 2004-2010, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,8 @@
 
 #include <System/cmtkExitException.h>
 
+#include <Base/cmtkPolynomial.h>
+
 cmtk::XformList
 cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringList )
 {
@@ -67,6 +69,12 @@ cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringLis
     catch ( const AffineXform::MatrixType::SingularMatrixException& )
       {
       StdErr << "ERROR: singular matrix encountered reading transformation from " << *it << "\n";
+      throw ExitException( 1 );
+      }
+    catch ( const PolynomialHelper::DegreeUnsupported& ex )
+      {
+      StdErr << "ERROR: polynomial degree unsupported in " << *it << "\n";
+      StdErr << ex.what() << "\n";
       throw ExitException( 1 );
       }
     }

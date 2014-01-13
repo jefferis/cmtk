@@ -2334,6 +2334,30 @@ case ${RUNTEST} in
 	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyzl"
 	check_results vol001_t0_points.xyzl
 	;;
+    streamxformFordwardBackwardPoly0)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform poly0.xform --inverse poly0.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformFordwardBackwardPoly1)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform poly1.xform --inverse poly1.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformFordwardBackwardPoly2)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform poly2.xform --inverse poly2.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformFordwardBackwardPoly3)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform poly3.xform --inverse poly3.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformFordwardBackwardPoly4)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform poly4.xform --inverse poly4.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
+    streamxformAffinePoly4)
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform --affine-only poly4.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	check_results vol001_t0_points.xyzl
+	;;
     streamxformAffineForward)
 	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform --affine-only vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t1_points.xyzl"
 	check_results vol001_t1_points.xyzl

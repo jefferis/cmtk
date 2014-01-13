@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2010, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,7 +35,8 @@
 cmtk::XformListEntry::XformListEntry
 ( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale )
   : m_Xform( xform ), 
-    InverseAffineXform( NULL ), 
+    InverseAffineXform( NULL ),
+    m_PolyXform( NULL ),
     m_WarpXform( NULL ),
     Inverse( inverse ), 
     GlobalScale( globalScale )
@@ -43,6 +44,7 @@ cmtk::XformListEntry::XformListEntry
   if ( this->m_Xform ) 
     {
     this->m_WarpXform = dynamic_cast<const WarpXform*>( this->m_Xform.GetConstPtr() );
+    this->m_PolyXform = dynamic_cast<const PolynomialXform*>( this->m_Xform.GetConstPtr() );
     
     AffineXform::SmartConstPtr affineXform( AffineXform::SmartConstPtr::DynamicCastFrom( this->m_Xform ) );
     if ( affineXform ) 
@@ -65,6 +67,10 @@ cmtk::XformListEntry::CopyAsAffine() const
   if ( this->m_WarpXform )
     {
     return Self::SmartPtr( new Self( this->m_WarpXform->m_InitialAffineXform, this->Inverse, this->GlobalScale ) );
+    }
+  else if ( this->m_PolyXform )
+    {
+    return Self::SmartPtr( new Self( Xform::SmartPtr( new AffineXform( this->m_PolyXform->GetGlobalAffineMatrix() ) ), this->Inverse, this->GlobalScale ) );
     }
   else
     {
