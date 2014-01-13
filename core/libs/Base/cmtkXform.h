@@ -112,7 +112,7 @@ public:
   virtual void ProjectToDomain( Self::SpaceVectorType& ) const {}
   
   /// Get global scaling factor.
-  virtual Types::Coordinate GetGlobalScaling() const { return 0.0; }
+  virtual Types::Coordinate GetGlobalScaling() const { return 1.0; }
 
   /// Apply transformation to vector.
   virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& ) const = 0;
