@@ -1,0 +1,7 @@
+! TYPEDSTREAM 2.4
+
+polynomial_xform {
+	degree 0
+	center 104.7050101 119.2885194 102.6025491 
+	coefficients -0.005729341772 -0.01379817089 0.003453588608 
+}
