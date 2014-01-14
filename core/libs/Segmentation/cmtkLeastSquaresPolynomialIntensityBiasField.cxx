@@ -64,15 +64,7 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
   avg /= nPixelsMask;
 
   // set up least-squares problem
-  size_t nVars = 0;
-  switch ( degree )
-    {
-    case 1: nVars = Polynomial<1,Types::DataItem>::NumberOfMonomials; break;
-    case 2: nVars = Polynomial<2,Types::DataItem>::NumberOfMonomials; break;
-    case 3: nVars = Polynomial<3,Types::DataItem>::NumberOfMonomials; break;
-    case 4: nVars = Polynomial<4,Types::DataItem>::NumberOfMonomials; break;
-    }
-
+  const size_t nVars = PolynomialHelper::GetNumberOfMonomials( degree );
   std::vector<Types::DataItem> dataVector( nPixelsMask );
   Matrix2D<Types::DataItem> uMatrix( nPixelsMask, nVars-1 ); // nVars-1 because we ignore zero-order term
 

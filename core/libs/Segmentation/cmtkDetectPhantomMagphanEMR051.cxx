@@ -567,6 +567,12 @@ cmtk::DetectPhantomMagphanEMR051::RefineSphereLocation( const Self::SpaceVectorT
       {
       regionVolume->SetData( LeastSquaresPolynomialIntensityBiasField( *regionVolume, regionMaskVectorErode, 1 /* polynomial degree */ ).GetCorrectedData() );
       }
+    catch ( PolynomialHelper::DegreeUnsupported& ex )
+      {
+      StdErr << "ERROR: polynomial degree not supported in LeastSquaresPolynomialIntensityBiasField() constructor.\n";
+      StdErr << ex.what() << "\n";
+      throw ExitException( 1 );
+      }
     catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& )
       {
       // nothing to do; regionVolume still has its data
@@ -715,6 +721,12 @@ cmtk::DetectPhantomMagphanEMR051::GetSphereMeanStdDeviation( Types::DataItem& me
     try
       {
       dataArray = LeastSquaresPolynomialIntensityBiasField( *dataVolume, regionMaskVector, biasFieldDegree ).GetCorrectedData();
+      }
+    catch ( PolynomialHelper::DegreeUnsupported& ex )
+      {
+      StdErr << "ERROR: polynomial degree not supported in LeastSquaresPolynomialIntensityBiasField() constructor.\n";
+      StdErr << ex.what() << "\n";
+      throw ExitException( 1 );
       }
     catch ( const LeastSquaresPolynomialIntensityBiasField::EmptyMaskException& )
       {

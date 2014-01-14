@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012 SRI International
+//  Copyright 2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkDataGrid.h>
+#include <Base/cmtkPolynomial.h> // because this class my throw PolynomialHelper::DegreeUnsupported exception
 
 #include <System/cmtkException.h>
 
