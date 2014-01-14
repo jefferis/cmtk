@@ -35,7 +35,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkDataGrid.h>
-#include <Base/cmtkPolynomial.h> // because this class my throw PolynomialHelper::DegreeUnsupported exception
+#include <Base/cmtkPolynomial.h> // because this class may throw PolynomialHelper::DegreeUnsupported exception
 
 #include <System/cmtkException.h>
 
