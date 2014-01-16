@@ -716,9 +716,7 @@ SET(dcmtk_SRCS
   # ofstd:
   ofcmdln.cc
   ofconapp.cc
-  ofconsol.cc
   #  dcmdata:
-  dcpcache.cc
   dcwcache.cc
   vrscan.cc
   vrscanl.c
