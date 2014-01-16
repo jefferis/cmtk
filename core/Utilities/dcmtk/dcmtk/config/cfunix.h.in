@@ -236,17 +236,14 @@
 /* Define to 1 if the system has the type `int64_t'. */
 #cmakedefine HAVE_INT64_T 1
 
-//TODO:
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #cmakedefine HAVE_INTP_ACCEPT 1
 
-//TODO:
 /* Define if your system declares argument 5 of getsockopt() as int * instead
    of size_t * or socklen_t */
 #cmakedefine HAVE_INTP_GETSOCKOPT 1
 
-//TODO:
 /* Define if your system declares argument 2-4 of select() as int * instead of
    struct fd_set * */
 #undef HAVE_INTP_SELECT
@@ -421,134 +418,106 @@ typedef unsigned short ushort;
    arguments. */
 #cmakedefine HAVE_OLD_READDIR_R 1
 
-//TODO:
 /* Define if pthread_t is a pointer type on your system */
 #cmakedefine HAVE_POINTER_TYPE_PTHREAD_T 1
 
-//TODO:
 /* Define if your system has a prototype for accept in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_ACCEPT 1
 
-//TODO:
 /* Define if your system has a prototype for bind in sys/types.h sys/socket.h
    */
 #cmakedefine HAVE_PROTOTYPE_BIND 1
 
-//TODO:
 /* Define if your system has a prototype for bzero in string.h strings.h
    libc.h unistd.h stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_BZERO 1
 
-//TODO:
 /* Define if your system has a prototype for connect in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_CONNECT 1
 
-//TODO:
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE 1
 
-//TODO:
 /* Define if your system has a prototype for flock in sys/file.h */
 #cmakedefine HAVE_PROTOTYPE_FLOCK 1
 
-//TODO:
 /* Define if your system has a prototype for gethostbyname in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME 1
 
-//TODO:
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTID 1
 
-//TODO:
 /* Define if your system has a prototype for gethostname in unistd.h libc.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTNAME 1
 
-//TODO:
 /* Define if your system has a prototype for getsockname in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_GETSOCKNAME 1
 
-//TODO:
 /* Define if your system has a prototype for getsockopt in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_GETSOCKOPT 1
 
-//TODO:
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h */
 #cmakedefine HAVE_PROTOTYPE_GETTIMEOFDAY 1
 
-//TODO:
 /* Define if your system has a prototype for isinf in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISINF 1
 
-//TODO:
 /* Define if your system has a prototype for isnan in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISNAN 1
 
-//TODO:
 /* Define if your system has a prototype for listen in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_LISTEN 1
 
-//TODO:
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKSTEMP 1
 
-//TODO:
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKTEMP 1
 
-//TODO:
 /* Define if your system has a prototype for select in sys/select.h
    sys/types.h sys/socket.h sys/time.h */
 #cmakedefine HAVE_PROTOTYPE_SELECT 1
 
-//TODO:
 /* Define if your system has a prototype for setsockopt in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_SETSOCKOPT 1
 
-//TODO:
 /* Define if your system has a prototype for socket in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_SOCKET 1
 
-//TODO:
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF 1
 
-//TODO:
 /* Define if your system has a prototype for strcasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRCASECMP 1
 
-//TODO:
 /* Define if your system has a prototype for strncasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRNCASECMP 1
 
-//TODO:
 /* Define if your system has a prototype for usleep in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_USLEEP 1
 
-//TODO:
 /* Define if your system has a prototype for wait3 in libc.h sys/wait.h
    sys/time.h sys/resource.h */
 #cmakedefine HAVE_PROTOTYPE_WAIT3 1
 
-//TODO:
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
    sys/resource.h */
 #cmakedefine HAVE_PROTOTYPE_WAITPID 1
 
-//TODO:
 /* Define if your system has a prototype for _stricmp in string.h */
 #cmakedefine HAVE_PROTOTYPE__STRICMP 1
 

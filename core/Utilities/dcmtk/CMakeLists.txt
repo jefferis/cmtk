@@ -213,6 +213,106 @@ CHECK_FUNCTION_EXISTS(_stricmp HAVE_PROTOTYPE__STRICMP)
 # The following from ITK's DCMTK git repository
 #
 INCLUDE(CMake/CheckFunctionWithHeaderExists.cmake)
+INCLUDE(CMake/dcmtkTryCompile.cmake)
+
+  SET(HEADERS)
+
+  IF(HAVE_IO_H)
+    SET(HEADERS ${HEADERS} io.h)
+  ENDIF(HAVE_IO_H)
+
+  IF(HAVE_IOSTREAM_H)
+    SET(HEADERS ${HEADERS} iostream.h)
+  ENDIF(HAVE_IOSTREAM_H)
+
+  IF(HAVE_MATH_H)
+    SET(HEADERS ${HEADERS} math.h)
+  ENDIF(HAVE_MATH_H)
+
+  IF(HAVE_LIBC_H)
+    SET(HEADERS ${HEADERS} libc.h)
+  ENDIF(HAVE_LIBC_H)
+
+  IF(HAVE_PTHREAD_H)
+    SET(HEADERS ${HEADERS} pthread.h)
+  ENDIF(HAVE_PTHREAD_H)
+
+  IF(HAVE_UNISTD_H)
+    SET(HEADERS ${HEADERS} unistd.h)
+  ENDIF(HAVE_UNISTD_H)
+
+  IF(HAVE_STDLIB_H)
+    SET(HEADERS ${HEADERS} stdlib.h)
+  ENDIF(HAVE_STDLIB_H)
+
+  IF(HAVE_NETDB_H)
+    SET(HEADERS ${HEADERS} netdb.h)
+  ENDIF(HAVE_NETDB_H)
+
+  IF(HAVE_SYS_FILE_H)
+    SET(HEADERS ${HEADERS} sys/file.h)
+  ENDIF(HAVE_SYS_FILE_H)
+
+  IF(HAVE_STRING_H)
+    SET(HEADERS ${HEADERS} string.h)
+  ENDIF(HAVE_STRING_H)
+
+  IF(HAVE_STRINGS_H)
+    SET(HEADERS ${HEADERS} strings.h)
+  ENDIF(HAVE_STRINGS_H)
+
+  IF(HAVE_SYS_WAIT_H)
+    SET(HEADERS ${HEADERS} sys/wait.h)
+  ENDIF(HAVE_SYS_WAIT_H)
+
+  IF(HAVE_SYS_TIME_H)
+    SET(HEADERS ${HEADERS} sys/time.h)
+  ENDIF(HAVE_SYS_TIME_H)
+
+  IF(HAVE_SYS_RESOURCE_H)
+    SET(HEADERS ${HEADERS} sys/resource.h)
+  ENDIF(HAVE_SYS_RESOURCE_H)
+
+  IF(HAVE_SYS_TYPES_H)
+    SET(HEADERS ${HEADERS} sys/types.h)
+  ENDIF(HAVE_SYS_TYPES_H)
+
+  IF(HAVE_SYS_SOCKET_H)
+    SET(HEADERS ${HEADERS} sys/socket.h)
+  ENDIF(HAVE_SYS_SOCKET_H)
+
+  IF(HAVE_STDARG_H)
+    SET(HEADERS ${HEADERS} stdarg.h)
+  ENDIF(HAVE_STDARG_H)
+
+  IF(HAVE_STDIO_H)
+    SET(HEADERS ${HEADERS} stdio.h)
+  ENDIF(HAVE_STDIO_H)
+
+  IF(HAVE_SYS_SELECT_H)
+    SET(HEADERS ${HEADERS} sys/select.h)
+  ENDIF(HAVE_SYS_SELECT_H)
+
+  IF(HAVE_WINDOWS_H)
+    SET(HEADERS ${HEADERS} windows.h)
+  ENDIF(HAVE_WINDOWS_H)
+
+  IF(HAVE_WINSOCK_H)
+    SET(HEADERS ${HEADERS} winsock.h)
+    SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ws2_32 netapi32 wsock32)
+  ENDIF(HAVE_WINSOCK_H)
+
+  # std::vsnprintf and std::vsnprintf need the C++ version of the headers.
+  # We just assume they exist when the C version was found
+  SET(CXXHEADERS)
+
+  IF(HAVE_CSTDIO)
+    SET(CXXHEADERS ${CXXHEADERS} cstdio)
+  ENDIF(HAVE_CSTDIO)
+
+  IF(HAVE_CSTDARG)
+    SET(CXXHEADERS ${CXXHEADERS} cstdarg)
+  ENDIF(HAVE_CSTDARG)
 
   CHECK_FUNCTIONWITHHEADER_EXISTS(isinf "${HEADERS}" HAVE_PROTOTYPE_ISINF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(isnan "${HEADERS}" HAVE_PROTOTYPE_ISNAN)
@@ -255,6 +355,186 @@ INCLUDE(CMake/CheckFunctionWithHeaderExists.cmake)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedIncrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_INCREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedDecrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_DECREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
+
+# Check for thread type
+IF (HAVE_WINDOWS_H)
+    SET(HAVE_INT_TYPE_PTHREAD_T 1)
+ELSE (HAVE_WINDOWS_H)
+    DCMTK_TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T "pthread_t is an integer type"
+        "// test to see if pthread_t is a pointer type or not
+
+#include <pthread.h>
+
+int main ()
+{
+  pthread_t p;
+  unsigned long l = p;
+  return 0;
+}")
+    IF (NOT HAVE_INT_TYPE_PTHREAD_T)
+        SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
+    ELSE (NOT HAVE_INT_TYPE_PTHREAD_T)
+        SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
+    ENDIF (NOT HAVE_INT_TYPE_PTHREAD_T)
+ENDIF(HAVE_WINDOWS_H)
+
+# Check if typename works properly. Only MSC6 really fails here.
+DCMTK_TRY_COMPILE(HAVE_TYPENAME "typename works correctly"
+    "
+template<typename type>
+type identical(type arg)
+{
+    return arg;
+}
+
+template<typename type>
+typename type::a foo(typename type::a arg)
+{
+    // This one is the usage of \"typename\" that we are checking for.
+    // MSC6 refuses this one incorrectly.
+    return identical<typename type::a>(arg);
+}
+
+class test {
+public:
+    typedef int a;
+};
+
+int main()
+{
+    return foo<test>(0);
+}")
+
+# Check if ENAMETOOLONG is defined.
+DCMTK_TRY_COMPILE(HAVE_ENAMETOOLONG "ENAMETOOLONG is defined"
+    "#include <errno.h>
+
+int main()
+{
+    int value = ENAMETOOLONG;
+    return 0;
+}")
+
+# Check if strerror_r returns a char* is defined.
+DCMTK_TRY_COMPILE(HAVE_INT_STRERROR_R "strerror_r returns an int"
+    "#include <string.h>
+
+int main()
+{
+    char *buf = 0;
+    int i = strerror_r(0, buf, 100);
+    return i;
+}")
+IF(HAVE_INT_STRERROR_R)
+  SET(HAVE_CHARP_STRERROR_R 0 CACHE INTERNAL "Set if strerror_r() returns a char*")
+ELSE(HAVE_INT_STRERROR_R)
+  SET(HAVE_CHARP_STRERROR_R 1 CACHE INTERNAL "Set if strerror_r() returns a char*")
+ENDIF(HAVE_INT_STRERROR_R)
+
+# Check if variable length arrays are supported.
+DCMTK_TRY_COMPILE(HAVE_VLA "variable length arrays are supported"
+    "int main()
+{
+    int n = 42;
+    int foo[n];
+    return 0;
+}")
+
+# Check if std::ios::nocreate exists
+DCMTK_TRY_COMPILE(HAVE_IOS_NOCREATE "std::ios::nocreate exists"
+    "#include <fstream>
+
+using namespace std;
+
+int main()
+{
+  std::ifstream file(\"name\", std::ios::nocreate);
+  return 0;
+}")
+
+# Check for explicit large file support
+DCMTK_TRY_COMPILE(_LARGEFILE64_SOURCE "explicit large file support is available"
+    "#define _LARGEFILE64_SOURCE
+#include <stdio.h>
+
+using namespace std;
+
+int main()
+{
+  FILE *f = fopen64(\"name\", \"r\");
+  return 0;
+}")
+
+IF(WIN32)
+  # If someone can tell me how to convince TRY_COMPILE to link against winsock,
+  # we could use tests for these. Until then, here is what would be the result:
+  SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  SET(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
+ELSE(WIN32)
+  # Check if socket functions accept an int*
+  DCMTK_TRY_COMPILE(HAVE_INTP_SOCKET, "socket functions accept an int* argument"
+      "
+#ifdef __cplusplus
+extern \"C\" {
+#endif
+#ifdef _WIN32
+/* Windows is pure evil */
+#include <windows.h>
+#else
+#include <sys/socket.h>
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int main()
+{
+    int i;
+    struct sockaddr *addr = 0;
+    int addrlen = 0;
+    int optlen = 0;
+
+    i = accept(1, addr, &addrlen);
+    i = getsockopt(0, 0, 0, 0, &optlen);
+
+    return 0;
+}")
+  IF(HAVE_INTP_SOCKET)
+    SET(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+    SET(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  ELSE(HAVE_INTP_SOCKET)
+    SET(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+    SET(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
+  ENDIF(HAVE_INTP_SOCKET)
+
+  # Check if select() accepts an int*
+  DCMTK_TRY_COMPILE(HAVE_INTP_SELECT "select() accepts an int* argument"
+      "
+#ifdef __cplusplus
+extern \"C\" {
+#endif
+#ifdef _WIN32
+/* Windows is pure evil */
+#include <windows.h>
+#else
+#include <sys/socket.h>
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int main()
+{
+    int i;
+    int fds = 0;
+
+    i = select(1, &fds, &fds, &fds, 0);
+
+    return 0;
+}
+")
+ENDIF(WIN32)
 
 # Windows being windows, it lies about its processor type to 32 bit binaries
 SET(SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
