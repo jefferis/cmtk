@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,9 +18,8 @@
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:08 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2010-11-17 15:17:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +33,7 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmdata/dcvr.h"
 
-#define INCLUDE_CSTRING
+#define INCLUDE_CSTRING               /* for strcmp() */
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /// constant describing an unlimited VM
@@ -318,9 +313,11 @@ public:
             return OFFalse;
         else
         {
-            return
-                DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
-                DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+            const OFBool groupMatches=DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup());
+            OFBool found=groupMatches && DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+            if (!found && groupMatches && privCreator)
+                found=DCM_INRANGE(key.getElement() & 0xFF, getElement(), getUpperElement());
+            return found;
         }
     }
 
@@ -367,7 +364,7 @@ public:
     }
 
     /// friend operator<<
-    friend ostream& operator<<(ostream& s, const DcmDictEntry& e);
+    friend STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& e);
 
 private:
 
@@ -413,6 +410,26 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
+** Revision 1.26  2010-11-17 15:17:51  meichel
+** Fixed issue with data dictionary causing private tags with group number
+**   range and flexible element number not to be found in the dictionary.
+**
+** Revision 1.25  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.24  2010-06-25 09:15:19  uli
+** Fixed issues with compiling with HAVE_STD_STRING.
+**
+** Revision 1.23  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
+** Revision 1.22  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.21  2006-08-15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.20  2005/12/08 16:28:08  meichel
 ** Changed include path schema for all DCMTK header files
 **

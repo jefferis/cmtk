@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: zlib compression filter for output streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:27 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcostrmz.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +40,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 /** global flag defining the compression level for zlib (deflate) compression.
- *  Legal values are 0..9. Default is Z_DEFAULT_COMPRESSION which is defined 
+ *  Legal values are 0..9. Default is Z_DEFAULT_COMPRESSION which is defined
  *  to be 6 for the current zlib implementation.
  */
 extern OFGlobal<int> dcmZlibCompressionLevel;
@@ -88,14 +83,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in consumer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail() const;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually processed. 
+   *  @return number of bytes actually processed.
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen);
+  virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
   /** instructs the consumer to flush its internal content until
    *  either the consumer becomes "flushed" or I/O suspension occurs.
@@ -105,7 +100,7 @@ public:
   virtual void flush();
 
   /** determines the consumer to which the filter is supposed
-   *  to write it's output.  Once a consumer for the output filter has 
+   *  to write it's output.  Once a consumer for the output filter has
    *  been defined, it cannot be changed anymore during the lifetime
    *  of the object.
    *  @param consumer reference to consumer, must not be circular chain
@@ -130,29 +125,29 @@ private:
    *  codec until complete or the output ring buffer becomes full.
    *  Does not flush the output ring buffer.
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @param finalize true if the current block of data constitutes
    *    the end of the input stream, i.e. the compression codec
    *    should be forced to flush its internal state.
    *  @return number of bytes processed
-   */   
-  Uint32 compress(const void *buf, Uint32 buflen, OFBool finalize);
+   */
+  offile_off_t compress(const void *buf, offile_off_t buflen, OFBool finalize);
 
   /** copies as much of the given block of data as possible
    *  in the input ring buffer
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @return number of bytes copied to input ring buffer
    */
-  Uint32 fillInputBuffer(const void *buf, Uint32 buflen);
+  offile_off_t fillInputBuffer(const void *buf, offile_off_t buflen);
 
   /** feed data from the input ring buffer to the compression
    *  codec until complete or the output ring buffer becomes full.
    *  Does not flush the output ring buffer.
-   *  @param finalize true if the content of the input ring buffer 
+   *  @param finalize true if the content of the input ring buffer
    *    constitutes the end of the input stream, i.e. the compression codec
    *    should be forced to flush its internal state.
-   */   
+   */
   void compressInputBuffer(OFBool finalize);
 
   /// pointer to consumer to which compressed output is written
@@ -171,19 +166,19 @@ private:
   unsigned char *inputBuf_;
 
   /// offset of first byte in input ring buffer
-  Uint32 inputBufStart_;
+  offile_off_t inputBufStart_;
 
   /// number of bytes in input ring buffer
-  Uint32 inputBufCount_;
+  offile_off_t inputBufCount_;
 
   /// output ring buffer
   unsigned char *outputBuf_;
 
   /// offset of first byte in output ring buffer
-  Uint32 outputBufStart_;
+  offile_off_t outputBufStart_;
 
   /// number of bytes in output ring buffer
-  Uint32 outputBufCount_;
+  offile_off_t outputBufCount_;
 
 };
 
@@ -193,6 +188,16 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmz.h,v $
+ * Revision 1.5  2010-10-14 13:15:41  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.4  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.3  2007/02/19 16:06:09  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.2  2005/12/08 16:28:27  meichel
  * Changed include path schema for all DCMTK header files
  *

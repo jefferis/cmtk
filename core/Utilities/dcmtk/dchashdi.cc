@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:11 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-10 12:02:01 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,10 +33,6 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CASSERT
 #include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-#include "dcmtk/ofstd/ofconsol.h"   /* for ofConsole */
-#endif
 
 /*
 ** DcmDictEntryList
@@ -160,6 +151,8 @@ DcmHashDictIterator::stepUp()
     while (hindex <= dict->highestBucket) {
         DcmDictEntryList* bucket = dict->hashTab[hindex];
         if (bucket == NULL) {
+            if (hindex == dict->highestBucket)
+                return; /* We reached the end of the dictionary */
             hindex++; // move on to next bucket
             iterating = OFFalse;
         } else {
@@ -171,6 +164,8 @@ DcmHashDictIterator::stepUp()
                 }
             }
             if (iter == bucket->end()) {
+                if (hindex == dict->highestBucket)
+                    return; /* We reached the end of the dictionary */
                 iterating = OFFalse;
                 hindex++;
             } else {
@@ -429,8 +424,7 @@ DcmHashDict::put(DcmDictEntry* e)
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-        ofConsole.lockCerr() << "replacing " << *old << endl;
-        ofConsole.unlockCerr();
+        DCMDATA_WARN("replacing " << *old);
 #endif
         delete old;
     } else {
@@ -488,11 +482,11 @@ DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
     }
 }
 
-ostream&
-DcmHashDict::loadSummary(ostream& out)
+STD_NAMESPACE ostream&
+DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 {
     out << "DcmHashDict: size=" << hashTabLength <<
-        ", total entries=" << size() << endl;
+        ", total entries=" << size() << OFendl;
     DcmDictEntryList* bucket = NULL;
     int largestBucket = 0;
     for (int i=0; i<hashTabLength; i++) {
@@ -508,12 +502,12 @@ DcmHashDict::loadSummary(ostream& out)
         out << "    hashTab[" << j << "]: ";
         bucket = hashTab[j];
         if (bucket == NULL) {
-            out << "0 entries" << endl;
+            out << "0 entries" << OFendl;
         } else {
-            out << bucket->size() << " entries" << endl;
+            out << bucket->size() << " entries" << OFendl;
         }
     }
-    out << "Bucket Sizes" << endl;
+    out << "Bucket Sizes" << OFendl;
     int n, x, k, l_size;
     for (x=0; x<=largestBucket; x++) {
         n = 0;
@@ -527,7 +521,7 @@ DcmHashDict::loadSummary(ostream& out)
                 n++;
             }
         }
-        out << "    entries{" << x << "}: " << n << " buckets" << endl;
+        out << "    entries{" << x << "}: " << n << " buckets" << OFendl;
     }
 
     return out;
@@ -537,6 +531,25 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.26  2010-11-10 12:02:01  uli
+** Made DcmHashDictIterator::stepUp correctly stop at the end of the dict.
+**
+** Revision 1.25  2010-10-14 13:14:08  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.24  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
+** Revision 1.23  2009-11-10 12:38:29  uli
+** Fix compilation on windows.
+**
+** Revision 1.22  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.21  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.20  2005/12/08 15:41:11  meichel
 ** Changed include path schema for all DCMTK header files
 **

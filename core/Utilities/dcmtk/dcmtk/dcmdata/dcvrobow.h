@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:29:03 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:43 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,10 +74,32 @@ class DcmOtherByteOtherWord
       return new DcmOtherByteOtherWord(*this);
     }
 
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
     /** get element type identifier
      *  @return type identifier of this class
      */
     virtual DcmEVR ident() const;
+
+    /** check whether stored value conforms to the VR and to the specified VM
+     *  @param vm parameter not used for this VR
+     *  @param oldFormat parameter not used for this VR (only for DA, TM, PN)
+     *  @return always returns EC_Normal, i.e. currently no checks are performed
+     */
+    virtual OFCondition checkValue(const OFString &vm = "",
+                                   const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
@@ -106,7 +123,7 @@ class DcmOtherByteOtherWord
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -124,29 +141,35 @@ class DcmOtherByteOtherWord
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** get particular 8 bit value.
      *  This method is only applicable to non-OW data, e.g. OB.
@@ -224,6 +247,26 @@ class DcmOtherByteOtherWord
     virtual OFCondition putUint16Array(const Uint16 *wordValue,
                                        const unsigned long numWords);
 
+    /** create an empty Uint8 array of given number of bytes and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to non-OW data, e.g. OB.
+     *  @param numBytes number of bytes (8 bit) to be created
+     *  @param bytes stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint8Array(const Uint32 numBytes,
+                                         Uint8 *&bytes);
+
+    /** create an empty Uint16 array of given number of words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to OW data.
+     *  @param numWords number of words (16 bit) to be created
+     *  @param words stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint16Array(const Uint32 numWords,
+                                          Uint16 *&words);
+
     /** set element value from the given character string.
      *  The input string is expected to have the same format as described for
      *  'getOFStringArray()' above, i.e. a backslash separated sequence of
@@ -260,11 +303,19 @@ class DcmOtherByteOtherWord
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    void printPixel(ostream &out,
+    void printPixel(STD_NAMESPACE ostream&out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,
                     size_t *pixelCounter);
+
+private:
+
+    /** this flag is used during write operations and indicates that compact() should be
+     *  called once the write operation finishes.
+     */
+    OFBool compactAfterTransfer;
+
 };
 
 
@@ -274,6 +325,45 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.35  2010-10-14 13:15:43  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.34  2010-04-23 15:26:13  joergr
+** Specify an appropriate default value for the "vm" parameter of checkValue().
+**
+** Revision 1.33  2010-04-23 14:25:27  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.32  2008-08-15 09:26:31  meichel
+** Under certain conditions (odd length compressed pixel data fragments)
+**   class DcmOtherByteOtherWord needs to load the attribute value into main
+**   memory during a write() operation, in order to add a pad byte. A new flag
+**   compactAfterTransfer now makes sure that the memory is released once the
+**   write operation has finished, so that only a single fragment at a time
+**   needs to fully reside in memory.
+**
+** Revision 1.31  2008-07-17 11:19:49  onken
+** Updated copyFrom() documentation.
+**
+** Revision 1.30  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.29  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.28  2007/06/07 09:01:15  joergr
+** Added createUint8Array() and createUint16Array() methods.
+**
+** Revision 1.27  2006/08/15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.26  2005/12/08 16:29:03  meichel
 ** Changed include path schema for all DCMTK header files
 **

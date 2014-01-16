@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Combined class for date and time functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:05:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +64,23 @@ class OFDateTime
      */
     OFDateTime(const OFDate &dateVal,
                const OFTime &timeVal);
+
+    /** constructor
+     *  @param year year value to be set
+     *  @param month month value to be set
+     *  @param day new value to be set
+     *  @param hour hour value to be set
+     *  @param minute minute value to be set
+     *  @param second second value to be set (incl. fraction of seconds)
+     *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
+     */
+    OFDateTime(const unsigned int year,
+               const unsigned int month,
+               const unsigned int day,
+               const unsigned int hour,
+               const unsigned int minute,
+               const double second,
+               const double timeZone = 0);
 
     /** destructor
      */
@@ -141,6 +154,15 @@ class OFDateTime
      */
     OFBool setTime(const OFTime &timeVal);
 
+    /** set the date and time component to the specified date/time.
+     *  Before the new value is set it is checked using the "isValid()" routine.
+     *  @param dateVal new date value to be set
+     *  @param timeVal new time value to be set
+     *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
+     */
+    OFBool setDateTime(const OFDate &dateVal,
+                       const OFTime &timeVal);
+
     /** set the date and time value to the current system date and time.
      *  This function uses operating system dependent routines. If the date or time function
      *  (or both) are unavailable for some reason the corresponding value is not modified.
@@ -204,7 +226,7 @@ class OFDateTime
      *  @param dateTimeSeparator separator between ISO date and time value (default: " "). Only
      *    used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, OFFalse otherwise
-     */    
+     */
     OFBool getISOFormattedDateTime(OFString &formattedDateTime,
                                    const OFBool showSeconds /*= OFTrue*/,
                                    const OFBool showFraction /*= OFFalse*/,
@@ -236,7 +258,7 @@ class OFDateTime
  *  @param time OFDateTime object to print
  *  @return reference to the output stream
  */
-ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime);
 
 
 #endif
@@ -246,6 +268,16 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
+ * Revision 1.10  2010-10-14 13:15:50  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.9  2008-05-21 16:31:22  joergr
+ * Added new constructor and new setDateTime() method.
+ *
+ * Revision 1.8  2006/08/14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
  * Revision 1.7  2005/12/08 16:05:55  meichel
  * Changed include path schema for all DCMTK header files
  *

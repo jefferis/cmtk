@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,10 +18,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:17 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +33,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrma.h"
 
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /** producer class that reads data from a plain file.
  */
@@ -51,7 +43,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmFileProducer(const char *filename, Uint32 offset = 0);
+  DcmFileProducer(const char *filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmFileProducer();
@@ -71,7 +63,7 @@ public:
   /** returns true if the producer is at the end of stream.
    *  @return true if end of stream, false otherwise
    */
-  virtual OFBool eos() const;
+  virtual OFBool eos();
 
   /** returns the minimum number of bytes that can be read with the
    *  next call to read(). The DcmObject read methods rely on avail
@@ -80,26 +72,26 @@ public:
    *  or nothing.
    *  @return minimum of data available in producer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail();
 
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually read. 
+   *  @return number of bytes actually read.
    */
-  virtual Uint32 read(void *buf, Uint32 buflen);
+  virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
-   *  @return number of bytes actually skipped. 
+   *  @return number of bytes actually skipped.
    */
-  virtual Uint32 skip(Uint32 skiplen);
+  virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
-   *    fails, the producer status becomes bad. 
+   *    fails, the producer status becomes bad.
    */
-  virtual void putback(Uint32 num);
+  virtual void putback(offile_off_t num);
 
 private:
 
@@ -110,13 +102,13 @@ private:
   DcmFileProducer& operator=(const DcmFileProducer&);
 
   /// the file we're actually reading from
-  FILE *file_;
+  OFFile file_;
 
   /// status
   OFCondition status_;
 
   /// number of bytes in file
-  Uint32 size_;
+  offile_off_t size_;
 };
 
 
@@ -130,7 +122,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStreamFactory(const char *filename, Uint32 offset);
+  DcmInputFileStreamFactory(const char *filename, offile_off_t offset);
 
   /// copy constructor
   DcmInputFileStreamFactory(const DcmInputFileStreamFactory &arg);
@@ -160,8 +152,8 @@ private:
   OFString filename_;
 
   /// offset in file
-  Uint32 offset_;
-  
+  offile_off_t offset_;
+
 };
 
 
@@ -174,7 +166,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStream(const char *filename, Uint32 offset = 0);
+  DcmInputFileStream(const char *filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmInputFileStream();
@@ -205,12 +197,137 @@ private:
   OFString filename_;
 };
 
+/** class that manages the life cycle of a temporary file.
+ *  It maintains a thread-safe reference counter, and when this counter
+ *  is decreased to zero, unlinks (deletes) the file and then the handler
+ *  object itself.
+ */
+class DcmTempFileHandler
+{
+public:
+
+  /** static method that permits creation of instances of
+   *  this class (only) on the heap, never on the stack.
+   *  A newly created instance always has a reference counter of 1.
+   *  @param fname path to temporary file
+   */
+
+  static DcmTempFileHandler *newInstance(const char *fname);
+
+  /** create an input stream that permits reading from the temporary file
+   *  @return pointer to input stream. Note that there is no guarantee
+   *    that the input stream actually permits reading, i.e. the presence of the
+   *    temporary file is not checked.
+   */
+  DcmInputStream *create() const;
+
+  /// increase reference counter for this object
+  void increaseRefCount();
+
+  /** decreases reference counter for this object and deletes
+   *  the temporary file and this object if the reference counter becomes zero.
+   */
+  void decreaseRefCount();
+
+private:
+
+  /** private constructor.
+   *  Instances of this class are always created through newInstance().
+   *  @param fname path to temporary file
+   */
+  DcmTempFileHandler(const char *fname);
+
+  /** private destructor. Instances of this class
+   *  are always deleted through the reference counting methods
+   */
+  virtual ~DcmTempFileHandler();
+
+  /// private undefined copy constructor
+  DcmTempFileHandler(const DcmTempFileHandler& arg);
+
+  /// private undefined copy assignment operator
+  DcmTempFileHandler& operator=(const DcmTempFileHandler& arg);
+
+  /** number of references to temporary file.
+   *  Default initialized to 1 upon construction of this object
+   */
+  size_t refCount_;
+
+#ifdef WITH_THREADS
+  /// mutex for MT-safe reference counting
+  OFMutex mutex_;
+#endif
+
+  /// path to temporary file
+  OFString filename_;
+
+};
+
+/** input stream factory for temporary file handlers
+ */
+class DcmInputTempFileStreamFactory: public DcmInputStreamFactory
+{
+public:
+
+  /** constructor
+   *  @param handler pointer to temporary file handler.
+   *    Reference counter of temporary file handler is increased by this operation.
+   */
+  DcmInputTempFileStreamFactory(DcmTempFileHandler *handler);
+
+  /// copy constructor
+  DcmInputTempFileStreamFactory(const DcmInputTempFileStreamFactory &arg);
+
+  /// destructor, decreases reference counter of temporary file handler
+  virtual ~DcmInputTempFileStreamFactory();
+
+  /** create a new input stream object
+   *  @return pointer to new input stream object
+   */
+  virtual DcmInputStream *create() const;
+
+  /** returns a pointer to a copy of this object
+   */
+  virtual DcmInputStreamFactory *clone() const;
+
+private:
+
+  /// private unimplemented copy assignment operator
+  DcmInputTempFileStreamFactory& operator=(const DcmInputTempFileStreamFactory&);
+
+  /// handler for temporary file
+  DcmTempFileHandler *fileHandler_;
+
+};
+
 
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
+ * Revision 1.9  2010-10-14 13:15:41  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.8  2010-10-04 14:44:39  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.7  2010-03-01 09:08:44  uli
+ * Removed some unnecessary include directives in the headers.
+ *
+ * Revision 1.6  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.5  2008-05-29 10:39:43  meichel
+ * Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
+ *   that perform thread-safe reference counted life cycle management of a
+ *   temporary file and are needed for DcmElement temporary file extensions to come.
+ *
+ * Revision 1.4  2007/02/19 15:45:41  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.3  2005/12/08 16:28:17  meichel
  * Changed include path schema for all DCMTK header files
  *

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmUnsignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:42:09 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +64,17 @@ DcmUnsignedShort &DcmUnsignedShort::operator=(const DcmUnsignedShort &obj)
 }
 
 
+OFCondition DcmUnsignedShort::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmUnsignedShort &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 // ********************************
 
 
@@ -77,16 +84,24 @@ DcmEVR DcmUnsignedShort::ident() const
 }
 
 
+OFCondition DcmUnsignedShort::checkValue(const OFString &vm,
+                                         const OFBool /*oldFormat*/)
+{
+    /* check VM only */
+    return DcmElement::checkVM(getVM(), vm);
+}
+
+
 unsigned long DcmUnsignedShort::getVM()
 {
-    return Length / sizeof(Uint16);
+    return getLengthField() / sizeof(Uint16);
 }
 
 
 // ********************************
 
 
-void DcmUnsignedShort::print(ostream &out,
+void DcmUnsignedShort::print(STD_NAMESPACE ostream&out,
                              const size_t flags,
                              const int level,
                              const char * /*pixelFileName*/,
@@ -267,13 +282,13 @@ OFCondition DcmUnsignedShort::putString(const char *stringVal)
 OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (sizeof(Uint16)) != 0)
+    if (getLengthField() % (sizeof(Uint16)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (sizeof(Uint16)));
+            setLengthField(getLengthField() - (getLengthField() % (sizeof(Uint16))));
         }
     } else
         errorFlag = EC_Normal;
@@ -284,6 +299,29 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
+** Revision 1.31  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.30  2010-10-14 13:14:11  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.29  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.27  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.26  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.25  2005/12/08 15:42:09  meichel
 ** Changed include path schema for all DCMTK header files
 **

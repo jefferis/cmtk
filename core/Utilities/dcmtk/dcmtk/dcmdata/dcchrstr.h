@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:00 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcchrstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +87,30 @@ class DcmCharString
       return new DcmCharString(*this);
     }
     
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);    
+
+    /** check if this element contains non-ASCII characters
+     *  @param checkAllStrings not used in this class
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this element is affected by SpecificCharacterSet
+     *  @return always returns true
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
 };
 
 
@@ -101,6 +120,28 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.16  2010-10-14 13:15:40  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.15  2008-07-17 11:19:48  onken
+ * Updated copyFrom() documentation.
+ *
+ * Revision 1.14  2008-07-17 10:30:22  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
+ *
+ * Revision 1.13  2006-12-15 14:18:07  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.12  2006/12/13 13:58:15  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.11  2006/05/11 08:52:09  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
  * Revision 1.10  2005/12/08 16:28:00  meichel
  * Changed include path schema for all DCMTK header files
  *

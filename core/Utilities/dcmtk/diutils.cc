@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:43:07 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:18 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,37 +28,25 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #include "dcmtk/dcmimgle/diutils.h"
-
-#include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
-/*-------------------*
- *  initializations  *
- *-------------------*/
-
-const int DicomImageClass::DL_NoMessages     = 0x0;
-const int DicomImageClass::DL_Errors         = 0x1;
-const int DicomImageClass::DL_Warnings       = 0x2;
-const int DicomImageClass::DL_Informationals = 0x4;
-const int DicomImageClass::DL_DebugMessages  = 0x8;
-
-#ifdef DEBUG
- OFGlobal<int> DicomImageClass::DebugLevel(DicomImageClass::DL_DebugMessages);
-#else
- OFGlobal<int> DicomImageClass::DebugLevel(DicomImageClass::DL_NoMessages);
-#endif
-
-
 /*------------------------*
  *  function definitions  *
  *------------------------*/
+
+OFLogger DCM_dcmimgleGetLogger()
+{
+    static OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
+    return DCM_dcmimgleLogger;
+}
 
 unsigned int DicomImageClass::rangeToBits(double minvalue,
                                           double maxvalue)
@@ -78,11 +62,41 @@ unsigned int DicomImageClass::rangeToBits(double minvalue,
     if (minvalue < 0)
     {
         if (fabs(minvalue) > fabs(maxvalue))
-            return tobits(OFstatic_cast(unsigned long, fabs(minvalue)), 0) + 1;
-        else
+            return tobits(OFstatic_cast(unsigned long, fabs(minvalue)), 1) + 1;
+        else /* 'minvalue' is negative, 'maxvalue' is positive */
             return tobits(OFstatic_cast(unsigned long, fabs(maxvalue)), 0) + 1;
     }
     return tobits(OFstatic_cast(unsigned long, maxvalue), 0);
+}
+
+
+int DicomImageClass::isRepresentationSigned(EP_Representation repres)
+{
+    /* determine whether integer representation is signed or unsigned */
+    return (repres == EPR_Sint8) || (repres == EPR_Sint16) || (repres == EPR_Sint32);
+}
+
+
+unsigned int DicomImageClass::getRepresentationBits(EP_Representation repres)
+{
+    unsigned int bits = 0;
+    /* determine number of bits for specified representation */
+    switch (repres)
+    {
+        case EPR_Uint8:
+        case EPR_Sint8:
+            bits = 8;
+            break;
+        case EPR_Uint16:
+        case EPR_Sint16:
+            bits = 16;
+            break;
+        case EPR_Uint32:
+        case EPR_Sint32:
+            bits = 32;
+            break;
+    }
+    return bits;
 }
 
 
@@ -104,21 +118,13 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
 #ifdef DEBUG
         if (-minvalue > maxval(MAX_BITS - 1, 0))
         {
-            if (checkDebugLevel(DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !" << endl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS
+                << " bit " << "representation after modality transformation");
         }
         if (maxvalue > maxval(MAX_BITS - 1))
         {
-            if (checkDebugLevel(DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !" << endl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS
+                << " bit " << "representation after modality transformation");
         }
 #endif
         return EPR_Sint32;
@@ -130,12 +136,8 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
 #ifdef DEBUG
     if (maxvalue > maxval(MAX_BITS))
     {
-        if (checkDebugLevel(DL_Warnings))
-        {
-            ofConsole.lockCerr() << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS
-                                 << " bit " << "representation after modality transformation !" << endl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS
+            << " bit " << "representation after modality transformation");
     }
 #endif
     return EPR_Uint32;
@@ -146,6 +148,32 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.22  2010-10-14 13:14:18  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.21  2010-07-21 08:56:23  joergr
+ * Fixed possibly wrong calculation of rangeToBits() for negative values.
+ *
+ * Revision 1.20  2010-02-23 16:42:15  joergr
+ * Added new helper function which determines whether an integer representation
+ * is signed or unsigned.
+ *
+ * Revision 1.19  2009-11-25 16:09:50  joergr
+ * Removed inclusion of header file "ofconsol.h".
+ *
+ * Revision 1.18  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
+ * Revision 1.17  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
+ * Revision 1.16  2009-04-20 12:20:34  joergr
+ * Added new helper function getRepresentationBits().
+ *
+ * Revision 1.15  2006/08/15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
  * Revision 1.14  2005/12/08 15:43:07  meichel
  * Changed include path schema for all DCMTK header files
  *

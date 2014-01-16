@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:27:59 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-05 09:34:11 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,8 +32,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/ofstd/ofstring.h"
@@ -46,8 +39,7 @@
 
 /** base class for all DICOM value representations storing a character string
  */
-class DcmByteString
-  : public DcmElement
+class DcmByteString: public DcmElement
 {
 
     /// internal type used to specify the current string representation
@@ -95,6 +87,20 @@ class DcmByteString
       return new DcmByteString(*this);
     }
 
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
     /** get element type identifier
      *  @return type identifier of this class (EVR_UNKNOWN)
      */
@@ -135,7 +141,7 @@ class DcmByteString
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -143,21 +149,26 @@ class DcmByteString
 
     /** write data element to a stream
      *  @param outStream output stream
-     *  @param writeXfer transfer syntax used to write the data
-     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param oxfer transfer syntax used to write the data
+     *  @param enctype flag, specifying the encoding with undefined or explicit length
+     *  @param wcache pointer to write cache object, may be NULL
      */
     virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax writeXfer,
-                              const E_EncodingType encodingType = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write data element to a stream as required for the creation of digital signatures
      *  @param outStream output stream
-     *  @param writeXfer transfer syntax used to write the data
-     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param oxfer transfer syntax used to write the data
+     *  @param enctype flag, specifying the encoding with undefined or explicit length
+     *  @param wcache pointer to write cache object, may be NULL
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax writeXfer,
-                                             const E_EncodingType encodingType = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
@@ -197,6 +208,23 @@ class DcmByteString
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
+    /** check if this element contains non-ASCII characters
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this element is affected by SpecificCharacterSet
+     *  @return always returns false
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
+
+    /** check if this object is empty
+     *  @param normalize normalize value before checking (ignore non-significant characters)
+     *  @return true if object is empty, i.e. has no value, false otherwise
+     */
+    virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
  protected:
 
@@ -233,18 +261,55 @@ class DcmByteString
      */
     OFCondition getStringValue(OFString &stringVal);
 
+    /** set the end-of-string padding character
+     *  @param c end-of-string padding character
+     */
+    void setPaddingChar(char c) { paddingChar = c; }
+
+    /** set the maximum number of characters for each string component
+     *  @param val maximum number of characters for each string component
+     */
+    void setMaxLength(Uint32 val) { maxLength = val; }
+
+    /** set non-significant characters used to determine whether the value is empty
+     *  @param characters non-significant characters used to determine whether the value is empty
+     */
+    void setNonSignificantChars(const OFString &characters) { nonSignificantChars = characters; }
+
+    /* --- static helper functions --- */
+
+    /** check whether given string value conforms to a certain VR and VM.
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "6", "9", "16", "32" or "" for no check)
+     *  @param vr two-character identifier of the VR to be checked (lower case)
+     *  @param vrID expected numeric identifier of the VR
+     *  @param maxLen maximum number of characters allowed for a single value (0 = no check)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkStringValue(const OFString &value,
+                                        const OFString &vm,
+                                        const OFString &vr,
+                                        const int vrID,
+                                        const size_t maxLen = 0);
+
+private:
+
     /// padding character used to adjust odd value length (space)
     char paddingChar;
+
     /// maximum number of characters for each string component
     Uint32 maxLength;
 
-
- private:
-
     /// number of characters of the internal string representation
     Uint32 realLength;
+
     /// current representation of the string value
     E_StringMode fStringMode;
+
+    /// non significant characters used to determine whether the value is empty
+    OFString nonSignificantChars;
 };
 
 
@@ -295,6 +360,65 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.46  2010-11-05 09:34:11  joergr
+** Added support for checking the value multiplicity "9" (see Supplement 131).
+**
+** Revision 1.45  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.44  2010-04-23 14:29:28  joergr
+** Renamed static helper function checkValue() to checkStringValue().
+**
+** Revision 1.43  2010-04-22 09:01:18  joergr
+** Added support for further VM values ("1-8", "1-99", "16", "32") to be checked.
+**
+** Revision 1.42  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
+** Revision 1.41  2009-08-07 14:40:38  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.40  2009-08-03 09:05:29  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.39  2008-07-17 11:19:48  onken
+** Updated copyFrom() documentation.
+**
+** Revision 1.38  2008-07-17 10:30:22  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.37  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.36  2007/11/29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.35  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.34  2006/12/15 14:18:07  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.33  2006/12/13 13:58:15  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.32  2006/11/08 17:00:06  meichel
+** Added DcmByteString::containsExtendedCharacters
+**
+** Revision 1.31  2006/08/15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.30  2005/12/08 16:27:59  meichel
 ** Changed include path schema for all DCMTK header files
 **

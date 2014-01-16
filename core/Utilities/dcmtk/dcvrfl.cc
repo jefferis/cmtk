@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:53 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +67,17 @@ DcmFloatingPointSingle &DcmFloatingPointSingle::operator=(const DcmFloatingPoint
 }
 
 
+OFCondition DcmFloatingPointSingle::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmFloatingPointSingle &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 // ********************************
 
 
@@ -80,16 +87,24 @@ DcmEVR DcmFloatingPointSingle::ident() const
 }
 
 
+OFCondition DcmFloatingPointSingle::checkValue(const OFString &vm,
+                                               const OFBool /*oldFormat*/)
+{
+    /* check VM only, further checks on the floating point values could be added later */
+    return DcmElement::checkVM(getVM(), vm);
+}
+
+
 unsigned long DcmFloatingPointSingle::getVM()
 {
-    return Length / sizeof(Float32);
+    return getLengthField() / sizeof(Float32);
 }
 
 
 // ********************************
 
 
-void DcmFloatingPointSingle::print(ostream &out,
+void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
                                    const size_t flags,
                                    const int level,
                                    const char * /*pixelFileName*/,
@@ -102,7 +117,7 @@ void DcmFloatingPointSingle::print(ostream &out,
         errorFlag = getFloat32Array(floatVals);
         if (floatVals != NULL)
         {
-            const unsigned long count = Length / sizeof(Float32) /* do not use getVM()! */;
+            const unsigned long count = getLengthField() / sizeof(Float32) /* do not use getVM()! */;
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
                 DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1);
             unsigned long printedLength = 0;
@@ -115,11 +130,11 @@ void DcmFloatingPointSingle::print(ostream &out,
             {
                 /* check whether first value is printed (omit delimiter) */
                 if (i == 0)
-                    OFStandard::ftoa(buffer, sizeof(buffer), *floatVals);
+                    OFStandard::ftoa(buffer, sizeof(buffer), *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
                 else
                 {
                     buffer[0] = '\\';
-                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals);
+                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
                 }
                 /* check whether current value sticks to the length limit */
                 newLength = printedLength + strlen(buffer);
@@ -160,7 +175,7 @@ OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
     {
         if (floatValues == NULL)
             errorFlag = EC_IllegalCall;
-        else if (pos >= Length / sizeof(Float32) /* do not use getVM()! */)
+        else if (pos >= getLengthField() / sizeof(Float32) /* do not use getVM()! */)
             errorFlag = EC_IllegalParameter;
         else
             floatVal = floatValues[pos];
@@ -193,7 +208,7 @@ OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
     {
         /* ... and convert it to a character string */
         char buffer[64];
-        OFStandard::ftoa(buffer, sizeof(buffer), floatVal);
+        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         /* assign result */
         value = buffer;
     }
@@ -280,13 +295,13 @@ OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
 OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (sizeof(Float32)) != 0)
+    if (getLengthField() % (sizeof(Float32)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (sizeof(Float32)));
+            setLengthField(getLengthField() - (getLengthField() % (sizeof(Float32))));
         }
     } else
         errorFlag = EC_Normal;
@@ -297,6 +312,32 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
+** Revision 1.36  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.35  2010-10-14 13:14:10  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.34  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.33  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.32  2008-05-30 12:50:05  meichel
+** Increased output precision to 8 (FLT_DIG+2) when converting an FL element to string.
+**
+** Revision 1.31  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.30  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.29  2005/12/08 15:41:53  meichel
 ** Changed include path schema for all DCMTK header files
 **

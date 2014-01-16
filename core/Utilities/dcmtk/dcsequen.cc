@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:36 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-11-01 10:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +43,6 @@
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
@@ -84,7 +79,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
     {
         itemList->seek(ELP_first);
         old.itemList->seek(ELP_first);
-        do 
+        do
         {
             itemList->insert(old.itemList->get()->clone(), ELP_next);
         } while (old.itemList->seek(ELP_next));
@@ -97,13 +92,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
 
 DcmSequenceOfItems::~DcmSequenceOfItems()
 {
-    DcmObject *dO;
-    itemList->seek(ELP_first);
-    while (!itemList->empty())
-    {
-        dO = itemList->remove();
-        delete dO;
-    }
+    itemList->deleteAllElements();
     delete itemList;
 }
 
@@ -113,12 +102,15 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 
 DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
 {
+  if (this != &obj)
+  {
     DcmElement::operator=(obj);
     lastItemComplete = obj.lastItemComplete;
     fStartPosition = obj.fStartPosition;
     readAsUN_ = obj.readAsUN_;
-    
-    DcmList *newList = new DcmList; // DcmList has no copy constructor. Need to copy ourselves.
+
+    // DcmList has no copy constructor. Need to copy ourselves.
+    DcmList *newList = new DcmList;
     if (newList)
     {
         switch (obj.ident())
@@ -150,10 +142,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                                 break;
                             default:
                                 newDO = new DcmItem(oldDO->getTag());
-                                ofConsole.lockCerr() << "DcmSequenceOfItems: Non-item element ("
-                                     << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                                     << dec << ") found" << endl;
-                                ofConsole.unlockCerr();
+                                DCMDATA_WARN("DcmSequenceOfItems: Non-item element " << oldDO->getTag() << " found");
                                 break;
                         }
                         newList->insert(newDO, ELP_next);
@@ -165,17 +154,42 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                 break;
         }
     }
+    // be sure to clear memory of former elements not in use any more...
+    itemList->deleteAllElements();
+    // ...and delete the list itself
     delete itemList;
     itemList = newList;
+  }
+  return *this;
+}
 
-    return *this;
+
+OFCondition DcmSequenceOfItems::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+      if (rhs.ident() != ident()) return EC_IllegalCall;
+      *this = OFstatic_cast(const DcmSequenceOfItems &, rhs);
+  }
+  return EC_Normal;
 }
 
 
 // ********************************
 
 
-void DcmSequenceOfItems::print(ostream &out,
+OFCondition DcmSequenceOfItems::checkValue(const OFString &cardinality,
+                                           const OFBool /*oldFormat*/)
+{
+    /* check cardinality (number of items) only */
+    return DcmElement::checkVM(this->card(), cardinality);
+}
+
+
+// ********************************
+
+
+void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
                                const size_t flags,
                                const int level,
                                const char *pixelFileName,
@@ -189,20 +203,18 @@ void DcmSequenceOfItems::print(ostream &out,
         /* print sequence content */
         if (!itemList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
             /* print all items contained in the sequence */
             DcmObject *dO;
             itemList->seek(ELP_first);
             do {
                 dO = itemList->get();
-                dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
             } while (itemList->seek(ELP_next));
         }
     } else {
         OFOStringStream oss;
         oss << "(Sequence with ";
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             oss << "undefined";
         else
             oss << "explicit";
@@ -222,7 +234,7 @@ void DcmSequenceOfItems::print(ostream &out,
         }
         /* print sequence end line */
         DcmTag delimItemTag(DCM_SequenceDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
@@ -233,29 +245,30 @@ void DcmSequenceOfItems::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::writeXML(ostream &out,
+OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
                                          const size_t flags)
 {
     OFString xmlString;
-    DcmVR vr(Tag.getVR());
+    DcmVR vr(getTag().getVR());
     /* XML start tag for "sequence" */
     out << "<sequence";
     /* attribute tag = (gggg,eeee) */
     out << " tag=\"";
-    out << hex << setfill('0')
-        << setw(4) << Tag.getGTag() << ","
-        << setw(4) << Tag.getETag() << "\""
-        << dec << setfill(' ');
+    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+        << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
+        << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
+        << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
     /* cardinality (number of items) = 1..n */
     out << " card=\"" << card() << "\"";
     /* value length in bytes = 0..max (if not undefined) */
-    if (Length != DCM_UndefinedLength)
-        out << " len=\"" << Length << "\"";
-    /* tag name (if known) */
-    out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
-    out << ">" << endl;
+    if (getLengthField() != DCM_UndefinedLength)
+        out << " len=\"" << getLengthField() << "\"";
+    /* tag name (if known and not suppressed) */
+    if (!(flags & DCMTypes::XF_omitDataElementName))
+        out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
+    out << ">" << OFendl;
     /* write sequence content */
     if (!itemList->empty())
     {
@@ -269,7 +282,7 @@ OFCondition DcmSequenceOfItems::writeXML(ostream &out,
         } while (itemList->seek(ELP_next));
     }
     /* XML end tag for "sequence" */
-    out << "</sequence>" << endl;
+    out << "</sequence>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -306,9 +319,17 @@ OFBool DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer,
 Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
                                              const E_EncodingType enctype)
 {
+    /* Get length of sequence header + sequence content (will call DcmSequenceOfItems::getLength()) */
     Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
+    if (seqlen == DCM_UndefinedLength)
+        return DCM_UndefinedLength;
     if (enctype == EET_UndefinedLength)
-        seqlen += 8;     // for Sequence Delimitation Tag
+    {
+        if (OFStandard::check32BitAddOverflow(seqlen, 8))
+            return DCM_UndefinedLength;
+        else
+            seqlen += 8;     // for Sequence Delimitation Tag
+    }
     return seqlen;
 }
 
@@ -320,13 +341,35 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype)
 {
     Uint32 seqlen = 0;
+    Uint32 sublen = 0;
     if (!itemList->empty())
     {
         DcmItem *dI;
         itemList->seek(ELP_first);
         do {
             dI = OFstatic_cast(DcmItem *, itemList->get());
-            seqlen += dI->calcElementLength(xfer, enctype);
+            sublen = dI->calcElementLength(xfer, enctype);
+            /* explicit length: be sure that total size of contained elements fits into sequence's
+               32 Bit length field. If not, switch encoding automatically to undefined
+               length for this sequence. Nevertheless, any contained items will be
+               written with explicit length if possible.
+             */
+            if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(seqlen, sublen) )
+            {
+                if (dcmWriteOversizedSeqsAndItemsUndefined.get())
+                {
+                    DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName() << " " << getTag()
+                        << " exceeds 32-bit length field, trying to treat it as undefined length instead");
+                }
+                else
+                {
+                    DCMDATA_WARN("DcmSequenceOfItems: Explicit length of sequence " << getTagName() << " " << getTag()
+                        << " exceeds 32-bit length field, writing with explicit length will not be possible");
+                    errorFlag = EC_SeqOrItemContentOverflow;
+                }
+                return DCM_UndefinedLength;
+            }
+            seqlen += sublen;
         } while (itemList->seek(ELP_next));
     }
     return seqlen;
@@ -352,9 +395,8 @@ OFCondition DcmSequenceOfItems::computeGroupLengthAndPadding(const E_GrpLenEncod
         do {
             DcmItem *dO = OFstatic_cast(DcmItem *, itemList->get());
             l_error = dO->computeGroupLengthAndPadding
-                (glenc, padenc, xfer, enctype, padlen,
-                 subPadlen, instanceLength);
-        } while (itemList->seek(ELP_next));
+                (glenc, padenc, xfer, enctype, padlen, subPadlen, instanceLength);
+        } while (l_error.good() && itemList->seek(ELP_next));
     }
     return l_error;
 }
@@ -424,23 +466,24 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         inStream.read(&elementTag, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
-        // Tag ist gelesen
+        // tag has ben read
 
         DcmTag newTag(groupTag, elementTag);
 
         Uint32 valueLength = 0;
         inStream.read(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
-        if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
+        if ((valueLength & 1) && (valueLength != DCM_UndefinedLength))
         {
-            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << Tag << " is odd" << endl;
-            ofConsole.unlockCerr();
+            DCMDATA_WARN("DcmSequenceOfItems: Length of item in sequence "
+                << getTagName() << " " << getTag() << " is odd");
         }
         length = valueLength;
         tag = newTag; // return value: assignment-operator
     }
 
-    DCM_dcmdataDebug(4, ("in Sequ.readTag errorFlag = %s", l_error.text()));
+    if (l_error.bad())
+        DCMDATA_TRACE("DcmSequenceOfItems::readTagAndLength() returns error = " << l_error.text());
     return l_error;
 }
 
@@ -469,17 +512,15 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag" << endl;
-        ofConsole.unlockCerr();
-        DCM_dcmdataDebug(1, ("Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
-            " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
+            << " instead of item tag");
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): parse error occurred: " << newTag);
     }
     else if (l_error != EC_SequEnd)
     {
-        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter" << endl;
-        ofConsole.unlockCerr();
-        DCM_dcmdataDebug(1, ("Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
-            " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
+        DCMDATA_ERROR("DcmSequenceOfItems: Parse error in sequence, found " << newTag
+            << " instead of a sequence delimiter");
+        DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem(): cannot create Sub Item " << newTag);
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
@@ -497,7 +538,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -505,18 +546,18 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && (fTransferState != ERW_ready))
+        else if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 fStartPosition = inStream.tell();   // Position Sequence-Value
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
 
             E_TransferSyntax readxfer = readAsUN_ ? EXS_LittleEndianImplicit : xfer;
-            
+
             itemList->seek(ELP_last); // append data at end
-            while (inStream.good() && ((fTransferredBytes < Length) || !lastItemComplete))
+            while (inStream.good() && ((getTransferredBytes() < getLengthField()) || !lastItemComplete))
             {
                 DcmTag newTag;
                 Uint32 newValueLength = 0;
@@ -528,7 +569,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     if (errorFlag.bad())
                         break;                  // finish while loop
                     else
-                        fTransferredBytes += 8;
+                        incTransferredBytes(8);
 
                     lastItemComplete = OFFalse;
                     errorFlag = readSubItem(inStream, newTag, newValueLength, readxfer, glenc, maxReadLength);
@@ -541,20 +582,20 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     if (errorFlag.good())
                         lastItemComplete = OFTrue;
                 }
-                fTransferredBytes = inStream.tell() - fStartPosition;
+                setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
 
                 if (errorFlag.bad())
                     break;
 
             } //while
-            if (((fTransferredBytes < Length) || !lastItemComplete) && errorFlag.good())
+            if (((getTransferredBytes() < getLengthField()) || !lastItemComplete) && errorFlag.good())
                 errorFlag = EC_StreamNotifyClient;
         } // else errorFlag
 
         if (errorFlag == EC_SequEnd)
             errorFlag = EC_Normal;
         if (errorFlag.good())
-            fTransferState = ERW_ready;      // sequence is complete
+            setTransferState(ERW_ready);      // sequence is complete
     }
     return errorFlag;
 }
@@ -562,21 +603,21 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
 // ********************************
 
-
-OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
+OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
                                       const E_TransferSyntax oxfer,
-                                      const E_EncodingType enctype)
-  {
-    if (fTransferState == ERW_notInitialized)
+                                      const E_EncodingType enctype,
+                                      DcmWriteCache *wcache)
+{
+  if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && (fTransferState != ERW_ready))
+        if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
-                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
                  */
@@ -584,20 +625,22 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                     (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
-                        Length = getLength(oxfer, enctype);
+                        setLengthField(getLength(oxfer, enctype));
                     else
-                        Length = DCM_UndefinedLength;
+                        setLengthField(DCM_UndefinedLength);
+                    if (errorFlag == EC_SeqOrItemContentOverflow)
+                      return EC_SeqOrItemContentOverflow;
                     Uint32 written_bytes = 0;
                     errorFlag = writeTagAndLength(outStream, oxfer, written_bytes);
                     if (errorFlag.good())
                     {
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         itemList->seek(ELP_first);
                     }
                 } else
                     errorFlag = EC_StreamNotifyClient;
             }
-            if (fTransferState == ERW_inWork)
+            if (getTransferState() == ERW_inWork)
             {
                 // itemList->get() can be NULL if buffer was full after
                 // writing the last item but before writing the sequence delimitation.
@@ -608,13 +651,13 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                     {
                       dO = itemList->get();
                       if (dO->transferState() != ERW_ready)
-                          errorFlag = dO->write(outStream, oxfer, enctype);
+                          errorFlag = dO->write(outStream, oxfer, enctype, wcache);
                     } while (errorFlag.good() && itemList->seek(ELP_next));
                 }
                 if (errorFlag.good())
                 {
-                    fTransferState = ERW_ready;
-                    if (Length == DCM_UndefinedLength)
+                    setTransferState(ERW_ready);
+                    if (getLengthField() == DCM_UndefinedLength)
                     {
                         if (outStream.avail() >= 8)
                         {
@@ -627,7 +670,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                             // the complete sequence is written but it
                             // is not possible to write the delimination item into the buffer.
                             errorFlag = EC_StreamNotifyClient;
-                            fTransferState = ERW_inWork;
+                            setTransferState(ERW_inWork);
                         }
                     }
                 }
@@ -686,18 +729,19 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(DcmOutputStream &outStream,
 
 OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                                                      const E_TransferSyntax oxfer,
-                                                     const E_EncodingType enctype)
+                                                     const E_EncodingType enctype,
+                                                     DcmWriteCache *wcache)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && (fTransferState != ERW_ready))
+        if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
-                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
                  */
@@ -705,20 +749,20 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                     (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
-                        Length = getLength(oxfer, enctype);
+                        setLengthField(getLength(oxfer, enctype));
                     else
-                        Length = DCM_UndefinedLength;
-                    errorFlag = writeTagAndVR(outStream, Tag, getVR(), oxfer);
+                        setLengthField(DCM_UndefinedLength);
+                    errorFlag = writeTagAndVR(outStream, getTag(), getVR(), oxfer);
                     /* we don't write the sequence length */
                     if (errorFlag.good())
                     {
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         itemList->seek(ELP_first);
                     }
                 } else
                     errorFlag = EC_StreamNotifyClient;
             }
-            if (fTransferState == ERW_inWork)
+            if (getTransferState() == ERW_inWork)
             {
                 // itemList->get() can be NULL if buffer was full after
                 // writing the last item but before writing the sequence delimitation.
@@ -728,12 +772,12 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                     do {
                         dO = itemList->get();
                         if (dO->transferState() != ERW_ready)
-                            errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
+                            errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
                     } while (errorFlag.good() && itemList->seek(ELP_next));
                 }
                 if (errorFlag.good())
                 {
-                    fTransferState = ERW_ready;
+                    setTransferState(ERW_ready);
                     /* we always write a sequence delimitation item tag, but no length */
                     if (outStream.avail() >= 4)
                     {
@@ -744,7 +788,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                         // Every subelement of the item was written but it
                         // is not possible to write the delimination item
                         // into the buffer.
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         errorFlag = EC_StreamNotifyClient;
                     }
                 }
@@ -826,20 +870,20 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
         // insert before or after "where"
         E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
         itemList->insert(item, whichSide);
-        if (before)
+        if (where == DCM_EndOfListIndex)
         {
-            DCM_dcmdataDebug(3, ("DcmSequenceOfItems::insert() item inserted before position %d", where));
+            DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
+                << (before ? "before" : "after") << " last position");
         } else {
-            DCM_dcmdataDebug(3, ("DcmSequenceOfItems::insert() item inserted after position %d", where));
+            DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
+                << (before ? "before" : "after") << " position " << where);
         }
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
-
 // ********************************
-
 
 OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem* item,
                                                    OFBool before)
@@ -998,19 +1042,16 @@ DcmItem *DcmSequenceOfItems::remove(DcmItem *item)
 OFCondition DcmSequenceOfItems::clear()
 {
     errorFlag = EC_Normal;
-    DcmObject *dO;
-    itemList->seek(ELP_first);
-    while (!itemList->empty())
-    {
-        dO = itemList->remove();
-        if (dO != NULL)
-        {
-            delete dO;
-            dO = NULL;
-        }
-    }
-    Length = 0;
+    // remove all items from sequence and delete them from memory
+    itemList->deleteAllElements();
+    setLengthField(0);
     return errorFlag;
+}
+
+
+OFBool DcmSequenceOfItems::isEmpty(const OFBool /*normalize*/)
+{
+    return itemList->empty();
 }
 
 
@@ -1031,7 +1072,7 @@ OFCondition DcmSequenceOfItems::verify(const OFBool autocorrect)
         } while (itemList->seek(ELP_next));
     }
     if (autocorrect == OFTrue)
-        Length = getLength();
+        setLengthField(getLength());
 
     return errorFlag;
 }
@@ -1176,29 +1217,6 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::searchErrors(DcmStack &resultStack)
-{
-    OFCondition l_error = errorFlag;
-    DcmObject *dO = NULL;
-    if (errorFlag.bad())
-        resultStack.push(this);
-    if (!itemList->empty())
-    {
-        itemList->seek(ELP_first);
-        do {
-            OFCondition err = EC_Normal;
-            dO = itemList->get();
-            if ((err = dO->searchErrors(resultStack)).bad())
-                l_error = err;
-        } while (itemList->seek(ELP_next));
-    }
-    return l_error;
-}
-
-
-// ********************************
-
-
 OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 {
     OFCondition l_error = EC_Normal;
@@ -1241,9 +1259,171 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 }
 
 
+OFBool DcmSequenceOfItems::containsExtendedCharacters(const OFBool checkAllStrings)
+{
+    if (!itemList->empty())
+    {
+        itemList->seek(ELP_first);
+        do {
+            if (itemList->get()->containsExtendedCharacters(checkAllStrings))
+                return OFTrue;
+        } while (itemList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
+OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
+{
+    if (!itemList->empty())
+    {
+        itemList->seek(ELP_first);
+        do {
+            if (itemList->get()->isAffectedBySpecificCharacterSet())
+                return OFTrue;
+        } while (itemList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
+OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
+                                                const Uint32 /* offset */,
+                                                Uint32 /* numBytes */,
+                                                DcmFileCache * /* cache */,
+                                                E_ByteOrder /* byteOrder */)
+{
+    // cannot use getPartialValue() with class DcmSequenceOfItems or derived classes
+    return EC_IllegalCall;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.94  2010-11-01 10:42:44  uli
+** Fixed some compiler warnings reported by gcc with additional flags.
+**
+** Revision 1.93  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.92  2010-10-14 13:14:09  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.91  2010-04-23 14:33:57  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.90  2010-03-25 16:28:40  joergr
+** Added check for errors during while loop in computeGroupLengthAndPadding().
+**
+** Revision 1.89  2010-03-24 11:56:36  onken
+** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
+** Replaced all code occurences of cleaning all elements from internal lists to
+** newly introduced function in DcmList.
+**
+** Revision 1.88  2010-03-03 14:30:28  joergr
+** Output return value of readTagAndLength() to the log only in case of error.
+** Use return value of getTag() for stream output where possible.
+**
+** Revision 1.87  2009-12-04 16:54:17  joergr
+** Moved some log messages from debug to trace level.
+** Sightly modified some log messages.
+**
+** Revision 1.86  2009-11-13 13:11:21  joergr
+** Fixed minor issues in log output.
+**
+** Revision 1.85  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.84  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.83  2009-03-25 10:21:22  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
+** Revision 1.82  2009-03-05 14:08:05  onken
+** Fixed typo.
+**
+** Revision 1.81  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
+** Revision 1.80  2009-02-04 17:57:19  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
+** Revision 1.79  2009-02-04 14:04:18  onken
+** Removed German comment and removed "magic number".
+**
+** Revision 1.78  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
+** Revision 1.77  2008-12-12 11:44:41  onken
+** Moved path access functions to separate classes
+**
+** Revision 1.76  2008-12-05 13:51:13  onken
+** Introduced new error code number for specific findOrCreatePath() errors.
+**
+** Revision 1.75  2008-12-05 13:28:01  onken
+** Splitted findOrCreatePath() function API for also offering a simple API
+** for non-wildcard searches.
+**
+** Revision 1.74  2008-12-04 16:54:54  onken
+** Changed findOrCreatePath() to also support wildcard as item numbers.
+**
+** Revision 1.73  2008-10-15 12:31:24  onken
+** Added findOrCreatePath() functions which allow for finding or creating a
+** hierarchy of sequences, items and attributes according to a given "path"
+** string.
+**
+** Revision 1.72  2008-07-17 10:36:38  onken
+** *** empty log message ***
+**
+** Revision 1.71  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.70  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.69  2007/11/23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.68  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.67  2007/02/19 15:04:16  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.66  2006/12/15 14:14:44  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.65  2006/12/13 13:59:49  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.64  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.63  2006/05/30 15:00:19  joergr
+** Added missing method containsExtendedCharacters().
+**
+** Revision 1.62  2006/05/11 08:51:05  joergr
+** Added new option that allows to omit the element name in the XML output.
+**
 ** Revision 1.61  2005/12/08 15:41:36  meichel
 ** Changed include path schema for all DCMTK header files
 **

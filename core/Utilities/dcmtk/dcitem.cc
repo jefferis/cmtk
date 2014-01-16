@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:16 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-02 15:31:09 $
+ *  CVS/RCS Revision: $Revision: 1.150 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +28,6 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcitem.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -40,12 +35,12 @@
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmdata/dcdefine.h"    /* for memzero() */
-#include "dcmtk/dcmdata/dcdeftag.h"    /* for name constants */
-#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/ofstd/ofdefine.h"     /* for memzero() */
+#include "dcmtk/dcmdata/dcdeftag.h"   /* for name constants */
+#include "dcmtk/dcmdata/dcistrma.h"   /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcobject.h"
-#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrma.h"   /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcovlay.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcsequen.h"
@@ -80,6 +75,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 // ********************************
@@ -119,7 +115,7 @@ DcmItem::DcmItem(const DcmItem &old)
     {
         elementList->seek(ELP_first);
         old.elementList->seek(ELP_first);
-        do 
+        do
         {
             elementList->insert(old.elementList->get()->clone(), ELP_next);
         } while (old.elementList->seek(ELP_next));
@@ -127,15 +123,47 @@ DcmItem::DcmItem(const DcmItem &old)
 }
 
 
+DcmItem& DcmItem::operator=(const DcmItem& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmObject::operator=(obj);
+
+    // delete any existing elements
+    elementList->deleteAllElements();
+
+    // copy DcmItem's member variables
+    lastElementComplete = obj.lastElementComplete;
+    fStartPosition = obj.fStartPosition;
+    if (!obj.elementList->empty())
+    {
+      elementList->seek(ELP_first);
+      obj.elementList->seek(ELP_first);
+      do
+      {
+        elementList->insert(obj.elementList->get()->clone(), ELP_next);
+      } while (obj.elementList->seek(ELP_next));
+    }
+  }
+  return *this;
+}
+
+
+OFCondition DcmItem::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmItem &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 DcmItem::~DcmItem()
 {
-    DcmObject *dO;
-    elementList->seek(ELP_first);
-    while (!elementList->empty())
-    {
-        dO = elementList->remove();
-        delete dO;
-    }
+    elementList->deleteAllElements();
     delete elementList;
 }
 
@@ -143,21 +171,21 @@ DcmItem::~DcmItem()
 // ********************************
 
 
-OFBool DcmItem::foundVR(char *atposition)
+OFBool DcmItem::foundVR(const Uint8* atposition)
 {
-    char c1 =  atposition[0];
-    char c2 = atposition[1];
+    const Uint8 c1 = atposition[0];
+    const Uint8 c2 = atposition[1];
     OFBool valid = OFFalse;
 
     if (isalpha(c1) && isalpha(c2))
     {
-        char vrName[3];
+        Uint8 vrName[3];
         vrName[0] = c1;
         vrName[1] = c2;
         vrName[2] = '\0';
 
         /* is this VR name a standard VR descriptor */
-        DcmVR vr(vrName);
+        DcmVR vr( OFreinterpret_cast(const char*, &vrName[0] ) );
         valid = vr.isStandard();
     } else {
         /* cannot be a valid VR name since non-characters */
@@ -173,21 +201,21 @@ OFBool DcmItem::foundVR(char *atposition)
 E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 {
     E_TransferSyntax transferSyntax;
-    char tagAndVR[6];
+    Uint8 tagAndVR[6];
 
     /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
     inStream.mark();
-    inStream.read(tagAndVR, 6);               // check Tag & VR
+    inStream.read(tagAndVR, 6);               // check tag & VR
     inStream.putback();
 
     /* create two tag variables (one for little, one for big */
     /* endian) in order to figure out, if there is a valid tag */
-    char c1 = tagAndVR[0];
-    char c2 = tagAndVR[1];
-    char c3 = tagAndVR[2];
-    char c4 = tagAndVR[3];
-    Uint16 t1 = OFstatic_cast(unsigned short, (c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
-    Uint16 t2 = OFstatic_cast(unsigned short, (c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
+    const Uint8 c1 = tagAndVR[0];
+    const Uint8 c2 = tagAndVR[1];
+    const Uint8 c3 = tagAndVR[2];
+    const Uint8 c4 = tagAndVR[3];
+    const Uint16 t1 = OFstatic_cast(unsigned short, (c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
+    const Uint16 t2 = OFstatic_cast(unsigned short, (c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
@@ -260,11 +288,71 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
         }
     }
     /* dump information on a certain debug level */
-    DCM_dcmdataDebug(3, ("found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
+    DCMDATA_DEBUG("DcmItem::checkTransferSyntax() TransferSyntax=\""
+        << DcmXfer(transferSyntax).getXferName() << "\"");
 
     /* return determined transfer syntax */
     return transferSyntax;
-} // DcmItem::checkTransferSyntax
+}
+
+
+// ********************************
+
+
+void DcmItem::checkAndUpdateVR(DcmItem &item,
+                               DcmTag &tag)
+{
+    /* handle special cases where the VR can be determined by some other element values */
+    if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue)) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 1 (WaveformData and others): see section 8.3 in PS 3.5 */
+        Uint16 bitsAlloc;
+        if (item.findAndGetUint16(DCM_WaveformBitsAllocated, bitsAlloc).good())
+        {
+            if (bitsAlloc == 8)
+            {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB' because WaveformBitsAllocated "
+                    << DCM_WaveformBitsAllocated << " has a value of 8");
+                tag.setVR(EVR_OB);
+            } else {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW' because WaveformBitsAllocated "
+                    << DCM_WaveformBitsAllocated << " has a value that is different from 8");
+                tag.setVR(EVR_OW);
+            }
+        }
+    }
+    else if (((tag == DCM_PixelPaddingValue) || (tag == DCM_PixelPaddingRangeLimit) ||
+        (tag == DCM_HistogramFirstBinValue) || (tag == DCM_HistogramLastBinValue)) && (tag.getEVR() == EVR_xs))
+    {
+        /* case 2 (PixelPaddingValue and others): see section C.7.5.1 and C.11.5 in PS 3.3 */
+        Uint16 pixelRep;
+        if (item.findAndGetUint16(DCM_PixelRepresentation, pixelRep).good())
+        {
+            if (pixelRep == 0x0001)
+            {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'SS' because PixelRepresentation "
+                    << DCM_PixelRepresentation << " has a value of 1");
+                tag.setVR(EVR_SS);
+            } else {
+                DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'US' because PixelRepresentation "
+                    << DCM_PixelRepresentation << " has a value that is different from 1");
+                tag.setVR(EVR_US);
+            }
+        }
+    }
+    else if (((tag == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 3 (OverlayData and PixelData): see section 8.1.2 and 8.2 in PS 3.5 */
+        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OW'");
+        tag.setVR(EVR_OW);
+    }
+    else if ((tag == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
+    {
+        /* case 4 (CurveData): see section A.1 in PS 3.5-2004 */
+        DCMDATA_DEBUG("setting undefined VR of " << tag.getTagName() << " " << tag << " to 'OB'");
+        tag.setVR(EVR_OB);
+    }
+}
 
 
 // ********************************
@@ -284,40 +372,31 @@ unsigned long DcmItem::getVM()
 
 // ********************************
 
-
-void DcmItem::print(ostream &out,
+void DcmItem::print(STD_NAMESPACE ostream &out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,
                     size_t *pixelCounter)
 {
-    /* print item start line */
     if (flags & DCMTypes::PF_showTreeStructure)
     {
-        /* empty text */
+        /* print item line with empty text */
         printInfoLine(out, flags, level);
         /* print item content */
         if (!elementList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
-            /* print attributes on this level */
             DcmObject *dO;
             elementList->seek(ELP_first);
-            OFBool ok;
             do {
                 dO = elementList->get();
-                ok = (elementList->seek(ELP_next) != NULL);
-                if (!ok)
-                    dO->print(out, newFlags | DCMTypes::PF_lastEntry, level + 1, pixelFileName, pixelCounter);
-                else
-                    dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
-            } while (ok);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+            } while (elementList->seek(ELP_next));
         }
     } else {
+        /* print item start line */
         OFOStringStream oss;
         oss << "(Item with ";
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             oss << "undefined";
         else
             oss << "explicit";
@@ -337,7 +416,7 @@ void DcmItem::print(ostream &out,
         }
         /* print item end line */
         DcmTag delimItemTag(DCM_ItemDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(ItemDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(ItemDelimitationItem for re-encoding)", &delimItemTag);
@@ -348,7 +427,7 @@ void DcmItem::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmItem::writeXML(ostream &out,
+OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
                               const size_t flags)
 {
     /* XML start tag for "item" */
@@ -356,9 +435,9 @@ OFCondition DcmItem::writeXML(ostream &out,
     /* cardinality (number of attributes) = 1..n */
     out << " card=\"" << card() << "\"";
     /* value length in bytes = 0..max (if not undefined) */
-    if (Length != DCM_UndefinedLength)
-        out << " len=\"" << Length << "\"";
-    out << ">" << endl;
+    if (getLengthField() != DCM_UndefinedLength)
+        out << " len=\"" << getLengthField() << "\"";
+    out << ">" << OFendl;
     /* write item content */
     if (!elementList->empty())
     {
@@ -371,7 +450,7 @@ OFCondition DcmItem::writeXML(ostream &out,
         } while (elementList->seek(ELP_next));
     }
     /* XML end tag for "item" */
-    out << "</item>" << endl;
+    out << "</item>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -407,9 +486,24 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 {
     Uint32 itemlen = 0;
     DcmXfer xferSyn(xfer);
-    itemlen = getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
-    if (enctype == EET_UndefinedLength)
+    /* Length of item's start header */
+    Uint32 headersize = xferSyn.sizeofTagHeader(getVR());
+    /* Length of item's content, i.e. contained elements */
+    itemlen = getLength(xfer, enctype);
+    /* Since the item's total length can exceed the maximum length of 32 bit, it is
+     * always necessary to check for overflows. The approach taken is not elegant
+     * but should work...
+     */
+    if ( (itemlen == DCM_UndefinedLength) || OFStandard::check32BitAddOverflow(itemlen, headersize) )
+      return DCM_UndefinedLength;
+    itemlen += xferSyn.sizeofTagHeader(getVR());
+    if (enctype == EET_UndefinedLength) // add bytes for closing item tag marker if necessary
+    {
+      if (OFStandard::check32BitAddOverflow(itemlen, 8))
+        return DCM_UndefinedLength;
+      else
         itemlen += 8;
+    }
     return itemlen;
 }
 
@@ -421,13 +515,36 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
                           const E_EncodingType enctype)
 {
     Uint32 itemlen = 0;
+    Uint32 sublen = 0;
     if (!elementList->empty())
     {
         DcmObject *dO;
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            itemlen += dO->calcElementLength(xfer, enctype);
+            sublen = dO->calcElementLength(xfer, enctype);
+            /* explicit length: be sure that total size of contained elements fits into item's
+               32 Bit length field. If not, switch encoding automatically to undefined
+               length for this item. Nevertheless, any contained elements will be
+               written with explicit length if possible.
+             */
+            if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(sublen, itemlen) )
+            {
+                if (dcmWriteOversizedSeqsAndItemsUndefined.get())
+                {
+                    DCMDATA_WARN("DcmItem: Explicit length of item exceeds 32-Bit length field, "
+                        << "trying to encode with undefined length");
+                }
+                else
+                {
+                    DCMDATA_WARN("DcmItem: Explicit length of item exceeds 32-Bit length field, "
+                        << "aborting write");
+                    errorFlag = EC_SeqOrItemContentOverflow;
+                }
+                return DCM_UndefinedLength;
+            }
+            else
+              itemlen += sublen;
         } while (elementList->seek(ELP_next));
     }
     return itemlen;
@@ -458,6 +575,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
     /* if we get to this point, we need to do something. First of all, set the error indicator to normal. */
     OFCondition l_error = EC_Normal;
+    /* collects group length elements that cannot be calculated due to length field overflows */
+    OFList<DcmObject*> exceededGroupLengthElems;
 
     /* if there are elements in this item... */
     if (!elementList->empty())
@@ -471,6 +590,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
         DcmUnsignedLong * paddingGL = NULL;
         Uint32 grplen = 0;
         DcmXfer xferSyn(xfer);
+        Uint32 sublen = 0;
+        OFBool groupLengthExceeded = OFFalse;
 
         /* determine the current seek mode and set the list pointer to the first element */
         E_ListPos seekmode = ELP_next;
@@ -488,11 +609,11 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             /* if the current element is a sequence, compute group length and padding for the sub sequence */
             if (dO->getVR() == EVR_SQ)
             {
+                // add size of sequence header
                 Uint32 templen = instanceLength + xferSyn.sizeofTagHeader(EVR_SQ);
-                l_error =
-                    OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
-                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen,
-                     templen);
+                // call computeGroupLengthAndPadding for all contained items
+                l_error = OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
+                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, templen);
             }
 
             /* if everything is ok so far */
@@ -508,7 +629,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                     (padenc != EPD_noChange && dO->getTag() == DCM_DataSetTrailingPadding))
                 {
                     delete elementList->remove();
-                    seekmode = ELP_atpos;           // remove = 1 forward
+                    seekmode = ELP_atpos; // remove advances 1 element forward -> make next seek() work
                     dO = NULL;
                 }
                 /* if the above mentioned conditions are not met but the caller specified that we want to add group */
@@ -520,13 +641,13 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
                     /* and if the group number is different from the last remembered group number or */
                     /* if this id the very first element that is treated then we've found a new group */
-                    if (actGrp!=lastGrp || beginning) // new Group found
+                    if (actGrp != lastGrp || beginning) // new Group found
                     {
                         /* set beginning to false in order to specify that the */
                         /* very first element has already been treated */
                         beginning = OFFalse;
 
-                        /* if the current element is a group length element) and it's data type */
+                        /* if the current element is a group length element and its data type */
                         /* is not UL replace this element with one that has a UL datatype since */
                         /* group length elements are supposed to have this data type */
                         if (dO->getETag() == 0x0000 && dO->ident() != EVR_UL)
@@ -536,8 +657,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected." << endl;
-                            ofConsole.unlockCerr();
+                            DCMDATA_WARN("DcmItem: Group Length with VR other than UL found, corrected");
                         }
                         /* if the above mentioned condition is not met but the caller specified */
                         /* that we want to add group length elements, we need to add such an element */
@@ -557,13 +677,32 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         if (padenc == EPD_withPadding && actGrp == 0xfffc)
                             paddingGL = OFstatic_cast(DcmUnsignedLong *, dO);
 
-                        /* if actGLElem conatins a valid pointer it was set in one of the last iterations */
+                        /* if actGLElem contains a valid pointer it was set in one of the last iterations */
                         /* to the group lenght element of the last group. We need to write the current computed */
-                        /* group length value to this element. */
+                        /* group length value to this element. Exception: If group length exceeds maximum possible */
+                        /* value, than remove group length element instead of setting it */
                         if (actGLElem != NULL)
                         {
-                            actGLElem->putUint32(grplen);
-                            DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
+                            if (!groupLengthExceeded)
+                            {
+                                // do not use putUint32() in order to make sure that the resulting VM is really 1
+                                actGLElem->putUint32Array(&grplen, 1);
+                                DCMDATA_DEBUG("DcmItem::computeGroupLengthAndPadding() Length of Group 0x"
+                                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                                    << STD_NAMESPACE setw(4) << actGLElem->getGTag()
+                                    << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
+                                    << " len=" << grplen);
+                            }
+                            else
+                            {
+                                DCMDATA_WARN("DcmItem: Group length of group 0x"
+                                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                                    << STD_NAMESPACE setw(4) << actGLElem->getGTag()
+                                    << " exceeds 32-Bit length field. "
+                                    << "Cannot calculate/write group length for this group.");
+                                exceededGroupLengthElems.push_back(actGLElem);
+                                groupLengthExceeded = OFFalse;
+                            }
                         }
 
                         /* set the group length value to 0 since it is the beginning of the new group */
@@ -579,9 +718,21 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             actGLElem = NULL;
                     }
                     /* if this is not a new group, calculate the element's length and add it */
-                    /* to the currently computed group length value */
+                    /* to the currently computed group length value. If group length is larger */
+                    /* than group length field permits, set flag to not add group length for this group */
                     else
-                        grplen += dO->calcElementLength(xfer, enctype);
+                    {
+                        sublen = dO->calcElementLength(xfer, enctype);
+                        // test for 32-bit overflow return value
+                        if ((sublen == DCM_UndefinedLength) || OFStandard::check32BitAddOverflow(sublen, grplen))
+                        {
+                            groupLengthExceeded = OFTrue;
+                        }
+                        else
+                        {
+                          grplen += sublen;
+                        }
+                    }
 
                     /* remember the current element's group number so that it is possible to */
                     /* figure out if a new group is treated in the following iteration */
@@ -592,9 +743,20 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
         /* if there was no error and the caller specified that we want to add or recalculate */
         /* group length tags and if actGLElem has a valid value, we need to add the above */
-        /* computed group length value to the last group's group length element */
+        /* computed group length value to the last group's group length element. Exception: */
+        /* If group length exceeds maximum possible value, remove group length element and */
+        /* i.e. do not write it for this group. */
         if (l_error.good() && (glenc == EGL_withGL || glenc == EGL_recalcGL) && actGLElem)
+        {
+          if (groupLengthExceeded)
+          {
+            exceededGroupLengthElems.push_back(actGLElem);
+          }
+          else
+          {
             actGLElem->putUint32(grplen);
+          }
+        }
 
         /* if the caller specified that we want to add padding elements and */
         /* if the length up to which shall be padded does not equal 0 we might */
@@ -654,6 +816,15 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             }
         }
     }
+    /* delete invalid group length elements from item. Cannot be done in */
+    /* above while loop because then elementList iterator is invalidated */
+    Uint32 numElems = exceededGroupLengthElems.size();
+    for (Uint32 i=0; i < numElems; i++)
+    {
+      delete remove(exceededGroupLengthElems.front());
+      exceededGroupLengthElems.pop_front();
+    }
+
     return l_error;
 }
 
@@ -673,11 +844,13 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
-    /* Create a DcmXfer object based on the transfer syntax which was passed */
+    /* create a DcmXfer object based on the transfer syntax which was passed */
     DcmXfer xferSyn(xfer);
 
+#ifdef DEBUG
     /* dump some information if required */
-    DCM_dcmdataDebug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
+    DCMDATA_TRACE("DcmItem::readTagAndLength() TransferSyntax=\"" << xferSyn.getXferName() << "\"");
+#endif
 
     /* bail out if at end of stream */
     if (inStream.eos())
@@ -704,6 +877,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     // tag has been read
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag);
+    // check whether tag is private
+    OFBool isPrivate = groupTag & 1;
 
     /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
     /* item is not a delimitation item (note that delimitation items do not have a VR), go */
@@ -722,14 +897,29 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* if the VR which was read is not a standard VR, print a warning */
         if (!vr.isStandard())
         {
-            ostream &localCerr = ofConsole.lockCerr();
-            localCerr << "DcmItem: Non-standard VR '" << vrstr
-                      << "' encountered while parsing attribute " << newTag.getXTag() << ", assuming ";
-            if (vr.usesExtendedLengthEncoding())
-                localCerr << "4 byte length field" << endl;
-            else
-                localCerr << "2 byte length field" << endl;
-            ofConsole.unlockCerr();
+            OFOStringStream oss;
+            oss << "DcmItem: Non-standard VR '"
+                << ((OFstatic_cast(unsigned char, vrstr[0]) < 32) ? ' ' : vrstr[0])
+                << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1]) << "' ("
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0] & 0xff) << "\\"
+                << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1] & 0xff)
+                << ") encountered while parsing element " << newTag << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+            /* encoding of this data element might be wrong, try to correct it */
+            if (dcmAcceptUnexpectedImplicitEncoding.get())
+            {
+                DCMDATA_WARN(tmpString << ", trying again with Implicit VR Little Endian");
+                /* put back read bytes to input stream ... */
+                inStream.putback();
+                bytesRead = 0;
+                /* ... and retry with Implicit VR Little Endian transfer syntax */
+                return readTagAndLength(inStream, EXS_LittleEndianImplicit, tag, length, bytesRead);
+            } else {
+                DCMDATA_WARN(tmpString << ", assuming " << (vr.usesExtendedLengthEncoding() ? "4" : "2")
+                    << " byte length field");
+            }
+            OFSTRINGSTREAM_FREESTR(tmpString)
         }
 
         /* set the VR which was read in the above created tag object. */
@@ -740,7 +930,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     }
 
     /* special handling for private elements */
-    if ((newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
+    if (isPrivate && (newTag.getElement() >= 0x1000))
     {
         const char *pc = privateCreatorCache.findPrivateCreator(newTag);
         if (pc)
@@ -760,8 +950,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     nxtobj = newTag.getEVR();
 
     /* the next thing we want to do is read the value in the length field from inStream. */
-    /* determine if there is a corresponging amount of bytes (for the length field) still */
-    /* available in inStream. if not, return an error. */
+    /* determine if there is a corresponding amount of bytes (for the length field) still */
+    /* available in inStream. If not, return an error. */
     if (inStream.avail() < xferSyn.sizeofTagHeader(nxtobj) - bytesRead)
     {
         inStream.putback();    // the UnsetPutbackMark is in readSubElement
@@ -771,8 +961,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     }
 
     /* read the value in the length field. In some cases, it is 4 bytes wide, in other */
-    /* cases only 2 bytes (see DICOM standard (year 2000) part 5, section 7.1.1) (or the */
-    /* corresponding section in a later version of the standard) */
+    /* cases only 2 bytes (see DICOM standard part 5, section 7.1.1) */
     if (xferSyn.isImplicitVR() || nxtobj == EVR_na)   //note that delimitation items don't have a VR
     {
         inStream.read(&valueLength, 4);            //length field is 4 bytes wide
@@ -796,11 +985,37 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         }
     }
     /* if the value in length is odd, print an error message */
-    if ((valueLength & 1)&&(valueLength != OFstatic_cast(Uint32, -1)))
+    if ( (valueLength & 1) && (valueLength != DCM_UndefinedLength) )
     {
-        ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << endl;
-        ofConsole.unlockCerr();
+        DCMDATA_WARN("DcmItem: Length of element " << newTag << " is odd");
     }
+
+    /* if desired, handle private attributes with maximum length as VR SQ */
+    if (isPrivate && dcmReadImplPrivAttribMaxLengthAsSQ.get() && (valueLength == DCM_UndefinedLength))
+    {
+        /* re-set tag to be a sequence and also delete private creator cache */
+        newTag.setVR(EVR_SQ);
+        newTag.setPrivateCreator("");
+    }
+
+    /* if desired, check if length is greater than length of surrounding item */
+    const Uint32 valueLengthItem = getLengthField();
+    if ((ident() == EVR_item /* e.g. meta info would have length 0 */) &&
+        (valueLengthItem != DCM_UndefinedLength /* this does not work in undefined length items */) &&
+        (valueLength != DCM_UndefinedLength) /* Also, do not check sequences with undefined length 0xFFFFFFFF */
+       )
+    {
+        const offile_off_t remainingItemBytes = valueLengthItem - (inStream.tell() - fStartPosition);
+        if (valueLength > remainingItemBytes)
+        {
+            DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                << " larger (" << valueLength << ") than remaining bytes ("
+                /* need to cast remainingItemBytes to unsigned long because VC6 cannot print offile_off_t (int64_t). */
+                << OFstatic_cast(unsigned long, remainingItemBytes) << ") of surrounding item");
+            l_error = EC_ElemLengthLargerThanItem;
+        }
+    }
+
     /* assign values to out parameter */
     length = valueLength;
     tag = newTag;
@@ -849,9 +1064,8 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         if (temp_error.bad())
         {
             // produce diagnostics
-            ofConsole.lockCerr() << "DcmItem: Element " << newTag
-               << " found twice in one dataset/item, ignoring second entry" << endl;
-            ofConsole.unlockCerr();
+            DCMDATA_WARN("DcmItem: Element " << newTag
+                << " found twice in one dataset/item, ignoring second entry");
             delete subElem;
         }
     }
@@ -862,14 +1076,13 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.putback();
-        ofConsole.lockCerr() << "DcmItem: Parse error while parsing attribute " <<  newTag << endl;
-        ofConsole.unlockCerr();
+        DCMDATA_WARN("DcmItem: Parse error while parsing element " << newTag);
     }
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag << " instead of an item delimiter" << endl;
-        ofConsole.unlockCerr();
+        DCMDATA_WARN("DcmItem: Parse error in sequence item, found " << newTag
+            << " instead of an item delimiter");
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
     }
@@ -888,41 +1101,57 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           const Uint32 maxReadLength)
 {
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
+    if (getTransferState() == ERW_notInitialized)
     {
-        /* figure out if the stream reported an error */
-        errorFlag = inStream.status();
-        /* if the stream reported an error or if it is the end of the */
-        /* stream, set the error flag correspondingly; else go ahead */
-        if (errorFlag.good() && inStream.eos())
-            errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && fTransferState != ERW_ready)
-        {
-            /* if the transfer state of this item is ERW_init, get its start */
-            /* position in the stream and set the transfer state to ERW_inWork */
-            if (fTransferState == ERW_init)
-            {
-                fStartPosition = inStream.tell();  // start position of this item
-                fTransferState = ERW_inWork;
-            }
-            DcmTag newTag;
-            /* start a loop in order to read all elements (attributes) which are contained in the inStream */
-            while (inStream.good() && (fTransferredBytes < Length || !lastElementComplete))
-            {
-                /* initialize variables */
-                Uint32 newValueLength = 0;
-                Uint32 bytes_tagAndLen = 0;
-                /* if the reading of the last element was complete, go ahead and read the next element */
-                if (lastElementComplete)
-                {
-                    /* read this element's tag and length information (and */
-                    /* possibly also VR information) from the inStream */
-                    errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
-                    /* increase counter correpsondingly */
-                    fTransferredBytes += bytes_tagAndLen;
+        errorFlag = EC_IllegalCall;
+        return errorFlag;
+    }
 
+    /* figure out if the stream reported an error */
+    errorFlag = inStream.status();
+    /* if the stream reported an error or if it is the end of the */
+    /* stream, set the error flag correspondingly; else go ahead */
+    if (errorFlag.good() && inStream.eos())
+        errorFlag = EC_EndOfStream;
+    else if (errorFlag.good() && getTransferState() != ERW_ready)
+    {
+        /* if the transfer state of this item is ERW_init, get its start */
+        /* position in the stream and set the transfer state to ERW_inWork */
+        if (getTransferState() == ERW_init)
+        {
+            fStartPosition = inStream.tell();  // start position of this item
+            setTransferState(ERW_inWork);
+        }
+        DcmTag newTag; OFBool readStopElem = OFFalse;
+        /* start a loop in order to read all elements (attributes) which are contained in the inStream */
+        while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete) && !readStopElem)
+        {
+            /* initialize variables */
+            Uint32 newValueLength = 0;
+            Uint32 bytes_tagAndLen = 0;
+            /* if the reading of the last element was complete, go ahead and read the next element */
+            if (lastElementComplete)
+            {
+                /* read this element's tag and length information */
+                /* (and possibly also VR information) from the inStream */
+                errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
+                /* increase counter correspondingly */
+                incTransferredBytes(bytes_tagAndLen);
+
+                /* if desired, try to ignore parse error -> skip item */
+                if ((errorFlag == EC_ElemLengthLargerThanItem) && dcmIgnoreParsingErrors.get())
+                {
+                    DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                        << " too large, trying to skip over rest of item");
+                    /* we can call getLengthField because error does only occur for explicit length items */
+                    const offile_off_t bytesToSkip = getLengthField() - bytes_tagAndLen;
+                    if (bytesToSkip > inStream.avail()) // no chance to recover
+                       break;
+                    inStream.skip(bytesToSkip);
+                    errorFlag = EC_Normal;
+                }
+                else /* continue with normal case: parse rest of element */
+                {
                     /* if there was an error while we were reading from the stream, terminate the while-loop */
                     /* (note that if the last element had been read from the instream in the last iteration, */
                     /* another iteration will be started, and of course then readTagAndLength(...) above will */
@@ -933,6 +1162,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* If we get to this point, we just started reading the first part */
                     /* of an element; hence, lastElementComplete is not longer true */
                     lastElementComplete = OFFalse;
+                    /* in case of implicit VR, check whether the "default VR" is really appropriate */
+                    if (DcmXfer(xfer).isImplicitVR())
+                        checkAndUpdateVR(*this, newTag);
                     /* read the actual data value which belongs to this element */
                     /* (attribute) and insert this information into the elementList */
                     errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
@@ -940,49 +1172,68 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* for this element; hence lastElementComplete is true again */
                     if (errorFlag.good())
                         lastElementComplete = OFTrue;
-                } else {
-                    /* if lastElementComplete is false, we have only read the current element's */
-                    /* tag and length (and possibly VR) information as well as maybe some data */
-                    /* data value information. We need to continue reading the data value */
-                    /* information for this particular element. */
-                    errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
-                    /* if reading was successful, we read the entire information */
-                    /* for this element; hence lastElementComplete is true */
-                    if (errorFlag.good())
-                        lastElementComplete = OFTrue;
                 }
-                /* remember how many bytes were read */
-                fTransferredBytes = inStream.tell() - fStartPosition;
+            } else
+            {
+                /* if lastElementComplete is false, we have only read the current element's */
+                /* tag and length (and possibly VR) information as well as maybe some data */
+                /* data value information. We need to continue reading the data value */
+                /* information for this particular element. */
+                errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
+                /* if reading was successful, we read the entire information */
+                /* for this element; hence lastElementComplete is true */
                 if (errorFlag.good())
+                    lastElementComplete = OFTrue;
+            }
+            /* remember how many bytes were read */
+            setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
+            if (errorFlag.good())
+            {
+                // If we completed one element, update the private tag cache.
+                if (lastElementComplete)
                 {
-                    // If we completed one element, update the private tag cache.
-                    if (lastElementComplete)
-                        privateCreatorCache.updateCache(elementList->get());
-                } else
-                    break; // if some error was encountered terminate the while-loop
-            } //while
+                    privateCreatorCache.updateCache(elementList->get());
+                    // evaluate option for skipping rest of dataset
+                    if ( (dcmStopParsingAfterElement.get() != DCM_UndefinedTagKey) &&
+                         (dcmStopParsingAfterElement.get() == elementList->get()->getTag()) &&
+                          ident() == EVR_dataset)
+                    {
+                        DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                            << " encountered, skipping rest of dataset");
+                        readStopElem = OFTrue;
+                    }
+                }
+            } else
+                break; // if some error was encountered terminate the while-loop
+        } //while
 
-            /* determine an appropriate result value; note that if the above called read function */
-            /* encountered the end of the stream before all information for this element could be */
-            /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
-            if ((fTransferredBytes < Length || !lastElementComplete) && errorFlag.good())
-                errorFlag = EC_StreamNotifyClient;
-            if (errorFlag.good() && inStream.eos())
-                errorFlag = EC_EndOfStream;
-        } // else errorFlag
-        /* modify the result value: two kinds of special error codes do not count as an error */
-        if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
-            errorFlag = EC_Normal;
-        /* if at this point the error flag indicates success, the item has */
-        /* been read completely; hence, set the transfer state to ERW_ready. */
-        /* Note that all information for this element could be read from the */
-        /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
+        /* determine an appropriate result value; note that if the above called read function */
+        /* encountered the end of the stream before all information for this element could be */
+        /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
         if (errorFlag.good())
-            fTransferState = ERW_ready;
-    }
+        {
+          // if stop element was read or end of stream occurs, tell parser end of stream is reached
+          if (readStopElem || inStream.eos())
+              errorFlag = EC_EndOfStream;
+          // if all bytes could be read or last element read could not be completed, set to error
+          else if ((getTransferredBytes() < getLengthField() || !lastElementComplete))
+              errorFlag = EC_StreamNotifyClient;
+        }
+    } // else errorFlag
+    /* modify the result value: two kinds of special error codes do not count as an error */
+    if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
+        errorFlag = EC_Normal;
+
+    /* if at this point the error flag indicates success, the item has */
+    /* been read completely; hence, set the transfer state to ERW_ready. */
+    /* Note that all information for this element could be read from the */
+    /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
+    if (errorFlag.good())
+        setTransferState(ERW_ready);
+
     /* return result value */
     return errorFlag;
-} // DcmItem::read()
+}
 
 
 // ********************************
@@ -990,36 +1241,39 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
 
 OFCondition DcmItem::write(DcmOutputStream &outStream,
                            const E_TransferSyntax oxfer,
-                           const E_EncodingType enctype)
+                           const E_EncodingType enctype,
+                           DcmWriteCache *wcache)
 {
-  if (fTransferState == ERW_notInitialized)
+  if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
   else
   {
     errorFlag = outStream.status();
-    if (errorFlag.good() && fTransferState != ERW_ready)
+    if (errorFlag.good() && getTransferState() != ERW_ready)
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         if (outStream.avail() >= 8)
         {
           if (enctype == EET_ExplicitLength)
-            Length = getLength(oxfer, enctype);
+            setLengthField(getLength(oxfer, enctype));
           else
-            Length = DCM_UndefinedLength;
-          errorFlag = writeTag(outStream, Tag, oxfer);
-          Uint32 valueLength = Length;
+            setLengthField(DCM_UndefinedLength);
+          if (errorFlag == EC_SeqOrItemContentOverflow)
+            return errorFlag;
+          errorFlag = writeTag(outStream, getTag(), oxfer);
+          Uint32 valueLength = getLengthField();
           DcmXfer outXfer(oxfer);
           const E_ByteOrder oByteOrder = outXfer.getByteOrder();
           if (oByteOrder == EBO_unknown) return EC_IllegalCall;
           swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
           outStream.write(&valueLength, 4); // 4 bytes length
           elementList->seek(ELP_first);
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         } else
           errorFlag = EC_StreamNotifyClient;
       }
-      if (fTransferState == ERW_inWork)
+      if (getTransferState() == ERW_inWork)
       {
         // elementList->get() can be NULL if buffer was full after
         // writing the last item but before writing the sequence delimitation.
@@ -1030,13 +1284,13 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
           {
               dO = elementList->get();
               if (dO->transferState() != ERW_ready)
-                errorFlag = dO->write(outStream, oxfer, enctype);
+                errorFlag = dO->write(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
         if (errorFlag.good())
         {
-          fTransferState = ERW_ready;
-          if (Length == DCM_UndefinedLength)
+          setTransferState(ERW_ready);
+          if (getLengthField() == DCM_UndefinedLength)
           {
             if (outStream.avail() >= 8)
             {
@@ -1051,7 +1305,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
                 // Every subelement of the item is written but it
                 // is not possible to write the delimination item into the buffer.
                 errorFlag = EC_StreamNotifyClient;
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
           }
         }
@@ -1063,33 +1317,35 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
 
 // ********************************
 
-OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
-                                          const E_TransferSyntax oxfer,
-                                          const E_EncodingType enctype)
+OFCondition DcmItem::writeSignatureFormat(
+  DcmOutputStream &outStream,
+   const E_TransferSyntax oxfer,
+   const E_EncodingType enctype,
+   DcmWriteCache *wcache)
 {
-  if (fTransferState == ERW_notInitialized)
+  if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
   else
   {
     errorFlag = outStream.status();
-    if (errorFlag.good() && fTransferState != ERW_ready)
+    if (errorFlag.good() && getTransferState() != ERW_ready)
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         if (outStream.avail() >= 4)
         {
           if (enctype == EET_ExplicitLength)
-            Length = getLength(oxfer, enctype);
+            setLengthField(getLength(oxfer, enctype));
           else
-            Length = DCM_UndefinedLength;
-          errorFlag = writeTag(outStream, Tag, oxfer);
+            setLengthField(DCM_UndefinedLength);
+          errorFlag = writeTag(outStream, getTag(), oxfer);
           /* we don't write the item length */
           elementList->seek(ELP_first);
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         } else
           errorFlag = EC_StreamNotifyClient;
       }
-      if (fTransferState == ERW_inWork)
+      if (getTransferState() == ERW_inWork)
       {
         // elementList->get() can be NULL if buffer was full after
         // writing the last item but before writing the sequence delimitation.
@@ -1100,12 +1356,12 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
           {
             dO = elementList->get();
             if (dO->transferState() != ERW_ready)
-              errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
+              errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
         if (errorFlag.good())
         {
-          fTransferState = ERW_ready;
+          setTransferState(ERW_ready);
           /* we don't write an item delimitation even if the item has undefined length */
         }
       }
@@ -1189,15 +1445,12 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
-                    ofConsole.lockCerr()
-                       << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << endl;
-                    ofConsole.unlockCerr();
+                    DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
                   }
                 }
                 /* dump some information if required */
-                DCM_dcmdataDebug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
-                        elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName()));
+                DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" at beginning inserted");
                 /* terminate do-while-loop */
                 break;
             }
@@ -1212,17 +1465,13 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   // check if we have inserted at the end of the list
                   if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
-                    // produce diagnostics
-                    ofConsole.lockCerr()
-                       << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << endl;
-                    ofConsole.unlockCerr();
+                      // produce diagnostics
+                      DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
                   }
                 }
                 /* dump some information if required */
-                DCM_dcmdataDebug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
-                        elem->getGTag(), elem->getETag(),
-                        DcmVR(elem->getVR()).getVRName()));
+                DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                    << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted");
                 /* terminate do-while-loop */
                 break;
             }
@@ -1241,26 +1490,23 @@ OFCondition DcmItem::insert(DcmElement *elem,
                         /* now the following holds: remObj == dE and elementList */
                         /* points to the element after the former current element. */
 
-                        /* dump some information if required */
-                        DCM_dcmdataDebug(3, ("DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
-                                remObj->getGTag(), remObj->getETag(),
-                                DcmVR(remObj->getVR()).getVRName(), remObj));
-
                         /* if the pointer to the removed object does not */
                         /* equal NULL (the usual case), delete this object */
                         /* and dump some information if required */
                         if (remObj != NULL)
                         {
+                            /* dump some information if required */
+                            DCMDATA_TRACE("DcmItem::insert() Element " << remObj->getTag()
+                                << " VR=\"" << DcmVR(remObj->getVR()).getVRName()
+                                << "\" p=" << OFstatic_cast(void *, remObj) << " removed and deleted");
                             delete remObj;
-                            DCM_dcmdataDebug(3, ("DcmItem::insert:element p=%p deleted", remObj));
                         }
                         /* insert the new element before the current element */
                         elementList->insert(elem, ELP_prev);
                         /* dump some information if required */
-                        DCM_dcmdataDebug(3, ("DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
-                                elem->getGTag(), elem->getETag(),
-                                DcmVR(elem->getVR()).getVRName(), elem));
-
+                        DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
+                            << " VR=\"" << DcmVR(elem->getVR()).getVRName()
+                            << "\" p=" << OFstatic_cast(void *, elem) << " replaced older one");
                     }   // if (replaceOld)
                     /* or else, i.e. the current element shall not be replaced by the new element */
                     else {
@@ -1297,7 +1543,7 @@ DcmElement *DcmItem::getElement(const unsigned long num)
     errorFlag = EC_Normal;
     DcmElement *elem;
     elem = OFstatic_cast(DcmElement *, elementList->seek_to(num));
-    // liest Element aus Liste
+    /* reads element from list */
     if (elem == NULL)
         errorFlag = EC_IllegalCall;
     return elem;
@@ -1446,16 +1692,17 @@ DcmElement *DcmItem::remove(const DcmTagKey &tag)
 OFCondition DcmItem::clear()
 {
     errorFlag = EC_Normal;
-    DcmObject *dO;
-    elementList->seek(ELP_first);
-    while (!elementList->empty())
-    {
-        dO = elementList->remove();
-        delete dO;                          // also delete sub elements
-    }
-    Length = 0;
+    // remove all elements from item and delete them from memory
+    elementList->deleteAllElements();
+    setLengthField(0);
 
     return errorFlag;
+}
+
+
+OFBool DcmItem::isEmpty(const OFBool /*normalize*/)
+{
+    return elementList->empty();
 }
 
 
@@ -1464,8 +1711,8 @@ OFCondition DcmItem::clear()
 
 OFCondition DcmItem::verify(const OFBool autocorrect)
 {
-    DCM_dcmdataDebug(3, ("DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-            getGTag(), getETag(), DcmVR(getVR()).getVRName(), Tag.getTagName()));
+    DCMDATA_TRACE("DcmItem::verify() Element " << getTag()
+        << " VR=\"" << DcmVR(getVR()).getVRName() << "\"");
 
     errorFlag = EC_Normal;
     if (!elementList->empty())
@@ -1478,8 +1725,8 @@ OFCondition DcmItem::verify(const OFBool autocorrect)
                 errorFlag = EC_CorruptedData;
         } while (elementList->seek(ELP_next));
     }
-    if (autocorrect == OFTrue)
-        Length = getLength();
+    if (autocorrect)
+        setLengthField(getLength());
     return errorFlag;
 }
 
@@ -1522,9 +1769,10 @@ OFCondition DcmItem::searchSubFromHere(const DcmTagKey &tag,
                 }
             }
         } while (l_error.bad() && elementList->seek(ELP_next));
-        DCM_dcmdataCDebug(4, l_error==EC_Normal && dO->getTag()==tag,
-               ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
-                " found!", tag.getGroup(), tag.getElement()));
+        if (l_error==EC_Normal && dO->getTag()==tag)
+        {
+            DCMDATA_TRACE("DcmItem::searchSubFromHere() Element " << tag << " found");
+        }
     }
     return l_error;
 }
@@ -1629,29 +1877,6 @@ OFCondition DcmItem::search(const DcmTagKey &tag,
 // ********************************
 
 
-OFCondition DcmItem::searchErrors(DcmStack &resultStack)
-{
-    OFCondition l_error = errorFlag;
-    DcmObject *dO = NULL;
-    if (errorFlag.bad())
-        resultStack.push(this);
-    if (!elementList->empty())
-    {
-        elementList->seek(ELP_first);
-        do {
-            OFCondition err = EC_Normal;
-            dO = elementList->get();
-            if ((err = dO->searchErrors(resultStack)).bad())
-                l_error = err;
-        } while (elementList->seek(ELP_next));
-    }
-    return l_error;
-}
-
-
-// ********************************
-
-
 OFCondition DcmItem::loadAllDataIntoMemory()
 {
     OFCondition l_error = EC_Normal;
@@ -1670,10 +1895,8 @@ OFCondition DcmItem::loadAllDataIntoMemory()
 
 
 
-
 // ********************************
 
-//
 // Support functions
 
 OFCondition newDicomElement(DcmElement *&newElement,
@@ -1684,7 +1907,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
     OFBool readAsUN = OFFalse;
     return newDicomElement(newElement, newTag, length, NULL, readAsUN);
 }
-                            
+
 DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length)
 {
@@ -1695,6 +1918,7 @@ DcmElement *newDicomElement(const DcmTag &tag,
 
 
 // ********************************
+
 
 OFCondition newDicomElement(DcmElement *&newElement,
                             DcmTag &tag,
@@ -1707,7 +1931,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
     newElement = NULL;
     DcmEVR evr = tag.getEVR();
     readAsUN = OFFalse;
-    
+
     /* revert UN elements with finite length back to known VR if possible */
     if ((evr == EVR_UN) && (length != DCM_UndefinedLength) && dcmEnableUnknownVRConversion.get())
     {
@@ -1718,7 +1942,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
       if (privateCreatorCache && (newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
       {
         const char *pc = privateCreatorCache->findPrivateCreator(newTag);
-        if (pc)
+        if (pc != NULL)
         {
             // we have a private creator for this element
             newTag.setPrivateCreator(pc);
@@ -1726,14 +1950,14 @@ OFCondition newDicomElement(DcmElement *&newElement,
         }
       }
 
-      /* update VR for tag, set "readAsUN" flag that makes sure the attribute value
+      /* update VR for tag, set "readAsUN" flag that makes sure the element value
        * is read in Little Endian Implicit VR (i.e. the UN encoding)
        */
       if (newTag.getEVR() != EVR_UNKNOWN)
       {
-        tag.setVR(newTag.getVR());
-        evr = tag.getEVR();
-        readAsUN = OFTrue;
+          tag.setVR(newTag.getVR());
+          evr = tag.getEVR();
+          readAsUN = OFTrue;
       }
     }
 
@@ -1796,17 +2020,17 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_SS :
             newElement = new DcmSignedShort(tag, length);
             break;
-        case EVR_xs : // according to Dicom-Standard V3.0
+        case EVR_xs : // according to DICOM standard
         case EVR_US :
             newElement = new DcmUnsignedShort(tag, length);
             break;
         case EVR_SL :
             newElement = new DcmSignedLong(tag, length);
             break;
-        case EVR_up : // for (0004,eeee) according to Dicom-Standard V3.0
+        case EVR_up : // for (0004,eeee) according to DICOM standard
         case EVR_UL :
         {
-            // generate Tag with VR from dictionary!
+            // generate tag with VR from dictionary!
             DcmTag ulupTag(tag.getXTag());
             if (ulupTag.getEVR() == EVR_up)
                 newElement = new DcmUnsignedLongOffset(ulupTag, length);
@@ -1814,13 +2038,13 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 newElement = new DcmUnsignedLong(tag, length);
         }
         break;
-        case EVR_FL:
+        case EVR_FL :
             newElement = new DcmFloatingPointSingle(tag, length);
             break;
         case EVR_FD :
             newElement = new DcmFloatingPointDouble(tag, length);
             break;
-        case EVR_OF:
+        case EVR_OF :
             newElement = new DcmOtherFloat(tag, length);
             break;
 
@@ -1839,14 +2063,14 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 l_error = EC_InvalidTag;
             break;
 
-        // pixel sequences (EVR_pixelSQ) are handled through class DcmPixelData 
+        // pixel sequences (EVR_pixelSQ) are handled through class DcmPixelData
         // and should never appear here.
 
         // unclear 8 or 16 bit:
         case EVR_ox :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
                 newElement = new DcmOverlayData(tag, length);
             else
                 /* we don't know this element's real transfer syntax, so we just
@@ -1864,10 +2088,11 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_OW :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
                 newElement = new DcmOverlayData(tag, length);
             else
-                if (length == DCM_UndefinedLength) {
+                if (length == DCM_UndefinedLength)
+                {
                     // The attribute is OB or OW but is encoded with undefined
                     // length.  Assume it is really a sequence so that we can
                     // catch the sequence delimitation item.
@@ -1884,7 +2109,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         default :
             if (length == DCM_UndefinedLength)
             {
-              // The attribute VR is UN with undefined length. Assume it is 
+              // The attribute VR is UN with undefined length. Assume it is
               // really a sequence so that we can catch the sequence delimitation item.
               DcmVR sqVR(EVR_SQ); // on writing we will handle this element as SQ, not UN
               DcmTag newTag(tag.getXTag(), sqVR);
@@ -1895,6 +2120,10 @@ OFCondition newDicomElement(DcmElement *&newElement,
             }
             break;
     }
+
+    /* check for valid element pointer */
+    if (l_error.good() && (newElement == NULL))
+        l_error = EC_MemoryExhausted;
 
     /* return result value */
     return l_error;
@@ -1954,11 +2183,12 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
 
 // ********************************
 
-/* --- findAndGet functions: find an element and get it or the value, respectively--- */
+/* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
 OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
                                        DcmElement *&element,
-                                       const OFBool searchIntoSub)
+                                       const OFBool searchIntoSub,
+                                       const OFBool createCopy)
 {
     DcmStack stack;
     /* find the element */
@@ -1969,6 +2199,13 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
         /* should never happen but ... */
         if (element == NULL)
             status = EC_CorruptedData;
+        else if (createCopy)
+        {
+            /* create a copy of the element */
+            element = OFstatic_cast(DcmElement *, element->clone());
+            if (element == NULL)
+                status = EC_MemoryExhausted;
+        }
     } else {
         /* reset element pointer */
         element = NULL;
@@ -2458,7 +2695,8 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
 
 OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
                                         DcmSequenceOfItems *&sequence,
-                                        const OFBool searchIntoSub)
+                                        const OFBool searchIntoSub,
+                                        const OFBool createCopy)
 {
     DcmStack stack;
     /* find the element */
@@ -2471,8 +2709,16 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
             status = EC_CorruptedData;
         /* check for correct VR */
         else if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+        {
             sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
-        else
+            /* create a copy of the sequence? */
+            if (createCopy)
+            {
+                sequence = OFstatic_cast(DcmSequenceOfItems *, sequence->clone());
+                if (sequence == NULL)
+                    status = EC_MemoryExhausted;
+            }
+        } else
             status = EC_InvalidVR;
     }
     if (status.bad())
@@ -2486,7 +2732,8 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
 
 OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                             DcmItem *&item,
-                                            const signed long itemNum)
+                                            const signed long itemNum,
+                                            const OFBool createCopy)
 {
     DcmStack stack;
     /* find sequence */
@@ -2500,20 +2747,30 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
             {
-                DcmSequenceOfItems *seq = OFstatic_cast(DcmSequenceOfItems *, delem);
-                const unsigned long count = seq->card();
+                DcmSequenceOfItems *sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                const unsigned long count = sequence->card();
                 /* empty sequence? */
                 if (count > 0)
                 {
                     /* get last item */
                     if (itemNum == -1)
-                        item = seq->getItem(count - 1);
+                        item = sequence->getItem(count - 1);
                     /* get specified item */
                     else if ((itemNum >= 0) && (OFstatic_cast(unsigned long, itemNum) < count))
-                        item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
+                        item = sequence->getItem(OFstatic_cast(unsigned long, itemNum));
                     /* invalid item number */
                     else
                         status = EC_IllegalParameter;
+                    /* create a copy of the item? */
+                    if (createCopy)
+                    {
+                        if (status.good() && (item != NULL))
+                        {
+                            item = OFstatic_cast(DcmItem *, item->clone());
+                            if (item == NULL)
+                                status = EC_MemoryExhausted;
+                        }
+                    }
                 } else
                     status = EC_IllegalParameter;
             } else
@@ -2541,7 +2798,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
     DcmStack stack;
     /* find sequence */
     OFCondition status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    DcmSequenceOfItems *seq = NULL;
+    DcmSequenceOfItems *sequence = NULL;
     /* sequence found? */
     if (status.good())
     {
@@ -2551,51 +2808,51 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
         {
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
-                seq = OFstatic_cast(DcmSequenceOfItems *, delem);
+                sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
             else
                 status = EC_InvalidVR;
         } else
             status = EC_CorruptedData;
     } else {
         /* create new sequence element */
-        seq = new DcmSequenceOfItems(seqTag);
-        if (seq != NULL)
+        sequence = new DcmSequenceOfItems(seqTag);
+        if (sequence != NULL)
         {
             /* insert into item/dataset */
-            status = insert(seq, OFTrue /*replaceOld*/);
+            status = insert(sequence, OFTrue /*replaceOld*/);
             if (status.bad())
-                delete seq;
+                delete sequence;
         } else
             status = EC_MemoryExhausted;
     }
     if (status.good())
     {
-        if (seq != NULL)
+        if (sequence != NULL)
         {
-            const unsigned long count = seq->card();
+            const unsigned long count = sequence->card();
             /* existing item? */
             if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
             {
                 if (itemNum == -1)
                 {
                     /* get last item */
-                    item = seq->getItem(count - 1);
+                    item = sequence->getItem(count - 1);
                 } else {
                     /* get specified item */
-                    item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
+                    item = sequence->getItem(OFstatic_cast(unsigned long, itemNum));
                 }
             /* create new item(s) */
             } else {
                 unsigned long i = 0;
                 /* create empty trailing items if required */
                 const unsigned long itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count + 1) : 1;
-                while ((i < itemCount) && (status.good()))
+                while ((i < itemCount) && status.good())
                 {
                     item = new DcmItem();
                     if (item != NULL)
                     {
                         /* append new item to end of sequence */
-                        status = seq->append(item);
+                        status = sequence->append(item);
                         if (status.bad())
                             delete item;
                     } else
@@ -2617,7 +2874,30 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 
 // ********************************
 
+
 /* --- findAndXXX functions: find an element and do something with it --- */
+
+OFCondition DcmItem::findAndInsertCopyOfElement(const DcmTagKey &tagKey,
+                                                DcmItem *destItem,
+                                                const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalParameter;
+    if (destItem != NULL)
+    {
+        DcmElement *delem = NULL;
+        /* get copy of element from current dataset */
+        status = findAndGetElement(tagKey, delem, OFFalse /*searchIntoSub*/, OFTrue /*createCopy*/);
+        if (status.good())
+        {
+            /* ... and insert it into the destination dataset */
+            status = destItem->insert(delem, replaceOld);
+            if (status.bad())
+                delete delem;
+        }
+    }
+    return status;
+}
+
 
 OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
                                           const OFBool allOccurrences,
@@ -2648,21 +2928,36 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
 }
 
 
-OFCondition DcmItem::findAndCopyElement(const DcmTagKey &tagKey,
-                                        DcmElement *&newElement,
-                                        const OFBool searchIntoSub)
+OFCondition DcmItem::findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
+                                               const signed long itemNum)
 {
-    DcmElement *elem = NULL;
-    /* find the element */
-    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    DcmStack stack;
+    /* find sequence */
+    OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (status.good())
     {
-        /* create copy of element */
-        newElement = OFstatic_cast(DcmElement *, elem->clone());
-        if (newElement == NULL)
-            status = EC_MemoryExhausted;
-    } else
-        newElement = NULL;
+        /* get element */
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+        if (delem != NULL)
+        {
+            /* check VR */
+            if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+            {
+                DcmSequenceOfItems *sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                const unsigned long count = sequence->card();
+                /* last item? */
+                if (itemNum == -1)
+                    delete sequence->remove(count - 1);
+                /* valid item? */
+                else if ((itemNum >= 0) && (OFstatic_cast(unsigned long, itemNum) < count))
+                    delete sequence->remove(OFstatic_cast(unsigned long, itemNum));
+                else
+                    status = EC_IllegalParameter;
+            } else
+                status = EC_InvalidVR;
+        } else
+            status = EC_CorruptedData;
+    }
     return status;
 }
 
@@ -2922,7 +3217,7 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3011,7 +3306,7 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3049,7 +3344,7 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3075,7 +3370,7 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3102,7 +3397,7 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3139,7 +3434,7 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3165,11 +3460,14 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
 }
+
+
+// ********************************
 
 
 OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
@@ -3207,21 +3505,8 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_FD:
             elem = new DcmFloatingPointDouble(tag);
             break;
-        case EVR_OF:
-            elem = new DcmOtherFloat(tag);
-            break;
         case EVR_IS:
             elem = new DcmIntegerString(tag);
-            break;
-        case EVR_OB:
-        case EVR_OW:
-            elem = new DcmOtherByteOtherWord(tag);
-            break;
-        case EVR_TM:
-            elem = new DcmTime(tag);
-            break;
-        case EVR_UI:
-            elem = new DcmUniqueIdentifier(tag);
             break;
         case EVR_LO:
             elem = new DcmLongString(tag);
@@ -3229,8 +3514,12 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_LT:
             elem = new DcmLongText(tag);
             break;
-        case EVR_UT:
-            elem = new DcmUnlimitedText(tag);
+        case EVR_OF:
+            elem = new DcmOtherFloat(tag);
+            break;
+        case EVR_OB:
+        case EVR_OW:
+            elem = new DcmOtherByteOtherWord(tag);
             break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
@@ -3238,11 +3527,32 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_SH:
             elem = new DcmShortString(tag);
             break;
-        case EVR_SQ :
+        case EVR_SL:
+            elem = new DcmSignedLong(tag);
+            break;
+        case EVR_SQ:
             elem = new DcmSequenceOfItems(tag);
+            break;
+        case EVR_SS:
+            elem = new DcmSignedShort(tag);
             break;
         case EVR_ST:
             elem = new DcmShortText(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_UL:
+            elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -3261,6 +3571,92 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::insertSequenceItem(const DcmTag &seqTag,
+                                        DcmItem *item,
+                                        const signed long itemNum)
+{
+    OFCondition status = EC_IllegalParameter;
+    if (item != NULL)
+    {
+        DcmStack stack;
+        /* find sequence */
+        status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
+        DcmSequenceOfItems *sequence = NULL;
+        /* sequence found? */
+        if (status.good())
+        {
+            /* get element */
+            DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+            if (delem != NULL)
+            {
+                /* check VR */
+                if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+                    sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                else
+                    status = EC_InvalidVR;
+            } else
+                status = EC_CorruptedData;
+        } else {
+            /* create new sequence element */
+            sequence = new DcmSequenceOfItems(seqTag);
+            if (sequence != NULL)
+            {
+                /* insert into item/dataset */
+                status = insert(sequence, OFTrue /*replaceOld*/);
+                if (status.bad())
+                    delete sequence;
+            } else
+                status = EC_MemoryExhausted;
+        }
+        if (status.good())
+        {
+            if (sequence != NULL)
+            {
+                const unsigned long count = sequence->card();
+                /* 'itemNum' specifies and existing item? */
+                if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
+                {
+                    if (itemNum == -1)
+                    {
+                        /* insert given item before last entry */
+                        status = sequence->insert(item, count - 1, OFTrue /*before*/);
+                    } else {
+                        /* insert given item before specified entry */
+                        status = sequence->insert(item, OFstatic_cast(unsigned long, itemNum), OFTrue /*before*/);
+                    }
+                /* create empty item(s) and append */
+                } else {
+                    DcmItem *newItem = NULL;
+                    unsigned long i = 0;
+                    /* create empty trailing items if required */
+                    const unsigned long itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count) : 0;
+                    while ((i < itemCount) && status.good())
+                    {
+                        newItem = new DcmItem();
+                        if (newItem != NULL)
+                        {
+                            /* append new item to end of sequence */
+                            status = sequence->append(newItem);
+                            if (status.bad())
+                                delete newItem;
+                        } else
+                            status = EC_MemoryExhausted;
+                        i++;
+                    }
+                    /* append given item to end of sequence */
+                    status = sequence->append(item);
+                }
+            } else
+                status = EC_IllegalCall;
+        }
+    }
+    return status;
+}
+
+
+// ********************************
+
+
 OFBool DcmItem::containsUnknownVR() const
 {
     if (!elementList->empty())
@@ -3275,9 +3671,244 @@ OFBool DcmItem::containsUnknownVR() const
 }
 
 
+OFBool DcmItem::containsExtendedCharacters(const OFBool checkAllStrings)
+{
+    if (!elementList->empty())
+    {
+        elementList->seek(ELP_first);
+        do {
+            if (elementList->get()->containsExtendedCharacters(checkAllStrings))
+                return OFTrue;
+        } while (elementList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
+OFBool DcmItem::isAffectedBySpecificCharacterSet() const
+{
+    if (!elementList->empty())
+    {
+        elementList->seek(ELP_first);
+        do {
+            if (elementList->get()->isAffectedBySpecificCharacterSet())
+                return OFTrue;
+        } while (elementList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.150  2010-11-02 15:31:09  joergr
+** Added special handling for data elements that are associated with different
+** VRs (according to the data dictinary) when read with an implicit transfer
+** syntax, e.g. PixelPaddingValue or WaveformData.
+**
+** Revision 1.149  2010-10-20 16:44:16  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.148  2010-10-14 13:14:08  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.147  2010-10-01 13:55:04  joergr
+** Added new helper function findAndInsertCopyOfElement().
+**
+** Revision 1.146  2010-06-23 08:50:25  joergr
+** Moved log output to another code line in order to avoid a possible NULL
+** pointer dereference.
+**
+** Revision 1.145  2010-03-25 16:31:42  joergr
+** Use return value of getTag() for stream output where possible.
+** Made log messages more consistent within this module.
+**
+** Revision 1.144  2010-03-24 14:11:54  onken
+** Fixed compilation problem introduced with recent assignment operator changes.
+**
+** Revision 1.143  2010-03-24 11:56:36  onken
+** Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
+** Replaced all code occurences of cleaning all elements from internal lists to
+** newly introduced function in DcmList.
+**
+** Revision 1.142  2009-12-04 16:54:54  joergr
+** Sightly modified some log messages.
+**
+** Revision 1.141  2009-11-13 13:11:20  joergr
+** Fixed minor issues in log output.
+**
+** Revision 1.140  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.139  2009-09-28 13:30:59  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
+** Revision 1.138  2009-08-31 15:21:57  joergr
+** Fixed bug in group length computation which could cause a segmentation fault
+** for incorrectly encoded DICOM datasets (with illegal group length elements).
+**
+** Revision 1.137  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.136  2009-05-15 09:20:09  joergr
+** Fixed wrong comments in print() method.
+**
+** Revision 1.135  2009-04-20 16:02:09  joergr
+** Fixed typo.
+**
+** Revision 1.134  2009-03-25 10:21:21  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
+** Revision 1.133  2009-03-18 13:54:04  joergr
+** Fixed "number overflow" issue with error message on non-standard VR.
+**
+** Revision 1.132  2009-03-05 14:08:05  onken
+** Fixed typo.
+**
+** Revision 1.131  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
+** Revision 1.130  2009-02-18 12:22:11  meichel
+** Minor changes needed for VC6
+**
+** Revision 1.129  2009-02-16 16:09:36  onken
+** Fixed bug that caused incorrect error message when parsing undefined length
+** sequences inside defined length items.
+**
+** Revision 1.128  2009-02-11 13:16:36  onken
+** Added global parser flag permitting to stop parsing after a specific
+** element was parsed on dataset level (useful for removing garbage at
+** end of file).
+**
+** Revision 1.127  2009-02-05 14:59:43  onken
+** Make usage of global "ignore parsing errors" flag in case of elements
+** being larger than rest of available input. However, if enabled, the
+** parser ignores any elements coming after such an input-exceeding
+** element. Minor code clarifications.
+**
+** Revision 1.126  2009-02-05 10:39:52  joergr
+** Made new error messages more consistent with existing messages.
+**
+** Revision 1.125  2009-02-04 18:07:30  joergr
+** Minor fixes and code restructuring (without changing the semantics).
+** Fixed various type mismatches reported by MSVC introduced with OFFile class.
+**
+** Revision 1.124  2009-02-04 14:06:01  onken
+** Changed parser to make use of the new error ignoring flag when parsing.
+** Added check (makes use of new flag) that notes whether an element's value is
+** specified larger than the surrounding item (applicable for explicit length
+** coding).
+**
+** Revision 1.123  2009-01-29 15:35:32  onken
+** Added global parsing option that allows for reading private attributes in
+** implicit encoding having a maximum length to be read as sequences instead
+** of relying on the dictionary.
+**
+** Revision 1.122  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
+** Revision 1.121  2009-01-05 15:31:42  joergr
+** Added global flag that allows for reading incorrectly encoded DICOM datasets
+** where particular data elements are encoded with a differing transfer syntax
+** (Implicit VR Little endian instead of Explicit VR encoding as declared).
+**
+** Revision 1.120  2008-12-12 11:44:41  onken
+** Moved path access functions to separate classes
+**
+** Revision 1.119  2008-12-05 13:51:13  onken
+** Introduced new error code number for specific findOrCreatePath() errors.
+**
+** Revision 1.118  2008-12-05 13:28:01  onken
+** Splitted findOrCreatePath() function API for also offering a simple API
+** for non-wildcard searches.
+**
+** Revision 1.117  2008-12-04 16:54:54  onken
+** Changed findOrCreatePath() to also support wildcard as item numbers.
+**
+** Revision 1.116  2008-11-26 12:16:52  joergr
+** Slightly changed behavior of newDicomElement(): return error code if new
+** element could not be created (e.g. because memory is exhausted).
+**
+** Revision 1.115  2008-11-21 16:18:11  onken
+** Changed implementation of findOrCreatePath() to make use of function
+** newDicomElement() which also knows how to handle EVRs like ox correctly.
+**
+** Revision 1.114  2008-10-15 15:49:09  onken
+** Fixed incorrect behaviour of findOrCreatePath() if sequence is the last
+** attribute to be inserted.
+**
+** Revision 1.113  2008-10-15 12:31:24  onken
+** Added findOrCreatePath() functions which allow for finding or creating a
+** hierarchy of sequences, items and attributes according to a given "path"
+** string.
+**
+** Revision 1.112  2008-09-24 13:32:10  joergr
+** Fixed typo in comment.
+**
+** Revision 1.111  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.110  2007-12-11 12:21:57  onken
+** Corrected some putAndInsert functions that returned wrong error code
+** (EC_MemoryExhausted) in some cases.
+**
+** Revision 1.109  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.108  2007/09/21 10:40:18  onken
+** Changed foundVR() API and implementation to use Uint8* instead of char* to
+** avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
+**
+** Revision 1.107  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.106  2007/06/08 15:18:47  joergr
+** Fixed typo that caused MSVC to report an error.
+**
+** Revision 1.105  2007/06/08 15:12:56  joergr
+** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
+** Replaced helper function findAndCopyElement() by new optional parameter
+** 'createCopy' in various findAndGetXXX() functions.
+**
+** Revision 1.104  2007/03/09 10:36:09  joergr
+** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
+**
+** Revision 1.103  2007/02/19 15:04:16  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.102  2006/12/15 14:14:44  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.101  2006/12/13 13:59:49  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.100  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.99  2006/05/11 08:49:18  joergr
+** Moved checkForNonASCIICharacters() from application to library.
+**
+** Revision 1.98  2006/01/18 13:44:03  joergr
+** Translated remaining German comment.
+**
 ** Revision 1.97  2005/12/08 15:41:16  meichel
 ** Changed include path schema for all DCMTK header files
 **

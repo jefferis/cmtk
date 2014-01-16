@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:17 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +30,6 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dclist.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 
 // *****************************************
@@ -274,10 +269,57 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 }
 
 
+// ********************************
+
+
+void DcmList::deleteAllElements()
+{
+    unsigned long numElements = cardinality;
+    DcmListNode* tmpNode = NULL;
+    DcmObject* tmpObject = NULL;
+    // delete all elements
+    for (unsigned long i = 0; i < numElements; i++)
+    {
+        // always select first node so no search is necessary
+        tmpNode = firstNode;
+        // clear value of node
+        tmpObject = tmpNode->value();
+        if (tmpObject != NULL)
+        {
+          // delete load of selected list node
+          delete tmpObject;
+          tmpObject = NULL;
+        }
+        firstNode = tmpNode->nextNode;
+        // delete the list node itself
+        delete tmpNode;
+    }
+    // reset all attributes for later use
+    firstNode = NULL;
+    lastNode = NULL;
+    currentNode = NULL;
+    cardinality = 0;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
- * Revision 1.14  2005/12/08 15:41:17  meichel
+ * Revision 1.18  2010-10-14 13:14:08  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.17  2010-03-25 16:24:59  joergr
+ * Removed redundant variable declaration in order to avoid a warning message
+ * reported by gcc 4.1.2.
+ *
+ * Revision 1.16  2010-03-24 11:52:46  onken
+ * Introduced new function to delete all elements (including memory de-allocation)
+ * from DcmList.
+ *
+ * Revision 1.15  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.14  2005-12-08 15:41:17  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2004/01/16 13:50:22  joergr

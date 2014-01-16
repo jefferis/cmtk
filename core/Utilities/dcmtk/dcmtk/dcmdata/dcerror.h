@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,29 +17,29 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:12 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCERROR_H
 #define DCERROR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofcond.h"      /* for OFCondition */
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 
 /*
- *  dcmtk module numbers for modules which create their own error codes.
+ *  DCMTK module numbers for modules which create their own error codes.
  *  Module numbers > 1023 are reserved for user code.
  */
 
 const unsigned short OFM_dcmdata  =  1;
-const unsigned short OFM_ctndisp  =  2;
+const unsigned short OFM_ctndisp  =  2;   /* retired */
 const unsigned short OFM_dcmimgle =  3;
 const unsigned short OFM_dcmimage =  4;
 const unsigned short OFM_dcmjpeg  =  5;
@@ -54,34 +50,78 @@ const unsigned short OFM_dcmsign  =  9;
 const unsigned short OFM_dcmsr    = 10;
 const unsigned short OFM_dcmtls   = 11;
 const unsigned short OFM_imagectn = 12;
-const unsigned short OFM_wlistctn = 13;
+const unsigned short OFM_wlistctn = 13;   /* retired */
 const unsigned short OFM_dcmwlm   = 14;
 const unsigned short OFM_dcmpps   = 15;
 const unsigned short OFM_dcmdbsup = 16;
 const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
+const unsigned short OFM_dcmjpls  = 19;
+const unsigned short OFM_dcmwave  = 20;
+const unsigned short OFM_dcmrt    = 21;
+const unsigned short OFM_dcmloco  = 22;
+const unsigned short OFM_dcmstcom = 23;
+const unsigned short OFM_dcmppscu = 24;
 
 
 // condition constants
-extern const OFCondition EC_InvalidTag;
-extern const OFCondition EC_TagNotFound;
-extern const OFCondition EC_InvalidVR;
-extern const OFCondition EC_InvalidStream;
-extern const OFCondition EC_EndOfStream;
-extern const OFCondition EC_CorruptedData;
-extern const OFCondition EC_IllegalCall;
-extern const OFCondition EC_SequEnd;
-extern const OFCondition EC_DoubledTag;
-extern const OFCondition EC_StreamNotifyClient;
-extern const OFCondition EC_WrongStreamMode;
-extern const OFCondition EC_ItemEnd;
-extern const OFCondition EC_RepresentationNotFound;
-extern const OFCondition EC_CannotChangeRepresentation;
-extern const OFCondition EC_UnsupportedEncoding;
-extern const OFCondition EC_PutbackFailed;
-extern const OFCondition EC_DoubleCompressionFilters;
-extern const OFCondition EC_ApplicationProfileViolated;
 
+/// invalid tag
+extern const OFCondition EC_InvalidTag;
+/// tag not found
+extern const OFCondition EC_TagNotFound;
+/// invalid VR
+extern const OFCondition EC_InvalidVR;
+/// invalid stream
+extern const OFCondition EC_InvalidStream;
+/// end of stream
+extern const OFCondition EC_EndOfStream;
+/// corrupted data
+extern const OFCondition EC_CorruptedData;
+/// illegal call, perhaps wrong parameters
+extern const OFCondition EC_IllegalCall;
+/// sequence end
+extern const OFCondition EC_SequEnd;
+/// doubled tag
+extern const OFCondition EC_DoubledTag;
+/// I/O suspension or premature end of stream
+extern const OFCondition EC_StreamNotifyClient;
+/// stream mode (R/W, random/sequence) is wrong
+extern const OFCondition EC_WrongStreamMode;
+/// item end
+extern const OFCondition EC_ItemEnd;
+/// compressed/uncompressed pixel representation not found
+extern const OFCondition EC_RepresentationNotFound;
+/// Pixel representation cannot be changed to requested transfer syntax
+extern const OFCondition EC_CannotChangeRepresentation;
+/// Unsupported compression or encryption
+extern const OFCondition EC_UnsupportedEncoding;
+/// Parser failure: Putback operation failed
+extern const OFCondition EC_PutbackFailed;
+/// Too many compression filters
+extern const OFCondition EC_DoubleCompressionFilters;
+/// Storage media application profile violated
+extern const OFCondition EC_ApplicationProfileViolated;
+/// Invalid offset
+extern const OFCondition EC_InvalidOffset;
+/// Too many bytes requested
+extern const OFCondition EC_TooManyBytesRequested;
+// Invalid basic offset table
+extern const OFCondition EC_InvalidBasicOffsetTable;
+/// Element length is larger than (explicit) length of surrounding item
+extern const OFCondition EC_ElemLengthLargerThanItem;
+/// File meta information header missing
+extern const OFCondition EC_FileMetaInfoHeaderMissing;
+/// Item or sequence content larger than explicit 32-bit length field permits
+extern const OFCondition EC_SeqOrItemContentOverflow;
+/// Value Representation (VR) violated
+extern const OFCondition EC_ValueRepresentationViolated;
+/// Value Multiplicity (VM) violated
+extern const OFCondition EC_ValueMultiplicityViolated;
+/// Maximum VR length violated
+extern const OFCondition EC_MaximumLengthViolated;
+/// Element length is larger than 16-bit length field permits
+extern const OFCondition EC_ElemLengthExceeds16BitField;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -101,6 +141,64 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.36  2010-10-14 13:15:41  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.35  2010-07-30 16:52:51  onken
+** Added error code for new (non-public) module dcmppscu.
+**
+** Revision 1.34  2010-06-09 15:53:34  joergr
+** Added number for new module "dcmstcom", used for module-specific error codes.
+**
+** Revision 1.33  2010-02-25 13:50:50  joergr
+** Fixed issue with element values which exceed the maximum of a 16-bit length
+** field.
+**
+** Revision 1.32  2009-08-03 09:05:29  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.31  2009-07-29 14:16:15  meichel
+** Defined new constant OFM_dcmloco
+**
+** Revision 1.30  2009-03-19 11:46:20  joergr
+** Fixed issue with Doxygen documentation.
+**
+** Revision 1.29  2009-03-05 13:35:47  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds
+** 32-bit length field. Also introduced new flag (default: enabled)
+** for writing in explicit length mode, which allows for automatically
+** switching encoding of only that very sequence/item to undefined
+** length coding (thus permitting to actually write the file).
+**
+** Revision 1.28  2009-02-11 16:36:04  joergr
+** Introduced new error code EC_FileMetaInfoHeaderMissing.
+**
+** Revision 1.27  2009-02-04 17:54:30  joergr
+** Fixed various layout and formatting issues.
+**
+** Revision 1.26  2009-02-04 14:06:03  onken
+** Changed parser to make use of the new error ignoring flag when parsing.
+** Added check (makes use of new flag) that notes whether an element's value is
+** specified larger than the surrounding item (applicable for explicit length
+** coding).
+**
+** Revision 1.25  2009-02-04 10:17:23  joergr
+** Introduced new error code EC_InvalidBasicOffsetTable.
+**
+** Revision 1.24  2008-12-08 14:34:54  joergr
+** Added number for new module "dcmrt", used for module-specific error codes.
+**
+** Revision 1.23  2008-07-17 10:28:36  onken
+** Added error constant for upcoming dcmwave module.
+**
+** Revision 1.22  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.21  2007/06/13 14:45:47  meichel
+** Added module code OFM_dcmjpls and some new error codes.
+**
 ** Revision 1.20  2005/12/08 16:28:12  meichel
 ** Changed include path schema for all DCMTK header files
 **
@@ -174,4 +272,3 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 */
-

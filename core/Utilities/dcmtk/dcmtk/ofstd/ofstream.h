@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:06:06 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +49,15 @@
 #else
 #error DCMTK needs stringstream or strstream type
 #endif
-#ifdef HAVE_STD_NAMESPACE
+
+/* DCMTK by default does not anymore pollute the default namespace by 
+ * importing namespace std. Earlier releases did this to simplify compatibility
+ * with older compilers where STL classes were not consistently defined
+ * in namespace std. We now have configure macros which should care for this.
+ * If user code still relies on namespace std to be included, compile with
+ * macro USING_STD_NAMESPACE defined.
+ */
+#ifdef USING_STD_NAMESPACE
 namespace std { }
 using namespace std;
 #endif
@@ -77,13 +81,24 @@ using namespace std;
 #endif
 #include <iomanip.h>
 
-#endif
+#endif 
 
 #ifdef USE_STRINGSTREAM
 
-typedef stringstream OFStringStream;
-typedef ostringstream OFOStringStream;
-typedef istringstream OFIStringStream;
+// define STD_NAMESPACE to std:: if the standard namespace exists
+#ifndef STD_NAMESPACE
+#ifdef HAVE_STD_NAMESPACE
+#define STD_NAMESPACE std::
+#else
+#define STD_NAMESPACE
+#endif
+#endif
+
+#define OFendl STD_NAMESPACE endl
+
+typedef STD_NAMESPACE stringstream OFStringStream;
+typedef STD_NAMESPACE ostringstream OFOStringStream;
+typedef STD_NAMESPACE istringstream OFIStringStream;
 
 #define OFStringStream_ends ""
 #define OFSTRINGSTREAM_GETOFSTRING(oss, string) \
@@ -92,7 +107,7 @@ typedef istringstream OFIStringStream;
 // declared between xxx_GETSTR and xxx_FREESTR are only valid within this scope.
 #define OFSTRINGSTREAM_GETSTR(oss, chptr) \
 { \
-    string chptr##__ = (oss).str(); \
+    STD_NAMESPACE string chptr##__ = (oss).str(); \
     const char *chptr = chptr##__.c_str();
 #define OFSTRINGSTREAM_FREESTR(chptr) \
 }
@@ -125,6 +140,22 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
+ * Revision 1.11  2010-10-14 13:15:50  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.10  2007/02/19 15:16:16  meichel
+ * Namespace std is not imported into the default namespace anymore,
+ *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
+ *
+ * Revision 1.9  2006/08/15 15:52:23  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.8  2006/08/14 16:42:02  meichel
+ * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
+ *   namespace exists and empty otherwise. OFendl is defined as std::endl if
+ *   the standard namespace exists and as endl otherwise.
+ *
  * Revision 1.7  2005/12/08 16:06:06  meichel
  * Changed include path schema for all DCMTK header files
  *

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmimgle
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:48:12 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:16:27 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,14 +31,21 @@
 #define DIUTILS_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofglobal.h"
+
+#include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_LIBC
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmimgleGetLogger();
+
+#define DCMIMGLE_TRACE(msg) OFLOG_TRACE(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_INFO(msg)  OFLOG_INFO(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleGetLogger(), msg)
+
 
 /*---------------------*
  *  const definitions  *
@@ -59,7 +62,7 @@ const unsigned long CIF_AcrNemaCompatibility         = 0x0000001;
 /// accept wrong palette attribute tags
 const unsigned long CIF_WrongPaletteAttributeTags    = 0x0000002;
 
-/// element pixel data may be detached if it is no longer needed by dcmimage
+/// element pixel data may be detached if it is no longer needed by DicomImage
 const unsigned long CIF_MayDetachPixelData           = 0x0000004;
 
 /// use presentation state instead of 'built-in' LUTs & overlays
@@ -76,6 +79,21 @@ const unsigned long CIF_IgnoreModalityTransformation = 0x0000040;
 
 /// ignore third value of the modality LUT descriptor, determine bit depth automatically
 const unsigned long CIF_IgnoreModalityLutBitDepth    = 0x0000080;
+
+/// check third value of the LUT descriptor, compare with with expected bit depth based on LUT data
+const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
+
+/// use absolute (possible) pixel range for determining the internal representation (monochrome only)
+const unsigned long CIF_UseAbsolutePixelRange        = 0x0000200;
+
+/// use partial access to pixel data, i.e. without decompressing or loading a complete multi-frame image
+const unsigned long CIF_UsePartialAccessToPixelData  = 0x0000400;
+
+/// always decompress complete pixel data when processing an image, i.e. even if partial access is used
+const unsigned long CIF_DecompressCompletePixelData  = 0x0000800;
+
+/// never access embedded overlays since this requires to load and uncompress the complete pixel data
+const unsigned long CIF_NeverAccessEmbeddedOverlays  = 0x0001000;
 //@}
 
 
@@ -93,6 +111,8 @@ enum EP_Interpretation
 {
     /// unknown, undefined, invalid
     EPI_Unknown,
+    // no element value available
+    EPI_Missing,
     /// monochrome 1
     EPI_Monochrome1,
     /// monochrome 2
@@ -120,9 +140,11 @@ enum EP_Interpretation
  */
 struct SP_Interpretation
 {
-    /// string
+    /// string (name of the color model without spaces and underscores)
     const char *Name;
-    /// constant
+    /// defined term according to the DICOM standard
+    const char *DefinedTerm;
+    /// integer constant
     EP_Interpretation Type;
 };
 
@@ -234,10 +256,23 @@ enum EM_Overlay
     EMO_Complement,
     /// invert the overlay bitmap
     EMO_InvertBitmap,
-    /// region of interest (ROI) 
+    /// region of interest (ROI)
     EMO_RegionOfInterest,
     /// bitmap shutter, used for GSPS objects
     EMO_BitmapShutter
+};
+
+
+/** VOI LUT functions
+ */
+enum EF_VoiLutFunction
+{
+    /// default function (not explicitly set)
+    EFV_Default,
+    /// function LINEAR
+    EFV_Linear,
+    /// function SIGMOID
+    EFV_Sigmoid
 };
 
 
@@ -267,23 +302,37 @@ enum EP_Polarity
 };
 
 
+/** bits per table entry modes.
+ *  Specifies whether the given value in the LUT descriptor is used.
+ */
+enum EL_BitsPerTableEntry
+{
+    /// use given value
+    ELM_UseValue,
+    /// ignore given value, use auto detection
+    ELM_IgnoreValue,
+    /// check whether given value is consistent with LUT data
+    ELM_CheckValue
+};
+
+
 /*----------------------------*
  *  constant initializations  *
  *----------------------------*/
 
 const SP_Interpretation PhotometricInterpretationNames[] =
 {
-    {"MONOCHROME1",   EPI_Monochrome1},
-    {"MONOCHROME2",   EPI_Monochrome2},
-    {"PALETTECOLOR",  EPI_PaletteColor},        // space deleted to simplify detection
-    {"RGB",           EPI_RGB},
-    {"HSV",           EPI_HSV},
-    {"ARGB",          EPI_ARGB},
-    {"CMYK",          EPI_CMYK},
-    {"YBRFULL",       EPI_YBR_Full},            // underscore deleted to simplify detection
-    {"YBRFULL422",    EPI_YBR_Full_422},        // underscores deleted to simplify detection
-    {"YBRPARTIAL422", EPI_YBR_Partial_422},     // underscores deleted to simplify detection
-    {NULL,            EPI_Unknown}
+    {"MONOCHROME1",   "MONOCHROME1",     EPI_Monochrome1},
+    {"MONOCHROME2",   "MONOCHROME2",     EPI_Monochrome2},
+    {"PALETTECOLOR",  "PALETTE COLOR",   EPI_PaletteColor},        // space deleted to simplify detection
+    {"RGB",           "RGB",             EPI_RGB},
+    {"HSV",           "HSV",             EPI_HSV},
+    {"ARGB",          "ARGB",            EPI_ARGB},
+    {"CMYK",          "CMYK",            EPI_CMYK},
+    {"YBRFULL",       "YBR_FULL",        EPI_YBR_Full},            // underscore deleted to simplify detection
+    {"YBRFULL422",    "YBR_FULL_422",    EPI_YBR_Full_422},        // underscores deleted to simplify detection
+    {"YBRPARTIAL422", "YBR_PARTIAL_422", EPI_YBR_Partial_422},     // underscores deleted to simplify detection
+    {NULL,            NULL,              EPI_Unknown}
 };
 
 
@@ -359,6 +408,22 @@ class DicomImageClass
     static unsigned int rangeToBits(double minvalue,
                                     double maxvalue);
 
+    /** determine whether integer representation is signed or unsigned
+     *
+     ** @param  repres  integer representation (enum) to be checked
+     *
+     ** @return true if representation is signed, false if unsigned
+     */
+    static int isRepresentationSigned(EP_Representation repres);
+
+    /** determine number of bits used for a particular integer representation
+     *
+     ** @param  repres  integer representation (enum) to be checked
+     *
+     ** @return number of bits
+     */
+    static unsigned int getRepresentationBits(EP_Representation repres);
+
     /** determine integer representation which is necessary to store values in the specified range
      *
      ** @param  minvalue  minimum value to be stored
@@ -369,52 +434,6 @@ class DicomImageClass
     static EP_Representation determineRepresentation(double minvalue,
                                                      double maxvalue);
 
-    /** set the debug level to the specified value
-     *
-     ** @param  level  debug level to be set
-     */
-    static void setDebugLevel(const int level)
-    {
-        DebugLevel.set(level);
-    }
-
-    /** get the current debug level
-     *
-     ** @return  current debug level
-     */
-    static int getDebugLevel()
-    {
-        return DebugLevel.get();
-    }
-
-    /** check whether specified debug level is set
-     *
-     ** @param  level  debug levelto be checked
-     *
-     ** @return true if debug level is set, false (0) otherwise
-     */
-    static int checkDebugLevel(const int level)
-    {
-        return DebugLevel.get() & level;
-    }
-
-
-    /// debug level: display no messages
-    static const int DL_NoMessages;
-    /// debug level: display error messages
-    static const int DL_Errors;
-    /// debug level: display warning messages
-    static const int DL_Warnings;
-    /// debug level: display informational messages
-    static const int DL_Informationals;
-    /// debug level: display debug messages
-    static const int DL_DebugMessages;
-
-
-  private:
-
-    /// debug level defining the verboseness of the image toolkit
-    static OFGlobal<int> DebugLevel;
 };
 
 
@@ -425,6 +444,45 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.42  2010-10-14 13:16:27  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.41  2010-10-05 15:24:02  joergr
+ * Added preliminary support for VOI LUT function. Please note, however, that
+ * the sigmoid transformation is not yet implemented.
+ *
+ * Revision 1.40  2010-03-01 09:08:47  uli
+ * Removed some unnecessary include directives in the headers.
+ *
+ * Revision 1.39  2010-02-23 16:31:34  joergr
+ * Added new helper function which determines whether an integer representation
+ * is signed or unsigned.
+ *
+ * Revision 1.38  2009-11-25 14:59:11  joergr
+ * Added list of Defined Terms for the attribute PhotometricInterpretation.
+ *
+ * Revision 1.37  2009-11-17 17:55:47  joergr
+ * Added new enum value for missing photometric interpretation value.
+ * Added new configuration flags for the upcoming support of partial access to
+ * pixel data, i.e. without decompressing/loading a complete multi-frame image.
+ *
+ * Revision 1.36  2009-10-28 14:38:17  joergr
+ * Fixed minor issues in log output.
+ *
+ * Revision 1.35  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
+ * Revision 1.34  2009-04-21 08:19:51  joergr
+ * Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
+ * the internal representation of monochrome images is determined.
+ *
+ * Revision 1.33  2009-04-20 12:19:40  joergr
+ * Added new helper function getRepresentationBits().
+ *
+ * Revision 1.32  2007/03/16 11:56:06  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
  * Revision 1.31  2005/12/08 16:48:12  meichel
  * Changed include path schema for all DCMTK header files
  *

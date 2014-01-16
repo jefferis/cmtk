@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -23,9 +19,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:19 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,14 +29,15 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcobject.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 
@@ -56,27 +53,33 @@ OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
 OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
 OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
 OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
+OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
+OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
+OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
+OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
+OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
+OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength(OFFalse);
 
 // ****** public methods **********************************
 
 
 DcmObject::DcmObject(const DcmTag &tag,
                      const Uint32 len)
-  : Tag(tag),
-    Length(len),
-    fTransferState(ERW_init),
-    errorFlag(EC_Normal),
-    fTransferredBytes(0)
+: errorFlag(EC_Normal)
+, Tag(tag)
+, Length(len)
+, fTransferState(ERW_init)
+, fTransferredBytes(0)
 {
 }
 
 
 DcmObject::DcmObject(const DcmObject &obj)
-  : Tag(obj.Tag),
-    Length(obj.Length),
-    fTransferState(obj.fTransferState),
-    errorFlag(obj.errorFlag),
-    fTransferredBytes(obj.fTransferredBytes)
+: errorFlag(obj.errorFlag)
+, Tag(obj.Tag)
+, Length(obj.Length)
+, fTransferState(obj.fTransferState)
+, fTransferredBytes(obj.fTransferredBytes)
 {
 }
 
@@ -88,11 +91,14 @@ DcmObject::~DcmObject()
 
 DcmObject &DcmObject::operator=(const DcmObject &obj)
 {
-    Tag = obj.Tag;
-    Length = obj.Length;
-    errorFlag = obj.errorFlag;
-    fTransferState = obj.fTransferState;
-    fTransferredBytes = obj.fTransferredBytes;
+    if (this != &obj)
+    {
+        Tag = obj.Tag;
+        Length = obj.Length;
+        errorFlag = obj.errorFlag;
+        fTransferState = obj.fTransferState;
+        fTransferredBytes = obj.fTransferredBytes;
+    }
     return *this;
 }
 
@@ -141,49 +147,31 @@ OFCondition DcmObject::search(const DcmTagKey &/*tag*/,
 }
 
 
-OFCondition DcmObject::searchErrors(DcmStack &resultStack)
-{
-    if (errorFlag.bad())
-        resultStack.push(this);
-    return errorFlag;
-}
-
-
 // ********************************
 
 
-OFCondition DcmObject::writeXML(ostream & /*out*/,
+OFCondition DcmObject::writeXML(STD_NAMESPACE ostream& /*out*/,
                                 const size_t /*flags*/)
 {
     return EC_IllegalCall;
 }
-
 
 // ***********************************************************
 // ****** protected methods **********************************
 // ***********************************************************
 
 
-void DcmObject::printNestingLevel(ostream &out,
+void DcmObject::printNestingLevel(STD_NAMESPACE ostream&out,
                                   const size_t flags,
                                   const int level)
 {
     if (flags & DCMTypes::PF_showTreeStructure)
     {
-        /* special treatment for the last entry on the level */
-        if (flags & DCMTypes::PF_lastEntry)
-        {
-            /* show vertical bar for the tree structure */
-            for (int i = 2; i < level; i++)
-                out << "| ";
-            /* show juncture sign for the last entry */
-            if (level > 0)
-                out << "+ ";
-        } else {
-            /* show vertical bar for the tree structure */
-            for (int i = 1; i < level; i++)
-                out << "| ";
-        }
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_LINE;
+        /* show vertical bar for the tree structure */
+        for (int i = 1; i < level; i++)
+            out << "| ";
     } else {
         /* show nesting level */
         for (int i = 1; i < level; i++)
@@ -192,7 +180,7 @@ void DcmObject::printNestingLevel(ostream &out,
 }
 
 
-void DcmObject::printInfoLineStart(ostream &out,
+void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
                                    const size_t flags,
                                    const int level,
                                    DcmTag *tag)
@@ -205,24 +193,47 @@ void DcmObject::printInfoLineStart(ostream &out,
     printNestingLevel(out, flags, level);
     if (flags & DCMTypes::PF_showTreeStructure)
     {
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        {
+            if (*tag == DCM_Item)
+                out << ANSI_ESCAPE_CODE_ITEM;
+            else if ((vr.getEVR() == EVR_SQ) || (vr.getEVR() == EVR_pixelSQ))
+            {
+                if (level == 1)
+                    out << ANSI_ESCAPE_CODE_SEQUENCE_1;
+                else
+                    out << ANSI_ESCAPE_CODE_SEQUENCE;
+            } else if (level == 1)
+                out << ANSI_ESCAPE_CODE_NAME_1;
+            else
+                out << ANSI_ESCAPE_CODE_NAME;
+        }
         /* print tag name */
         out << tag->getTagName() << ' ';
         /* add padding spaces if required */
-        const signed long padLength = 35 - strlen(tag->getTagName()) - 2 * level;
+        const signed long padLength = DCM_OptPrintAttributeNameLength - strlen(tag->getTagName()) - 2 * level;
         if (padLength > 0)
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
-        /* print line start: tag and VR */
-        out << hex << setfill('0') << "("
-            << setw(4) << tag->getGTag() << ","
-            << setw(4) << tag->getETag() << ") "
-            << dec << setfill(' ')
-            << vr.getVRName() << " ";
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_TAG;
+        /* print line start: tag */
+        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "("
+            << STD_NAMESPACE setw(4) << tag->getGTag() << ","
+            << STD_NAMESPACE setw(4) << tag->getETag() << ") ";
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_VR;
+        /* print line start: VR */
+        out << vr.getVRName() << " "
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     }
+    /* set color for subsequent element value */
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_VALUE;
 }
 
 
-void DcmObject::printInfoLineEnd(ostream &out,
+void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream &out,
                                  const size_t flags,
                                  const unsigned long printedLength,
                                  DcmTag *tag)
@@ -239,29 +250,45 @@ void DcmObject::printInfoLineEnd(ostream &out,
     if (flags & DCMTypes::PF_showTreeStructure)
     {
         /* finish the current line */
-        out << endl;
+        out << OFendl;
     } else {
         /* fill with spaces if necessary */
         if (printedLength < DCM_OptPrintValueLength)
             out << OFString(OFstatic_cast(size_t, DCM_OptPrintValueLength - printedLength), ' ');
-        /* print line end: length, VM and tag name */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_COMMENT;
         out << " # ";
+        /* print line end: length */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_LENGTH;
         if (length == DCM_UndefinedLength)
             out << "u/l";   // means "undefined/length"
         else
-            out << setw(3) << length;
-        out << ","
-            << setw(2) << vm << " "
-            << tag->getTagName() << endl;
+            out << STD_NAMESPACE setw(3) << length;
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_COMMENT;
+        out << ",";
+        /* print line end: VM */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_VM;
+        out << STD_NAMESPACE setw(2) << vm << " ";
+        /* print line end: name */
+        if (flags & DCMTypes::PF_useANSIEscapeCodes)
+            out << ANSI_ESCAPE_CODE_NAME;
+        out << tag->getTagName() << OFendl;
     }
+    /* reset all colors and styles */
+    if (flags & DCMTypes::PF_useANSIEscapeCodes)
+        out << ANSI_ESCAPE_CODE_RESET;
 }
 
 
-void DcmObject::printInfoLine(ostream &out,
+void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
                               const size_t flags,
                               const int level,
                               const char *info,
-                              DcmTag *tag)
+                              DcmTag *tag,
+                              const OFBool isInfo)
 {
     /* print tag and VR */
     printInfoLineStart(out, flags, level, tag);
@@ -270,6 +297,8 @@ void DcmObject::printInfoLine(ostream &out,
     /* check for valid info text */
     if (info != NULL)
     {
+        if (isInfo && (flags & DCMTypes::PF_useANSIEscapeCodes))
+            out << ANSI_ESCAPE_CODE_INFO;
         /* check info text length */
         printedLength = strlen(info);
         if (printedLength > DCM_OptPrintValueLength)
@@ -338,12 +367,12 @@ Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
 
     if (oxferSyn.isExplicitVR())
     {
-       /* map "UN" to "OB" if generation of "UN" is disabled */  
+       /* map "UN" to "OB" if generation of "UN" is disabled */
        DcmVR outvr(getTag().getVR().getValidEVR());
 
        if (outvr.usesExtendedLengthEncoding())
        {
-         return 12;
+           return 12;
        }
     }
     return 8;
@@ -358,9 +387,8 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
      * writing information, the transfer syntax which was passed is accounted for. If the transfer
      * syntax shows an explicit value representation, the data type of this object is also written
      * to the stream. In general, this function follows the rules which are specified in the DICOM
-     * standard (see DICOM standard (year 2000) part 5, section 7) (or the corresponding section
-     * in a later version of the standard) concerning the encoding of a data set which shall be
-     * transmitted.
+     * standard (see DICOM standard part 5, section 7) concerning the encoding of a data set which
+     * shall be transmitted.
      *
      * Parameters:
      *   outStream    - [out] The stream that the information will be written to.
@@ -378,7 +406,7 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
 
         /* write the tag information (a total of 4 bytes, group number and element */
         /* number) to the stream. Mind the transfer syntax's byte ordering. */
-        l_error = writeTag(outStream, Tag, oxfer);
+        l_error = writeTag(outStream, getTag(), oxfer);
         writtenBytes = 4;
 
         /* create an object which represents the transfer syntax */
@@ -413,11 +441,10 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
             DcmVR outvr(vr);
 
             /* in case we are dealing with a transfer syntax with explicit VR (see if above) */
-            /* and the actual VR uses extended length encoding (see DICOM standard (year 2000) */
-            /* part 5, section 7.1.2) (or the corresponding section in a later version of the */
-            /* standard) we have to add 2 reserved bytes (set to a value of 00H) to the data */
-            /* type field and the actual length field is 4 bytes wide. Write the corresponding */
-            /* information to the stream. */
+            /* and the actual VR uses extended length encoding (see DICOM standard part 5, */
+            /* section 7.1.2) we have to add 2 reserved bytes (set to a value of 00H) to the */
+            /* data type field and the actual length field is 4 bytes wide. Write the */
+            /* corresponding information to the stream. */
             if (outvr.usesExtendedLengthEncoding())
             {
                 Uint16 reserved = 0;
@@ -428,22 +455,29 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
                 writtenBytes += 6;                                                  // remember that 6 bytes were written in total
             }
             /* in case that we are dealing with a transfer syntax with explicit VR (see if above) and */
-            /* the actual VR does not use extended length encoding (see DICOM standard (year 2000) */
-            /* part 5, section 7.1.2) (or the corresponding section in a later version of the standard) */
-            /* we do not have to add reserved bytes to the data type field and the actual length field */
-            /* is 2 bytes wide. Write the corresponding information to the stream. */
-            else {
-                Uint16 valueLength = OFstatic_cast(Uint16, Length);                 // determine length
+            /* the actual VR does not use extended length encoding (see DICOM standard part 5, section */
+            /* 7.1.2) we do not have to add reserved bytes to the data type field and the actual length */
+            /* is 2 bytes wide. Write the corresponding information to the stream. But, make sure that */
+            /* the length really fits into the 2-byte field ... */
+            else if (Length <= 0xffff)
+            {
+                Uint16 valueLength = OFstatic_cast(Uint16, Length);                 // determine length (cast to 16 bit)
                 swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);   // mind transfer syntax
                 outStream.write(&valueLength, 2);                                   // write length, 2 bytes wide
                 writtenBytes += 2;                                                  // remember that 2 bytes were written in total
+            }
+            /* ... if not, report an error message and return an error code. */
+            else {
+                DcmTag tag(Tag);
+                DCMDATA_ERROR("DcmObject: Length of element " << tag.getTagName() << " " << tag
+                    << " exceeds maximum of 16-bit length field");
+                l_error = EC_ElemLengthExceeds16BitField;
             }
          }
          /* if the transfer syntax is one with implicit value representation this value's data type */
          /* does not have to be written to the stream. Only the length information has to be written */
          /* to the stream. According to the DICOM standard the length field is in this case always 4 */
-         /* byte wide. (see DICOM standard (year 2000) part 5, section 7.1.2) (or the corresponding */
-         /* section in a later version of the standard) */
+         /* byte wide. (see DICOM standard part 5, section 7.1.2) */
          else {
             Uint32 valueLength = Length;                                          // determine length
             swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);     // mind transfer syntax
@@ -469,9 +503,116 @@ OFBool DcmObject::containsUnknownVR() const
 }
 
 
+OFBool DcmObject::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
+{
+    return OFFalse;
+}
+
+
+OFBool DcmObject::isAffectedBySpecificCharacterSet() const
+{
+    return OFFalse;
+}
+
+
+OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
+{
+    return (Length == 0);
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.68  2010-10-29 10:57:21  joergr
+ * Added support for colored output to the print() method.
+ *
+ * Revision 1.67  2010-10-14 13:14:08  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.66  2010-02-25 13:50:15  joergr
+ * Fixed issue with element values which exceed the maximum of a 16-bit length
+ * field.
+ *
+ * Revision 1.65  2009-11-13 13:11:21  joergr
+ * Fixed minor issues in log output.
+ *
+ * Revision 1.64  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.63  2009-08-07 14:35:49  joergr
+ * Enhanced isEmpty() method by checking whether the data element value consists
+ * of non-significant characters only.
+ *
+ * Revision 1.62  2009-06-04 16:52:53  joergr
+ * Added new parsing flag that allows for ignoring the value of File Meta
+ * Information Group Length (0002,0000).
+ *
+ * Revision 1.61  2009-03-25 10:21:22  joergr
+ * Added new method isEmpty() to DICOM object, item and sequence class.
+ *
+ * Revision 1.60  2009-03-05 14:08:05  onken
+ * Fixed typo.
+ *
+ * Revision 1.59  2009-03-05 13:35:07  onken
+ * Added checks for sequence and item lengths which prevents overflow in length
+ * field, if total length of contained items (or sequences) exceeds 32-bit
+ * length field. Also introduced new flag (default: enabled) for writing
+ * in explicit length mode, which allows for automatically switching encoding
+ * of only that very sequence/item to undefined length coding (thus permitting
+ * to actually write the file).
+ *
+ * Revision 1.58  2009-02-11 13:16:36  onken
+ * Added global parser flag permitting to stop parsing after a specific
+ * element was parsed on dataset level (useful for removing garbage at
+ * end of file).
+ *
+ * Revision 1.57  2009-02-04 17:58:53  joergr
+ * Fixed various layout and formatting issues.
+ *
+ * Revision 1.56  2009-02-04 14:04:57  onken
+ * Introduced global flag that, if enabled, tells the parser to continue
+ * parsing if possible.
+ *
+ * Revision 1.55  2009-01-29 15:35:32  onken
+ * Added global parsing option that allows for reading private attributes in
+ * implicit encoding having a maximum length to be read as sequences instead
+ * of relying on the dictionary.
+ *
+ * Revision 1.54  2009-01-06 16:27:03  joergr
+ * Reworked print() output format for option PF_showTreeStructure.
+ *
+ * Revision 1.53  2009-01-05 15:31:42  joergr
+ * Added global flag that allows for reading incorrectly encoded DICOM datasets
+ * where particular data elements are encoded with a differing transfer syntax
+ * (Implicit VR Little endian instead of Explicit VR encoding as declared).
+ *
+ * Revision 1.52  2007/11/23 15:42:36  meichel
+ * Copy assignment operators in dcmdata now safe for self assignment
+ *
+ * Revision 1.51  2007/06/29 14:17:49  meichel
+ * Code clean-up: Most member variables in module dcmdata are now private,
+ *   not protected anymore.
+ *
+ * Revision 1.50  2007/02/19 15:04:16  meichel
+ * Removed searchErrors() methods that are not used anywhere and added
+ *   error() methods only in the DcmObject subclasses where really used.
+ *
+ * Revision 1.49  2006/12/15 14:14:44  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.48  2006/12/13 13:59:49  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.47  2006/08/15 15:49:54  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.46  2006/05/11 08:50:19  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
  * Revision 1.45  2005/12/08 15:41:19  meichel
  * Changed include path schema for all DCMTK header files
  *

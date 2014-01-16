@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:44 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:42 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,10 +122,10 @@ public:
      *  @return copy of tag key, by value
      */
     DcmTagKey getXTag() const
-    { 
+    {
       return * OFstatic_cast(const DcmTagKey *, this);
     }
-    
+
     /** returns name of attribute tag.
      *  If name has not been accessed before, a dictionary lookup
      *  under consideration of the current private creator code
@@ -178,7 +173,7 @@ public:
     /** convert the given string to a DICOM tag value
      *  @param name name or tag of the attribute to be searched for.
      *    If the name of the attribute is given the spelling has to be consistent
-     *    with the spelling used in the data dictionary (e.g. "PatientsName").
+     *    with the spelling used in the data dictionary (e.g. "PatientName").
      *    If the tag values are used the format is "gggg,eeee" (i.e. two hexa-
      *    decimal numbers separated by a comma).
      *  @param value variable in which the resulting tag value is stored.
@@ -227,7 +222,18 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.21  2005/12/08 16:28:44  meichel
+** Revision 1.24  2010-10-14 13:15:42  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.23  2010-08-09 13:02:57  joergr
+** Updated data dictionary to 2009 edition of the DICOM standard. From now on,
+** the official "keyword" is used for the attribute name which results in a
+** number of minor changes (e.g. "PatientsName" is now called "PatientName").
+**
+** Revision 1.22  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.21  2005-12-08 16:28:44  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.20  2003/08/14 09:00:56  meichel

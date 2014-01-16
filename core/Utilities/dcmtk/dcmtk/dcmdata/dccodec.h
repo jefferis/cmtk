@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/09 14:48:14 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,8 +30,8 @@
 #define DCCODEC_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/ofstd/oflist.h"
 
@@ -62,7 +57,7 @@ public:
 
     /// destructor
     virtual ~DcmCodecParameter() {}
-    
+
     /** this methods creates a copy of type DcmCodecParameter *
      *  it must be overweritten in every subclass.
      *  @return copy of this object
@@ -74,12 +69,12 @@ public:
      */
     virtual const char *className() const = 0;
 
-};                    
+};
 
 
 /** abstract base class for a codec object that can be registered
  *  in dcmdata and performs transfer syntax transformation (i.e.
- *  compressing, decompressing or transcoding between different 
+ *  compressing, decompressing or transcoding between different
  *  compressed transfer syntaxes).
  *  When dcmdata is requested to write a transfer syntax that differs
  *  from the current one (i.e. the one in which the object was read),
@@ -107,11 +102,47 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition decode(
-      const DcmRepresentationParameter * fromRepParam,
-      DcmPixelSequence * pixSeq,
-      DcmPolymorphOBOW& uncompressedPixelData,
-      const DcmCodecParameter * cp,
-      const DcmStack& objStack) const = 0;
+    const DcmRepresentationParameter * fromRepParam,
+    DcmPixelSequence * pixSeq,
+    DcmPolymorphOBOW& uncompressedPixelData,
+    const DcmCodecParameter * cp,
+    const DcmStack& objStack) const = 0;
+
+  /** decompresses a single frame from the given pixel sequence and
+   *  stores the result in the given buffer.
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL.
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param frameNo number of frame, starting with 0 for the first frame
+   *  @param startFragment index of the compressed fragment that contains
+   *    all or the first part of the compressed bitstream for the given frameNo.
+   *    Upon successful return this parameter is updated to contain the index
+   *    of the first compressed fragment of the next frame.
+   *    When unknown, zero should be passed. In this case the decompression
+   *    algorithm will try to determine the index by itself, which will always
+   *    work if frames are decompressed in increasing order from first to last,
+   *    but may fail if frames are decompressed in random order, multiple fragments
+   *    per frame and multiple frames are present in the dataset, and the offset
+   *    table is empty.
+   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param bufSize size of buffer in bytes
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  virtual OFCondition decodeFrame(
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
+    const DcmCodecParameter * cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel) const = 0;
 
   /** compresses the given uncompressed DICOM image and stores
    *  the result in the given pixSeq element.
@@ -121,19 +152,19 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
-      const Uint16 * pixelData,
-      const Uint32 length,
-      const DcmRepresentationParameter * toRepParam,
-      DcmPixelSequence * & pixSeq,
-      const DcmCodecParameter *cp,
-      DcmStack & objStack) const = 0;
+    const Uint16 * pixelData,
+    const Uint32 length,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & pixSeq,
+    const DcmCodecParameter *cp,
+    DcmStack & objStack) const = 0;
 
   /** transcodes (re-compresses) the given compressed DICOM image and stores
    *  the result in the given toPixSeq element.
@@ -143,20 +174,20 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    new compressed representation (e.g. JPEG quality)
    *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
-      const E_TransferSyntax fromRepType,
-      const DcmRepresentationParameter * fromRepParam,
-      DcmPixelSequence * fromPixSeq,
-      const DcmRepresentationParameter * toRepParam,
-      DcmPixelSequence * & toPixSeq,
-      const DcmCodecParameter * cp,
-      DcmStack & objStack) const = 0;
+    const E_TransferSyntax fromRepType,
+    const DcmRepresentationParameter * fromRepParam,
+    DcmPixelSequence * fromPixSeq,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    const DcmCodecParameter * cp,
+    DcmStack & objStack) const = 0;
 
   /** checks if this codec is able to convert from the
    *  given current transfer syntax to the given new
@@ -166,11 +197,30 @@ public:
    *  @return true if transformation is supported by this codec, false otherwise.
    */
   virtual OFBool canChangeCoding(
-      const E_TransferSyntax oldRepType,
-      const E_TransferSyntax newRepType) const = 0;
+    const E_TransferSyntax oldRepType,
+    const E_TransferSyntax newRepType) const = 0;
 
+  /** determine color model of the decompressed image
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param dataset pointer to DICOM dataset in which this pixel data object
+   *    is located. Used to access photometric interpretation.
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition determineDecompressedColorModel(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    OFString &decompressedColorModel) const = 0;
 
-  // static helper methods that have proven useful in codec classes derived from DcmCodec 
+  // static helper methods that have proven useful in codec classes derived from DcmCodec
 
   /** helper function that inserts a string attribute with a given value into a dataset
    *  if missing in the dataset.
@@ -178,7 +228,7 @@ public:
    *  @param tag tag key of attribute to check/insert
    *  @param val string value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFCondition insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val);
 
   /** helper function that converts a dataset containing a DICOM image
@@ -188,7 +238,7 @@ public:
    *  by Secondary Capture. It does not, however, change an existing SOP Instance UID.
    *  @param dataset dataset to insert to, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFCondition convertToSecondaryCapture(DcmItem *dataset);
 
   /** create new SOP instance UID and Source Image Sequence
@@ -200,7 +250,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition newInstance(
-    DcmItem *dataset, 
+    DcmItem *dataset,
     const char *purposeOfReferenceCodingScheme = NULL,
     const char *purposeOfReferenceCodeValue = NULL,
     const char *purposeOfReferenceCodeMeaning = NULL);
@@ -226,6 +276,19 @@ public:
     const char *codeValue,
     const char *codeMeaning);
 
+  /** determine the index number (starting with zero) of the compressed pixel data fragment
+   *  corresponding to the given frame (also starting with zero)
+   *  @param frameNo frame number
+   *  @param numberOfFrames number of frames of this image
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param currentItem index of compressed pixel data fragment returned in this parameter on success
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition determineStartFragment(
+    Uint32 frameNo,
+    Sint32 numberOfFrames,
+    DcmPixelSequence * fromPixSeq,
+    Uint32& currentItem);
 };
 
 
@@ -246,17 +309,17 @@ public:
    *  This function must not be called before main() is started, e.g. from
    *  a constructor of a global object.
    *  This call is safe in multi-thread operations.
-   *  @param aCodec pointer to codec object.  
-   *    Must remain unmodified and valid until the codec has been deregistered. 
-   *  @param aDefaultRepParam default representation parameter. 
-   *    Must remain unmodified and valid until the codec has been deregistered. 
-   *  @param aCodecParameter codec parameter. 
+   *  @param aCodec pointer to codec object.
+   *    Must remain unmodified and valid until the codec has been deregistered.
+   *  @param aDefaultRepParam default representation parameter.
+   *    Must remain unmodified and valid until the codec has been deregistered.
+   *  @param aCodecParameter codec parameter.
    *    Must remain unmodified and valid until the codec has been deregistered or the
    *    parameter has been replaced by a call to updateCodecParameter()
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition registerCodec(
-    const DcmCodec *aCodec,  
+    const DcmCodec *aCodec,
     const DcmRepresentationParameter *aDefaultRepParam,
     const DcmCodecParameter *aCodecParameter);
 
@@ -266,11 +329,11 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition deregisterCodec(const DcmCodec *aCodec);
-    
+
   /** updates the codec parameters object for a codec that has been registered before.
    *  This call is safe in multi-thread operations.
    *  @param aCodec pointer to codec object that has been registered before
-   *  @param aCodecParameter codec parameter. 
+   *  @param aCodecParameter codec parameter.
    *    Must remain unmodified and valid until the codec has been deregistered or the
    *    parameter has been replaced by another call to updateCodecParameter()
    *  @return EC_Normal if successful, an error code otherwise
@@ -298,6 +361,43 @@ public:
     DcmPolymorphOBOW& uncompressedPixelData,
     DcmStack & pixelStack);
 
+  /** looks for a codec that is able to decode from the given transfer syntax
+   *  and calls the decodeFrame() method of the codec.  A read lock on the list of
+   *  codecs is acquired until this method returns.
+   *  @param fromType transfer syntax to decode from
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL.
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param frameNo number of frame, starting with 0 for the first frame
+   *  @param startFragment index of the compressed fragment that contains
+   *    all or the first part of the compressed bitstream for the given frameNo.
+   *    Upon successful return this parameter is updated to contain the index
+   *    of the first compressed fragment of the next frame.
+   *    When unknown, zero should be passed. In this case the decompression
+   *    algorithm will try to determine the index by itself, which will always
+   *    work if frames are decompressed in increasing order from first to last,
+   *    but may fail if frames are decompressed in random order, multiple fragments
+   *    per frame and multiple frames are present in the dataset, and the offset
+   *    table is empty.
+   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param bufSize size of buffer in bytes
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  static OFCondition decodeFrame(
+    const DcmXfer & fromType,
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel);
+
   /** looks for a codec that is able to encode from the given transfer syntax
    *  and calls the encode() method of the codec.  A read lock on the list of
    *  codecs is acquired until this method returns.
@@ -309,7 +409,7 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
    *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param pixelStack stack pointing to the location of the pixel data
    *    element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -335,20 +435,19 @@ public:
    *  @param toRepParam representation parameter describing the desired
    *    new compressed representation (e.g. JPEG quality)
    *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.   
+   *    allocated on heap) returned in this parameter upon success.
    *  @param pixelStack stack pointing to the location of the pixel data
    *    element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFCondition encode(
     const E_TransferSyntax fromRepType,
-    const DcmRepresentationParameter * fromParam, 
-    DcmPixelSequence * fromPixSeq, 
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
     const E_TransferSyntax toRepType,
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & toPixSeq,
     DcmStack & pixelStack);
-
 
   /** looks for a codec that claims to be able to convert
    *  between the given transfer syntaxes.
@@ -362,37 +461,55 @@ public:
     const E_TransferSyntax fromRepType,
     const E_TransferSyntax toRepType);
 
+  /** determine color model of the decompressed image
+   *  @param fromType transfer syntax to decode from
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition determineDecompressedColorModel(
+    const DcmXfer &fromType,
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    DcmItem *dataset,
+    OFString &decompressedColorModel);
+
 private:
 
   /** constructor
-   *  @param aCodec pointer to codec object.  
-   *  @param aDefaultRepParam default representation parameter. 
-   *  @param aCodecParameter codec parameter. 
+   *  @param aCodec pointer to codec object.
+   *  @param aDefaultRepParam default representation parameter.
+   *  @param aCodecParameter codec parameter.
    */
   DcmCodecList(
-    const DcmCodec *aCodec,  
+    const DcmCodec *aCodec,
     const DcmRepresentationParameter *aDefaultRepParam,
     const DcmCodecParameter *aCodecParameter);
 
-  /// private undefined copy constructor 
+  /// private undefined copy constructor
   DcmCodecList(const DcmCodecList &);
 
-  /// private undefined copy assignment operator 
+  /// private undefined copy assignment operator
   DcmCodecList &operator=(const DcmCodecList &);
 
   /// pointer to codec object
   const DcmCodec * codec;
-  
+
   /// pointer to default representation parameter
   const DcmRepresentationParameter * defaultRepParam;
-  
+
   /// pointer to codec parameter set
   const DcmCodecParameter * codecParameter;
 
   /// singleton list of registered codecs
   static OFList<DcmCodecList *> registeredCodecs;
-  
-#ifdef _REENTRANT
+
+#ifdef WITH_THREADS
   /// read/write lock guarding access to singleton list
   static OFReadWriteLock codecLock;
 #endif
@@ -401,13 +518,38 @@ private:
   // that this class only defines private constructors and has no friends.
   friend class DcmCodecListDummyFriend;
 };
- 
+
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
+** Revision 1.24  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.23  2010-10-04 14:26:21  joergr
+** Fixed issue with codec registry when compiled on Linux x86_64 with "configure
+** --disable-threads" (replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS").
+**
+** Revision 1.22  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
+** Revision 1.21  2009-11-17 16:36:51  joergr
+** Added new method that allows for determining the color model of the
+** decompressed image.
+**
+** Revision 1.20  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.19  2008-05-29 10:46:13  meichel
+** Implemented new method DcmPixelData::getUncompressedFrame
+**   that permits frame-wise access to compressed and uncompressed
+**   objects without ever loading the complete object into main memory.
+**   For this new method to work with compressed images, all classes derived from
+**   DcmCodec need to implement a new method decodeFrame(). For now, only
+**   dummy implementations returning an error code have been defined.
+**
 ** Revision 1.18  2005/12/09 14:48:14  meichel
 ** Added missing virtual destructors
 **
@@ -478,5 +620,5 @@ private:
 **   between them. Codecs are derived from the DcmCodec class. New error
 **   codes are introduced for handling of representations. New internal
 **   value representation (only for ident()) for PixelData
-** 
+**
 */

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -25,9 +21,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:06:08 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-01-04 14:47:09 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,6 +259,13 @@ private:
 };
 
 
+/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
+   but does not work. This will be corrected in the next snapshot. For now, the
+   semaphore code is completely disabled for that OS (it is not used in other
+   parts of the toolkit so far.
+ */
+#ifndef _DARWIN_C_SOURCE
+
 /** provides an operating system independent abstraction for semaphores.
  *  A semaphore is a non-negative integer counter that is used
  *  to coordinate access to resources. The initial and maximum value of the counter
@@ -335,6 +338,8 @@ private:
   OFSemaphore& operator=(const OFSemaphore& arg);
 };
 
+
+#endif // _DARWIN_C_SOURCE
 
 /** provides an operating system independent abstraction for mutexes
  *  (mutual exclusion locks).
@@ -501,13 +506,84 @@ private:
   OFReadWriteLock& operator=(const OFReadWriteLock& arg);
 };
 
+/** This class aims to provide an easy way for making sure OFReadWriteLocks
+ *  are unlocked in an exception safe way. You can just create a local
+ *  instance of this class and lock the OFReadWriteLock through it. When it
+ *  is destructed it will make sure that the lock is unlocked if necessary.
+ */
+class OFReadWriteLocker {
+public:
+  /** constructor
+   *  @param lock the lock to associate this instance with
+   */
+  OFReadWriteLocker(OFReadWriteLock& lock);
+
+  /** destructor, unlocks the mutex if necessary */
+  ~OFReadWriteLocker();
+
+  /** lock the lock for reading
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::rdlock
+   */
+  int rdlock();
+
+  /** lock the lock for writing
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::wrlock
+   */
+  int wrlock();
+
+  /** try to lock the lock for reading
+   *  @return 0 upon success, OFReadWriteLock::busy if the read/write lock
+   *    is already locked, an error code otherwise
+   *  @see OFReadWriteLock::tryrdlock
+   */
+  int tryrdlock();
+
+  /** try to lock the lock for writing
+   *  @return 0 upon success, OFReadWriteLock::busy if the read/write lock
+   *    is already locked, an error code otherwise
+   *  @see OFReadWriteLock::trywrlock
+   */
+  int trywrlock();
+
+  /** unlock the lock
+   *  @return 0 upon success, an error code otherwise
+   *  @see OFReadWriteLock::unlock
+   */
+  int unlock();
+
+private:
+  /** the lock on which we are operating */
+  OFReadWriteLock& theLock;
+
+  /** did we sucessfully lock the lock? */
+  OFBool locked;
+
+  /** unimplemented private copy constructor */
+  OFReadWriteLocker(const OFReadWriteLocker& arg);
+
+  /** unimplemented private assignment operator */
+  OFReadWriteLocker& operator=(const OFReadWriteLocker& arg);
+};
+
 #endif
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.9  2005/12/08 16:06:08  meichel
+ * Revision 1.12  2011-01-04 14:47:09  onken
+ * Disable and hide OFSemaphore class on Mac OS X since implementation is
+ * broken on that OS (needs named semaphores instead).
+ *
+ * Revision 1.11  2010-10-14 13:15:50  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.10  2010-06-04 13:58:42  uli
+ * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+ *
+ * Revision 1.9  2005-12-08 16:06:08  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2004/08/03 16:44:16  meichel

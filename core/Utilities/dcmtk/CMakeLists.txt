@@ -1,7 +1,7 @@
 PROJECT(D4CMTK)
 
 ##
-##  Copyright 2004-2012 SRI International
+##  Copyright 2004-2012, 2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -336,7 +336,55 @@ SET(dcmtk_SRCS
   ofstring.cc
   ofthread.cc
   oftime.cc
+  # files added in dcmtk 3.6.0
+  #  oflog:
+  apndimpl.cc
+  appender.cc
+  config.cc
+  consap.cc
+  factory.cc
+  fileap.cc
+  filter.cc
+  globinit.cc
+  hierarchy.cc
+  hierlock.cc
+  layout.cc
+  lloguser.cc
+  logevent.cc
+  logger.cc
+  logimpl.cc
+  loglevel.cc
+  loglog.cc
+  ndc.cc
+  ntelogap.cc
+  nullap.cc
+  objreg.cc
+  oflog.cc
+  patlay.cc
+  pointer.cc
+  property.cc
+  rootlog.cc
+  sleep.cc
+  sockbuff.cc
+  socketap.cc
+  socket.cc
+  strhelp.cc
+  syncprims.cc
+  syslogap.cc
+  threads.cc
+  timehelp.cc
+  #  dcmdata:
+  dcpcache.cc
+  dcwcache.cc
+  vrscan.cc
+  vrscanl.c
 )
+
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  LIST(APPEND dcmtk_SRCS   winconap.cc windebap.cc winsock.cc)
+ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  LIST(APPEND dcmtk_SRCS unixsock.cc)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 ADD_LIBRARY(D4CMTK ${dcmtk_SRCS})
 TARGET_LINK_LIBRARIES(D4CMTK ${ZLIB_LIBRARIES})

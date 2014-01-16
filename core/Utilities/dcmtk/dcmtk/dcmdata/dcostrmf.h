@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,10 +18,9 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:26 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcostrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,14 +81,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in consumer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail() const;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually processed. 
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen);
+  virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
   /** instructs the consumer to flush its internal content until
    *  either the consumer becomes "flushed" or I/O suspension occurs.
@@ -111,7 +106,7 @@ private:
   DcmFileConsumer& operator=(const DcmFileConsumer&);
 
   /// the file we're actually writing to
-  FILE *file_;
+  OFFile file_;
 
   /// status
   OFCondition status_;
@@ -155,6 +150,16 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.h,v $
+ * Revision 1.7  2010-10-14 13:15:41  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.6  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.5  2007-02-19 16:06:09  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.4  2005/12/08 16:28:26  meichel
  * Changed include path schema for all DCMTK header files
  *

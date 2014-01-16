@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -22,10 +18,9 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:27:58 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/cmdlnarg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,24 +32,29 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-/*
-** prepareCmdLineArgs 
-**
-** Should do nothing on Unix OS's.
-** On other OS's (e.g. MacOS with CW6) allows command line arguments
-** to be input from the standard input.
-**
-** MT level: Thread unsafe!
-*/
-void prepareCmdLineArgs(int& argc, char** argv, 
-			const char* progname = "aProgram");
-
+/** this function is used on certain operating systems (in particular, classic MacOS)
+ *  and allows command line arguments to be input from stdin.
+ *  MT level: Thread unsafe!
+ *  @param argc the argc parameter of main() is passed in this parameter
+ *  @param argv the argv parameter of main() is passed in this parameter
+ *  @param progname program name
+ */
+void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram");
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.h,v $
+** Revision 1.10  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.9  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.8  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
 ** Revision 1.7  2005/12/08 16:27:58  meichel
 ** Changed include path schema for all DCMTK header files
 **

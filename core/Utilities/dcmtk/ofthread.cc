@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -25,10 +21,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:49:02 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2011-01-04 14:47:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +39,8 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
@@ -136,17 +133,21 @@ int OFThread::start()
 {
 #ifdef WINDOWS_INTERFACE
   unsigned int tid = 0;
-  theThreadHandle = _beginthreadex(NULL, 0, thread_stub, (void *)this, 0, &tid);
+  theThreadHandle = _beginthreadex(NULL, 0, thread_stub, OFstatic_cast(void *, this), 0, &tid);
   if (theThreadHandle == 0) return errno; else
   {
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
+    theThread = OFreinterpret_cast(void *, tid);
+#else
     theThread = tid;
+#endif
     return 0;
   }
 #elif defined(POSIX_INTERFACE)
-  pthread_t tid=0;
+  pthread_t tid = 0;
   int result = pthread_create(&tid, NULL, thread_stub, OFstatic_cast(void *, this));
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  if (0 == result) theThread = tid; else theThread = 0;
+  if (0 == result) theThread = OFstatic_cast(void *, tid); else theThread = 0;
 #else
   if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;
 #endif
@@ -195,7 +196,11 @@ OFBool OFThread::equal(unsigned long /* tID */ )
 #endif
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
+  if (theThread == OFreinterpret_cast(void *, tID)) return OFTrue; else return OFFalse;
+#else
   if (theThread == tID) return OFTrue; else return OFFalse;
+#endif
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   // dangerous - we cast an unsigned long back to a pointer type and hope that it is still valid
@@ -258,7 +263,8 @@ void OFThread::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: threads not implemented";
@@ -383,7 +389,8 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
   if (buf) description = (const char *)buf;
   LocalFree(buf);
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: thread specific data not implemented";
@@ -393,6 +400,12 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
+/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
+   but does not work. This will be corrected in the next snapshot. For now, the
+   semaphore code is completely disabled for that OS (it is not used in other
+   parts of the toolkit so far.
+ */
+#ifndef _DARWIN_C_SOURCE
 
 #ifdef WINDOWS_INTERFACE
   const int OFSemaphore::busy = -1;
@@ -413,7 +426,7 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 : theSemaphore(NULL)
 {
 #ifdef WINDOWS_INTERFACE
-  theSemaphore = (void *)(CreateSemaphore(NULL, numResources, numResources, NULL));
+  theSemaphore = OFstatic_cast(void *, CreateSemaphore(NULL, numResources, numResources, NULL));
 #elif defined(POSIX_INTERFACE)
   sem_t *sem = new sem_t;
   if (sem)
@@ -525,7 +538,8 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: semaphore not implemented";
@@ -533,6 +547,7 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
   return;
 }
 
+#endif // _DARWIN_C_SOURCE
 
 /* ------------------------------------------------------------------------- */
 
@@ -549,7 +564,7 @@ OFMutex::OFMutex()
 : theMutex(NULL)
 {
 #ifdef WINDOWS_INTERFACE
-  theMutex = (void *)(CreateMutex(NULL, FALSE, NULL));
+  theMutex = OFstatic_cast(void *, CreateMutex(NULL, FALSE, NULL));
 #elif defined(POSIX_INTERFACE)
   pthread_mutex_t *mtx = new pthread_mutex_t;
   if (mtx)
@@ -655,7 +670,8 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: mutex not implemented";
@@ -925,7 +941,8 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-  const char *str = strerror(code);
+  char buf[256];
+  const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
 #else
   description = "error: read/write lock not implemented";
@@ -934,11 +951,84 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
 }
 
 
+OFReadWriteLocker::OFReadWriteLocker(OFReadWriteLock& lock)
+    : theLock(lock), locked(OFFalse)
+{
+}
+
+OFReadWriteLocker::~OFReadWriteLocker()
+{
+  if (locked)
+    theLock.unlock();
+}
+
+#ifdef DEBUG
+#define lockWarn(name, locked) \
+  if (locked == OFTrue)        \
+  {                            \
+    ofConsole.lockCout() << "OFReadWriteLocker::" name "(): Already locked?!" << OFendl; \
+    ofConsole.unlockCout();    \
+  }
+#else
+#define lockWarn(name, locked)
+#endif
+
+#define OFReadWriteLockerFunction(name) \
+int OFReadWriteLocker::name()           \
+{                                       \
+  lockWarn(#name, locked);              \
+  int ret = theLock. name ();           \
+  if (ret == 0)                         \
+    locked = OFTrue;                    \
+  return ret;                           \
+}
+
+OFReadWriteLockerFunction(rdlock)
+OFReadWriteLockerFunction(wrlock)
+OFReadWriteLockerFunction(tryrdlock)
+OFReadWriteLockerFunction(trywrlock)
+
+int OFReadWriteLocker::unlock()
+{
+#ifdef DEBUG
+  if (locked == OFFalse)
+  {
+    ofConsole.lockCout() << "OFReadWriteLocker::unlock(): Nothing to unlock?!" << OFendl;
+    ofConsole.unlockCout();
+  }
+#endif
+
+  int ret = theLock.unlock();
+  if (ret == 0)
+    locked = OFFalse;
+  return ret;
+}
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
+ * Revision 1.22  2011-01-04 14:47:11  onken
+ * Disable and hide OFSemaphore class on Mac OS X since implementation is
+ * broken on that OS (needs named semaphores instead).
+ *
+ * Revision 1.21  2010-10-14 13:14:53  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.20  2010-06-28 07:22:00  joergr
+ * Introduced explicit type casts in order to compile with new gcc versions on
+ * MinGW/MSYS. Use type cast macros (e.g. OFstatic_cast) where appropriate.
+ *
+ * Revision 1.19  2010-06-04 14:18:20  uli
+ * Removed an outdated comment.
+ *
+ * Revision 1.18  2010-06-04 13:58:42  uli
+ * Added class OFReadWriteLocker which simplifies unlocking OFReadWriteLocks.
+ *
+ * Revision 1.17  2010-06-03 10:27:04  joergr
+ * Replaced calls to strerror() by new helper function OFStandard::strerror()
+ * which results in using the thread safe version of strerror() if available.
+ *
  * Revision 1.16  2005/12/08 15:49:02  meichel
  * Changed include path schema for all DCMTK header files
  *

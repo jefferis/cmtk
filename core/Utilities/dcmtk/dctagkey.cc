@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:40 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:09 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +30,7 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 
 #define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 /*
@@ -85,7 +81,7 @@ OFBool DcmTagKey::isSignableTag() const
 ** DcmTagKey friend functions
 */
 
-ostream& operator<<(ostream& s, const DcmTagKey& k)
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k)
 {
     s << k.toString();
     return s;
@@ -95,6 +91,19 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
+** Revision 1.16  2010-10-14 13:14:09  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.15  2010-06-25 09:15:19  uli
+** Fixed issues with compiling with HAVE_STD_STRING.
+**
+** Revision 1.14  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.13  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.12  2005/12/08 15:41:40  meichel
 ** Changed include path schema for all DCMTK header files
 **

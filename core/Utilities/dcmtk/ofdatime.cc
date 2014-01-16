@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:48:56 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2010-10-20 07:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +31,7 @@
 
 #define INCLUDE_CTIME
 #define INCLUDE_CCTYPE
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -68,6 +65,19 @@ OFDateTime::OFDateTime(const OFDate &dateVal,
                        const OFTime &timeVal)
   : Date(dateVal),
     Time(timeVal)
+{
+}
+
+
+OFDateTime::OFDateTime(const unsigned int year,
+                       const unsigned int month,
+                       const unsigned int day,
+                       const unsigned int hour,
+                       const unsigned int minute,
+                       const double second,
+                       const double timeZone)
+  : Date(year, month, day),
+    Time(hour, minute, second, timeZone)
 {
 }
 
@@ -155,6 +165,15 @@ OFBool OFDateTime::setTime(const OFTime &timeVal)
 }
 
 
+OFBool OFDateTime::setDateTime(const OFDate &dateVal,
+                               const OFTime &timeVal)
+{
+    const OFBool result = setDate(dateVal);
+    /* make sure that time value is set even if date is invalid */
+    return setTime(timeVal) && result;
+}
+
+
 OFBool OFDateTime::setCurrentDateTime()
 {
     /* set current system date and time, use the same "time_t" struct to avoid inconsistencies */
@@ -180,7 +199,7 @@ OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
         {
             size_t pos = 10;
             /* search for first digit of the time value (skip arbitrary separators) */
-            while ((pos < length) && !isdigit(formattedDateTime.at(pos)))
+            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedDateTime.at(pos))))
                 ++pos;
             if ((pos < length) && Time.setISOFormattedTime(formattedDateTime.substr(pos)))
                 result = OFTrue;
@@ -209,7 +228,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                            const OFBool showDelimiter) const
 {
     /* call the real function, required to make Sun CC 2.0.1 happy (see header file) */
-    return getISOFormattedDateTime(formattedDateTime, showSeconds, showFraction, showTimeZone, showDelimiter, "" /*showDelimiter*/);
+    return getISOFormattedDateTime(formattedDateTime, showSeconds, showFraction, showTimeZone, showDelimiter, " " /*dateTimeSeparator*/);
 }
 
 
@@ -251,7 +270,7 @@ OFDateTime OFDateTime::getCurrentDateTime()
 }
 
 
-ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime)
 {
     OFString string;
     /* print the given date and time in ISO format to the stream */
@@ -265,6 +284,25 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
+ * Revision 1.14  2010-10-20 07:41:37  uli
+ * Made sure isalpha() & friends are only called with valid arguments.
+ *
+ * Revision 1.13  2010-10-14 13:14:53  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.12  2009-08-19 11:55:45  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
+ * Revision 1.11  2008-05-21 16:29:45  joergr
+ * Added new constructor and new setDateTime() method.
+ *
+ * Revision 1.10  2006/12/12 11:56:05  joergr
+ * Fixed wrong default value for the "dateTimeSeparator" parameter.
+ *
+ * Revision 1.9  2006/08/14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
  * Revision 1.8  2005/12/08 15:48:56  meichel
  * Changed include path schema for all DCMTK header files
  *

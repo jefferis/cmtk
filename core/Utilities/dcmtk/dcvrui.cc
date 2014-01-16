@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:42:06 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-29 10:57:21 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +27,8 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -44,6 +40,9 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+#define MAX_UI_LENGTH 64
+
+
 // ********************************
 
 
@@ -52,8 +51,9 @@ DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
   : DcmByteString(tag, len)
 {
     /* padding character is NULL not a space! */
-    paddingChar = '\0';
-    maxLength = 64;
+    setPaddingChar('\0');
+    setMaxLength(MAX_UI_LENGTH);
+    setNonSignificantChars("\\");
 }
 
 
@@ -75,6 +75,17 @@ DcmUniqueIdentifier &DcmUniqueIdentifier::operator=(const DcmUniqueIdentifier &o
 }
 
 
+OFCondition DcmUniqueIdentifier::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmUniqueIdentifier &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 // ********************************
 
 
@@ -84,10 +95,22 @@ DcmEVR DcmUniqueIdentifier::ident() const
 }
 
 
+OFCondition DcmUniqueIdentifier::checkValue(const OFString &vm,
+                                            const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmUniqueIdentifier::checkStringValue(strVal, vm);
+    return l_error;
+}
+
+
 // ********************************
 
 
-void DcmUniqueIdentifier::print(ostream &out,
+void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
                                 const size_t flags,
                                 const int level,
                                 const char * /*pixelFileName*/,
@@ -96,12 +119,16 @@ void DcmUniqueIdentifier::print(ostream &out,
     if (valueLoaded())
     {
         /* get string data (possibly multi-valued) */
-        char *string = NULL;
-        getString(string);
-        if (string != NULL)
+        char *stringVal = NULL;
+        getString(stringVal);
+        if (stringVal != NULL)
         {
-            /* check whether UID number can be mapped to a UID name */
-            const char *symbol = dcmFindNameOfUID(string);
+            const char *symbol = NULL;
+            if (!(flags & DCMTypes::PF_doNotMapUIDsToNames))
+            {
+                /* check whether UID number can be mapped to a UID name */
+                symbol = dcmFindNameOfUID(stringVal);
+            }
             if ((symbol != NULL) && (strlen(symbol) > 0))
             {
                 const size_t bufSize = strlen(symbol) + 1 /* for "=" */ + 1;
@@ -111,17 +138,17 @@ void DcmUniqueIdentifier::print(ostream &out,
                     /* concatenate "=" and the UID name */
                     OFStandard::strlcpy(buffer, "=", bufSize);
                     OFStandard::strlcat(buffer, symbol, bufSize);
-                    printInfoLine(out, flags, level, buffer);
+                    printInfoLine(out, flags, level, buffer, NULL /*tag*/, OFFalse /*isInfo*/);
                     /* delete temporary character buffer */
                     delete[] buffer;
                 } else /* could not allocate buffer */
                     DcmByteString::print(out, flags, level);
-            } else /* no symbol (UID name) found */
+            } else /* no symbol (UID name) found or mapping switched off */
                 DcmByteString::print(out, flags, level);
         } else
-            printInfoLine(out, flags, level, "(no value available)" );
+            printInfoLine(out, flags, level, "(no value available)");
     } else
-        printInfoLine(out, flags, level, "(not loaded)" );
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
@@ -159,7 +186,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
         int k = 0;
         for (int i = 0; i < len; i++)
         {
-           if (!isspace(value[i]))
+           if (!isspace(OFstatic_cast(unsigned char, value[i])))
            {
               value[k] = value[i];
               k++;
@@ -172,9 +199,63 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 }
 
 
+// ********************************
+
+
+OFCondition DcmUniqueIdentifier::checkStringValue(const OFString &value,
+                                                  const OFString &vm)
+{
+    return DcmByteString::checkStringValue(value, vm, "ui", 9, MAX_UI_LENGTH);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.35  2010-10-29 10:57:21  joergr
+** Added support for colored output to the print() method.
+**
+** Revision 1.34  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.33  2010-10-20 07:41:35  uli
+** Made sure isalpha() & friends are only called with valid arguments.
+**
+** Revision 1.32  2010-10-14 13:14:11  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.31  2010-04-23 14:30:35  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.30  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.29  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.27  2008-02-26 16:59:55  joergr
+** Added new print flag that disables the mapping of well-known UID numbers to
+** their associated names (e.g. transfer syntax or SOP class).
+**
+** Revision 1.26  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.25  2006/10/13 10:08:44  joergr
+** Renamed variable "string" to "stringVal".
+**
+** Revision 1.24  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.23  2005/12/08 15:42:06  meichel
 ** Changed include path schema for all DCMTK header files
 **
@@ -262,5 +343,3 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 ** - better and unique print methods
 **
 */
-
-

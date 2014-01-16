@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:44 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:10 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +28,8 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
@@ -163,7 +159,7 @@ DcmVRDict_checker::DcmVRDict_checker()
             error_found = OFTrue;
             // we can't use ofConsole here because this piece of code
             // might be called before ofConsole is initialized.
-            CERR << "DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName << endl;
+            DCMDATA_FATAL("DcmVRDict: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
             abort();
         }
     }
@@ -370,6 +366,25 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
+ * Revision 1.39  2010-10-14 13:14:10  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.38  2010-03-01 09:08:45  uli
+ * Removed some unnecessary include directives in the headers.
+ *
+ * Revision 1.37  2010-02-22 11:39:54  uli
+ * Remove some unneeded includes.
+ *
+ * Revision 1.36  2009-12-04 17:08:11  joergr
+ * Sightly modified some log messages.
+ *
+ * Revision 1.35  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.34  2006-08-15 15:49:54  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
  * Revision 1.33  2005/12/08 15:41:44  meichel
  * Changed include path schema for all DCMTK header files
  *

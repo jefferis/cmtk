@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:06:04 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +34,7 @@
 #include "dcmtk/ofstd/oflist.h"     /* for class OFList */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
+#include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -63,6 +60,22 @@ class OFStandard
 {
 
  public:
+
+    // --- type definitions ---
+
+    /** Markup language mode
+     */
+    enum E_MarkupMode
+    {
+        /// HTML (Hyper Text Markup Language)
+        MM_HTML,
+        /// HTML 3.2 (Hyper Text Markup Language)
+        MM_HTML32,
+        /// XHTML (Extensible Hyper Text Markup Language)
+        MM_XHTML,
+        /// XML (Extensible Markup Language)
+        MM_XML
+    };
 
     // --- string functions ---
 
@@ -116,6 +129,50 @@ class OFStandard
 #endif
     }
 
+    /** convert a given error code to a string. This function wraps the various
+     *  approaches found on different systems. Internally, the standard function
+     *  strerror() or strerror_r() is used.
+     *  @param errnum error code to be converted
+     *  @param buf buffer which is used to store the result string (if supported)
+     *  @param buflen size if the buffer in bytes
+     *  @return pointer to string describing the error code. Please note that depending
+     *     on the implementation of the function used, the result may or may not be a
+     *     pointer to buf. The return value can also be NULL if the buffer is invalid.
+     */
+    static const char *strerror(const int errnum,
+                                char *buf,
+                                const size_t buflen);
+
+    /** returns the upper-case version of a given string
+     *  @param result string variable in which the result is stored
+     *  @param value string value to be converted to upper case
+     *  @return reference to the resulting string (same as 'result')
+     */
+    static OFString &toUpper(OFString &result,
+                             const OFString &value);
+
+    /** returns the upper-case version of a given string.
+     *  NB: This function changes the parameter 'value'.
+     *  @param value string value to be converted to upper case
+     *  @return reference to the resulting string (same as 'value')
+     */
+    static OFString &toUpper(OFString &value);
+
+    /** returns the lower-case version of a given string
+     *  @param result string variable in which the result is stored
+     *  @param value string value to be converted to lower case
+     *  @return reference to the resulting string (same as 'result')
+     */
+    static OFString &toLower(OFString &result,
+                             const OFString &value);
+
+    /** returns the lower-case version of a given string.
+     *  NB: This function changes the parameter 'value'.
+     *  @param value string value to be converted to lower case
+     *  @return reference to the resulting string (same as 'value')
+     */
+    static OFString &toLower(OFString &value);
+
     // --- file system functions ---
 
     /** check whether the given path exists.
@@ -156,6 +213,36 @@ class OFStandard
      */
     static OFBool isWriteable(const OFString &pathName);
 
+    /** get directory name component from given path name.
+     *  Extracts the substring before the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeDirName' is OFFalse, an empty string is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting name points to a valid or existing directory.
+     *  @param result string variable in which the resulting directory name is stored
+     *  @param pathName path name from which the directory name should be extracted
+     *  @param assumeDirName assume that there always is a directory name in 'pathName'
+     *  @return reference to the resulting directory name (same as 'result')
+     */
+    static OFString &getDirNameFromPath(OFString &result,
+                                        const OFString &pathName,
+                                        const OFBool assumeDirName = OFTrue);
+
+    /** get file name component from given path name.
+     *  Extracts the substring after the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned by
+     *  default; if 'assumeFilename' is OFFalse, an empty string is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting name points to a valid or existing file.
+     *  @param result string variable in which the resulting file name is stored
+     *  @param pathName path name from which the file name should be extracted
+     *  @param assumeFilename assume that there always is a file name in 'pathName'
+     *  @return reference to the resulting file name (same as 'result')
+     */
+    static OFString &getFilenameFromPath(OFString &result,
+                                         const OFString &pathName,
+                                         const OFBool assumeFilename = OFTrue);
+
     /** normalize the given directory name.
      *  Removes trailing path separators from the directory name. If the resulting
      *  directory name is an empty string and the flag 'allowEmptyDirName' is OFFalse
@@ -178,7 +265,8 @@ class OFStandard
      *  directory). If 'dirName' is "." and the flag 'allowEmptyDirName' is OFTrue an
      *  empty directory name is used.
      *  NB: This function neither checks whether the given 'dirName' exists nor whether
-     *      the resulting path name points to a valid or existing file name.
+     *      the resulting path name points to a valid or existing file name. Furthermore,
+     *      the value of 'dirName' is ignored if 'fileName' starts with a path separator.
      *  @param result string variable in which the resulting path name is stored
      *  @param dirName directory name to be combined with the file name
      *  @param fileName file name to be combined with the directory name
@@ -190,7 +278,22 @@ class OFStandard
                                            const OFString &fileName,
                                            const OFBool allowEmptyDirName = OFFalse);
 
-    /** scan a given directory recursively and add all filenames found to a list
+    /** remove root directory prefix from given path name.
+     *  In case 'pathName' starts with 'rootDir', the common prefix is removed.
+     *  Otherwise, an empty string is returned.
+     *  @param result string variable in which the resulting path name is stored
+     *  @param rootDir name of the root directory to be removed
+     *  @param pathName path name from which the root directory (prefix) is removed
+     *  @param allowLeadingPathSeparator flag indicating whether a leading path separator
+     *    is allowed for the resulting path name (automatically removed otherwise)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition removeRootDirFromPathname(OFString &result,
+                                                 const OFString &rootDir,
+                                                 const OFString &pathName,
+                                                 const OFBool allowLeadingPathSeparator = OFTrue);
+
+    /** scan a given directory (recursively) and add all filenames found to a list
      *  @param directory name of the directory to be scanned
      *  @param fileList list to which the filenames are added.
      *    Please note that the list is not not cleared automatically.
@@ -199,37 +302,109 @@ class OFStandard
      *    fnmatch() is required.
      *  @param dirPrefix optional prefix added to the directory name.
      *    This prefix will, however, not be part of the filenames added to the list.
+     *  @param recurse flag indicating whether to search recursively (default) or not
      *  @return number of new files added to the list
      */
     static size_t searchDirectoryRecursively(const OFString &directory,
                                              OFList<OFString> &fileList,
-                                             const OFString &pattern /*= ""*/,		// default parameter value not
-                                             const OFString &dirPrefix /*= ""*/);   // supported by Sun CC 2.0.1 :-/
+                                             const OFString &pattern /*= ""*/,      // default parameter value not
+                                             const OFString &dirPrefix /*= ""*/,    // supported by Sun CC 2.0.1 :-/
+                                             const OFBool recurse = OFTrue);
+
+    /** delete given file from filesystem
+     *  @param filename name of the file (including directory) to delete
+     *  @return OFTrue if deletion was successul, OFFalse otherwise
+     */
+    static OFBool deleteFile(const OFString &filename);
+
+    /** determine size of given file (in bytes)
+     *  @param filename name of the file to be checked
+     *  @return size of the file in bytes (0 in case of error)
+     */
+    static size_t getFileSize(const OFString &filename);
 
     // --- other functions ---
 
-    /** convert character string to HTML/XML mnenonic string.
-     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replaced by the
-     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
-     *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
-     *  not allow to specify the character set).
-     ** @param sourceString source string to be converted
-     *  @param markupString reference to character string where the result should be stored
-     *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
-     *    if OFTrue
-     *  @param xmlMode convert to XML markup string if OFTrue, HTML string otherwise.
+    /** check whether conversion to HTML/XML mnenonic string is required.
+     *  This check can be performed before convertToMarkupStream() or convertToMarkupString()
+     *  is called in order to speed up the process in case the conversion is not required.
+     ** @param sourceString source string to be checked
+     *  @param convertNonASCII convert non-ASCII characters (< #32 and >= #127) to numeric
+     *    value (@&@#nnn;) if OFTrue
+     ** @return OFTrue if markup conversion is required, OFFalse otherwise
+     */
+    static OFBool checkForMarkupConversion(const OFString &sourceString,
+                                           const OFBool convertNonASCII = OFFalse);
+
+    /** convert character string to HTML/XHTML/XML mnenonic stream.
+     *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
+     *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
+     *  which does not allow to specify the character set).  In HTML 3.2 mode, the quotation mark
+     *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
+     *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
+     *  same reason.
+     ** @param out stream used for the HTML/XHTML/XML mnenonic output
+     *  @param sourceString source string to be converted
+     *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
+     *    (@&@#nnn;) if OFTrue
+     *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup.
      *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
      *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
-     *    If they are allowed the text "<br>" is used, "&para;" otherwise. The following
-     *    combinations are accepted: LF, CR, LF CR, CF LF.
+     *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
+     *    The following combinations are accepted: LF, CR, LF CR, CF LF.
+     ** @return status, always returns EC_Normal
+     */
+    static OFCondition convertToMarkupStream(STD_NAMESPACE ostream &out,
+                                             const OFString &sourceString,
+                                             const OFBool convertNonASCII = OFFalse,
+                                             const E_MarkupMode markupMode = MM_XML,
+                                             const OFBool newlineAllowed = OFFalse);
+
+    /** convert character string to HTML/XHTML/XML mnenonic string.
+     *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
+     *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
+     *  which does not allow to specify the character set).  In HTML 3.2 mode, the quotation mark
+     *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
+     *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
+     *  same reason.
+     ** @param sourceString source string to be converted
+     *  @param markupString reference to character string where the result should be stored
+     *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
+     *    (@&@#nnn;) if OFTrue
+     *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup string.
+     *    LF and CR are encoded as "@&@#10;" and "@&@#13;" in XML mode, the flag 'newlineAllowed'
+     *    has no meaning in this case.
+     *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
+     *    If they are allowed the text "<br>" (HTML) or "<br />" (XHTML) is used, "&para;" otherwise.
+     *    The following combinations are accepted: LF, CR, LF CR, CF LF.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
                                                  OFString &markupString,
                                                  const OFBool convertNonASCII = OFFalse,
-                                                 const OFBool xmlMode = OFTrue,
+                                                 const E_MarkupMode markupMode = MM_XML,
                                                  const OFBool newlineAllowed = OFFalse);
+
+    /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
+     *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
+     *  the textual output.  The input data is 'padded' with zeros to create a length that is an
+     *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
+     *  can be decoded back to its exact size.
+     *  If the input data is NULL an error code (EC_IllegalParameter) is returned.
+     ** @param out output stream used for the base64 encoded data
+     *  @param data buffer with binary data to be encoded (big endian required!)
+     *  @param length length of the input data buffer (in bytes)
+     *  @param width maximum number of characters per line in the output stream
+     *    (default: 0 = no line breaks, typical for MIME = 72)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition encodeBase64(STD_NAMESPACE ostream &out,
+                                    const unsigned char *data,
+                                    const size_t length,
+                                    const size_t width = 0);
 
     /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
      *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
@@ -360,20 +535,10 @@ class OFStandard
 
      //@}
 
-    /** Checks if a given string consists only of characters which are specified in a
-     *  given charset. Note that in case one of the parameters equals NULL, OFTrue will
-     *  be returned.
-     *  @param str String which shall be checked.
-     *  @param charset Possible character set for s.
-     *  @return OFTrue if the given string consists only of characters which are specified
-     *    in the given charset; OFFalse otherwise.
-     */
-     static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
-
     /** makes the current process sleep until seconds seconds have
-     *  elapsed or a signal arrives which is not ignored.
+     *  elapsed or a signal arrives which is not ignored
      *  @param seconds number of seconds to sleep
-     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     *  @return zero if the requested time has elapsed, or the number of seconds left to sleep
      */
     static inline unsigned int sleep(unsigned int seconds)
     {
@@ -386,6 +551,22 @@ class OFStandard
 #endif
     }
 
+    /** Determines the identification of the running process.
+     *  @return the process ID of the currently running process.
+     */
+    static long getProcessID();
+
+     /** check whether the addition of two 32-bit integers yields in an overflow
+     *  @param summand1 first integer value to be added
+     *  @param summand2 second integer value to be added
+     *  @return OFTrue if an overflow occurred during the addition, OFFalse otherwise
+     */
+    static inline OFBool check32BitAddOverflow(const Uint32 summand1,
+                                               const Uint32 summand2)
+    {
+      return (0xffffffff - summand1 < summand2);
+    }
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
@@ -394,7 +575,7 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *    create, i.e. strlen(src).
+     *    create, i.e. strlen(src)
      */
     static size_t my_strlcpy(char *dst, const char *src, size_t siz);
 
@@ -404,17 +585,16 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *    create, i.e. the initial length of dst plus the length of src.
+     *    create, i.e. the initial length of dst plus the length of src
      */
     static size_t my_strlcat(char *dst, const char *src, size_t siz);
 
     /** makes the current process sleep until seconds seconds have
-     *  elapsed or a signal arrives which is not ignored.
+     *  elapsed or a signal arrives which is not ignored
      *  @param seconds number of seconds to sleep
-     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     *  @return zero if the requested time has elapsed, or the number of seconds left to sleep
      */
     static unsigned int my_sleep(unsigned int seconds);
-
 };
 
 
@@ -425,6 +605,71 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.42  2010-10-14 13:15:50  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.41  2010-06-02 12:54:28  joergr
+ * Introduced new helper function strerror() which is used as a wrapper to the
+ * various approaches found on different systems.
+ *
+ * Revision 1.40  2010-05-20 09:20:13  joergr
+ * Added new method for determining the size of a given file (in bytes).
+ *
+ * Revision 1.39  2010-04-26 12:22:30  uli
+ * Fixed a some minor doxygen warnings.
+ *
+ * Revision 1.38  2010-01-21 14:43:27  joergr
+ * Added stream variant of method convertToMarkupString().
+ *
+ * Revision 1.37  2010-01-20 13:49:47  uli
+ * Added OFStandard::getProcessID().
+ *
+ * Revision 1.36  2010-01-04 16:02:23  joergr
+ * Added new method getDirNameFromPath() and enhanced existing method
+ * getFilenameFromPath().
+ *
+ * Revision 1.35  2009-08-19 10:43:37  joergr
+ * Added new string helper functions toUpper() and toLower().
+ *
+ * Revision 1.34  2009-04-27 14:26:00  joergr
+ * Added comment on absolute path names e.g. in UNC syntax.
+ *
+ * Revision 1.33  2009-03-13 09:47:20  joergr
+ * Added new helper function getFilenameFromPath().
+ *
+ * Revision 1.32  2009-03-05 13:33:12  onken
+ * Added helper function that checks whether a given Uint32 addition would
+ * result in an overflow.
+ *
+ * Revision 1.31  2008-08-28 10:44:36  onken
+ * Introduced deleteFile() method.
+ *
+ * Revision 1.30  2008-07-15 09:49:33  joergr
+ * Removed unused function OFStandard::stringMatchesCharacterSet().
+ *
+ * Revision 1.29  2008-04-28 12:03:24  joergr
+ * Adapted OFStandard::checkForMarkupConversion() to the new behavior of
+ * parameter "convertNonASCII" of OFStandard::convertToMarkupString().
+ * Fixed API documentation of OFStandard::convertToMarkupString().
+ *
+ * Revision 1.28  2007/11/15 16:11:43  joergr
+ * Introduced new markup mode for convertToMarkupString() that is used to
+ * distinguish between HTML, HTML 3.2, XHTML and XML.
+ *
+ * Revision 1.27  2007/06/26 16:21:14  joergr
+ * Added new variant of encodeBase64() method that outputs directly to a stream
+ * (avoids using a memory buffer for large binary data).
+ *
+ * Revision 1.26  2007/03/09 14:54:59  joergr
+ * Added optional parameter "recurse" to searchDirectoryRecursively().
+ *
+ * Revision 1.25  2007/02/20 13:12:27  joergr
+ * Added function that removes a given prefix from a pathname (e.g. root dir).
+ *
+ * Revision 1.24  2006/10/13 10:04:03  joergr
+ * Added new helper function that allows to check whether the conversion to an
+ * HTML/XML markup string is required.
+ *
  * Revision 1.23  2005/12/08 16:06:04  meichel
  * Changed include path schema for all DCMTK header files
  *

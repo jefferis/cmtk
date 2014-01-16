@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: base classes for output streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:20 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dcostrma.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,14 +87,14 @@ OFBool DcmOutputStream::isFlushed() const
   return current_->isFlushed();
 }
 
-Uint32 DcmOutputStream::avail() const
+offile_off_t DcmOutputStream::avail() const
 {
   return current_->avail();
 }
 
-Uint32 DcmOutputStream::write(const void *buf, Uint32 buflen)
+offile_off_t DcmOutputStream::write(const void *buf, offile_off_t buflen)
 {
-  Uint32 result = current_->write(buf, buflen);
+  offile_off_t result = current_->write(buf, buflen);
   tell_ += result;
   return result;
 }
@@ -109,7 +104,7 @@ void DcmOutputStream::flush()
   current_->flush();
 }
 
-Uint32 DcmOutputStream::tell() const
+offile_off_t DcmOutputStream::tell() const
 {
   return tell_;
 }
@@ -118,6 +113,16 @@ Uint32 DcmOutputStream::tell() const
 /*
  * CVS/RCS Log:
  * $Log: dcostrma.cc,v $
+ * Revision 1.5  2010-10-14 13:14:08  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.4  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.3  2007-02-19 16:06:10  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.2  2005/12/08 15:41:20  meichel
  * Changed include path schema for all DCMTK header files
  *

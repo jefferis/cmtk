@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,21 +17,23 @@
  *
  *  Purpose: Interface for loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:09 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCMDICT_H
 #define DCMDICT_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dchashdi.h"
+
 #include "dcmtk/ofstd/ofthread.h"
+#include "dcmtk/dcmdata/dchashdi.h"
 
 /// maximum length of a line in the loadable DICOM dictionary
 #define DCM_MAXDICTLINESIZE     2048
@@ -85,7 +83,7 @@ public:
     int numberOfNormalTagEntries() const { return hashDict.size(); }
 
     /// returns the number of repeating tag entries
-    int numberOfRepeatingTagEntries() const { return repDict.size(); }
+    int numberOfRepeatingTagEntries() const { return OFstatic_cast(int, repDict.size()); }
 
     /** returns the number of dictionary entries that were loaded
      *  either from file or from a built-in dictionary or both.
@@ -101,6 +99,15 @@ public:
      */
     int numberOfSkeletonEntries() const { return skeletonCount; }
 
+    /** reload data dictionaries. First, all dictionary entries are deleted.
+     *  @param loadBuiltin flag indicating if a built-in data dictionary
+     *    (if any) should be loaded.
+     *  @param loadExternal flag indicating if an external data dictionary
+     *    should be read from file.
+     *  @return true if reload was successful, false if an error occurred
+     */
+    OFBool reloadDictionaries(OFBool loadBuiltin, OFBool loadExternal);
+
     /** load a particular dictionary from file.
      *  @param fileName filename
      *  @param errorIfAbsent causes the method to return false
@@ -108,7 +115,7 @@ public:
      *  @return false if the file contains a parse error or if the file could
      *     not be opened and errorIfAbsent was set, true otherwise.
      */
-    OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent=OFTrue);
+    OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent = OFTrue);
 
     /** dictionary lookup for the given tag key and private creator name.
      *  First the normal tag dictionary is searched.  If not found
@@ -269,7 +276,7 @@ private:
    */
   DcmDataDictionary dataDict;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /** the read/write lock used to protect access from multiple threads
    */
   OFReadWriteLock dataDictLock;
@@ -296,6 +303,19 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
+** Revision 1.24  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.23  2010-10-04 14:44:39  joergr
+** Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+** in all cases where OFMutex, OFReadWriteLock, etc. are used).
+**
+** Revision 1.22  2009-02-05 13:13:51  joergr
+** Added reload method to data dictionary class.
+**
+** Revision 1.21  2008-08-15 09:27:14  meichel
+** Added type cast to fix a warning
+**
 ** Revision 1.20  2005/12/08 16:28:09  meichel
 ** Changed include path schema for all DCMTK header files
 **
@@ -373,4 +393,3 @@ extern GlobalDcmDataDictionary dcmDataDict;
 ** dictionary entry.
 **
 */
-

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDate
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:49 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +27,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcvrda.h"
 
 #define INCLUDE_CSTDIO
@@ -45,7 +41,8 @@ DcmDate::DcmDate(const DcmTag &tag,
                  const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 10;
+    setMaxLength(10);
+    setNonSignificantChars("\\");
 }
 
 
@@ -67,12 +64,36 @@ DcmDate &DcmDate::operator=(const DcmDate &obj)
 }
 
 
+OFCondition DcmDate::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmDate &, rhs);
+  }
+  return EC_Normal;
+}
+
+
+
 // ********************************
 
 
 DcmEVR DcmDate::ident() const
 {
     return EVR_DA;
+}
+
+
+OFCondition DcmDate::checkValue(const OFString &vm,
+                                const OFBool oldFormat)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmDate::checkStringValue(strVal, vm, oldFormat);
+    return l_error;
 }
 
 
@@ -233,9 +254,75 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 }
 
 
+// ********************************
+
+
+OFCondition DcmDate::checkStringValue(const OFString &value,
+                                      const OFString &vm,
+                                      const OFBool oldFormat)
+{
+    OFCondition result = EC_Normal;
+    const size_t valLen = value.length();
+    if (valLen > 0)
+    {
+      size_t posStart = 0;
+      unsigned long vmNum = 0;
+      /* iterate over all value components */
+      while (posStart != OFString_npos)
+      {
+        ++vmNum;
+        /* search for next component separator */
+        const size_t posEnd = value.find('\\', posStart);
+        const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+        /* check value representation */
+        const int vrID = DcmElement::scanValue(value, "da", posStart, length);
+        if ((vrID != 2) && (!oldFormat || (vrID != 3)) && (vrID != 17))
+        {
+          result = EC_ValueRepresentationViolated;
+          break;
+        }
+        posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+      }
+      if (result.good() && !vm.empty())
+      {
+        /* check value multiplicity */
+        result = DcmElement::checkVM(vmNum, vm);
+      }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
+** Revision 1.23  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.22  2010-10-14 13:14:10  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.21  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.20  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.19  2009-08-03 09:02:59  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.18  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.17  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
 ** Revision 1.16  2005/12/08 15:41:49  meichel
 ** Changed include path schema for all DCMTK header files
 **

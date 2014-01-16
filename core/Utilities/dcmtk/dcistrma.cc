@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: base classes for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:12 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dcistrma.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,31 +56,31 @@ OFCondition DcmInputStream::status() const
   return current_->status();
 }
 
-OFBool DcmInputStream::eos() const
+OFBool DcmInputStream::eos() 
 {
   return current_->eos();
 }
 
-Uint32 DcmInputStream::avail() const
+offile_off_t DcmInputStream::avail() 
 {
   return current_->avail();
 }
 
-Uint32 DcmInputStream::read(void *buf, Uint32 buflen)
+offile_off_t DcmInputStream::read(void *buf, offile_off_t buflen)
 {
-  Uint32 result = current_->read(buf, buflen);
+  offile_off_t result = current_->read(buf, buflen);
   tell_ += result;
   return result;
 }
 
-Uint32 DcmInputStream::skip(Uint32 skiplen)
+offile_off_t DcmInputStream::skip(offile_off_t skiplen)
 {
-  Uint32 result = current_->skip(skiplen);
+  offile_off_t result = current_->skip(skiplen);
   tell_ += result;
   return result;
 }
 
-Uint32 DcmInputStream::tell() const
+offile_off_t DcmInputStream::tell() const
 {
   return tell_;
 }
@@ -141,6 +136,16 @@ OFCondition DcmInputStream::installCompressionFilter(E_StreamCompression filterT
 /*
  * CVS/RCS Log:
  * $Log: dcistrma.cc,v $
+ * Revision 1.5  2010-10-14 13:14:08  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.4  2009-11-04 09:58:09  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.3  2007-02-19 15:45:30  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.2  2005/12/08 15:41:12  meichel
  * Changed include path schema for all DCMTK header files
  *

@@ -1,38 +1,56 @@
 
 COPYRIGHT
 
-Unless otherwise specified, the DCMTK software package has the
-following copyright:
+Unless otherwise specified, the DCMTK software package has the following
+copyright:
 
 /*
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  All rights reserved.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
- *    D-26121 Oldenburg, Germany
+ *    26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
  *
- *  Copyright of the software  and  supporting  documentation  is,  unless
- *  otherwise stated, owned by OFFIS, and free access is hereby granted as
- *  a license to  use  this  software,  copy  this  software  and  prepare
- *  derivative works based upon this software.  However, any  distribution
- *  of this software source code or supporting documentation or derivative
- *  works  (source code and  supporting documentation)  must  include  the
- *  three paragraphs of this copyright notice.
+ *  - Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *  - Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ *  - Neither the name of OFFIS nor the names of its contributors may be
+ *    used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 
+Please note that some DCMTK modules, especially those that are not part
+of the free toolkit, are covered by a separate license which can be found
+in the COPYRIGHT file in the corresponding module directory.
+
 Some portions of the DCMTK software package are derived from earlier
 versions of this software with the following copyright, and can be
-identifed by the following copyright notice located in each source file:
+identified by the following copyright notice located in each source file:
 
 /*
  *  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
@@ -81,12 +99,12 @@ identifed by the following copyright notice located in each source file:
  *
  */
 
-Some other parts of this software within the dcmtk/dcmnet
-sub-package related to the DICOM Upper Layer Protocol are
-derived from software developed for the RSNA'93 DICOM
-demonstration and kindly made available to us by the Mallinckrodt
-Institute of Radiology.  Such software can be identifed by the
-following copyright notice located in each affected source file:
+Some other parts of this software within the dcmtk/dcmnet sub-package
+related to the DICOM Upper Layer Protocol are derived from software
+developed for the RSNA'93 DICOM demonstration and kindly made available
+to us by the Mallinckrodt Institute of Radiology.  Such software can be
+identified by the following copyright notice located in each affected
+source file:
 
 /*
  *  Copyright (C) 1993, RSNA and Washington University
@@ -120,8 +138,8 @@ following copyright notice located in each affected source file:
  *  the copyright notice.
  */
 
-The dcmjpeg sub-package includes an adapted version of the Independent JPEG
-Group Toolkit Version 6b, which is contained in dcmjpeg/libijg8,
+The dcmjpeg sub-package includes an adapted version of the Independent
+JPEG Group Toolkit Version 6b, which is contained in dcmjpeg/libijg8,
 dcmjpeg/libijg12 and dcmjpeg/libijg16.  This toolkit is covered by the
 following copyright.  The original README file for the Independent JPEG
 Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
@@ -163,9 +181,10 @@ Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
  *  assumed by the product vendor.
  */
 
-The code for the interpolatePixel() image scaling algorithm in module dcmimgle
-has been derived from code written by Jef Poskanzer for the "Extended Portable
-Bitmap Toolkit" (pbmplus10dec91) which has the following copyright:
+The code for the interpolatePixel() image scaling algorithm in module
+dcmimgle has been derived from code written by Jef Poskanzer for the
+"Extended Portable Bitmap Toolkit" (pbmplus10dec91) which has the
+following copyright:
 
 /*
  * Copyright (C) 1991 by Jef Poskanzer.
@@ -179,8 +198,8 @@ Bitmap Toolkit" (pbmplus10dec91) which has the following copyright:
  */
 
 The color quantization code in module dcmimage (dcmquant and the related
-classes) has been derived from code written by Jef Poskanzer for the NetPBM
-toolkit which has the following copyright:
+classes) has been derived from code written by Jef Poskanzer for the
+NetPBM toolkit which has the following copyright:
 
 /*
  * Copyright (C) 1989, 1991 by Jef Poskanzer.
@@ -225,9 +244,9 @@ following copyright notice:
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-The code for the OFStandard::atof helper function in
-ofstd/libsrc/ofstd.cc has been derived from an implementation which
-carries the following copyright notice:
+The code for the OFStandard::atof helper function in ofstd/libsrc/ofstd.cc
+has been derived from an implementation which carries the following
+copyright notice:
 
 /*
  *  Copyright 1988 Regents of the University of California
@@ -268,59 +287,87 @@ from an implementation which carries the following copyright notice:
  *  provided the authors copyright notice remains intact.
  */
 
-The dcmjp2k sub-package (which is currently not part of the free
-toolkit) includes an adapted version of the JasPer JPEG 2000 toolkit,
-which is contained in dcmjp2k/libjaspr. This toolkit is covered by
-the following copyright.
+The oflog sub-package is based on the log4cplus library which is covered by
+the following two copyright notices (for details see oflog/docs/LICENSE):
 
-/*  JasPer License Version 2.0
+/*
+ *     Copyright (C) 1999-2009 Contributors to log4cplus project.
+ *     All rights reserved.
  *
- *  Copyright (c) 1999-2000 Image Power, Inc.
- *  Copyright (c) 1999-2000 The University of British Columbia
- *  Copyright (c) 2001-2003 Michael David Adams
+ *  Redistribution and use in source and binary forms, with or without modifica-
+ *  tion, are permitted provided that the following conditions are met:
  *
+ *  1. Redistributions of  source code must  retain the above copyright  notice,
+ *     this list of conditions and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *
+ *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ *  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ *  FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
+ *  APACHE SOFTWARE  FOUNDATION  OR ITS CONTRIBUTORS  BE LIABLE FOR  ANY DIRECT,
+ *  INDIRECT, INCIDENTAL, SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLU-
+ *  DING, BUT NOT LIMITED TO, PROCUREMENT  OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ *  OF USE, DATA, OR  PROFITS; OR BUSINESS  INTERRUPTION)  HOWEVER CAUSED AND ON
+ *  ANY  THEORY OF LIABILITY,  WHETHER  IN CONTRACT,  STRICT LIABILITY,  OR TORT
+ *  (INCLUDING  NEGLIGENCE OR  OTHERWISE) ARISING IN  ANY WAY OUT OF THE  USE OF
+ *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+// Module:  Log4CPLUS
+// File:    appender.h
+// Created: 6/2001
+// Author:  Tad E. Smith
+//
+//
+// Copyright 2001-2009 Tad E. Smith
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+The dcmjpls sub-package is based on the CharLS library, which is contained
+in dcmjpls/libcharls. This toolkit is covered by the following copyright:
+
+/*
+ *  The CharLS library is available under the following license:
+ *  -------------------------------------------------------------------------------
+ *  Copyright (c) 2007-2010, Jan de Vaan
  *  All rights reserved.
  *
- *  Permission is hereby granted, free of charge, to any person (the
- *  "User") obtaining a copy of this software and associated documentation
- *  files (the "Software"), to deal in the Software without restriction,
- *  including without limitation the rights to use, copy, modify, merge,
- *  publish, distribute, and/or sell copies of the Software, and to permit
- *  persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
  *
- *  1.  The above copyright notices and this permission notice (which
- *  includes the disclaimer below) shall be included in all copies or
- *  substantial portions of the Software.
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
  *
- *  2.  The name of a copyright holder shall not be used to endorse or
- *  promote products derived from the Software without specific prior
- *  written permission.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
- *  THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
- *  LICENSE.  NO USE OF THE SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER
- *  THIS DISCLAIMER.  THE SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS
- *  "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- *  BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- *  PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS.  IN NO
- *  EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING
- *  FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
- *  NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
- *  WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.  NO ASSURANCES ARE
- *  PROVIDED BY THE COPYRIGHT HOLDERS THAT THE SOFTWARE DOES NOT INFRINGE
- *  THE PATENT OR OTHER INTELLECTUAL PROPERTY RIGHTS OF ANY OTHER ENTITY.
- *  EACH COPYRIGHT HOLDER DISCLAIMS ANY LIABILITY TO THE USER FOR CLAIMS
- *  BROUGHT BY ANY OTHER ENTITY BASED ON INFRINGEMENT OF INTELLECTUAL
- *  PROPERTY RIGHTS OR OTHERWISE.  AS A CONDITION TO EXERCISING THE RIGHTS
- *  GRANTED HEREUNDER, EACH USER HEREBY ASSUMES SOLE RESPONSIBILITY TO SECURE
- *  ANY OTHER INTELLECTUAL PROPERTY RIGHTS NEEDED, IF ANY.  THE SOFTWARE
- *  IS NOT FAULT-TOLERANT AND IS NOT INTENDED FOR USE IN MISSION-CRITICAL
- *  SYSTEMS, SUCH AS THOSE USED IN THE OPERATION OF NUCLEAR FACILITIES,
- *  AIRCRAFT NAVIGATION OR COMMUNICATION SYSTEMS, AIR TRAFFIC CONTROL
- *  SYSTEMS, DIRECT LIFE SUPPORT MACHINES, OR WEAPONS SYSTEMS, IN WHICH
- *  THE FAILURE OF THE SOFTWARE OR SYSTEM COULD LEAD DIRECTLY TO DEATH,
- *  PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE ("HIGH
- *  RISK ACTIVITIES").  THE COPYRIGHT HOLDERS SPECIFICALLY DISCLAIM ANY
- *  EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES.
+ *  * Neither the name of my employer, nor the names of its contributors may be
+ *    used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:06:07 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +30,14 @@
 #define OFSTRING_H
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
-#include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+
+#include "dcmtk/ofstd/oftypes.h"       /* for OFBool */
 #include "dcmtk/ofstd/ofcast.h"
+
+
+// makes sure that resulting C string is never NULL
+#define OFSTRING_GUARD(c_string) ((c_string != NULL) ? (c_string) : "")
+
 
 #ifdef HAVE_STD_STRING
 /*
@@ -73,7 +75,7 @@
 /** OFString_npos is a value larger than any "reasonable" string and is
  *  used to denote "until the end" when a length is required.
  *  Normally string::npos is defined as a static const member
- * but some C++ compilers are too primitive.
+ *  but some C++ compilers are too primitive.
  */
 static const size_t OFString_npos = (OFstatic_cast(size_t, -1));
 
@@ -207,10 +209,16 @@ public:
      *  The function reports an out-of-range error if pos > str.size().
      *  @param str string to append from
      *  @param pos position to start copying from
-     *  @param n maximum number of characters to copy
+     *  @param n maximum number of characters to copy, can be OFString_npos
      *  @return reference to this object
      */
-    OFString& assign(const OFString& str, size_t pos = 0, size_t n = OFString_npos);
+    OFString& assign(const OFString& str, size_t pos, size_t n);
+
+    /** Assigns input string str to the current string object.
+     *  @param str string to copy
+     *  @return reference to this object
+     */
+    OFString& assign(const OFString& str);
 
     /** constructs a temporary string from the input and assigns it to the current string.
      *  @param s pointer to an array of char of length n. Must not be NULL.
@@ -243,7 +251,7 @@ public:
      *  @return reference to this object
      */
     OFString& insert(size_t pos1, const OFString& str,
-              size_t pos2 = 0, size_t n = OFString_npos);
+                     size_t pos2 = 0, size_t n = OFString_npos);
 
     /** constructs a temporary string from the input and inserts
      *  it into the current string.
@@ -276,7 +284,7 @@ public:
      *  @param n number of characters to remove
      *  @return reference to this object
      */
-    OFString& erase (size_t pos = 0, size_t n = OFString_npos);
+    OFString& erase(size_t pos = 0, size_t n = OFString_npos);
 
     /** replaces a range of characters in the current string
      *  with a range of characters taken from the input string str. The
@@ -294,7 +302,7 @@ public:
      *  @return reference to this object
      */
     OFString& replace(size_t pos1, size_t n1, const OFString& str,
-               size_t pos2 = 0, size_t n2 = OFString_npos);
+                      size_t pos2 = 0, size_t n2 = OFString_npos);
 
     /** constructs a temporary string from the input and replaces the range [pos, n]
      *  in the current string with the constructed string.
@@ -350,7 +358,7 @@ public:
     }
 
     /** returns the element at position pos of the current string. Returns
-     *  '\0' if pos == size().
+     *  '@\0' if pos == size().
      *  @param pos position in string
      *  @return character in string at pos (by value)
      */
@@ -401,7 +409,7 @@ public:
      */
     size_t size() const
     {
-        return (this->theCString)?(strlen(this->theCString)):(0);
+        return this->theSize;
     }
 
     /** returns a count of the number of char-like objects currently in
@@ -426,12 +434,12 @@ public:
      *  @param n length to truncate string to
      *  @param c character to pad extra locations with
      */
-    void resize (size_t n, char c = '\0');
+    void resize(size_t n, char c = '\0');
 
     /** returns the size of the allocated storage in the string.
      *  @return size of the allocated storage in the string
      */
-    size_t capacity () const
+    size_t capacity() const
     {
         return this->theCapacity;
     }
@@ -498,11 +506,11 @@ public:
      */
     int compare(const OFString& str) const;
 
-    /** constructs a temporary string from the input and compares
-     *  it with the current string
-     *  @param pos1 position to start copying from in str
-     *  @param n1 maximum number of characters to copy from str
-     *  @param str string to copy from
+    /** constructs a temporary string from this object and compares
+     *  it with the input string
+     *  @param pos1 position to start copying from this object
+     *  @param n1 maximum number of characters to copy from this object
+     *  @param str string to compare to
      *  @return comparison result
      */
     int compare(size_t pos1, size_t n1, const OFString& str) const;
@@ -516,8 +524,7 @@ public:
      *  @param n2 maximum number of characters to copy from str
      *  @return comparison result
      */
-    int compare(size_t pos1, size_t n1, const OFString& str,
-         size_t pos2, size_t n2) const;
+    int compare(size_t pos1, size_t n1, const OFString& str, size_t pos2, size_t n2) const;
 
     /** constructs a temporary string from the input and compares
      *  it with the current string
@@ -527,15 +534,14 @@ public:
     int compare(const char* s) const;
 
     /** constructs a temporary string from this object and another
-     *  temporary from the input  and compares the two temporaries
+     *  temporary from the input and compares the two temporaries
      *  @param pos1 position to start copying from this object
      *  @param n1 maximum number of characters to copy from this object
      *  @param s pointer to an array of char of length n. Must not be NULL.
      *  @param n2 number of characters in array s
      *  @return comparison result
      */
-    int compare(size_t pos1, size_t n1,
-         const char* s, size_t n2 = OFString_npos) const;
+    int compare(size_t pos1, size_t n1, const char* s, size_t n2 = OFString_npos) const;
 
     /** determines the earliest occurrence of the
      *  input pattern in the current string object, starting from position
@@ -799,9 +805,37 @@ public:
      */
     size_t find_last_not_of(char c, size_t pos = OFString_npos) const;
 
+    /** type that is used for lengths and offsets */
+    typedef size_t size_type;
+
+    /** type that is contained in this */
+    typedef char value_type;
+
+    /** this typedef can be used to iterate over an string.
+     *  Note: Normally you are allowed to modify items through an iterator,
+     *  we do not allow this!
+     */
+    typedef const char* iterator;
+
+    /** this is just an alias for iterator since iterator is already "const" */
+    typedef iterator const_iterator;
+
+    /** returns a constant iterator that points to the beginning of the string
+     *  @return iterator to the beginning of the string
+     */
+    iterator begin() const { return theCString; }
+
+    /** returns a constant iterator that points after the last element of the string
+     *  @return iterator after the last element of the string
+     */
+    iterator end() const { return begin() + length(); }
+
 private:
     /// the "C" string pointer
     char* theCString;
+
+    /// the length of theCString
+    size_t theSize;
 
     /// the capacity of str
     size_t theCapacity;
@@ -814,7 +848,7 @@ private:
  *  @param s string to print
  *  @return reference to stream
  */
-ostream& operator<< (ostream& o, const OFString& s);
+STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFString& s);
 
 /** reads a string of characters from input stream i into s. Any
  *  whitespace is treated as a string terminator.
@@ -822,7 +856,7 @@ ostream& operator<< (ostream& o, const OFString& s);
  *  @param s string to print
  *  @return reference to stream
  */
-istream& operator>> (istream& i, OFString& s);
+STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s);
 
 /** appends the string rhs to lhs.
  *  @param lhs left-hand side string
@@ -1077,6 +1111,40 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.30  2010-10-14 13:15:50  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.29  2010-08-19 12:07:55  uli
+** Made OFString follow the C++ standard for std::string::assign().
+**
+** Revision 1.28  2010-07-26 07:31:17  joergr
+** Fixed typo (and revised documentation on the OFSTRING_GUARD macro).
+**
+** Revision 1.27  2010-07-21 14:25:10  joergr
+** Introduced new guard macro that makes sure that a C string is never NULL.
+** Useful when passing a C string to a OFString constructor or an output stream.
+**
+** Revision 1.26  2010-04-26 12:22:30  uli
+** Fixed a some minor doxygen warnings.
+**
+** Revision 1.25  2009-09-28 14:07:34  joergr
+** Introduced new member variable that stores the current length of the string.
+** This yields in a significant performance improvement when compiled in debug
+** mode.
+**
+** Revision 1.24  2009-08-19 10:42:42  joergr
+** Added iterator declarations and required methods.
+**
+** Revision 1.23  2009-08-07 14:31:08  joergr
+** Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
+**
+** Revision 1.22  2007/02/20 13:12:59  joergr
+** Fixed wrong comment in compare() method.
+**
+** Revision 1.21  2006/08/14 16:42:26  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
 ** Revision 1.20  2005/12/08 16:06:07  meichel
 ** Changed include path schema for all DCMTK header files
 **

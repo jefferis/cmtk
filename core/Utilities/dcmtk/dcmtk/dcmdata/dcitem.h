@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:19 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-11-02 15:31:06 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,25 +32,25 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/offile.h"       /* for offile_off_t */
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcobject.h"
-#include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dclist.h"
-#include "dcmtk/dcmdata/dcstack.h"
 #include "dcmtk/dcmdata/dcpcache.h"
 
 
 // forward declaration
 class DcmSequenceOfItems;
+class DcmElement;
 
 
-/** a class representing a collection of DICOM elements
+/** a class representing a list of DICOM elements in which each
+ *  element has a different tag and elements are maintained in
+ *  increasing order of tags. In particular, a sequence item.
  */
 class DcmItem
   : public DcmObject
 {
-
   public:
 
     /** default constructor
@@ -74,6 +70,12 @@ class DcmItem
      */
     DcmItem(const DcmItem &old);
 
+    /** assignment operator. Private creator cache is not copied
+     *  as it is also the case for clone().
+     *  @param the item to be copied
+     */
+    DcmItem &operator=(const DcmItem &obj);
+
     /** destructor
      */
     virtual ~DcmItem();
@@ -86,6 +88,20 @@ class DcmItem
       return new DcmItem(*this);
     }
 
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
     /** get type identifier
      *  @return type identifier of this class (EVR_item)
      */
@@ -96,8 +112,17 @@ class DcmItem
      */
     virtual unsigned long getVM();
 
+    /** get cardinality of this item
+     *  @return number of elements in this item
+     */
     virtual unsigned long card() const;
 
+    /** check if this element is a leaf node in a dataset tree.
+     *  All subclasses of DcmElement except for DcmSequenceOfItems
+     *  are leaf nodes, while DcmSequenceOfItems, DcmItem, DcmDataset etc.
+     *  are not.
+     *  @return true if leaf node, false otherwise.
+     */
     virtual OFBool isLeaf() const { return OFFalse; }
 
     /** print all elements of the item to a stream
@@ -107,21 +132,61 @@ class DcmItem
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** calculate the length of this DICOM element when encoded with the
+     *  given transfer syntax and the given encoding type for sequences.
+     *  For elements, the length includes the length of the tag, length field,
+     *  VR field and the value itself, for items and sequences it returns
+     *  the length of the complete item or sequence including delimitation tags
+     *  if applicable.
+     *  If length encodig is set to be explicit and the total item size is
+     *  larger than the available 32-bit length field, then undefined length
+     *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
+     *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
+     *  in case the item content (excluding tag header etc.) is already too
+     *  large.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return length of DICOM element
+     */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
+    /** calculate the value length (without attribute tag, VR and length field)
+     *  of this DICOM element when encoded with the given transfer syntax and
+     *  the given encoding type for sequences.
+     *  If length encodig is set to be explicit and the item content is larger
+     *  than the available 32-bit length field, then undefined length is
+     *  returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
+     *  also the internal DcmObject errorFlag is set to
+     *  EC_SeqOrItemContentOverflow.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return value length of DICOM element
+     */
     virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
                              const E_EncodingType enctype = EET_UndefinedLength);
 
+    /** initialize the transfer state of this object. This method must be called
+     *  before this object is written to a stream or read (parsed) from a stream.
+     */
     virtual void transferInit();
+
+    /** finalize the transfer state of this object. This method must be called
+     *  when reading/writing this object from/to a stream has been completed.
+     */
     virtual void transferEnd();
 
+    /** check if this DICOM object can be encoded in the given transfer syntax.
+     *  @param newXfer transfer syntax in which the DICOM object is to be encoded
+     *  @param oldXfer transfer syntax in which the DICOM object was read or created.
+     *  @return true if object can be encoded in desired transfer syntax, false otherwise.
+     */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
@@ -147,34 +212,55 @@ class DcmItem
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** returns true if the object contains an element with Unknown VR at any nesting level
      *  @return true if the object contains an element with Unknown VR, false otherwise
      */
     virtual OFBool containsUnknownVR() const;
+
+    /** check if this object contains non-ASCII characters at any nesting level
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *  @return true if object contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this object is affected by SpecificCharacterSet at any nesting level.
+     *  In detail, it is checked whether this object contains any data elements that
+     *  according to their VR are affected by the SpecificCharacterSet (0008,0005)
+     *  element. This is true for the following VRs: PN, LO, LT, SH, ST and UT
+     *  @return true if object is affected by SpecificCharacterSet, false otherwise
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -192,25 +278,118 @@ class DcmItem
                                OFBool replaceOld = OFFalse,
                                OFBool checkInsertOrder = OFFalse);
 
+    /** access an element from the item. This method returns a pointer to one
+     *  of the elements in the item, and not a copy.
+     *  @param num index number of element, must be < card()
+     *  @return pointer to element if found, NULL if num >= card()
+     */
     virtual DcmElement *getElement(const unsigned long num);
 
-    // get next Object from position in stack. If stack empty
-    // get next Object in this item. if intoSub true, scan
-    // complete hierarchy, false scan only elements direct in this
-    // item (not deeper).
+    /** this method enables a stack based, depth-first traversal of a complete
+     *  hierarchical DICOM dataset (that is, classes derived from DcmItem or
+     *  DcmSequenceOfItems). With each call of this method, the next object
+     *  in the tree is located and marked on the stack.
+     *  @param stack "cursor" for current position in the dataset. The stack
+     *    will contain a pointer to each dataset, sequence, item and element
+     *    from the main dataset down to the current element, and is updated
+     *    upon each call to this method. An empty stack is equivalent to a stack
+     *    containing a pointer to this object only.
+     *  @param intoSub if true, the nextObject method will perform a hierarchical
+     *    search through the dataset (depth-first), if false, only the current
+     *    container object will be traversed (e.g., all elements of an item
+     *    or all items of a sequence).
+     *  @return EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition nextObject(DcmStack &stack,
                                    const OFBool intoSub);
-    virtual DcmObject  *nextInContainer(const DcmObject *obj);
+
+    /** this method is only used in container classes,
+     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the
+     *  next object in the list AFTER the given object. If the caller passes NULL,
+     *  a pointer to the first object in the list is returned. If the given object
+     *  is not found, the given object is the last one in the list or the list is empty,
+     *  NULL is returned.
+     *  @param obj pointer to one object in the container; we are looking for the
+     *    next entry after this one. NULL if looking for the first entry.
+     *  @return pointer to next object in container or NULL if not found
+     */
+    virtual DcmObject *nextInContainer(const DcmObject *obj);
+
+    /** remove element from list. If found, the element is not deleted but
+     *  returned to the caller who is responsible for further management of the
+     *  DcmElement object.
+     *  @param num index number of element, must be < card()
+     *  @return pointer to DcmElement if found, NULL otherwise
+     */
     virtual DcmElement *remove(const unsigned long num);
+
+    /** remove element from list. If found, the element is not deleted but
+     *  returned to the caller who is responsible for further management of the
+     *  DcmElement object.
+     *  @param elem pointer to element (as type DcmObject *) to be removed from list
+     *  @return pointer to element (as type DcmElement *) if found, NULL otherwise
+     */
     virtual DcmElement *remove(DcmObject *elem);
+
+    /** remove element from list. If found, the element is not deleted but
+     *  returned to the caller who is responsible for further management of the
+     *  DcmElement object.
+     *  @param tag attribute tag of element to be removed
+     *  @return pointer to DcmElement if found, NULL otherwise
+     */
     virtual DcmElement *remove(const DcmTagKey &tag);
+
+    /** check if this item is empty
+     *  @param normalize not used for this class
+     *  @return true if item is empty, i.e. has no elements, false otherwise
+     */
+    virtual OFBool isEmpty(const OFBool normalize = OFTrue);
+
+    /** clear (remove) attribute value
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition clear();
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse );
+
+    /** a complex, stack-based, hierarchical search method. It allows for a search
+     *  for a DICOM object with a given attribute within a given container,
+     *  hierarchically, from a starting position identified through a cursor stack.
+     *  @param xtag the DICOM attribute tag we are searching for
+     *  @param resultStack Depending on the search mode (see below), this parameter
+     *     either serves as an input and output parameter, or as an output parameter
+     *     only (the latter being the default). When used as an input parameter,
+     *     the cursor stack defines the start position for the search within a
+     *     hierarchical DICOM dataset. Upon successful return, the stack contains
+     *     the position of the element found, in the form of a pointer to each dataset,
+     *     sequence, item and element from the main dataset down to the found element.
+     *  @param mode search mode, controls how the search stack is handled.
+     *     In the default mode, ESM_fromHere, the stack is ignored on input, and
+     *     the search starts in the object for which this method is called.
+     *     In the other modes, the stack is used both as an input and an output
+     *     parameter and defines the starting point for the search.
+     *  @param searchIntoSub if true, the search will be performed hierarchically descending
+     *    into the sequences and items of the dataset. If false, only the current container
+     *    (sequence or item) will be traversed.
+     *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something
+     *    went wrong.
+     */
     virtual OFCondition search(const DcmTagKey &xtag,              // in
                                DcmStack &resultStack,              // inout
                                E_SearchMode mode = ESM_fromHere,   // in
                                OFBool searchIntoSub = OFTrue );    // in
-    virtual OFCondition searchErrors( DcmStack &resultStack );     // inout
+
+    /** this method loads all attribute values maintained by this object and
+     *  all sub-objects (in case of a container such as DcmDataset) into memory.
+     *  After a call to this method, the file from which a dataset was read may safely
+     *  be deleted or replaced. For large files, this method may obviously allocate large
+     *  amounts of memory.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition loadAllDataIntoMemory();
 
     /** This function takes care of group length and padding elements
@@ -249,32 +428,47 @@ class DcmItem
                                                      const Uint32 subPadlen = 0,
                                                      Uint32 instanceLength = 0);
 
-    /* simple tests for existance */
+
+    /** check if an element with the given attribute tag exists in the dataset
+     *  @param key tag key to be searched
+     *  @param searchIntoSub if true, do hierarchical search within sequences,
+     *    if false only search through this dataset
+     *  @return true if tag found, false otherwise
+     */
     OFBool tagExists(const DcmTagKey &key,
                      OFBool searchIntoSub = OFFalse);
+
+    /** check if an element with the given attribute tag exists in the dataset
+     *  and has a non-empty value (i.e., length > 0)
+     *  @param key tag key to be searched
+     *  @param searchIntoSub if true, do hierarchical search within sequences,
+     *    if false only search through this dataset
+     *  @return true if tag found and element non-empty, false otherwise
+     */
     OFBool tagExistsWithValue(const DcmTagKey &key,
                               OFBool searchIntoSub = OFFalse);
 
-
     /* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
-    /** find element and get a pointer to it.
+    /** find element and get a pointer to it (or copy it).
      *  Applicable to all DICOM value representations (VR).
      *  The result variable 'element' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param element variable in which the reference to the element is stored
+     *  @param element variable in which the reference to (or copy of) the element is stored
      *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @param createCopy create a copy of the element if true, return a reference otherwise
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetElement(const DcmTagKey &tagKey,
                                   DcmElement *&element,
-                                  const OFBool searchIntoSub = OFFalse);
+                                  const OFBool searchIntoSub = OFFalse,
+                                  const OFBool createCopy = OFFalse);
 
     /** find all elements matching a particular tag and return references to them on a stack.
      *  This functions always performs a deep search (i.e. searches into sequence of items).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param resultStack stack where references to the elements are stored (added to).
-     * 	  If no element is found, the stack is not modified (e.g. cleared).
+     *    If no element is found, the stack is not modified (e.g. cleared).
      *  @return EC_Normal if at least one matching tag is found, an error code otherwise.
      */
     OFCondition findAndGetElements(const DcmTagKey &tagKey,
@@ -547,13 +741,15 @@ class DcmItem
      *  The result variable 'sequence' is automatically set to NULL if an error occurs
      *  (e.g. if 'seqTagKey' does not refer to a sequence attribute).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
-     *  @param sequence variable in which the reference to the sequence element is stored
+     *  @param sequence variable in which the reference to (or copy of) the sequence is stored
      *  @param searchIntoSub flag indicating whether to search into sub-sequences or not
+     *  @param createCopy create a copy of the sequence if true, return a reference otherwise
      *  @return EC_Normal upon success, an error otherwise.
      */
     OFCondition findAndGetSequence(const DcmTagKey &seqTagKey,
                                    DcmSequenceOfItems *&sequence,
-                                   const OFBool searchIntoSub = OFFalse);
+                                   const OFBool searchIntoSub = OFFalse,
+                                   const OFBool createCopy = OFFalse);
 
     /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
      *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
@@ -561,13 +757,15 @@ class DcmItem
      *  the dataset/item is examined (i.e. no deep-search is performed).
      *  Applicable to the following VRs: SQ, (pixelSQ)
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
-     *  @param item variable in which the reference to the sequence item is stored
+     *  @param item variable in which the reference to (or copy of) the item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last)
+     *  @param createCopy create a copy of the item if true, return a reference otherwise
      *  @return EC_Normal upon success, an error otherwise.
      */
     OFCondition findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                        DcmItem *&item,
-                                       const signed long itemNum = 0);
+                                       const signed long itemNum = 0,
+                                       const OFBool createCopy = OFFalse);
 
 
     /* --- findOrCreate functions: find an element or create a new one --- */
@@ -577,8 +775,8 @@ class DcmItem
      *  multiple empty items are inserted. Only the top-most level of the dataset/item
      *  is examined (i.e. no deep-search is performed).
      *  Applicable to the following VRs: SQ, (pixelSQ)
-     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for or
-     *    to be create respectively
+     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
+     *    (or to be created)
      *  @param item variable in which the reference to the sequence item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last,
      *    -2 for append new)
@@ -588,8 +786,22 @@ class DcmItem
                                          DcmItem *&item,
                                          const signed long itemNum = 0);
 
-
     /* --- findAndXXX functions: find an element and do something with it --- */
+
+    /** find element, create a copy and insert it into the given destination dataset.
+     *  This functions never performs a deep search (i.e. does not search into sequence
+     *  of items). Empty elements are also copied. However, if the given tag is not
+     *  found in the current dataset, EC_TagNotFound is returned and the destination
+     *  dataset remains unchanged.
+     *  Applicable to all DICOM value representations (VR).
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param destItem destination dataset to which the copied element is inserted
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition findAndInsertCopyOfElement(const DcmTagKey &tagKey,
+                                           DcmItem *destItem,
+                                           const OFBool replaceOld = OFTrue);
 
     /** find element, remove it from the dataset and free the associated memory.
      *  Applicable to all DICOM value representations (VR).
@@ -603,18 +815,15 @@ class DcmItem
                                      const OFBool allOccurrences = OFFalse,
                                      const OFBool searchIntoSub = OFFalse);
 
-    /** find element, and create a copy of it.
-     *  Applicable to all DICOM value representations (VR).
-     *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param newElement stores pointer to the new element copy (NULL in case of error).
-     *    This element is not inserted into the dataset/item and must, therefore, be
-     *    deleted by the caller.
-     *  @param searchIntoSub flag indicating whether to search into sequences or not
-     *  @return EC_Normal upon success, an error code otherwise.
+    /** looks up the given sequence in the current dataset and deletes the given item.
+     *  Applicable to the following VRs: SQ, (pixelSQ)
+     *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
+     *  @param itemNum number of the item to be deleted (0..n-1, -1 for last)
+     *  @return EC_Normal upon success, an error otherwise.
      */
-    OFCondition findAndCopyElement(const DcmTagKey &tagKey,
-                                   DcmElement *&newElement,
-                                   const OFBool searchIntoSub = OFFalse);
+    OFCondition findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
+                                          const signed long itemNum);
+
 
     /* --- putAndInsert functions: put value and insert new element --- */
 
@@ -658,7 +867,8 @@ class DcmItem
      *  Applicable to the following VRs: US, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -684,7 +894,8 @@ class DcmItem
      *  Applicable to the following VRs: SS, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -710,7 +921,8 @@ class DcmItem
      *  Applicable to the following VRs: UL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -723,7 +935,8 @@ class DcmItem
      *  Applicable to the following VRs: SL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -736,7 +949,8 @@ class DcmItem
      *  Applicable to the following VRs: FL, OF
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -749,7 +963,8 @@ class DcmItem
      *  Applicable to the following VRs: FD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -758,9 +973,12 @@ class DcmItem
                                     const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
+
+    /* --- insertXXX functions: insert new element --- */
+
     /** create a new element (with no value) and insert it into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, OB, OF, OW, LT,
-     *  PN, SH, SQ, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SQ, SS, ST, TM, UI, UL, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
@@ -768,6 +986,21 @@ class DcmItem
     OFCondition insertEmptyElement(const DcmTag &tag,
                                    const OFBool replaceOld = OFTrue);
 
+    /** looks up the given sequence in the current dataset and inserts the given item.
+     *  If the sequence does not exist, it is created. If necessary, multiple empty items
+     *  are inserted before the specified item position. Only the top-most level of the
+     *  dataset/item is examined (i.e. no deep-search is performed).
+     *  Applicable to the following VRs: SQ, (pixelSQ)
+     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
+     *    (or to be created)
+     *  @param item item to be inserted into the sequence, must not be contained in this
+     *    or any other sequence. Will be deleted upon destruction of the sequence object.
+     *  @param itemNum position of the item (0..n-1, -1 = before last, -2 = after last)
+     *  @return EC_Normal upon success, an error otherwise (delete 'item' manually!).
+     */
+    OFCondition insertSequenceItem(const DcmTag &seqTag,
+                                   DcmItem *item,
+                                   const signed long itemNum = -2);
 
   protected:
 
@@ -784,7 +1017,9 @@ class DcmItem
      *  the item started (needed for calculating the remaining number of
      *  bytes available for a fixed-length item).
      */
-    Uint32 fStartPosition;
+    offile_off_t fStartPosition;
+
+  protected:
 
     /** This function reads tag and length information from inStream and
      *  returns this information to the caller. When reading information,
@@ -844,64 +1079,90 @@ class DcmItem
      */
     E_TransferSyntax checkTransferSyntax(DcmInputStream &inStream);
 
+    /** check whether the given tag requires some special handling regarding the VR
+     *  (i.e. in case it is undefined and multiple values are possible). If required,
+     *  the VR of the given element tag is then updated according to the DICOM
+     *  standard, e.g. the VR of PixelPaddingValue (if undefined) is set to 'SS' or
+     *  'US' depending on the value of PixelRepresentation.
+     *  @param item dataset or item that can be used to lookup other element values
+     *  @param tag tag of the element to be checked and updated (if required)
+     */
+    void checkAndUpdateVR(DcmItem &item,
+                          DcmTag &tag);
+
 
   private:
 
-    /// private unimplemented copy assignment operator
-    DcmItem &operator=(const DcmItem &);
-
+    /** helper function for search(). May only be called if elementList is non-empty.
+     *  Performs hierarchical search for given tag and pushes pointer of sub-element
+     *  on result stack if found
+     *  @param tag tag key to be searched
+     *  @param resultStack upon successful return, pointer to element pushed onto this stack
+     *  @param searchIntoSub flag indicating whether recursive search is desired
+     *  @return EC_Normal if tag found and stack modified, EC_TagNotFound if tag not found
+     *    and stack unmodified
+     */
     OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
                                   DcmStack &resultStack,         // inout
                                   OFBool searchIntoSub );        // in
 
-    OFBool foundVR(char *atposition);
+    /** helper function that interprets the given pointer as a pointer to an
+     *  array of two characters and checks whether these two characters form
+     *  a valid standard DICOM VR.
+     *  @param atposition pointer to array of (at least) two bytes interpreted as VR
+     *  @return true if standard VR, false otherwise
+     */
+    static OFBool foundVR(const Uint8* atposition);
 
     /// cache for private creator tags and names
     DcmPrivateTagCache privateCreatorCache;
 };
 
-
 //
 // SUPPORT FUNCTIONS
 //
 
-
-// Function: newDicomElement
-// creates a new DicomElement from a Tag.
-//
-// Input:
-//   tag    : Tag of the new element
-//   length : length of the element value
-//
-// Output:
-//   newElement: point of a heap allocated new element. If the tag does not
-//               describe a dicom element or has ambigious VR (e.g. EVR_ox)
-//               a NULL pointer is returned.
-//
-// Result:
-//   EC_Normal:     tag describes an element (possibly with ambiguous VR)
-//   EC_InvalidTag: tag describes an item begin or an unknown element
-//   EC_SequEnd:    tag describes a sequence delimitation element
-//   EC_ItemEnd:    tag describes an item delmitation element
-//   other: an error
+/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
+ *  @param newElement pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
+ *  @param tag attribute tag of the element to be created
+ *  @param length attribute value length of the element to be created
+ *  @param privateCreatorCache cache object for private creator strings in the current dataset
+ *  @param readAsUN flag indicating whether parser is currently handling a UN element that
+ *    must be read in implicit VR little endian; updated upon return
+ *  @return EC_Normal upon success, an error code otherwise
+ */
 OFCondition newDicomElement(DcmElement *&newElement,
                             DcmTag &tag,
                             const Uint32 length,
                             DcmPrivateTagCache *privateCreatorCache,
                             OFBool& readAsUN);
 
+/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
+ *  @param newElement pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
+ *  @param tag attribute tag of the element to be created
+ *  @param length attribute value length of the element to be created
+ *  @return EC_Normal upon success, an error code otherwise
+ */
 OFCondition newDicomElement(DcmElement *&newElement,
                             const DcmTag &tag,
                             const Uint32 length = 0);
 
-// Functions: newDicomElement
-// creates a new DicomElement from a Tag. They differ from the above functions
-// in not returning a condition.
+/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
+ *  @param tag attribute tag of the element to be created
+ *  @param length attribute value length of the element to be created
+ *  @return pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
+ */
 DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length = 0);
 
-// Function: nextUp
-// pop Object from stack and get next Object in top of stack
+/** helper function for DcmElement::nextObject.
+ *  hierarchically traverses all datasets/items after the position indicated by the call stack
+ *  @param st stack
+ *  @return EC_Normal upon success, an error code otherwise
+ */
 OFCondition nextUp(DcmStack &st);
 
 
@@ -911,6 +1172,122 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.83  2010-11-02 15:31:06  joergr
+** Added special handling for data elements that are associated with different
+** VRs (according to the data dictinary) when read with an implicit transfer
+** syntax, e.g. PixelPaddingValue or WaveformData.
+**
+** Revision 1.82  2010-10-14 13:15:41  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.81  2010-10-01 13:55:01  joergr
+** Added new helper function findAndInsertCopyOfElement().
+**
+** Revision 1.80  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
+** Revision 1.79  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
+** Revision 1.78  2009-09-02 09:58:21  joergr
+** Revised documentation of parameter "pos" for some putAndInsertXXX() functions
+** in order to make clear what the possible range of values is.
+**
+** Revision 1.77  2009-08-07 14:40:38  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.76  2009-03-25 10:22:09  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
+** Revision 1.75  2009-03-05 14:07:56  onken
+** Fixed typo.
+**
+** Revision 1.74  2009-03-05 13:35:47  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds
+** 32-bit length field. Also introduced new flag (default: enabled)
+** for writing in explicit length mode, which allows for automatically
+** switching encoding of only that very sequence/item to undefined
+** length coding (thus permitting to actually write the file).
+**
+** Revision 1.73  2009-02-04 17:52:17  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
+** Revision 1.72  2008-12-12 11:44:40  onken
+** Moved path access functions to separate classes
+**
+** Revision 1.71  2008-12-05 13:28:14  onken
+** Splitted findOrCreatePath() function API for also offering a simple API
+** for non-wildcard searches.
+**
+** Revision 1.70  2008-12-04 16:55:14  onken
+** Changed findOrCreatePath() to also support wildcard as item numbers.
+**
+** Revision 1.69  2008-11-26 12:08:22  joergr
+** Updated documentation of newDicomElement() in order to reflect the current
+** implementation.
+**
+** Revision 1.68  2008-10-15 12:31:20  onken
+** Added findOrCreatePath() functions which allow for finding or creating a
+** hierarchy of sequences, items and attributes according to a given "path"
+** string.
+**
+** Revision 1.67  2008-07-17 11:19:48  onken
+** Updated copyFrom() documentation.
+**
+** Revision 1.66  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.65  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.64  2007/11/29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.63  2007/09/21 10:40:15  onken
+** Changed foundVR() API and implementation to use Uint8* instead of char* to
+** avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
+**
+** Revision 1.62  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.61  2007/06/08 14:56:04  joergr
+** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
+** Replaced helper function findAndCopyElement() by new optional parameter
+** 'createCopy' in various findAndGetXXX() functions.
+**
+** Revision 1.60  2007/03/09 10:38:13  joergr
+** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
+**
+** Revision 1.59  2007/02/19 15:04:34  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.58  2006/12/15 14:18:07  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.57  2006/12/13 13:58:14  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.56  2006/08/15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.55  2006/05/30 15:01:52  joergr
+** Modified comment of method containsExtendedCharacters().
+**
+** Revision 1.54  2006/05/11 08:54:00  joergr
+** Moved checkForNonASCIICharacters() from application to library.
+**
 ** Revision 1.53  2005/12/08 16:28:19  meichel
 ** Changed include path schema for all DCMTK header files
 **

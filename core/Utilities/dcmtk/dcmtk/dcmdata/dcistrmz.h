@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:18 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmz.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +73,7 @@ public:
   /** returns true if the producer is at the end of stream.
    *  @return true if end of stream, false otherwise
    */
-  virtual OFBool eos() const;
+  virtual OFBool eos();
 
   /** returns the minimum number of bytes that can be read with the
    *  next call to read(). The DcmObject read methods rely on avail
@@ -87,26 +82,26 @@ public:
    *  or nothing.
    *  @return minimum of data available in producer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail();
 
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually read. 
    */
-  virtual Uint32 read(void *buf, Uint32 buflen);
+  virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
    *  @return number of bytes actually skipped. 
    */
-  virtual Uint32 skip(Uint32 skiplen);
+  virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
    *    fails, the producer status becomes bad. 
    */
-  virtual void putback(Uint32 num);
+  virtual void putback(offile_off_t num);
 
   /** determines the producer from which the filter is supposed
    *  to read it's input. Once a producer for the input filter has 
@@ -129,16 +124,16 @@ private:
    *  producer suspends
    *  @return number of bytes added to input buffer
    */
-  Uint32 fillInputBuffer();
+  offile_off_t fillInputBuffer();
 
   /** decompress data into the given output block until
    *  complete or no more input is available in the input ring buffer.
    *  does not re-fill the input ring buffer from the producer.
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @return number of bytes processed
    */   
-  Uint32 decompress(const void *buf, Uint32 buflen);
+  offile_off_t decompress(const void *buf, offile_off_t buflen);
 
   /** reads and decompresses data from the producer
    *  until the producer suspends or the output ring buffer becomes full.
@@ -154,10 +149,10 @@ private:
   /** copies as much of the given block of data as possible
    *  in the input ring buffer
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @return number of bytes copied to input ring buffer
    */
-  Uint32 fillInputBuffer(const void *buf, Uint32 buflen);
+  offile_off_t fillInputBuffer(const void *buf, offile_off_t buflen);
 
   /** feed data from the input ring buffer to the compression
    *  codec until complete or the output ring buffer becomes full.
@@ -185,22 +180,22 @@ private:
   unsigned char *inputBuf_;
 
   /// offset of first byte in input ring buffer
-  Uint32 inputBufStart_;
+  offile_off_t inputBufStart_;
 
   /// number of bytes in input ring buffer
-  Uint32 inputBufCount_;
+  offile_off_t inputBufCount_;
 
   /// output ring buffer
   unsigned char *outputBuf_;
 
   /// offset of first byte in output ring buffer
-  Uint32 outputBufStart_;
+  offile_off_t outputBufStart_;
 
   /// number of bytes available for read in output ring buffer
-  Uint32 outputBufCount_;
+  offile_off_t outputBufCount_;
 
   /// number of putback bytes in output ring buffer
-  Uint32 outputBufPutback_;
+  offile_off_t outputBufPutback_;
 
   /// flag indicating whether or not a pad byte has been appended to the input stream
   OFBool padded_;
@@ -212,6 +207,16 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.h,v $
+ * Revision 1.5  2010-10-14 13:15:41  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.4  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.3  2007/02/19 15:45:41  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
  * Revision 1.2  2005/12/08 16:28:18  meichel
  * Changed include path schema for all DCMTK header files
  *

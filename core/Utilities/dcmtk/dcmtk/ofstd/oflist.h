@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -22,10 +18,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:05:58 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/ofstd/include/dcmtk/ofstd/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,11 +75,7 @@
 #define OFListRemoveIf(Predicate, T, c, pred) (c).remove_if((pred))
 
 // workaround for "implicit typename" warning on gcc 3.x
-#if defined(HAVE_TYPENAME)
-#define OFLIST_TYPENAME typename
-#else
-#define OFLIST_TYPENAME
-#endif
+#define OFLIST_TYPENAME OFTypename
 
 #else
 
@@ -94,6 +85,12 @@
 
 #define OFLIST_TYPENAME
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+/* needed e.g. on Solaris for definition of size_t */
+#include <sys/types.h>
+#endif
+END_EXTERN_C
 
 // OFListLinkBase, OFListLink and OFListBase are classes for internal
 // use only and shall not be used.
@@ -225,6 +222,15 @@ public:
     {
         assert(!node->dummy);
         return (OFstatic_cast(OFListLink<T> *,node))->info;
+    }
+
+    /** dereferences the iterator. May only be called if iterator references
+     *  a valid element of a list.
+     *  @return reference to the element "pointed to" by the iterator.
+     */
+    T* operator->() const
+    {
+        return &(**this);
     }
 
     /** moves the iterator to the next element of the list.
@@ -555,6 +561,18 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.26  2010-10-14 13:15:50  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.25  2010-05-07 11:13:42  uli
+** Use OFTypename for OFLIST_TYPENAME.
+**
+** Revision 1.24  2009-08-19 11:55:45  meichel
+** Added additional includes needed for Sun Studio 11 on Solaris.
+**
+** Revision 1.23  2009-08-19 10:44:36  joergr
+** Added missing dereference operator.
+**
 ** Revision 1.22  2005/12/08 16:05:58  meichel
 ** Changed include path schema for all DCMTK header files
 **

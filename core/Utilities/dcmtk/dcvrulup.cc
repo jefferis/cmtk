@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:42:08 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,8 +53,32 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset &old)
 }
 
 
+DcmUnsignedLongOffset& DcmUnsignedLongOffset::operator=(const DcmUnsignedLongOffset& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmUnsignedLong::operator=(obj);
+    // copy member variables
+    nextRecord = obj.nextRecord;
+  }
+  return *this;
+}
+
+
 DcmUnsignedLongOffset::~DcmUnsignedLongOffset()
 {
+}
+
+
+OFCondition DcmUnsignedLongOffset::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmUnsignedLongOffset &, rhs);
+  }
+  return EC_Normal;
 }
 
 
@@ -112,7 +132,7 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
     /* perform additional checks on the stored value */
     Uint32 *uintVals;
     errorFlag = getUint32Array(uintVals);
-    if (errorFlag.good() && (Length > 0) && (uintVals != NULL) && (*uintVals != 0) && (nextRecord == NULL))
+    if (errorFlag.good() && (getLengthField() > 0) && (uintVals != NULL) && (*uintVals != 0) && (nextRecord == NULL))
         errorFlag = EC_CorruptedData;
     return errorFlag;
 }
@@ -121,6 +141,21 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
+** Revision 1.30  2010-10-20 16:44:18  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.29  2010-10-14 13:14:11  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.27  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
 ** Revision 1.26  2005/12/08 15:42:08  meichel
 ** Changed include path schema for all DCMTK header files
 **

@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:26 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:16 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +38,6 @@
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvr.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 
@@ -55,8 +50,8 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
   : DcmSequenceOfItems(tag, len),
     Xfer(EXS_Unknown)
 {
-    Tag.setVR(EVR_OB);
-    Length = DCM_UndefinedLength; // pixel sequences always use undefined length
+    setTagVR(EVR_OB);
+    setLengthField(DCM_UndefinedLength); // pixel sequences always use undefined length
 }
 
 
@@ -75,16 +70,29 @@ DcmPixelSequence::~DcmPixelSequence()
 
 DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 {
+  if (this != &obj)
+  {
     DcmSequenceOfItems::operator=(obj);
     Xfer = obj.Xfer;
-    return *this;
+  }
+  return *this;
 }
 
+
+OFCondition DcmPixelSequence::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmPixelSequence &, rhs);
+  }
+  return EC_Normal;
+}
 
 // ********************************
 
 
-void DcmPixelSequence::print(ostream &out,
+void DcmPixelSequence::print(STD_NAMESPACE ostream &out,
                              const size_t flags,
                              const int level,
                              const char *pixelFileName,
@@ -98,20 +106,18 @@ void DcmPixelSequence::print(ostream &out,
         /* print pixel sequence content */
         if (!itemList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
             /* print pixel items */
             DcmObject *dO;
             itemList->seek(ELP_first);
             do {
                 dO = itemList->get();
-                dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
             } while (itemList->seek(ELP_next));
         }
     } else {
         OFOStringStream oss;
         oss << "(PixelSequence ";
-        if (Length != DCM_UndefinedLength)
+        if (getLengthField() != DCM_UndefinedLength)
             oss << "with explicit length ";
         oss << "#=" << card() << ")" << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
@@ -129,7 +135,7 @@ void DcmPixelSequence::print(ostream &out,
         }
         /* print pixel sequence end line */
         DcmTag delimItemTag(DCM_SequenceDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
@@ -193,8 +199,10 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
     {
         itemList->seek_to(where);
         itemList->insert(item);
-        DCM_dcmdataCDebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where));
-        DCM_dcmdataCDebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted"));
+        if (where < itemList->card())
+            DCMDATA_TRACE("DcmPixelSequence::insert() Item at position " << where << " inserted");
+        if (where >= itemList->card())
+            DCMDATA_TRACE("DcmPixelSequence::insert() Item at last position inserted");
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -301,12 +309,13 @@ OFCondition DcmPixelSequence::read(DcmInputStream &inStream,
 
 
 OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
-                                      const E_TransferSyntax oxfer,
-                                      const E_EncodingType /*enctype*/)
+                                    const E_TransferSyntax oxfer,
+                                    const E_EncodingType /*enctype*/,
+                                    DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
-        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength, wcache);
 
     return l_error;
 }
@@ -317,11 +326,12 @@ OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
 
 OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream &outStream,
                                                    const E_TransferSyntax oxfer,
-                                                   const E_EncodingType /*enctype*/)
+                                                   const E_EncodingType /*enctype*/,
+                                                   DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
-        return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
+        return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength, wcache);
 
     return l_error;
 }
@@ -350,7 +360,7 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 
     while ((offset < compressedLen) && (result.good()))
     {
-        fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+        fragment = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
         if (fragment == NULL)
             result = EC_MemoryExhausted;
         else
@@ -360,13 +370,17 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
             currentSize = fragmentSize;
             if (offset + currentSize > compressedLen)
                 currentSize = compressedLen - offset;
-            result = fragment->putUint8Array(compressedData+offset, currentSize);
+            // if currentSize is odd this will be fixed during DcmOtherByteOtherWord::write()
+            result = fragment->putUint8Array(compressedData + offset, currentSize);
             if (result.good())
                 offset += currentSize;
         }
     }
 
     currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
+    // odd frame size requires padding, i.e. last fragment uses odd length pixel item
+    if (currentSize & 1)
+        currentSize++;
     offsetList.push_back(currentSize);
     return result;
 }
@@ -375,6 +389,50 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.48  2010-10-20 16:44:16  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.47  2010-10-14 13:14:08  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.46  2009-12-04 17:08:52  joergr
+** Sightly modified some log messages.
+**
+** Revision 1.45  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
+** Revision 1.44  2009-02-04 17:58:28  joergr
+** Uncommented name of unused parameter in order to avoid compiler warnings.
+**
+** Revision 1.43  2009-02-04 10:18:57  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
+** Revision 1.42  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
+** Revision 1.41  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.40  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.39  2007/11/23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.38  2007/06/29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.37  2006/08/15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.36  2005/12/08 15:41:26  meichel
 ** Changed include path schema for all DCMTK header files
 **

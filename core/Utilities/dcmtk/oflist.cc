@@ -1,31 +1,25 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
  *  Author:  Andreas Barth
  *
- *  Purpose:
- *	    Implementation of supplementary methods for a template list class 
+ *  Purpose: Implementation of supplementary methods for a template list class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:48:58 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/ofstd/libsrc/oflist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-21 13:46:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +28,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#if defined(HAVE_STL) || defined (HAVE_STL_LIST) 
+#if defined(HAVE_STL) || defined (HAVE_STL_LIST)
 // We do not need to make this library
 void OF__DUMMY()    // to make the linker happy!
 {
@@ -57,26 +51,26 @@ OFListBase::~OFListBase()
 {
     base_clear();
     if (afterLast)
-	delete afterLast;
+        delete afterLast;
 }
 
-OFListLinkBase * OFListBase::base_insert(OFListLinkBase * pos, 
-				    OFListLinkBase * newElem)
+OFListLinkBase * OFListBase::base_insert(OFListLinkBase * pos,
+                                         OFListLinkBase * newElem)
 {
     assert(pos && newElem);
     if (pos && newElem)
     {
-	newElem->next = pos;
-	newElem->prev = pos->prev;
-	pos->prev->next = newElem;
-	pos->prev = newElem;
-	listSize++;
-	return newElem;
+        newElem->next = pos;
+        newElem->prev = pos->prev;
+        pos->prev->next = newElem;
+        pos->prev = newElem;
+        listSize++;
+        return newElem;
     }
     return NULL;
 }
 
-    
+
 OFListLinkBase * OFListBase::base_erase(OFListLinkBase * pos)
 {
     assert(pos && pos != afterLast);
@@ -88,47 +82,53 @@ OFListLinkBase * OFListBase::base_erase(OFListLinkBase * pos)
     return tmp;
 }
 
-void OFListBase::base_splice(OFListLinkBase * pos, 
-			OFListLinkBase * begin, 
-			OFListLinkBase * end)
+void OFListBase::base_splice(OFListLinkBase * pos,
+                             OFListLinkBase * begin,
+                             OFListLinkBase * end)
 {
     assert(pos && begin && end);
     if (begin != end)
     {
-	OFListLinkBase * beginPrev = begin->prev;
-	OFListLinkBase * posPrev = pos->prev;
-	pos->prev->next = begin;
-	pos->prev = end->prev;
-	begin->prev->next = end;
-	begin->prev = posPrev;
-	end->prev->next = pos;
-	end->prev = beginPrev;
-	base_recalcListSize();
+        OFListLinkBase * beginPrev = begin->prev;
+        OFListLinkBase * posPrev = pos->prev;
+        pos->prev->next = begin;
+        pos->prev = end->prev;
+        begin->prev->next = end;
+        begin->prev = posPrev;
+        end->prev->next = pos;
+        end->prev = beginPrev;
+        base_recalcListSize();
     }
 }
 
 void OFListBase::base_clear()
 {
     while(listSize)
-	base_erase(afterLast->next);
+        base_erase(afterLast->next);
 }
 
 void OFListBase::base_recalcListSize()
 {
     OFListLinkBase * elem;
-    for (listSize = 0, elem = afterLast->next; 
-	 elem != afterLast;
-	 elem = elem->next, ++listSize)
-	;
+    for (listSize = 0, elem = afterLast->next;
+         elem != afterLast;
+         elem = elem->next, ++listSize)
+        ;
 }
-
 
 
 #endif
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
+** Revision 1.10  2010-10-21 13:46:48  joergr
+** Replaced tab characters by spaces
+**
+** Revision 1.9  2010-10-14 13:14:53  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
 ** Revision 1.8  2005/12/08 15:48:58  meichel
 ** Changed include path schema for all DCMTK header files
 **

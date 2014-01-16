@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:48:53 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:14:53 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,38 +44,38 @@ OFConsole::OFConsole()
 : currentCout(&COUT)
 , currentCerr(&CERR)
 #else
-: currentCout(&cout)
-, currentCerr(&cerr)
+: currentCout(&STD_NAMESPACE cout)
+, currentCerr(&STD_NAMESPACE cerr)
 #endif
 , joined(0)
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
 , coutMutex()
 , cerrMutex()
 #endif
 {
 }
 
-ostream *OFConsole::setCout(ostream *newCout)
+STD_NAMESPACE ostream *OFConsole::setCout(STD_NAMESPACE ostream *newCout)
 {
   lockCout();
-  ostream *tmpCout = currentCout;
+  STD_NAMESPACE ostream *tmpCout = currentCout;
 #ifdef DCMTK_GUI
   if (newCout) currentCout = newCout; else currentCout = &COUT;
 #else
-  if (newCout) currentCout = newCout; else currentCout = &cout;
+  if (newCout) currentCout = newCout; else currentCout = &STD_NAMESPACE cout;
 #endif
   unlockCout();
   return tmpCout;
 }
 
-ostream *OFConsole::setCerr(ostream *newCerr)
+STD_NAMESPACE ostream *OFConsole::setCerr(STD_NAMESPACE ostream *newCerr)
 {
   lockCerr();
-  ostream *tmpCerr = currentCerr;
+  STD_NAMESPACE ostream *tmpCerr = currentCerr;
 #ifdef DCMTK_GUI
   if (newCerr) currentCerr = newCerr; else currentCerr = &CERR;
 #else
-  if (newCerr) currentCerr = newCerr; else currentCerr = &cerr;
+  if (newCerr) currentCerr = newCerr; else currentCerr = &STD_NAMESPACE cerr;
 #endif
   unlockCerr();
   return tmpCerr;
@@ -106,7 +102,7 @@ void OFConsole::split()
   lockCerr();
   if (joined)
   {
-  	// since status is joined, lockCerr() has locked both mutexes
+    // since status is joined, lockCerr() has locked both mutexes
     joined = 0;
 
     // now status is unjoined, we have to unlock both mutexes manually
@@ -137,7 +133,7 @@ class OFConsoleInitializer
 public:
   OFConsoleInitializer()
   {
-  	OFConsole::instance();
+    OFConsole::instance();
   }
 };
 
@@ -152,6 +148,17 @@ OFConsoleInitializer ofConsoleInitializer;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
+ * Revision 1.15  2010-10-14 13:14:53  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.14  2010-10-04 14:44:49  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.13  2006/08/14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
  * Revision 1.12  2005/12/08 15:48:53  meichel
  * Changed include path schema for all DCMTK header files
  *

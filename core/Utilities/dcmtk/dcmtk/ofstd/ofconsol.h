@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -25,7 +21,7 @@
  *  provide access to the standard console output and error streams
  *  in a way that allows multiple threads to concurrently create output
  *  even if that output is redirected, e. g. to file or memory.
- *  Protection is implemented if the module is compiled with -D_REENTRANT
+ *  Protection is implemented if the module is compiled with -DWITH_THREADS
  *  and is based on Mutexes.
  *
  *  In cases where DCMTK is used for GUI development, the fact that the
@@ -51,9 +47,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:05:52 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:50 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +71,7 @@
 /** Singleton class which provides thread-safe access to the standard console
  *  output and error streams. Allows multiple threads to concurrently create
  *  output even if that output is redirected to file or memory.
- *  Protection is implemented if the module is compiled with -D_REENTRANT
+ *  Protection is implemented if the module is compiled with -DWITH_THREADS
  *  and is based on Mutexes.
  *  Use of the singleton prior to start of main (i.e. from global constructors)
  *  is allowed, but any use after the end of main is undefined.
@@ -92,9 +88,9 @@ public:
    *  to the stream.
    *  @return reference to cout stream
    */
-  ostream& lockCout()
+  STD_NAMESPACE ostream& lockCout()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     coutMutex.lock();
 #endif
     return *currentCout;
@@ -104,7 +100,7 @@ public:
    */
   void unlockCout()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     coutMutex.unlock();
 #endif
   }
@@ -114,7 +110,7 @@ public:
    *  must ensure that the stream is locked and unlocked appropriately.
    *  @return reference to cout stream
    */
-  ostream& getCout()
+  STD_NAMESPACE ostream& getCout()
   {
     return *currentCout;
   }
@@ -130,20 +126,20 @@ public:
    *         active upon creation of the console object.
    *  @return pointer to replaced cout stream.
    */
-  ostream *setCout(ostream *newCout=NULL);
+  STD_NAMESPACE ostream *setCout(STD_NAMESPACE ostream *newCout=NULL);
 
   /** acquires a lock on the cerr stream and returns a reference
    *  to the stream.
    *  @return reference to cerr stream
    */
-  ostream& lockCerr()
+  STD_NAMESPACE ostream& lockCerr()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     cerrMutex.lock();
 #endif
     if (joined)
     {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
       coutMutex.lock();
 #endif
       return *currentCout;
@@ -156,7 +152,7 @@ public:
    *  must ensure that the stream is locked and unlocked appropriately.
    *  @return reference to cerr stream
    */
-  ostream& getCerr()
+  STD_NAMESPACE ostream& getCerr()
   {
     if (joined) return *currentCout;
     else return *currentCerr;
@@ -166,7 +162,7 @@ public:
    */
   void unlockCerr()
   {
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
     if (joined) coutMutex.unlock();
     cerrMutex.unlock();
 #endif
@@ -183,7 +179,7 @@ public:
    *         active upon creation of the console object.
    *  @return pointer to replaced cerr stream.
    */
-  ostream *setCerr(ostream *newCerr=NULL);
+  STD_NAMESPACE ostream *setCerr(STD_NAMESPACE ostream *newCerr=NULL);
 
   /** combines the cerr and cout streams.
    *  After a call to this method, both cout and cerr related methods
@@ -229,15 +225,15 @@ private:
   OFConsole& operator=(const OFConsole &arg);
 
   /** pointer to current cout stream, never NULL */
-  ostream *currentCout;
+  STD_NAMESPACE ostream *currentCout;
 
   /** pointer to current cerr stream, never NULL */
-  ostream *currentCerr;
+  STD_NAMESPACE ostream *currentCerr;
 
   /** true if streams are combined, false otherwise */
   int joined;
 
-#ifdef _REENTRANT
+#ifdef WITH_THREADS
   /** mutex protecting access to cout */
   OFMutex coutMutex;
 
@@ -280,6 +276,17 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
+ * Revision 1.21  2010-10-14 13:15:50  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.20  2010-10-04 14:44:47  joergr
+ * Replaced "#ifdef _REENTRANT" by "#ifdef WITH_THREADS" where appropriate (i.e.
+ * in all cases where OFMutex, OFReadWriteLock, etc. are used).
+ *
+ * Revision 1.19  2006/08/14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
  * Revision 1.18  2005/12/08 16:05:52  meichel
  * Changed include path schema for all DCMTK header files
  *

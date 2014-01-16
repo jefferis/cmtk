@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,10 +17,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:02 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +32,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dcerror.h"
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcitem.h"
 
 
@@ -70,6 +62,11 @@ class DcmDataset
      */
     virtual ~DcmDataset();
 
+    /** assignment operator
+     *  @param obj the dataset to be copied
+     */
+    DcmDataset& operator=(const DcmDataset& obj);
+
     /** clone method
      *  @return deep copy of this object
      */
@@ -78,29 +75,71 @@ class DcmDataset
       return new DcmDataset(*this);
     }
 
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
     /** get type identifier
      *  @return type identifier of this class (EVR_dataset)
      */
     virtual DcmEVR ident() const;
 
+    /** clear (remove) attribute value
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition clear();
+
+    /** remove all elements with an invalid group number, i.e. 0x0000 to 0x0003,
+     *  0x0005, 0x0007 and 0xFFFF
+     */
+    virtual void removeInvalidGroups();
+
+    /** return the transfer syntax in which this dataset was originally read.
+     *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
+     */
     E_TransferSyntax getOriginalXfer() const;
 
     /** print all elements of the dataset to a stream
      *  @param out output stream
      *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
-     *  @param pixelFileName not used
-     *  @param pixelCounter not used
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** calculate the length of this DICOM element when encoded with the
+     *  given transfer syntax and the given encoding type for sequences.
+     *  For elements, the length includes the length of the tag, length field,
+     *  VR field and the value itself, for items and sequences it returns
+     *  the length of the complete item or sequence including delimitation tags
+     *  if applicable. Never returns undefined length.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return length of DICOM element
+     */
     Uint32 calcElementLength(const E_TransferSyntax xfer,
                              const E_EncodingType enctype);
 
+    /** check if this DICOM object can be encoded in the given transfer syntax.
+     *  @param newXfer transfer syntax in which the DICOM object is to be encoded
+     *  @param oldXfer transfer syntax in which the DICOM object was read or created.
+     *  @return true if object can be encoded in desired transfer syntax, false otherwise.
+     */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer = EXS_Unknown);
 
@@ -128,11 +167,13 @@ class DcmDataset
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** This function writes data values which are contained in this
      *  DcmDataset object to the stream which is passed as first argument.
@@ -147,6 +188,7 @@ class DcmDataset
      *  @param oxfer          The transfer syntax which shall be used.
      *  @param enctype        Encoding type for sequences; specifies how sequences
      *                        will be handled.
+     *  @param wcache pointer to write cache object, may be NULL
      *  @param glenc          Encoding type for group length; specifies what will
      *                        be done with group length tags.
      *  @param padenc         Encoding type for padding. Specifies what will be done
@@ -156,7 +198,7 @@ class DcmDataset
      *  @param subPadlen      For sequences (ie sub elements), the length up to which
      *                        item shall be padded, if padding is desired.
      *  @param instanceLength Number of extra bytes added to the item/dataset length
-     *                        used when computing the padding; this parameter is for 
+     *                        used when computing the padding; this parameter is for
      *                        instance used to pass the length of the file meta header
      *                        from the DcmFileFormat to the DcmDataset object.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -164,6 +206,7 @@ class DcmDataset
     virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
+                              DcmWriteCache *wcache,
                               const E_GrpLenEncoding glenc,
                               const E_PaddingEncoding padenc = EPD_noChange,
                               const Uint32 padlen = 0,
@@ -174,11 +217,14 @@ class DcmDataset
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format.
      *  The XML declaration (e.g. <?xml version="1.0"?>) is not written by this function.
@@ -186,10 +232,8 @@ class DcmDataset
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
-
-    virtual OFCondition clear();
 
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
@@ -229,16 +273,23 @@ class DcmDataset
 
     // methods for different pixel representations
 
-    // choose Representation changes the representation of
-    // PixelData Elements in the data set to the given representation
-    // If the representation does not exists it creates one.
+    /** select a specific representation (compressed or uncompressed) of the dataset
+     *  and create the representation if needed. This may cause compression or decompression
+     *  to be applied to the pixel data in the dataset.
+     *  @param repType desired transfer syntax
+     *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     OFCondition chooseRepresentation(const E_TransferSyntax repType,
                                      const DcmRepresentationParameter *repParam);
 
-    // checks if all PixelData elements have a conforming representation
-    // (for definition of conforming representation see dcpixel.h).
-    // if one PixelData element has no conforming representation
-    // OFFalse is returned.
+    /** check if all PixelData elements in this dataset have a representation conforming
+     *  to the given transfer syntax and representation parameters (see dcpixel.h for
+     *  definition of "conforming").
+     *  @param repType desired transfer syntax
+     *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
+     *  @return true if all pixel elements have the desired representation, false otherwise
+     */
     OFBool hasRepresentation(const E_TransferSyntax repType,
                              const DcmRepresentationParameter *repParam);
 
@@ -254,9 +305,6 @@ class DcmDataset
 
   private:
 
-    /// private undefined copy assignment operator
-    DcmDataset& operator=(const DcmDataset&);
-
     /// current transfer syntax of the dataset
     E_TransferSyntax Xfer;
 };
@@ -268,6 +316,46 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.36  2010-10-14 13:15:40  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.35  2010-10-08 08:37:00  joergr
+** Enhanced documentation on pixel-related parameters.
+**
+** Revision 1.34  2010-10-05 16:20:47  joergr
+** Fixed various Doxygen API documentation issues.
+**
+** Revision 1.33  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
+** Revision 1.32  2010-02-22 11:39:53  uli
+** Remove some unneeded includes.
+**
+** Revision 1.31  2009-08-25 13:00:52  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+**
+** Revision 1.30  2008-07-17 11:19:48  onken
+** Updated copyFrom() documentation.
+**
+** Revision 1.29  2008-07-17 10:30:22  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.28  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.27  2007/11/29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.26  2006/08/15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.25  2005/12/08 16:28:02  meichel
 ** Changed include path schema for all DCMTK header files
 **

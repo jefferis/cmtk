@@ -1,5 +1,5 @@
 /*
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -792,6 +792,9 @@ typedef unsigned short ushort;
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "torsten@synapse.sri.com"
 
+/* Define to the release date of this package. */
+#define PACKAGE_DATE "2014-01-17"
+
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "D4CMTK"
 
@@ -802,7 +805,13 @@ typedef unsigned short ushort;
 #define PACKAGE_TARNAME "d4cmtk"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION @CMTK_VERSION_STRING@
+#define PACKAGE_VERSION "@CMTK_VERSION_STRING@"
+
+/* Define to the version number of this package. */
+#define PACKAGE_VERSION_NUMBER "@CMTK_VERSION_MAJOR@"
+
+/* Define to the version suffix of this package. */
+#define PACKAGE_VERSION_SUFFIX "@CMTK_VERSION_MINOR@.@CMTK_VERSION_PATCH@"
 
 /* Define path separator */
 #ifdef _MSC_VER
@@ -843,6 +852,10 @@ typedef unsigned short ushort;
 //TODO:
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
+
+//TODO:
+/* Namespace for ANSI C functions in standard C++ headers */
+#define STDIO_NAMESPACE std::
 
 //TODO:
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
@@ -887,6 +900,18 @@ typedef unsigned short ushort;
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE
 #endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#cmakedefine _FILE_OFFSET_BITS
+
+/* Define to enable LFS64 (explicit large file support) if available */
+#cmakedefine _LARGEFILE64_SOURCE
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#cmakedefine _LARGEFILE_SOURCE
+
+/* Define for large files, on AIX-style hosts. */
+#cmakedefine _LARGE_FILES
 
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__

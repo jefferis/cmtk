@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DCMTK_ROOT=$1
 
@@ -37,7 +37,7 @@ copy_src_tgt()
 
   for module in ${module_list}; do
       [ -f ${src_h_path}/${module}.h ] && cp ${src_h_path}/${module}.h ${tgt_h_path}
-      [ -f ${src_c_path}/${module}.cc] && cp ${src_c_path}/${module}.cc ${tgt_c_path}
+      [ -f ${src_c_path}/${module}.cc ] && cp ${src_c_path}/${module}.cc ${tgt_c_path}
   done
 
 }

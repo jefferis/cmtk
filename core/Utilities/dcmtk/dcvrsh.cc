@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,16 +17,17 @@
  *
  *  Purpose: Implementation of class DcmShortString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:42:01 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-20 16:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrsh.h"
 
@@ -42,7 +39,8 @@ DcmShortString::DcmShortString(const DcmTag &tag,
                                const Uint32 len)
   : DcmCharString(tag, len)
 {
-    maxLength = 16;
+    setMaxLength(16);
+    setNonSignificantChars(" \\");
 }
 
 
@@ -64,12 +62,35 @@ DcmShortString &DcmShortString::operator=(const DcmShortString &obj)
 }
 
 
+OFCondition DcmShortString::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmShortString &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 // ********************************
 
 
 DcmEVR DcmShortString::ident() const
 {
     return EVR_SH;
+}
+
+
+OFCondition DcmShortString::checkValue(const OFString &vm,
+                                       const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmShortString::checkStringValue(strVal, vm);
+    return l_error;
 }
 
 
@@ -87,9 +108,46 @@ OFCondition DcmShortString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmShortString::checkStringValue(const OFString &value,
+                                             const OFString &vm)
+{
+    return DcmByteString::checkStringValue(value, vm, "lo", 12 /*, maxLength: 16 characters */);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
+** Revision 1.21  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.20  2010-10-14 13:14:10  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.19  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.18  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.17  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.16  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.15  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
 ** Revision 1.14  2005/12/08 15:42:01  meichel
 ** Changed include path schema for all DCMTK header files
 **

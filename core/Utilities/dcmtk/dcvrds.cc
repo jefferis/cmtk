@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,9 +17,9 @@
  *
  *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 15:41:50 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-27 09:18:31 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +34,9 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 
+#define MAX_DS_LENGTH 16
+
+
 // ********************************
 
 
@@ -45,7 +44,8 @@ DcmDecimalString::DcmDecimalString(const DcmTag &tag,
                                    const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 16;
+    setMaxLength(MAX_DS_LENGTH);
+    setNonSignificantChars(" \\");
 }
 
 
@@ -67,12 +67,35 @@ DcmDecimalString &DcmDecimalString::operator=(const DcmDecimalString &obj)
 }
 
 
+OFCondition DcmDecimalString::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = OFstatic_cast(const DcmDecimalString &, rhs);
+  }
+  return EC_Normal;
+}
+
+
 // ********************************
 
 
 DcmEVR DcmDecimalString::ident() const
 {
     return EVR_DS;
+}
+
+
+OFCondition DcmDecimalString::checkValue(const OFString &vm,
+                                         const OFBool /*oldFormat*/)
+{
+    OFString strVal;
+    /* get "raw value" without any modifications (if possible) */
+    OFCondition l_error = getStringValue(strVal);
+    if (l_error.good())
+        l_error = DcmDecimalString::checkStringValue(strVal, vm);
+    return l_error;
 }
 
 
@@ -97,6 +120,54 @@ OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
 }
 
 
+OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
+{
+    /* get stored value */
+    char *strVal = NULL;
+    OFCondition l_error = getString(strVal);
+    /* clear result variable */
+    doubleVals.clear();
+    if (l_error.good() && (strVal != NULL))
+    {
+        /* determine number of stored values */
+        const unsigned long vm = getVM();
+        if (vm > 0)
+        {
+            char c;
+            Float64 doubleVal;
+            OFString doubleStr;
+            char *p = strVal;
+            OFBool success = OFFalse;
+            /* avoid memory re-allocations by specifying the expected size */
+            doubleVals.reserve(vm);
+            /* iterate over the string value and search for delimiters */
+            do {
+                c = *p;
+                if ((c == '\\') || (c == '\0'))
+                {
+                    /* extract single value and convert it to floating point */
+                    doubleStr.assign(strVal, p - strVal);
+                    doubleVal = OFStandard::atof(doubleStr.c_str(), &success);
+                    if (success)
+                    {
+                        /* store floating point value in result variable */
+                        doubleVals.push_back(doubleVal);
+                        strVal = p + 1;
+                    }
+                    else
+                    {
+                        l_error = EC_CorruptedData;
+                        break;
+                    }
+                }
+                ++p;
+            } while (c != '\0');
+        }
+    }
+    return l_error;
+}
+
+
 // ********************************
 
 
@@ -113,9 +184,88 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
+                                       const size_t flags)
+{
+    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+    writeXMLStartTag(out, flags);
+    /* write element value (if loaded) */
+    if (valueLoaded())
+    {
+        /* get string data (without normalization) */
+        char *value = NULL;
+        getString(value);
+        if (value != NULL)
+        {
+            /* check whether conversion to XML markup string is required */
+            if (OFStandard::checkForMarkupConversion(value))
+                OFStandard::convertToMarkupStream(out, value);
+            else
+                out << value;
+        }
+    }
+    /* XML end tag: </element> */
+    writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDecimalString::checkStringValue(const OFString &value,
+                                               const OFString &vm)
+{
+    return DcmByteString::checkStringValue(value, vm, "ds", 6, MAX_DS_LENGTH);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
+** Revision 1.28  2010-10-27 09:18:31  joergr
+** Added getFloat64Vector() method which allows for retrieving the stored
+** floating point values more efficiently (especially when there are many
+** values).
+**
+** Revision 1.27  2010-10-20 16:44:17  joergr
+** Use type cast macros (e.g. OFstatic_cast) where appropriate.
+**
+** Revision 1.26  2010-10-14 13:14:10  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.25  2010-04-23 14:30:34  joergr
+** Added new method to all VR classes which checks whether the stored value
+** conforms to the VR definition and to the specified VM.
+**
+** Revision 1.24  2010-01-21 15:05:59  joergr
+** Switched to new stream variant of method convertToMarkupString() where
+** appropriate.
+**
+** Revision 1.23  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
+** Revision 1.22  2009-08-03 09:02:59  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
+** Revision 1.21  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.20  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.19  2006/10/13 10:08:19  joergr
+** Enhanced performance of writeXML() for large multi-valued DS elements.
+**
 ** Revision 1.18  2005/12/08 15:41:50  meichel
 ** Changed include path schema for all DCMTK header files
 **

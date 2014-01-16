@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  dcmdata
  *
@@ -21,43 +17,52 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:28:32 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmdata/include/dcmtk/dcmdata/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:41 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCPXITEM_H
 #define DCPXITEM_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofconsol.h"
-#include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
-#include "dcmtk/dcmdata/dcofsetl.h"    /* for class DcmOffsetList */
+#include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
 
-// CLASS DcmPixelItem
-// This is a pseudo item, that has a value with representation OB
-// and has no sub elements. Since a DcmOtherByteOtherWord is defined as a
-// Dicom structure with a value of representation OW/OB it is better to
-// derive this class from DcmOtherByteOtherWord.
 
+/** this class implements a container for a fragment of compressed pixel data.
+ *  Instances of this class use the same attribute tags as sequence items,
+ *  but are maintained within a pixel data element (class DcmPixelSequence)
+ *  with undefined length and contain no DICOM structure, but raw data.
+ *  Therefore, this class is derived from DcmOtherByteOtherWord, the class
+ *  that is used for OB raw data which is handled very similar.
+ */
 class DcmPixelItem : public DcmOtherByteOtherWord
-
 {
-  protected:
-    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
-					  const E_TransferSyntax oxfer,
-					  Uint32 & writtenBytes) const;
   public:
+
+    /** constructor
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     */
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
     DcmPixelItem(const DcmPixelItem &old);
+
+    /// destructor
     virtual ~DcmPixelItem();
 
+    /** copy assignment operator
+     *  @param obj element to be copied
+     */
     DcmPixelItem &operator=(const DcmPixelItem &obj) { DcmOtherByteOtherWord::operator=(obj); return *this; }
 
     /** clone method
@@ -68,9 +73,33 @@ class DcmPixelItem : public DcmOtherByteOtherWord
       return new DcmPixelItem(*this);
     }
 
+    /** get type identifier
+     *  @return type identifier of this class (EVR_item)
+     */
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
 
-    virtual void print(ostream &out,
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmObject parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param rhs - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject &rhs);
+
+    /** print all elements of the item to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
+     */
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -78,25 +107,43 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
     /** creates in this object an offset table for a compressed pixel sequence.
      *  @param offsetList list of size entries for each individual encoded frame
-     *    provided by the compression codec
+     *    provided by the compression codec. All entries are expected to have
+     *    an even value (i.e. the pixel items are padded).
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition createOffsetTable(const DcmOffsetList& offsetList);
+    virtual OFCondition createOffsetTable(const DcmOffsetList &offsetList);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype
-					 = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
+
+  protected:
+
+    /** write tag, VR and length field to the given output stream
+     *  @param outStream output stream
+     *  @param oxfer transfer syntax for writing
+     *  @param writtenBytes number of bytes written to stream returned in this parameter
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeTagAndLength(DcmOutputStream &outStream,
+                                          const E_TransferSyntax oxfer,
+                                          Uint32 &writtenBytes) const;
 
 };
 
@@ -106,6 +153,40 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.30  2010-10-14 13:15:41  joergr
+** Updated copyright header. Added reference to COPYRIGHT file.
+**
+** Revision 1.29  2010-03-01 09:08:44  uli
+** Removed some unnecessary include directives in the headers.
+**
+** Revision 1.28  2010-02-22 11:39:54  uli
+** Remove some unneeded includes.
+**
+** Revision 1.27  2009-02-04 17:54:31  joergr
+** Fixed various layout and formatting issues.
+**
+** Revision 1.26  2009-02-04 10:18:19  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
+** Revision 1.25  2008-07-17 11:19:49  onken
+** Updated copyFrom() documentation.
+**
+** Revision 1.24  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
+** Revision 1.23  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.22  2006/08/15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
 ** Revision 1.21  2005/12/08 16:28:32  meichel
 ** Changed include path schema for all DCMTK header files
 **

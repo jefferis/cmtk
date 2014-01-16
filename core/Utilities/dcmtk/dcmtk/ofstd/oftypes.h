@@ -1,19 +1,15 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
+ *    OFFIS e.V.
+ *    R&D Division Health
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
  *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
  *  Module:  ofstd
  *
@@ -23,10 +19,9 @@
  *      Defines some C++ standard types that are not consistently 
  *      supported by all C++ Compilers
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005/12/08 16:06:11 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/ofstd/include/dcmtk/ofstd/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2010-10-14 13:15:51 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +33,9 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>                /* Needed for int64_t */
+#endif
 
 #ifdef __CHAR_UNSIGNED__
 typedef signed char     Sint8;
@@ -60,7 +58,6 @@ typedef unsigned short  Uint16;
 
 typedef float           Float32;    /* 32 Bit Floating Point Single */
 typedef double          Float64;    /* 64 Bit Floating Point Double */
-
 
 // Definition of type OFBool
 
@@ -87,12 +84,35 @@ typedef int OFBool;
 #endif
 
 #endif
+
+#if defined(HAVE_TYPENAME)
+#define OFTypename typename
+#else
+#define OFTypename
+#endif
+
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
- * Revision 1.7  2005/12/08 16:06:11  meichel
+ * Revision 1.12  2010-10-14 13:15:51  joergr
+ * Updated copyright header. Added reference to COPYRIGHT file.
+ *
+ * Revision 1.11  2010-10-05 08:49:45  uli
+ * Removed Sint64 and Uint64 since there is no 64bit int available everywhere.
+ *
+ * Revision 1.10  2010-05-25 10:02:36  uli
+ * Added a missing include before the use of int64_t.
+ *
+ * Revision 1.9  2010-05-07 11:12:29  uli
+ * Add new define OFTypename which only expands to "typename"
+ * if "HAVE_TYPENAME" is defined.
+ *
+ * Revision 1.8  2010-03-09 12:14:20  uli
+ * Added Sint64 and Uint64 typedefs.
+ *
+ * Revision 1.7  2005-12-08 16:06:11  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2002/07/10 11:45:26  meichel
