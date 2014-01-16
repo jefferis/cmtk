@@ -256,6 +256,15 @@ INCLUDE(CMake/CheckFunctionWithHeaderExists.cmake)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedDecrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_DECREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
 
+# Windows being windows, it lies about its processor type to 32 bit binaries
+SET(SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
+IF(NOT SYSTEM_PROCESSOR)
+  SET(SYSTEM_PROCESSOR "${CMAKE_SYSTEM_PROCESSOR}")
+ENDIF(NOT SYSTEM_PROCESSOR)
+# CMake doesn't provide a configure-style system type string
+SET(CANONICAL_HOST_TYPE "${SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
+UNSET(SYSTEM_PROCESSOR)
+
 #
 # End of stuff from ITK's git repository
 #
@@ -424,6 +433,10 @@ SET(dcmtk_SRCS
   syslogap.cc
   threads.cc
   timehelp.cc
+  # ofstd:
+  ofcmdln.cc
+  ofconapp.cc
+  ofconsol.cc
   #  dcmdata:
   dcpcache.cc
   dcwcache.cc

@@ -43,7 +43,7 @@
 #endif
 
 /* Define the canonical host system type as a string constant */
-#undef CANONICAL_HOST_TYPE
+#cmakedefine CANONICAL_HOST_TYPE "@CANONICAL_HOST_TYPE@"
 
 /* Define if char is unsigned on the C compiler */
 #cmakedefine C_CHAR_UNSIGNED
