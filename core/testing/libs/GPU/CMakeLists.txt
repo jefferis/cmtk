@@ -32,14 +32,14 @@
 # Setup binary test drivers
 
 SET(CMTK_LIBRARIES "cmtkGPU;cmtkBase;cmtkNumerics;cmtkSystem")
-SET(DRIVERS libGPUTests)
 
-FOREACH(D ${DRIVERS})
-  CUDA_ADD_EXECUTABLE(${D} ${D}.cxx)
-  TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
-ENDFOREACH(D ${DRIVERS})
+IF(CMTK_USE_CUDA_FOUND)
+  SET(DRIVERS libGPUTests)
 
-IF(CMTK_USE_CUDA)
+  FOREACH(D ${DRIVERS})
+    CUDA_ADD_EXECUTABLE(${D} ${D}.cxx)
+    TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+  ENDFOREACH(D ${DRIVERS})
 
   # ==========================================
   # Tests for "cmtk::DeviceHistogram" class
@@ -58,7 +58,7 @@ IF(CMTK_USE_CUDA)
   SET(Tests ${Tests} 
     DeviceUniformVolume)
   
-ENDIF(CMTK_USE_CUDA)
+ENDIF(CMTK_USE_CUDA_FOUND)
 
 FOREACH(T ${Tests})
   ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libGPUTests ${T})

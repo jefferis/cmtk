@@ -39,7 +39,7 @@ SET(cmtkGPU_SRCS
   cmtkSimpleLevelsetDevice.cxx
   )
 
-IF(CMTK_USE_CUDA)
+IF(CMTK_USE_CUDA_FOUND)
   SET(cmtkGPU_SRCS_CUDA
     cmtkDeviceImageConvolution_kernels.cu
     cmtkDeviceHistogram_kernels.cu
@@ -52,7 +52,7 @@ IF(CMTK_USE_CUDA)
     )
 
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})
-ENDIF(CMTK_USE_CUDA)
+ENDIF(CMTK_USE_CUDA_FOUND)
 
 TARGET_LINK_LIBRARIES(cmtkGPU cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
