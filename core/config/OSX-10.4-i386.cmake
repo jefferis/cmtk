@@ -31,6 +31,9 @@
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
 SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
+# this is the non-macports build so ignore macports
+set(CMAKE_SYSTEM_IGNORE_PATH "/opt/local/lib")
+
 # General settings
 SET(CMTK_SYSTEM_NAME "MacOSX-10.4" CACHE STRING "System name")
 SET(CMTK_SYSTEM_PROCESSOR "i686" CACHE STRING "System processor")
