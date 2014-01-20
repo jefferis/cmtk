@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010-2012 SRI International
+##  Copyright 2010-2012, 2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -46,9 +46,9 @@ SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
 # CMTK config settings
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
-SET(CMTK_USE_QT ON CACHE BOOL "Use Qt toolkit")
-SET(BUILD_GUI ON CACHE BOOL "Build GUI applications (requires Qt)")
-SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
+SET(CMTK_USE_QT OFF CACHE BOOL "Use Qt toolkit")
+SET(BUILD_GUI OFF CACHE BOOL "Build GUI applications (requires Qt)")
+SET(CMTK_USE_CUDA OFF CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # Disable OpenMP - broken on Mac
