@@ -1,5 +1,9 @@
 Release CMTK-3.0.1:
 
+(r5183) Fixed: use of MacPorts should be optional, even if its directory
+	tree exists.
+(r5183) Fixed: CUDA should be optional and build config file clearly
+	labelled if it is used.
 (r5166) Added: polynomial transformation model and class to fit such
 	transformations to landmarks.
 (r5157) Changed: "reformatx" no longer corrects Jacobian maps for global
