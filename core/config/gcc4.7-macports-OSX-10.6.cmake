@@ -47,6 +47,7 @@ SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING 
 SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
 # CMTK config settings
+SET(CMTK_USE_MACPORTS ON CACHE BOOL "Use libraries from MacPorts" )
 SET(CMTK_USE_OPENMP ON CACHE BOOL "Use OpenMP for parallelization" )
 SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch for SMP parallelism" )
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
