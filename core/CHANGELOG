@@ -1,5 +1,8 @@
 Release CMTK-3.0.1:
 
+(r5185) Added: for convenience, histogram- and mean/sdev-based intensity
+	matching are now also available in "convertx", in addition to
+	"imagemath".
 (r5183) Fixed: use of MacPorts should be optional, even if its directory
 	tree exists.
 (r5183) Fixed: CUDA should be optional and build config file clearly
