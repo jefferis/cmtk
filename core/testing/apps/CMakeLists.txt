@@ -266,6 +266,8 @@ LIST(APPEND testList
   convertxMapValues3
   convertxMapValuesOnly
   convertxMapValuesOnly2
+  convertxMatchMeanSDev
+  convertxMatchHistograms
   convertxMask
   convertxMaskInverse
   convertxMedianFilter1

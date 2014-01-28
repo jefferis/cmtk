@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,6 @@
 #include <Base/cmtkImageOperation.h>
 #include <Base/cmtkImageOperationConvertType.h>
 #include <Base/cmtkImageOperationFlip.h>
-#include <IO/cmtkImageOperationApplyMask.h>
 #include <Base/cmtkImageOperationErodeDilate.h>
 #include <Base/cmtkImageOperationErodeDilateDistance.h>
 #include <Base/cmtkImageOperationBoundaryMap.h>
@@ -71,6 +70,9 @@
 #include <Base/cmtkImageOperationLaplaceFilter.h>
 #include <Base/cmtkImageOperationDistanceMap.h>
 #include <Base/cmtkImageOperationRevert.h>
+
+#include <IO/cmtkImageOperationApplyMask.h>
+#include <IO/cmtkImageOperationMatchIntensities.h>
 
 #include <stdlib.h>
 #include <iostream>
@@ -163,7 +165,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "scale-to-range" ), &cmtk::ImageOperationScaleToRange::New, "Scale image intensities to range 'from:to', e.g., '0:255' before conversion to byte data." );
     cl.AddCallback( Key( "histogram-equalization" ), &cmtk::ImageOperationHistogramEqualization::New, "Apply histogram equalization." );
     cl.AddCallback( Key( "histogram-equalization-nbins" ), &cmtk::ImageOperationHistogramEqualization::NewBins, "Apply histogram equalization with <int> number of bins." );
-
+    cl.AddCallback( Key( "match-histograms" ), cmtk::ImageOperationMatchIntensities::NewMatchHistograms, "Transform intensities to match the distribution in the image provided as the argument for this command." );
+    cl.AddCallback( Key( "match-mean-sdev" ), cmtk::ImageOperationMatchIntensities::NewMatchMeanSDev, "Scale intensities to match the mean and standard distribution of intensities in the image provided as the argument for this command." );
     cl.EndGroup();
     
     cl.BeginGroup( "Morphological", "Morphological Operations" );

@@ -41,6 +41,7 @@ SET(cmtkIO_SRCS
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageFileDICOM.cxx
   cmtkImageOperationApplyMask.cxx
+  cmtkImageOperationMatchIntensities.cxx
   cmtkImageStackDICOM.cxx
   cmtkLandmarkIO.cxx
   cmtkLandmarkListIO.cxx

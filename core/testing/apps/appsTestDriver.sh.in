@@ -474,6 +474,14 @@ case ${RUNTEST} in
         run convertx --histogram-equalization-nbins 32 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
+    convertxMatchMeanSDev)
+        run convertx --match-mean-sdev spgr_brain_2.hdr spgr_brain_1.hdr ${tmpdir}/match.nii
+        check_results match.nii
+        ;;
+    convertxMatchHistograms)
+        run convertx --match-histograms spgr_brain_2.hdr spgr_brain_1.hdr ${tmpdir}/match.nii
+        check_results match.nii
+        ;;
     convertxMask)
 	run convertx --mask spgr_3t_mask.hdr spgr_3t.hdr ${tmpdir}/masked.hdr
 	check_results masked.img
