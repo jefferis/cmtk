@@ -1,5 +1,9 @@
 Release CMTK-3.0.1:
 
+(r5187) Changed: "fview" GUI now expects only a transformation sequence on
+	the command line. To override fixed and/or moving image (or to
+	provide them, if they are not stored within the transformation),
+	use the new optional arguments, "--fixed" and "--moving".
 (r5185) Added: for convenience, histogram- and mean/sdev-based intensity
 	matching are now also available in "convertx", in addition to
 	"imagemath".

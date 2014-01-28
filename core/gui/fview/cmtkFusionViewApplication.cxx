@@ -62,12 +62,12 @@ cmtk::FusionViewApplication
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
 
-  std::string imagePathFix;
-  cl.AddParameter( &imagePathFix, "FixedImage", "Fixed image path. If this is '?', the program attempts to automatically deduce the fixed image path of the first transformation in the given sequence." )
+  std::string imagePathFix = "";
+  cl.AddOption( CommandLine::Key( "fixed" ), &imagePathFix, "Fixed image path. If this is not provided, the program attempts to automatically deduce the fixed image path of the first transformation in the given sequence." )
     ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
-  std::string imagePathMov;
-  cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path. If this is '?', the program attempts to automatically deduce the moving image path of the last transformation in the given sequence." )
+  std::string imagePathMov = "";
+  cl.AddOption( CommandLine::Key( "moving" ), &imagePathMov, "Moving image path. If this is not provided, the program attempts to automatically deduce the fixed image path of the first transformation in the given sequence." )
     ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   std::vector<std::string> xformList;
@@ -86,7 +86,7 @@ cmtk::FusionViewApplication
   this->m_XformList = XformListIO::MakeFromStringList( xformList );
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
-  if ( imagePathFix == "?" )
+  if ( imagePathFix.empty() )
     {
     imagePathFix = this->m_XformList.GetFixedImagePath();
     if ( !imagePathFix.empty() )
@@ -114,7 +114,7 @@ cmtk::FusionViewApplication
 
   (this->m_CursorPosition = this->m_Fixed.m_Volume->GetDims() ) *= 0.5;
 
-  if ( imagePathMov == "?" )
+  if ( imagePathMov.empty() )
     {
     imagePathMov = this->m_XformList.GetMovingImagePath();
     if ( !imagePathMov.empty() )
