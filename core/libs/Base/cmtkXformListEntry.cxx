@@ -32,6 +32,8 @@
 
 #include "cmtkXformListEntry.h"
 
+#include <System/cmtkExitException.h>
+
 cmtk::XformListEntry::XformListEntry
 ( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale )
   : m_Xform( xform ), 
@@ -64,16 +66,24 @@ cmtk::XformListEntry::~XformListEntry()
 cmtk::XformListEntry::SmartPtr 
 cmtk::XformListEntry::CopyAsAffine() const
 {
-  if ( this->m_WarpXform )
-    {
-    return Self::SmartPtr( new Self( this->m_WarpXform->m_InitialAffineXform, this->Inverse, this->GlobalScale ) );
+  try
+    {  
+    if ( this->m_WarpXform )
+      {
+      return Self::SmartPtr( new Self( this->m_WarpXform->m_InitialAffineXform, this->Inverse, this->GlobalScale ) );
+      }
+    else if ( this->m_PolyXform )
+      {
+      return Self::SmartPtr( new Self( Xform::SmartPtr( new AffineXform( this->m_PolyXform->GetGlobalAffineMatrix() ) ), this->Inverse, this->GlobalScale ) );
+      }
+    else
+      {
+      return Self::SmartPtr( new Self( this->m_Xform, this->Inverse, this->GlobalScale ) );
+      }
     }
-  else if ( this->m_PolyXform )
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
     {
-    return Self::SmartPtr( new Self( Xform::SmartPtr( new AffineXform( this->m_PolyXform->GetGlobalAffineMatrix() ) ), this->Inverse, this->GlobalScale ) );
-    }
-  else
-    {
-    return Self::SmartPtr( new Self( this->m_Xform, this->Inverse, this->GlobalScale ) );
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::XformListEntry::CopyAsAffine() - this should not be happening!\n";
+    throw cmtk::ExitException( 1 );
     }
 }
