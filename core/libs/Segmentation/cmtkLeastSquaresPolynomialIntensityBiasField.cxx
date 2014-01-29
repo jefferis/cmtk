@@ -65,6 +65,12 @@ LeastSquaresPolynomialIntensityBiasField::LeastSquaresPolynomialIntensityBiasFie
 
   // set up least-squares problem
   const size_t nVars = PolynomialHelper::GetNumberOfMonomials( degree );
+  if ( nVars < 2 )
+    { // we ignore constant term, so we need at least 2 variables to be able to do anything meningful. for fewer, just use original data
+    this->m_CorrectedData = image.GetData();
+    return;
+    }
+
   std::vector<Types::DataItem> dataVector( nPixelsMask );
   Matrix2D<Types::DataItem> uMatrix( nPixelsMask, nVars-1 ); // nVars-1 because we ignore zero-order term
 
