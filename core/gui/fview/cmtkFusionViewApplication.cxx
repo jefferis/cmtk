@@ -84,7 +84,16 @@ cmtk::FusionViewApplication
     }
 
   this->m_XformList = XformListIO::MakeFromStringList( xformList );
-  this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
+
+  try
+    {
+    this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
+    {
+    StdErr << "WARNING: encountered singular matrix when creating affine-only transformation. Will substitute (incorrect) identify transformation instead.\n";
+    this->m_XformListAllAffine = XformList();
+    }
 
   if ( imagePathFix.empty() )
     {
