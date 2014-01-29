@@ -151,10 +151,15 @@ doMain( const int argc, const char* argv[] )
     cmtk::StdErr << "ERROR: estimated location " << ex.m_Location << " puts landmark #" << ex.m_Idx << " (partly) outside image field of view.\n";
     throw cmtk::ExitException( 3 );
     }
-  catch ( const cmtk::DetectPhantomMagphanEMR051::NoSphereInSearchRegion )
+  catch ( const cmtk::DetectPhantomMagphanEMR051::NoSphereInSearchRegion& )
     {
     cmtk::StdErr << "ERROR: unable to find sphere near expected location - most likely insufficient field of view.\n";
     throw cmtk::ExitException( 3 );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+    {
+    cmtk::StdErr << "ERROR: singular matrix in cmtk::DetectPhantomMagphanEMR051 constructor\n";
+    throw cmtk::ExitException( 1 );
     }
 
   return 0;
