@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -213,6 +213,11 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
     {
     this->DoVendorTagsGE();
     }
+
+  if ( this->m_TagToStringMap[DCM_Manufacturer].substr( 0, 7 ) == "Philips" )
+    {
+    this->DoVendorTagsPhilips();
+    }
 }
 
 void
@@ -259,7 +264,7 @@ ImageFileDICOM::DoVendorTagsSiemens()
       {
       if ( this->m_Document->getValue( DcmTagKey(0x0019,0x100c), tmpStr ) != 0 ) // bValue tag
 	{
-	this->m_BValue = atoi( tmpStr );
+	this->m_BValue = atof( tmpStr );
 	this->m_IsDWI |= (this->m_BValue > 0);
 	}
       
@@ -355,7 +360,7 @@ ImageFileDICOM::DoVendorTagsGE()
 	  {
 	  if ( 1 == sscanf( tmpStr, "%10d\\%*c", &tmpInt ) )
 	    {
-	    this->m_BValue = static_cast<Sint16>( tmpInt );
+	    this->m_BValue = static_cast<double>( tmpInt );
 
 	    for ( int i = 0; i < 3; ++i )
 	      {
@@ -371,6 +376,32 @@ ImageFileDICOM::DoVendorTagsGE()
 	    this->m_BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
 	    }
 	  }
+	}
+      }
+    }
+}
+
+void
+ImageFileDICOM::DoVendorTagsPhilips()
+{
+  double tmpDbl = 0;
+
+  if ( this->GetTagValue( DCM_Modality ) == "MR" )
+    {
+    if ( this->m_Document->getValue( DcmTagKey(0x0018,0x9087), tmpDbl ) > 0 ) // bValue tag
+      {
+      this->m_IsDWI = true;
+      this->m_BValue = tmpDbl;
+      }
+
+    if ( this->m_BValue > 0 )
+      {
+      for ( size_t i = 0; this->m_IsDWI && (i < 3); ++i )
+	{
+	if ( this->m_Document->getValue( DcmTagKey(0x0018,0x9089), tmpDbl, i ) > 0 )
+	  this->m_BVector[i] = tmpDbl;
+	else
+	  this->m_IsDWI = false;
 	}
       }
     }
