@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -105,7 +105,7 @@ public:
   double m_DwellTime;
 
   /// B value for DWI.
-  Sint16 m_BValue;
+  double m_BValue;
 
   /// B vector for DWI.
   cmtk::FixedVector<3,double> m_BVector;
@@ -173,6 +173,9 @@ private:
 
   /// Handle GE private tags.
   void DoVendorTagsGE();
+
+  /// Handle Philips private tags.
+  void DoVendorTagsPhilips();
 };
 
 //@}
