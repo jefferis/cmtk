@@ -176,8 +176,6 @@ doMain
   else
     {
     densityLabelsVector = cmtk::StrSplit( densityLabels, "," );
-    for ( size_t i  = 0; i < densityLabelsVector.size(); ++i )
-      std::cout << densityLabelsVector[i] << std::endl;
     }
 
   // make sure we have exactly one label per column
