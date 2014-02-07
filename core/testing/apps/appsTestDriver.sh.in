@@ -2762,6 +2762,10 @@ case ${RUNTEST} in
 	run vol2csv -o ${tmpdir}/volumes.csv --labels-file sri24_ventricles.txt ncanda_t1_ventricles.nii ncanda_t1_pve_0.nii ncanda_t1_pve_1.nii ncanda_t1_pve_2.nii
 	check_results volumes.csv
 	;;
+    vol2csvDensityLabels)
+	run vol2csv -o ${tmpdir}/volumes.csv --density-labels CSF,GM,WM ncanda_t1_ventricles.nii ncanda_t1_pve_0.nii ncanda_t1_pve_1.nii ncanda_t1_pve_2.nii
+	check_results volumes.csv
+	;;
     vol2csvScale)
 	run vol2csv -o ${tmpdir}/volumes.csv --pixel-scale-image ncanda_t1_jacobian.nii ncanda_t1_ventricles.nii ncanda_t1_pve_0.nii ncanda_t1_pve_1.nii ncanda_t1_pve_2.nii
 	check_results volumes.csv

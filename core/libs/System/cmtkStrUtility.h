@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,6 +37,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace
 cmtk
@@ -72,6 +73,9 @@ std::string StrReplace( const std::string& str /*!< The string to replace in */,
   
 /// Make a string legal in a path by replacing spaces and colons with "_".
 std::string StrMakeLegalInPath( const std::string& s );
+
+/// Split a string into a vector of strings.
+std::vector<std::string> StrSplit( const std::string& s /*<! The string to split. */, const std::string separators = "," /*!< String of separator characters. Any of these will separate two parts in the input string. */ );
 
 //@}
 

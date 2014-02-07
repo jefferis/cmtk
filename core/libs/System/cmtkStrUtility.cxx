@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -135,5 +135,31 @@ StrMakeLegalInPath( const std::string& s )
   return result;
 }
 
+std::vector<std::string> 
+StrSplit( const std::string& s, const std::string separators )
+{
+  std::vector<std::string> result;
+
+  if ( ! s.empty() )
+    {
+    size_t prev = 0;
+    while ( prev != std::string::npos )
+      {
+      size_t next = s.find_first_of( separators, prev );
+      if ( next != std::string::npos )
+	{
+	result.push_back( s.substr( prev, next-prev ) );
+	prev = next+1;
+	}
+      else
+	{
+	result.push_back( s.substr( prev ) );
+	prev = next;
+	}
+      }
+    }
+
+  return result;
+}
 
 } // namespace cmtk

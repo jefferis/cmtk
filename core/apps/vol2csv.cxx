@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkStrUtility.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -42,6 +43,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 int
 doMain
@@ -51,6 +53,7 @@ doMain
   std::string labelsFilePath;
   std::string pscaleImagePath;
   std::string outputFilePath;
+  std::string densityLabels;
 
   std::vector<std::string> densityImagePaths;
 
@@ -79,6 +82,8 @@ doMain
     cl.EndGroup();
 
     cl.BeginGroup( "output", "Output Options" );
+    cl.AddOption( Key( "density-labels" ), &densityLabels, "This option can be used to provide labels for the density maps, which are used as column labels in the output. "
+		  "Labels must be separated by commas and must not contain any unescaped spaces." );
     cl.AddOption( Key( 'o', "output" ), &outputFilePath, "If provided, program output is written to this file. If not provided, output is written to the STDOUT stream." );
     cl.EndGroup();
 
@@ -90,6 +95,7 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
+  // read ROI image
   cmtk::UniformVolume::SmartConstPtr regionsImage( cmtk::VolumeIO::ReadOriented( regionsImagePath ) );
   if ( ! regionsImage )
     {
@@ -97,6 +103,7 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
+  // read optional label name text file
   std::map<size_t, std::string> labelToNameMap;
   if ( !labelsFilePath.empty() )
     {
@@ -113,6 +120,7 @@ doMain
       }
     }
 
+  // read optional pixel volume scale image
   cmtk::UniformVolume::SmartPtr pscaleImage;
   if ( !pscaleImagePath.empty() )
     {
@@ -131,6 +139,7 @@ doMain
       }
     }
 
+  // read optional density images
   std::vector<cmtk::UniformVolume::SmartConstPtr> densityImages;
   for ( size_t idx = 0; idx < densityImagePaths.size(); ++idx )
     {
@@ -153,11 +162,39 @@ doMain
     densityImages.push_back( nextImage );
     }
 
+  // parse optional density labels for output columns
+  std::vector<std::string> densityLabelsVector;
+  if ( densityLabels.empty() )
+    {
+    for ( size_t midx = 0; midx < densityImages.size(); ++midx )
+      {
+      std::ostringstream strm;
+      strm << "density" << midx;
+      densityLabelsVector.push_back( strm.str() );
+      }
+    }
+  else
+    {
+    densityLabelsVector = cmtk::StrSplit( densityLabels, "," );
+    for ( size_t i  = 0; i < densityLabelsVector.size(); ++i )
+      std::cout << densityLabelsVector[i] << std::endl;
+    }
+
+  // make sure we have exactly one label per column
+  if ( densityLabelsVector.size() != densityImages.size() )
+    {
+    cmtk::StdErr << "ERROR: must provide exactly one density label per density image (identified " << densityLabelsVector.size() << " labels for " << densityImages.size() << " images)\n";
+    throw cmtk::ExitException();
+    }
+
+  // compute pixel volume
   const cmtk::Types::Coordinate pixelVolumeRegionsImage = regionsImage->m_Delta.Product();
 
+  // compute number of labels in the ROI image
   const size_t maxLabel = std::max( 1, static_cast<int>( regionsImage->GetData()->GetRange().m_UpperBound ) );
   std::vector<cmtk::Types::Coordinate> regionVolumes( 1+maxLabel, 0.0 );
 
+  // prepare vector for volume per label and density map
   std::vector< std::vector<cmtk::Types::Coordinate> > regionDensities( densityImages.size() );
   for ( size_t midx = 0; midx < densityImages.size(); ++midx )
     {
@@ -190,7 +227,7 @@ doMain
   output << "label,volume";
   for ( size_t midx = 0; midx < densityImages.size(); ++midx )
     {
-    output << ",density" << midx;
+    output << "," << densityLabelsVector[midx];
     }
   output << "\n";
   
