@@ -1,5 +1,7 @@
 Release CMTK-3.0.1:
 
+(r5193) Added: DICOM import now supports Philips tags for diffusion
+	information (b Value and gradient direction vectors).
 (r5187) Changed: "fview" GUI now expects only a transformation sequence on
 	the command line. To override fixed and/or moving image (or to
 	provide them, if they are not stored within the transformation),
