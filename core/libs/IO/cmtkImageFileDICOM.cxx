@@ -112,6 +112,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
    m_DwellTime( 0.0 ),
    m_BValue( 0 ),
    m_BVector( 0.0 ),
+   m_HasBVector( false ),
    m_RawDataType( "unknown" )
 {
   if ( cmtk::FileFormat::Identify( filepath, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
@@ -304,6 +305,7 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	  }
 	}
       }
+    this->m_HasBVector = this->m_IsDWI;
     }
 }
 
@@ -362,6 +364,7 @@ ImageFileDICOM::DoVendorTagsGE()
 	    {
 	    this->m_BValue = static_cast<double>( tmpInt );
 
+	    this->m_HasBVector = true;
 	    for ( int i = 0; i < 3; ++i )
 	      {
 	      if ( this->m_Document->getValue( DcmTagKey(0x0019,0x10bb+i), tmpStr ) > 0 ) // bVector tags
@@ -371,6 +374,7 @@ ImageFileDICOM::DoVendorTagsGE()
 	      else
 		{
 		this->m_BVector[i] = 0;
+		this->m_HasBVector = false;
 		}
 	      }
 	    this->m_BVector[2] *= -1; // for some reason z component apparently requires negation of sign on GE
@@ -396,12 +400,22 @@ ImageFileDICOM::DoVendorTagsPhilips()
 
     if ( this->m_BValue > 0 )
       {
+      this->m_HasBVector = true;
       for ( size_t i = 0; this->m_IsDWI && (i < 3); ++i )
 	{
 	if ( this->m_Document->getValue( DcmTagKey(0x0018,0x9089), tmpDbl, i ) > 0 )
 	  this->m_BVector[i] = tmpDbl;
 	else
 	  this->m_IsDWI = false;
+	}
+
+      const char* tmpStr = NULL;
+      if ( this->m_Document->getValue( DcmTagKey(0x2001,0x1004), tmpStr ) > 0 ) // DiffusionDirection tag - "O", oblique or "I", isotropic. Uses "I" with bValue!=0 to identify average diffusion image
+	{
+	if ( tmpStr )
+	  {
+	  this->m_HasBVector = (tmpStr[0] != 'I');
+	  }
 	}
       }
     }

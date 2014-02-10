@@ -225,56 +225,59 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
       mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
       
       Coverity::FakeFree( mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), this->front()->m_BValue ) );
-      
-      mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
-      mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
-      for ( size_t idx = 0; idx < 3; ++idx )
-	{
-	Coverity::FakeFree( mxmlNewReal( x_bvec, this->front()->m_BVector[idx] ) );
-	}
 
-      // Determine bVector in image LPS coordinate space:
-      // First, create copy of image grid
-      UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
-      // Make sure still in LPS DICOM coordinate space
-      gridLPS->ChangeCoordinateSpace( "LPS" );
-
-      try
+      if ( this->front()->m_HasBVector )
 	{
-	// Apply inverse of remaining image-to-space matrix to original bVector
-	const UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
-	
-	mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
-	mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
+	mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
+	mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
 	for ( size_t idx = 0; idx < 3; ++idx )
 	  {
-	  Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
+	  Coverity::FakeFree( mxmlNewReal( x_bvec, this->front()->m_BVector[idx] ) );
 	  }
-	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& )
-	{
-	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in image space (bVectorImage).\n";
-	}
-
-      // Determine bVector in image RAS standard coordinate space:
-      // First, create copy of image grid
-      UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
-
-      try
-	{
-	// Apply inverse of remaining image-to-space matrix to original bVector
-	const UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
 	
-	mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
-	mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
-	for ( size_t idx = 0; idx < 3; ++idx )
+	// Determine bVector in image LPS coordinate space:
+	// First, create copy of image grid
+	UniformVolume::SmartPtr gridLPS = volume.CloneGrid();
+	// Make sure still in LPS DICOM coordinate space
+	gridLPS->ChangeCoordinateSpace( "LPS" );
+	
+	try
 	  {
-	  Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
+	  // Apply inverse of remaining image-to-space matrix to original bVector
+	  const UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
+	  
+	  mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
+	  mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
+	  for ( size_t idx = 0; idx < 3; ++idx )
+	    {
+	    Coverity::FakeFree( mxmlNewReal( x_bvec_image, bVectorImage[idx] ) );
+	    }
 	  }
-	}
-      catch ( const AffineXform::MatrixType::SingularMatrixException& )
-	{
-	StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in standard space (bVectorStandard).\n";
+	catch ( const AffineXform::MatrixType::SingularMatrixException& )
+	  {
+	  StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in image space (bVectorImage).\n";
+	  }
+	
+	// Determine bVector in image RAS standard coordinate space:
+	// First, create copy of image grid
+	UniformVolume::SmartPtr gridRAS = gridLPS->GetReoriented();
+	
+	try
+	  {
+	  // Apply inverse of remaining image-to-space matrix to original bVector
+	  const UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
+	  
+	  mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
+	  mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
+	  for ( size_t idx = 0; idx < 3; ++idx )
+	    {
+	    Coverity::FakeFree( mxmlNewReal( x_bvec_std, bVectorStandard[idx] ) );
+	    }
+	  }
+	catch ( const AffineXform::MatrixType::SingularMatrixException& )
+	  {
+	  StdErr << "WARNING: singular image-to-physical matrix; cannot determine b vector orientation in standard space (bVectorStandard).\n";
+	  }
 	}
       }
     }

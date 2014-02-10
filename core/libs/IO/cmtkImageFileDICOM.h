@@ -110,6 +110,9 @@ public:
   /// B vector for DWI.
   cmtk::FixedVector<3,double> m_BVector;
 
+  /// Flag whether this image has a valid B vector (false for average DWI images).
+  bool m_HasBVector;
+
   /// Raw data type string.
   std::string m_RawDataType;
 
