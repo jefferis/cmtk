@@ -398,9 +398,9 @@ ImageFileDICOM::DoVendorTagsPhilips()
       this->m_BValue = tmpDbl;
       }
 
+    this->m_HasBVector = true;
     if ( this->m_BValue > 0 )
       {
-      this->m_HasBVector = true;
       for ( size_t i = 0; this->m_IsDWI && (i < 3); ++i )
 	{
 	if ( this->m_Document->getValue( DcmTagKey(0x0018,0x9089), tmpDbl, i ) > 0 )
