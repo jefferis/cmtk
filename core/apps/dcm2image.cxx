@@ -548,7 +548,8 @@ doMain ( const int argc, const char *argv[] )
     cl.AddSwitch( Key( "write-single-slices" ), &WriteSingleSlices, true, "Also write output images for single-slice DICOM files that could not be assigned to any 3D stacks. By default, these are skipped." );
     cl.AddSwitch( Key( "ignore-acq-number" ), &IgnoreAcquisitionNumber, true, "Ignore 'AcquisitionNumber' tag for image grouping, i.e., do not separate stacks based on this tag." );
     cl.AddSwitch( Key( "no-orientation-check" ), &DisableOrientationCheck, true, "Disable checking of image orientations (to avoid rounding issues)" );
-    cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
+    cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5). "
+		  "If one or more volumes cannot be stacked because of non-uniform slice spacing that exceeds this threshold, dcm2image will return an exit code of 3." );
     cl.EndGroup();
 
     cl.AddParameterVector( &SearchRootDirVector, "SearchDirList", "List of directories to search for DICOM files. Subdirectories are also search if '--recurse' option is used." );
