@@ -1,5 +1,8 @@
 Release CMTK-3.0.1:
 
+(r5203)	Changed: "dcm2image" tool now returns exit code 3 if one or more
+	image stacks could not be built due to non-uniform slice spacing
+	that exceeds the given "--tolerance" threshold.
 (r5196) Added: "vol2csv" tool now accepts user-define column labels for
 	the optional density-weighted volumes.
 (r5195) Added: DICOM import now supports Philips tags for diffusion
