@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,8 +162,10 @@ public:
   /// Build a volume list by traversing a directory.
   void AppendFromDirectory( const std::string& path, const char *wildcard );
   
-  /// Write all volumes in this list.
-  void WriteVolumes();
+  /** Write all volumes in this list.
+   *\return Return code - 0, no problems; 3, at least one volume was not written correctly (e.g., due to non-uniform slice spacing).
+   */
+  int WriteVolumes();
 
 private:
   /// Stored floating point tolerance.
@@ -182,9 +184,11 @@ PutNumberAndSanitize( const std::string& path, const std::string& numberString )
     return cmtk::StrReplace( cmtk::StrReplace( path, "%n", numberString ), "%N", "-" + numberString );
 }
 
-void
+int
 VolumeList::WriteVolumes() 
 {
+  int returnCode = 0;
+  
   size_t cntSingleImages = 0;
 
   std::map<std::string,Self> pathToVolumeMap;
@@ -270,9 +274,16 @@ VolumeList::WriteVolumes()
 
       cmtk::UniformVolume::SmartConstPtr volume = it->second[0]->WriteImage( uniquePath.c_str(), EmbedInfo );
 
-      if ( volume && WriteXML )
+      if ( volume )
 	{
-	it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume, IncludeIdentifiers );
+	if ( WriteXML )
+	  {
+	  it->second[0]->WriteXML( (uniquePath+".xml").c_str(), *volume, IncludeIdentifiers );
+	  }
+	}
+      else
+	{
+	returnCode = 3;
 	}
       }
     else
@@ -289,13 +300,22 @@ VolumeList::WriteVolumes()
 
 	cmtk::UniformVolume::SmartConstPtr volume = it->second[i]->WriteImage( uniquePath.c_str(), EmbedInfo );
 
-	if ( volume && WriteXML )
+	if ( volume) 
 	  {
-	  it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume, IncludeIdentifiers );
+	  if ( WriteXML )
+	    {
+	    it->second[i]->WriteXML( (uniquePath + ".xml").c_str(), *volume, IncludeIdentifiers );
+	    }
+	  }
+	else
+	  {
+	  returnCode = 3;
 	  }
 	}
       }
     }
+
+  return returnCode;
 }
 
 
@@ -320,7 +340,7 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
       }
     }    
 
-  ImageStackDICOM::SmartPtr newImageStack( new ImageStackDICOM( Tolerance ) );
+  ImageStackDICOM::SmartPtr newImageStack( new ImageStackDICOM( this->m_Tolerance ) );
   newImageStack->AddImageFile( newImage );
   push_back( newImageStack );    
 }
@@ -554,9 +574,7 @@ doMain ( const int argc, const char *argv[] )
     volumeList.AppendFromDirectory( *it, "*" );
     }
   
-  volumeList.WriteVolumes();
-
-  return 0;
+  return volumeList.WriteVolumes();
 }
 
 #include "cmtkSafeMain"
