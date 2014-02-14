@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-##  Copyright 2012, 2013 SRI International
+##  Copyright 2012-2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -108,7 +108,7 @@ for bX in ${b0FwdCorr} ${bXlist}; do
     if [ "${bX}" == "${b0FwdCorr}" ]; then
 	if CMTK_needs_update_and_lock ${outdir}/motion/${base} ${b0FwdCorr}; then
 	    cmtk convertx ${b0FwdCorr} ${outdir}/motion/${base}
-	    lockfile_delete  ${outdir}/motion/${base}
+	    CMTK_lockfile_delete  ${outdir}/motion/${base}
 	fi
     else
 	xform=${outdir}/motion/xforms/b0Unwarp_${pref}.xform
