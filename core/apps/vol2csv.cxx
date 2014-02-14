@@ -107,11 +107,16 @@ doMain
   std::map<size_t, std::string> labelToNameMap;
   if ( !labelsFilePath.empty() )
     {
+    std::ifstream labelsFile( labelsFilePath.c_str() );
+    if ( !labelsFile.good() )
+      {
+      cmtk::StdErr << "ERROR: could not read label file " << labelsFilePath << "\n";
+      throw cmtk::ExitException( 1 );
+      }
+    
     size_t idx;
     std::string name;
     std::string restOfLine;
-    
-    std::ifstream labelsFile( labelsFilePath.c_str() );
     while ( ! labelsFile.eof() )
       {
       labelsFile >> idx >> name;
