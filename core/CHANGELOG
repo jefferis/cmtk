@@ -1,4 +1,4 @@
-Release CMTK-3.0.1:
+Release CMTK-3.1.0 (2014-02-21):
 
 (r5203)	Changed: "dcm2image" tool now returns exit code 3 if one or more
 	image stacks could not be built due to non-uniform slice spacing
