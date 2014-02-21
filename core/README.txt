@@ -3,15 +3,54 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 3.0.1
+Release Notes -- CMTK 3.1.0
 ===========================
+
+ADDED FEATURES:
+
+1. Polynomial Transformations
+
+A new class of coordinate transformations based on polynomials (up to 4th
+order) has been added. This is mostly useful for fitting transformations to
+landmark correspondences derived from scans of the ADNI phantom.
+
+
+2. Basic Support for Philips DWI DICOMs
+
+Diffusion-related information (b-value, b-vector) are now extracted also from
+recent Philips DICOM files. Since Philips DWI series appear to contain an
+average diffusion weighted image (with b-value = 0 and b-vector = 0), the
+dcm2image tool no longer writes the bVector tag to XML sidecar files if the
+vector is zero but the b value is not. (This is so the necessary information
+for tensor reconstruction can be easily extracted). In our experience, neither
+Siemens nor GE write zero b-vectors with non-zero b-values, so behaviour
+should not change for files from these manufacturers.
+
 
 USER-VISIBLE CHANGES:
 
-1. The "reformatx" tool no longer corrects Jacobian maps for global
+1. Global Scale Correction for Jacobian Maps
+
+The "reformatx" tool no longer corrects Jacobian maps for global
 scale by default. This seems like a more natural way to do this,
 avoiding surprises.  To force the old behaviour, add
 "--jacobian-correct-global" switch to the command  line.
+
+
+2. "fview" Tool Command Line
+
+The "fview" GUI no longer expects the fixed and moving image paths on the
+command line (these are commonly and conveniently extracted from the
+transformation). New, optional arguments allow providing or overriding the
+deduced paths when necessary.
+
+
+DEVELOPER CHANGES:
+
+1. MacOS Configurations
+
+Inconsistencies in pre-defined configurations for MacOS X builds have been
+resolved and unnecessary external dependencies cleaned up.
 
 
 Release Notes -- CMTK 3.0.0
