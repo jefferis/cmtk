@@ -1,0 +1,5 @@
+label,volume,density0,density1,density2
+"LateralVentricle_L",2700,2467.8,0,232.2
+"LateralVentricle_R",2700,2160,540,0
+"ThirdVentricle_L",540,216,324,0
+"ThirdVentricls_R",1620,1377,243.001,0

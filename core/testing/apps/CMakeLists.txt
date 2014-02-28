@@ -924,7 +924,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "vol2csv" tool
-LIST(APPEND testList vol2csvLabels vol2csvDensityLabels vol2csvScale)
+LIST(APPEND testList vol2csvLabels vol2csvLabelsNoBackground vol2csvDensityLabels vol2csvScale)
 
 # ==========================================
 # Tests for "vtkxform" tool
