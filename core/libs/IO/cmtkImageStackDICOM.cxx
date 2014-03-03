@@ -122,6 +122,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:ImageOrientationPatient",      { "\t", NULL, NULL, "\n" } },
     { "image",                              { "\t", "\n", "\t", "\n" } },
     { "dcmFile",                            { "\t\t", NULL, NULL, "\n" } },
+    { "sliceTime",                          { "\t\t", NULL, NULL, "\n" } },
     { "dicom:AcquisitionTime",              { "\t\t", NULL, NULL, "\n" } },
     { "dicom:ImagePositionPatient",         { "\t\t", NULL, NULL, "\n" } },
     { "dicom:RescaleIntercept",             { "\t\t", NULL, NULL, "\n" } },
@@ -267,7 +268,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 	  // Apply inverse of remaining image-to-space matrix to original bVector
 	  const UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
 	  
-	  mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard");
+	  mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard" );
 	  mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
 	  for ( size_t idx = 0; idx < 3; ++idx )
 	    {
@@ -314,6 +315,18 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
     if ( (*it)->GetTagValue( DCM_RescaleSlope, "missing" ) != "missing" )
       {
       Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) ) );
+      }
+
+    if ( ! (*it)->m_SliceTimes.empty() )
+      {
+      char slice_str[10];
+      for ( size_t slice = 0; slice < (*it)->m_SliceTimes.size(); ++slice )
+	{
+	mxml_node_t *x_slice_time = mxmlNewElement( x_image, "sliceTime" );
+	Coverity::FakeFree( mxmlNewReal( x_slice_time, (*it)->m_SliceTimes[slice] ) );
+	snprintf( slice_str, 9, "%u", static_cast<unsigned int>( slice ) );	
+	mxmlElementSetAttr( x_slice_time, "slice", slice_str );
+	}
       }
     }
 

@@ -59,6 +59,11 @@
 #define DCM_PatientsName DCM_PatientName
 #endif
 
+#ifndef DCM_Siemens_MosaicRefAcqTimes
+// Siemens tag for relative timing of all slices in a mosaic file
+#define DCM_Siemens_MosaicRefAcqTimes DcmTagKey(0x0019,0x1029)
+#endif
+
 #include <string>
 #include <map>
 #include <memory>
@@ -115,6 +120,9 @@ public:
 
   /// Raw data type string.
   std::string m_RawDataType;
+
+  /// Slice time(s) for this file.
+  std::vector<double> m_SliceTimes;
 
   /// Constructor.
   ImageFileDICOM( const std::string& filename );

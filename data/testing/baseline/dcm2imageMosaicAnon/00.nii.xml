@@ -12,6 +12,28 @@
 		<dcmFile>fmri.dcm</dcmFile>
 		<dicom:AcquisitionTime>144307.010000</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-315.36324739456\-340.71552136397\89.11576887014</dicom:ImagePositionPatient>
+		<sliceTime slice="0">732.500000</sliceTime>
+		<sliceTime slice="1">0.000000</sliceTime>
+		<sliceTime slice="2">800.000000</sliceTime>
+		<sliceTime slice="3">67.500000</sliceTime>
+		<sliceTime slice="4">865.000000</sliceTime>
+		<sliceTime slice="5">132.500000</sliceTime>
+		<sliceTime slice="6">932.500000</sliceTime>
+		<sliceTime slice="7">200.000000</sliceTime>
+		<sliceTime slice="8">1000.000000</sliceTime>
+		<sliceTime slice="9">267.500000</sliceTime>
+		<sliceTime slice="10">1065.000000</sliceTime>
+		<sliceTime slice="11">332.500000</sliceTime>
+		<sliceTime slice="12">1132.500000</sliceTime>
+		<sliceTime slice="13">400.000000</sliceTime>
+		<sliceTime slice="14">1200.000000</sliceTime>
+		<sliceTime slice="15">467.500000</sliceTime>
+		<sliceTime slice="16">1265.000000</sliceTime>
+		<sliceTime slice="17">532.500000</sliceTime>
+		<sliceTime slice="18">1332.500000</sliceTime>
+		<sliceTime slice="19">600.000000</sliceTime>
+		<sliceTime slice="20">1400.000000</sliceTime>
+		<sliceTime slice="21">667.500000</sliceTime>
 	</image>
 </stack>
 

@@ -176,11 +176,17 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   const DcmTagKey defaultStringTags[] = { DCM_Manufacturer, DCM_ManufacturerModelName, DCM_DeviceSerialNumber, DCM_StationName, DCM_AcquisitionTime,
 					  DCM_PatientsName, 
 					  DCM_Modality, DCM_EchoTime, DCM_RepetitionTime, DCM_InversionTime, DCM_ImagingFrequency, DCM_SequenceName,
-					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName, DCM_GE_AssetRFactors,
 					  DCM_StudyInstanceUID, DCM_StudyID, DCM_StudyDate,
 					  DCM_FrameOfReferenceUID, DCM_SeriesInstanceUID, DCM_SeriesDescription,
 					  DCM_ImagePositionPatient, DCM_ImageOrientationPatient, 
 					  DCM_RescaleIntercept, DCM_RescaleSlope,
+					  // GE-specific tags
+					  DCM_GE_PulseSequenceName, DCM_GE_PulseSequenceDate, DCM_GE_InternalPulseSequenceName, DCM_GE_AssetRFactors,
+					  // Siemens-specific tags
+
+					  // Philips-specific tags
+
+					  // Zero-tag ends the array
 					  DcmTagKey( 0, 0 ) };
   
   for ( size_t tagIdx = 0; (defaultStringTags[tagIdx].getGroup() != 0) && (defaultStringTags[tagIdx].getElement() != 0); ++tagIdx )
@@ -225,11 +231,19 @@ void
 ImageFileDICOM::DoVendorTagsSiemens()
 {
   Uint16 nFrames = 0;
+  double tmpDbl = 0;
   const char* tmpStr = NULL;
 
   this->m_IsMultislice = (0 != this->m_Document->getValue( DcmTagKey (0x0019,0x100a), nFrames )); // Number of Slices tag
   this->m_IsMultislice |= ( this->m_Document->getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" ) ); // mosaics are always multi-slice
-  
+
+  // Retrieve slice times if this tag exists (it's an array of double-precision floats)
+  for ( size_t slice = 0, nslices = this->m_Document->getVM( DCM_Siemens_MosaicRefAcqTimes ); slice < nslices; ++slice )
+    {
+    if ( this->m_Document->getValue( DCM_Siemens_MosaicRefAcqTimes, tmpDbl, slice ) > 0 )
+      this->m_SliceTimes.push_back( tmpDbl );
+    }
+
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
     // try to extract raw data type from "ImageType"

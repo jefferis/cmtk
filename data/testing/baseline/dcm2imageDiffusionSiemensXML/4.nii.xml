@@ -30,6 +30,71 @@
 		<dcmFile>I0001.dcm</dcmFile>
 		<dicom:AcquisitionTime>185003.512500</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-1082.9055690765\-1094.5278453827\-77.094429016113</dicom:ImagePositionPatient>
+		<sliceTime slice="0">0.000000</sliceTime>
+		<sliceTime slice="1">3975.000000</sliceTime>
+		<sliceTime slice="2">120.000000</sliceTime>
+		<sliceTime slice="3">4095.000000</sliceTime>
+		<sliceTime slice="4">240.000000</sliceTime>
+		<sliceTime slice="5">4215.000000</sliceTime>
+		<sliceTime slice="6">360.000000</sliceTime>
+		<sliceTime slice="7">4335.000000</sliceTime>
+		<sliceTime slice="8">480.000000</sliceTime>
+		<sliceTime slice="9">4457.500000</sliceTime>
+		<sliceTime slice="10">600.000000</sliceTime>
+		<sliceTime slice="11">4577.500000</sliceTime>
+		<sliceTime slice="12">722.500000</sliceTime>
+		<sliceTime slice="13">4697.500000</sliceTime>
+		<sliceTime slice="14">842.500000</sliceTime>
+		<sliceTime slice="15">4817.500000</sliceTime>
+		<sliceTime slice="16">962.500000</sliceTime>
+		<sliceTime slice="17">4937.500000</sliceTime>
+		<sliceTime slice="18">1082.500000</sliceTime>
+		<sliceTime slice="19">5057.500000</sliceTime>
+		<sliceTime slice="20">1202.500000</sliceTime>
+		<sliceTime slice="21">5180.000000</sliceTime>
+		<sliceTime slice="22">1325.000000</sliceTime>
+		<sliceTime slice="23">5300.000000</sliceTime>
+		<sliceTime slice="24">1445.000000</sliceTime>
+		<sliceTime slice="25">5420.000000</sliceTime>
+		<sliceTime slice="26">1565.000000</sliceTime>
+		<sliceTime slice="27">5540.000000</sliceTime>
+		<sliceTime slice="28">1685.000000</sliceTime>
+		<sliceTime slice="29">5660.000000</sliceTime>
+		<sliceTime slice="30">1805.000000</sliceTime>
+		<sliceTime slice="31">5782.500000</sliceTime>
+		<sliceTime slice="32">1927.500000</sliceTime>
+		<sliceTime slice="33">5902.500000</sliceTime>
+		<sliceTime slice="34">2047.500000</sliceTime>
+		<sliceTime slice="35">6022.500000</sliceTime>
+		<sliceTime slice="36">2167.500000</sliceTime>
+		<sliceTime slice="37">6142.500000</sliceTime>
+		<sliceTime slice="38">2287.500000</sliceTime>
+		<sliceTime slice="39">6262.500000</sliceTime>
+		<sliceTime slice="40">2407.500000</sliceTime>
+		<sliceTime slice="41">6385.000000</sliceTime>
+		<sliceTime slice="42">2527.500000</sliceTime>
+		<sliceTime slice="43">6505.000000</sliceTime>
+		<sliceTime slice="44">2650.000000</sliceTime>
+		<sliceTime slice="45">6625.000000</sliceTime>
+		<sliceTime slice="46">2770.000000</sliceTime>
+		<sliceTime slice="47">6745.000000</sliceTime>
+		<sliceTime slice="48">2890.000000</sliceTime>
+		<sliceTime slice="49">6865.000000</sliceTime>
+		<sliceTime slice="50">3010.000000</sliceTime>
+		<sliceTime slice="51">6985.000000</sliceTime>
+		<sliceTime slice="52">3130.000000</sliceTime>
+		<sliceTime slice="53">7107.500000</sliceTime>
+		<sliceTime slice="54">3252.500000</sliceTime>
+		<sliceTime slice="55">7227.500000</sliceTime>
+		<sliceTime slice="56">3372.500000</sliceTime>
+		<sliceTime slice="57">7347.500000</sliceTime>
+		<sliceTime slice="58">3492.500000</sliceTime>
+		<sliceTime slice="59">7467.500000</sliceTime>
+		<sliceTime slice="60">3612.500000</sliceTime>
+		<sliceTime slice="61">7587.500000</sliceTime>
+		<sliceTime slice="62">3732.500000</sliceTime>
+		<sliceTime slice="63">7710.000000</sliceTime>
+		<sliceTime slice="64">3855.000000</sliceTime>
 	</image>
 </stack>
 
