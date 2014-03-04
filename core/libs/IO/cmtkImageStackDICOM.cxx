@@ -323,14 +323,18 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
     }
 
   // put slice times into XML (if we have them)
-  for ( size_t stackSlice = 0; stackSlice < stackSliceTimes.size(); ++stackSlice )
+  if ( ! stackSliceTimes.empty() )
     {
-    mxml_node_t *x_slice_time = mxmlNewElement( x_stack, "sliceTime" );
-    Coverity::FakeFree( mxmlNewReal( x_slice_time, stackSliceTimes[stackSlice] ) );
-
-    char slice_str[10];
-    snprintf( slice_str, 9, "%u", static_cast<unsigned int>( stackSlice ) );	
-    mxmlElementSetAttr( x_slice_time, "slice", slice_str );
+    const double baseTime = *std::min_element( stackSliceTimes.begin(),stackSliceTimes.end() );
+    for ( size_t stackSlice = 0; stackSlice < stackSliceTimes.size(); ++stackSlice )
+      {
+      mxml_node_t *x_slice_time = mxmlNewElement( x_stack, "sliceTime" );
+      Coverity::FakeFree( mxmlNewReal( x_slice_time, stackSliceTimes[stackSlice]-baseTime ) );
+      
+      char slice_str[10];
+      snprintf( slice_str, 9, "%u", static_cast<unsigned int>( stackSlice ) );	
+      mxmlElementSetAttr( x_slice_time, "slice", slice_str );
+      }
     }
   
 
