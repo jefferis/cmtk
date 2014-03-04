@@ -80,6 +80,19 @@ ImageStackDICOM::AddImageFile ( ImageFileDICOM::SmartConstPtr& newImage )
   insert( it, newImage );
 }
 
+std::vector<double>
+ImageStackDICOM::AssembleSliceTimes() const
+{
+  std::vector<double> sliceTimes;
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    // add this file's slice times to stack slice time vector - this should be safe even if file slice time vector is empty
+    sliceTimes.insert( sliceTimes.end(), (*it)->m_SliceTimes.begin(), (*it)->m_SliceTimes.end() );
+    }
+
+  return sliceTimes;
+}
+
 const char *
 ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
 {
@@ -299,7 +312,6 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 
   Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() ) );
 
-  std::vector<double> stackSliceTimes;
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
@@ -317,12 +329,10 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
       {
       Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) ) );
       }
-
-    // add this file's slice times to stack slice time vector - this should be safe even if file slice time vector is empty
-    stackSliceTimes.insert( stackSliceTimes.end(), (*it)->m_SliceTimes.begin(), (*it)->m_SliceTimes.end() );
     }
 
   // put slice times into XML (if we have them)
+  const std::vector<double> stackSliceTimes = this->AssembleSliceTimes();
   if ( ! stackSliceTimes.empty() )
     {
     const double baseTime = *std::min_element( stackSliceTimes.begin(),stackSliceTimes.end() );

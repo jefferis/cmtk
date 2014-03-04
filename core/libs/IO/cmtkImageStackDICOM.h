@@ -103,6 +103,9 @@ private:
   /// Stored floating point tolerance.
   Types::Coordinate m_Tolerance;
 
+  /// Assemble slice times vector from current set of slices.
+  std::vector<double> AssembleSliceTimes() const;
+
   /// Generate custom whitespaces for XML output.
   static const char *WhitespaceWriteMiniXML( mxml_node_t*, int where);
 };
