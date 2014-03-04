@@ -120,9 +120,9 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:SeriesInstanceUID",            { "\t", NULL, NULL, "\n" } },
     { "dicom:FrameOfReferenceUID",          { "\t", NULL, NULL, "\n" } }, 
     { "dicom:ImageOrientationPatient",      { "\t", NULL, NULL, "\n" } },
+    { "sliceTime",                          { "\t", NULL, NULL, "\n" } },
     { "image",                              { "\t", "\n", "\t", "\n" } },
     { "dcmFile",                            { "\t\t", NULL, NULL, "\n" } },
-    { "sliceTime",                          { "\t\t", NULL, NULL, "\n" } },
     { "dicom:AcquisitionTime",              { "\t\t", NULL, NULL, "\n" } },
     { "dicom:ImagePositionPatient",         { "\t\t", NULL, NULL, "\n" } },
     { "dicom:RescaleIntercept",             { "\t\t", NULL, NULL, "\n" } },
@@ -299,6 +299,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 
   Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() ) );
 
+  std::vector<double> stackSliceTimes;
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
@@ -317,18 +318,21 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
       Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_image, "dicom:RescaleSlope" ), atof( (*it)->GetTagValue( DCM_RescaleSlope ).c_str() ) ) );
       }
 
-    if ( ! (*it)->m_SliceTimes.empty() )
-      {
-      char slice_str[10];
-      for ( size_t slice = 0; slice < (*it)->m_SliceTimes.size(); ++slice )
-	{
-	mxml_node_t *x_slice_time = mxmlNewElement( x_image, "sliceTime" );
-	Coverity::FakeFree( mxmlNewReal( x_slice_time, (*it)->m_SliceTimes[slice] ) );
-	snprintf( slice_str, 9, "%u", static_cast<unsigned int>( slice ) );	
-	mxmlElementSetAttr( x_slice_time, "slice", slice_str );
-	}
-      }
+    // add this file's slice times to stack slice time vector - this should be safe even if file slice time vector is empty
+    stackSliceTimes.insert( stackSliceTimes.end(), (*it)->m_SliceTimes.begin(), (*it)->m_SliceTimes.end() );
     }
+
+  // put slice times into XML (if we have them)
+  for ( size_t stackSlice = 0; stackSlice < stackSliceTimes.size(); ++stackSlice )
+    {
+    mxml_node_t *x_slice_time = mxmlNewElement( x_stack, "sliceTime" );
+    Coverity::FakeFree( mxmlNewReal( x_slice_time, stackSliceTimes[stackSlice] ) );
+
+    char slice_str[10];
+    snprintf( slice_str, 9, "%u", static_cast<unsigned int>( stackSlice ) );	
+    mxmlElementSetAttr( x_slice_time, "slice", slice_str );
+    }
+  
 
   FILE *file = fopen( fname.c_str(), "w" );
   if ( file )
