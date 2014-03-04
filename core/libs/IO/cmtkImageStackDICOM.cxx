@@ -42,6 +42,9 @@
 #include <IO/cmtkVolumeFromFile.h>
 #include <IO/cmtkVolumeIO.h>
 
+#include <algorithm>
+#include <sstream>
+
 namespace
 cmtk
 {
@@ -414,6 +417,68 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
       case EMBED_SERIESDESCR:
 	volume->SetMetaInfo( META_IMAGE_DESCRIPTION, first->GetTagValue( DCM_SeriesDescription ) );
 	break;
+      }
+
+    // see if we have slice times and set metadate accordingly (relevant for NIFTI only at this time)
+    const std::vector<double> sliceTimes = this->AssembleSliceTimes();
+    if ( sliceTimes.size() > 1 ) // need at least 2 slices for meaningful slice order
+      {
+      std::vector<double> sliceTimesSorted = sliceTimes;
+      std::sort( sliceTimesSorted.begin(), sliceTimesSorted.end() );
+
+      // This next bit inspired by Xiangru Li's Matlab DICOM-to-NIfTI converter, http://www.mathworks.com/matlabcentral/fileexchange/42997-dicom-to-nifti-converter
+      double duration = 0;
+      for ( size_t i = 1; i < sliceTimes.size(); ++i )
+	{
+	duration += fabs(sliceTimes[i]-sliceTimes[i-1]);
+	}
+      duration /= (sliceTimes.size()-1);
+      const double difference = (sliceTimesSorted[sliceTimesSorted.size()-1]-sliceTimesSorted[0]) / (sliceTimes.size()-1);
+
+      std::string sliceOrder;
+      if ( fabs( difference - duration ) < 1e-6 )
+	{
+	sliceOrder = META_IMAGE_SLICEORDER_SI;
+	}
+      else if ( fabs( difference + duration ) < 1e-6 )
+	{
+	sliceOrder = META_IMAGE_SLICEORDER_SD;
+	}
+      else if ( difference > 0 )
+	{
+	if ( sliceTimes[0] < sliceTimes[1] ) 
+	  {
+	  // EVEN slices acquired first.
+	  sliceOrder = META_IMAGE_SLICEORDER_AI;
+	  }
+	else
+	  {
+	  // ODD slices acquired first
+	  sliceOrder = META_IMAGE_SLICEORDER_AI2;
+	  }
+	}
+      else
+	{
+	if ( sliceTimes[sliceTimes.size()-1] < sliceTimes[sliceTimes.size()-2] ) 
+	  {
+	  // EVEN slices acquired first.
+	  sliceOrder = META_IMAGE_SLICEORDER_AD;
+	  }
+	else
+	  {
+	  // ODD slices acquired first
+	  sliceOrder = META_IMAGE_SLICEORDER_AD2;
+	  }
+	}
+
+      if ( ! sliceOrder.empty() )
+	{
+	volume->SetMetaInfo( META_IMAGE_SLICEORDER, sliceOrder );
+
+	std::ostringstream strm;
+	strm << difference;
+	volume->SetMetaInfo( META_IMAGE_SLICEDURATION, strm.str() );
+	}
       }
     
     VolumeIO::Write( *volume, fname.c_str() );

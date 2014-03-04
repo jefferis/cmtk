@@ -56,6 +56,18 @@ const char* const META_IMAGE_DESCRIPTION = "IMAGE_DESCRIPTION";
 
 const char* const META_IMAGE_DIRECTION_VECTORS = "IMAGE_DIRECTION_VECTORS";
 
+// Slice order (ascending/descending, sequential/interleaved)
+const char* const META_IMAGE_SLICEORDER = "IMAGE_SLICEORDER";
+const char* const META_IMAGE_SLICEORDER_SI = "SEQ-INC";
+const char* const META_IMAGE_SLICEORDER_SD = "SEQ-DEC";
+const char* const META_IMAGE_SLICEORDER_AI = "ALT-INC";
+const char* const META_IMAGE_SLICEORDER_AD = "ALT-DEC";
+const char* const META_IMAGE_SLICEORDER_AI2 = "ALT-INC2";
+const char* const META_IMAGE_SLICEORDER_AD2 = "ALT-DEC2";
+
+// Slice time (duration for one slice; this should be TR/nSlices)
+const char* const META_IMAGE_SLICEDURATION = "IMAGE_SLICEDURATION";
+
 const char* const META_XFORM_FIXED_IMAGE_PATH = "XFORM_FIXED_IMAGE_PATH";
 const char* const META_XFORM_MOVING_IMAGE_PATH = "XFORM_MOVING_IMAGE_PATH";
 

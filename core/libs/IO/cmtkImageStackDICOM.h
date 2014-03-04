@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -43,6 +43,8 @@
 #include <Base/cmtkUniformVolume.h>
 
 #include <mxml.h>
+
+#include <vector>
 
 namespace
 cmtk

@@ -454,6 +454,28 @@ VolumeFromFile::WriteNifti
     memset( header.descrip, 0, sizeof( header.descrip ) );
     strncpy( header.descrip, volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str(), sizeof( header.descrip )-1 );
     }
+
+  if ( volume.MetaKeyExists( META_IMAGE_SLICEORDER ) )
+    {
+    const std::string sliceOrder = volume.GetMetaInfo( META_IMAGE_SLICEORDER );
+    if ( sliceOrder == META_IMAGE_SLICEORDER_SI )
+      header.slice_code = NIFTI_SLICE_SEQ_INC;
+    else if ( sliceOrder == META_IMAGE_SLICEORDER_SD )
+      header.slice_code = NIFTI_SLICE_SEQ_DEC;
+    else if ( sliceOrder == META_IMAGE_SLICEORDER_AI )
+      header.slice_code = NIFTI_SLICE_ALT_INC;
+    else if ( sliceOrder == META_IMAGE_SLICEORDER_AD )
+      header.slice_code = NIFTI_SLICE_ALT_DEC;
+    else if ( sliceOrder == META_IMAGE_SLICEORDER_AI2 )
+      header.slice_code = NIFTI_SLICE_ALT_INC2;
+    else if ( sliceOrder == META_IMAGE_SLICEORDER_AD2 )
+      header.slice_code = NIFTI_SLICE_ALT_DEC2;
+
+    header.slice_start = 0;
+    header.slice_end = header.dim[3]-1; // here we assume that this is a volume straight out of the DICOM stacker, which keeps slices along dim[3]
+
+    header.slice_duration = atof( volume.GetMetaInfo( META_IMAGE_SLICEDURATION ).c_str() );
+    }
   
 #ifdef _MSC_VER
   const char *const modestr = "wb";
