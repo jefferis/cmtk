@@ -419,7 +419,14 @@ ImageStackDICOM::WriteImage( const std::string& fname, const Self::EmbedInfoEnum
 	break;
       }
 
-    // see if we have slice times and set metadate accordingly (relevant for NIFTI only at this time)
+    // see if we have Phase Encode direction and set metadata (for NIFTI only at this time)
+    const std::string phaseEncodeDirection = first->GetTagValue( DCM_InPlanePhaseEncodingDirection );
+    if ( ! phaseEncodeDirection.empty() )
+      {
+      volume->SetMetaInfo( META_IMAGE_SLICE_PEDIRECTION, phaseEncodeDirection );
+      }
+
+    // see if we have slice times and set metadata accordingly (relevant for NIFTI only at this time)
     const std::vector<double> sliceTimes = this->AssembleSliceTimes();
     if ( sliceTimes.size() > 1 ) // need at least 2 slices for meaningful slice order
       {

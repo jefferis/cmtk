@@ -68,6 +68,9 @@ const char* const META_IMAGE_SLICEORDER_AD2 = "ALT-DEC2";
 // Slice time (duration for one slice; this should be TR/nSlices)
 const char* const META_IMAGE_SLICEDURATION = "IMAGE_SLICEDURATION";
 
+// Phase encode direction within slice - this should be either "COL" (y) or "ROW" (x), as delivered by DICOM tag InPlanePhaseEncodingDirection
+const char* const META_IMAGE_SLICE_PEDIRECTION = "IMAGE_SLICE_PEDIRECTION";
+
 const char* const META_XFORM_FIXED_IMAGE_PATH = "XFORM_FIXED_IMAGE_PATH";
 const char* const META_XFORM_MOVING_IMAGE_PATH = "XFORM_MOVING_IMAGE_PATH";
 

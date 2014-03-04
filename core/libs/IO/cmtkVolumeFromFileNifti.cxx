@@ -455,8 +455,22 @@ VolumeFromFile::WriteNifti
     strncpy( header.descrip, volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str(), sizeof( header.descrip )-1 );
     }
 
+  // see if we have the Phase Encode Direction from DICOM - set axis information in header if we do
+  if ( volume.MetaKeyExists( META_IMAGE_SLICE_PEDIRECTION ) )
+    {
+    const std::string peDirection = volume.GetMetaInfo( META_IMAGE_SLICE_PEDIRECTION );
+    if ( peDirection == "COL" )
+      header.dim_info = FPS_INTO_DIM_INFO( 1, 2, 3 );
+    else
+      header.dim_info = FPS_INTO_DIM_INFO( 2, 1, 3 );
+    }
+
   if ( volume.MetaKeyExists( META_IMAGE_SLICEORDER ) )
     {
+    // here we assume that this is a volume straight out of the DICOM stacker, which keeps slices along dim[3]
+    if ( header.dim_info == 0 ) // see if we previously set dim_info based on PE direction
+      header.dim_info = FPS_INTO_DIM_INFO( 0, 0, 3 ); // if not, we need to set at least the slice direction
+
     const std::string sliceOrder = volume.GetMetaInfo( META_IMAGE_SLICEORDER );
     if ( sliceOrder == META_IMAGE_SLICEORDER_SI )
       header.slice_code = NIFTI_SLICE_SEQ_INC;
@@ -472,7 +486,7 @@ VolumeFromFile::WriteNifti
       header.slice_code = NIFTI_SLICE_ALT_DEC2;
 
     header.slice_start = 0;
-    header.slice_end = header.dim[3]-1; // here we assume that this is a volume straight out of the DICOM stacker, which keeps slices along dim[3]
+    header.slice_end = header.dim[3]-1;
 
     header.slice_duration = atof( volume.GetMetaInfo( META_IMAGE_SLICEDURATION ).c_str() );
     }
