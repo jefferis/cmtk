@@ -1,6 +1,6 @@
 Release CMTK-3.1.1:
 
-(r5212) Added: slice times (relative to first slice in each volume) are
+(r5214) Added: slice times (relative to first slice in each volume) are
 	now extracted from Siemens DICOM files and written to XML sidecar
 	files by "dcm2image" tool.
 
