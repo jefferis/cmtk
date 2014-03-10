@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011, 2013 SRI International
+//  Copyright 2004-2011, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,8 +30,6 @@
 //
 */
 
-#include <System/cmtkProgress.h>
-
 #include <algorithm>
 
 template<class TFilter>
@@ -48,17 +46,13 @@ cmtk::DataGridFilter::ApplyRegionFilter( const int radiusX, const int radiusY, c
   const int widthY = 1 + 2*radiusY;
   const int widthZ = 1 + 2*radiusZ;
 
-  std::vector<Types::DataItem> regionData(  widthX*widthY*widthZ  );
-  
-  int offset = 0;
-  Progress::Begin( 0, this->m_DataGrid->m_Dims[2], 1 );
-
-  Progress::ResultEnum status = Progress::OK;
+  const int pixelsPerPlane = this->m_DataGrid->m_Dims[0] * this->m_DataGrid->m_Dims[1];
+#pragma omp parallel for
   for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
     {
-    status = Progress::SetProgress( z );
-    if ( status != Progress::OK ) break;
-    
+    int offset = z * pixelsPerPlane;
+    std::vector<Types::DataItem> regionData(  widthX*widthY*widthZ  );
+  
     int zFrom = ( z > radiusZ ) ? ( z - radiusZ ) : 0;
     int zTo = std::min( z+radiusZ+1, this->m_DataGrid->m_Dims[2] );
     
@@ -96,13 +90,6 @@ cmtk::DataGridFilter::ApplyRegionFilter( const int radiusX, const int radiusY, c
 	}
       }
     }
-  Progress::Done();
-  
-  if ( status != Progress::OK ) 
-    {
-    result = TypedArray::SmartPtr( NULL );
-    }
-  
   return result;
 }
 

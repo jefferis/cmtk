@@ -34,6 +34,7 @@
 
 #include <System/cmtkException.h>
 #include <System/cmtkThreadPool.h>
+#include <System/cmtkProgress.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkMathFunctionWrappers.h>
