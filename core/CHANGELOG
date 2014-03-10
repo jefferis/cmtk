@@ -1,5 +1,8 @@
 Release CMTK-3.1.1:
 
+(r5222) Improved: region-based DataGrid filters now use OpenMP
+	acceleration where available (but they no longer report progress
+	or allow user cancellation).
 (r5220) Added: freq_dim, phase_dim, slice_dim as well as slice times and
 	acquisition order fields are now properly set in NIFTI headers for
 	files created by "dcm2image," so long as these data were available
