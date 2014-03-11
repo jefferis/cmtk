@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,6 +72,9 @@ protected:
   /// Write transformation to filesystem.
   static void WriteNrrd( const Xform* xform, const std::string& path );
 #endif // #ifdef CMTK_BUILD_NRRD
+
+  /// Write transformation to filesystem.
+  static void WriteNIFTI( const Xform* xform, const std::string& path );
 };
 
 //@}

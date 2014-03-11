@@ -143,6 +143,14 @@ XformIO::Write
       {
       fileFormat = FILEFORMAT_NRRD;
       }
+    else if ( suffix == ".nii")
+      {
+      fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
+      }
+    else if ( suffix == ".img" )
+      {
+      fileFormat = FILEFORMAT_NIFTI_DETACHED;
+      }
     else
       {
       if ( (suffix == ".tfm") || (suffix == ".txt") )
@@ -162,6 +170,10 @@ XformIO::Write
 #else
       StdErr << "ERROR: XformIO::Write -- Nrrd support not configured.\n";
 #endif
+      break;
+    case FILEFORMAT_NIFTI_DETACHED:
+    case FILEFORMAT_NIFTI_SINGLEFILE:
+      Self::WriteNIFTI( xform, absolutePath );
       break;
     case FILEFORMAT_ITK_TFM:
     {

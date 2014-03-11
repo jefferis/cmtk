@@ -2714,6 +2714,14 @@ case ${RUNTEST} in
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
 	check_results dfield.nhdr dfield.raw
 	;;
+    xform2dfieldWarpNifti)
+	run xform2dfield -v ${tmpdir}/dfield.nii vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
+	check_results dfield.nii
+	;;
+    xform2dfieldWarpNiftiHdr)
+	run xform2dfield -v ${tmpdir}/dfield.img vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
+	check_results dfield.hdr dfield.img
+	;;
     xform2dfieldAffineNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform
 	check_results dfield.nhdr dfield.raw

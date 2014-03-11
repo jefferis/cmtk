@@ -65,6 +65,7 @@ SET(cmtkIO_SRCS
   cmtkVolumeIO.cxx
   cmtkXformIO.cxx
   cmtkXformListIO.cxx
+  cmtkXformIONifti.cxx
   cmtkXformIONrrd.cxx
   nifti1_io_math.c
 )
