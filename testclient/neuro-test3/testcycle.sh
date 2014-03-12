@@ -89,7 +89,7 @@ for t in ${tests}; do
 	    echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
 	    cat ${c} ${t} tail.cmake >> /tmp/testfile.cmake
 	    
-	    /opt/local/bin/ctest -S /tmp/testfile.cmake
+	    /usr/local/bin/ctest -S /tmp/testfile.cmake
 	fi
     done
 done
