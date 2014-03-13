@@ -903,6 +903,11 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "xform2dfield" tool
+LIST(APPEND testList
+  xform2dfieldWarpNifti
+  xform2dfieldWarpNiftiFSL
+  xform2dfieldWarpNiftiHdr)
+
 IF(CMTK_BUILD_NRRD)
   LIST(APPEND testList
     xform2dfieldWarpNrrd

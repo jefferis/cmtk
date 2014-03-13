@@ -2718,6 +2718,10 @@ case ${RUNTEST} in
 	run xform2dfield -v ${tmpdir}/dfield.nii vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
 	check_results dfield.nii
 	;;
+    xform2dfieldWarpNiftiFSL)
+	run xform2dfield --target-image-fsl ncanda_t1_jacobian.nii.gz --output-absolute ${tmpdir}/dfield.nii vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
+	check_results dfield.nii
+	;;
     xform2dfieldWarpNiftiHdr)
 	run xform2dfield -v ${tmpdir}/dfield.img vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
 	check_results dfield.hdr dfield.img
