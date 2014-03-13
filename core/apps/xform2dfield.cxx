@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,6 +61,9 @@ bool OutputAbsolute = false;
 std::string RefFileName;
 std::string OutFileName;
 
+std::string TargetImagePath;
+bool TargetImageFSL = false;
+
 std::vector<std::string> InputXformPaths;
 
 std::string Downsample;
@@ -83,6 +86,8 @@ doMain ( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'm', "mask" ), &Mask, true, "Use reference image pixels as a binary mask." );
 
+    cl.AddOption( Key( "target-image-fsl" ), &TargetImagePath, "Path to optional target image to be used in FSL. This is the image that the transformation (and thus the created deformation field) maps to. "
+		  "When creating a deformation field to be used with FSL's \"applywarp\" tool, is may be necessary to determine whether the x coordinate of the resulting deformation vectors has to be flipped.", &TargetImageFSL );
     cl.AddOption( Key( "inversion-tolerance-factor" ), &InversionToleranceFactor, "Factor for numerical tolerance of B-spline inversion [multiples of minimum grid pixel size; default=0.1]" );
     cl.AddOption( Key( "downsample" ), &Downsample, "Downsample grid by factors 'x,y,z' or by single factor 'xyz'" );
 
@@ -110,6 +115,42 @@ doMain ( const int argc, const char *argv[] )
     cmtk::StdErr << "Could not read reference volume " << RefFileName << "\n";
     throw cmtk::ExitException(1);
     }          
+
+  // Do we have a target image given (presumably for FSL use at this point)?
+  cmtk::AffineXform::MatrixType targetImageMatrix = cmtk::AffineXform::MatrixType::Identity();
+  if ( !TargetImagePath.empty() )
+    {
+    cmtk::UniformVolume::SmartPtr targetImageGrid( cmtk::VolumeIO::ReadGrid( TargetImagePath ) );
+    if ( ! targetImageGrid ) 
+      {
+      cmtk::StdErr << "Could not read target volume grid from " << TargetImagePath << "\n";
+      throw cmtk::ExitException(1);
+      }
+
+    // Get initial matrix from index to physical space
+    targetImageMatrix = targetImageGrid->m_IndexToPhysicalMatrix;
+
+    if ( TargetImageFSL )
+      {
+      // Warn if not "absolute" output.
+      if ( ! OutputAbsolute )
+	{
+	cmtk::StdErr << "WARNING: generating deformation field for FSL, but \"--output--absolute\" is not active.\n";
+	}
+
+      // Does the matrix have a negative determinant? Then this is what FSL calls "neurological orientation" and we need to flip x
+      if ( targetImageMatrix.GetTopLeft3x3().Determinant() > 0 )
+	{
+	cmtk::AffineXform::MatrixType targetImageMatrixFlip = cmtk::AffineXform::MatrixType::Identity();
+	targetImageMatrixFlip[0][0] = -1;
+	targetImageMatrixFlip[3][0] = (targetImageGrid->m_Dims[0]-1) * targetImageGrid->m_Delta[0];
+	targetImageMatrix = targetImageMatrix * targetImageMatrixFlip;
+	}
+      }
+    
+    targetImageGrid = targetImageGrid->GetReoriented( "RAS" );
+    targetImageMatrix = targetImageGrid->m_IndexToPhysicalMatrix.GetInverse() * targetImageMatrix;
+    }    
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );  
   xformList.SetEpsilon( InversionToleranceFactor * volume->GetMinDelta() );
@@ -166,6 +207,12 @@ doMain ( const int argc, const char *argv[] )
 
 	if ( !invalid )
 	  {
+	  // do any transformations to account for target image coordinate changes due to reorientation
+	  if ( TargetImageFSL )
+	    {
+	    v1 *= targetImageMatrix;
+	    }
+
 	  if ( !OutputAbsolute )
 	    v1 -= v0;
 	  }
@@ -173,10 +220,21 @@ doMain ( const int argc, const char *argv[] )
 	  {
 	  v1 = cmtk::Vector3D( std::numeric_limits<cmtk::Types::Coordinate>::quiet_NaN() );
 	  }
-	
-	dfield->m_Parameters[offset+0] = v1[0];
-	dfield->m_Parameters[offset+1] = v1[1];
-	dfield->m_Parameters[offset+2] = v1[2];
+
+	// store final vector.
+	if ( TargetImageFSL )
+	  {
+	  const size_t flipOffset = offset + 3 * ((dims[cmtk::AXIS_X] - 1) - 2 * x);
+	  dfield->m_Parameters[flipOffset+0] = v1[0];
+	  dfield->m_Parameters[flipOffset+1] = v1[1];
+	  dfield->m_Parameters[flipOffset+2] = v1[2];
+	  }
+	else
+	  {
+	  dfield->m_Parameters[offset+0] = v1[0];
+	  dfield->m_Parameters[offset+1] = v1[1];
+	  dfield->m_Parameters[offset+2] = v1[2];
+	  }
 	}
       }
     }
