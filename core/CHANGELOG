@@ -1,5 +1,9 @@
 Release CMTK-3.1.1:
 
+(r5230) Added: the "xform2dfield" tool can now write deformation fields
+	for use by FSL's "applywarp" tool.
+(r5230) Added: XformIO can now write deformation fields in NIfTI format,
+	albeit very inflexibly so.
 (r5222) Improved: region-based DataGrid filters now use OpenMP
 	acceleration where available (but they no longer report progress
 	or allow user cancellation).
