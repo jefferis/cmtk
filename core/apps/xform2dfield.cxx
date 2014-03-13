@@ -139,7 +139,7 @@ doMain ( const int argc, const char *argv[] )
 	}
 
       // Does the matrix have a negative determinant? Then this is what FSL calls "neurological orientation" and we need to flip x
-      if ( targetImageMatrix.GetTopLeft3x3().Determinant() > 0 )
+      if ( targetImageMatrix.GetTopLeft3x3().Determinant() < 0 )
 	{
 	cmtk::AffineXform::MatrixType targetImageMatrixFlip = cmtk::AffineXform::MatrixType::Identity();
 	targetImageMatrixFlip[0][0] = -1;
