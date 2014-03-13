@@ -128,7 +128,7 @@ doMain ( const int argc, const char *argv[] )
       }
 
     // Get initial matrix from index to physical space
-    targetImageMatrix = targetImageGrid->m_IndexToPhysicalMatrix;
+    targetImageMatrix = targetImageGrid->GetImageToPhysicalMatrix().GetInverse();
 
     if ( TargetImageFSL )
       {
@@ -137,9 +137,9 @@ doMain ( const int argc, const char *argv[] )
 	{
 	cmtk::StdErr << "WARNING: generating deformation field for FSL, but \"--output--absolute\" is not active.\n";
 	}
-
-      // Does the matrix have a negative determinant? Then this is what FSL calls "neurological orientation" and we need to flip x
-      if ( targetImageMatrix.GetTopLeft3x3().Determinant() < 0 )
+      
+      // Does the matrix have a positive determinant? Then this is what FSL calls "neurological orientation" and we need to flip x
+      if ( targetImageGrid->GetImageToPhysicalMatrix().GetTopLeft3x3().Determinant() > 0 )
 	{
 	cmtk::AffineXform::MatrixType targetImageMatrixFlip = cmtk::AffineXform::MatrixType::Identity();
 	targetImageMatrixFlip[0][0] = -1;
@@ -147,9 +147,9 @@ doMain ( const int argc, const char *argv[] )
 	targetImageMatrix = targetImageMatrix * targetImageMatrixFlip;
 	}
       }
-    
+
     targetImageGrid = targetImageGrid->GetReoriented( "RAS" );
-    targetImageMatrix = targetImageGrid->m_IndexToPhysicalMatrix.GetInverse() * targetImageMatrix;
+    targetImageMatrix = targetImageGrid->GetImageToPhysicalMatrix() * targetImageMatrix;
     }    
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );  
