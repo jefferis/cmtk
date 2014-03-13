@@ -82,9 +82,6 @@ XformIO::WriteNIFTI
       }
     }
   
-  //    if ( dfield->MetaKeyExists(META_SPACE_UNITS_STRING) )
-//      nval->spaceUnits[0] = strdup( dfield->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
-      
   bool detachedHeader = false;
   bool forceCompressed = false;
 
