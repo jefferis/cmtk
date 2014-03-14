@@ -72,9 +72,9 @@ for t in ${tests}; do
     for c in ${sdks}; do
 	
 	if [ ! -d data ]; then
-	    svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
+	    /opt/local/bin/svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
 	else
-	    svn update data
+	    /opt/local/bin/svn update data
 	fi
 
 	tname=`basename ${c} .cmake`-`basename ${t} .cmake`
@@ -89,7 +89,7 @@ for t in ${tests}; do
 	    echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
 	    cat ${c} ${t} tail.cmake >> /tmp/testfile.cmake
 	    
-	    /usr/local/bin/ctest -S /tmp/testfile.cmake
+	    /opt/local/bin/ctest -S /tmp/testfile.cmake
 	fi
     done
 done
