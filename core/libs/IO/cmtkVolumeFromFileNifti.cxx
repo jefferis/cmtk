@@ -301,18 +301,22 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     StdErr << "ERROR: could not open Nifti image file " << pathImg << "\n";
     }
 
-  const short intent_code = header.GetField<short>( 68 );
-  switch ( intent_code )
+  // if we read volume data (as opposed to grid geometry only) then check intent_code and set DataClass accordingly.
+  if ( volume->GetData() )
     {
-    case NIFTI_INTENT_LABEL:
-    case NIFTI_INTENT_NEURONAME:
-      volume->GetData()->SetDataClass( DATACLASS_LABEL );
-      break;
-    default:
-      volume->GetData()->SetDataClass( DATACLASS_GREY );
-      break;
+    const short intent_code = header.GetField<short>( 68 );
+    switch ( intent_code )
+      {
+      case NIFTI_INTENT_LABEL:
+      case NIFTI_INTENT_NEURONAME:
+	volume->GetData()->SetDataClass( DATACLASS_LABEL );
+	break;
+      default:
+	volume->GetData()->SetDataClass( DATACLASS_GREY );
+	break;
+      }
     }
-  
+
   return volume;
 }
 
