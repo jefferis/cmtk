@@ -404,6 +404,10 @@ case ${RUNTEST} in
 	run convertx --resample 1.0 phantom_ax.nii ${tmpdir}/resample.nii
 	check_results resample.nii
 	;;
+    convertxResampleExactLabels)
+	run convertx --resample-exact 10 lvote_atlas_l0.nii ${tmpdir}/resample.nii
+	check_results resample.nii
+	;;
     convertxDownsample)
 	run convertx --downsample-average 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
 	check_results downsample.hdr downsample.img

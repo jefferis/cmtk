@@ -114,6 +114,30 @@ UniformVolume::GetResampled
   return newVolume;
 }
 
+UniformVolume* 
+UniformVolume::GetResampledExact
+( const Types::Coordinate resolution ) const
+{
+  Self::IndexType newDims;
+  Self::SpaceVectorType newSize;
+
+  for ( int dim=0; dim<3; ++dim ) 
+    {
+    newDims[dim] = static_cast<int>( this->m_Size[dim] / resolution ) + 1;
+    newSize[dim] = (newDims[dim]-1) * resolution;
+    }
+
+  UniformVolume* newVolume = new UniformVolume( newDims, newSize );
+  newVolume->SetData( TypedArray::SmartPtr( newVolume->Resample( *this ) ) );
+  
+  newVolume->SetImageToPhysicalMatrix( this->GetImageToPhysicalMatrix() );
+  newVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
+  newVolume->SetOffset( this->m_Offset );
+  newVolume->CopyMetaInfo( *this );
+
+  return newVolume;
+}
+
 UniformVolume*
 UniformVolume::CloneVirtual( const bool copyData )
 {

@@ -222,6 +222,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "downsample-average" ), &cmtk::ImageOperationDownsample::NewAverage, "Downsample image by averaging using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
     cl.AddCallback( Key( "resample" ), &cmtk::ImageOperationResampleIsotropic::New, "Resample image to near-isotropic pixels while preserving the image field-of-view. "
 		    "Takes one argument, the target resolution in world units [e.g., mm]" );
+    cl.AddCallback( Key( "resample-exact" ), &cmtk::ImageOperationResampleIsotropic::NewExact, "Resample image to exactly isotropic pixels of the given resolution while matching the image field-of-view as closely as possible. "
+		    "Takes one argument, the target resolution in world units [e.g., mm]" );
     cl.AddCallback( Key( "crop-by-index" ), &cmtk::ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as comma-separated integers x0,y0,z0,x1,y1,z1" );
     cl.AddCallback( Key( "crop-by-threshold" ), &cmtk::ImageOperationCropThreshold::New, "Crop image to region determined via a given threshold. "
 		    "The resulting image will contain all pixels larger than the given parameter." );

@@ -132,6 +132,13 @@ public:
    */
   virtual UniformVolume* GetResampled( const Types::Coordinate resolution, const bool allowUpsampling = false ) const;
 
+  /** Resample volume to an exact given resolution.
+   * Unlike GetResampled(), this function forces the pixel size of the resampled image to be exactly the given "resolution." Grid dimensions and volume size are adjusted accordingly.
+   *\param resolution Resolution of the newly created volume in world units.
+   *\return Newly created, resampled volume.
+   */
+  virtual UniformVolume* GetResampledExact( const Types::Coordinate resolution ) const;
+
   /** Coordinate transformation from index to physical position.
    * This incorporates image axis directions and first pixel offset.
    *\note Strictly, this is not a transformation from the pixel index

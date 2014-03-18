@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011, 2013 SRI International
+//  Copyright 2009-2011, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,12 +57,18 @@ public:
   /// Create a new resampler.
   static void New( const double resolution );
   
+  /// Create a new resampler.
+  static void NewExact( const double resolution );
+  
 private:
   /// Constructor:
-  ImageOperationResampleIsotropic( const double resolution ) : m_Resolution( resolution ) {}
+  ImageOperationResampleIsotropic( const double resolution, const bool exact = false ) : m_Resolution( resolution ), m_Exact( exact ) {}
   
   /// Anisotropic resampling resolution
   double m_Resolution;
+
+  /// Flag for exact vs. approximate resampling.
+  bool m_Exact;
 };
 
 //@}

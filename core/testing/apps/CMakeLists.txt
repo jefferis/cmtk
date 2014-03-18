@@ -243,6 +243,7 @@ LIST(APPEND testList
   convertxCropRegion1
   convertxCropRegion2
   convertxResample
+  convertxResampleExactLabels
   convertxDownsample
   convertxDownsampleNiftiSform
   convertxDownsampleNiftiQform
