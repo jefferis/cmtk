@@ -62,6 +62,7 @@
 #include <Base/cmtkImageOperationThreshold.h>
 #include <Base/cmtkImageOperationOtsuThreshold.h>
 #include <Base/cmtkImageOperationPruneHistogram.h>
+#include <Base/cmtkImageOperationSetDataClass.h>
 #include <Base/cmtkImageOperationSetPadding.h>
 #include <Base/cmtkImageOperationMapValues.h>
 #include <Base/cmtkImageOperationReplace.h>
@@ -112,6 +113,10 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "Input", "Input Image Controls" );
     cl.AddCallback( Key( "set-padding" ), &cmtk::ImageOperationSetPadding::New, "Set padding value: all pixels in the input image that have this value will be ignored in all subsequent operations." );
     cl.AddCallback( Key( "unset-padding" ), &cmtk::ImageOperationSetPadding::NewUnset, "Unset padding value: for all subsequent operations, all pixels will be treated according to their value." );
+    cl.AddCallback( Key( "labels" ), &cmtk::ImageOperationSetDataClass::NewLabels, "Specify that the image values are to be treated as discrete labels. "
+		    "This will result in the appropriate intent code to be set in output files in NIfTI format." );
+    cl.AddCallback( Key( "grey" ), &cmtk::ImageOperationSetDataClass::NewGrey, "Specify that the image values are to be treated as continuous grey levels. "
+		    "This will reset the intent code in files read from NIfTI format." );
     cl.EndGroup();
 
     cl.BeginGroup( "Conversion", "Data Type Conversion" );

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -300,6 +300,18 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
     {
     StdErr << "ERROR: could not open Nifti image file " << pathImg << "\n";
     }
+
+  const short intent_code = header.GetField<short>( 68 );
+  switch ( intent_code )
+    {
+    case NIFTI_INTENT_LABEL:
+    case NIFTI_INTENT_NEURONAME:
+      volume->GetData()->SetDataClass( DATACLASS_LABEL );
+      break;
+    default:
+      volume->GetData()->SetDataClass( DATACLASS_GREY );
+      break;
+    }
   
   return volume;
 }
@@ -443,6 +455,11 @@ VolumeFromFile::WriteNifti
       header.bitpix = 8 * sizeof(double);
       break;
     }  
+
+  if ( data->GetDataClass() == DATACLASS_LABEL )
+    header.intent_code = NIFTI_INTENT_LABEL;
+  else
+    header.intent_code = 0;
   
   // determine data range;
   const Types::DataItemRange dataRange = data->GetRange();
