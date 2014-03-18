@@ -36,7 +36,6 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkImageOperation.h>
-#include <Base/cmtkDataGridMorphologicalOperators.h>
 
 namespace
 cmtk
@@ -69,13 +68,13 @@ public:
     return volume;
   }
   
-  /// Create new connected components operation.
+  /// Create new operation to set padding value.
   static void New( const double value )
   {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetPadding( true, value ) ) );
   }
 
-  /// Create new connected components operation.
+  /// Create new operation to reset padding flag.
   static void NewUnset()
   {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetPadding( false ) ) );
