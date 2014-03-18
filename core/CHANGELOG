@@ -1,5 +1,8 @@
 Release CMTK-3.1.1:
 
+(r5240) Added: interpolator classes now issue a warning message to the
+	console when an unsuitable interpolator (i.e., cubic, spline,
+	linear, sinc) is used on data flagged as "labels."
 (r5238) Changed: "reformatx" tool now propagates floating image data class
 	(label or grey) to output, as represented by the "intent_code"
 	header field when written in NIfTI format.
