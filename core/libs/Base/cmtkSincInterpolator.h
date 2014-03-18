@@ -60,6 +60,9 @@ public:
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = NRadius;
 
+  /// Flag whether this interpolator is suitable for labels.
+  static const bool SuitableForLabels = false;
+
   /// Get specific interpolation weight for relative coordinate.
   static Types::Coordinate GetWeight( const int i, const Types::Coordinate x )
   {
@@ -82,6 +85,9 @@ class CosineSinc
 public:
   /// This class.
   typedef CosineSinc<NRadius> Self;
+
+  /// Flag whether this interpolator is suitable for labels.
+  static const bool SuitableForLabels = false;
 
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = NRadius;

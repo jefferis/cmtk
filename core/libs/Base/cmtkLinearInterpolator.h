@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2009, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,8 +51,11 @@ class Linear
 public:
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = 1;
+ 
+  /// Flag whether this interpolator is suitable for labels.
+  static const bool SuitableForLabels = false;
 
-  /// Get specific interpolation weight for relative coordinate.
+ /// Get specific interpolation weight for relative coordinate.
   static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x )
   {
     switch (weight)

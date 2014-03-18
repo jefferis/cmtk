@@ -40,6 +40,7 @@
 #include <Base/cmtkUniformVolume.h>
 
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk
@@ -75,6 +76,10 @@ public:
   UniformVolumeInterpolator( const UniformVolume& volume )
     : UniformVolumeInterpolatorBase( volume )
   {
+    if ( !TInterpolationFunction::SuitableForLabels && (volume.GetData()->GetDataClass() == DATACLASS_LABEL ) )
+      {
+      StdErr << "WARNING: using an unsuitable interpolator on label data\n";
+      }
   }
 
   /** Get data at location.
