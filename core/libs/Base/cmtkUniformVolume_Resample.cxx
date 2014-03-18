@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,6 +44,74 @@ cmtk
 
 /** \addtogroup Base */
 //@{
+
+UniformVolume* 
+UniformVolume::GetResampled
+( const Types::Coordinate resolution, const bool allowUpsampling ) const
+{
+  Self::IndexType newDims;
+  Self::SpaceVectorType newSize;
+  Self::SpaceVectorType newDelta;
+
+  for ( int dim=0; dim<3; ++dim ) 
+    {
+    newSize[dim] = this->m_Size[dim];
+    const int new_dims=(int) (newSize[dim]/resolution)+1;
+    if ( allowUpsampling || (new_dims<=this->m_Dims[dim]) ) 
+      {
+      newDims[dim]=new_dims;
+      newDelta[dim] = newSize[dim]/(new_dims-1);
+      } 
+    else
+      {
+      if ( this->m_Dims[dim] == 1 ) 
+	{
+	newDelta[dim] = newSize[dim];
+	newDims[dim] = 1;
+	} 
+      else 
+	{
+	newDelta[dim] = this->m_Delta[dim];
+	newDims[dim] = ((int)(newSize[dim]/newDelta[dim])) + 1;
+	newSize[dim] = (newDims[dim]-1) * newDelta[dim];
+	}
+      }
+    }
+
+  UniformVolume* newVolume = new UniformVolume( newDims, newSize );
+  newVolume->SetData( TypedArray::SmartPtr( newVolume->Resample( *this ) ) );
+  
+  newVolume->SetImageToPhysicalMatrix( this->GetImageToPhysicalMatrix() );
+  newVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
+  newVolume->SetOffset( this->m_Offset );
+  newVolume->CopyMetaInfo( *this );
+
+  return newVolume;
+}
+
+UniformVolume* 
+UniformVolume::GetResampledExact
+( const Types::Coordinate resolution ) const
+{
+  Self::IndexType newDims;
+  Self::SpaceVectorType newSize;
+
+  for ( int dim=0; dim<3; ++dim ) 
+    {
+    newDims[dim] = static_cast<int>( this->m_Size[dim] / resolution ) + 1;
+    newSize[dim] = (newDims[dim]-1) * resolution;
+    }
+
+  UniformVolume* newVolume = new UniformVolume( newDims, newSize );
+  newVolume->SetData( TypedArray::SmartPtr( newVolume->Resample( *this ) ) );
+  
+  newVolume->SetImageToPhysicalMatrix( this->GetImageToPhysicalMatrix() );
+  newVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
+  newVolume->SetOffset( this->m_Offset );
+  newVolume->CopyMetaInfo( *this );
+
+  return newVolume;
+}
 
 TypedArray::SmartPtr
 UniformVolume::Resample( const UniformVolume& other ) const 
