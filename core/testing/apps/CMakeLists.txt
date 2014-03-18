@@ -229,6 +229,7 @@ LIST(APPEND testList convert_warpFractional convert_warpDeformation)
 # Tests for "convertx" tool
 LIST(APPEND testList
   convertxType
+  convertxLabels
   convertxBinarize
   convertxBinarizeOtsu
   convertxBinarizeOtsuNBins

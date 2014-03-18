@@ -306,6 +306,10 @@ case ${RUNTEST} in
         run convertx --byte --char --float --double --int --uint --short --ushort spgr_brain_1.hdr ${tmpdir}/convert.nii
 	check_results convert.nii
 	;;
+    convertxLabels)
+        run convertx --labels binary_mask.nii ${tmpdir}/convert.nii
+	check_results convert.nii
+	;;
     convertxBinarize)
         run convertx --binarize-thresh 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
 	check_results thresh.img
