@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -243,6 +243,8 @@ DataGrid::GetReoriented( const char* newOrientation ) const
       {
       newData->SetPaddingValue( oldData->GetPaddingValue() );
       }
+
+    newData->SetDataClass( oldData->GetDataClass() );
     
     const char* fromPtr = static_cast<const char*>( oldData->GetDataPtr() );
     char* toPtr = static_cast<char*>( newData->GetDataPtr() );
