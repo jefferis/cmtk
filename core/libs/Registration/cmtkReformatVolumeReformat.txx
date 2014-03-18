@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,6 +51,11 @@ ReformatVolume::ReformatMasked
   TypedArray::SmartPtr result = TypedArray::Create( fct.GetDataType( *floating ), target->GetNumberOfPixels() );
   if ( fct.UsePaddingValue )
     result->SetPaddingValue( fct.PaddingValue );
+
+  // If there is floating image data (may not be, for Jacobian mapping etc.), then copy its data class
+  if ( floating )
+    result->SetDataClass( floating->GetData()->GetDataClass() );
+
   const TypedArray* targetData = target->GetData();
   
   Progress::Begin( 0, dims[2], 1, "Volume reformatting" );
@@ -105,6 +110,10 @@ ReformatVolume::ReformatUnmasked
   TypedArray::SmartPtr result = TypedArray::Create( fct.GetDataType( *floating ), target->GetNumberOfPixels() );
   if ( fct.UsePaddingValue )
     result->SetPaddingValue( fct.PaddingValue );
+
+  // If there is floating image data (may not be, for Jacobian mapping etc.), then copy its data class
+  if ( floating )
+    result->SetDataClass( floating->GetData()->GetDataClass() );
 
   Progress::Begin( 0, dims[2], 1, "Volume reformatting" );
   
