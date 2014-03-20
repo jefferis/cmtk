@@ -3,6 +3,11 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
+Release Notes -- CMTK 3.1.1
+===========================
+
+
+
 Release Notes -- CMTK 3.1.0
 ===========================
 
@@ -125,7 +130,8 @@ CMTK has been built and tested on the following platforms:
 - MacOSX 10.6, x86_64, clang 2.0
 - Cygwin, gcc 4.8.2
 - Windows XP, VisualStudio 10SP1 (2010 Express Edition), CUDA 4.1
-- Windows 7 64bit, VisualStudio 2012 Express for Desktop, CUDA 4.1
+- Windows 7 x64, VisualStudio 2012 Express for Desktop, CUDA 4.2
+- Windows 7 x64, VisualStudio 2013 Express for Desktop, CUDA 4.2
 
 
 Platform-Specific Issues
@@ -141,8 +147,9 @@ MacOS-X
   http://www.nitrc.org/tracker/index.php?func=detail&aid=5450&group_id=212&atid=877
 
 
-- To use a pre-compiled binary distribution of CMTK on MacOS, the following
-  MacPorts packages have to be installed under /opt/local:
+- To use a pre-combiled binary version of CMTK that was compiled on MacOS with
+  MacPorts compilers, the following MacPorts packages have to be installed
+  under /opt/local:
   - qt4
   - sqlite3
   - dcmtk
