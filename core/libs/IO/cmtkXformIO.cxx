@@ -102,7 +102,7 @@ XformIO::Read( const std::string& path )
       stream >> polyXform;
       return Xform::SmartPtr( new PolynomialXform( polyXform ) );
       }
-    catch ( const cmtk::Exception& ex )
+    catch ( const cmtk::Exception& )
       {
       }
     
