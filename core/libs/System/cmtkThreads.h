@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
 
 #include <System/cmtkThreadSystemTypes.h>
 #include <System/cmtkThreadParameters.h>
