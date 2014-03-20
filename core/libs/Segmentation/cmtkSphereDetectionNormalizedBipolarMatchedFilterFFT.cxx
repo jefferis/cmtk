@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012, 2013 SRI International
+//  Copyright 2012-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,7 +57,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::SphereDetectionNormalize
   fftw_plan plan_image = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_ImageFT, this->m_ImageFT, FFTW_FORWARD, FFTW_ESTIMATE );
   fftw_plan plan_image_square = fftw_plan_dft_3d( this->m_ImageDims[2], this->m_ImageDims[1], this->m_ImageDims[0], this->m_ImageSquareFT, this->m_ImageSquareFT, FFTW_FORWARD, FFTW_ESTIMATE );
 #pragma omp parallel for
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( this->m_NumberOfPixels ); ++n )
     {
     this->m_ImageFT[n][0] = image.GetDataAt( n );
     this->m_ImageFT[n][1] = 0;
@@ -111,7 +111,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
   
   // apply FT'ed filter to FT'ed image
 #pragma omp parallel for
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( this->m_NumberOfPixels ); ++n )
     {
     this->m_FilterMaskFT2[n][0] = this->m_FilterMaskFT[n][0];
     this->m_FilterMaskFT2[n][1] = this->m_FilterMaskFT[n][1];
@@ -128,7 +128,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
 
   const double invNumberOfPixels = 1.0 / this->m_NumberOfPixels;
 #pragma omp parallel for
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( this->m_NumberOfPixels ); ++n )
     {
     for ( int c = 0; c < 2; ++c )
       {
@@ -143,7 +143,7 @@ cmtk::SphereDetectionNormalizedBipolarMatchedFilterFFT::GetFilteredImageData( co
     this->m_FilterResponse = TypedArray::Create( cmtk::TYPE_ITEM, this->m_NumberOfPixels );
   
 #pragma omp parallel for
-  for ( size_t n = 0; n < this->m_NumberOfPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( this->m_NumberOfPixels ); ++n )
     {
     const Types::DataItem num = FFTW::Magnitude( this->m_FilterFT[n] ) - (FFTW::Magnitude( this->m_FilterMaskFT[n] ) * this->m_SumFilter / this->m_SumFilterMask );
     const Types::DataItem denom1 = sqrt( std::max<Types::DataItem>( 0, FFTW::Magnitude( this->m_FilterMaskFT2[n] ) - FFTW::SumOfSquares( this->m_FilterMaskFT[n] ) / this->m_SumFilterMask ) );
