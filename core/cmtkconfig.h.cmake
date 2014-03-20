@@ -158,12 +158,22 @@
 // enable POSIX compliance
 #  define _POSIX_
 #  define NOMINMAX
+
+#include <Windows.h>
+
 #  define snprintf _snprintf
 #  define strdup _strdup
-#  define isnan(a) (!_finite(a))
-#  define finite(a) _finite(a)
 #  define random rand
 #  define srandom srand
+
+
+#include <float.h>
+inline int finite( const double x ) { return _finite(x); }
+
+// Fake PATH_MAX if we don't have it
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
 
 #  define CMTK_PATH_SEPARATOR '\\'
 #  define CMTK_PATH_SEPARATOR_STR "\\"
