@@ -153,6 +153,14 @@ VolumeFromFile::ReadNifti( const std::string& pathHdr, const bool detached, cons
   volume->SetMetaInfo( META_SPACE, niftiSpace );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, niftiSpace );
 
+  const char xyzt_units = header.GetField<char>( offsetof( struct nifti_1_header, xyzt_units ) );
+  if ( xyzt_units & NIFTI_UNITS_MM )
+    volume->SetMetaInfo( META_SPACE_UNITS_STRING, "mm" );
+  else if ( xyzt_units & NIFTI_UNITS_MICRON )
+    volume->SetMetaInfo( META_SPACE_UNITS_STRING, "micron" );
+  else if ( xyzt_units & NIFTI_UNITS_METER )
+    volume->SetMetaInfo( META_SPACE_UNITS_STRING, "m" );
+
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
   const short sform_code = header.GetField<short>( offsetof(nifti_1_header,sform_code) );
 
@@ -376,6 +384,14 @@ VolumeFromFile::WriteNifti
   header.pixdim[3] = static_cast<float>( writeVolume->m_Delta[AXIS_Z] );
   header.pixdim[4] = 0.0;
   header.pixdim[5] = 0.0;
+
+  const std::string spaceUnits = writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING );
+  if ( spaceUnits == "mm" )
+    header.xyzt_units = NIFTI_UNITS_MM;
+  else if ( (spaceUnits == "micron") or (spaceUnits == "um") )
+    header.xyzt_units = NIFTI_UNITS_MICRON;
+  else if ( (spaceUnits == "m") or (spaceUnits == "meter") )
+    header.xyzt_units = NIFTI_UNITS_METER;
   
   for ( std::map<int,cmtk::AffineXform::MatrixType>::const_iterator it = volume.m_AlternativeIndexToPhysicalMatrices.begin(); it != volume.m_AlternativeIndexToPhysicalMatrices.end(); ++it )
     {
@@ -509,7 +525,8 @@ VolumeFromFile::WriteNifti
     header.slice_start = 0;
     header.slice_end = header.dim[3]-1;
 
-    header.slice_duration = atof( volume.GetMetaInfo( META_IMAGE_SLICEDURATION ).c_str() );
+    header.slice_duration = atof( volume.GetMetaInfo( META_IMAGE_SLICEDURATION ).c_str() ) / 1000; // convert from msec to s for AFNI
+    header.xyzt_units |= NIFTI_UNITS_SEC;
     }
   
 #ifdef _MSC_VER
