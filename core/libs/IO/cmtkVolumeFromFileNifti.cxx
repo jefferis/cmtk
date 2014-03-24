@@ -367,13 +367,13 @@ VolumeFromFile::WriteNifti
   header.dim_info = 0;
 
   // ndims
-  header.dim[0] = 4;
+  header.dim[0] = 3;
 
   // dimensions
   header.dim[1] = writeVolume->GetDims()[AXIS_X];
   header.dim[2] = writeVolume->GetDims()[AXIS_Y];
   header.dim[3] = writeVolume->GetDims()[AXIS_Z];
-  header.dim[4] = 1;
+  header.dim[4] = 0;
   header.dim[5] = 0;
   header.dim[6] = 0;
   header.dim[7] = 0;
