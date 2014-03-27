@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +50,7 @@ class ImageOperationErodeDilateDistance
 {
 public:
   /// Constructor:
-  ImageOperationErodeDilateDistance( const double distance ) : m_Distance( distance ) {}
+  ImageOperationErodeDilateDistance( const double distance, const bool multiLabels = false ) : m_Distance( distance ), m_MultiLabels( multiLabels ) {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume )
@@ -58,7 +58,10 @@ public:
     if ( this->m_Distance < 0 )
       {
       cmtk::UniformVolumeMorphologicalOperators ops( volume );
-      volume->SetData( ops.GetErodedByDistance( -this->m_Distance ) );
+      if ( this->m_MultiLabels )
+	volume->SetData( ops.GetErodedByDistanceMultiLabels( -this->m_Distance ) );
+      else
+	volume->SetData( ops.GetErodedByDistance( -this->m_Distance ) );
       }
     else
       {
@@ -83,9 +86,18 @@ public:
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( -distance ) ) );
   }
   
+  /// Create new erosion operation for multi-label; data.
+  static void NewErodeMultiLabels( const double distance )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( -distance, true ) ) );
+  }
+  
 private:
   /// Distance of erosion (if negative) or dilation (if positive).
   double m_Distance;
+
+  /// Operate on multi-label map.
+  bool m_MultiLabels;
 };
 
 //@}

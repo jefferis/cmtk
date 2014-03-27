@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -61,10 +61,13 @@ public:
   /// Constructor: link to UniformVolume object.
   UniformVolumeMorphologicalOperators( const UniformVolume::SmartConstPtr& uniformVolume );
 
-  /// Get data after erosion operator using the Euclidean distance transform.
+  /// Get binary data after erosion operator using the Euclidean distance transform.
   TypedArray::SmartPtr GetErodedByDistance( const Types::Coordinate erodeBy /*!< Erosion distance. */ ) const;
   
-  /// Get data after dilation operator using the Euclidean distance transform.
+  /// Get multi-label data after erosion operator using the Euclidean distance transform.
+  TypedArray::SmartPtr GetErodedByDistanceMultiLabels( const Types::Coordinate erodeBy /*!< Erosion distance. */ ) const;
+  
+  /// Get binary data after dilation operator using the Euclidean distance transform.
   TypedArray::SmartPtr GetDilatedByDistance( const Types::Coordinate dilateBy /*!< Dilation distance. */ ) const;
 
 private:

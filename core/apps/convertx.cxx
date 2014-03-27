@@ -179,6 +179,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator (by pixels)" );
     cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator (by pixels)" );
     cl.AddCallback( Key( "erode-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewErode, "Morphological erosion operator (by distance). Often preferable for anisotropic data." );
+    cl.AddCallback( Key( "erode-distance-multilabel" ), &cmtk::ImageOperationErodeDilateDistance::NewErodeMultiLabels, "Morphological erosion operator (by distance) for multi-label maps. "
+		    "The result will be either byte, unsigned short, or unsigned int data, depending on the index of the largest used label in the input." );
     cl.AddCallback( Key( "dilate-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewDilate, "Morphological dilation operator (by distance). Oftern preferable for anisotropic data." );
     cl.AddCallback( Key( "connected-components" ), &cmtk::ImageOperationConnectedComponents::New, "Create connected components map with regions numbered by decreasing component size" );
     cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
