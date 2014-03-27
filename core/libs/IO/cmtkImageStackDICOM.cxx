@@ -217,7 +217,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
       Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() ) );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceName ) != "" )
+    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceName ) != "" && includeIdentifiers )
       {
       Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() ) );
       }
@@ -227,7 +227,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
       Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() ) );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" )
+    if ( this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" && includeIdentifiers )
       {
       Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() ) );
       }
@@ -319,7 +319,11 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
     {
     mxml_node_t *x_image = mxmlNewElement( x_stack, "image" );
 
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() ) );
+    if ( includeIdentifiers )
+      {
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dcmFile" ), 0, (*it)->m_FileName.c_str() ) );
+      }
+
     Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dicom:AcquisitionTime" ), 0, (*it)->GetTagValue( DCM_AcquisitionTime ).c_str() ) );
     Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_image, "dicom:ImagePositionPatient" ), 0, (*it)->GetTagValue( DCM_ImagePositionPatient ).c_str() ) );
 

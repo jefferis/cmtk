@@ -6,8 +6,6 @@
 	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
 	<DwellTime>0.000628</DwellTime>
 	<dicom:GE:EffectiveEchoSpacing>628.000000</dicom:GE:EffectiveEchoSpacing>
-	<dicom:GE:PulseSequenceName>dirk/sri_tensor_ramp1800_inv</dicom:GE:PulseSequenceName>
-	<dicom:GE:InternalPulseSequenceName>EPI2</dicom:GE:InternalPulseSequenceName>
 	<type>magnitude</type>
 	<dwi>
 		<bValue>0</bValue>
@@ -19,17 +17,14 @@
 <stack>
 	<dicom:ImageOrientationPatient>1\-0\0\-0\1\0</dicom:ImageOrientationPatient>
 	<image>
-		<dcmFile>I0150.dcm</dcmFile>
 		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\10.5997</dicom:ImagePositionPatient>
 	</image>
 	<image>
-		<dcmFile>I0151.dcm</dcmFile>
 		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\8.09975</dicom:ImagePositionPatient>
 	</image>
 	<image>
-		<dcmFile>I0152.dcm</dcmFile>
 		<dicom:AcquisitionTime>170902</dicom:AcquisitionTime>
 		<dicom:ImagePositionPatient>-117.516\-134.874\5.59975</dicom:ImagePositionPatient>
 	</image>
