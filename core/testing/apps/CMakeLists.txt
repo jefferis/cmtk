@@ -257,6 +257,7 @@ LIST(APPEND testList
   convertxErodeDilateErode
   convertxDilateErodeDilate
   convertxErodeByDistance
+  convertxErodeByDistanceMultiLabel
   convertxDilateByDistance
   convertxGaussianFilterSigma
   convertxGaussianFilterFWHM

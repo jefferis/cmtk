@@ -462,6 +462,10 @@ case ${RUNTEST} in
 	run convertx --erode-distance 10 parc1_bin.hdr ${tmpdir}/parc1_erode.nii
 	check_results parc1_erode.nii
 	;;
+    convertxErodeByDistanceMultiLabel)
+	run convertx --erode-distance-multilabel 10 lvote_atlas_l0.nii ${tmpdir}/erode.nii
+	check_results erode.nii
+	;;
     convertxDilateByDistance)
 	run convertx --dilate-distance 10 parc1_bin.hdr ${tmpdir}/parc1_dilate.nii
 	check_results parc1_dilate.nii
