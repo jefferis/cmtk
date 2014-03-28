@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,6 +53,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
 
   const size_t nPixels = targetImage.GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, nPixels ) );
+  result->SetDataClass( DATACLASS_LABEL );
   std::vector<float> resultDistance( nPixels, 1.0 );
   
   const TargetRegionType region = targetImage.CropRegion();
