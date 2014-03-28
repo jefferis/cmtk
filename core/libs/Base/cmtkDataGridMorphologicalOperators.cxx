@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,7 +104,8 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
     
     memcpy( eroded, &(tmp[0]), erodedArray->GetDataSizeBytes() );
     } // for i
-  
+
+  erodedArray->SetDataClass( DATACLASS_LABEL );
   return erodedArray;
 }
 
@@ -165,6 +166,7 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
     memcpy( dilated, &(tmp[0]), dilatedArray->GetDataSizeBytes() );
     } // for i
   
+  dilatedArray->SetDataClass( DATACLASS_LABEL );
   return dilatedArray;
 }
 
@@ -220,6 +222,7 @@ DataGridMorphologicalOperators::GetBoundaryMap( const bool multiValued ) const
       } // for y
     } // for z
   
+  boundaryArray->SetDataClass( DATACLASS_LABEL );
   return boundaryArray;
 }
 

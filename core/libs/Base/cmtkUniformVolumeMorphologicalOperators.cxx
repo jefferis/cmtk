@@ -56,6 +56,8 @@ UniformVolumeMorphologicalOperators::GetErodedByDistance( const Types::Coordinat
   
   TypedArray::SmartPtr erodedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume), DistanceMap::INSIDE ).Get()->GetData();
   erodedData->Binarize( erodeBy + 0.5 );
+  erodedData->SetDataClass( DATACLASS_LABEL );
+
   return erodedData->Convert( TYPE_BYTE );
 }
 
@@ -91,6 +93,7 @@ UniformVolumeMorphologicalOperators::GetErodedByDistanceMultiLabels( const Types
     resultData = TypedArray::Create( TYPE_USHORT, nPixels );
   else
     resultData = TypedArray::Create( TYPE_UINT, nPixels );
+  resultData->SetDataClass( DATACLASS_LABEL );
   resultData->ClearArray();
 
   // Run over all labels and compound the per-label eroded label maps
@@ -120,6 +123,8 @@ UniformVolumeMorphologicalOperators::GetDilatedByDistance( const Types::Coordina
   TypedArray::SmartPtr dilatedData = UniformDistanceMap<Types::Coordinate>( *(this->m_UniformVolume) ).Get()->GetData();
   dilatedData->Binarize( dilateBy + 0.5 );
   dilatedData->Rescale( -1 /*scale*/, +1 /*offset*/ ); // this is binary inversion, 0->1, 1->0
+  dilatedData->SetDataClass( DATACLASS_LABEL );
+
   return dilatedData->Convert( TYPE_BYTE );
 }
 
