@@ -28,8 +28,8 @@
 ##  $LastChangedBy$
 ##
 
-FIND_PROGRAM(SH_PATH sh PATHS C:/cygwin/bin)
-SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
+FIND_PROGRAM(BASH_PATH bash PATHS C:/cygwin/bin)
+SET(testDriver ${BASH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
 SET(testList "")
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh @ONLY)
