@@ -1,5 +1,8 @@
 Release CMTK-3.1.1:
 
+(r5260) Added: distance map-based erosion of multi-label fields, both in
+	the library and exposed via the new "--erode-distance-multilabel"
+	operation of "convertx"
 (r5250) Fixed: compilation errors with Visual C++ 2013.
 (r5243) Added: exact isotropic resampling in UniformVolume class, exposed
 	at command line via new "--resample-exact" operation of the
