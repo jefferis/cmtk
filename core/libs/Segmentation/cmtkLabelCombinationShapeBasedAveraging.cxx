@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,6 +87,7 @@ LabelCombinationShapeBasedAveraging::GetResult( const bool detectOutliers ) cons
 {
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT, this->m_NumberOfPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, this->m_NumberOfPixels /*len*/ );
+  result->SetDataClass( DATACLASS_LABEL );
   
   std::vector<Self::DistanceMapRealType> totalDistance( this->m_NumberOfPixels, 0.0 );
   std::vector<Self::DistanceMapRealType> labelDistanceMap( this->m_NumberOfPixels );

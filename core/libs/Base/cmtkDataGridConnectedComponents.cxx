@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -123,6 +123,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
     resultArray->Set( linkMap[result[px]], px );
     }
   
+  resultArray->SetDataClass( DATACLASS_LABEL );
   return resultArray;
 }
 
@@ -165,6 +166,7 @@ cmtk::DataGridMorphologicalOperators::GetRegionsRenumberedBySize() const
     {
     resultArray->Set( renumberMap[static_cast<int>( this->m_DataGrid->GetDataAt( px ) )], px );
     }
-  
+
+  resultArray->SetDataClass( DATACLASS_LABEL );  
   return resultArray;  
 }

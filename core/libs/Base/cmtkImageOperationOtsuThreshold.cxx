@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2012 SRI International
+//  Copyright 2009-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,6 +44,7 @@ cmtk::ImageOperationOtsuThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume 
   DebugOutput( 5 ) << "INFO: Otsu binarization threshold = " << threshold << "\n";
 
   volumeData.Binarize( threshold );
+  volumeData.SetDataClass( DATACLASS_LABEL );
 
   return volume;
 }

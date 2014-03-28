@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,6 +94,7 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
+  result->SetDataClass( DATACLASS_LABEL );
   
   const size_t nAtlases = this->m_AtlasImages.size();
   this->m_GlobalAtlasWeights.resize( nAtlases );

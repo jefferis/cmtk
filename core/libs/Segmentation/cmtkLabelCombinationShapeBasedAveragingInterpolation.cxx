@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,6 +75,7 @@ LabelCombinationShapeBasedAveragingInterpolation::GetResult() const
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_USHORT,this->m_NumberOfPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/,this->m_NumberOfPixels /*len*/ );
+  result->SetDataClass( DATACLASS_LABEL );
   
   std::vector<Self::DistanceMapRealType> totalDistance( this->m_NumberOfPixels, 0.0 );
 

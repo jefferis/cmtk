@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,6 +46,7 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
 {
   const size_t nValues = data[ 0 ]->GetDataSize();
   this->m_Result = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, nValues ) );
+  this->m_Result->SetDataClass( DATACLASS_LABEL );
   
   size_t numberOfClasses = 1;
   for ( size_t k = 0; k < data.size(); ++k )

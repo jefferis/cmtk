@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +49,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
   const size_t numberOfInputs = data.size();
   const size_t numberOfPixels = data[ 0 ]->GetDataSize();
   this->m_Result = TypedArray::SmartPtr( TypedArray::Create( resultType, numberOfPixels ) );
+  this->m_Result->SetDataClass( DATACLASS_LABEL );
 
   // compute initial estimate as the average of all inputs;
   // this is also the first E-step with all p/q equal to 0.5

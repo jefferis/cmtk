@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2013 SRI International
+//  Copyright 2010-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,6 +140,7 @@ cmtk::SimpleLevelset
     {
     this->m_Levelset->GetData()->Binarize( threshold );
     this->m_Levelset->SetData( TypedArray::SmartPtr( this->m_Levelset->GetData()->Convert( TYPE_BYTE ) ) );
+    this->m_Levelset->GetData()->SetDataClass( DATACLASS_LABEL );
     }
 
   return this->m_Levelset;
