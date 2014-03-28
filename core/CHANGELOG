@@ -13,7 +13,7 @@ Release CMTK-3.1.1:
 (r5238) Changed: "reformatx" tool now propagates floating image data class
 	(label or grey) to output, as represented by the "intent_code"
 	header field when written in NIfTI format.
-(r5238) Added: new operations in "convertx" tool, "--label" and "--grey",
+(r5238) Added: new operations in "convertx" tool, "--labels" and "--grey",
 	set and reset the "intent_code" field in NIfTI images to
 	NIFTI_INTENT_LABEL and 0, respectively.
 (r5230) Added: the "xform2dfield" tool can now write deformation fields
