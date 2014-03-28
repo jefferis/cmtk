@@ -1,5 +1,9 @@
 Release CMTK-3.1.1:
 
+(r5268)	Changed: where appropriate, image processing operators now set the
+	data class of their outputs as "LABEL". This includes a variety of
+	binarization/thresholding techniques, label combination
+	algorithms, and segmentations.
 (r5260) Added: distance map-based erosion of multi-label fields, both in
 	the library and exposed via the new "--erode-distance-multilabel"
 	operation of "convertx"
