@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2009, 2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -55,9 +56,9 @@ ENDIF(IGS_BUILD_NRRD OR IGS_USE_TEEM)
 
 FOREACH(testName ${testList})
   IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} /bin/sh ${testDriver} ${testName} ${MEMORYCHECK_COMMAND})
+    ADD_TEST(${testName} /bin/bash ${testDriver} ${testName} ${MEMORYCHECK_COMMAND})
   ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} /bin/sh ${testDriver} ${testName})
+    ADD_TEST(${testName} /bin/bash ${testDriver} ${testName})
   ENDIF(CMTK_TESTING_MEMORYCHECK)      
 ENDFOREACH(testName ${testList})
 
