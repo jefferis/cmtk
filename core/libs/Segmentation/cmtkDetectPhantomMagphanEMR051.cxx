@@ -57,9 +57,9 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
     m_IncludeMask( phantomImage->CloneGrid() )
 {
   this->m_ExcludeMask->CreateDataArray( TYPE_BYTE, true /*setToZero*/ );
-  this->m_ExcludeMask->SetDataClass( DATACLASS_LABEL );
+  this->m_ExcludeMask->GetData()->SetDataClass( DATACLASS_LABEL );
   this->m_IncludeMask->CreateDataArray( TYPE_BYTE );
-  this->m_IncludeMask->SetDataClass( DATACLASS_LABEL );
+  this->m_IncludeMask->GetData()->SetDataClass( DATACLASS_LABEL );
 
   this->m_Landmarks.resize( MagphanEMR051::NumberOfSpheres );
 
