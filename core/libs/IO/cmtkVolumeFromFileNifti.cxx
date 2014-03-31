@@ -373,10 +373,10 @@ VolumeFromFile::WriteNifti
   header.dim[1] = writeVolume->GetDims()[AXIS_X];
   header.dim[2] = writeVolume->GetDims()[AXIS_Y];
   header.dim[3] = writeVolume->GetDims()[AXIS_Z];
-  header.dim[4] = 0;
-  header.dim[5] = 0;
-  header.dim[6] = 0;
-  header.dim[7] = 0;
+  header.dim[4] = 1;
+  header.dim[5] = 1;
+  header.dim[6] = 1;
+  header.dim[7] = 1;
 
   header.pixdim[0] = 1.0;
   header.pixdim[1] = static_cast<float>( writeVolume->m_Delta[AXIS_X] );
