@@ -54,8 +54,6 @@ INCLUDE (${CMAKE_ROOT}/Modules/CMakeDetermineSystem.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
-
 #-----------------------------------------------------------------------------
 # On Mac, if we have MacPorts installed, we need to look for libraries in 
 # /opt/local.
@@ -291,11 +289,12 @@ OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
 
 IF(CMTK_USE_CUDA)
   # check using cmake's own FindCUDA above v2.8 or use our own for earlier versions
-  IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
+  IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS "2.8")
+    MESSAGE("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8")
     INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindCUDA.cmake)
-  ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
+  ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS "2.8")
     FIND_PACKAGE(CUDA)
-  ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
+  ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS "2.8")
  
 ENDIF(CMTK_USE_CUDA)
 
@@ -389,7 +388,7 @@ INCLUDE_DIRECTORIES(BEFORE ${ZLIB_INCLUDE_DIRS})
 
 OPTION(CMTK_BUILD_MXML "Build bundled mxml library, even if system library exists" OFF)
 
-FIND_PACKAGE(MXML)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindMXML.cmake)
 IF(CMTK_BUILD_MXML)
   MESSAGE( STATUS "Building bundled mxml by user configuration" )
   SET(CMTK_BUILD_MXML 1)
