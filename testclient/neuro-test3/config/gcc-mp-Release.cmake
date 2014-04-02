@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2011 Torsten Rohlfing
 ##
-##  Copyright 2004-2013 SRI International
+##  Copyright 2004-2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -63,7 +63,7 @@ CMAKE_CXX_FLAGS:STRING=-Wall -Wextra -Wshadow
 
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON
-CMTK_USE_CUDA:BOOL=ON
+CMTK_USE_CUDA:BOOL=OFF
 CMTK_USE_FFTW:BOOL=ON
 CMTK_USE_QT:BOOL=ON
 
