@@ -1,5 +1,7 @@
 Release CMTK-3.1.1:
 
+(r5281) Added: "sequence" tool can now optionally create histogram files
+	in CSV format.
 (r5270)	Changed: where appropriate, image processing operators now set the
 	data class of their outputs as "LABEL". This includes a variety of
 	binarization/thresholding techniques, label combination
