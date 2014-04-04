@@ -759,7 +759,7 @@ LIST(APPEND testList sbaiDefault)
 
 # ==========================================
 # Tests for "sequence" tool
-LIST(APPEND testList sequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh)
+LIST(APPEND testList sequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh sequenceHistogramDefault sequenceHistogramExplicit)
 
 # ==========================================
 # Tests for "similarity" tool

@@ -2270,6 +2270,14 @@ case ${RUNTEST} in
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1000 --abs > ${tmpdir}/sequence.txt"
 	check_results sequence.txt
 	;;
+    sequenceHistogramDefault)
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --write-histogram ${tmpdir}/histogram.csv > ${tmpdir}/sequence.txt"
+	check_results sequence.txt histogram.csv
+	;;
+    sequenceHistogramExplicit)
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --histogram-bins 10 --histogram-min 0 --histogram-max 1000 --write-histogram ${tmpdir}/histogram.csv > ${tmpdir}/sequence.txt"
+	check_results sequence.txt histogram.csv
+	;;
     similarityGrey)
 	run_eval "${BINDIR}/similarity --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram.txt similarity.txt
