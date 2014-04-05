@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -204,9 +204,9 @@ doMain( const int argc, const char* argv[] )
       const double binFrom = HistogramMin + bin*binWidth;
       const double binTo = HistogramMin + (1+bin)*binWidth;
       
-      // go through sroted vector and add to this bin whatever belongs
+      // go through sorted vector and add to this bin whatever belongs
       int countBin = 0;
-      for ( ; (*sample < binTo) && (sample != sorted.end());  ++countBin, ++sample ) {}
+      for ( ; (sample != sorted.end()) && (*sample < binTo); ++countBin, ++sample ) {}
       
       // last bin -- add whatever is left
       if ( bin == HistogramBins-1 )
