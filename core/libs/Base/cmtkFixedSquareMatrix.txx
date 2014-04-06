@@ -195,7 +195,7 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
 }
 
 template<size_t NDIM,class T> 
-FixedSquareMatrix<NDIM,T>&
+FixedSquareMatrix<NDIM,T>
 operator+( const FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
 {
   FixedSquareMatrix<NDIM,T> M;
@@ -217,7 +217,7 @@ FixedSquareMatrix<NDIM,TSCALAR>::operator+=( const Self& other )
 }
 
 template<size_t NDIM,class T> 
-FixedSquareMatrix<NDIM,T>&
+FixedSquareMatrix<NDIM,T>
 operator-( const FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
 {
   FixedSquareMatrix<NDIM,T> M;
