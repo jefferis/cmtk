@@ -196,16 +196,17 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
 
 template<size_t NDIM,class T> 
 FixedSquareMatrix<NDIM,T>&
-operator+( FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
+operator+( const FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
 {
+  FixedSquareMatrix<NDIM,T> M;
   for ( size_t i = 0; i<NDIM; ++i ) 
     {
     for ( size_t j = 1; j<NDIM; ++j ) 
       {
-      A[j][i] += B[j][i];
+      M[j][i] = A[j][i] + B[j][i];
       }
     }
-  return A;
+  return M;
 }
 
 template<size_t NDIM,class TSCALAR>
@@ -217,16 +218,17 @@ FixedSquareMatrix<NDIM,TSCALAR>::operator+=( const Self& other )
 
 template<size_t NDIM,class T> 
 FixedSquareMatrix<NDIM,T>&
-operator-( FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
+operator-( const FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
 {
+  FixedSquareMatrix<NDIM,T> M;
   for ( size_t i = 0; i<NDIM; ++i ) 
     {
     for ( size_t j = 1; j<NDIM; ++j ) 
       {
-      A[j][i] -= B[j][i];
+      M[j][i] = A[j][i] - B[j][i];
       }
     }
-  return A;
+  return M;
 }
 
 template<size_t NDIM,class TSCALAR>
