@@ -58,6 +58,7 @@ SET(APPS avg_adm
   fit_affine_xform_landmarks
   fit_spline_dfield
   fit_spline_xform
+  geomatch
   glm
   gmm
   gregxform
