@@ -153,6 +153,9 @@ public:
 protected:
   /// The actual matrix.
   typename Self::ScalarType m_Matrix[NDIM][NDIM];
+
+  template<size_t N,class TYPE> friend FixedSquareMatrix<N,TYPE> operator+( const FixedSquareMatrix<N,TYPE>&, const FixedSquareMatrix<N,TYPE>& );
+  template<size_t N,class TYPE> friend FixedSquareMatrix<N,TYPE> operator-( const FixedSquareMatrix<N,TYPE>&, const FixedSquareMatrix<N,TYPE>& );
 };
 
 /// In-place vector-matrix multiplication operation.
