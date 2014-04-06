@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,6 +140,12 @@ public:
 
   /// Assignment operator.
   Self& operator=( const Self& other );
+
+  /// Addition operator.
+  Self& operator+=( const Self& other );
+
+  /// Subtraction operator.
+  Self& operator-=( const Self& other );
 
   /// Get Frobenius norm.
   typename Self::ScalarType FrobeniusNorm() const;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -194,11 +194,46 @@ FixedSquareMatrix<NDIM,TSCALAR>::GetInverse() const
   return inverse;
 }
 
+template<size_t NDIM,class T> 
+FixedSquareMatrix<NDIM,T>&
+operator+( FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
+{
+  for ( size_t i = 0; i<NDIM; ++i ) 
+    {
+    for ( size_t j = 1; j<NDIM; ++j ) 
+      {
+      A[j][i] += B[j][i];
+      }
+    }
+  return A;
+}
+
 template<size_t NDIM,class TSCALAR>
 FixedSquareMatrix<NDIM,TSCALAR>& 
-FixedSquareMatrix<NDIM,TSCALAR>::operator*=( const Self& other )
+FixedSquareMatrix<NDIM,TSCALAR>::operator+=( const Self& other )
 {
-  return (*this = ((*this) * other));
+  return (*this = ((*this) + other));
+}
+
+template<size_t NDIM,class T> 
+FixedSquareMatrix<NDIM,T>&
+operator-( FixedSquareMatrix<NDIM,T>& A, const FixedSquareMatrix<NDIM,T>& B )
+{
+  for ( size_t i = 0; i<NDIM; ++i ) 
+    {
+    for ( size_t j = 1; j<NDIM; ++j ) 
+      {
+      A[j][i] -= B[j][i];
+      }
+    }
+  return A;
+}
+
+template<size_t NDIM,class TSCALAR>
+FixedSquareMatrix<NDIM,TSCALAR>& 
+FixedSquareMatrix<NDIM,TSCALAR>::operator-=( const Self& other )
+{
+  return (*this = ((*this) - other));
 }
 
 template<size_t NDIM,class TSCALAR>
@@ -213,6 +248,13 @@ FixedSquareMatrix<NDIM,TSCALAR>::operator*=( const typename Self::ScalarType& sc
       }
     }
   return *this;
+}
+
+template<size_t NDIM,class TSCALAR>
+FixedSquareMatrix<NDIM,TSCALAR>& 
+FixedSquareMatrix<NDIM,TSCALAR>::operator*=( const Self& other )
+{
+  return (*this = ((*this) * other));
 }
 
 template<size_t NDIM,class TSCALAR>
