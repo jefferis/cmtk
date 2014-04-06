@@ -128,7 +128,18 @@ for bX in ${b0FwdCorr} ${bXlist}; do
 
 	if CMTK_needs_update_and_lock ${outdir}/motion/${base} ${bXUnwarp} ${xform}; then
 	    echo "Reformatting motion-corrected $bX"
-	    cmtk reformatx --sinc-cosine -o ${outdir}/motion/${base} --pad-floating -1 --floating ${bXUnwarp} ${average} ${xform}
+	    tmpdir=$(mktemp -d)
+	    # First, re-reslice the unwarped image
+	    cmtk reformatx --sinc-cosine -o ${tmpdir}/reslice.nii --pad-floating -1 --floating ${bXUnwarp} ${average} ${xform}
+	    # Second, make a mask of bad slices (0 - bad slice, 1 - good slice), based on requirement that bad slices be marked as -1
+	    cmtk convertx --float --binarize-thresh -0.5 ${bX} ${tmpdir}/mask.nii
+	    # Third, reslice the mask using the same motion xform and interpolation as the image
+	    cmtk reformatx --sinc-cosine -o ${tmpdir}/mask_reslice.nii --floating ${tmpdir}/mask.nii ${average} ${xform}
+	    # Fourth, threshold resliced mask to include only those pixels that have more then 50% support
+	    cmtk convertx --binarize-thresh 0.5 ${tmpdir}/mask_reslice.nii ${tmpdir}/mask_thresh.nii
+	    # Fifth, create final image by masking out pixels with under 50% support
+	    cmtk convertx --set-padding -1 --mask ${tmpdir}/mask_thresh.nii --thresh-below 0 ${tmpdir}/reslice.nii ${outdir}/motion/${base}
+	    rm -rf ${tmpdir}
 	    CMTK_lockfile_delete ${outdir}/motion/${base}
 	fi
     fi
