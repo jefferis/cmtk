@@ -82,7 +82,16 @@ for bX in ${bXlist}; do
 
     if CMTK_needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
 	echo "Unwarping $bX"
-	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --pad-floating -1 --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
+	tmpdir=$(mktemp -d)
+	# First, reslice using PEpolar unwarp and eddy current correction
+	cmtk reformatx --sinc-cosine -o ${tmpdir}/reslice.nii --pad-floating -1 --floating ${bX} ${b0FwdCorr} ${outdir}/dfield_fwd.nrrd ${xform}
+	# Second, multiply with Jacobian volume correction field
+	cmtk imagemath --in ${outdir}/jacobian.nii ${tmpdir}/reslice.nii --mul --out ${tmpdir}/reslice_j.nii
+	# Third, make a mask of bad slices (0 - bad slice, 1 - good slice), based on requirement that bad slices be marked as -1
+	cmtk convertx --float --binarize-thresh -0.5 --byte ${bX} ${tmpdir}/mask.nii
+	# Apply bad-slice mask back to resliced and Jacobian-corrected volume
+	cmtk convertx --thresh-below 0 --set-padding -1 --mask ${tmpdir}/mask.nii ${tmpdir}/reslice_j.nii ${outdir}/${base}
+	rm -rf ${tmpdir}
 	CMTK_lockfile_delete ${outdir}/${base}
     fi
 
