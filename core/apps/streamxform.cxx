@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 2014 Greg Jefferis
 //
@@ -78,7 +78,7 @@ doMain( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
-    cl.AddOption( Key( "separator" ), &separator, "Field separator - this string or character is used to separate x, y, and z coordinates and z from the remainder of every line." );
+    cl.AddOption( Key( "separator" ), &separator, "Field separator - this string or character is used to separate x, y, and z coordinates from each other, and z from the remainder of every line." );
     cl.AddOption( Key( "precision" ), &precision, "Floating point precision for output file." );
     cl.EndGroup();
 
