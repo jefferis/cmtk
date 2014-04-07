@@ -1,5 +1,8 @@
 Release CMTK-3.1.1:
 
+(r5293) Added/Changed: "mat2dof" tool no longer has unintuitive
+	single-character options for xform modifiers. Instead, it now
+	supports writing to a single, simple transformation file.
 (r5281) Added: "sequence" tool can now optionally create histogram files
 	in CSV format.
 (r5270)	Changed: where appropriate, image processing operators now set the
