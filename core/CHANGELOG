@@ -1,5 +1,6 @@
 Release CMTK-3.1.1:
 
+(r5297) Added: "dof2mat" tool can now print only 3x3 top-left submatrix.
 (r5293) Added/Changed: "mat2dof" tool no longer has unintuitive
 	single-character options for xform modifiers. Instead, it now
 	supports writing to a single, simple transformation file.
