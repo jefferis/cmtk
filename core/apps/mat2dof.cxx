@@ -85,6 +85,7 @@ doMain( const int argc, const char* argv[] )
   const char* PixelSizeStr = NULL;
   
   const char* OutList = NULL;
+  const char* OutXform = NULL;
   bool AppendToOutput = false;
   
   bool Matrix3x3 = false;
@@ -100,17 +101,25 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert transformation matrix to degrees of freedom" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "mat2dof [options] < matrix" );
 
-    typedef cmtk::CommandLine::Key Key;    
+    typedef cmtk::CommandLine::Key Key;
+    cl.BeginGroup( "Input", "Input Options" );
     cl.AddSwitch( Key( '3', "matrix3x3" ), &Matrix3x3, true, "Only input upper left 3x3 submatrix." );
     cl.AddSwitch( Key( 't', "transpose" ), &Transpose, true, "Transpose input matrix." );
-    cl.AddSwitch( Key( 'i', "inverse" ), &Inverse, true, "Output inverse transformation." );
-    cl.AddOption( Key( 'c', "center" ), &CenterStr, "Set center x,y,z for rotation and scaling." );
-    cl.AddOption( Key( 'o', "offset" ), &OffsetStr, "Set offset dx,dy,dz for translation." );
-    cl.AddOption( Key( 'x', "xlate" ), &TranslateStr, "Translate result relative by given vector." );
-    cl.AddOption( Key( 'p', "pixel-size" ), &PixelSizeStr, "For matrices in pixel space, set pixel size." );
+    cl.AddOption( Key( "pixel-size" ), &PixelSizeStr, "For matrices in pixel space (i.e., mapping from grid index to physical coordinate), set image grid pixel size." );
+    cl.EndGroup();
 
-    cl.AddOption( Key( 'l', "list" ), &OutList, "Write output in list format to this archive" );
-    cl.AddOption( Key( 'A', "append" ), &OutList, "Append output to this archive", &AppendToOutput );
+    cl.BeginGroup( "Modifiers", "Transformation Modifiers" );
+    cl.AddOption( Key( "center" ), &CenterStr, "Set center x,y,z for rotation and scaling." );
+    cl.AddOption( Key( "offset" ), &OffsetStr, "Set offset dx,dy,dz for translation." );
+    cl.AddOption( Key( "xlate" ), &TranslateStr, "Translate result relative by given vector." );
+    cl.AddSwitch( Key( "inverse" ), &Inverse, true, "Output inverse transformation. Inversion happens after all other modifiers have been applied." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "output" ), &OutXform, "Write output transformation to this file" );
+    cl.AddOption( Key( "list" ), &OutList, "Write output in list format to this archive (directory including 'registration' and 'studylist' files)." );
+    cl.AddSwitch( Key( "append" ), &AppendToOutput, true, "Append to output file rather than create a new one and overwrite exisiting files." );
+    cl.EndGroup();
 
     cl.Parse( argc, argv );
 
@@ -162,6 +171,7 @@ doMain( const int argc, const char* argv[] )
       }
     }
 
+  // Create transformation from imported matrix
   cmtk::AffineXform::SmartPtr xform;
   try
     {
@@ -199,28 +209,28 @@ doMain( const int argc, const char* argv[] )
       xform->Translate( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( xlate ) );
       }
     }
-  
+
+  // Invert transformation
+  if ( Inverse )
+    {
+    try
+      {
+      xform = xform->GetInverse();
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+      {
+      cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+
+  // Are we writing to a list archive?
   if ( OutList )
     {
     if ( AppendToOutput )
       {
-      cmtk::ClassStreamOutput outStream( OutList, cmtk::ClassStreamOutput::MODE_APPEND );
-      if ( Inverse )
-	{
-	try
-	  {
-	  outStream << *(xform->GetInverse());
-	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-	  {
-	  cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
-	  throw cmtk::ExitException( 1 );
-	  }
-	}
-      else
-	{
-	outStream << *xform;
-	}
+      cmtk::ClassStreamOutput outStream( OutList, "registration", cmtk::ClassStreamOutput::MODE_APPEND );
+      outStream << *xform;
       }
     else
       {
@@ -232,26 +242,21 @@ doMain( const int argc, const char* argv[] )
       studyList.AddStudy( strReference );
       studyList.AddStudy( strFloating );
 
-      if ( Inverse )
-	{
-	try 
-	  {
-	  cmtk::AffineXform::SmartPtr inverse( xform->GetInverse() );
-	  studyList.AddXform( strReference, strFloating, inverse );
-	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-	  {
-	  cmtk::StdErr << "ERROR: affine transformation with singular matrix cannot be inverted\n";
-	  throw cmtk::ExitException( 1 );
-	  }
-	}
-      else
-	studyList.AddXform( strReference, strFloating, xform );
+      studyList.AddXform( strReference, strFloating, xform );
       
       cmtk::ClassStreamStudyList::Write( OutList, &studyList );
       }
     }
-  else
+
+  // Are we writing to a single file?
+  if ( OutXform )
+    {
+    cmtk::ClassStreamOutput outStream( OutXform, AppendToOutput ? cmtk::ClassStreamOutput::MODE_APPEND : cmtk::ClassStreamOutput::MODE_WRITE );
+    outStream << *xform;
+    }
+
+  // No output files given: just dump parameters to console
+  if ( !OutList && !OutXform )
     {
     cmtk::CoordinateVector v;
     if ( Inverse )

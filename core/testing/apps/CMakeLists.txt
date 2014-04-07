@@ -536,7 +536,9 @@ ENDIF(CMTK_USE_SQLITE)
 LIST(APPEND testList
   mat2dof1
   mat2dof2
-  mat2dofFile)
+  mat2dofFile
+  mat2dofToFile
+  mat2dofToFileAppend)
 
 # ==========================================
 # Multi-channel registration requires hash map to build
