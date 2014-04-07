@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,6 +47,7 @@ doMain( const int argc, const char* argv[] )
   std::string inputFileName;
   
   bool transpose = false;
+  bool matrix3x3 = false;
   
   try
     {
@@ -58,6 +59,7 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Output", "Output Options" );
+    cl.AddSwitch( Key( '3', "matrix3x3" ), &matrix3x3, true, "Only the top-left 3x3 sub- matrix (rotation/scale/shear)." );    
     cl.AddSwitch( Key( "transpose" ), &transpose, true, "Print transpose of transformation matrix." );    
     cl.EndGroup();
 
@@ -73,11 +75,12 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::AffineXform::SmartConstPtr affineXform = cmtk::AffineXform::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( inputFileName ) );
 
+    const size_t printToDim = matrix3x3 ? 3 : 4;
     if ( affineXform )
       {
-      for ( size_t j = 0; j < 4; ++j ) 
+      for ( size_t j = 0; j < printToDim; ++j ) 
 	{
-	for ( size_t i = 0; i < 4; ++i ) 
+	for ( size_t i = 0; i < printToDim; ++i ) 
 	  {
 	  if ( transpose )
 	    {

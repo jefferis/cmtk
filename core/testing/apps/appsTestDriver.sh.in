@@ -963,6 +963,10 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/dof2mat vol001_mr_t0t1_fwd24.list > ${tmpdir}/matrix"
 	check_results matrix
         ;;    
+    dof2mat3x3)
+        run_eval "${BINDIR}/dof2mat --matrix3x3 vol001_mr_t0t1_fwd24.list > ${tmpdir}/matrix"
+	check_results matrix
+        ;;    
     stream_pixels)
         run_eval "${BINDIR}/stream_pixels jacobian-01.nii jacobian-02.nii > ${tmpdir}/stream.raw"
 	check_results stream.raw

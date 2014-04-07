@@ -349,7 +349,8 @@ LIST(APPEND testList
   dof2matTranspose
   dof2matLegacy
   dof2matLegacyFwd
-  dof2matFixed)
+  dof2matFixed
+  dof2mat3x3)
 
 # ==========================================
 # Tests for "filter" tool
