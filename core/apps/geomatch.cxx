@@ -100,8 +100,8 @@ doMain( int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Comparison" , "Image Comparison Options" );
-    cl.AddSwitch( Key( "no-check-xform" ), &noCheckXforms, false, "Do not check transformation matrices." );
-    cl.AddSwitch( Key( "no-check-pixelsize" ), &noCheckPixels, false, "Do not check pixelsize." );
+    cl.AddSwitch( Key( "no-check-xforms" ), &noCheckXforms, true, "Do not check transformation matrices." );
+    cl.AddSwitch( Key( "no-check-pixels" ), &noCheckPixels, true, "Do not check pixelsizes." );
     cl.AddOption( Key( "tolerance" ), &tolerance, "Numerical tolerance for floating point comparisons of transformation matrices." );
     cl.AddOption( Key( "tolerance-xlate" ), &toleranceXlate, "Numerical tolerance for floating point comparisons of the translational components of the transformation matrices." );
     cl.EndGroup();
