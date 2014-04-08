@@ -150,6 +150,28 @@ public:
   /// Get Frobenius norm.
   typename Self::ScalarType FrobeniusNorm() const;
 
+  /// Get column vector.
+  FixedVector<NDIM,TSCALAR> GetColumnVector( const size_t i ) const
+  {
+    FixedVector<NDIM,TSCALAR> v;
+    for ( size_t j = 0; j<NDIM; ++j )
+      {
+      v[j] = this->m_Matrix[j][i];
+      }
+    return v;
+  }
+
+  /// Get row vector.
+  FixedVector<NDIM,TSCALAR> GetRowVector( const size_t j ) const
+  {
+    FixedVector<NDIM,TSCALAR> v;
+    for ( size_t i = 0; i<NDIM; ++i )
+      {
+      v[i] = this->m_Matrix[j][i];
+      }
+    return v;
+  }
+
 protected:
   /// The actual matrix.
   typename Self::ScalarType m_Matrix[NDIM][NDIM];

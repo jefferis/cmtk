@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkFixedSquareMatrix.h>
@@ -79,7 +80,11 @@ doMain( int argc, const char *argv[] )
   const char* readOrientation = NULL;
   std::vector<std::string> imagePaths;
 
-  double tolerance = 1e-5;
+  bool noCheckXforms = false;
+  bool noCheckPixels = false;
+
+  double tolerance = 1e-6;
+  double toleranceXlate = 1e-3;
 
   try
     {
@@ -90,8 +95,16 @@ doMain( int argc, const char *argv[] )
 		       "In case of an error (e.g., one of the images can not be read), the exit code is 1." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.BeginGroup( "Input" , "Input Options" );
     cl.AddSwitch( Key( "read-ras" ), &readOrientation, "RAS", "Read all images in RAS orientation" );
-    cl.AddOption( Key( "tolerance" ), &tolerance, "Numerical tolerance for floating point comparisons (e.g., transformation matrices)" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Comparison" , "Image Comparison Options" );
+    cl.AddSwitch( Key( "no-check-xform" ), &noCheckXforms, false, "Do not check transformation matrices." );
+    cl.AddSwitch( Key( "no-check-pixelsize" ), &noCheckPixels, false, "Do not check pixelsize." );
+    cl.AddOption( Key( "tolerance" ), &tolerance, "Numerical tolerance for floating point comparisons of transformation matrices." );
+    cl.AddOption( Key( "tolerance-xlate" ), &toleranceXlate, "Numerical tolerance for floating point comparisons of the translational components of the transformation matrices." );
+    cl.EndGroup();
 
     cl.AddParameterVector( &imagePaths, "ImagePaths", "List of image files." );
     
@@ -111,17 +124,45 @@ doMain( int argc, const char *argv[] )
     }
 
   cmtk::UniformVolume::SmartConstPtr firstVolume = readVolume( imagePaths[0], readOrientation );
+  const cmtk::AffineXform::MatrixType firstVolumeMatrix = firstVolume->GetImageToPhysicalMatrix();
+
   for ( size_t i = 1; i < imagePaths.size(); ++i )
     {
     cmtk::UniformVolume::SmartConstPtr nextVolume = readVolume( imagePaths[i], readOrientation );
-    if ( ! firstVolume->GridMatches( *nextVolume ) )
+
+    // First and always, use the DataGrid member function to check grid dimensions
+    if ( ! firstVolume->DataGrid::GridMatches( *nextVolume ) )
       {
+      cmtk::DebugOutput( 1 ) << "MISMATCH: grid dimensions\n";
       return 2;
       }
-
-    if ( (firstVolume->GetImageToPhysicalMatrix() - nextVolume->GetImageToPhysicalMatrix()).FrobeniusNorm() > tolerance )
+    
+    // Check pixels - use default (UniformVolume) member function
+    if ( ! noCheckPixels )
       {
-      return 2;
+      if ( ! firstVolume->GridMatches( *nextVolume ) )
+	{
+	cmtk::DebugOutput( 1 ) << "MISMATCH: pixel size\n";
+	return 2;
+	}
+      }
+
+    if ( ! noCheckXforms )
+      {
+      // Check rotational part of image matrices
+      const cmtk::AffineXform::MatrixType nextVolumeMatrix = nextVolume->GetImageToPhysicalMatrix();
+      if ( (firstVolumeMatrix.GetTopLeft3x3() - nextVolumeMatrix.GetTopLeft3x3()).FrobeniusNorm() > tolerance )
+	{
+	cmtk::DebugOutput( 1 ) << "MISMATCH: image-to-space matrix (rotational part)\n";
+	return 2;
+	}
+
+      // Check translational part of image matrices
+      if ( (firstVolumeMatrix.GetRowVector(3) - nextVolumeMatrix.GetRowVector(3)).MaxAbsValue() > toleranceXlate )
+	{
+	cmtk::DebugOutput( 1 ) << "MISMATCH: image-to-space matrix (translational part)\n";
+	return 2;
+	}      
       }
     }
 
