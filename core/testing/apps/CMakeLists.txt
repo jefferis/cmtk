@@ -149,6 +149,12 @@ LIST(APPEND testList fib2image)
 LIST(APPEND testList fibxform fibxformSourceTarget)
 
 # ==========================================
+# Tests for "geomatch" tool
+LIST(APPEND testList geomatchAxSa
+  geomatchAxSaRAS
+  geomatchAxSaNoXforms)
+
+# ==========================================
 # Tests for "groupwise_init" tool
 LIST(APPEND testList
   groupwise_initCenterFOV

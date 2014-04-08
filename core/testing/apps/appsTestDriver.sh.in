@@ -106,6 +106,18 @@ run_eval()
     fi
 }
 
+run_eval_expect_fail()
+{
+    cmd=$*
+
+    echo "pushd $PWD; $cmd; popd"
+    if eval "${VALGRIND} $cmd"; then
+	exit 1
+    else
+	return
+    fi
+}
+
 get_unzipped()
 {
     if test -f ${1}.gz; then
@@ -1136,6 +1148,18 @@ case ${RUNTEST} in
     fit_spline_xformDimsMultiLevel)
         run fit_spline_xform --final-cp-dims 10,10,5 --levels 2 -o ${tmpdir}/warp.xform vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1.list
 	check_results warp.xform
+	;;
+    geomatchAxSa)
+	run_eval_expect_fail "${BINDIR}/geomatch -v phantom_ax.nii.gz phantom_sa.nii.gz >& ${tmpdir}/stderr"
+	check_results stderr
+	;;
+    geomatchAxSaRAS)
+	run_eval_expect_fail "${BINDIR}/geomatch -v --no-check-xforms --read-ras phantom_ax.nii.gz phantom_sa.nii.gz >& ${tmpdir}/stderr"
+	check_results stderr
+	;;
+    geomatchAxSaNoXforms)
+	run_eval "${BINDIR}/geomatch -v --no-check-xforms phantom_ax.nii.gz phantom_sa.nii.gz >& ${tmpdir}/stderr"
+	check_results stderr
 	;;
     glmDefault)
 	run_eval "${BINDIR}/glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
