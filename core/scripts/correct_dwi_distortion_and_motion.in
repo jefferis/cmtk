@@ -48,6 +48,13 @@ outdir=$1
 b0Rev=$2
 b0Fwd=$3
 
+if ! cmtk geomatch ${b0Rev} ${b0Fwd}; then
+    echo "ERROR: the two b=0 images have mismatched geometries or spatial coordinated:"
+    echo "  ${b0Rev}"
+    echo "  ${b0Fwd}"
+    exit 1
+fi
+
 shift 3
 bXlist="$*"
 
