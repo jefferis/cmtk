@@ -989,15 +989,49 @@ CallbackProduct()
 void
 CallbackAverage()
 {
-  const size_t nimages = ImageStack.size();
-  if ( ! nimages )
+  CheckStackTwoMatchingImages( "Average" );
+  
+  std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
+  while ( !ImageStack.empty() ) 
     {
-    cmtk::StdErr << "ERROR: need at least two images on stack for averaging\n";
-    return;
+    if ( ImageStack.size() > 1 )
+      CheckStackTwoMatchingImages( "Average" );
+    
+    volPtrs.push_back( ImageStack.front() );
+    ImageStack.pop_front();
+    }
+  
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
+  const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
+  cmtk::TypedArray::SmartPtr avgArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+
+#pragma omp parallel for  
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
+    {
+    double sum = 0;
+    size_t nvalues = 0;
+
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
+      {
+      cmtk::Types::DataItem v;
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
+        {
+	++nvalues;
+	sum += v;
+        }
+      }
+    
+    if ( nvalues )
+      {
+      avgArray->Set( sum/nvalues, i );      
+      }
+    else
+      avgArray->SetPaddingAt( i );       
     }
 
-  CallbackSum();
-  ImageStack.front()->GetData()->Rescale( 1.0 / nimages );
+  volPtrs[0]->SetData( avgArray );
+  ImageStack.push_front( volPtrs[0] );
 }
 
 void
