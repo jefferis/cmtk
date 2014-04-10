@@ -1,5 +1,8 @@
 Release CMTK-3.1.1:
 
+(r5307) Improved: "imagemath" tool's "--average" operator no longer
+	returns missing values for a pixel where a single one of the input
+	images has missing (padded) data.
 (r5303) Added: new "geomatch" tool can compare grid dimensions, pixel
 	sizes, and/or transformation matrices of two or more images to
 	ensure that they match.
