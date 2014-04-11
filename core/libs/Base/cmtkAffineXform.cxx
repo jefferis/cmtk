@@ -280,6 +280,12 @@ AffineXform::SetParameter ( const size_t idx, const Types::Coordinate p )
   this->ComposeMatrix();
 }
 
+std::set<short> 
+AffineXform::GetSupportedDOFs()
+{
+  const short supportedDOFs[] = { 0, 3, 6, 7, 9, 12, 3003, 3033, 3303, -1 };
+  return std::set<short>( &supportedDOFs[0], &supportedDOFs[9] );
+}
 
 Types::Coordinate
 AffineXform::GetParamStep
@@ -293,7 +299,7 @@ AffineXform::GetParamStep
     case 0: case 1: case 2:
       return mmStep;
     case 3:
-      if ( this->NumberDOFs == 303 || this->NumberDOFs == 306 )
+      if ( this->NumberDOFs == 3003 || this->NumberDOFs == 3033 )
 	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
 	return 0;
 	}
@@ -302,7 +308,7 @@ AffineXform::GetParamStep
 	return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[1] ) + MathUtil::Square( volSize[2] ) ) );
 	}
     case 4:
-      if ( this->NumberDOFs == 303 ||  this->NumberDOFs == 306 )
+      if ( this->NumberDOFs == 3003 ||  this->NumberDOFs == 3033 )
 	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
 	return 0;
 	}
@@ -311,7 +317,7 @@ AffineXform::GetParamStep
 	return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[2] ) ) );
 	}
     case 5:
-      if ( this->NumberDOFs == 303 || this->NumberDOFs == 306 )
+      if ( this->NumberDOFs == 3003 || this->NumberDOFs == 3033 )
 	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
 	return 0;
 	}
@@ -322,7 +328,7 @@ AffineXform::GetParamStep
     case 6: 
     case 7:
     case 8:
-      if ( this->NumberDOFs == 603 || this->NumberDOFs == 303 )
+      if ( this->NumberDOFs == 3303 || this->NumberDOFs == 3003 )
 	{ // special case: 6 DOFs rigid plus 3 DOFs shear, but no scale
 	return 0;
 	}

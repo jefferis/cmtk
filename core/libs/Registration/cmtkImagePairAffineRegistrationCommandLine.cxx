@@ -136,7 +136,7 @@ ImagePairAffineRegistrationCommandLine
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
     cl.AddVector( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom. This can be 3 (translation), 6 (rigid: translation and rotation), "
-		  "7 (rigid plus global scale), 9 (rigid plus anisotropic scales), 12 (rigid plus scales plus shears), or 603 (rigid plus shears, but no scale). "
+		  "7 (rigid plus global scale), 9 (rigid plus anisotropic scales), 12 (rigid plus scales plus shears), 3003 (translation plus shear), 3033 (translation, shear, and scale) or 3303 (rigid plus shears, but no scale). "
 		  "This option can be repeated, in which case DOFs are used for successive optimization runs in the order that they appear." );
     cl.AddVector( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
     cl.AddSwitch( Key( "symmetric" ), &this->m_SymmetricFwdBwd, true, "Use symmetric registration functional to simultaneously estimate forward and inverse transformation. "
@@ -224,6 +224,24 @@ ImagePairAffineRegistrationCommandLine
     {
     StdErr << "ERROR: step factor value " << this->m_OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
     throw cmtk::ExitException( 1 );
+    }
+
+  const std::set<short> supportedDOFs = AffineXform::GetSupportedDOFs();
+  for ( std::vector<short>::const_iterator it = this->NumberDOFs.begin(); it != this->NumberDOFs.end(); ++it )
+    {
+    if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
+      {
+      StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+  for ( std::vector<short>::const_iterator it = this->NumberDOFsFinal.begin(); it != this->NumberDOFsFinal.end(); ++it )
+    {
+    if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
+      {
+      StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
 
   if ( ! clArg2.empty() ) 

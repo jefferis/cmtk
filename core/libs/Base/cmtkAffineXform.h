@@ -44,6 +44,8 @@
 
 #include <Base/cmtkUnits.h>
 
+#include <set>
+
 namespace
 cmtk
 {
@@ -437,6 +439,9 @@ public:
 
   /// Get the number of degrees of freedom for this object.
   virtual unsigned int GetNumberDOFs () const { return NumberDOFs; }
+
+  /// Get a set of supported DOF values.
+  static std::set<short> GetSupportedDOFs();
 
   /// Return flag for log scale factors.
   bool GetUseLogScaleFactors() const
