@@ -148,7 +148,8 @@ doMain( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "MaskAndThreshold", "Image Masking and Thresholding" );
-    cl.AddCallback( Key( "mask" ), &cmtk::ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
+    cl.AddCallback( Key( "mask" ), &cmtk::ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0. "
+		    "Masked-out pixels will NOT be set to zero, but will instead be replaced with the currently-set padding value. Use '--set-padding 0' prior to '--mask' to force setting to zero." );
     cl.AddCallback( Key( "mask-inverse" ), &cmtk::ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0." );
 
     cl.AddCallback( Key( "thresh-below" ), &cmtk::ImageOperationThreshold::NewBelow, "Set all values below threshold to threshold value." );
