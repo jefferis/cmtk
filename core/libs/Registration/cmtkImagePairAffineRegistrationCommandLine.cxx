@@ -240,7 +240,7 @@ ImagePairAffineRegistrationCommandLine
       }
     }
   // check for supported numbers of degrees of freedom
-  for ( std::vector<short>::const_iterator it = this->NumberDOFsFinal.begin(); it != this->NumberDOFsFinal.end(); ++it )
+  for ( std::vector<short>::iterator it = this->NumberDOFsFinal.begin(); it != this->NumberDOFsFinal.end(); ++it )
     {
     if ( *it == 603 ) // fix legacy value
       *it = 3303;
