@@ -193,6 +193,26 @@ AffineRegistrationCommandLine
     throw cmtk::ExitException( 1 );
     }
 
+  // check for supported numbers of degrees of freedom
+  const std::set<short> supportedDOFs = AffineXform::GetSupportedDOFs();
+  for ( std::vector<short>::const_iterator it = this->NumberDOFs.begin(); it != this->NumberDOFs.end(); ++it )
+    {
+    if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
+      {
+      StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+  // check for supported numbers of degrees of freedom
+  for ( std::vector<short>::const_iterator it = this->NumberDOFsFinal.begin(); it != this->NumberDOFsFinal.end(); ++it )
+    {
+    if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
+      {
+      StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+
   this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
     
   if ( ! clArg2.empty() ) 
