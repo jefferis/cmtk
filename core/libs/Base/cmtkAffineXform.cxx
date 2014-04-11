@@ -293,15 +293,36 @@ AffineXform::GetParamStep
     case 0: case 1: case 2:
       return mmStep;
     case 3:
-      return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[1] ) + MathUtil::Square( volSize[2] ) ) );
+      if ( this->NumberDOFs == 303 || this->NumberDOFs == 306 )
+	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
+	return 0;
+	}
+      else
+	{
+	return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[1] ) + MathUtil::Square( volSize[2] ) ) );
+	}
     case 4:
-      return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[2] ) ) );
+      if ( this->NumberDOFs == 303 ||  this->NumberDOFs == 306 )
+	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
+	return 0;
+	}
+      else
+	{
+	return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[2] ) ) );
+	}
     case 5:
-      return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[1] ) ) );
+      if ( this->NumberDOFs == 303 || this->NumberDOFs == 306 )
+	{ // special case: 3 DOFs translation plus 3 DOFs shear, but no rotation
+	return 0;
+	}
+      else
+	{
+	return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[1] ) ) );
+	}
     case 6: 
     case 7:
     case 8:
-      if ( this->NumberDOFs == 603 )
+      if ( this->NumberDOFs == 603 || this->NumberDOFs == 303 )
 	{ // special case: 6 DOFs rigid plus 3 DOFs shear, but no scale
 	return 0;
 	}
