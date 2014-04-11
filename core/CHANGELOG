@@ -1,6 +1,11 @@
 Release CMTK-3.1.1:
 
-(r5313)	Changed: "registration" and "registrationx" tools no longer
+(r5317) Removed: the two scripts "correct_dwi_distortion" and
+	"correct_dwi_distortion_and_motion" have been removed. These were
+	not really very effective, but to be effective we need to be more
+	specific to the particular imaging. A vastly improved version is
+	available through http://nitrc.org/projects/ncanda-datacore
+(r5316)	Changed: "registration" and "registrationx" tools no longer
 	support the "603" special degree-of-freedom notation for no-scale
 	affine transformations. This is now denoted, more logically, as
 	"3303". Newly supported special notations have been added: "3003"
