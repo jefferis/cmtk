@@ -388,9 +388,9 @@ VolumeFromFile::WriteNifti
   const std::string spaceUnits = writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING );
   if ( spaceUnits == "mm" )
     header.xyzt_units = NIFTI_UNITS_MM;
-  else if ( (spaceUnits == "micron") or (spaceUnits == "um") )
+  else if ( (spaceUnits == "micron") || (spaceUnits == "um") )
     header.xyzt_units = NIFTI_UNITS_MICRON;
-  else if ( (spaceUnits == "m") or (spaceUnits == "meter") )
+  else if ( (spaceUnits == "m") || (spaceUnits == "meter") )
     header.xyzt_units = NIFTI_UNITS_METER;
   
   for ( std::map<int,cmtk::AffineXform::MatrixType>::const_iterator it = volume.m_AlternativeIndexToPhysicalMatrices.begin(); it != volume.m_AlternativeIndexToPhysicalMatrices.end(); ++it )
