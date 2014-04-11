@@ -1,4 +1,4 @@
-Release CMTK-3.1.1:
+Release CMTK-3.2.0:
 
 (r5317) Removed: the two scripts "correct_dwi_distortion" and
 	"correct_dwi_distortion_and_motion" have been removed. These were

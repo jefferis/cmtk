@@ -3,7 +3,7 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 3.1.1
+Release Notes -- CMTK 3.2.0
 ===========================
 
 
