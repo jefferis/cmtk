@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,6 +73,9 @@ public:
 
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
+
+  /// Set optional restriction to axis-orthogonal in-plane transformations.
+  virtual void SetRestrictToInPlane( const int axis ) = 0;
 
   /// Constructor function.
   static ImagePairSymmetricAffineRegistrationFunctional* Create

@@ -173,7 +173,7 @@ ImagePairAffineRegistration
 
     if ( this->m_RestrictToInPlane >=0 )
       {
-      StdErr << "WARNING: cannot restrict transformation to in-plane when symmetric computation is used; ignoring this.\n";
+      functional->SetRestrictToInPlane( this->m_RestrictToInPlane );
       }
     
     return functional;

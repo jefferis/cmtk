@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2011, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,6 +86,12 @@ public:
     this->BwdFunctional.SetForceOutside( flag, value );
   }
 
+  /// Set optional restriction to axis-orthogonal in-plane transformations.
+  virtual void SetRestrictToInPlane( const int axis )
+  {
+    this->FwdFunctional.SetRestrictToInPlane( axis );
+  }
+
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v )
   {
@@ -112,7 +118,7 @@ public:
   /// Get parameter stepping in milimeters.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    return 0.5 * (this->FwdFunctional.GetParamStep( idx, mmStep ) + this->FwdFunctional.GetParamStep( idx, mmStep ) );
+    return this->FwdFunctional.GetParamStep( idx, mmStep );
   }
   
   /// Return the transformation's parameter vector dimension.
