@@ -1,5 +1,7 @@
 Release CMTK-3.1.1:
 
+(r5309) Added: symmetric affine registration now also supports in-plane
+	transformations.
 (r5307) Improved: "imagemath" tool's "--average" operator no longer
 	returns missing values for a pixel where a single one of the input
 	images has missing (padded) data.
