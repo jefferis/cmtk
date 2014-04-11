@@ -1,5 +1,5 @@
 ##
-##  Copyright 2009-2012 SRI International
+##  Copyright 2009-2012, 2014 SRI International
 ##
 ##  Copyright 2012 Torsten Rohlfing
 ##
@@ -33,7 +33,7 @@ SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
 SET(CMTK_LIBRARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
 
 SET(SCRIPTS cmtk_functions.sh cmtk_locking.sh cmtk_locking_procmail.sh)
-LIST(APPEND SCRIPTS iterative_shape_averaging correct_nex_motion correct_dwi_distortion correct_dwi_distortion_and_motion groupwise_reformat)
+LIST(APPEND SCRIPTS iterative_shape_averaging correct_nex_motion groupwise_reformat)
 
 FOREACH(s ${SCRIPTS})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.in ${CMAKE_BINARY_DIR}/bin/${s} @ONLY)
