@@ -197,6 +197,9 @@ AffineRegistrationCommandLine
   const std::set<short> supportedDOFs = AffineXform::GetSupportedDOFs();
   for ( std::vector<short>::const_iterator it = this->NumberDOFs.begin(); it != this->NumberDOFs.end(); ++it )
     {
+    if ( *it == 603 ) // fix legacy value
+      *it = 3303;
+
     if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
       {
       StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
@@ -206,6 +209,9 @@ AffineRegistrationCommandLine
   // check for supported numbers of degrees of freedom
   for ( std::vector<short>::const_iterator it = this->NumberDOFsFinal.begin(); it != this->NumberDOFsFinal.end(); ++it )
     {
+    if ( *it == 603 ) // fix legacy value
+      *it = 3303;
+
     if ( supportedDOFs.find( *it ) == supportedDOFs.end() )
       {
       StdErr << "ERROR: DOF number " << *it << " is not supported.\n";
