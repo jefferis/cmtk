@@ -1,5 +1,8 @@
 Release CMTK-3.2.0:
 
+(r5324) Added: sign of the phase encode direction is now extracted from
+	Siemens EPI files and written to XML sidecar files. This
+	information apparently is NOT available in GE files at all.
 (r5317) Removed: the two scripts "correct_dwi_distortion" and
 	"correct_dwi_distortion_and_motion" have been removed. These were
 	not really very effective, but to be effective we need to be more
