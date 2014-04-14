@@ -11,6 +11,8 @@
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.250616</dicom:ImagingFrequency>
 	<DwellTime>0.000278</DwellTime>
+	<phaseEncodeDirection>COL</phaseEncodeDirection>
+	<phaseEncodeDirectionSign>pos</phaseEncodeDirectionSign>
 	<dicom:SequenceName>*epfid2d1_64</dicom:SequenceName>
 	<type>magnitude</type>
 </mr>

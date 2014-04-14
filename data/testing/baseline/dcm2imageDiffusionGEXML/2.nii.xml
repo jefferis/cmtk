@@ -11,6 +11,7 @@
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
 	<DwellTime>0.000628</DwellTime>
+	<phaseEncodeDirection>COL</phaseEncodeDirection>
 	<dicom:GE:EffectiveEchoSpacing>628.000000</dicom:GE:EffectiveEchoSpacing>
 	<dicom:GE:PulseSequenceName>dirk/sri_tensor_ramp1800_inv</dicom:GE:PulseSequenceName>
 	<dicom:GE:PulseSequenceDate>20111215102622</dicom:GE:PulseSequenceDate>

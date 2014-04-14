@@ -11,6 +11,8 @@
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260136</dicom:ImagingFrequency>
 	<DwellTime>0.000323</DwellTime>
+	<phaseEncodeDirection>COL</phaseEncodeDirection>
+	<phaseEncodeDirectionSign>neg</phaseEncodeDirectionSign>
 	<dicom:SequenceName>*ep_b0</dicom:SequenceName>
 	<type>magnitude</type>
 	<dwi>

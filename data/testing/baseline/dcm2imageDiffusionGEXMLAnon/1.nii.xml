@@ -5,6 +5,7 @@
 	<dicom:InversionTime>0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
 	<DwellTime>0.000628</DwellTime>
+	<phaseEncodeDirection>COL</phaseEncodeDirection>
 	<dicom:GE:EffectiveEchoSpacing>628.000000</dicom:GE:EffectiveEchoSpacing>
 	<type>magnitude</type>
 	<dwi>
