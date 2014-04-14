@@ -110,6 +110,7 @@ ImageFileDICOM::ImageFileDICOM( const std::string& filepath )
   :m_IsMultislice( false ),
    m_IsDWI( false ),   
    m_DwellTime( 0.0 ),
+   m_PhaseEncodeDirectionSign( "" ),
    m_BValue( 0 ),
    m_BVector( 0.0 ),
    m_HasBVector( false ),
@@ -272,8 +273,25 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	{
 	this->m_DwellTime = 0.0;
 	}
-      }
 
+      it = csaImageHeader.find( "PhaseEncodingDirectionPositive" );
+      if ( (it != csaImageHeader.end()) && !it->second.empty() )
+	{
+	switch ( it->second[0][0] )
+	  {
+	  case '0':
+	    this->m_PhaseEncodeDirectionSign = "neg";
+	    break;
+	  case '1':
+	    this->m_PhaseEncodeDirectionSign = "pos";
+	    break;
+	  default:
+	    this->m_PhaseEncodeDirectionSign = "unknown";	    
+	    break;
+	  }
+	}
+      }
+      
     // for DWI, first check standard DICOM vendor tags
     if ( (this->m_IsDWI = (this->m_Document->getValue( DcmTagKey(0x0019,0x100d), tmpStr )!=0)) ) // "Directionality" tag
       {

@@ -110,6 +110,11 @@ public:
   /// Dwell time for EPI
   double m_DwellTime;
 
+  /** Sign for phase encode direction.
+   * This is "pos" for "positive" phase encoding, "neg" for "negative", or "unknown"
+   */
+  std::string m_PhaseEncodeDirectionSign;
+
   /// B value for DWI.
   double m_BValue;
 

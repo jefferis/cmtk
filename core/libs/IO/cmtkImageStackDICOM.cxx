@@ -120,6 +120,8 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:InversionTime",                { "\t", NULL, NULL, "\n" } },
     { "dicom:ImagingFrequency",             { "\t", NULL, NULL, "\n" } },
     { "DwellTime",                          { "\t", NULL, NULL, "\n" } },
+    { "phaseEncodeDirection",               { "\t", NULL, NULL, "\n" } },
+    { "phaseEncodeDirectionSign",           { "\t", NULL, NULL, "\n" } },
     { "dicom:SequenceName",                 { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:PulseSequenceName",         { "\t", NULL, NULL, "\n" } },
     { "dicom:GE:PulseSequenceDate",         { "\t", NULL, NULL, "\n" } },
@@ -182,74 +184,88 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
   mxmlSetWrapMargin( 120 ); // make enough room for indented bVectorStandard
   mxml_node_t *x_root = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
 
+  // convenience pointer to first image in series
+  const ImageFileDICOM* firstImage = this->front();
+
   if ( includeIdentifiers )
     {
     mxml_node_t *x_device = mxmlNewElement( x_root, "device" );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, this->front()->GetTagValue( DCM_Manufacturer ).c_str() ) );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, this->front()->GetTagValue( DCM_ManufacturerModelName ).c_str() ) );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, this->front()->GetTagValue( DCM_StationName ).c_str() ) );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, this->front()->GetTagValue( DCM_DeviceSerialNumber ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:Manufacturer" ), 0, firstImage->GetTagValue( DCM_Manufacturer ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:ManufacturerModel" ), 0, firstImage->GetTagValue( DCM_ManufacturerModelName ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:StationName" ), 0, firstImage->GetTagValue( DCM_StationName ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_device, "dicom:DeviceSerialNumber" ), 0, firstImage->GetTagValue( DCM_DeviceSerialNumber ).c_str() ) );
     }
 
-  std::string modality = this->front()->GetTagValue( DCM_Modality );
+  std::string modality = firstImage->GetTagValue( DCM_Modality );
   std::transform( modality.begin(), modality.end(), modality.begin(), cmtkWrapToLower );
   
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( this->front()->GetTagValue( DCM_RepetitionTime ).c_str() ) ) );
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( this->front()->GetTagValue( DCM_EchoTime ).c_str() ) ) );
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( this->front()->GetTagValue( DCM_InversionTime ).c_str() ) ) );
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( this->front()->GetTagValue( DCM_ImagingFrequency ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( firstImage->GetTagValue( DCM_RepetitionTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( firstImage->GetTagValue( DCM_EchoTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( firstImage->GetTagValue( DCM_InversionTime ).c_str() ) ) );
+    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( firstImage->GetTagValue( DCM_ImagingFrequency ).c_str() ) ) );
 
-    if ( this->front()->m_DwellTime > 0 )
+    if ( firstImage->m_DwellTime > 0 )
       {
-      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "DwellTime"), this->front()->m_DwellTime ) );
-      }
-
-    if ( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ) != "" )
-      {
-      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( this->front()->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) ) );
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "DwellTime"), firstImage->m_DwellTime ) );
       }
 
-    if ( this->front()->GetTagValue( DCM_SequenceName ) != "" && includeIdentifiers )
+    const std::string phaseEncodeDirection = firstImage->GetTagValue( DCM_InPlanePhaseEncodingDirection );
+    if ( phaseEncodeDirection != "" )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, this->front()->GetTagValue( DCM_SequenceName ).c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "phaseEncodeDirection"), 0, phaseEncodeDirection.c_str() ) );
+      }
+
+    if ( firstImage->m_PhaseEncodeDirectionSign != "" )
+      {
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "phaseEncodeDirectionSign"), 0, firstImage->m_PhaseEncodeDirectionSign.c_str() ) );
+      }
+
+    if ( firstImage->GetTagValue( DCM_GE_EffectiveEchoSpacing ) != "" )
+      {
+      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:GE:EffectiveEchoSpacing"), atof( firstImage->GetTagValue( DCM_GE_EffectiveEchoSpacing ).c_str() ) ) );
+      }
+
+    if ( firstImage->GetTagValue( DCM_SequenceName ) != "" && includeIdentifiers )
+      {
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:SequenceName"), 0, firstImage->GetTagValue( DCM_SequenceName ).c_str() ) );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceName ) != "" && includeIdentifiers )
+    if ( firstImage->GetTagValue( DCM_GE_PulseSequenceName ) != "" && includeIdentifiers )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceName ).c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceName"), 0, firstImage->GetTagValue( DCM_GE_PulseSequenceName ).c_str() ) );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_PulseSequenceDate ) != "" && includeIdentifiers )
+    if ( firstImage->GetTagValue( DCM_GE_PulseSequenceDate ) != "" && includeIdentifiers )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, this->front()->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:PulseSequenceDate"), 0, firstImage->GetTagValue( DCM_GE_PulseSequenceDate ).c_str() ) );
       }
     
-    if ( this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" && includeIdentifiers )
+    if ( firstImage->GetTagValue( DCM_GE_InternalPulseSequenceName ) != "" && includeIdentifiers )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, this->front()->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "dicom:GE:InternalPulseSequenceName"), 0, firstImage->GetTagValue( DCM_GE_InternalPulseSequenceName ).c_str() ) );
       }
     
-    if ( this->front()->m_RawDataType != "unknown" )
+    if ( firstImage->m_RawDataType != "unknown" )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "type"), 0, this->front()->m_RawDataType.c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_modality, "type"), 0, firstImage->m_RawDataType.c_str() ) );
       }
     
-    if ( this->front()->m_IsDWI )
+    if ( firstImage->m_IsDWI )
       {
       mxml_node_t *x_dwi = mxmlNewElement( x_modality, "dwi" );
       
-      Coverity::FakeFree( mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), this->front()->m_BValue ) );
+      Coverity::FakeFree( mxmlNewInteger( mxmlNewElement( x_dwi, "bValue"), firstImage->m_BValue ) );
 
-      if ( this->front()->m_HasBVector )
+      if ( firstImage->m_HasBVector )
 	{
 	mxml_node_t *x_bvec = mxmlNewElement( x_dwi, "bVector");
 	mxmlElementSetAttr( x_bvec, "coordinateSpace", "LPS" );
 	for ( size_t idx = 0; idx < 3; ++idx )
 	  {
-	  Coverity::FakeFree( mxmlNewReal( x_bvec, this->front()->m_BVector[idx] ) );
+	  Coverity::FakeFree( mxmlNewReal( x_bvec, firstImage->m_BVector[idx] ) );
 	  }
 	
 	// Determine bVector in image LPS coordinate space:
@@ -261,7 +277,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 	try
 	  {
 	  // Apply inverse of remaining image-to-space matrix to original bVector
-	  const UniformVolume::CoordinateVectorType bVectorImage = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
+	  const UniformVolume::CoordinateVectorType bVectorImage = firstImage->m_BVector * Matrix3x3<Types::Coordinate>( gridLPS->GetImageToPhysicalMatrix().GetInverse() );
 	  
 	  mxml_node_t *x_bvec_image = mxmlNewElement( x_dwi, "bVectorImage");
 	  mxmlElementSetAttr( x_bvec_image, "imageOrientation", gridLPS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
@@ -282,7 +298,7 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 	try
 	  {
 	  // Apply inverse of remaining image-to-space matrix to original bVector
-	  const UniformVolume::CoordinateVectorType bVectorStandard = this->front()->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
+	  const UniformVolume::CoordinateVectorType bVectorStandard = firstImage->m_BVector * Matrix3x3<Types::Coordinate>( gridRAS->GetImageToPhysicalMatrix().GetInverse() );
 	  
 	  mxml_node_t *x_bvec_std = mxmlNewElement( x_dwi, "bVectorStandard" );
 	  mxmlElementSetAttr( x_bvec_std, "imageOrientation", gridRAS->GetMetaInfo( META_IMAGE_ORIENTATION ).c_str() );
@@ -303,17 +319,17 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
 
   if ( includeIdentifiers )
     {
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, this->front()->m_FileDir.c_str() ) );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, this->front()->GetTagValue( DCM_StudyInstanceUID ).c_str() ) );
-    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, this->front()->GetTagValue( DCM_SeriesInstanceUID ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dcmFileDirectory" ), 0, firstImage->m_FileDir.c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:StudyInstanceUID" ), 0, firstImage->GetTagValue( DCM_StudyInstanceUID ).c_str() ) );
+    Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:SeriesInstanceUID" ), 0, firstImage->GetTagValue( DCM_SeriesInstanceUID ).c_str() ) );
 
-    if ( this->front()->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
+    if ( firstImage->GetTagValue( DCM_FrameOfReferenceUID, "missing" ) != "missing" )
       {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, this->front()->GetTagValue( DCM_FrameOfReferenceUID ).c_str() ) );
+      Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:FrameOfReferenceUID" ), 0, firstImage->GetTagValue( DCM_FrameOfReferenceUID ).c_str() ) );
       }
     }
 
-  Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, this->front()->GetTagValue( DCM_ImageOrientationPatient ).c_str() ) );
+  Coverity::FakeFree( mxmlNewText( mxmlNewElement( x_stack, "dicom:ImageOrientationPatient" ), 0, firstImage->GetTagValue( DCM_ImageOrientationPatient ).c_str() ) );
 
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
