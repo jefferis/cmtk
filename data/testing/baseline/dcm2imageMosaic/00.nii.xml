@@ -6,13 +6,13 @@
 	<dicom:DeviceSerialNumber>35078</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<dicom:RepetitionTime>2260.000000</dicom:RepetitionTime>
-	<dicom:EchoTime>30.000000</dicom:EchoTime>
-	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:RepetitionTime units="ms">2260.000000</dicom:RepetitionTime>
+	<dicom:EchoTime units="ms">30.000000</dicom:EchoTime>
+	<dicom:InversionTime units="ms">0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260759</dicom:ImagingFrequency>
-	<DwellTime>0.000286</DwellTime>
+	<dwellTime units="s">0.000286</dwellTime>
 	<phaseEncodeDirection>COL</phaseEncodeDirection>
-	<phaseEncodeDirectionSign>pos</phaseEncodeDirectionSign>
+	<phaseEncodeDirectionSign>POS</phaseEncodeDirectionSign>
 	<dicom:SequenceName>epfid2d1_64</dicom:SequenceName>
 </mr>
 <stack>

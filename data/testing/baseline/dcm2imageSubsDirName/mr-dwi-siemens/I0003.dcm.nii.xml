@@ -6,13 +6,13 @@
 	<dicom:DeviceSerialNumber>35139</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<dicom:RepetitionTime>7800.000000</dicom:RepetitionTime>
-	<dicom:EchoTime>87.000000</dicom:EchoTime>
-	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:RepetitionTime units="ms">7800.000000</dicom:RepetitionTime>
+	<dicom:EchoTime units="ms">87.000000</dicom:EchoTime>
+	<dicom:InversionTime units="ms">0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.250600</dicom:ImagingFrequency>
-	<DwellTime>0.000357</DwellTime>
+	<dwellTime units="s">0.000357</dwellTime>
 	<phaseEncodeDirection>COL</phaseEncodeDirection>
-	<phaseEncodeDirectionSign>neg</phaseEncodeDirectionSign>
+	<phaseEncodeDirectionSign>NEG</phaseEncodeDirectionSign>
 	<dicom:SequenceName>*ep_b0</dicom:SequenceName>
 	<dwi>
 		<bValue>0</bValue>

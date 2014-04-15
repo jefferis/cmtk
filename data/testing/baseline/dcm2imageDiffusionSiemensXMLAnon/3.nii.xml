@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mr>
-	<dicom:RepetitionTime>7800.000000</dicom:RepetitionTime>
-	<dicom:EchoTime>87.000000</dicom:EchoTime>
-	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:RepetitionTime units="ms">7800.000000</dicom:RepetitionTime>
+	<dicom:EchoTime units="ms">87.000000</dicom:EchoTime>
+	<dicom:InversionTime units="ms">0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>123.260136</dicom:ImagingFrequency>
-	<DwellTime>0.000323</DwellTime>
+	<dwellTime units="s">0.000323</dwellTime>
 	<phaseEncodeDirection>COL</phaseEncodeDirection>
-	<phaseEncodeDirectionSign>neg</phaseEncodeDirectionSign>
+	<phaseEncodeDirectionSign>NEG</phaseEncodeDirectionSign>
 	<type>magnitude</type>
 	<dwi>
 		<bValue>0</bValue>

@@ -6,11 +6,11 @@
 	<dicom:DeviceSerialNumber>0000000000585124</dicom:DeviceSerialNumber>
 </device>
 <mr>
-	<dicom:RepetitionTime>4000.000000</dicom:RepetitionTime>
-	<dicom:EchoTime>97.900000</dicom:EchoTime>
-	<dicom:InversionTime>0.000000</dicom:InversionTime>
+	<dicom:RepetitionTime units="ms">4000.000000</dicom:RepetitionTime>
+	<dicom:EchoTime units="ms">97.900000</dicom:EchoTime>
+	<dicom:InversionTime units="ms">0.000000</dicom:InversionTime>
 	<dicom:ImagingFrequency>127.886707</dicom:ImagingFrequency>
-	<DwellTime>0.000628</DwellTime>
+	<dwellTime units="s">0.000628</dwellTime>
 	<phaseEncodeDirection>COL</phaseEncodeDirection>
 	<dicom:GE:EffectiveEchoSpacing>628.000000</dicom:GE:EffectiveEchoSpacing>
 	<dicom:GE:PulseSequenceName>dirk/sri_tensor_ramp1800_inv</dicom:GE:PulseSequenceName>
