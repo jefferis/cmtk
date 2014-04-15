@@ -579,9 +579,9 @@ IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
 
-IF(CMTK_USE_QT)
+IF(CMTK_USE_QT AND QT_FOUND)
   OPTION(BUILD_GUI "Build GUI applications" ON)
-ENDIF(CMTK_USE_QT)
+ENDIF(CMTK_USE_QT AND QT_FOUND)
 
 #-----------------------------------------------------------------------------
 # Add an option to use FFTW library
