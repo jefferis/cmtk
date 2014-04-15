@@ -119,7 +119,7 @@ ImageStackDICOM::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "dicom:EchoTime",                     { "\t", NULL, NULL, "\n" } },
     { "dicom:InversionTime",                { "\t", NULL, NULL, "\n" } },
     { "dicom:ImagingFrequency",             { "\t", NULL, NULL, "\n" } },
-    { "DwellTime",                          { "\t", NULL, NULL, "\n" } },
+    { "dwellTime",                          { "\t", NULL, NULL, "\n" } },
     { "phaseEncodeDirection",               { "\t", NULL, NULL, "\n" } },
     { "phaseEncodeDirectionSign",           { "\t", NULL, NULL, "\n" } },
     { "dicom:SequenceName",                 { "\t", NULL, NULL, "\n" } },
@@ -202,14 +202,25 @@ ImageStackDICOM::WriteXML( const std::string& fname, const UniformVolume& volume
   mxml_node_t *x_modality = mxmlNewElement( x_root, modality.c_str() );
   if ( modality == "mr" )
     {
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:RepetitionTime"), atof( firstImage->GetTagValue( DCM_RepetitionTime ).c_str() ) ) );
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:EchoTime"), atof( firstImage->GetTagValue( DCM_EchoTime ).c_str() ) ) );
-    Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:InversionTime"), atof( firstImage->GetTagValue( DCM_InversionTime ).c_str() ) ) );
+    mxml_node_t *x_tr = mxmlNewElement( x_modality, "dicom:RepetitionTime");
+    mxmlNewReal( x_tr, atof( firstImage->GetTagValue( DCM_RepetitionTime ).c_str() ) );
+    mxmlElementSetAttr( x_tr, "units", "ms" );
+    
+    mxml_node_t *x_te = mxmlNewElement( x_modality, "dicom:EchoTime");
+    mxmlNewReal( x_te, atof( firstImage->GetTagValue( DCM_EchoTime ).c_str() ) );
+    mxmlElementSetAttr( x_te, "units", "ms" );
+
+    mxml_node_t *x_ti = mxmlNewElement( x_modality, "dicom:InversionTime");
+    mxmlNewReal( x_ti, atof( firstImage->GetTagValue( DCM_InversionTime ).c_str() ) );
+    mxmlElementSetAttr( x_ti, "units", "ms" );
+
     Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "dicom:ImagingFrequency"), atof( firstImage->GetTagValue( DCM_ImagingFrequency ).c_str() ) ) );
 
     if ( firstImage->m_DwellTime > 0 )
       {
-      Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_modality, "DwellTime"), firstImage->m_DwellTime ) );
+      mxml_node_t *x_dwell_time = mxmlNewElement( x_modality, "dwellTime");
+      mxmlNewReal( x_dwell_time, firstImage->m_DwellTime );
+      mxmlElementSetAttr( x_dwell_time, "units", "s" );
       }
 
     const std::string phaseEncodeDirection = firstImage->GetTagValue( DCM_InPlanePhaseEncodingDirection );

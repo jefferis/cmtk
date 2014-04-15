@@ -280,13 +280,13 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	switch ( it->second[0][0] )
 	  {
 	  case '0':
-	    this->m_PhaseEncodeDirectionSign = "neg";
+	    this->m_PhaseEncodeDirectionSign = "NEG";
 	    break;
 	  case '1':
-	    this->m_PhaseEncodeDirectionSign = "pos";
+	    this->m_PhaseEncodeDirectionSign = "POS";
 	    break;
 	  default:
-	    this->m_PhaseEncodeDirectionSign = "unknown";	    
+	    this->m_PhaseEncodeDirectionSign = "UNKNOWN";	    
 	    break;
 	  }
 	}
