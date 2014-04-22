@@ -50,7 +50,6 @@
 #define DCM_GE_PulseSequenceName DcmTagKey(0x0019,0x109c)
 #define DCM_GE_PulseSequenceDate DcmTagKey(0x0019,0x109d)
 #define DCM_GE_InternalPulseSequenceName DcmTagKey(0x0019,0x109e)
-#define DCM_GE_RTIA_Timer DcmTagKey(0x0021,0x105e)
 
 #ifndef DCM_ManufacturerModelName
 #define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)

@@ -347,17 +347,6 @@ ImageFileDICOM::DoVendorTagsGE()
   int tmpInt = 0;
   double tmpDbl = 0;
 
-  // some GE files have slice times in a "Real Time Image Acquisition Timer" private tag.
-  if ( this->m_Document->getValue( DCM_GE_RTIA_Timer, tmpDbl ) )
-    {
-    // some scanners set this, but always have it at zero. exclude these.
-    // valid data seems to start with a small offset.
-    if ( tmpDbl > 0 )
-      {
-      this->m_SliceTimes.push_back( tmpDbl / 10 ); // for some reason, these seem to be stored as milliseconds times 10; we just want milliseconds
-      }
-    }
-
   if ( this->GetTagValue( DCM_Modality ) == "MR" )
     {
     // raw data type
