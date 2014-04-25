@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,6 +54,7 @@ doMain
   std::string outputImagePath2;
 
   std::string outputDField;
+  std::string outputDFieldRev;
 
   std::string writeJacobianPath1;
   std::string writeJacobianPath2;  
@@ -110,6 +111,8 @@ doMain
     cl.AddParameter( &outputImagePath1, "OutputImage1", "First output image path - this is the unwarped, corrected standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddParameter( &outputImagePath2, "OutputImage2", "Second output image path - this is the unwarped, corrected reversed-encoding b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddParameter( &outputDField, "OutputDField", "Path for deformation field (this can be applied to other images, e.g., diffusion-weighted images." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputDFieldRev, "OutputDFieldRev", "Path for reverse deformation field (again, this can be applied to other images, e.g., diffusion-weighted images." )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT | cmtk::CommandLine::PROPS_OPTIONAL );
     
     cl.Parse( argc, argv );
     }
@@ -138,6 +141,12 @@ doMain
     {
     cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( +1 ) );
     cmtk::XformIO::Write( dfield, outputDField );
+    }
+    
+  if ( !outputDFieldRev.empty() )
+    {
+    cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( -1 ) );
+    cmtk::XformIO::Write( dfield, outputDFieldRev );
     }
     
   if ( !writeJacobianPath1.empty() )

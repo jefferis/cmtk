@@ -80,14 +80,20 @@ CommandLine::PrintHelp
 	{
 	if ( ! (*it)->m_Comment.empty() )
 	  {
-	  fmt << (*it)->m_Name << " ";
+	  if ( (*it)->m_Properties & PROPS_OPTIONAL )
+	    fmt << "[" << (*it)->m_Name << "] ";
+	  else
+	    fmt << (*it)->m_Name << " ";
 	  }
 	}
       for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
 	if ( ! (*it)->m_Comment.empty() )
 	  {
-	  fmt << (*it)->m_Name << " ";
+	  if ( (*it)->m_Properties & PROPS_OPTIONAL )
+	    fmt << "[" << (*it)->m_Name << " ... ] ";
+	  else
+	    fmt << (*it)->m_Name << " ... ";
 	  }
 	}
       StdOut.FormatText( fmt.str(), 5, lineWidth );
