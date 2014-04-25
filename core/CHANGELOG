@@ -1,5 +1,7 @@
 Release CMTK-3.2.0:
 
+(r5333) Added: "epiunwarp" now has optional sixth positional parameter to
+	export reverse deformation field to a given path.
 (r5327) Added: time units are now written to XML sidecar files for TR, TE,
 	TI, and dwell time.
 (r5324) Added: sign of the phase encode direction is now extracted from
