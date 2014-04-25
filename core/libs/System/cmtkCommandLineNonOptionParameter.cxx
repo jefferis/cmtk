@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011, 2013 SRI International
+//  Copyright 2009-2011, 2013-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
