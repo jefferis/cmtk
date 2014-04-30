@@ -1,5 +1,9 @@
-Release CMTK-3.2.0:
+Release CMTK-3.2.0 (2014-04-30):
 
+(r5340) Packaging: RPM distribution now split into "core" (binaries) and
+	"devel" (libraries and headers)	packages.
+(r5340) Packaging: TGZ packages no longer include "CMTK-M.m.p/" release
+	name prefix for stored files.
 (r5337) Added: CMTK_BINARY_DIR and CMTK_LIRBARY_DIR as used in a number of
 	shell scripts included with CMTK can now be overridden by setting
 	them before executing one such script. This should allow CMTK to
@@ -12,11 +16,6 @@ Release CMTK-3.2.0:
 (r5324) Added: sign of the phase encode direction is now extracted from
 	Siemens EPI files and written to XML sidecar files. This
 	information apparently is NOT available in GE files at all.
-(r5317) Removed: the two scripts "correct_dwi_distortion" and
-	"correct_dwi_distortion_and_motion" have been removed. These were
-	not really very effective, but to be effective we need to be more
-	specific to the particular imaging. A vastly improved version is
-	available through http://nitrc.org/projects/ncanda-datacore
 (r5316)	Changed: "registration" and "registrationx" tools no longer
 	support the "603" special degree-of-freedom notation for no-scale
 	affine transformations. This is now denoted, more logically, as

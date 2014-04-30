@@ -6,6 +6,74 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 3.2.0
 ===========================
 
+ADDED FEATURES:
+
+1. Paths for non-standard installation directories
+
+CMTK_BINARY_DIR and CMTK_LIRBARY_DIR as used in a number of shell scripts
+included with CMTK can now be overridden by setting them before executing one
+such script. This should allow CMTK to 	work when it was installed/unpacked
+into a path other than the installation path defined during build.
+
+
+2. Additional information in XML sidecar files
+
+The following additionl information is now written to XML sidecar files
+created by the "dcm2image" tool:  
+
+ - time units for TR, TE, TI, and dwell time.
+
+ - sign of the phase encode direction from Siemens EPI files
+
+ - slice times (relative to first slice in each volume) from Siemens DICOM
+   files
+
+
+3. New command line tools:
+
+"geomatch" can compare grid dimensions, pixel sizes, and/or transformation
+matrices of two or more images to ensure that they match.
+
+
+4. New features in existing tools:
+
+- The "sequence" tool can now optionally create histogram files in CSV format.
+
+- Distance map-based erosion of multi-label fields, both in the library and
+  exposed via the new "--erode-distance-multilabel"operation of "convertx"
+
+- Exact isotropic resampling in UniformVolume class, exposed at command line
+  via new "--resample-exact" operation of the "convertx" tool.
+
+- The "epiunwarp" tool now has optional sixth positional parameter to export
+  reverse deformation field to a given path.
+
+- symmetric affine registration now also supports in-plane transformations.
+
+- new operations in "convertx" tool, "--labels" and "--grey", set and reset
+  the "intent_code" field in NIfTI images to NIFTI_INTENT_LABEL and 0, respectively.
+
+- the "xform2dfield" tool can now write deformation fields in NIfTI format and
+  fit for use by FSL's "applywarp" tool.
+
+- freq_dim, phase_dim, slice_dim as well as slice times and acquisition order
+  fields are now properly set in NIFTI headers for files created by
+  "dcm2image," so long as these data were available in the input DICOM files.
+
+
+USER-VISIBLE CHANGES:
+
+1. The "--average" operator of the "imagemath" tool no longer returns missing
+values for a pixel where a single one of the input  images has missing
+(padded) data.
+
+2. Where appropriate, image processing operators now set the data class of
+their outputs as "LABEL". This includes a variety of binarization/thresholding
+techniques, label combination algorithms, and segmentations.
+
+The "reformatx" tool now propagates floating image data class (label or grey)
+to output, as represented by the "intent_code" header field when written in
+NIfTI format.
 
 
 Release Notes -- CMTK 3.1.0
