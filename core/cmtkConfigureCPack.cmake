@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2013 SRI International
+##  Copyright 2004-2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -58,9 +58,14 @@ SET(CPACK_PACKAGE_FILE_NAME "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}")
 
 SET(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-
+SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
 SET(CPACK_RPM_PACKAGE_LICENSE "GPL v3")
 SET(CPACK_RPM_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
+SET(CPACK_RPM_COMPONENT_INSTALL ON)
+SET(CPACK_RPM_PACKAGE_URL "http://nitrc.org/projects/cmtk" )
+SET(CPACK_RPM_CHANGELOG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG" )
+
+SET(CPACK_TGZ_COMPONENT_INSTALL ON)
 
 # mandatory package
 IF(CMTK_USE_QT)
@@ -111,31 +116,36 @@ INCLUDE(CPack)
 
 CPACK_ADD_COMPONENT(tools
   DISPLAY_NAME "Command Line Tools"
-  GROUP runtime)
+  GROUP core)
 
 CPACK_ADD_COMPONENT(gui
   DISPLAY_NAME "Graphical User Interface Applications"
-  GROUP runtime)
+  GROUP core)
 
 CPACK_ADD_COMPONENT(libraries
   DISPLAY_NAME "Link Libraries"
-  GROUP development
+  GROUP devel
   DISABLED)
 
 CPACK_ADD_COMPONENT(headers
   DISPLAY_NAME "C/C++ Header Files"
-  GROUP development
+  GROUP devel
   DISABLED)
+
+CPACK_ADD_COMPONENT(runtime
+  DISPLAY_NAME "Runtime Components"
+  GROUP core)
 
 CPACK_ADD_COMPONENT(documentation
   DISPLAY_NAME "CMTK Documentation"
-  GROUP runtime)
+  GROUP core)
 
-CPACK_ADD_COMPONENT_GROUP(development
-  DISPLAY_NAME "Development Components")
+CPACK_ADD_COMPONENT_GROUP(devel
+  DISPLAY_NAME "Development Components"
+  DEPENDS core)
 
-CPACK_ADD_COMPONENT_GROUP(runtime
-  DISPLAY_NAME "Runtime Components")
+CPACK_ADD_COMPONENT_GROUP(core
+  DISPLAY_NAME "Core Components")
 
 IF(BUILD_SHARED_LIBS)
   SET(CPACK_COMPONENT_TOOLS_DEPENDS libraries)
