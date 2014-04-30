@@ -28,7 +28,7 @@
 ##  $LastChangedBy$
 ##
 
-CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
  
 # Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
 . ${CMTK_BINARY_DIR}/cmtk_functions.sh

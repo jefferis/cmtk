@@ -3,7 +3,7 @@
 ##
 ##  Copyright 2011 Yaroslav Halchenko 
 ##
-##  Copyright 2011-2012 SRI International
+##  Copyright 2011-2012, 2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -30,17 +30,17 @@
 ##  $LastChangedBy$
 ##
 
-CMTK_BIN_DIR=@CMTK_BINARY_DIR_CONFIG@
-CMTK_LIB_DIR=@CMTK_LIBRARY_DIR_CONFIG@
+export CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
+export CMTK_LIBRARY_DIR=${CMTK_BINARY_DIR:-@CMTK_LIBRARY_DIR_CONFIG@}
 
 CMD=$1
-CMDPATH=${CMTK_BIN_DIR}/$CMD
+CMDPATH=${CMTK_BINARY_DIR}/$CMD
 shift
 
 if [ "${LD_LIBRARY_PATH}" != "" ]; then
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CMTK_LIB_DIR}
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CMTK_LIBRARY_DIR}
 else
-    export LD_LIBRARY_PATH=${CMTK_LIB_DIR}
+    export LD_LIBRARY_PATH=${CMTK_LIBRARY_DIR}
 fi
 
 if echo "$CMD $@" | grep -q -e --help; then
