@@ -1,5 +1,10 @@
 Release CMTK-3.2.0:
 
+(r5337) Added: CMTK_BINARY_DIR and CMTK_LIRBARY_DIR as used in a number of
+	shell scripts included with CMTK can now be overridden by setting
+	them before executing one such script. This should allow CMTK to
+	work when it was installed/unpacked into a path other than the
+	installation path defined during build.
 (r5333) Added: "epiunwarp" now has optional sixth positional parameter to
 	export reverse deformation field to a given path.
 (r5327) Added: time units are now written to XML sidecar files for TR, TE,
