@@ -68,6 +68,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddSwitch( Key( "tolerant" ), &detectionParameters.m_TolerateTruncation, true, "Be tolerant of issues such as partially truncated marker spheres. "
 		  "This should be used with caution only when necessary, and both the phantom image and detection results should be carefully inspected to identify the source of detection problems and verify reliable results." );
     cl.AddSwitch( Key( "any-orientation" ), &detectionParameters.m_StandardOrientation, false, "Do not assume standard orientation of the phantom, i.e., allow phantoms scanned upside-down. This makes detection of defective phantoms less robust." );
+    cl.AddSwitch( Key( "fallback-cnr-centroid" ), &detectionParameters.m_ForceFallbackCentroidCNR, true, "Force a fallback to use centroid of CNR spheres rather than center of SNR sphere for initial orientation. "
+		  "This can be used when, for example, the SNR sphere has broken off but is positioned in a way that does not trigger the automatic fallback." );
     cl.AddOption( Key( "erode-snr" ), &detectionParameters.m_ErodeSNR, "Erode SNR sphere by this distance prior to computing SNR estimate." );
     cl.AddOption( Key( "erode-cnr" ), &detectionParameters.m_ErodeCNR, "Erode each CNR sphere by this distance prior to computing CNR estimate." );
     cl.AddSwitch( Key( "refine-xform" ), &detectionParameters.m_RefineXformEachLandmark, true, "Refine estimated affine transformation after each new landmark is added." );

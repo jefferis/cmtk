@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012, 2013 SRI International
+//  Copyright 2012-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,6 +71,7 @@ public:
       m_CorrectSphereBiasField( true ), 
       m_TolerateTruncation( false ),
       m_StandardOrientation( true ),
+      m_ForceFallbackCentroidCNR( false ),
       m_BipolarFilterMargin( 1 ), 
       m_RefineMarginPixels( 1 ), 
       m_SphereExcludeSafetyMargin( 10.0 ),
@@ -96,6 +97,9 @@ public:
      * phantoms scanned upside down.
      */
     bool m_StandardOrientation;
+
+    /// Flag for forcing the fallback to use CNR centroid instead of SNR sphere center (e.g., when SNR sphere is broken off)
+    bool m_ForceFallbackCentroidCNR;
 
     /// Margin (in pixels) for the bipolar sphere detection matched filter.
     int m_BipolarFilterMargin;

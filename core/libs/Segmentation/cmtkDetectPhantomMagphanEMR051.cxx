@@ -133,7 +133,7 @@ cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::Sma
 
     // Use the phantom center estimate with the smallest angle cosine, i.e., the one generating the closest to an orthogonal coordinate system
     Types::Coordinate minAngleCosine;
-    if ( angleCosineSNR <= angleCosineCNR )
+    if ( (angleCosineSNR <= angleCosineCNR) && !this->m_Parameters.m_ForceFallbackCentroidCNR )
       {
       minAngleCosine = angleCosineSNR;
       phantomCenter = this->m_Landmarks[0].m_Location;
