@@ -1,4 +1,4 @@
-Release CMTK-3.2.0 (2014-04-30):
+Release CMTK-3.2.0 (2014-05-01):
 
 (r5344) Added: manually force CNR centroid fallback in
 	"detect"adni_phantom" tool.

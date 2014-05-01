@@ -56,9 +56,13 @@ matrices of two or more images to ensure that they match.
 - the "xform2dfield" tool can now write deformation fields in NIfTI format and
   fit for use by FSL's "applywarp" tool.
 
-- freq_dim, phase_dim, slice_dim as well as slice times and acquisition order
+- freq_dim, phase_dim, slice_dim, as well as slice times and acquisition order
   fields are now properly set in NIFTI headers for files created by
   "dcm2image," so long as these data were available in the input DICOM files.
+
+- The CNR centroid fallback (for phantoms with broken-off SNR sphere) can now
+  be forced in the "detect_adni_phantom" tool, for cases where the SNR sphere
+  is floating in a position that does not trigger the automatic fallback.
 
 
 USER-VISIBLE CHANGES:
