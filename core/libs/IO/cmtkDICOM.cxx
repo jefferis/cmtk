@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -450,12 +450,14 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
 	      }
 	    else
 	      {
-	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << " in file " << this->m_Path << "\n";
+	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << " in file " << this->m_Path << "\nAssuming zero.\n";
+	      imageOrigin[i] = 0;
 	      }
 	    }
 	  else
 	    {
-	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header in file " << this->m_Path << "\n";
+	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header in file " << this->m_Path << "\nAssuming zero.\n";
+	    imageOrigin[i] = 0;	    
 	    }
 	}
       }
