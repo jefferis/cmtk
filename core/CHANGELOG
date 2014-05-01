@@ -1,5 +1,7 @@
 Release CMTK-3.2.0 (2014-04-30):
 
+(r5344) Added: manually force CNR centroid fallback in
+	"detect"adni_phantom" tool.
 (r5340) Packaging: RPM distribution now split into "core" (binaries) and
 	"devel" (libraries and headers)	packages.
 (r5340) Packaging: TGZ packages no longer include "CMTK-M.m.p/" release
