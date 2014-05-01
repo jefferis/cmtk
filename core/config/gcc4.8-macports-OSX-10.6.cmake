@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010-2013 SRI International
+##  Copyright 2010-2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -53,7 +53,7 @@ SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch for SMP parallelism"
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
 SET(CMTK_USE_QT ON CACHE BOOL "Use Qt toolkit")
 SET(BUILD_GUI ON CACHE BOOL "Build GUI applications (requires Qt)")
-SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
+SET(CMTK_USE_CUDA OFF CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # Enable FFTW, since we require MacPorts for this build anyway
