@@ -1,5 +1,6 @@
 Release CMTK-3.2.1:
 
+(r5353) Added: global scale factor support in "vol2csv" tool
 (r5347) Fixed: missing coordinate information in Siemens mosaic files must
 	be treated as zero.
 
