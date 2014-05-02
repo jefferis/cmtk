@@ -51,6 +51,7 @@ doMain
 {
   std::string regionsImagePath;
   std::string labelsFilePath;
+  double pscaleFactor = 1;
   std::string pscaleImagePath;
   std::string outputFilePath;
   std::string densityLabels;
@@ -77,6 +78,10 @@ doMain
     cl.AddOption( Key( "normalize-densities" ), &normalizeDensities, "Optional normalization factor for density images. Typically, the values in the density images should be in the range 0..1, but often such images are scaled to "
 		  "different ranges to accomodate storage as integers. If, for example, densities are stored as values 0..255, set this paramater to 255." );
     cl.AddOption( Key( "labels-file" ), &labelsFilePath, "If provided, this text file contains names for all labels in the regions image. These names are then used to label the rows of the CSV output." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "correct", "Correction Options" );
+    cl.AddOption( Key( "pixel-scale-factor" ), &pscaleFactor, "If provided, this global scale factor is applied to all pixel volumes to compensate for deviations between world and image scale." );
     cl.AddOption( Key( "pixel-scale-image" ), &pscaleImagePath, "If provided, this volume contains scale factors for the volume of each pixel. This is typically the Jacobian determinant map of a spatial unwarping deformation." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.EndGroup();
@@ -210,7 +215,8 @@ doMain
     const size_t label = std::min<size_t>( maxLabel, std::max( 0, static_cast<int>( regionsImage->GetDataAt( px ) ) ) );
 
     // get size for this pixel and scale, depending on whether we have a per-pixel map or not.
-    cmtk::Types::Coordinate pixelVolume = pixelVolumeRegionsImage;
+    cmtk::Types::Coordinate pixelVolume = pixelVolumeRegionsImage * pscaleFactor;
+
     if ( pscaleImage )
       pixelVolume *= pscaleImage->GetDataAt( px );
 
