@@ -4,6 +4,7 @@
 <fallbackCentroidCNR distance="1.756220" />
 <snr>49.671512</snr>
 <cnr>58.072462 39.963126 25.494787 35.482979</cnr>
+<maxDimming>0.020491</maxDimming>
 <scale>1.008063 1.004896 1.002807</scale>
 <nonlinear>0.663676 0.407180 0.587974</nonlinear>
 <landmarkList coordinates="physical" space="RAS" count="165">

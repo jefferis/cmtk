@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012, 2013 SRI International
+//  Copyright 2012-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,7 +65,7 @@ public:
 
   /// Constructor.
   DetectedPhantomMagphanEMR051( const AffineXform& linearFitXform /*!< Fitted linear (including shear and scale) transformation */ ) : 
-    m_EstimatedSNR( 0.0 ), m_LinearFitXform( linearFitXform ) {}
+    m_EstimatedSNR( 0.0 ), m_MaxDimming( 0.0 ), m_LinearFitXform( linearFitXform ) {}
     
     
   /// Add expected and actual location of a detected phantom landmark.
@@ -97,8 +97,11 @@ public:
     return this->m_LandmarkPairs;
   }
       
-  /// Estimated image signal-to-noise ratio..
+  /// Estimated image signal-to-noise ratio.
   Types::DataItem m_EstimatedSNR;
+
+  /// Estimated maximum dimming (i.e., minimum fraction of intensity of a 10mm sphere relative to maximum)
+  Types::DataItem m_MaxDimming;
 
   /// Estimated image contrast-to-noise ratio.
   FixedVector<4,Types::DataItem> m_EstimatedCNR;

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2012, 2013 SRI International
+//  Copyright 2012-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,6 +54,7 @@ cmtk::PhantomIO::WhitespaceWriteMiniXML( mxml_node_t* node, int where)
     { "fallbackCentroidCNR",     { NULL, "\n", NULL, "\n" } },
     { "snr",                     { NULL, NULL, NULL, "\n" } },
     { "cnr",                     { NULL, NULL, NULL, "\n" } },
+    { "maxDimming",              { NULL, NULL, NULL, "\n" } },
     { "scale",                   { NULL, NULL, NULL, "\n" } },
     { "nonlinear",               { NULL, NULL, NULL, "\n" } },
     { "landmarkList",            { NULL, "\n", NULL, "\n" } },
@@ -118,6 +119,8 @@ cmtk::PhantomIO::Write( const DetectedPhantomMagphanEMR051& phantom, const std::
   mxml_node_t *x_cnr = mxmlNewElement( x_phantom, "cnr" );
   for ( size_t i=0; i < phantom.m_EstimatedCNR.Size(); ++i )
     Coverity::FakeFree( mxmlNewReal( x_cnr, phantom.m_EstimatedCNR[i] ) );
+
+  Coverity::FakeFree( mxmlNewReal( mxmlNewElement( x_phantom, "maxDimming" ), phantom.m_MaxDimming ) ); 
     
   FixedVector<3,Types::Coordinate> scales = phantom.m_LinearFitXform.GetScales(); 
   mxml_node_t *x_scale= mxmlNewElement( x_phantom, "scale");

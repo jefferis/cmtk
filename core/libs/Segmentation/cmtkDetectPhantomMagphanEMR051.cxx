@@ -49,6 +49,7 @@
 #include <Segmentation/cmtkLeastSquaresPolynomialIntensityBiasField.h>
 
 #include <map>
+#include <limits>
 
 cmtk::DetectPhantomMagphanEMR051::DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, Self::Parameters& parameters )
   : m_Parameters( parameters ),
@@ -683,6 +684,24 @@ cmtk::DetectPhantomMagphanEMR051::GetDetectedPhantom()
     // we compute CNR per CNR sphere using formula from http://www.mr-tip.com/serv1.php?type=db1&dbs=Contrast%20to%20Noise%20Ratio (plus "fabs")
     this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), this->m_Parameters.m_ErodeCNR, 2 /*biasFieldDegree*/ );
     detected->m_EstimatedCNR[i-3] = fabs( detected->m_EstimatedSNR - mean / stdev );
+    }
+
+  // get the maximum fraction by which a 10mm sphere is dimmed (relative to 90th percentile of intensities over all spheres)
+  Types::DataItem minIntensity = std::numeric_limits<Types::DataItem>::infinity();
+  std::vector<Types::DataItem> allIntensities;
+  for ( size_t i = 7; i < MagphanEMR051::NumberOfSpheres; ++i )
+    {
+    if ( this->m_Landmarks[i].m_Valid )
+      {
+      this->GetSphereMeanStdDeviation( mean, stdev, this->m_Landmarks[i].m_Location, MagphanEMR051::SphereRadius( i ), this->m_Parameters.m_Erode10mm, 0 /*biasFieldDegree*/ );
+      minIntensity = std::min( minIntensity, mean );
+      allIntensities.push_back( mean );
+      }
+    }
+  if ( ! allIntensities.empty() )
+    {
+    std::sort( allIntensities.begin(), allIntensities.end() );
+    detected->m_MaxDimming = minIntensity / allIntensities[ static_cast<size_t>( allIntensities.size() * 0.9 ) ];
     }
 
   return DetectedPhantomMagphanEMR051::SmartPtr( detected );
