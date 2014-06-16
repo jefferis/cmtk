@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2012 SRI International
+//  Copyright 2004-2012, 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,6 +67,9 @@ public:
 
   /// Default constructor.
   ClassStreamOutput() : TypedStreamOutput() {}
+
+  /// Virtual destructor - to make sure base class destructor is properly run.
+  ~ClassStreamOutput() {}
 
   /** Open constructor.
    *\param filename Name of the archive to open.
