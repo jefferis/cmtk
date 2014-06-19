@@ -3,6 +3,23 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
+Release Notes -- CMTK 3.2.1
+===========================
+
+ADDED FEATURES:
+
+1. Compute "dimming" of lowest-intensity spheres in ADNI phantom scans
+
+2. Global scale factor support in "vol2csv" tool
+
+
+BUGFIXES:
+
+1. Treat missing location information in Siemens DICOM CSA data structure as
+   zero. This fixes incorrectly generated image-to-space transformation
+   matrices.
+
+
 Release Notes -- CMTK 3.2.0
 ===========================
 
