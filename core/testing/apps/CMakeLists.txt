@@ -356,6 +356,7 @@ LIST(APPEND testList
   dof2matLegacy
   dof2matLegacyFwd
   dof2matFixed
+  dof2matSuffix
   dof2mat3x3)
 
 # ==========================================

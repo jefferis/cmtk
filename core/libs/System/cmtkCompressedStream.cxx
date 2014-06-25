@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2013 SRI International
+//  Copyright 2004-2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -201,10 +201,10 @@ CompressedStream::GetBaseName( const std::string& path )
   
   if ( suffixPos != std::string::npos ) 
     {
+    const std::string fileSuffix = path.substr( suffixPos, std::string::npos );
     for ( int i = 0; ArchiveLookup[i].suffix; ++i )
       {
-      const size_t suffixLen = strlen( ArchiveLookup[i].suffix );
-      if ( !path.compare( suffixPos, suffixLen, ArchiveLookup[i].suffix, suffixLen ) )
+      if ( fileSuffix == ArchiveLookup[i].suffix )
 	{
 	return path.substr( 0, suffixPos );
 	}

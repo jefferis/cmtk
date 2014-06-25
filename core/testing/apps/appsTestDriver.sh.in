@@ -975,6 +975,10 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/dof2mat vol001_mr_t0t1_fwd24.list > ${tmpdir}/matrix"
 	check_results matrix
         ;;    
+    dof2matSuffix)
+        run_eval "${BINDIR}/dof2mat xform.ZYX > ${tmpdir}/matrix"
+	check_results matrix
+        ;;    
     dof2mat3x3)
         run_eval "${BINDIR}/dof2mat --matrix3x3 vol001_mr_t0t1_fwd24.list > ${tmpdir}/matrix"
 	check_results matrix
