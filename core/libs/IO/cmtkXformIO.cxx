@@ -63,68 +63,64 @@ XformIO::Read( const std::string& path )
   switch ( FileFormat::Identify( realPath ) ) 
     {
     case FILEFORMAT_NRRD: 
-    {
 #ifdef CMTK_BUILD_NRRD
-    return Self::ReadNrrd( realPath );
+      return Self::ReadNrrd( realPath );
 #else
-    StdErr << "ERROR: " << realPath << " is a Nrrd file, but Nrrd support is not enabled.\n"
-	   << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
-    return Xform::SmartPtr( NULL );
+      StdErr << "ERROR: " << realPath << " is a Nrrd file, but Nrrd support is not enabled.\n"
+	     << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
+      return Xform::SmartPtr( NULL );
 #endif
-    }
     case FILEFORMAT_ITK_TFM:
       return AffineXformITKIO::Read( path );
     case FILEFORMAT_STUDYLIST: 
-    {
-    DebugOutput( 1 ) << "Reading transformation from studylist " << realPath << "\n";
-    
-    TypedStreamStudylist studylist( realPath );
-    if ( studylist.GetWarpXform() )
-      return studylist.GetWarpXform();
-    else
-      return studylist.GetAffineXform();
-    }
+      DebugOutput( 1 ) << "Reading transformation from studylist " << realPath << "\n";
+      {
+      TypedStreamStudylist studylist( realPath );
+      if ( studylist.GetWarpXform() )
+	return studylist.GetWarpXform();
+      else
+	return studylist.GetAffineXform();
+      }
     case FILEFORMAT_TYPEDSTREAM: 
-    {
-    DebugOutput( 1 ) << "Reading transformation from typedstream file " << realPath << "\n";
-    
-    ClassStreamInput stream( realPath );
-    WarpXform* warpXform;
-    stream >> warpXform;
-    
-    if ( warpXform ) 
-      return Xform::SmartPtr( warpXform );
-    
-    stream.Open( realPath );
-    PolynomialXform polyXform;
-    try 
+      DebugOutput( 1 ) << "Reading transformation from typedstream file " << realPath << "\n";
       {
-      stream >> polyXform;
-      return Xform::SmartPtr( new PolynomialXform( polyXform ) );
+      ClassStreamInput stream( realPath );
+      WarpXform* warpXform;
+      stream >> warpXform;
+      
+      if ( warpXform ) 
+	return Xform::SmartPtr( warpXform );
+      
+      stream.Open( realPath );
+      PolynomialXform polyXform;
+      try 
+	{
+	stream >> polyXform;
+	return Xform::SmartPtr( new PolynomialXform( polyXform ) );
+	}
+      catch ( const cmtk::Exception& )
+	{
+	}
+      
+      stream.Open( realPath );
+      AffineXform affineXform;
+      try 
+	{
+	stream >> affineXform;
+	}
+      catch ( const cmtk::Exception& ex )
+	{
+	StdErr << "ERROR: " << ex.what() << "\n";
+	return Xform::SmartPtr( NULL );
+	}
+      return Xform::SmartPtr( new AffineXform( affineXform ) );
       }
-    catch ( const cmtk::Exception& )
-      {
-      }
-    
-    stream.Open( realPath );
-    AffineXform affineXform;
-    try 
-      {
-      stream >> affineXform;
-      }
-    catch ( const cmtk::Exception& ex )
-      {
-      StdErr << "ERROR: " << ex.what() << "\n";
-      return Xform::SmartPtr( NULL );
-      }
-    
-    return Xform::SmartPtr( new AffineXform( affineXform ) );
-    }
+    case FILEFORMAT_NEXIST:
+      StdErr << "The file/directory " << realPath << " does not exist or cannot be read\n";
+      throw ExitException( 1 );
     default:
-    {
-    StdErr << "The file/directory " << realPath << " does not seem to be in a supported transformation format\n";
-    throw ExitException( 1 );
-    }
+      StdErr << "The file/directory " << realPath << " does not seem to be in a supported transformation format\n";
+      throw ExitException( 1 );
     }
   return Xform::SmartPtr( NULL );
 }
