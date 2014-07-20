@@ -1,6 +1,8 @@
 ##
 ##  Copyright 2012 SRI International
 ##
+##  Copyright 2014 Ashley Manton / Greg Jefferis
+##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
 ##  http://www.nitrc.org/projects/cmtk/
@@ -35,7 +37,11 @@ IF(PERL_FOUND)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/munger.in ${CMAKE_BINARY_DIR}/bin/munger @ONLY)
 
   ## Configure for the install tree
-  SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_BIN_DIR})
+  IF(CMTK_BUILD_WRAPPER)
+    SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR}/bin)
+  ELSE(CMTK_BUILD_WRAPPER)
+    SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_BIN_DIR})
+  ENDIF(CMTK_BUILD_WRAPPER)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/munger.in ${CMAKE_BINARY_DIR}/Install/munger @ONLY)
   INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/Install/munger DESTINATION ${CMTK_INSTALL_BIN_DIR} COMPONENT tools)
 
