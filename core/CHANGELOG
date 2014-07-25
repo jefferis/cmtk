@@ -1,3 +1,10 @@
+Release CMTK-3.2.2:
+
+(r5365) Fixed: binary VTK files were previously written (illegally) as
+	double-precision data.
+(r5353) Fixed: wrong binary paths in munger.pl script
+
+
 Release CMTK-3.2.1 (2014-06-19):
 
 (r5355) Added: ADNI phantom detection and quantification (exposed via the
