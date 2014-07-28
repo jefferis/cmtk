@@ -44,7 +44,7 @@ else
 fi
 
 if echo "$CMD $@" | grep -q -e --help; then
-    [ "$CMD" = "--help" ] && man cmtk || man <( ${CMDPATH} --man )
+    [ "$CMD" = "--help" ] && man cmtk || man <( cmtk-${CMDPATH} --man )
 else
     ${CMDPATH} "$@"
 fi
