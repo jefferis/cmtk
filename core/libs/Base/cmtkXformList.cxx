@@ -62,7 +62,8 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
       else
 	{
 	// not affine: use approximate inverse
-	return (*it)->m_Xform->ApplyInverse( v, v, this->m_Epsilon );
+	if( ! (*it)->m_Xform->ApplyInverse( v, v, this->m_Epsilon ) )
+          return false;
 	} 
       } 
     else
