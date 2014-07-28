@@ -34,6 +34,15 @@ export CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
 export CMTK_LIBRARY_DIR=${CMTK_BINARY_DIR:-@CMTK_LIBRARY_DIR_CONFIG@}
 
 CMD=$1
+
+# Basic help if we have been called without command or cmtk --help
+if [ -z "$1" ] || [ "$1" = "--help" ] ; then
+    echo "CMTK makes the following commands available:"
+    ls "${CMTK_BINARY_DIR}"
+    echo -e "For help on a specific command, try:\n  cmtk <command-name> --help"
+    exit 1
+fi
+
 CMDPATH=${CMTK_BINARY_DIR}/$CMD
 shift
 
