@@ -782,7 +782,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "streamxform" tool
-LIST(APPEND testList streamxformFordwardBackward
+LIST(APPEND testList streamxformFordwardBackward streamxformBackwardForward
   streamxformFordwardBackwardPoly0 streamxformFordwardBackwardPoly1
   streamxformFordwardBackwardPoly2 streamxformFordwardBackwardPoly3
   streamxformFordwardBackwardPoly4 streamxformAffinePoly4
