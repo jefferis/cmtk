@@ -1,5 +1,7 @@
 Release CMTK-3.2.2:
 
+(r5368) Fixed: XformList::ApplyInPlace terminated concatenation when an
+	inverted B-spline FFD transformation was encountered.
 (r5365) Fixed: binary VTK files were previously written (illegally) as
 	double-precision data.
 (r5353) Fixed: wrong binary paths in munger.pl script
