@@ -2404,7 +2404,7 @@ case ${RUNTEST} in
 	check_results vol001_t0_points.xyzl
 	;;
     streamxformBackwardForward)
-	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyzl"
+	run_eval "cat vol001_t0_points.xyzl | ${BINDIR}/streamxform -- --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyzl"
 	check_results vol001_t0_points.xyzl
 	;;
     streamxformFordwardBackwardPoly0)
