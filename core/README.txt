@@ -6,6 +6,10 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 3.2.2
 ===========================
 
+This is a minor bug fix release that corrects errors in the vtkxform tool, the
+handling of inverse B-spline transformations in cmtk::XformList, and a
+configuration issue with Greg Jefferis' munger.pl script.
+
 
 Release Notes -- CMTK 3.2.1
 ===========================

@@ -1,4 +1,4 @@
-Release CMTK-3.2.2:
+Release CMTK-3.2.2 (2014-08-01):
 
 (r5368) Fixed: XformList::ApplyInPlace terminated concatenation when an
 	inverted B-spline FFD transformation was encountered.
