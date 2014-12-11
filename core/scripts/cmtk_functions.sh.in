@@ -1,6 +1,8 @@
 #!/bin/sh
 
 ##
+##  Copyright 2014 Google Inc.
+##
 ##  Copyright 2007-2011, 2014 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -32,9 +34,9 @@ export CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
 
 # Check whether we have "lockfile" tool available and include proper script with locking functions
 if which lockfile > /dev/null; then
-    source ${CMTK_BINARY_DIR}/cmtk_locking_procmail.sh
+    . ${CMTK_BINARY_DIR}/cmtk_locking_procmail.sh
 else
-    source ${CMTK_BINARY_DIR}/cmtk_locking.sh
+    . ${CMTK_BINARY_DIR}/cmtk_locking.sh
 fi
 
 # For convenience and readability

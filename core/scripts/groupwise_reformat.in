@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
+##
+##  Copyright 2014 Google Inc.
 ##
 ##  Copyright 2012, 2014 SRI International
 ##
@@ -46,7 +48,7 @@ fi
 # put all arguments starting with "-" into reformat options
 reformatOptions=""
 while [[ "$1" =~ ^- ]]; do
-    reformatOptions+="$1 "
+    reformatOptions+="${1} "
     shift
 done
 
