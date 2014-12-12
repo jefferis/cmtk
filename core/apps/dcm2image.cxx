@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2014 Google Inc.
+//
 //  Copyright 1997-2012 Torsten Rohlfing
 //
 //  Copyright 2004-2014 SRI International
@@ -328,7 +330,7 @@ VolumeList::AddImageFile( ImageFileDICOM::SmartConstPtr& newImage )
     while ( it != this->end() ) 
       {
       ImageStackDICOM::SmartPtr study = *it;
-      if ( study->Match( *newImage ) ) 
+      if ( study->Match( *newImage, this->m_Tolerance, DisableOrientationCheck, IgnoreAcquisitionNumber) ) 
 	{
 	study->AddImageFile( newImage );
 	return;
