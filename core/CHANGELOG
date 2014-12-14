@@ -1,8 +1,10 @@
 Upcoming release:
 
-(r5374) Fixed: "dcm2image" tool did not respect command line options to ignore
+(r5375) Fixed: when DICOM files have fractional rescale slope, read image as
+        floating point, not integer.
+(r5375) Fixed: "dcm2image" tool did not respect command line options to ignore
         acquisition number tags and disable orientation checks.
-(r5373) Fixed: bashisms in two scripts.
+(r5374) Fixed: bashisms in two scripts.
 
 
 Release CMTK-3.2.2 (2014-08-01):

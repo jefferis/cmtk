@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2014 Google Inc.
+//
 //  Copyright 2004-2014 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
@@ -313,6 +315,12 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
     
   if ( haveRescaleIntercept || haveRescaleSlope ) 
     {
+    double intpart = 0;
+    if ( fabs(modf(rescaleSlope, &intpart) / rescaleSlope) > 1e-5 ) 
+      {
+      pixelDataArray = pixelDataArray->Convert(TYPE_FLOAT);
+      }
+    
     pixelDataArray->Rescale( rescaleSlope, rescaleIntercept );
     }
 
