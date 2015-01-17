@@ -1,5 +1,8 @@
 Upcoming release:
 
+(r5377) Fixed: on Windows, recursive directory creation failed if the given
+        path begin with a drive letter. Thanks to Florian Schulze,
+        fschulze@vrvis.at, for finding and fixing the problem.
 (r5375) Fixed: when DICOM files have fractional rescale slope, read image as
         floating point, not integer.
 (r5375) Fixed: "dcm2image" tool did not respect command line options to ignore

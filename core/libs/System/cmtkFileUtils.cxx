@@ -103,7 +103,19 @@ RecursiveMkPrefixDir
 	}
 #endif
 #ifdef _MSC_VER
-      const int result = _mkdir( prefix );
+      int result = 0;
+      // NOTE(fschulze@vrvis.at): prevent to call _mkdir on drive letters 
+      // (e.g. "C:\") because this would fail and subsequentually make the 
+      // whole function fail Furthermore drives are not folders and cannot 
+      // be created.
+      
+      // The current prefix describes a drive if the second letter is a colon 
+      // and we only have 3 letters 
+      const bool isDrive = (prefix[i-1]==':') && (i==2); 
+      if (!isDrive) 
+	{
+        result = _mkdir( prefix );
+	}
 #else
       const int result = mkdir( prefix, permissions );
 #endif
