@@ -1,5 +1,8 @@
 Upcoming release:
 
+(r5378) Fixed: bashisms fixed by merging downstream Debian patch; see
+        https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=772217. Patch
+        provided by Michael Gilbert <mgilbert@debian.org>.
 (r5377) Fixed: on Windows, recursive directory creation failed if the given
         path begin with a drive letter. Thanks to Florian Schulze,
         fschulze@vrvis.at, for finding and fixing the problem.
