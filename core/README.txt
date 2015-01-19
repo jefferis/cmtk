@@ -3,6 +3,15 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
+Release Notes -- CMTK 3.2.3
+===========================
+
+This release fixes some minor bugs such as recursive mkdir on Windows, an
+ignored command line option in "dcm2image", and remaining bashisms in a number
+of scripts. DICOM files with non-integer rescaling are now read as floats,
+which changes the behaviour of "dcm2image" in these cases.
+
+
 Release Notes -- CMTK 3.2.2
 ===========================
 
