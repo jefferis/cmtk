@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -90,6 +92,22 @@ inline unsigned long int
 CommandLine::Item::Convert<unsigned long int>( const char* str ) 
 {
   return static_cast<unsigned long int>( this->ConvertStrToLong( str ) );
+}
+
+/// Convert string to unsigned long long
+template<> 
+inline unsigned long long int
+CommandLine::Item::Convert<unsigned long long int>( const char* str ) 
+{
+  return static_cast<unsigned long long int>( this->ConvertStrToLong( str ) );
+}
+
+/// Convert string to signed long long
+template<> 
+inline signed long long int
+CommandLine::Item::Convert<signed long long int>( const char* str ) 
+{
+  return static_cast<signed long long int>( this->ConvertStrToLong( str ) );
 }
 
 /// Convert string to char.

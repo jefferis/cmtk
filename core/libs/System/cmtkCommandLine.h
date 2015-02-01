@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -335,7 +337,7 @@ public:
     /// Item attributes. These are free-form string key/value pairs.
     std::map<std::string, std::string> m_Attributes;
 
-    /// Safely convertstring argument to long integer.
+    /// Safely convert string argument to long integer.
     static long int ConvertStrToLong( const char* str );
 
     /// Safely convert string argument to double.

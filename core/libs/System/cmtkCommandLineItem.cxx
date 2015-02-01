@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2009 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -29,6 +31,7 @@
 //  $LastChangedBy$
 //
 */
+
 #include "cmtkCommandLine.h"
 
 long int
@@ -36,7 +39,7 @@ cmtk::CommandLine::Item
 ::ConvertStrToLong( const char* str )
 {
   char* endptr;
-  const int value = strtol( str, &endptr, 0 );
+  const long int value = strtol( str, &endptr, 0 );
   if ( (endptr == str) || *endptr )
     {
     throw( Exception( "Option expects an integer argument" ) );
