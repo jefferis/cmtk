@@ -3,6 +3,8 @@
 ##
 ##  Copyright 2004-2014 SRI International
 ##
+##  Copyright 2015 Google, Inc.
+##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
 ##  http://www.nitrc.org/projects/cmtk/
@@ -397,11 +399,11 @@ IF(CMTK_BUILD_MXML)
   INCLUDE_DIRECTORIES(BEFORE ${MXML_INCLUDE_DIR})
   SET(MXML_LIBRARIES "cmtkMxml" CACHE INTERNAL "")
 ELSE(CMTK_BUILD_MXML)
-  IF(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7)
+  IF(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7 OR ${MXML_VERSION} STREQUAL 2.8)
     IF(NOT MXML_FOUND)
       MESSAGE( STATUS "Building bundled mxml due to missing system mxml" )
     ELSE(NOT MXML_FOUND)
-      MESSAGE( STATUS "Building bundled mxml due to outdated system mxml (minimum version required is 2.7, installed version is ${MXML_VERSION})" )
+      MESSAGE( STATUS "Building bundled mxml due to outdated or broken system mxml (minimum version required is 2.7, version 2.8 is broken; installed version is ${MXML_VERSION})" )
     ENDIF(NOT MXML_FOUND)
 
     SET(CMTK_BUILD_MXML 1)
@@ -409,9 +411,9 @@ ELSE(CMTK_BUILD_MXML)
     SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml")
     INCLUDE_DIRECTORIES(BEFORE ${MXML_INCLUDE_DIR})
     SET(MXML_LIBRARIES "cmtkMxml" CACHE INTERNAL "")
-  ELSE(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7)
+  ELSE(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7 OR ${MXML_VERSION} STREQUAL 2.8)
     MESSAGE( STATUS "Using system mxml version ${MXML_VERSION}" )
-  ENDIF(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7)
+  ENDIF(NOT MXML_FOUND OR ${MXML_VERSION} STRLESS 2.7 OR ${MXML_VERSION} STREQUAL 2.8)
 ENDIF(CMTK_BUILD_MXML)
 
 #-----------------------------------------------------------------------------
