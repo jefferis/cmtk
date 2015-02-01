@@ -1,7 +1,9 @@
-Release CMTK-3.2.3 (2015-01-19):
+Release CMTK-3.2.3 (2015-02-01):
 
 (r5381) Fixed: link error on Win64 due to missing implementation of a
         conversion method for 64bit integers.
+(r5380) Fixed: MXML 2.8 is broken; when this version is detected, fall back to
+        bundled library version.
 (r5378) Fixed: bashisms fixed by merging downstream Debian patch; see
         https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=772217. Patch
         provided by Michael Gilbert <mgilbert@debian.org>.

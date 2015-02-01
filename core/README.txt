@@ -11,6 +11,10 @@ ignored command line option in "dcm2image", and remaining bashisms in a number
 of scripts. DICOM files with non-integer rescaling are now read as floats,
 which changes the behaviour of "dcm2image" in these cases.
 
+This release also implements a workaround for a bug in MXML 2.8, which
+effectively prevents reading of XML files. CMTK now detects that version when
+configured and builds the bundled MXML library instead.
+
 
 Release Notes -- CMTK 3.2.2
 ===========================
