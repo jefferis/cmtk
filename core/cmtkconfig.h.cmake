@@ -163,14 +163,14 @@
 
 #include <Windows.h>
 
-#if _MSC_VER < 14
+#if _MSC_VER >= 1900
+#  define STDC99
+#else
 #  define snprintf _snprintf
-#endif
-
 #  define strdup _strdup
 #  define random rand
 #  define srandom srand
-
+#endif
 
 #include <float.h>
 inline int finite( const double x ) { return _finite(x); }

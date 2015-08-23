@@ -2,6 +2,8 @@
 //
 //  Copyright 2010-2012 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -28,7 +30,7 @@
 //
 */
 
-#ifdef _MSC_VER
+#if _MSC_VER < 1900
 #  include <stdio.h>
 #endif
 
@@ -45,7 +47,7 @@
 int
 main( const int argc, const char* argv[] )
 {
-#ifdef _MSC_VER
+#if _MSC_VER < 1900
    _set_output_format( _TWO_DIGIT_EXPONENT );
 #endif
 
