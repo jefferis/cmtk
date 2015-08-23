@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -161,7 +163,10 @@
 
 #include <Windows.h>
 
+#if _MSC_VER < 14
 #  define snprintf _snprintf
+#endif
+
 #  define strdup _strdup
 #  define random rand
 #  define srandom srand
