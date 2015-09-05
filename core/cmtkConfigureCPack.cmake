@@ -3,6 +3,8 @@
 ##
 ##  Copyright 2004-2014 SRI International
 ##
+##  Copyright 2015 Google, Inc.
+##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
 ##  http://www.nitrc.org/projects/cmtk/
@@ -29,8 +31,7 @@
 ##
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  SET(CPACK_GENERATOR "NSIS;ZIP")
-  SET(CPACK_SET_DESTDIR OFF)
+  SET(CPACK_GENERATOR "ZIP")
 ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     SET(CPACK_GENERATOR "TGZ;RPM")
