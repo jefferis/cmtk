@@ -1,3 +1,4 @@
+(r5392) Fixed: compile problems with VisualStudio Express 2015.
 (r5391) Fixed: recent system DCMTK versions on Fedora (perhaps elsewhere too)
         have lost constants for ACR-NEMA legacy field tags. Re-added those 
         for compatibility.
