@@ -55,6 +55,22 @@
 #include <stdio.h>
 #include <ctime>
 
+#ifndef DCM_ACR_NEMA_ImagePosition
+#  define DCM_ACR_NEMA_ImagePosition DcmTagKey(0x0020, 0x0030)
+#endif
+
+#ifndef DCM_ACR_NEMA_ImageOrientation
+#  define DCM_ACR_NEMA_ImageOrientation DcmTagKey(0x0020, 0x0035)
+#endif
+
+#ifndef DCM_ACR_NEMA_Location
+#  define DCM_ACR_NEMA_Location DcmTagKey(0x0020, 0x0050)
+#endif
+
+#ifndef DCM_ACR_NEMA_2C_VariablePixelData
+#  define DCM_ACR_NEMA_2C_VariablePixelData DcmTagKey(0x7f00, 0x0010)
+#endif
+
 namespace
 cmtk
 {
