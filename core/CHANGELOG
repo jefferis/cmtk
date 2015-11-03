@@ -1,3 +1,8 @@
+(r5391) Fixed: recent system DCMTK versions on Fedora (perhaps elsewhere too)
+        have lost constants for ACR-NEMA legacy field tags. Re-added those 
+        for compatibility.
+
+
 Release CMTK-3.2.3 (2015-02-01):
 
 (r5381) Fixed: link error on Win64 due to missing implementation of a
