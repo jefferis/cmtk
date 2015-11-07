@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2012 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -40,6 +42,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkFilterVolume.h>
+#include <Base/cmtkTypes.h>
 
 #include <IO/cmtkVolumeIO.h>
 

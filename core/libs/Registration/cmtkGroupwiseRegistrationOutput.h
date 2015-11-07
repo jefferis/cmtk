@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2011, 2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -39,6 +41,7 @@
 #include <System/cmtkSmartPtr.h>
 #include <Registration/cmtkReformatVolume.h>
 #include <Base/cmtkInterpolator.h>
+#include <Base/cmtkTypes.h>
 
 namespace
 cmtk
@@ -93,6 +96,7 @@ public:
   /// Reformat and write average image.
   bool WriteAverageImage( const char* path /*<! Path of output image.*/,
 			  const cmtk::Interpolators::InterpolationEnum interp = cmtk::Interpolators::LINEAR /*!< Selection of interpolation method (via igsReformatVolume).*/,
+			  const cmtk::ScalarDataType pixelType = cmtk::TYPE_FLOAT /*!< Scalar data type for the average image. */,
 			  const bool useTemplateData = false /*!< If true, template image data is included in averaging.*/ );
   
 private:

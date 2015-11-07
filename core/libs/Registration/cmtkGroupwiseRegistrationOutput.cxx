@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2011, 2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -42,8 +44,9 @@
 
 #include <limits.h>
 
-#include <vector>
+#include <algorithm>
 #include <sstream>
+#include <vector>
 
 namespace
 cmtk
@@ -87,7 +90,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
       {
       StudyList slist;
       Study::SmartPtr refstudy;
-      if ( this->m_OutputRootDirectory  && ! this->m_ExistingTemplatePath )
+      if ( this->m_OutputRootDirectory && ! this->m_ExistingTemplatePath )
 	{
 	refstudy = slist.AddStudy( std::string( this->m_OutputRootDirectory ) + CMTK_PATH_SEPARATOR + templatePath );
 	}
@@ -130,7 +133,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 }
 
 bool
-GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::Interpolators::InterpolationEnum interp, const bool useTemplateData )
+GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::Interpolators::InterpolationEnum interp, const cmtk::ScalarDataType pixelType, const bool useTemplateData )
 {
   // reformat output and generate average images
   if ( path )
@@ -138,12 +141,11 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
     UniformVolume::SmartPtr templateGrid = this->m_Functional->GetTemplateGrid();
     const size_t numberOfPixels = templateGrid->GetNumberOfPixels();
 
-    TypedArray::SmartPtr average( TypedArray::Create( TYPE_FLOAT, numberOfPixels ) );
+    TypedArray::SmartPtr average( TypedArray::Create( pixelType, numberOfPixels ) );
     float* averagePtr = static_cast<float*>( average->GetDataPtr() );
 
-    TypedArray::SmartPtr count( TypedArray::Create( TYPE_USHORT, numberOfPixels ) );
-    unsigned short* countPtr = static_cast<unsigned short*>( count->GetDataPtr() );
-    
+    std::vector<byte> count;
+
     if ( useTemplateData )
       {
       if ( ! templateGrid->GetData() )
@@ -156,12 +158,12 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	{
 	averagePtr[px] = static_cast<float>( templateGrid->GetDataAt( px ) );
 	}
-      count->Fill( 1 );
+      count.resize(numberOfPixels, 1);
       }  
     else
       {
       average->Fill( 0 );
-      count->Fill( 0 );
+      count.resize(numberOfPixels, 0);
       }
 
     DebugOutput( 1 ) << "Reformating output images\n";
@@ -198,7 +200,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	if ( data->Get( v, i ) )
 	  {
 	  averagePtr[i] += static_cast<float>( v );
-	  ++countPtr[i];
+	  ++count[i];
 	  }
 	}
       }
@@ -206,8 +208,8 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 #pragma omp parallel for
     for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
       {
-      if ( countPtr[i] )
-	averagePtr[i] /= countPtr[i];
+      if ( count[i] )
+	averagePtr[i] /= count[i];
       else
 	average->SetPaddingAt( i );
       }

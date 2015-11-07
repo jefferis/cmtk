@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2013 SRI International
 //
+//  Copyright 2015 Google, Inc.
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -416,7 +418,7 @@ doMain( int argc, const char* argv[] )
 
   output.WriteGroupwiseArchive( OutputArchive );
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, PreDefinedTemplatePath );
-  output.WriteAverageImage( AverageImagePath, AverageImageInterpolation, UseTemplateData );
+  output.WriteAverageImage( AverageImagePath, AverageImageInterpolation, cmtk::TYPE_FLOAT, UseTemplateData );
 
   return 0;
 }
