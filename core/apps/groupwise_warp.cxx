@@ -234,6 +234,14 @@ doMain( int argc, const char* argv[] )
   stream >> *functional;
   stream.Close();
 
+  // Make sure we don't exceed maximum number of supported images. This is due to
+  // using, for example, "byte" for pixelwise image counts in averaging.
+  if ( functional->GetNumberOfTargetImages() > 255 ) 
+    {
+    cmtk::StdErr << "ERROR: no more than 255 images are supported.\n";
+    throw cmtk::ExitException( 1 );
+    }
+
   if ( PreDefinedTemplatePath )
     {
     cmtk::UniformVolume::SmartPtr templateImage;

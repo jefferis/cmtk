@@ -72,6 +72,8 @@ std::vector<const char*> fileNameList;
 // this vector holds the original (not downsampled) images.
 std::vector<cmtk::UniformVolume::SmartPtr> imageListOriginal;
 
+cmtk::ScalarDataType DataType = cmtk::TYPE_FLOAT;
+
 int
 doMain( int argc, const char* argv[] )
 {
@@ -96,6 +98,17 @@ doMain( int argc, const char* argv[] )
     cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments" );
     cl.AddSwitch( Key( "center-template" ), &CenterTemplate, true, "Center aligned images in template grid field of view." );
 
+    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr
+      typeGroup = cl.AddEnum( "outputtype", &DataType, "Scalar data type for the output average image." );
+    typeGroup->AddSwitch( Key( "char" ), cmtk::TYPE_CHAR, "8 bits, signed" );
+    typeGroup->AddSwitch( Key( "byte" ), cmtk::TYPE_BYTE, "8 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "short" ), cmtk::TYPE_SHORT, "16 bits, signed" );
+    typeGroup->AddSwitch( Key( "ushort" ), cmtk::TYPE_USHORT, "16 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "int" ), cmtk::TYPE_INT, "32 bits signed" );
+    typeGroup->AddSwitch( Key( "uint" ), cmtk::TYPE_UINT, "32 bits unsigned" );
+    typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
+    typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
+
     cl.Parse( argc, const_cast<const char**>( argv ) );
 
     const char* next = cl.GetNext();
@@ -108,6 +121,14 @@ doMain( int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
+    throw cmtk::ExitException( 1 );
+    }
+
+  // Make sure we don't exceed maximum number of supported images. This is due to
+  // using, for example, "byte" for pixelwise image counts in averaging.
+  if ( fileNameList.size() > 255 ) 
+    {
+    cmtk::StdErr << "ERROR: no more than 255 images are supported.\n";
     throw cmtk::ExitException( 1 );
     }
 
