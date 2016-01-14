@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -50,8 +52,8 @@ DataGrid::SetCropRegion( const Self::RegionType& region )
       this->m_CropRegion.To()[dim] = this->m_Dims[dim] + this->m_CropRegion.To()[dim];
 
     // check whether all cropping index values are within the valid range and truncate if necessary
-    this->m_CropRegion.To()[dim] = std::min( this->m_Dims[dim], std::max( 0, this->m_CropRegion.To()[dim] ) );
-    this->m_CropRegion.From()[dim] = std::min( this->m_Dims[dim], std::max( 0, this->m_CropRegion.From()[dim] ) );
+    this->m_CropRegion.To()[dim] = std::min( this->m_Dims[dim], std::max<Types::GridIndexType>( 0, this->m_CropRegion.To()[dim] ) );
+    this->m_CropRegion.From()[dim] = std::min( this->m_Dims[dim], std::max<Types::GridIndexType>( 0, this->m_CropRegion.From()[dim] ) );
     }
 }
 
@@ -70,7 +72,7 @@ DataGrid::GetCropRegionIncrements
 
 DataGrid::RegionType
 DataGrid::AutoCrop
-( const Types::DataItem threshold, const bool recrop, const int margin )
+( const Types::DataItem threshold, const bool recrop, const Types::GridIndexType margin )
 {
   const TypedArray* data = this->GetData();
   
@@ -85,10 +87,10 @@ DataGrid::AutoCrop
       }
     }
   
-  const size_t nextRow = this->m_Dims[0] - cropTo[0] + this->m_CropRegion.From()[0];
-  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - cropTo[1] + this->m_CropRegion.From()[1]);
+  const Types::GridIndexType nextRow = this->m_Dims[0] - cropTo[0] + this->m_CropRegion.From()[0];
+  const Types::GridIndexType nextPlane = this->m_Dims[0] * (this->m_Dims[1] - cropTo[1] + this->m_CropRegion.From()[1]);
   
-  size_t offset = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
+  Types::GridIndexType offset = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
 
   Self::IndexType newCropFrom = cropTo, newCropTo = cropFrom;
   Self::IndexType xyz;
@@ -126,18 +128,18 @@ DataGrid::AutoCrop
 void
 DataGrid::FillCropBackground( const Types::DataItem value )
 {
-  const size_t planeSize = this->m_Dims[0] * this->m_Dims[1];
+  const Types::GridIndexType planeSize = this->m_Dims[0] * this->m_Dims[1];
 
-  size_t offset = this->m_CropRegion.From()[2] * planeSize;
+  Types::GridIndexType offset = this->m_CropRegion.From()[2] * planeSize;
   this->m_Data->BlockSet( value, 0, offset );
 
-  for ( int z = this->m_CropRegion.From()[2]; z < this->m_CropRegion.To()[2]; ++z ) 
+  for ( Types::GridIndexType z = this->m_CropRegion.From()[2]; z < this->m_CropRegion.To()[2]; ++z ) 
     {
-    size_t planeOffset = offset + this->m_CropRegion.From()[1] * this->m_Dims[0];
+    Types::GridIndexType planeOffset = offset + this->m_CropRegion.From()[1] * this->m_Dims[0];
     this->m_Data->BlockSet( value, offset, planeOffset );
 
     offset = planeOffset;
-    for ( int y = this->m_CropRegion.From()[1]; y < this->m_CropRegion.To()[1]; ++y, offset += this->m_Dims[0] ) 
+    for ( Types::GridIndexType y = this->m_CropRegion.From()[1]; y < this->m_CropRegion.To()[1]; ++y, offset += this->m_Dims[0] ) 
       {
       this->m_Data->BlockSet( value, offset, offset+this->m_CropRegion.From()[0] );
       this->m_Data->BlockSet( value, offset+this->m_CropRegion.To()[0], offset+this->m_Dims[0] );
@@ -160,14 +162,14 @@ DataGrid::GetRegionData( const Self::RegionType& region ) const
 
   TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), region.Size() );
   
-  const size_t lineLength = region.To()[0] - region.From()[0];
-  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (region.To()[1] - region.From()[1]));
+  const Types::GridIndexType lineLength = region.To()[0] - region.From()[0];
+  const Types::GridIndexType nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (region.To()[1] - region.From()[1]));
   
-  size_t toOffset = 0;
-  size_t fromOffset = this->GetOffsetFromIndex( region.From() );
+  Types::GridIndexType toOffset = 0;
+  Types::GridIndexType fromOffset = this->GetOffsetFromIndex( region.From() );
   
-  for ( int z = region.From()[2]; z < region.To()[2]; ++z, fromOffset += nextPlane )
-    for ( int y = region.From()[1]; y < region.To()[1]; ++y, fromOffset += this->m_Dims[0] ) 
+  for ( Types::GridIndexType z = region.From()[2]; z < region.To()[2]; ++z, fromOffset += nextPlane )
+    for ( Types::GridIndexType y = region.From()[1]; y < region.To()[1]; ++y, fromOffset += this->m_Dims[0] ) 
       {
       srcData->BlockCopy( *cropData, toOffset, fromOffset, lineLength );
       toOffset += lineLength;

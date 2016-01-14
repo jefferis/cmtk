@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -41,7 +43,7 @@ template<class TData>
 TData
 DataGrid::TrilinearInterpolation
 ( const TData* dataPtr, 
-  const int X, const int Y, const int Z,
+  const Types::GridIndexType X, const Types::GridIndexType Y, const Types::GridIndexType Z,
   const Self::SpaceVectorType& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
@@ -67,7 +69,7 @@ template<class TData,class TOutputIterator>
 inline void
 DataGrid
 ::TrilinearInterpolation
-( TOutputIterator result, const std::vector<TData*>& dataPtr, const int x, const int y, const int z,
+( TOutputIterator result, const std::vector<TData*>& dataPtr, const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z,
   const Types::Coordinate fracX, const Types::Coordinate fracY, const Types::Coordinate fracZ ) const
 {
   const size_t offset = x + this->m_Dims[0] * ( y + this->m_Dims[1] * z);

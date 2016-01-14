@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
@@ -78,7 +80,7 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Region type.
-  typedef Region<3,int> RegionType;
+  typedef Region<3,Types::GridIndexType> RegionType;
 
   /// Index type.
   typedef RegionType::IndexType IndexType;
@@ -133,10 +135,10 @@ public:
   }
 
   /// Downsampling and pixel-averaging constructor function.
-  virtual DataGrid* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
+  virtual DataGrid* GetDownsampledAndAveraged( const Types::GridIndexType (&downsample)[3] ) const;
 
   /// Downsampling without averaging constructor function.
-  virtual DataGrid* GetDownsampled( const int (&downsample)[3] ) const;
+  virtual DataGrid* GetDownsampled( const Types::GridIndexType (&downsample)[3] ) const;
 
   /** Reorientation constructor function.
    *\param newOrientation Three letter orientation code that specifies the anatomically-based
@@ -178,25 +180,25 @@ public:
   size_t GetNumberOfPixels () const { return this->m_Dims[0]*this->m_Dims[1]*this->m_Dims[2]; }
 
   /// Check whether given pixel index is inside grid.
-  bool IndexIsInRange( const int x, const int y, const int z ) const
+  bool IndexIsInRange( const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z ) const
   {
     return (x>=0) && (x<this->m_Dims[0]) && (y>=0) && (y<this->m_Dims[1]) && (z>=0) && (z<this->m_Dims[2]);
   }
 
   /// Get offset of a pixel.
-  int GetOffsetFromIndex( const int x, const int y, const int z ) const 
+  Types::GridIndexType GetOffsetFromIndex( const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z ) const 
   {
     return x + nextJ * y + nextK * z;
   }
 
   /// Get offset of a pixel.
-  int GetOffsetFromIndex( const Self::IndexType& index ) const 
+  Types::GridIndexType GetOffsetFromIndex( const Self::IndexType& index ) const 
   {
     return index[0] + this->nextJ * index[1] + this->nextK * index[2];
   }
 
   /// Get index of a pixel identified by its offset.
-  void GetIndexFromOffset( const size_t offset, int& x, int& y, int& z ) const 
+  void GetIndexFromOffset( const size_t offset, Types::GridIndexType& x, Types::GridIndexType& y, Types::GridIndexType& z ) const 
   {
     z = offset / nextK;
     y = (offset % nextK) / nextJ;
@@ -204,7 +206,7 @@ public:
   }
 
   /// Get index of a pixel identified by its offset.
-  Self::IndexType GetIndexFromOffset( const size_t offset ) const 
+  Self::IndexType GetIndexFromOffset( const Types::GridIndexType offset ) const 
   {
     Self::IndexType index;
     index[2] = offset / nextK;
@@ -220,7 +222,7 @@ public:
   }
 
   /// Return data at specified grid point.
-  bool GetDataAt ( Types::DataItem& data, const int x, const int y, const int z ) const
+  bool GetDataAt ( Types::DataItem& data, const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z ) const
   {
     return this->m_Data->Get( data, this->GetOffsetFromIndex( x, y, z ) );
   }
@@ -232,13 +234,13 @@ public:
   }
   
   /// Set data at specified grid point.
-  void SetDataAt ( const Types::DataItem data, const int x, const int y, const int z )
+  void SetDataAt ( const Types::DataItem data, const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z )
   {
     this->SetDataAt( data, this->GetOffsetFromIndex( x, y, z ) );
   }
 
   /// Return data at specified grid point, or a given default value if no data exists there.
-  Types::DataItem GetDataAt ( const int x, const int y, const int z, const Types::DataItem defaultValue = 0.0 ) const
+  Types::DataItem GetDataAt ( const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z, const Types::DataItem defaultValue = 0.0 ) const
   {
     Types::DataItem value;
     if ( this->GetDataAt( value, this->GetOffsetFromIndex( x, y, z ) ) )
@@ -287,7 +289,7 @@ public:
   const Self::RegionType GetWholeImageRegion() const;
 
   /// Get region covering one slice of the image.
-  const Self::RegionType GetSliceRegion( const int axis /*!< Coordinate axis perpendicular to the slice, i.e., 0 for x, 1 for y, 2 for z.*/, const int slice /*!< Index of selected slice. */ ) const;
+  const Self::RegionType GetSliceRegion( const int axis /*!< Coordinate axis perpendicular to the slice, i.e., 0 for x, 1 for y, 2 for z.*/, const Types::GridIndexType slice /*!< Index of selected slice. */ ) const;
 
   /// Get index increments for crop region.
   const Self::IndexType GetCropRegionIncrements() const;
@@ -300,7 +302,7 @@ public:
    *\param margin Width of additional margin added around the threshold-cropped region.
    *\return The crop region that was applied.
    */
-  Self::RegionType AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
+  Self::RegionType AutoCrop( const Types::DataItem threshold, const bool recrop = false, const Types::GridIndexType margin = 0 );
 
   /// Fill volume outside current crop region with constant value.
   void FillCropBackground( const Types::DataItem value );
@@ -309,13 +311,13 @@ public:
   TypedArray::SmartPtr GetRegionData( const Self::RegionType& region ) const;
 
   /// Accessor functions for protected member variables
-  int GetNextI() const { return nextI; }
-  int GetNextJ() const { return nextJ; }
-  int GetNextK() const { return nextK; }
-  int GetNextIJ() const { return nextIJ; }
-  int GetNextIK() const { return nextIK; }
-  int GetNextJK() const { return nextJK; }
-  int GetNextIJK() const { return nextIJK; }
+  Types::GridIndexType GetNextI() const { return nextI; }
+  Types::GridIndexType GetNextJ() const { return nextJ; }
+  Types::GridIndexType GetNextK() const { return nextK; }
+  Types::GridIndexType GetNextIJ() const { return nextIJ; }
+  Types::GridIndexType GetNextIK() const { return nextIK; }
+  Types::GridIndexType GetNextJK() const { return nextJK; }
+  Types::GridIndexType GetNextIJK() const { return nextIJK; }
   
   /// Get center of mass of pixel data.
   virtual FixedVector<3,Types::Coordinate> GetCenterOfMassGrid() const;
@@ -325,15 +327,15 @@ public:
   
   /** Return orthogonal slice as a 2D image.
    */
-  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const unsigned int plane ) const;
+  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const Types::GridIndexType plane ) const;
   
   /** Extract orthogonal slice as a data grid object.
    */
-  Self::SmartPtr ExtractSlice( const int axis /*!< Coordinate axis perpendicular to extracted plane*/, const int plane /*!< Index of extracted plane */ ) const;
+  Self::SmartPtr ExtractSlice( const int axis /*!< Coordinate axis perpendicular to extracted plane*/, const Types::GridIndexType plane /*!< Index of extracted plane */ ) const;
 
   /** Set orthogonal slice from a 2D image.
    */
-  virtual void SetOrthoSlice( const int axis, const unsigned int idx, const ScalarImage* slice );
+  virtual void SetOrthoSlice( const int axis, const Types::GridIndexType idx, const ScalarImage* slice );
 
   /// Print object.
   void Print() const;
@@ -361,7 +363,7 @@ protected:
    * given location, so that the interpolation could be completed successfully,
    * False otherwise.
    */
-  bool TrilinearInterpolation( Types::DataItem& data, const int x, const int y, const int z, const Self::SpaceVectorType& location, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
+  bool TrilinearInterpolation( Types::DataItem& data, const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z, const Self::SpaceVectorType& location, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
 
   /** Utility function for trilinear interpolation from a primitive data array.
    * This function is provided for computational efficiency when a large number 
@@ -381,7 +383,7 @@ protected:
    */
   template<class TData>
   inline TData TrilinearInterpolation
-  ( const TData* dataPtr, const int x, const int y, const int z, const Self::SpaceVectorType& gridPosition, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
+  ( const TData* dataPtr, const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z, const Self::SpaceVectorType& gridPosition, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
 
   /** Utility function for trilinear interpolation from multiple primitive data arrays of identical grid structure.
    * This function is provided for computational efficiency when a large number 
@@ -391,33 +393,33 @@ protected:
   inline void TrilinearInterpolation
   ( TOutputIterator result /*!< Output iterator to store interpolated values.*/,
     const std::vector<TData*>& dataPtr /*!< Vector of data arrays to interpolate from */, 
-    const int x /*!< Grid position x */, 
-    const int y /*!< Grid position y */, 
-    const int z /*!< Grid position z */,
+    const Types::GridIndexType x /*!< Grid position x */, 
+    const Types::GridIndexType y /*!< Grid position y */, 
+    const Types::GridIndexType z /*!< Grid position z */,
     const Types::Coordinate fracX /*!< Fractional coordinate X within pixel */, 
     const Types::Coordinate fracY /*!< Fractional coordinate Y within pixel */, 
     const Types::Coordinate fracZ /*!< Fractional coordinate Z within pixel */ ) const;
 
   /// Offset to next voxel column.
-  int nextI;
+  Types::GridIndexType nextI;
 
   /// Offset to next voxel row.
-  int nextJ;
+  Types::GridIndexType nextJ;
 
   /// Offset to next voxel plane.
-  int nextK;
+  Types::GridIndexType nextK;
 
   /// Offset to next column and row.
-  int nextIJ;
+  Types::GridIndexType nextIJ;
   
   /// Offset to next column and plane.
-  int nextIK;
+  Types::GridIndexType nextIK;
 
   /// Offset to next row and plane.
-  int nextJK;
+  Types::GridIndexType nextJK;
 
   /// Offset to next column, row, and plane.
-  int nextIJK;
+  Types::GridIndexType nextIJK;
 
 private:
   /** Crop region.

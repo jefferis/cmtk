@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010, 2013 SRI International
@@ -45,7 +47,7 @@ cmtk
 //@{
 
 AnatomicalOrientation::PermutationMatrix::PermutationMatrix
-( const FixedVector<3,int>& sourceDims, const std::string& curOrientation, const char newOrientation[3] ) 
+( const FixedVector<3,Types::GridIndexType>& sourceDims, const std::string& curOrientation, const char newOrientation[3] ) 
 {
   // Build a permutation matrix and store it in compressed form 
   for ( int i = 0; i < 3; i++ )

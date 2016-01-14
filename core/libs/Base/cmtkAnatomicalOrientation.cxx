@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010, 2013 SRI International
@@ -95,7 +97,7 @@ AnatomicalOrientation
 
 void
 AnatomicalOrientation
-::GetImageToSpaceAxesPermutation( int (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes )
+::GetImageToSpaceAxesPermutation( Types::GridIndexType (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes )
 {
   for ( int j = 0; j < 3; ++j )
     {

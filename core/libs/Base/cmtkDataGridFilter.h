@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 2004-2013 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
@@ -62,7 +64,7 @@ public:
   explicit DataGridFilter( DataGrid::SmartConstPtr dataGrid );
 
   /// Return data after median-filtering with global filter radius (convenience function).
-  TypedArray::SmartPtr GetDataMedianFiltered( const int radius ) const
+  TypedArray::SmartPtr GetDataMedianFiltered( const Types::GridIndexType radius ) const
   {
     return this->GetDataMedianFiltered( radius, radius, radius );
   }
@@ -73,7 +75,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr GetDataMedianFiltered( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
   
   /** Apply neighborhood-mean filter.
    *\param radiusX Region radius in x direction.
@@ -81,7 +83,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionMeanFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply fast, recursive neighborhood-mean filter.
    *\param radiusX Region radius in x direction.
@@ -89,7 +91,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr FastRegionMeanFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply neighborhood-variance filter.
    *\param radiusX Region radius in x direction.
@@ -97,7 +99,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionVarianceFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply fast neighborhood-variance filter based on linear-time region mean filter.
    *\param radiusX Region radius in x direction.
@@ -105,7 +107,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr FastRegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr FastRegionVarianceFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply neighborhood-third-moment filter.
    *\param radiusX Region radius in x direction.
@@ -113,7 +115,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionThirdMomentFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionThirdMomentFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply neighborhood-standard-deviation filter.
    *\param radiusX Region radius in x direction.
@@ -121,7 +123,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionStandardDeviationFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionStandardDeviationFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
   /** Apply neighborhood-smoothness filter.
    *\param radiusX Region radius in x direction.
@@ -129,7 +131,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionSmoothnessFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionSmoothnessFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
   
   /** Apply neighborhood-entropy filter.
    *\param radiusX Region radius in x direction.
@@ -137,7 +139,7 @@ public:
    *\param radiusZ Region radius in z direction.
    *\return Newly allocated data array with filtered data.
    */
-  TypedArray::SmartPtr RegionEntropyFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  TypedArray::SmartPtr RegionEntropyFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
   
   /// Return data after Sobel filtering.
   TypedArray::SmartPtr GetDataSobelFiltered() const;
@@ -236,7 +238,7 @@ private:
   };
   
   /// Apply a regional filter operator. The actual operator is given as a class template parameter.
-  template<class TFilter> TypedArray::SmartPtr ApplyRegionFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  template<class TFilter> TypedArray::SmartPtr ApplyRegionFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const;
 
 };
 

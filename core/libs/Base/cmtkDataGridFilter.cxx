@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -58,7 +60,7 @@ cmtk::DataGridFilter::MedianOperator::Reduce( std::vector<Types::DataItem>& regi
 }
 
 TypedArray::SmartPtr
-DataGridFilter::GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::GetDataMedianFiltered( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::MedianOperator>( radiusX, radiusY, radiusZ );
 }
@@ -67,20 +69,20 @@ cmtk::Types::DataItem
 cmtk::DataGridFilter::MeanOperator::Reduce( std::vector<Types::DataItem>& regionData )
 {
   Types::DataItem sum = 0;
-  for ( size_t i = 0; i < regionData.size(); ++i )
+  for ( Types::GridIndexType i = 0; i < regionData.size(); ++i )
     sum += regionData[i];
   
   return sum / regionData.size();
 }
 
 TypedArray::SmartPtr
-DataGridFilter::RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::RegionMeanFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::MeanOperator>( radiusX, radiusY, radiusZ );
 }
 
 TypedArray::SmartPtr
-DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::FastRegionMeanFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   const DataGrid& dataGrid = *(this->m_DataGrid);
   if ( !dataGrid.GetData() )
@@ -93,7 +95,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
   radius[1] = radiusY;
   radius[2] = radiusZ;
 
-  const size_t nPixels = dataGrid.GetNumberOfPixels();
+  const Types::GridIndexType nPixels = dataGrid.GetNumberOfPixels();
   const DataGrid::RegionType wholeImageRegion = dataGrid.GetWholeImageRegion();
   
   std::vector<double> sums( nPixels );
@@ -109,9 +111,9 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
     {
     const DataGrid::RegionType face = wholeImageRegion.GetFaceRegion( dim );
 
-    const int columnFrom = wholeImageRegion.From()[dim];
-    const int columnTo = wholeImageRegion.To()[dim];
-    const size_t nPixelsColumn = columnTo - columnFrom;
+    const Types::GridIndexType columnFrom = wholeImageRegion.From()[dim];
+    const Types::GridIndexType columnTo = wholeImageRegion.To()[dim];
+    const Types::GridIndexType nPixelsColumn = columnTo - columnFrom;
 
     std::vector<double> sumsColumn( nPixelsColumn );
     std::vector<unsigned short> cntsColumn( nPixelsColumn );
@@ -124,12 +126,12 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
       //
       // PASS 1 - accumulate all values and counts upwards
       //
-      int idx0 = 0;
+      Types::GridIndexType idx0 = 0;
       DataGrid::IndexType idx = fIt.Index();
       
       for ( idx[dim] = columnFrom; idx[dim] < columnTo; ++idx[dim], ++idx0 )
 	{
-	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
+	const Types::GridIndexType offset = dataGrid.GetOffsetFromIndex( idx );
 
 	if ( ! dim ) // get first-pass values from data array
 	  {
@@ -158,14 +160,14 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
       idx0 = 0;
       for ( idx[dim] = columnFrom; idx[dim] < columnTo; ++idx[dim], ++idx0 )
 	{
-	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
+	const Types::GridIndexType offset = dataGrid.GetOffsetFromIndex( idx );
 	
-	const size_t upper = static_cast<size_t>( std::min<int>( idx0+radius[dim], nPixelsColumn-1 ) );	
+	const Types::GridIndexType upper = static_cast<Types::GridIndexType>( std::min<Types::GridIndexType>( idx0+radius[dim], nPixelsColumn-1 ) );	
 	sums[offset] = sumsColumn[upper];
 	cnts[offset] = cntsColumn[upper];
 
 	// if lower end of window is outside range, implicitly subtract zero from sums and counts
-	const int lower = idx0-radius[dim]-1;
+	const Types::GridIndexType lower = idx0-radius[dim]-1;
 	if ( lower >= 0 )
 	  {
 	  sums[offset] -= sumsColumn[lower];
@@ -176,7 +178,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
     }
 
   TypedArray::SmartPtr result( TypedArray::Create( dataArray.GetType(), nPixels ) );
-  for ( size_t ofs = 0; ofs < nPixels; ++ofs )
+  for ( Types::GridIndexType ofs = 0; ofs < nPixels; ++ofs )
     {
     if ( cnts[ofs] )
       {
@@ -191,7 +193,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
 }
 
 TypedArray::SmartPtr
-DataGridFilter::FastRegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::FastRegionVarianceFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   if ( !this->m_DataGrid->GetData() )
     return TypedArray::SmartPtr( NULL );
@@ -207,8 +209,8 @@ DataGridFilter::FastRegionVarianceFilter( const int radiusX, const int radiusY, 
 
   TypedArray& squareData = *(square->GetData());  
 
-  const size_t nPixels = square->GetNumberOfPixels();  
-  for ( size_t i = 0; i < nPixels; ++i )
+  const Types::GridIndexType nPixels = square->GetNumberOfPixels();  
+  for ( Types::GridIndexType i = 0; i < nPixels; ++i )
     {
     Types::DataItem vMean, vSquare;
     if ( mean->Get( vMean, i ) && squareData.Get( vSquare, i ) )
@@ -231,7 +233,7 @@ cmtk::DataGridFilter::VarianceOperator::Reduce( std::vector<Types::DataItem>& re
   const Types::DataItem mean = MeanOperator::Reduce( regionData );
 
   Types::DataItem sum = 0;
-  for ( size_t i = 0; i < regionData.size(); ++i )
+  for ( Types::GridIndexType i = 0; i < regionData.size(); ++i )
     {
     const Types::DataItem diff = mean - regionData[i];
     sum += diff*diff;
@@ -241,7 +243,7 @@ cmtk::DataGridFilter::VarianceOperator::Reduce( std::vector<Types::DataItem>& re
 }
 
 TypedArray::SmartPtr
-DataGridFilter::RegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::RegionVarianceFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::VarianceOperator>( radiusX, radiusY, radiusZ );
 }
@@ -253,7 +255,7 @@ cmtk::DataGridFilter::StandardDeviationOperator::Reduce( std::vector<Types::Data
 }
 
 TypedArray::SmartPtr
-DataGridFilter::RegionStandardDeviationFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::RegionStandardDeviationFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::StandardDeviationOperator>( radiusX, radiusY, radiusZ );
 }
@@ -265,7 +267,7 @@ cmtk::DataGridFilter::SmoothnessOperator::Reduce( std::vector<Types::DataItem>& 
 }
 
 TypedArray::SmartPtr
-DataGridFilter::RegionSmoothnessFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::RegionSmoothnessFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::SmoothnessOperator>( radiusX, radiusY, radiusZ );
 }
@@ -276,7 +278,7 @@ cmtk::DataGridFilter::ThirdMomentOperator::Reduce( std::vector<Types::DataItem>&
   const Types::DataItem mean = MeanOperator::Reduce( regionData );
 
   Types::DataItem sum = 0.0;
-  for ( size_t i = 0; i < regionData.size(); ++i ) 
+  for ( Types::GridIndexType i = 0; i < regionData.size(); ++i ) 
     {
     const Types::DataItem diff = mean - regionData[i];
     sum += diff*diff*diff;
@@ -286,47 +288,10 @@ cmtk::DataGridFilter::ThirdMomentOperator::Reduce( std::vector<Types::DataItem>&
 }
 
 TypedArray::SmartPtr
-DataGridFilter::RegionThirdMomentFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+DataGridFilter::RegionThirdMomentFilter( const Types::GridIndexType radiusX, const Types::GridIndexType radiusY, const Types::GridIndexType radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::ThirdMomentOperator>( radiusX, radiusY, radiusZ );
 }
-
-/*
-TypedArray::SmartPtr
-DataGridFilter::NeighborhoodEntropyFilter
-( const UniformVolume* volume, 
-  const int windowRadius )
-{
-
-  const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) 
-    return TypedArray::SmartPtr( NULL );
-
-  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
-  const int* dims = volume->GetDims().begin();
-  const int dimX = dims[AXIS_X];
-  const int dimY = dims[AXIS_Y];
-  const int dimZ = dims[AXIS_Z];
-  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3 );
-  const Types::DataItemRange range = inputData->GetRange();
-  const int numBins = range.m_UpperBound - range.m_LowerBound;
-  std::cout << "numBins:" << numBins << std::endl;
-
-  Histogram<unsigned int>::SmartPtr histogram;
-  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
-  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
-    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
-      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
-	{
-        int offset = x + dimX * ( y + dimY * z );
-        DataGridFilter::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
-        histogram = neighborhood->GetHistogram( numBins );
-        Types::DataItem entropy = neighborhood->GetEntropy( histogram );
-        filtered->Set( entropy, offset );
-        }
-  return filtered;
-}
-*/
 
 TypedArray::SmartPtr
 DataGridFilter::GetDataSobelFiltered() const
@@ -342,18 +307,18 @@ DataGridFilter::GetDataSobelFiltered() const
 
   Progress::Begin( 0, this->m_DataGrid->m_Dims[2], 1 );
 
-  size_t offset = 0;
-  for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
+  Types::GridIndexType offset = 0;
+  for ( Types::GridIndexType z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
     {
     Progress::SetProgress( z );
-    for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y )
-      for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
+    for ( Types::GridIndexType y = 0; y < this->m_DataGrid->m_Dims[1]; ++y )
+      for ( Types::GridIndexType x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	{
 	if ( x && y && z && ( x<this->m_DataGrid->m_Dims[0]-1 ) && ( y<this->m_DataGrid->m_Dims[1]-1 ) && ( z<this->m_DataGrid->m_Dims[2]-1 ) ) 
 	  {
-	  for ( int dz=-1; dz<2; ++dz )
-	    for ( int dy=-1; dy<2; ++dy )
-	      for ( int dx=-1; dx<2; ++dx )
+	  for ( Types::GridIndexType dz=-1; dz<2; ++dz )
+	    for ( Types::GridIndexType dy=-1; dy<2; ++dy )
+	      for ( Types::GridIndexType dx=-1; dx<2; ++dx )
 		if ( ! data->Get( fov[1+dx][1+dy][1+dz], offset+this->m_DataGrid->GetOffsetFromIndex( dx, dy, dz ) ) )
 		  fov[1+dx][1+dy][1+dz] = 0;
 	  
@@ -405,11 +370,11 @@ DataGridFilter::GetDataKernelFiltered
   TypedArray::SmartPtr result( this->m_DataGrid->GetData()->Clone() );
   
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  const size_t numberOfTasks = 4 * threadPool.GetNumberOfThreads() - 3;
+  const Types::GridIndexType numberOfTasks = 4 * threadPool.GetNumberOfThreads() - 3;
 
   // initialize common thread data
   std::vector<FilterThreadParameters> params( numberOfTasks );
-  for ( size_t task = 0; task < numberOfTasks; ++task )
+  for ( Types::GridIndexType task = 0; task < numberOfTasks; ++task )
     {
     params[task].thisObject = this;
     params[task].m_Result = result;
@@ -419,7 +384,7 @@ DataGridFilter::GetDataKernelFiltered
   // run x filter
   if ( filterX.size() > 1 )
     {
-    for ( size_t task = 0; task < numberOfTasks; ++task )
+    for ( Types::GridIndexType task = 0; task < numberOfTasks; ++task )
       {
       params[task].m_Filter = &filterX;
       }
@@ -429,7 +394,7 @@ DataGridFilter::GetDataKernelFiltered
   // run y filter
   if ( filterY.size() > 1 )
     {
-    for ( size_t task = 0; task < numberOfTasks; ++task )
+    for ( Types::GridIndexType task = 0; task < numberOfTasks; ++task )
       {
       params[task].m_Filter = &filterY;
       }
@@ -439,7 +404,7 @@ DataGridFilter::GetDataKernelFiltered
   // run z filter
   if ( filterZ.size() > 1 )
     {
-    for ( size_t task = 0; task < numberOfTasks; ++task )
+    for ( Types::GridIndexType task = 0; task < numberOfTasks; ++task )
       {
       params[task].m_Filter = &filterZ;
       }
@@ -457,35 +422,35 @@ DataGridFilter
   const Self* ThisConst = params->thisObject;
   
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
-  unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
+  Types::GridIndexType maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
-  const size_t filterSize = filter.size();
+  const Types::GridIndexType filterSize = filter.size();
 
   std::vector<Types::DataItem> pixelBufferFrom( maxDim );
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray::SmartPtr& result = params->m_Result;
 
-  for ( int z=taskIdx; z < dims[2]; z += taskCnt ) 
+  for ( Types::GridIndexType z=taskIdx; z < dims[2]; z += taskCnt ) 
     {
-    for ( int y=0; y < dims[1]; ++y ) 
+    for ( Types::GridIndexType y=0; y < dims[1]; ++y ) 
       {
       // copy row data to buffer
-      size_t ofs = ThisConst->m_DataGrid->GetOffsetFromIndex( 0, y, z );
-      for ( int x=0; x < dims[0]; ++x, ++ofs )
+      Types::GridIndexType ofs = ThisConst->m_DataGrid->GetOffsetFromIndex( 0, y, z );
+      for ( Types::GridIndexType x=0; x < dims[0]; ++x, ++ofs )
 	if ( !result->Get( pixelBufferFrom[x], ofs ) )
 	  pixelBufferFrom[x] = 0;
       
       // convolve row with filter
-      for ( int x=0; x < dims[0]; ++x ) 
+      for ( Types::GridIndexType x=0; x < dims[0]; ++x ) 
 	{
 	// this keeps track of outside FOV data
 	Types::DataItem correctOverlap = filter[0];
 	// central element first to initialize target value
 	pixelBufferTo[x] = pixelBufferFrom[x] * filter[0];
 	// now convolve side elements
-	for ( int t=1; t < (int)filterSize; ++t ) 
+	for ( Types::GridIndexType t=1; t < (Types::GridIndexType)filterSize; ++t ) 
 	  {
 	  // is x-t still inside the image?
 	  if ( x >= t )
@@ -508,7 +473,7 @@ DataGridFilter
 	}
       
       ofs = ThisConst->m_DataGrid->GetOffsetFromIndex( 0, y, z );
-      for ( int x=0; x < dims[0]; ++x, ++ofs )
+      for ( Types::GridIndexType x=0; x < dims[0]; ++x, ++ofs )
 	result->Set( pixelBufferTo[x], ofs );
       }
     }
@@ -522,29 +487,29 @@ DataGridFilter
   const Self* ThisConst = params->thisObject;
   
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
-  unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
+  Types::GridIndexType maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
-  const size_t filterSize = filter.size();
+  const Types::GridIndexType filterSize = filter.size();
 
   std::vector<Types::DataItem> pixelBufferFrom( maxDim );
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray::SmartPtr& result = params->m_Result;
 
-  for ( int z=taskIdx; z < dims[2]; z+=taskCnt ) 
+  for ( Types::GridIndexType z=taskIdx; z < dims[2]; z+=taskCnt ) 
     {
-    for ( int x=0; x < dims[0]; ++x ) 
+    for ( Types::GridIndexType x=0; x < dims[0]; ++x ) 
       {
-      for ( int y=0; y < dims[1]; ++y )
+      for ( Types::GridIndexType y=0; y < dims[1]; ++y )
 	if ( !result->Get( pixelBufferFrom[y], ThisConst->m_DataGrid->GetOffsetFromIndex( x, y, z ) ) ) 
 	  pixelBufferFrom[y] = 0;
       
-      for ( int y=0; y < dims[1]; ++y ) 
+      for ( Types::GridIndexType y=0; y < dims[1]; ++y ) 
 	{
 	Types::DataItem correctOverlap = filter[0];
 	pixelBufferTo[y] = pixelBufferFrom[y] * filter[0];
-	for ( int t=1; t < (int)filterSize; ++t ) 
+	for ( Types::GridIndexType t=1; t < (Types::GridIndexType)filterSize; ++t ) 
 	  {
 	  if ( y >= t ) 
 	    {
@@ -564,7 +529,7 @@ DataGridFilter
 	}
       
       // write back convolved data
-      for ( int y=0; y < dims[1]; ++y )
+      for ( Types::GridIndexType y=0; y < dims[1]; ++y )
 	result->Set( pixelBufferTo[y], ThisConst->m_DataGrid->GetOffsetFromIndex( x, y, z ) );
       }
     }
@@ -578,29 +543,29 @@ DataGridFilter
   const Self* ThisConst = params->thisObject;
   
   const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
-  unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
+  Types::GridIndexType maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const bool normalize = params->m_Normalize;
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
-  const size_t filterSize = filter.size();
+  const Types::GridIndexType filterSize = filter.size();
 
   std::vector<Types::DataItem> pixelBufferFrom( maxDim );
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray::SmartPtr& result = params->m_Result;
 
-  for ( int y=taskIdx; y < dims[1]; y+=taskCnt ) 
+  for ( Types::GridIndexType y=taskIdx; y < dims[1]; y+=taskCnt ) 
     {
-    for ( int x=0; x < dims[0]; ++x ) 
+    for ( Types::GridIndexType x=0; x < dims[0]; ++x ) 
       {
-      for ( int z=0; z < dims[2]; ++z )
+      for ( Types::GridIndexType z=0; z < dims[2]; ++z )
 	if ( !result->Get( pixelBufferFrom[z], ThisConst->m_DataGrid->GetOffsetFromIndex( x, y, z ) ) ) 
 	  pixelBufferFrom[z] = 0;
       
-      for ( int z=0; z < dims[2]; ++z ) 
+      for ( Types::GridIndexType z=0; z < dims[2]; ++z ) 
 	{
 	Types::DataItem correctOverlap = filter[0];
 	pixelBufferTo[z] = pixelBufferFrom[z] * filter[0];
-	for ( int t=1; t < (int)filterSize; ++t ) 
+	for ( Types::GridIndexType t=1; t < (Types::GridIndexType)filterSize; ++t ) 
 	  {
 	  if ( z >= t )
 	    {
@@ -620,7 +585,7 @@ DataGridFilter
 	}
       
       // write back convolved data
-      for ( int z=0; z < dims[2]; ++z )
+      for ( Types::GridIndexType z=0; z < dims[2]; ++z )
 	result->Set( pixelBufferTo[z], ThisConst->m_DataGrid->GetOffsetFromIndex( x, y, z ) );
       }
     }

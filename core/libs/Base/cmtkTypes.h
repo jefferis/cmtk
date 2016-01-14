@@ -186,6 +186,11 @@ typedef Range<DataItem> DataItemRange;
 
 }
 
+namespace Types {
+  // Type for grid indexes in images.
+  typedef long long int GridIndexType;
+}
+ 
 #ifdef CMTK_COORDINATES_FLOAT
 /** @memo Definition of the coordinate data type
  * All spatial locations, distances, etc. are stored using this type.

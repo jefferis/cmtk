@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -74,7 +76,7 @@ public:
   static void GetOrientationFromDirections( char* orientation, const AffineXform::MatrixType& directions, const char* spaceAxes );
 
   /// Get permutation table of coordinate axes from space axes and image orientation.
-  static void GetImageToSpaceAxesPermutation( int (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes );
+  static void GetImageToSpaceAxesPermutation( Types::GridIndexType (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes );
 
   /// Class for permutation matrix that can be applied to pixel indexes, as well as dimension, and pixel size arrays.
   class PermutationMatrix
@@ -87,7 +89,7 @@ public:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Constructor: determine axes permutation, flipping, and store local copy of reoriented dimensions array.
-    PermutationMatrix( const FixedVector<3,int>& sourceDims, const std::string& curOrientation, const char newOrientation[3] );
+    PermutationMatrix( const FixedVector<3,Types::GridIndexType>& sourceDims, const std::string& curOrientation, const char newOrientation[3] );
    
     /** Takes the dimensions of a volume (e.g. a grid, a voxel)
      * and returns the dimensions of that volume after the
@@ -118,7 +120,7 @@ public:
      *\param origPoint The input pixel index in the original image grid.
      *\param newPoint The output pixel index in the reoriented image grid.
      */
-    void GetReorientedIndex( const int* origPoint, int* newPoint ) const
+    void GetReorientedIndex( const Types::GridIndexType* origPoint, Types::GridIndexType* newPoint ) const
     {
       for ( int i = 0; i < 3; ++i )
 	newPoint[i] = this->m_Multipliers[i] * origPoint[this->m_Axes[i]] + this->m_Offsets[i];
@@ -128,7 +130,7 @@ public:
      *\param origPoint The input pixel index.
      *\return The offset of the corresponding pixel in the reoriented volume.
      */
-    size_t NewOffsetFromPoint( const int* origPoint ) const
+    size_t NewOffsetFromPoint( const Types::GridIndexType* origPoint ) const
     {
       return ( this->m_Multipliers[0] * origPoint[this->m_Axes[0]] + this->m_Offsets[0] ) + 
               this->m_NewDims[0] * 
@@ -152,12 +154,12 @@ public:
      * m_Axes[i] is to be reversed from its direction
      * prior to re-orientation, and 1 otherwise
      */
-    FixedVector<3,int> m_Multipliers;
+    FixedVector<3,Types::GridIndexType> m_Multipliers;
 
     /** Dimension of the reoriented 
      * image in the direction of m_Axes[i]
      */
-    FixedVector<3,int> m_NewDims;
+    FixedVector<3,Types::GridIndexType> m_NewDims;
     
     /** m_Offsets[i] contains 0 if m_Multipliers[i] == 1,
      * and (m_NewDims[i] - 1) if m_Multipliers[i] == -1.

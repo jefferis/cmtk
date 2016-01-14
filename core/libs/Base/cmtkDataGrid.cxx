@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2014 SRI International
@@ -91,7 +93,7 @@ DataGrid::GetWholeImageRegion() const
 }
 
 const DataGrid::RegionType
-DataGrid::GetSliceRegion( const int axis, const int slice ) const
+DataGrid::GetSliceRegion( const int axis, const Types::GridIndexType slice ) const
 {
   Self::IndexType regionFrom( 0 ), regionTo( this->m_Dims );
 
@@ -112,9 +114,9 @@ DataGrid::CreateDataArray( const ScalarDataType dataType, const bool setToZero )
 }
 
 DataGrid* 
-DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
+DataGrid::GetDownsampledAndAveraged( const Types::GridIndexType (&downsample)[3] ) const
 {
-  const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
+  const Types::GridIndexType newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
   DataGrid* newDataGrid = new DataGrid( Self::IndexType::FromPointer( newDims ) );
   
@@ -124,25 +126,25 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
     TypedArray::SmartPtr newData = TypedArray::Create( thisData->GetType(), newDataGrid->GetNumberOfPixels() );
 
 #pragma omp parallel for
-    for ( int z = 0; z < newDims[2]; ++z )
+    for ( Types::GridIndexType z = 0; z < newDims[2]; ++z )
       {
-      size_t toOffset = z * newDims[0] * newDims[1];
-      int oldZ = z * downsample[2];
-      int oldY = 0;
-      for ( int y = 0; y < newDims[1]; ++y, oldY += downsample[1] ) 
+      Types::GridIndexType toOffset = z * newDims[0] * newDims[1];
+      Types::GridIndexType oldZ = z * downsample[2];
+      Types::GridIndexType oldY = 0;
+      for ( Types::GridIndexType y = 0; y < newDims[1]; ++y, oldY += downsample[1] ) 
 	{
-	int oldX = 0;
-	for ( int x = 0; x < newDims[0]; ++x, oldX += downsample[0], ++toOffset ) 
+	Types::GridIndexType oldX = 0;
+	for ( Types::GridIndexType x = 0; x < newDims[0]; ++x, oldX += downsample[0], ++toOffset ) 
 	  {
 	  Types::DataItem sum = 0;
-	  int count = 0;
-	  for ( int zz = 0; (zz < downsample[2]) && (oldZ+zz<this->m_Dims[2]); ++zz )
+	  Types::GridIndexType count = 0;
+	  for ( Types::GridIndexType zz = 0; (zz < downsample[2]) && (oldZ+zz<this->m_Dims[2]); ++zz )
 	    {
-	    const size_t ofsZ = (oldZ+zz)*this->nextK;
-	    for ( int yy = 0; (yy < downsample[1]) && (oldY+yy<this->m_Dims[1]); ++yy )
+	    const Types::GridIndexType ofsZ = (oldZ+zz)*this->nextK;
+	    for ( Types::GridIndexType yy = 0; (yy < downsample[1]) && (oldY+yy<this->m_Dims[1]); ++yy )
 	      {
-	      const size_t ofsYZ = ofsZ + (oldY+yy)*this->nextJ;
-	      for ( int xx = 0; (xx < downsample[0]) && (oldX+xx<this->m_Dims[0]); ++xx )
+	      const Types::GridIndexType ofsYZ = ofsZ + (oldY+yy)*this->nextJ;
+	      for ( Types::GridIndexType xx = 0; (xx < downsample[0]) && (oldX+xx<this->m_Dims[0]); ++xx )
 		{
 		Types::DataItem value;
 		if ( thisData->Get( value, (oldX+xx) + ofsYZ  ) )
@@ -174,9 +176,9 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 }
 
 DataGrid* 
-DataGrid::GetDownsampled( const int (&downsample)[3] ) const
+DataGrid::GetDownsampled( const Types::GridIndexType (&downsample)[3] ) const
 {
-  const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
+  const Types::GridIndexType newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
   DataGrid* newDataGrid = new DataGrid( Self::IndexType::FromPointer( newDims ) );
   
@@ -186,15 +188,15 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
     TypedArray::SmartPtr newData = TypedArray::Create( thisData->GetType(), newDataGrid->GetNumberOfPixels() );
 
 #pragma omp parallel for
-    for ( int z = 0; z < newDims[2]; ++z )
+    for ( Types::GridIndexType z = 0; z < newDims[2]; ++z )
       {
-      size_t toOffset = z * newDims[0] * newDims[1];
-      int oldZ = z * downsample[2];
-      int oldY = 0;
-      for ( int y = 0; y < newDims[1]; ++y, oldY += downsample[1] ) 
+      Types::GridIndexType toOffset = z * newDims[0] * newDims[1];
+      Types::GridIndexType oldZ = z * downsample[2];
+      Types::GridIndexType oldY = 0;
+      for ( Types::GridIndexType y = 0; y < newDims[1]; ++y, oldY += downsample[1] ) 
 	{
-	int oldX = 0;
-	for ( int x = 0; x < newDims[0]; ++x, oldX += downsample[0], ++toOffset ) 
+	Types::GridIndexType oldX = 0;
+	for ( Types::GridIndexType x = 0; x < newDims[0]; ++x, oldX += downsample[0], ++toOffset ) 
 	  {
 	  Types::DataItem value = 0;
 	  if ( thisData->Get( value, this->GetOffsetFromIndex( oldX, oldY, oldZ ) ) )
@@ -250,9 +252,9 @@ DataGrid::GetReoriented( const char* newOrientation ) const
     char* toPtr = static_cast<char*>( newData->GetDataPtr() );
     
     // 2. loop through the data, applying transformation
-    const size_t bytesPerPixel = oldData->GetItemSize();
+    const Types::GridIndexType bytesPerPixel = oldData->GetItemSize();
 
-    int fromPoint[3];
+    Types::GridIndexType fromPoint[3];
     for ( fromPoint[2] = 0; fromPoint[2] < this->m_Dims[2]; fromPoint[2]++ )
       {
       for ( fromPoint[1] = 0; fromPoint[1] < this->m_Dims[1]; fromPoint[1]++ )
@@ -289,13 +291,13 @@ DataGrid::ComputeGridIncrements()
 
 bool
 DataGrid::TrilinearInterpolation
-( Types::DataItem& value, const int X, const int Y, const int Z,
+( Types::DataItem& value, const Types::GridIndexType X, const Types::GridIndexType Y, const Types::GridIndexType Z,
   const Self::SpaceVectorType& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
   Types::DataItem corners[8];
 
-  const size_t offset = this->GetOffsetFromIndex( X, Y, Z );
+  const Types::GridIndexType offset = this->GetOffsetFromIndex( X, Y, Z );
 
   const TypedArray* data = this->GetData();
   bool data_present = data->Get( corners[0], offset );
@@ -374,26 +376,26 @@ DataGrid::MirrorPlaneInPlace
     {
     case AXIS_X: 
     {
-    int offset = 0;
-    for ( int z = 0; z < dims[2]; ++z )
-      for ( int y = 0; y < dims[1]; ++y, offset += dims[0] )
+    Types::GridIndexType offset = 0;
+    for ( Types::GridIndexType z = 0; z < dims[2]; ++z )
+      for ( Types::GridIndexType y = 0; y < dims[1]; ++y, offset += dims[0] )
 	data.BlockReverse( offset, dims[0] );
     }
     break;
     case AXIS_Y: 
     {
-    size_t zOffset = 0;
-    for ( int z = 0; z < dims[2]; ++z, zOffset += dims[0] * dims[1] ) 
+    Types::GridIndexType zOffset = 0;
+    for ( Types::GridIndexType z = 0; z < dims[2]; ++z, zOffset += dims[0] * dims[1] ) 
       {
-      for ( int y = 0; y < (dims[1] / 2); ++y )
+      for ( Types::GridIndexType y = 0; y < (dims[1] / 2); ++y )
 	data.BlockSwap( zOffset + y * dims[0], zOffset + (dims[1] - 1 - y) * dims[0], dims[0] );
       }
     }
     break;
     case AXIS_Z: 
     {
-    size_t blockSize = dims[0] * dims[1];
-    for ( int z = 0; z < (dims[2] / 2); ++z ) 
+    Types::GridIndexType blockSize = dims[0] * dims[1];
+    for ( Types::GridIndexType z = 0; z < (dims[2] / 2); ++z ) 
       {
       data.BlockSwap( z * blockSize, (dims[2] - 1 - z) * blockSize, blockSize );
       }
@@ -404,9 +406,9 @@ DataGrid::MirrorPlaneInPlace
 
 ScalarImage::SmartPtr
 DataGrid::GetOrthoSlice
-( const int axis, const unsigned int plane ) const
+( const int axis, const Types::GridIndexType plane ) const
 {
-  unsigned int dims[2], depth, incX, incY, incZ;
+  Types::GridIndexType dims[2], depth, incX, incY, incZ;
 
   switch ( axis ) 
     {
@@ -444,23 +446,22 @@ DataGrid::GetOrthoSlice
     sliceData->SetPaddingValue( data->GetPaddingValue() );
     }
 
-  //  if ( (plane < 0) || (plane >= depth) ) {
-  if ( (plane >= depth) ) 
-    { // need not check < 0 for unsigned int
+  if ( (plane < 0) || (plane >= depth) )
+    {
     sliceData->ClearArray( true /* PaddingData */ );
     } 
   else
     {
-    const unsigned int itemSize = data->GetItemSize();
+    const Types::GridIndexType itemSize = data->GetItemSize();
     
-    unsigned int sliceOffset = 0;
-    unsigned int offset = plane * incZ;
-    for ( unsigned int y = 0; y < dims[1]; ++y ) 
+    Types::GridIndexType sliceOffset = 0;
+    Types::GridIndexType offset = plane * incZ;
+    for ( Types::GridIndexType y = 0; y < dims[1]; ++y ) 
       {
-      unsigned int offsetY = offset + incY;
-      for ( unsigned int x = 0; x < dims[0]; ++x, ++sliceOffset ) 
+      Types::GridIndexType offsetY = offset + incY;
+      for ( Types::GridIndexType x = 0; x < dims[0]; ++x, ++sliceOffset ) 
 	{
-	unsigned int offsetX = offset + incX;
+	Types::GridIndexType offsetX = offset + incX;
 	
 	memcpy( sliceData->GetDataPtr( sliceOffset ), data->GetDataPtr( offset ), itemSize );
 	offset = offsetX;
@@ -476,9 +477,9 @@ DataGrid::GetOrthoSlice
 
 DataGrid::SmartPtr
 DataGrid::ExtractSlice
-( const int axis, const int plane ) const
+( const int axis, const Types::GridIndexType plane ) const
 {
-  unsigned int dims[2], incX, incY, incZ;
+  Types::GridIndexType dims[2], incX, incY, incZ;
 
   switch ( axis ) 
     {
@@ -519,16 +520,16 @@ DataGrid::ExtractSlice
     } 
   else
     {
-    const unsigned int itemSize = data.GetItemSize();
+    const Types::GridIndexType itemSize = data.GetItemSize();
     
-    unsigned int sliceOffset = 0;
-    unsigned int offset = plane * incZ;
-    for ( unsigned int y = 0; y < dims[1]; ++y ) 
+    Types::GridIndexType sliceOffset = 0;
+    Types::GridIndexType offset = plane * incZ;
+    for ( Types::GridIndexType y = 0; y < dims[1]; ++y ) 
       {
-      unsigned int offsetY = offset + incY;
-      for ( unsigned int x = 0; x < dims[0]; ++x, ++sliceOffset ) 
+      Types::GridIndexType offsetY = offset + incY;
+      for ( Types::GridIndexType x = 0; x < dims[0]; ++x, ++sliceOffset ) 
 	{
-	unsigned int offsetX = offset + incX;
+	Types::GridIndexType offsetX = offset + incX;
 	
 	memcpy( sliceData->GetDataPtr( sliceOffset ), data.GetDataPtr( offset ), itemSize );
 	offset = offsetX;
@@ -545,7 +546,7 @@ DataGrid::ExtractSlice
 
 void 
 DataGrid::SetOrthoSlice
-( const int axis, const unsigned int idx, const ScalarImage* slice )
+( const int axis, const Types::GridIndexType idx, const ScalarImage* slice )
 {
   const TypedArray* sliceData = slice->GetPixelData();
   if ( ! sliceData ) return;
@@ -556,7 +557,7 @@ DataGrid::SetOrthoSlice
     data = this->CreateDataArray( sliceData->GetType() );
     }
 
-  unsigned int dims[2], depth, incX, incY, incZ;
+  Types::GridIndexType dims[2], depth, incX, incY, incZ;
 
   switch ( axis ) 
     {
@@ -587,16 +588,16 @@ DataGrid::SetOrthoSlice
       break;
     }
   
-  if ( (idx < depth) )
-    { // need not check > 0 for unsigned int
-    unsigned int sliceOffset = 0;
-    unsigned int offset = idx * incZ;
-    for ( unsigned int y = 0; y < dims[1]; ++y ) 
+  if ( (idx >= 0) && (idx < depth) )
+    {
+    Types::GridIndexType sliceOffset = 0;
+    Types::GridIndexType offset = idx * incZ;
+    for ( Types::GridIndexType y = 0; y < dims[1]; ++y ) 
       {
-      unsigned int offsetY = offset + incY;
-      for ( unsigned int x = 0; x < dims[0]; ++x, ++sliceOffset ) 
+      Types::GridIndexType offsetY = offset + incY;
+      for ( Types::GridIndexType x = 0; x < dims[0]; ++x, ++sliceOffset ) 
 	{
-	unsigned int offsetX = offset + incX;
+	Types::GridIndexType offsetX = offset + incX;
 	
 	sliceData->BlockCopy( *data, offset, sliceOffset, 1 );
 	offset = offsetX;
@@ -613,10 +614,10 @@ DataGrid
   FixedVector<3,Types::Coordinate> com( 0.0 );
 
   double sumOfSamples = 0;
-  size_t ofs = 0;
-  for ( int z = 0; z < this->m_Dims[2]; ++z )
-    for ( int y = 0; y < this->m_Dims[1]; ++y )
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
+  Types::GridIndexType ofs = 0;
+  for ( Types::GridIndexType z = 0; z < this->m_Dims[2]; ++z )
+    for ( Types::GridIndexType y = 0; y < this->m_Dims[1]; ++y )
+      for ( Types::GridIndexType x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) && MathUtil::IsFinite( value ) )
@@ -640,10 +641,10 @@ DataGrid
   firstOrderMoment = FixedVector<3,Types::Coordinate>( 0.0 );
 
   double sumOfSamples = 0;
-  size_t ofs = 0;
-  for ( int z = 0; z < this->m_Dims[2]; ++z )
-    for ( int y = 0; y < this->m_Dims[1]; ++y )
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
+  Types::GridIndexType ofs = 0;
+  for ( Types::GridIndexType z = 0; z < this->m_Dims[2]; ++z )
+    for ( Types::GridIndexType y = 0; y < this->m_Dims[1]; ++y )
+      for ( Types::GridIndexType x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) && MathUtil::IsFinite( value ) )
