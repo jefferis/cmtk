@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -241,12 +243,12 @@ public:
    * factors per dimension are adjusted so that the resulting output volume
    * is as close to isotropic as possible without interpolation.
    */
-  virtual UniformVolume* GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic = false ) const;
+  virtual UniformVolume* GetDownsampledAndAveraged( const Types::GridIndexType downsample, const bool approxIsotropic = false ) const;
  
   /** Downsampling and pixel averaging constructor function.
    *\param downsample Array of per-dimension downsampling factors.
    */
-  virtual UniformVolume* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
+  virtual UniformVolume* GetDownsampledAndAveraged( const Types::GridIndexType (&downsample)[3] ) const;
 
   /** Downsampling constructor function.
    *\param downsample Downsampling factor.
@@ -254,26 +256,26 @@ public:
    * factors per dimension are adjusted so that the resulting output volume
    * is as close to isotropic as possible without interpolation.
    */
-  virtual UniformVolume* GetDownsampled( const int downsample, const bool approxIsotropic = false ) const;
+  virtual UniformVolume* GetDownsampled( const  Types::GridIndexType downsample, const bool approxIsotropic = false ) const;
  
   /** Downsampling constructor function.
    *\param downsample Array of per-dimension downsampling factors.
    */
-  virtual UniformVolume* GetDownsampled( const int (&downsample)[3] ) const;
+  virtual UniformVolume* GetDownsampled( const Types::GridIndexType (&downsample)[3] ) const;
 
   /** Get interleaved sub-volume along given axis and with given interleave offset.
    *\param axis Coordinate axis along which the image is interleaved.
    *\param factor Interleave factor, i.e., the number of interleaved sub-volumes.
    *\param idx Index of interleaved sub-volume to extract.
    */
-  UniformVolume* GetInterleavedSubVolume( const int axis, const int factor, const int idx ) const;
+  UniformVolume* GetInterleavedSubVolume( const int axis, const Types::GridIndexType factor, const Types::GridIndexType idx ) const;
 
   /** Get interleaved sub-volume along given axis and with given interleave offset, padded with empty image planes.
    *\param axis Coordinate axis along which the image is interleaved.
    *\param factor Interleave factor, i.e., the number of interleaved sub-volumes.
    *\param idx Index of interleaved sub-volume to extract.
    */
-  UniformVolume* GetInterleavedPaddedSubVolume( const int axis, const int factor, const int idx ) const;
+  UniformVolume* GetInterleavedPaddedSubVolume( const int axis, const Types::GridIndexType factor, const Types::GridIndexType idx ) const;
 
   /// Mirror volume and associated data.
   virtual void Mirror ( const int axis = AXIS_X /*!< Mirror with respect to this coordinate axis.*/);
@@ -284,11 +286,11 @@ public:
    *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
-  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const unsigned int plane ) const;
+  virtual ScalarImage::SmartPtr GetOrthoSlice( const int axis, const Types::GridIndexType plane ) const;
 
   /** Extract orthogonal slice as a new volume.
    */
-  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const;
+  Self::SmartPtr ExtractSlice( const int axis, const Types::GridIndexType plane ) const;
 
   /** Return interpolated orthogonal slice.
    * This function calls its non-interpolating counterpart twice and performs
@@ -312,7 +314,7 @@ public:
    *
    *\warning No parameter range checking is currently performed!
    */
-  virtual const Self::CoordinateVectorType GetGradientAt( const int i, const int j, const int k );
+  virtual const Self::CoordinateVectorType GetGradientAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k );
 
   /** Get data Hessian matrix at pixel using central differences.
    * This function cannot be called for pixels within a two-pixel distance from the
@@ -320,7 +322,7 @@ public:
    *
    *\warning No parameter range checking is currently performed!
    */
-  virtual Matrix3x3<Types::DataItem> GetHessianAt( const int i, const int j, const int k );
+  virtual Matrix3x3<Types::DataItem> GetHessianAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k );
 
   /// Get data value at specified coordinate.
   template<class TData> inline bool ProbeData( TData& result, const TData* dataPtr, const Self::CoordinateVectorType& location ) const;
@@ -340,7 +342,7 @@ public:
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
+  inline bool FindVoxel( const Self::CoordinateVectorType& location,  Types::GridIndexType *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
   
   /** Find a voxel in the volume.
    *\param location Real-world coordinates of the location that is to be 
@@ -352,7 +354,7 @@ public:
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx ) const;
+  inline bool FindVoxel( const Self::CoordinateVectorType& location, Types::GridIndexType *const idx ) const;
 
   /** Find a grid index inside or outside the volume.
    *\param location Real-world coordinates of the location that is to be 
@@ -361,7 +363,7 @@ public:
    * voxel containing the given location. Values range from 0 to 
    * ModelDims[dim-1].
    */
-  inline void GetVoxelIndexNoBounds( const Self::CoordinateVectorType& location, int *const idx ) const;
+  inline void GetVoxelIndexNoBounds( const Self::CoordinateVectorType& location, Types::GridIndexType *const idx ) const;
 
   /** Find a voxel in the volume by fractional index.
    *\param fracIndex Fractional 3D voxel index.
@@ -371,13 +373,13 @@ public:
    * within the model volume. If false is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxelByIndex( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
+  inline bool FindVoxelByIndex( const Self::CoordinateVectorType& fracIndex, Types::GridIndexType *const idx, Types::Coordinate *const frac ) const;
 
   /// Get 3D grid region from continuous lower and upper corner.
   const Self::RegionType GetGridRange( const Self::CoordinateRegionType& region /*!< The coordinate region*/ ) const;
  
   /// Get plane coordinate.
-  virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 
+  virtual Types::Coordinate GetPlaneCoord( const int axis, const Types::GridIndexType plane ) const 
   {
     return this->m_Offset[axis] + plane * this->m_Delta[axis];
   }
@@ -386,19 +388,19 @@ public:
    * @param axis The coordinate axis that the location parameters refers to.
    * @param location The location along the selected coordinate axis in the range from 0 to Size[axis].
    */
-  virtual int GetCoordIndex( const int axis, const Types::Coordinate location ) const 
+  virtual Types::GridIndexType GetCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    return std::max<int>( 0, std::min<int>( (int) ((location-this->m_Offset[axis]) / this->m_Delta[axis]), this->m_Dims[axis]-1 ) );
+    return std::max< Types::GridIndexType>( 0, std::min< Types::GridIndexType>( (Types::GridIndexType) ((location-this->m_Offset[axis]) / this->m_Delta[axis]), this->m_Dims[axis]-1 ) );
   }
   
   /** Get grid index corresponding (as close as possible) to coordinate.
    * @param axis The coordinate axis that the location parameters refers to.
    * @param location The location along the selected coordinate axis in the range from 0 to Size[axis].
    */
-  virtual int GetClosestCoordIndex( const int axis, const Types::Coordinate location ) const 
+  virtual Types::GridIndexType GetClosestCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = (int)MathUtil::Round((location-this->m_Offset[axis]) / this->m_Delta[axis]);
-    return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
+    const Types::GridIndexType idx = (Types::GridIndexType)MathUtil::Round((location-this->m_Offset[axis]) / this->m_Delta[axis]);
+    return std::max<Types::GridIndexType>( 0, std::min<Types::GridIndexType>( idx, this->m_Dims[axis]-1 ) );
   }
 
   /** Get grid index corresponding (as close as possible) to coordinate.
@@ -408,7 +410,7 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      idx[dim] = static_cast<int>( MathUtil::Round((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
+      idx[dim] = static_cast<Types::GridIndexType>( MathUtil::Round((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
       if ( (idx[dim] < 0) || ( idx[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
@@ -419,10 +421,10 @@ public:
    * @param axis The coordinate dimension that the location parameters refers to.
    * @param location The location in the range from 0 to Size[axis].
    */
-  virtual int GetTruncCoordIndex( const int axis, const Types::Coordinate location ) const 
+  virtual Types::GridIndexType GetTruncCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = static_cast<int>((location-this->m_Offset[axis]) / this->m_Delta[axis]);
-    return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
+    const Types::GridIndexType idx = static_cast<Types::GridIndexType>((location-this->m_Offset[axis]) / this->m_Delta[axis]);
+    return std::max<Types::GridIndexType>( 0, std::min<Types::GridIndexType>( idx, this->m_Dims[axis]-1 ) );
   }
 
   /** Get grid index corresponding to coordinate by truncation, not rounding.
@@ -433,7 +435,7 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      idx[dim] = static_cast<int>((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
+      idx[dim] = static_cast<Types::GridIndexType>((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
       if (  (idx[dim] < 0) || (idx[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
@@ -445,7 +447,7 @@ public:
    * three coordinate axes. Valid range is from 0 to Dims[...]-1.
    *\return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */
-  virtual const Self::CoordinateVectorType GetGridLocation( const int x, const int y, const int z ) const 
+  virtual const Self::CoordinateVectorType GetGridLocation( const Types::GridIndexType x, const Types::GridIndexType y, const Types::GridIndexType z ) const 
   {
     const Types::Coordinate loc[3] = { this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] };
     return Self::CoordinateVectorType::FromPointer( loc );
@@ -484,7 +486,7 @@ public:
    * Valid range is from 0 to (Dims[0]*Dims[1]*Dims[2])-1.
    *\return The location of the given grid element as a Self::CoordinateVectorType.
    */
-  virtual const Self::CoordinateVectorType GetGridLocation( const size_t idx ) const 
+  virtual const Self::CoordinateVectorType GetGridLocation( const Types::GridIndexType idx ) const 
   {
     const Types::Coordinate loc[3] = { this->m_Offset[0] +  (idx % this->nextJ) * this->m_Delta[0], 
 				       this->m_Offset[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 

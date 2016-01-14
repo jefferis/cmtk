@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2014 SRI International
@@ -117,25 +119,25 @@ UniformVolume::CloneGridVirtual() const
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic ) const
+UniformVolume::GetDownsampledAndAveraged( const Types::GridIndexType downsample, const bool approxIsotropic ) const
 {
   if ( approxIsotropic )
     {
     const Types::Coordinate minDelta = std::min<Types::Coordinate>( this->m_Delta[0], std::min<Types::Coordinate>( this->m_Delta[1], this->m_Delta[2] ) );
-    const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[0] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[1] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[2] / minDelta) ) ) };
+    const Types::GridIndexType downsampleByAxis[3] = { std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[0] / minDelta) ) ),
+				      std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[1] / minDelta) ) ),
+				      std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[2] / minDelta) ) ) };
     return this->GetDownsampledAndAveraged( downsampleByAxis );
     }
   else
     {
-    const int downsampleByAxis[3] = { downsample, downsample, downsample };
+    const Types::GridIndexType downsampleByAxis[3] = { downsample, downsample, downsample };
     return this->GetDownsampledAndAveraged( downsampleByAxis );
     }
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
+UniformVolume::GetDownsampledAndAveraged( const Types::GridIndexType (&downsample)[3] ) const
 {
   DataGrid::SmartPtr newDataGrid( this->DataGrid::GetDownsampledAndAveraged( downsample ) );
   TypedArray::SmartPtr newData = newDataGrid->GetData();
@@ -188,25 +190,25 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampled( const int downsample, const bool approxIsotropic ) const
+UniformVolume::GetDownsampled( const Types::GridIndexType downsample, const bool approxIsotropic ) const
 {
   if ( approxIsotropic )
     {
     const Types::Coordinate minDelta = std::min<Types::Coordinate>( this->m_Delta[0], std::min<Types::Coordinate>( this->m_Delta[1], this->m_Delta[2] ) );
-    const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[0] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[1] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[2] / minDelta) ) ) };
+    const Types::GridIndexType downsampleByAxis[3] = { std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[0] / minDelta) ) ),
+				      std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[1] / minDelta) ) ),
+				      std::max<Types::GridIndexType>( 1, downsample / std::max<Types::GridIndexType>( 1, static_cast<Types::GridIndexType>(this->m_Delta[2] / minDelta) ) ) };
     return this->GetDownsampled( downsampleByAxis );
     }
   else
     {
-    const int downsampleByAxis[3] = { downsample, downsample, downsample };
+    const Types::GridIndexType downsampleByAxis[3] = { downsample, downsample, downsample };
     return this->GetDownsampled( downsampleByAxis );
     }
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
+UniformVolume::GetDownsampled( const Types::GridIndexType (&downsample)[3] ) const
 {
   DataGrid::SmartPtr newDataGrid( this->DataGrid::GetDownsampled( downsample ) );
   TypedArray::SmartPtr newData = newDataGrid->GetData();
@@ -250,7 +252,7 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
 
 UniformVolume* 
 UniformVolume::GetInterleavedSubVolume
-( const int axis, const int factor, const int idx ) const
+( const int axis, const Types::GridIndexType factor, const Types::GridIndexType idx ) const
 {
   Self::IndexType dims;
   Self::CoordinateVectorType delta;
@@ -270,7 +272,7 @@ UniformVolume::GetInterleavedSubVolume
   
   UniformVolume* volume = new UniformVolume( dims, delta[0], delta[1], delta[2] );
   volume->SetOffset( offset );
-  for ( int i = 0; i < dims[axis]; ++i )
+  for ( Types::GridIndexType i = 0; i < dims[axis]; ++i )
     {
     ScalarImage::SmartPtr slice( this->GetOrthoSlice( axis, idx + i * factor ) );
     volume->SetOrthoSlice( axis, i, slice );
@@ -308,18 +310,18 @@ UniformVolume::GetInterleavedSubVolume
 
 UniformVolume* 
 UniformVolume::GetInterleavedPaddedSubVolume
-( const int axis, const int factor, const int idx ) const
+( const int axis, const Types::GridIndexType factor, const Types::GridIndexType idx ) const
 {
-  int sDims = this->m_Dims[axis] / factor;
+  Types::GridIndexType sDims = this->m_Dims[axis] / factor;
   if ( this->m_Dims[axis] % factor > idx )
     ++sDims;
 
   UniformVolume* volume = new UniformVolume( this->m_Dims, this->m_Size );
   (volume->CreateDataArray( this->GetData()->GetType() ))->Fill( 0.0 );
   volume->SetOffset( this->m_Offset );
-  for ( int i = 0; i < sDims; ++i )
+  for ( Types::GridIndexType i = 0; i < sDims; ++i )
     {
-    const size_t sliceIdx = idx + i * factor;
+      const Types::GridIndexType sliceIdx = idx + i * factor;
     ScalarImage::SmartPtr slice( this->GetOrthoSlice( axis, sliceIdx ) );
     volume->SetOrthoSlice( axis, sliceIdx, slice );
     }
@@ -366,7 +368,7 @@ UniformVolume::Mirror ( const int axis )
 
 ScalarImage::SmartPtr
 UniformVolume::GetOrthoSlice
-( const int axis, const unsigned int plane ) const
+( const int axis, const Types::GridIndexType plane ) const
 {
   ScalarImage::SmartPtr sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
@@ -405,7 +407,7 @@ UniformVolume::GetOrthoSlice
 
 UniformVolume::SmartPtr
 UniformVolume::ExtractSlice
-( const int axis, const int plane ) const
+( const int axis, const Types::GridIndexType plane ) const
 {
   DataGrid::SmartPtr sliceGrid( this->DataGrid::ExtractSlice( axis, plane ) );
   Self::SmartPtr sliceVolume( new Self( sliceGrid->m_Dims, this->m_Delta[0], this->m_Delta[1], this->m_Delta[2], sliceGrid->m_Data ) );
@@ -427,7 +429,7 @@ ScalarImage::SmartPtr
 UniformVolume::GetOrthoSliceInterp
 ( const int axis, const Types::Coordinate location ) const
 {
-  unsigned int baseSliceIndex = this->GetCoordIndex( axis, location );
+  Types::GridIndexType baseSliceIndex = this->GetCoordIndex( axis, location );
 
   const Types::Coordinate baseSliceLocation = this->GetPlaneCoord( axis, baseSliceIndex );
   const Types::Coordinate nextSliceLocation = this->GetPlaneCoord( axis, baseSliceIndex+1 ); 
@@ -449,7 +451,7 @@ UniformVolume::GetOrthoSliceInterp
   Types::Coordinate weight0 = (nextSliceLocation - location) / (nextSliceLocation - baseSliceLocation );
 
   Types::DataItem value0, value1;
-  for ( unsigned int idx = 0; idx < data0->GetDataSize(); ++idx ) 
+  for ( Types::GridIndexType idx = 0; idx < data0->GetDataSize(); ++idx ) 
     {
     if ( data0->Get( value0, idx ) && data1->Get( value1, idx ) ) 
       {
@@ -477,15 +479,15 @@ UniformVolume
   const Types::Coordinate zg = centerOfMass[2];
 
   Types::DataItem ixx = 0, iyy = 0, izz = 0, ixy = 0, iyz = 0, izx = 0;
-  for ( int k = 0; k < this->m_Dims[2]; ++k )
+  for ( Types::GridIndexType k = 0; k < this->m_Dims[2]; ++k )
     {
     const Types::Coordinate Dz = this->GetPlaneCoord( AXIS_Z, k ) - zg;
     const Types::Coordinate Dz2 = Dz * Dz;
-    for ( int j = 0; j < this->m_Dims[1]; ++j )
+    for ( Types::GridIndexType j = 0; j < this->m_Dims[1]; ++j )
       {
       const Types::Coordinate Dy = this->GetPlaneCoord( AXIS_Y, j ) - yg;
       const Types::Coordinate Dy2 = Dy * Dy;
-      for ( int i = 0; i < this->m_Dims[0]; ++i )
+      for ( Types::GridIndexType i = 0; i < this->m_Dims[0]; ++i )
 	{
         const Types::Coordinate Dx = this->GetPlaneCoord( AXIS_X, i ) - xg;
 	const Types::Coordinate Dx2 = Dx * Dx;
