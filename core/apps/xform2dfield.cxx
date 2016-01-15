@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2014 SRI International
@@ -173,7 +175,9 @@ doMain ( const int argc, const char *argv[] )
 	throw cmtk::ExitException( 1 );
 	}
       }
-    volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
+
+    const cmtk::Types::GridIndexType gridIndexFactors[3] = { factors[0], factors[1], factors[2] };
+    volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( gridIndexFactors ) );
     }
   
   cmtk::DeformationField::SmartPtr dfield( new cmtk::DeformationField( volume ) );
