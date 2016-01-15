@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -75,7 +77,7 @@ public:
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
    *\param psfScale Optional spatial scale factor for the PSF. Values larger than 1 increase PSF size, smaller than one decrease it.
    */
-  DeblurringVolumeReconstruction( const UniformVolume* originalImage, const size_t numberOfPasses, const int interleaveAxis, const Types::Coordinate psfScale = 1.0 )
+ DeblurringVolumeReconstruction( const UniformVolume* originalImage, const Types::GridIndexType numberOfPasses, const int interleaveAxis, const Types::Coordinate psfScale = 1.0 )
     : InverseInterpolationVolumeReconstructionBase( originalImage, numberOfPasses, interleaveAxis )
   { 
     this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
@@ -118,7 +120,7 @@ private:
   /** Get a bounding box of the transformed pass-image pixel neighborhood.
    * (Transformed from pass-image space to corrected-image space)
    */
-  void GetBoundingBoxOfXformedPassNeighborhood( int* region, 
+  void GetBoundingBoxOfXformedPassNeighborhood( Types::GridIndexType* region, 
 						const UniformVolume* correctedImage, 
 						const Vector3D& currentPassVoxel, 
 						const TPSF* psf, 

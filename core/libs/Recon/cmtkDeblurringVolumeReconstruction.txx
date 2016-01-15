@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -51,16 +53,16 @@ DeblurringVolumeReconstruction<TPSF>
   const UniformVolume* correctedImage = this->m_CorrectedImage;
   const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
 
-  for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
+  for ( Types::GridIndexType pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
     const UniformVolume* passImage = this->m_OriginalPassImages[pass];
     UniformVolume::SmartPtr result( passImage->CloneGrid() );
     result->CreateDataArray( TYPE_FLOAT, true/*setToZero*/ );
     
     const DataGrid::IndexType& passImageDims = passImage->GetDims();
-    const int passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
-    const int passImageDimsXY = passImageDimsX*passImageDimsY;
-    const int passImageDimsXYZ = passImageDimsXY*passImageDimsZ;
+    const Types::GridIndexType passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
+    const Types::GridIndexType passImageDimsXY = passImageDimsX*passImageDimsY;
+    const Types::GridIndexType passImageDimsXYZ = passImageDimsXY*passImageDimsZ;
 
     const TPSF* passImagePSF = this->m_PassImagePSF[pass];
     const AffineXform* correctedToPassXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
@@ -72,10 +74,10 @@ DeblurringVolumeReconstruction<TPSF>
 		    { const size_t last = std::min( stride * (i+1), passImageDimsXYZ ); for ( size_t offset = i * stride; offset < last; ++offset )
 #else
 #pragma omp parallel for
-    for ( int offset = 0; offset < static_cast<int>( passImageDimsXYZ ); ++offset )
+    for ( Types::GridIndexType offset = 0; offset < static_cast<Types::GridIndexType>( passImageDimsXYZ ); ++offset )
 #endif
       {
-      const int curPassVox[3] = { (offset % passImageDimsXY) % passImageDimsX, (offset % passImageDimsXY) / passImageDimsX, (offset / passImageDimsXY) };
+      const Types::GridIndexType curPassVox[3] = { (offset % passImageDimsXY) % passImageDimsX, (offset % passImageDimsXY) / passImageDimsX, (offset / passImageDimsXY) };
       
       Types::DataItem blurredData = 0;
       Types::DataItem totalWeight = 0;
@@ -83,23 +85,23 @@ DeblurringVolumeReconstruction<TPSF>
       /* Get a bounding box for the transformed neighborhood (pass- to corrected-image)
            */
       const UniformVolume::CoordinateVectorType curPassVec3D = passImage->GetGridLocation( curPassVox[0], curPassVox[1], curPassVox[2] );
-      int corrBoundingBox[6];
+      Types::GridIndexType corrBoundingBox[6];
       this->GetBoundingBoxOfXformedPassNeighborhood( corrBoundingBox, correctedImage, curPassVec3D, passImagePSF, passToCorrectedXform, correctedImageDims );
       
       /* Iterate through the bounding box of the blur-weights matrix,
            * assembling the weighted sum of the neighbors, and the sum of weights
            */
       Types::DataItem data;
-      for (int k = corrBoundingBox[2]; k <= corrBoundingBox[5]; ++k)
+      for (Types::GridIndexType k = corrBoundingBox[2]; k <= corrBoundingBox[5]; ++k)
 	{
-	for (int j = corrBoundingBox[1]; j <= corrBoundingBox[4]; ++j)
+	for (Types::GridIndexType j = corrBoundingBox[1]; j <= corrBoundingBox[4]; ++j)
 	  {
-	  for (int i = corrBoundingBox[0]; i <= corrBoundingBox[3]; ++i)
+	  for (Types::GridIndexType i = corrBoundingBox[0]; i <= corrBoundingBox[3]; ++i)
 	    {
 	    const UniformVolume::CoordinateVectorType curNeighbVec3D = correctedToPassXform->Apply( correctedImage->GetGridLocation( i, j, k ) );
             
 	    Types::Coordinate from[3], to[3];
-	    int neighborPassVox[3];
+	    Types::GridIndexType neighborPassVox[3];
 	    if ( passImage->FindVoxel( curNeighbVec3D, neighborPassVox, from, to ) )
 	      {
 	      Types::Coordinate weightIJK = 1;
@@ -140,10 +142,10 @@ DeblurringVolumeReconstruction<TPSF>
     g(i) = 0;
 
   const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
-  const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
-  const int correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
+  const Types::GridIndexType correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
+  const Types::GridIndexType correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
 
-  for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
+  for ( Types::GridIndexType pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
     const Types::Coordinate passImageWeight = this->m_PassWeights[pass];      
     if ( passImageWeight > 0 )
@@ -155,16 +157,16 @@ DeblurringVolumeReconstruction<TPSF>
       const AffineXform* transformationToPassImage = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
       
 #pragma omp parallel for
-      for ( int offset = 0; offset < static_cast<int>( numberOfPixels ); ++offset )
+      for ( Types::GridIndexType offset = 0; offset < static_cast<Types::GridIndexType>( numberOfPixels ); ++offset )
 	{
-	const int corrCenterVox[3] = { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
+	const Types::GridIndexType corrCenterVox[3] = { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 
         const UniformVolume::CoordinateVectorType curCenterVec3D = transformationToPassImage->Apply( correctedImage->GetGridLocation( corrCenterVox[0], corrCenterVox[1], corrCenterVox[2] ) );
 
 	/* compute neighborhood in blurred (pass) image from which blurred pixels 
            * are affected by current corrected image pixel
            */
-	int passRegionCorners[2][3];
+	Types::GridIndexType passRegionCorners[2][3];
 	for ( int dim = 0; dim < 3; ++dim )
 	  {
 	  passRegionCorners[0][dim] = blurredPassImage->GetCoordIndex( dim, curCenterVec3D[dim] - passImagePSF->GetTruncationRadius( dim ) );
@@ -176,11 +178,11 @@ DeblurringVolumeReconstruction<TPSF>
            * image
            */
 	Types::DataItem gradientData = 0;
-	for (int k = passRegionCorners[0][2]; k <= passRegionCorners[1][2]; ++k)
+	for (Types::GridIndexType k = passRegionCorners[0][2]; k <= passRegionCorners[1][2]; ++k)
 	  {
-	  for (int j = passRegionCorners[0][1]; j <= passRegionCorners[1][1]; ++j)
+	  for (Types::GridIndexType j = passRegionCorners[0][1]; j <= passRegionCorners[1][1]; ++j)
 	    {
-	    for (int i = passRegionCorners[0][0]; i <= passRegionCorners[1][0]; ++i)
+	    for (Types::GridIndexType i = passRegionCorners[0][0]; i <= passRegionCorners[1][0]; ++i)
 	      {
 	      Types::DataItem differenceData;
 	      // if differenceData==0, we can skip this, too
@@ -216,7 +218,7 @@ template<class TPSF>
 void
 DeblurringVolumeReconstruction<TPSF>
 ::GetBoundingBoxOfXformedPassNeighborhood
-( int* correctedImageBoundingBox, const UniformVolume* correctedImage, const Vector3D& currentPassVoxel, const TPSF* psf,
+( Types::GridIndexType* correctedImageBoundingBox, const UniformVolume* correctedImage, const Vector3D& currentPassVoxel, const TPSF* psf,
   const AffineXform* passToCorrectedXform, const DataGrid::IndexType& correctedImageDims ) const
 {
   /* Compute the blurring neighborhood in the pass image 
@@ -278,7 +280,7 @@ DeblurringVolumeReconstruction<TPSF>
    */
   for ( int dim = 0; dim < 3; ++dim )
     {
-    correctedImageBoundingBox[dim] = std::max( correctedImageBoundingBox[dim], 0 );
+    correctedImageBoundingBox[dim] = std::max<Types::GridIndexType>( correctedImageBoundingBox[dim], 0 );
     // increment upper indexes by one to compensate for floating point truncation in pixel index lookup.
     correctedImageBoundingBox[dim+3] = std::min( correctedImageBoundingBox[dim+3]+1, correctedImageDims[dim]-1 );
     }
@@ -306,8 +308,8 @@ DeblurringVolumeReconstruction<TPSF>
   if ( this->m_Function->GetMaximumError() <= this->m_Function->m_LowestMaxError )
     {
     this->m_Function->m_LowestMaxError = this->m_Function->GetMaximumError();
-    const int numberOfPixels = this->m_Function->m_CorrectedImage->GetNumberOfPixels();
-    for ( int i = 1; i <= numberOfPixels; ++i )
+    const Types::GridIndexType numberOfPixels = this->m_Function->m_CorrectedImage->GetNumberOfPixels();
+    for ( Types::GridIndexType i = 1; i <= numberOfPixels; ++i )
       this->m_Function->m_CorrectedImage->SetDataAt( x(i), i-1 );
     this->m_Function->m_LowestMaxErrorImage = UniformVolume::SmartPtr( this->m_Function->m_CorrectedImage->Clone( true /*copyData*/ ) );
     }

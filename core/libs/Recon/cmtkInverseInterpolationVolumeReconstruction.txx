@@ -101,14 +101,14 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 		}
 	      }
 	    
-	    const Types::GridIndexType iMin = std::max( 0, -xx );
-	    const Types::GridIndexType iMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsX - xx );
+	    const Types::GridIndexType iMin = std::max<Types::GridIndexType>( 0, -xx );
+	    const Types::GridIndexType iMax = std::min<Types::GridIndexType>( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsX - xx );
 
-	    const Types::GridIndexType jMin = std::max( 0, -yy );
-	    const Types::GridIndexType jMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsY - yy );
+	    const Types::GridIndexType jMin = std::max<Types::GridIndexType>( 0, -yy );
+	    const Types::GridIndexType jMax = std::min<Types::GridIndexType>( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsY - yy );
 
-	    const Types::GridIndexType kMin = std::max( 0, -zz );
-	    const Types::GridIndexType kMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsZ - zz );
+	    const Types::GridIndexType kMin = std::max<Types::GridIndexType>( 0, -zz );
+	    const Types::GridIndexType kMax = std::min<Types::GridIndexType>( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsZ - zz );
 
 	    for ( Types::GridIndexType k = kMin; k < kMax; ++k )
 	      {
@@ -244,8 +244,8 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
   Types::GridIndexType corners[2][3];
   for ( int dim = 0; dim < 3; ++dim )
     {
-    corners[0][dim] = std::max( currentCorrectedGridPoint[dim] - TInterpolator::RegionSizeLeftRight, 0 );
-    corners[1][dim] = std::min( currentCorrectedGridPoint[dim] + TInterpolator::RegionSizeLeftRight, correctedImage->GetDims()[dim]-1 );
+    corners[0][dim] = std::max<Types::GridIndexType>( currentCorrectedGridPoint[dim] - TInterpolator::RegionSizeLeftRight, 0 );
+    corners[1][dim] = std::min<Types::GridIndexType>( currentCorrectedGridPoint[dim] + TInterpolator::RegionSizeLeftRight, correctedImage->GetDims()[dim]-1 );
     }
 
   UniformVolume::CoordinateVectorType corners3D[8];
@@ -287,7 +287,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
   // clip bounding box against pass image boundaries
   for ( int dim = 0; dim < 3; ++dim )
     {
-    region[dim] = std::max( region[dim], 0 );
+    region[dim] = std::max<Types::GridIndexType>( region[dim], 0 );
     // increment upper indexes by one to compensate for floating point truncation in pixel index lookup.
     region[dim+3] = std::min( region[dim+3]+1, passImageDims[dim]-1 );
     }
