@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -96,7 +98,7 @@ public:
   /** Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
    *\return Interpolated value.
    */
-  virtual Types::DataItem GetDataDirect( const int* imageGridPoint /*!< Grid index in image */, const Types::Coordinate* insidePixel /*!< Relative position inside indexed pixel */ ) const = 0;
+  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint /*!< Grid index in image */, const Types::Coordinate* insidePixel /*!< Relative position inside indexed pixel */ ) const = 0;
 
 protected:
   /// Pointer to volume data array.
@@ -112,13 +114,13 @@ protected:
   UniformVolume::CoordinateVectorType m_VolumeOffset;
 
   /// Index increment when increasing "j" pixel index (i.e., moving to next image row).
-  int m_NextJ;
+  Types::GridIndexType m_NextJ;
 
   /// Index increment when increasing "k" pixel index (i.e., moving to next image plane).
-  int m_NextK;
+  Types::GridIndexType m_NextK;
 
   /// Get offset from pixel index.
-  size_t GetOffsetFromIndex( const int i /*!< Grid index #0 */, const int j /*!< Grid index #1 */, const int k /*!< Grid index #2 */ ) const
+  size_t GetOffsetFromIndex( const Types::GridIndexType i /*!< Grid index #0 */, const Types::GridIndexType j /*!< Grid index #1 */, const Types::GridIndexType k /*!< Grid index #2 */ ) const
   {
     return i + j * this->m_NextJ + k * this->m_NextK;
   }

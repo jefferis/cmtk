@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
@@ -41,7 +43,7 @@ cmtk::UniformVolumeInterpolatorBase
   const TypedArray& data = *(volume.GetData());
   const size_t nPixels = data.GetDataSize();
   this->m_VolumeDataArray.resize( nPixels );
-  for ( size_t n = 0; n < nPixels; ++n )
+  for ( Types::GridIndexType n = 0; n < nPixels; ++n )
     {
     if ( !data.Get( this->m_VolumeDataArray[n], n ) )
       this->m_VolumeDataArray[n] = std::numeric_limits<Types::DataItem>::infinity();

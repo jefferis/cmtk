@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -88,7 +90,7 @@ public:
   virtual void Reset() {}
 
   /// Get a value from the X distribution (reference image).
-  Types::DataItem GetSampleX ( const size_t index ) const
+  Types::DataItem GetSampleX ( const Types::GridIndexType index ) const
   { 
     Types::DataItem data;
     this->m_ReferenceData->Get( data, index );
@@ -114,7 +116,7 @@ public:
   }
   
   /// Interpolate a value from the Y distribution (floating image).
-  Types::DataItem GetSampleY( const int* index, const Types::Coordinate* frac ) const
+  Types::DataItem GetSampleY( const Types::GridIndexType* index, const Types::Coordinate* frac ) const
   {
     return this->m_FloatingImageInterpolator->GetDataDirect( index, frac );
   }

@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -32,7 +34,7 @@
 
 const cmtk::UniformVolume::CoordinateVectorType
 cmtk::UniformVolume
-::GetGradientAt( const int i, const int j, const int k )
+::GetGradientAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k )
 {
   Self::CoordinateVectorType g;
   g[0] = (this->GetDataAt( i+1, j, k ) - this->GetDataAt( i-1, j, k )) / (2*this->m_Delta[0]);
@@ -43,7 +45,7 @@ cmtk::UniformVolume
 
 cmtk::Matrix3x3<cmtk::Types::DataItem>
 cmtk::UniformVolume
-::GetHessianAt( const int i, const int j, const int k )
+::GetHessianAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k )
 {
   cmtk::Matrix3x3<Types::DataItem> H;
 // implementation following central differences formulas from http://www.technion.ac.il/docs/sas/ormp/chap5/sect28.htm

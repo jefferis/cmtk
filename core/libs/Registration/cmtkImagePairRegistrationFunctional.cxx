@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -86,8 +88,8 @@ ImagePairRegistrationFunctional::GetReferenceGridRange
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<int>( region.From()[i] * this->m_ReferenceInverseDelta[i] ) ) );
-    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<int>( region.To()[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<Types::GridIndexType>( region.From()[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<Types::GridIndexType>( region.To()[i] * this->m_ReferenceInverseDelta[i] ) ) );
     }
 
   return DataGrid::RegionType( from, to );

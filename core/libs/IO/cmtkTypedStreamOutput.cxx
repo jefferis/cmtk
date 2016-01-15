@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -505,6 +507,61 @@ TypedStreamOutput
 	  fputs( "\t", File );
 	}
       fprintf( File, "%d ", array[i] );
+      }
+    
+    fputs( "\n", File);
+    }
+  
+  return Self::CONDITION_OK;
+}
+
+TypedStreamOutput::Condition
+TypedStreamOutput
+::WriteIntArray( const char* key, const long long int* array, const int size, const int valuesPerLine )
+{
+  if ( !array || size < 1) 
+    {
+    this->m_Status = Self::ERROR_ARG;
+    return Self::CONDITION_ERROR;
+    }
+  
+  int currentLevel = LevelStack.size();
+  if ( GzFile ) 
+    {
+    for ( int level = 0; level < currentLevel; level++)
+      gzputs( GzFile, "\t" );
+    
+    gzprintf( this->GzFile, "%s ", key );
+    
+    for ( int i = 0; i < size; i++) 
+      {
+      if (i && (i % valuesPerLine) == 0) 
+	{
+	gzprintf( GzFile, "\n\t");
+	for ( int level = 0; level < currentLevel; level++ )
+	  gzputs( GzFile, "\t" );
+	}
+      gzprintf( GzFile, "%ld ", array[i] );
+      }
+    
+    gzputs( GzFile, "\n" );
+    } 
+  else
+    {
+    for ( int level = 0; level < currentLevel; level++)
+      fputs( "\t", File );
+    
+    fprintf( File, "%s ", key );
+    
+    for ( int i = 0; i < size; i++) 
+      {
+      if (i && (i % valuesPerLine) == 0) 
+	{
+	fprintf( File, "\n\t");
+	for ( int level = 0; level < currentLevel; level++ )
+	  fputs( "\t", File );
+	}
+      fprintf( File, "%ld ", array[i] );
       }
     
     fputs( "\n", File);

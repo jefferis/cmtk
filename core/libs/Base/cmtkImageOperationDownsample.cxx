@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,7 +36,7 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationDownsample
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-  const int factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
+  const Types::GridIndexType factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
   if ( this->m_DoAverage )
     return cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
   else
@@ -45,9 +47,9 @@ void
 cmtk::ImageOperationDownsample
 ::NewGeneric( const bool doAverage, const char* arg )
 {
-  int factorsX = 1;
-  int factorsY = 1;
-  int factorsZ = 1;
+  Types::GridIndexType factorsX = 1;
+  Types::GridIndexType factorsY = 1;
+  Types::GridIndexType factorsZ = 1;
   
   const size_t nFactors = sscanf( arg, "%5d,%5d,%5d", &factorsX, &factorsY, &factorsZ );
   if ( nFactors == 1 )

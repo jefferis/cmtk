@@ -1,4 +1,6 @@
 /*
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -118,7 +120,7 @@ protected:
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  int ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -127,7 +129,7 @@ protected:
 
     // there is an intersection: Look up the corresponding grid indices
     start = static_cast<DataGrid::IndexType::ValueType>( (ReferenceDims[2]-1)*fromFactor );
-    end = 1+std::min( (int)(ReferenceDims[2]-1), (int)(1 + ((ReferenceDims[2]-1)*toFactor) ) );
+    end = 1+std::min( (Types::GridIndexType)(ReferenceDims[2]-1), (Types::GridIndexType)(1 + ((ReferenceDims[2]-1)*toFactor) ) );
     
     // finally, apply cropping boundaries of the reference volume
     start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[2] );
@@ -163,7 +165,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -173,7 +175,7 @@ protected:
     fromFactor = std::min<Types::Coordinate>( 1.0, fromFactor );
 	      
     // there is an intersection: Look up the corresponding grid indices
-    start = std::max( 0, (int)((ReferenceDims[0]-1)*fromFactor)-1 );
+    start = std::max<Types::GridIndexType>( 0, (Types::GridIndexType)((ReferenceDims[0]-1)*fromFactor)-1 );
     while ( ( start*ReferenceGrid->m_Delta[0] < fromFactor*ReferenceSize[0]) && ( start < ReferenceDims[0] ) ) 
       ++start;
     
@@ -183,7 +185,7 @@ protected:
       } 
     else
       {
-      end = std::min( ReferenceDims[0]-2, (int)(1 + (ReferenceDims[0]-1)*toFactor));
+      end = std::min( ReferenceDims[0]-2, (Types::GridIndexType)(1 + (ReferenceDims[0]-1)*toFactor));
       while ( end*ReferenceGrid->m_Delta[0] > toFactor*ReferenceSize[0] ) // 'if' not sufficient!	
 	--end;
       ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
@@ -213,7 +215,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -229,7 +231,7 @@ protected:
       } 
     else
       {
-      end = 1+std::min( ReferenceDims[1]-1, (int)(1+(ReferenceDims[1]-1)*toFactor ) );
+      end = 1+std::min( ReferenceDims[1]-1, (Types::GridIndexType)(1+(ReferenceDims[1]-1)*toFactor ) );
       }
     // finally, apply cropping boundaries of the reference volume
     start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[1] );

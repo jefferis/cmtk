@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -131,7 +133,7 @@ protected:
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  int ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -140,7 +142,7 @@ protected:
 
     // there is an intersection: Look up the corresponding grid indices
     start = static_cast<DataGrid::IndexType::ValueType>( (this->m_ReferenceDims[2]-1)*fromFactor );
-    end = 1+std::min( (int)(this->m_ReferenceDims[2]-1), (int)(1 + ((this->m_ReferenceDims[2]-1)*toFactor) ) );
+    end = 1+std::min( (Types::GridIndexType)(this->m_ReferenceDims[2]-1), (Types::GridIndexType)(1 + ((this->m_ReferenceDims[2]-1)*toFactor) ) );
     
     // finally, apply cropping boundaries of the reference volume
     start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[2] );
@@ -176,7 +178,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -186,7 +188,7 @@ protected:
     fromFactor = std::min<Types::Coordinate>( 1.0, fromFactor );
 	      
     // there is an intersection: Look up the corresponding grid indices
-    start = std::max( 0, (int)((this->m_ReferenceDims[0]-1)*fromFactor)-1 );
+    start = std::max<Types::GridIndexType>( 0, (Types::GridIndexType)((this->m_ReferenceDims[0]-1)*fromFactor)-1 );
     while ( ( start*this->m_ReferenceGrid->m_Delta[0] < fromFactor*this->m_ReferenceSize[0]) && ( start < this->m_ReferenceDims[0] ) ) 
       ++start;
     
@@ -196,7 +198,7 @@ protected:
       } 
     else
       {
-      end = std::min( this->m_ReferenceDims[0]-2, (int)(1 + (this->m_ReferenceDims[0]-1)*toFactor));
+      end = std::min( this->m_ReferenceDims[0]-2, (Types::GridIndexType)(1 + (this->m_ReferenceDims[0]-1)*toFactor));
       while ( end*this->m_ReferenceGrid->m_Delta[0] > toFactor*this->m_ReferenceSize[0] ) // 'if' not sufficient!	
 	--end;
       ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
@@ -226,7 +228,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  Types::GridIndexType ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -242,7 +244,7 @@ protected:
       } 
     else
       {
-      end = 1+std::min( this->m_ReferenceDims[1]-1, (int)(1+(this->m_ReferenceDims[1]-1)*toFactor ) );
+      end = 1+std::min( this->m_ReferenceDims[1]-1, (Types::GridIndexType)(1+(this->m_ReferenceDims[1]-1)*toFactor ) );
       }
     // finally, apply cropping boundaries of the reference volume
     start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[1] );
@@ -272,7 +274,7 @@ public:
   static ImagePairAffineRegistrationFunctional* Create( const int metric /*!< Index of image similarity measure.*/,
 							UniformVolume::SmartPtr& refVolume /*!< Reference volume.*/,
 							UniformVolume::SmartPtr& fltVolume /*!< Floating volume*/,
-							const Interpolators::InterpolationEnum interpolation /*!< Floating volume interpolation.*/,
+							const Interpolators::InterpolationEnum interpolation /*!< Floating volume intnerpolation.*/,
 							AffineXform::SmartPtr& affineXform /*!< Use this affine transformation.*/ );
 };
 

@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -180,6 +182,11 @@ public:
    */
   Self::Condition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
 				      const int* array /*!< Pointer to the array to be written.*/, 
+				      const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
+				      const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
+
+  Self::Condition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+				      const long long int* array /*!< Pointer to the array to be written.*/, 
 				      const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
 				      const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 

@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -84,7 +86,7 @@ UniformVolume
   if ( currentSpace == newSpace )
     return; // nothing to do.
 
-  int axesPermutation[3][3];
+  Types::GridIndexType axesPermutation[3][3];
   AnatomicalOrientation::GetImageToSpaceAxesPermutation( axesPermutation, newSpace.c_str(), currentSpace.c_str() );
 
   AffineXform::MatrixType newMatrix = AffineXform::MatrixType::Identity();
