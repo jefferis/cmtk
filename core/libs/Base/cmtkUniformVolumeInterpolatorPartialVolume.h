@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
@@ -79,7 +81,7 @@ public:
   virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const;
 
   /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
-  virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const;
+  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const;
 };
 
 //@}

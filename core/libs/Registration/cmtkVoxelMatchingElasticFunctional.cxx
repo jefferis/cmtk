@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -200,14 +202,14 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
       const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
       
-      int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
+      Types::GridIndexType r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
       bool active = false;
-      for ( int pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
+      for ( Types::GridIndexType pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
 	{
-	for ( int pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
+	for ( Types::GridIndexType pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
 	  {
-	  for ( int pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
+	  for ( Types::GridIndexType pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
 	    {
 	    if ( ( this->Metric->GetSampleX( r ) != 0 ) || ( ( this->WarpedVolume[r] != unsetY ) && ( this->WarpedVolume[r] != 0 ) ) ) 
 	      {
@@ -239,19 +241,19 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       {
       this->m_ThreadConsistencyHistograms.resize( omp_get_max_threads() );
       
-      const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
+      const Types::GridIndexType numSamplesX = this->Metric->DataX.NumberOfSamples;
       const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
-      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
+      const size_t numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
 
-      const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
+      const Types::GridIndexType numSamplesY = this->Metric->DataY.NumberOfSamples;
       const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
-      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
+      const size_t numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
       for ( size_t thread = 0; thread < static_cast<size_t>( omp_get_max_threads() ); ++thread )
 	{
 	if ( ! this->m_ThreadConsistencyHistograms[thread] )
 	  {
-	  this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+	  this->m_ThreadConsistencyHistograms[thread] = JointHistogram<Types::GridIndexType>::SmartPtr( new JointHistogram<Types::GridIndexType>() );
 	  
 	  this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
 	  this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
@@ -260,15 +262,15 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 	}
       }
 #else
-      const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
+      const Types::GridIndexType numSamplesX = this->Metric->DataX.NumberOfSamples;
       const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
-      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
+      const size_t numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
 
-      const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
+      const Types::GridIndexType numSamplesY = this->Metric->DataY.NumberOfSamples;
       const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
-      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
+      const size_t numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
-      this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+      this->m_ConsistencyHistogram = JointHistogram<Types::GridIndexType>::SmartPtr( new JointHistogram<Types::GridIndexType>() );
       
       this->m_ConsistencyHistogram->Resize( numBinsX, numBinsY );
       this->m_ConsistencyHistogram->SetRangeX( rangeX );
@@ -279,25 +281,25 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
 	{
 #ifdef _OPENMP
-	JointHistogram<unsigned int>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
+	JointHistogram<Types::GridIndexType>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
 #else
-	JointHistogram<unsigned int>& threadHistogram = *(this->m_ConsistencyHistogram);
+	JointHistogram<Types::GridIndexType>& threadHistogram = *(this->m_ConsistencyHistogram);
 #endif
 	threadHistogram.Reset();
 	
 	// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
 	const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
 	
-	int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
+	Types::GridIndexType r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
 	
-	const int endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
-	const int endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
+	const Types::GridIndexType endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
+	const Types::GridIndexType endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
 	
-	for ( int pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
+	for ( Types::GridIndexType pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	  {
-	  for ( int pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
+	  for ( Types::GridIndexType pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	    {
-	    for ( int pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
+	    for ( Types::GridIndexType pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	      {
 	      // Continue metric computation.
 	      if ( this->WarpedVolume[r] != unsetY ) 

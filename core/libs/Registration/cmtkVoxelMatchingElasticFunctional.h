@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -454,12 +456,12 @@ public:
   typename Self::ReturnType EvaluateIncremental( const SplineWarpXform& warp, VM *const localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 
   {
     Vector3D *pVec;
-    int pX, pY, pZ, offset, r;
-    int fltIdx[3];
+    Types::GridIndexType pX, pY, pZ, offset, r;
+    Types::GridIndexType fltIdx[3];
     Types::Coordinate fltFrac[3];
 
-    int endLineIncrement = ( voi.From()[0] + ( this->DimsX - voi.To()[0]) );
-    int endPlaneIncrement = this->DimsX * ( voi.From()[1] + (this->DimsY - voi.To()[1]) );
+    Types::GridIndexType endLineIncrement = ( voi.From()[0] + ( this->DimsX - voi.To()[0]) );
+    Types::GridIndexType endPlaneIncrement = this->DimsX * ( voi.From()[1] + (this->DimsY - voi.To()[1]) );
     
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
     *localMetric = *this->Metric;
@@ -700,20 +702,20 @@ private:
     const typename VM::Exchange unsetY = me->Metric->DataY.padding();
     
     Vector3D *pVec;
-    int pX, pY, pZ;
+    Types::GridIndexType pX, pY, pZ;
     
-    int fltIdx[3];
+    Types::GridIndexType fltIdx[3];
     Types::Coordinate fltFrac[3];
     
-    int rowCount = ( me->DimsY * me->DimsZ );
-    int rowFrom = ( rowCount / taskCnt ) * taskIdx;
-    int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
-    int rowsToDo = rowTo - rowFrom;
+    Types::GridIndexType rowCount = ( me->DimsY * me->DimsZ );
+    Types::GridIndexType rowFrom = ( rowCount / taskCnt ) * taskIdx;
+    Types::GridIndexType rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
+    Types::GridIndexType rowsToDo = rowTo - rowFrom;
     
-    int pYfrom = rowFrom % me->DimsY;
-    int pZfrom = rowFrom / me->DimsY;
+    Types::GridIndexType pYfrom = rowFrom % me->DimsY;
+    Types::GridIndexType pZfrom = rowFrom / me->DimsY;
     
-    int r = rowFrom * me->DimsX;
+    Types::GridIndexType r = rowFrom * me->DimsX;
     for ( pZ = pZfrom; (pZ < me->DimsZ) && rowsToDo; ++pZ ) 
       {
       for ( pY = pYfrom; (pY < me->DimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo ) 

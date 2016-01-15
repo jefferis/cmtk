@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -42,7 +44,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
 ::GetDataAt(const Vector3D& v, Types::DataItem& value) const
 {
   Types::Coordinate lScaled[3];
-  int imageGridPoint[3];
+  Types::GridIndexType imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
     lScaled[n] = (v[n] - this->m_VolumeOffset[n]) / this->m_VolumeDeltas[n];
@@ -51,40 +53,40 @@ UniformVolumeInterpolator<TInterpolationFunction>
       return false;
     }
 
-  const int xx = imageGridPoint[0] + 1 - TInterpolationFunction::RegionSizeLeftRight;
-  const int yy = imageGridPoint[1] + 1 - TInterpolationFunction::RegionSizeLeftRight;
-  const int zz = imageGridPoint[2] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType xx = imageGridPoint[0] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType yy = imageGridPoint[1] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType zz = imageGridPoint[2] + 1 - TInterpolationFunction::RegionSizeLeftRight;
 
   Types::Coordinate interpolationWeights[3][2 * TInterpolationFunction::RegionSizeLeftRight];
 
   for ( int n = 0; n < 3; ++n )
     {
     const Types::Coordinate relative = lScaled[n] - imageGridPoint[n];
-    for ( int m = 1-TInterpolationFunction::RegionSizeLeftRight; m <= TInterpolationFunction::RegionSizeLeftRight; ++m )
+    for ( Types::GridIndexType m = 1-TInterpolationFunction::RegionSizeLeftRight; m <= TInterpolationFunction::RegionSizeLeftRight; ++m )
       {
       interpolationWeights[n][m+TInterpolationFunction::RegionSizeLeftRight-1] = TInterpolationFunction::GetWeight( m, relative );
       }
     }
 
-  const int iMin = std::max( 0, -xx );
-  const int iMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
+  const Types::GridIndexType iMin = std::max<Types::GridIndexType>( 0, -xx );
+  const Types::GridIndexType iMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
 
-  const int jMin = std::max( 0, -yy );
-  const int jMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
+  const Types::GridIndexType jMin = std::max<Types::GridIndexType>( 0, -yy );
+  const Types::GridIndexType jMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
 
-  const int kMin = std::max( 0, -zz );
-  const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
+  const Types::GridIndexType kMin = std::max<Types::GridIndexType>( 0, -zz );
+  const Types::GridIndexType kMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
 
   Types::DataItem interpolatedData = 0;
   Types::Coordinate totalWeight = 0;
 
-  for ( int k = kMin; k < kMax; ++k )
+  for ( Types::GridIndexType k = kMin; k < kMax; ++k )
     {
-    for ( int j = jMin; j < jMax; ++j )
+    for ( Types::GridIndexType j = jMin; j < jMax; ++j )
       {
       const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
       size_t offset = this->GetOffsetFromIndex( xx + iMin, yy + j, zz + k );
-      for ( int i = iMin; i < iMax; ++i, ++offset )
+      for ( Types::GridIndexType i = iMin; i < iMax; ++i, ++offset )
         {
 	const Types::DataItem data = this->m_VolumeDataArray[offset];
 	if ( finite( data ) )
@@ -108,41 +110,41 @@ UniformVolumeInterpolator<TInterpolationFunction>
 template <class TInterpolationFunction>
 Types::DataItem
 UniformVolumeInterpolator<TInterpolationFunction>
-::GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
+::GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const
 {
   Types::Coordinate interpolationWeights[3][2 * TInterpolationFunction::RegionSizeLeftRight];
 
   for ( int n = 0; n < 3; ++n )
     {
-    for ( int m = 1-TInterpolationFunction::RegionSizeLeftRight; m <= TInterpolationFunction::RegionSizeLeftRight; ++m )
+    for ( Types::GridIndexType m = 1-TInterpolationFunction::RegionSizeLeftRight; m <= TInterpolationFunction::RegionSizeLeftRight; ++m )
       {
       interpolationWeights[n][m+TInterpolationFunction::RegionSizeLeftRight-1] = TInterpolationFunction::GetWeight( m, insidePixel[n] );
       }
     }
 
-  const int xx = imageGridPoint[0] + 1 - TInterpolationFunction::RegionSizeLeftRight;
-  const int yy = imageGridPoint[1] + 1 - TInterpolationFunction::RegionSizeLeftRight;
-  const int zz = imageGridPoint[2] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType xx = imageGridPoint[0] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType yy = imageGridPoint[1] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const Types::GridIndexType zz = imageGridPoint[2] + 1 - TInterpolationFunction::RegionSizeLeftRight;
 
-  const int iMin = std::max( 0, -xx );
-  const int iMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
+  const Types::GridIndexType iMin = std::max<Types::GridIndexType>( 0, -xx );
+  const Types::GridIndexType iMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
 
-  const int jMin = std::max( 0, -yy );
-  const int jMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
+  const Types::GridIndexType jMin = std::max<Types::GridIndexType>( 0, -yy );
+  const Types::GridIndexType jMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
 
-  const int kMin = std::max( 0, -zz );
-  const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
+  const Types::GridIndexType kMin = std::max<Types::GridIndexType>( 0, -zz );
+  const Types::GridIndexType kMax = std::min<Types::GridIndexType>( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
 
   Types::DataItem interpolatedData = 0;
   Types::Coordinate totalWeight = 0;
 
-  for ( int k = kMin; k < kMax; ++k )
+  for ( Types::GridIndexType k = kMin; k < kMax; ++k )
     {
-    for ( int j = jMin; j < jMax; ++j )
+    for ( Types::GridIndexType j = jMin; j < jMax; ++j )
       {
       const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
       size_t offset = (xx + iMin) + (yy + j) * this->m_NextJ + (zz + k) * this->m_NextK;
-      for ( int i = iMin; i < iMax; ++i, ++offset )
+      for ( Types::GridIndexType i = iMin; i < iMax; ++i, ++offset )
         {
         const Types::DataItem data = this->m_VolumeDataArray[offset];
 	if ( finite( data ) )

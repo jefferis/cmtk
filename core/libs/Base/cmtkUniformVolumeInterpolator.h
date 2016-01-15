@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
@@ -93,7 +95,7 @@ public:
    */
   virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const;
 
-  virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const;
+  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const;
 };
 
 //@}

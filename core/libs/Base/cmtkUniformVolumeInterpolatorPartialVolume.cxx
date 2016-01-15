@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -51,11 +53,11 @@ UniformVolumeInterpolatorPartialVolume
   value=0;
 
   Types::Coordinate lScaled[3];
-  int imageGridPoint[3];
+  Types::GridIndexType imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
     lScaled[n] = (v[n]-this->m_VolumeOffset[n]) / this->m_VolumeDeltas[n];
-    imageGridPoint[n] = (int) floor( lScaled[n] );
+    imageGridPoint[n] = (Types::GridIndexType) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
     }
@@ -66,11 +68,11 @@ UniformVolumeInterpolatorPartialVolume
   bool dataPresent = false;
 
   size_t idx = 0;
-  for ( int k = 0; k < 2; ++k )
+  for ( Types::GridIndexType k = 0; k < 2; ++k )
     {
-    for ( int j = 0; j < 2; ++j )
+    for ( Types::GridIndexType j = 0; j < 2; ++j )
       {
-      for ( int i = 0; i < 2; ++i, ++idx )
+      for ( Types::GridIndexType i = 0; i < 2; ++i, ++idx )
 	{
 	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
 	const bool dataHere = (finite( corners[idx] ) != 0);
@@ -97,11 +99,11 @@ UniformVolumeInterpolatorPartialVolume
     memset( done, 0, sizeof( done ) );
     
     Types::Coordinate maxWeight = 0;
-    for ( unsigned int j = 0; j < 8; ++j ) 
+    for ( Types::GridIndexType j = 0; j < 8; ++j ) 
       {
       if ( done[j] ) continue;
       Types::Coordinate weight = weights[j];
-      for ( unsigned int i = j+1; i < 8; ++i ) 
+      for ( Types::GridIndexType i = j+1; i < 8; ++i ) 
 	{
 	if ( done[i] ) continue;
 	if ( corners[i] == corners[j] ) 
@@ -125,7 +127,7 @@ UniformVolumeInterpolatorPartialVolume
 
 Types::DataItem
 UniformVolumeInterpolatorPartialVolume
-::GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
+::GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const
 {
   Types::DataItem value = 0;
 
@@ -136,11 +138,11 @@ UniformVolumeInterpolatorPartialVolume
   bool dataPresent = false;
 
   size_t idx = 0;
-  for ( int k = 0; k < 2; ++k )
+  for ( Types::GridIndexType k = 0; k < 2; ++k )
     {
-    for ( int j = 0; j < 2; ++j )
+    for ( Types::GridIndexType j = 0; j < 2; ++j )
       {
-      for ( int i = 0; i < 2; ++i, ++idx )
+      for ( Types::GridIndexType i = 0; i < 2; ++i, ++idx )
 	{
 	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
 	const bool dataHere = (finite( corners[idx] ) != 0);
@@ -168,11 +170,11 @@ UniformVolumeInterpolatorPartialVolume
       };
 
     Types::Coordinate maxWeight = 0;
-    for ( unsigned int j = 0; j < 8; ++j ) 
+    for ( Types::GridIndexType j = 0; j < 8; ++j ) 
       {
       if ( done[j] ) continue;
       Types::Coordinate weight = weights[j];
-      for ( unsigned int i = j+1; i < 8; ++i ) 
+      for ( Types::GridIndexType i = j+1; i < 8; ++i ) 
 	{
 	if ( done[i] ) continue;
 	if ( corners[i] == corners[j] ) 
