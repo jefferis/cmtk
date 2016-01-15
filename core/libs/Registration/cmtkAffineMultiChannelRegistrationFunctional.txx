@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -72,18 +74,18 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   const TransformedVolumeAxes transformedAxes( *this->m_ReferenceChannels[0], &this->m_Transformation );
   
   const DataGrid::IndexType& dims = this->m_ReferenceDims;
-  const int dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];
+  const Types::GridIndexType dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];
 
   this->m_VolumeClipper.SetDeltaX( transformedAxes[0][dimsX-1] - transformedAxes[0][0] );
   this->m_VolumeClipper.SetDeltaY( transformedAxes[1][dimsY-1] - transformedAxes[1][0] );
   this->m_VolumeClipper.SetDeltaZ( transformedAxes[2][dimsZ-1] - transformedAxes[2][0] );
   this->m_VolumeClipper.SetClippingBoundaries( this->m_FloatingCropRegion );
     
-  int startZ, endZ;
+  Types::GridIndexType startZ, endZ;
   if ( this->ClipZ( this->m_VolumeClipper, transformedAxes[2][0], startZ, endZ ) ) 
     {
-    startZ = std::max<int>( startZ, this->m_ReferenceCropRegion.From()[2] );
-    endZ = std::min<int>( endZ, this->m_ReferenceCropRegion.To()[2] );
+    startZ = std::max<Types::GridIndexType>( startZ, this->m_ReferenceCropRegion.From()[2] );
+    endZ = std::min<Types::GridIndexType>( endZ, this->m_ReferenceCropRegion.To()[2] );
 
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
     const size_t numberOfThreads = threadPool.GetNumberOfThreads();
@@ -121,38 +123,38 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   const Vector3D *transformedAxesZ = (*params->m_TransformedAxes)[2];
 
   const DataGrid::IndexType& dims = constThis->m_ReferenceDims;
-  const int dimsX = dims[0], dimsY = dims[1];
+  const Types::GridIndexType dimsX = dims[0], dimsY = dims[1];
 
   Vector3D pFloating, rowStart;
 
   // Loop over all remaining planes
-  for ( int pZ = params->m_StartZ + taskIdx; pZ < params->m_EndZ; pZ += taskCnt ) 
+  for ( Types::GridIndexType pZ = params->m_StartZ + taskIdx; pZ < params->m_EndZ; pZ += taskCnt ) 
     {
     // Offset of current reference voxel
-    int r = pZ * dimsX * dimsY;
+    Types::GridIndexType r = pZ * dimsX * dimsY;
     Vector3D planeStart = transformedAxesZ[pZ];
     
-    int startY, endY;
+    Types::GridIndexType startY, endY;
     if ( constThis->ClipY( constThis->m_VolumeClipper, planeStart, startY, endY ) ) 
       {	  
-      startY = std::max<int>( startY, constThis->m_ReferenceCropRegion.From()[1] );
-      endY = std::min<int>( endY, constThis->m_ReferenceCropRegion.To()[1] );
+      startY = std::max<Types::GridIndexType>( startY, constThis->m_ReferenceCropRegion.From()[1] );
+      endY = std::min<Types::GridIndexType>( endY, constThis->m_ReferenceCropRegion.To()[1] );
       r += startY * dimsX;
       
       // Loop over all remaining rows
-      for ( int pY = startY; pY<endY; ++pY ) 
+      for ( Types::GridIndexType pY = startY; pY<endY; ++pY ) 
 	{
 	(rowStart = planeStart) += transformedAxesY[pY];
 	
-	int startX, endX;
+	Types::GridIndexType startX, endX;
 	if ( constThis->ClipX( constThis->m_VolumeClipper, rowStart, startX, endX ) ) 
 	  {
-	  startX = std::max<int>( startX, constThis->m_ReferenceCropRegion.From()[0] );
-	  endX = std::min<int>( endX, constThis->m_ReferenceCropRegion.To()[0] );
+	  startX = std::max<Types::GridIndexType>( startX, constThis->m_ReferenceCropRegion.From()[0] );
+	  endX = std::min<Types::GridIndexType>( endX, constThis->m_ReferenceCropRegion.To()[0] );
 	  
 	  r += startX;
 	  // Loop over all remaining voxels in current row
-	  for ( int pX = startX; pX<endX; ++pX, ++r ) 
+	  for ( Types::GridIndexType pX = startX; pX<endX; ++pX, ++r ) 
 	    {
 	    (pFloating = rowStart) += transformedAxesX[pX];
 	    
@@ -187,7 +189,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 template<class TMultiChannelMetricFunctional>
 bool
 AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
-::ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, int& start, int& end ) const
+::ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const
 {
   // perform clipping
   Types::Coordinate fromFactor, toFactor;
@@ -195,12 +197,12 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     return false;
   
   // there is an intersection: Look up the corresponding grid indices
-  start = static_cast<int>( (this->m_ReferenceDims[2]-1)*fromFactor );
-  end = 1+std::min( (int)(this->m_ReferenceDims[2]-1), (int)(1 + ((this->m_ReferenceDims[2]-1)*toFactor) ) );
+  start = static_cast<Types::GridIndexType>( (this->m_ReferenceDims[2]-1)*fromFactor );
+  end = 1+std::min( (Types::GridIndexType)(this->m_ReferenceDims[2]-1), (Types::GridIndexType)(1 + ((this->m_ReferenceDims[2]-1)*toFactor) ) );
   
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[2] );
-  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[2] );
+  start = std::max<Types::GridIndexType>( start, this->m_ReferenceCropRegion.From()[2] );
+  end = std::min<Types::GridIndexType>( end, this->m_ReferenceCropRegion.To()[2] );
   
   // return true iff index range is non-empty.
   return (start < end );
@@ -209,7 +211,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 template<class TMultiChannelMetricFunctional>
 bool
 AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
-::ClipX ( const VolumeClipping& clipper, const Vector3D& origin, int& start, int& end ) const
+::ClipX ( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const
 {
   // perform clipping
   Types::Coordinate fromFactor, toFactor;
@@ -219,7 +221,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   fromFactor = std::min<Types::Coordinate>( 1.0, fromFactor );
   
   // there is an intersection: Look up the corresponding grid indices
-  start = std::max( 0, (int)((this->m_ReferenceDims[0]-1)*fromFactor)-1 );
+  start = std::max<Types::GridIndexType>( 0, (Types::GridIndexType)((this->m_ReferenceDims[0]-1)*fromFactor)-1 );
   while ( ( start*this->m_ReferenceChannels[0]->m_Delta[0] < fromFactor*this->m_ReferenceSize[0]) && ( start < this->m_ReferenceDims[0] ) ) 
     ++start;
   
@@ -229,15 +231,15 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     } 
   else
     {
-    end = std::min( this->m_ReferenceDims[0]-2, (int)(1 + (this->m_ReferenceDims[0]-1)*toFactor));
+    end = std::min<Types::GridIndexType>( this->m_ReferenceDims[0]-2, (Types::GridIndexType)(1 + (this->m_ReferenceDims[0]-1)*toFactor));
     while ( end*this->m_ReferenceChannels[0]->m_Delta[0] > toFactor*this->m_ReferenceSize[0] ) // 'if' not sufficient!	
       --end;
     ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
     }
   
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[0] );
-  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[0] );
+  start = std::max<Types::GridIndexType>( start, this->m_ReferenceCropRegion.From()[0] );
+  end = std::min<Types::GridIndexType>( end, this->m_ReferenceCropRegion.To()[0] );
   
   // return true iff index range is non-empty.
   return (start < end );
@@ -246,7 +248,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 template<class TMultiChannelMetricFunctional>
 bool
 AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
-::ClipY ( const VolumeClipping& clipper, const Vector3D& origin, int& start, int& end ) const
+::ClipY ( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const
 {
   // perform clipping
   Types::Coordinate fromFactor, toFactor;
@@ -254,7 +256,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     return false;
   
   // there is an intersection: Look up the corresponding grid indices
-  start = static_cast<int>( (this->m_ReferenceDims[1]-1)*fromFactor );
+  start = static_cast<Types::GridIndexType>( (this->m_ReferenceDims[1]-1)*fromFactor );
   
   if ( toFactor > 1.0 ) 
     {
@@ -262,11 +264,11 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     } 
   else
     {
-    end = 1+std::min( this->m_ReferenceDims[1]-1, (int)(1+(this->m_ReferenceDims[1]-1)*toFactor ) );
+    end = 1+std::min( this->m_ReferenceDims[1]-1, (Types::GridIndexType)(1+(this->m_ReferenceDims[1]-1)*toFactor ) );
     }
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[1] );
-  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[1] );
+  start = std::max<Types::GridIndexType>( start, this->m_ReferenceCropRegion.From()[1] );
+  end = std::min<Types::GridIndexType>( end, this->m_ReferenceCropRegion.To()[1] );
   
   // return true iff index range is non-empty.
   return (start < end );

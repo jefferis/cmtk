@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2014 SRI International
@@ -163,9 +165,9 @@ doMain( const int argc, const char *argv[] )
     cmtk::Types::DataItem maxValue = volume->GetDataAt( volume->GetOffsetFromIndex( ijk ) );
 
     cmtk::DataGrid::IndexType probe = ijk;
-    for ( probe[2] = std::max( 0, ijk[2]-radius[2] ); probe[2] < std::min( volume->m_Dims[2], ijk[2]+radius[2]+1 ); ++probe[2] )
-      for ( probe[1] = std::max( 0, ijk[1]-radius[1] ); probe[1] < std::min( volume->m_Dims[1], ijk[1]+radius[1]+1 ); ++probe[1] )
-	for ( probe[0] = std::max( 0, ijk[0]-radius[0] ); probe[0] < std::min( volume->m_Dims[0], ijk[0]+radius[0]+1 ); ++probe[0] )
+    for ( probe[2] = std::max<cmtk::Types::GridIndexType>( 0, ijk[2]-radius[2] ); probe[2] < std::min( volume->m_Dims[2], ijk[2]+radius[2]+1 ); ++probe[2] )
+      for ( probe[1] = std::max<cmtk::Types::GridIndexType>( 0, ijk[1]-radius[1] ); probe[1] < std::min( volume->m_Dims[1], ijk[1]+radius[1]+1 ); ++probe[1] )
+	for ( probe[0] = std::max<cmtk::Types::GridIndexType>( 0, ijk[0]-radius[0] ); probe[0] < std::min( volume->m_Dims[0], ijk[0]+radius[0]+1 ); ++probe[0] )
 	  {
 	  const cmtk::Types::DataItem value = volume->GetDataAt( volume->GetOffsetFromIndex( probe ) );
 	  if ( value > maxValue )

@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -114,7 +116,7 @@ private:
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  bool ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, int& start, int& end ) const;
+  bool ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const;
     
   /** Perform clipping/cropping in x-direction.
    * This function computes the intersection of reference and floating data in
@@ -142,7 +144,7 @@ private:
    * the floating, false if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if true is the return value.
    */
-  bool ClipX( const VolumeClipping& clipper, const Vector3D& origin, int& start, int &end ) const;
+  bool ClipX( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType &end ) const;
 
   /** Perform clipping/cropping in y-direction.
    * This function computes the intersection of reference and floating data in
@@ -160,7 +162,7 @@ private:
    * the floating, false if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if true is the return value.
    */
-  bool ClipY( const VolumeClipping& clipper, const Vector3D& origin, int& start, int& end ) const;
+  bool ClipY( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const;
 
   /** Number of parallel threads. */
   const size_t m_NumberOfThreads;
@@ -175,10 +177,10 @@ private:
     const TransformedVolumeAxes* m_TransformedAxes;
 
     /** First clipped pixel index in z direction. */
-    int m_StartZ;
+    Types::GridIndexType m_StartZ;
 
     /** Last clipped pixel index in z direction plus one. */
-    int m_EndZ;
+    Types::GridIndexType m_EndZ;
   };
 
   /** Thread function for metric computation. */
