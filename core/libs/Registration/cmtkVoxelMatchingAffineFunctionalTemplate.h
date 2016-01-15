@@ -1,4 +1,6 @@
 /*
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -122,7 +124,7 @@ public:
     this->Metric->Reset();
 
     const DataGrid::IndexType& Dims = this->ReferenceGrid->GetDims();
-    const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
+    const Types::GridIndexType DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
     this->Clipper.SetDeltaX( axesHashX[DimsX-1] - axesHashX[0] );
     this->Clipper.SetDeltaY( axesHashY[DimsY-1] - axesHashY[0] );
@@ -208,23 +210,23 @@ public:
     Vector3D pFloating;
 
     const DataGrid::IndexType& Dims = me->ReferenceGrid->GetDims();
-    const int DimsX = Dims[0], DimsY = Dims[1];
+    const Types::GridIndexType DimsX = Dims[0], DimsY = Dims[1];
 
-    int fltIdx[3];
+    Types::GridIndexType fltIdx[3];
     Types::Coordinate fltFrac[3];
 
-    const int FltDimsX = me->FloatingDims[0], FltDimsY = me->FloatingDims[1];
+    const Types::GridIndexType FltDimsX = me->FloatingDims[0], FltDimsY = me->FloatingDims[1];
 
     Vector3D rowStart;
     Vector3D planeStart;
 
-    int offset;
+    Types::GridIndexType offset;
     DataGrid::IndexType::ValueType pX, pY, pZ;
     // Loop over all remaining planes
     for ( pZ = info->StartZ + taskIdx; pZ < info->EndZ; pZ += taskCnt ) 
       {
       // Offset of current reference voxel
-      int r = pZ * DimsX * DimsY;
+      Types::GridIndexType r = pZ * DimsX * DimsY;
       
       planeStart = hashZ[pZ];
       

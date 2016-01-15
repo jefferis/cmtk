@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010, 2013 SRI International
@@ -125,6 +127,7 @@ JointHistogram<T>::GetMarginalY() const
 
 template class JointHistogram<int>;
 template class JointHistogram<unsigned int>;
+template class JointHistogram<long long int>;
 template class JointHistogram<float>;
 template class JointHistogram<double>;
 

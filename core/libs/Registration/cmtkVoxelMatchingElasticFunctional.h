@@ -155,7 +155,7 @@ protected:
   bool WarpNeedsFixUpdate;
 
   /// Histogram used for consistency computation.
-  JointHistogram<unsigned int>::SmartPtr m_ConsistencyHistogram;
+  JointHistogram<Types::GridIndexType>::SmartPtr m_ConsistencyHistogram;
 
   /// Dimension of warp parameter vector
   size_t Dim;
@@ -589,7 +589,7 @@ private:
   
 #ifdef _OPENMP
   /// Consistency histogram objects for threadwise computation.
-  std::vector<JointHistogram<unsigned int>::SmartPtr> m_ThreadConsistencyHistograms;
+  std::vector<JointHistogram<Types::GridIndexType>::SmartPtr> m_ThreadConsistencyHistograms;
 #endif // #ifdef _OPENMP
   
   /** Thread parameter block for incremental gradient computation.

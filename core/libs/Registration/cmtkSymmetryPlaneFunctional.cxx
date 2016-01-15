@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -88,23 +90,23 @@ SymmetryPlaneFunctional::Evaluate()
   m_Metric->Reset();
     
   const DataGrid::IndexType& Dims = m_Volume->GetDims();
-  const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
+  const Types::GridIndexType DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
-  int fltIdx[3];
+  Types::GridIndexType fltIdx[3];
   Types::Coordinate fltFrac[3];
 
   Vector3D planeStart, rowStart;
 
-  int r = 0;
-  for ( int pZ = 0; pZ<DimsZ; ++pZ ) 
+  Types::GridIndexType r = 0;
+  for ( Types::GridIndexType pZ = 0; pZ<DimsZ; ++pZ ) 
     {
     planeStart = HashZ[pZ];
     
-    for ( int pY = 0; pY<DimsY; ++pY ) 
+    for ( Types::GridIndexType pY = 0; pY<DimsY; ++pY ) 
       {
       (rowStart = planeStart) += HashY[pY];
       
-      for ( int pX = 0; pX<DimsX; ++pX, ++r ) 
+      for ( Types::GridIndexType pX = 0; pX<DimsX; ++pX, ++r ) 
 	{
 	(pFloating = rowStart) += HashX[pX];
 	
@@ -113,10 +115,10 @@ SymmetryPlaneFunctional::Evaluate()
 	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) ) 
 	  {
 	  // Compute data index of the model voxel in the model volume.
-	  int offset = fltIdx[0] + DimsX * (fltIdx[1] + DimsY * fltIdx[2]);
+	  Types::GridIndexType offset = fltIdx[0] + DimsX * (fltIdx[1] + DimsY * fltIdx[2]);
 	  
 	  // Continue metric computation.
-	  m_Metric->Proceed( (int) r, offset, fltFrac );
+	  m_Metric->Proceed( (Types::GridIndexType) r, offset, fltFrac );
 	  }
 	}
       }

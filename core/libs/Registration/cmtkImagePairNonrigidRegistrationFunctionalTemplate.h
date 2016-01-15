@@ -431,10 +431,10 @@ private:
 
 #ifdef _OPENMP
   /// Histogram used for consistency computation.
-  std::vector<JointHistogram<unsigned int>::SmartPtr> m_ThreadConsistencyHistograms;
+  std::vector<JointHistogram<Types::GridIndexType>::SmartPtr> m_ThreadConsistencyHistograms;
 #else
   /// Histogram used for consistency computation.
-  JointHistogram<unsigned int>::SmartPtr m_ConsistencyHistogram;
+  JointHistogram<Types::GridIndexType>::SmartPtr m_ConsistencyHistogram;
 #endif // #ifdef _OPENMP
 
   /** Update set of active and passive parameters.

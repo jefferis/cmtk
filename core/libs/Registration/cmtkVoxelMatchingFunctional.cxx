@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -84,8 +86,8 @@ VoxelMatchingFunctional::GetReferenceGridRange
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( region.From()[i] * this->ReferenceInvDelta[i] ) );
-    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( region.To()[i] * this->ReferenceInvDelta[i] ) );
+    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<Types::GridIndexType>( region.From()[i] * this->ReferenceInvDelta[i] ) );
+    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<Types::GridIndexType>( region.To()[i] * this->ReferenceInvDelta[i] ) );
     }
 
   return DataGrid::RegionType( from, to );

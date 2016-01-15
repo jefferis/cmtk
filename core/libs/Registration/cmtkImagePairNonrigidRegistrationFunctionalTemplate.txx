@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -117,11 +119,11 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       {
       this->m_ThreadConsistencyHistograms.resize( omp_get_max_threads() );
       
-      const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
+      const Types::GridIndexType numSamplesX = this->m_Metric->GetNumberOfSamplesX();
       const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
       const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
       
-      const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
+      const Types::GridIndexType numSamplesY = this->m_Metric->GetNumberOfSamplesY();
       const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
       const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
 
@@ -129,7 +131,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 	{
 	if ( ! this->m_ThreadConsistencyHistograms[thread] )
 	  {
-	  this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+	  this->m_ThreadConsistencyHistograms[thread] = JointHistogram<Types::GridIndexType>::SmartPtr( new JointHistogram<Types::GridIndexType>() );
 	  
 	  this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
 	  this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
@@ -140,12 +142,12 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 #else
     if ( !this->m_ConsistencyHistogram )
       {
-      this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-      const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
+      this->m_ConsistencyHistogram = JointHistogram<Types::GridIndexType>::SmartPtr( new JointHistogram<Types::GridIndexType>() );
+      const Types::GridIndexType numSamplesX = this->m_Metric->GetNumberOfSamplesX();
       const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
       const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
       
-      const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
+      const Types::GridIndexType numSamplesY = this->m_Metric->GetNumberOfSamplesY();
       const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
       const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
@@ -159,9 +161,9 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
 #ifdef _OPENMP
-      JointHistogram<unsigned int>& histogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
+      JointHistogram<Types::GridIndexType>& histogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
 #else
-      JointHistogram<unsigned int>& histogram = *(this->m_ConsistencyHistogram);
+      JointHistogram<Types::GridIndexType>& histogram = *(this->m_ConsistencyHistogram);
 #endif
       histogram.Reset();
       

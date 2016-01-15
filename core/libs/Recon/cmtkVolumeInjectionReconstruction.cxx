@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011, 2013 SRI International
@@ -54,7 +56,7 @@ cmtk
 //@{
 
 VolumeInjectionReconstruction
-::VolumeInjectionReconstruction( const UniformVolume* originalImage, const int interleaveFactor, const int interleaveAxis )
+::VolumeInjectionReconstruction( const UniformVolume* originalImage, const Types::GridIndexType interleaveFactor, const int interleaveAxis )
   : m_NumberOfPasses( interleaveFactor ),
     m_PassWeights( interleaveFactor ),
     m_OriginalImageRange( 0, 0 ),
@@ -229,12 +231,12 @@ VolumeInjectionReconstruction
 		    
   UniformVolume::SmartPtr& correctedImage = this->m_CorrectedImage;
   TypedArray::SmartPtr correctedImageData = correctedImage->GetData();
-  const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
+  const Types::GridIndexType correctedImageNumPixels = correctedImage->GetNumberOfPixels();
   const Types::Coordinate correctedDelta[3] = { correctedImage->m_Delta[0], correctedImage->m_Delta[1], correctedImage->m_Delta[2] };
 
   this->m_NeighorhoodMaxPixelValues.setbounds( 1, correctedImageNumPixels );
   this->m_NeighorhoodMinPixelValues.setbounds( 1, correctedImageNumPixels );
-  for ( size_t i = 1; i <= correctedImageNumPixels; ++i )
+  for ( Types::GridIndexType i = 1; i <= correctedImageNumPixels; ++i )
     {
     this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageRange.m_LowerBound;
     this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageRange.m_UpperBound;
@@ -251,10 +253,10 @@ VolumeInjectionReconstruction
 //		  { for ( size_t correctedPx = stride.From( b ); correctedPx < stride.To( b ); ++correctedPx )
 //#else
 #pragma omp parallel for schedule(dynamic)
-  for ( int correctedPx = 0; correctedPx < static_cast<int>( correctedImageNumPixels ); ++correctedPx )
+  for ( Types::GridIndexType correctedPx = 0; correctedPx < static_cast<Types::GridIndexType>( correctedImageNumPixels ); ++correctedPx )
 //#endif
     {
-    if ( (correctedPx % ((size_t)1e5)) == 0 )
+      if ( (correctedPx % ((Types::GridIndexType)1e5)) == 0 )
       Progress::SetProgress( correctedPx );
 
     ap::real_value_type sum = 0;
@@ -274,28 +276,28 @@ VolumeInjectionReconstruction
 
 	const  UniformVolume::CoordinateVectorType vPass = passImageXform->Apply( vCorrected );
 
-	int passGridPosition[3];
+	Types::GridIndexType passGridPosition[3];
 	passImage->GetVoxelIndexNoBounds( vPass, passGridPosition );
 
-	int passGridFrom[3], passGridTo[3];
+	Types::GridIndexType passGridFrom[3], passGridTo[3];
 	for ( int n = 0; n < 3; ++n )
 	  {
-	  passGridFrom[n] = std::max( passGridPosition[n] - static_cast<int>( kernelRadiusFactor ), 0 );
-	  passGridTo[n] = std::min( passGridPosition[n] + static_cast<int>( kernelRadiusFactor ) + 1, passImageDims[n] );
+	  passGridFrom[n] = std::max<Types::GridIndexType>( passGridPosition[n] - static_cast<Types::GridIndexType>( kernelRadiusFactor ), 0 );
+	  passGridTo[n] = std::min<Types::GridIndexType>( passGridPosition[n] + static_cast<Types::GridIndexType>( kernelRadiusFactor ) + 1, passImageDims[n] );
 	  }
 
 	UniformVolume::CoordinateVectorType u, delta;
-	for ( int k = passGridFrom[2]; k < passGridTo[2]; ++k )
+	for ( Types::GridIndexType k = passGridFrom[2]; k < passGridTo[2]; ++k )
 	  {
 	  u[2] = passImage->GetPlaneCoord( AXIS_Z, k );
 	  delta[2] = (u[2] - vPass[2]) / correctedDelta[2];
 	      
-	  for ( int j = passGridFrom[1]; j < passGridTo[1]; ++j )
+	  for ( Types::GridIndexType j = passGridFrom[1]; j < passGridTo[1]; ++j )
 	    {
 	    u[1] = passImage->GetPlaneCoord( AXIS_Y, j );
 	    delta[1] = (u[1] - vPass[1]) / correctedDelta[1];
 	    
-	    for ( int i = passGridFrom[0]; i < passGridTo[0]; ++i )
+	    for ( Types::GridIndexType i = passGridFrom[0]; i < passGridTo[0]; ++i )
 	      {                
 	      u[0] = passImage->GetPlaneCoord( AXIS_X, i );
 	      delta[0] = (u[0] - vPass[0]) / correctedDelta[0];
@@ -338,24 +340,24 @@ void
 VolumeInjectionReconstruction
 ::VolumeInjectionIsotropic( const Types::Coordinate kernelSigma, const Types::Coordinate kernelRadius )
 {
-  const size_t correctedImageNumPixels = this->m_CorrectedImage->GetNumberOfPixels();
+  const Types::GridIndexType correctedImageNumPixels = this->m_CorrectedImage->GetNumberOfPixels();
   const DataGrid::IndexType& splattedImageDims = this->m_CorrectedImage->GetDims();
 
   this->m_CorrectedImage->GetData()->ClearArray();
   
   this->m_NeighorhoodMaxPixelValues.setbounds( 1, correctedImageNumPixels );
   this->m_NeighorhoodMinPixelValues.setbounds( 1, correctedImageNumPixels );
-  for ( size_t i = 1; i <= correctedImageNumPixels; ++i )
+  for ( Types::GridIndexType i = 1; i <= correctedImageNumPixels; ++i )
     {
     this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageRange.m_LowerBound;
     this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageRange.m_UpperBound;
     }
 
-  const int kernelRadiusIndex[3] = 
+  const Types::GridIndexType kernelRadiusIndex[3] = 
   {
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[0] ),
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[1] ),
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[2] )
+    1 + static_cast<Types::GridIndexType>( kernelRadius / this->m_CorrectedImage->m_Delta[0] ),
+    1 + static_cast<Types::GridIndexType>( kernelRadius / this->m_CorrectedImage->m_Delta[1] ),
+    1 + static_cast<Types::GridIndexType>( kernelRadius / this->m_CorrectedImage->m_Delta[2] )
   };
 
   const Types::Coordinate kernelRadiusSquare = kernelRadius * kernelRadius;
@@ -381,13 +383,13 @@ VolumeInjectionReconstruction
       AffineXform::SmartPtr affinePassImageXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
       const AffineXform* passImageXformInverse = (affinePassImageXform) ? affinePassImageXform->GetInverse() : static_cast<const AffineXform*>( NULL );
       
-      const int passImageNumPixels = passImage->GetNumberOfPixels();
-      for ( int offset = 0; offset < passImageNumPixels; ++offset )
+      const Types::GridIndexType passImageNumPixels = passImage->GetNumberOfPixels();
+      for ( Types::GridIndexType offset = 0; offset < passImageNumPixels; ++offset )
 	{      
 	Types::DataItem passImageData;
 	if ( passImage->GetDataAt( passImageData, offset ) ) 
 	  {
-	  int x, y, z;
+	  Types::GridIndexType x, y, z;
 	  passImage->GetIndexFromOffset( offset, x, y, z );
 	  
 	  UniformVolume::CoordinateVectorType v = passImage->GetGridLocation( x, y, z );
@@ -404,28 +406,28 @@ VolumeInjectionReconstruction
 	      }
 	    }
 	  
-	  int targetGridPosition[3];
+	  Types::GridIndexType targetGridPosition[3];
 	  if ( this->m_CorrectedImage->FindVoxel( v, targetGridPosition ) )
 	    {
 	    // check if neighbours are outside - if yes, set new neighbour ranges
-	    int targetGridFrom[3], targetGridTo[3];
+	    Types::GridIndexType targetGridFrom[3], targetGridTo[3];
 	    for ( int n = 0; n < 3; ++n )
 	      {
-	      targetGridFrom[n] = std::max( targetGridPosition[n] - kernelRadiusIndex[n], 0 );
-	      targetGridTo[n] = std::min( targetGridPosition[n] + kernelRadiusIndex[n] + 1, splattedImageDims[n] );
+	      targetGridFrom[n] = std::max<Types::GridIndexType>( targetGridPosition[n] - kernelRadiusIndex[n], 0 );
+	      targetGridTo[n] = std::min<Types::GridIndexType>( targetGridPosition[n] + kernelRadiusIndex[n] + 1, splattedImageDims[n] );
 	      }
 	    
 	    UniformVolume::CoordinateVectorType u;
-	    for ( int k = targetGridFrom[2]; k < targetGridTo[2]; ++k )
+	    for ( Types::GridIndexType k = targetGridFrom[2]; k < targetGridTo[2]; ++k )
 	      {
 	      u[2] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Z, k );
 	      
-	      for ( int j = targetGridFrom[1]; j < targetGridTo[1]; ++j )
+	      for ( Types::GridIndexType j = targetGridFrom[1]; j < targetGridTo[1]; ++j )
 		{
 		u[1] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Y, j );
 		
-		size_t splattedImageOffset = this->m_CorrectedImage->GetOffsetFromIndex( targetGridFrom[0], j, k );
-		for ( int i = targetGridFrom[0]; i < targetGridTo[0]; ++i, ++splattedImageOffset )
+		Types::GridIndexType splattedImageOffset = this->m_CorrectedImage->GetOffsetFromIndex( targetGridFrom[0], j, k );
+		for ( Types::GridIndexType i = targetGridFrom[0]; i < targetGridTo[0]; ++i, ++splattedImageOffset )
 		  {                
 		  u[0] = this->m_CorrectedImage->GetPlaneCoord( AXIS_X, i );
 		  
@@ -452,7 +454,7 @@ VolumeInjectionReconstruction
     }
   
 #pragma omp parallel for
-  for ( int idx = 0; idx < static_cast<int>( correctedImageNumPixels ); ++idx )
+  for ( Types::GridIndexType idx = 0; idx < static_cast<Types::GridIndexType>( correctedImageNumPixels ); ++idx )
     {
     const Types::DataItem kernelWeightPixel = static_cast<Types::DataItem>( kernelWeights[idx] );
     if ( kernelWeightPixel > 0 ) // check if pixel is a neighbour
@@ -496,28 +498,28 @@ VolumeInjectionReconstruction
 ::ComputeCorrectedImageLaplacianNorm( const ap::real_1d_array& correctedImagePixels )
 {
   const UniformVolume* correctedImage = this->m_CorrectedImage;
-  const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
+  const Types::GridIndexType correctedImageNumPixels = correctedImage->GetNumberOfPixels();
   this->m_CorrectedImageLaplacians.resize( correctedImageNumPixels );
 
   const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
-  const int nextI = 1;
-  const int nextJ = nextI * correctedImageDims[0];
-  const int nextK = nextJ * correctedImageDims[1];
+  const Types::GridIndexType nextI = 1;
+  const Types::GridIndexType nextJ = nextI * correctedImageDims[0];
+  const Types::GridIndexType nextK = nextJ * correctedImageDims[1];
 
   ap::real_value_type lnorm = 0;
 #pragma omp parallel for reduction(+:lnorm)
-  for ( int idx = 1; idx <= static_cast<int>( correctedImageNumPixels ); ++idx )
+  for ( Types::GridIndexType idx = 1; idx <= static_cast<Types::GridIndexType>( correctedImageNumPixels ); ++idx )
     {
-    int x, y, z;
+    Types::GridIndexType x, y, z;
     correctedImage->GetIndexFromOffset( idx-1, x, y, z );
     
-    const int xm = (x>0) ? idx-nextI : idx+nextI;
-    const int ym = (y>0) ? idx-nextJ : idx+nextJ;
-    const int zm = (z>0) ? idx-nextK : idx+nextK;
+    const Types::GridIndexType xm = (x>0) ? idx-nextI : idx+nextI;
+    const Types::GridIndexType ym = (y>0) ? idx-nextJ : idx+nextJ;
+    const Types::GridIndexType zm = (z>0) ? idx-nextK : idx+nextK;
     
-    const int xp = (x+1 < correctedImageDims[0]) ? idx+nextI : idx-nextI;
-    const int yp = (y+1 < correctedImageDims[1]) ? idx+nextJ : idx-nextJ;
-    const int zp = (z+1 < correctedImageDims[2]) ? idx+nextK : idx-nextK;
+    const Types::GridIndexType xp = (x+1 < correctedImageDims[0]) ? idx+nextI : idx-nextI;
+    const Types::GridIndexType yp = (y+1 < correctedImageDims[1]) ? idx+nextJ : idx-nextJ;
+    const Types::GridIndexType zp = (z+1 < correctedImageDims[2]) ? idx+nextK : idx-nextK;
     
     const ap::real_value_type l = 
       correctedImagePixels( xm ) + correctedImagePixels( xp ) +
@@ -540,26 +542,26 @@ VolumeInjectionReconstruction
 ::AddLaplacianGradientImage( ap::real_1d_array& g, const ap::real_1d_array&, const ap::real_value_type weight ) const
 {
   const UniformVolume* correctedImage = this->m_CorrectedImage;
-  const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
+  const Types::GridIndexType correctedImageNumPixels = correctedImage->GetNumberOfPixels();
   const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
 
-  const int nextI = 1;
-  const int nextJ = nextI * correctedImageDims[0];
-  const int nextK = nextJ * correctedImageDims[1];
+  const Types::GridIndexType nextI = 1;
+  const Types::GridIndexType nextJ = nextI * correctedImageDims[0];
+  const Types::GridIndexType nextK = nextJ * correctedImageDims[1];
   
 #pragma omp parallel for
-  for ( int idx = 0; idx < static_cast<int>( correctedImageNumPixels ); ++idx )
+  for ( Types::GridIndexType idx = 0; idx < static_cast<Types::GridIndexType>( correctedImageNumPixels ); ++idx )
     {
-    int x, y, z;
+    Types::GridIndexType x, y, z;
     correctedImage->GetIndexFromOffset( idx, x, y, z );
     
-    const int xm = (x>0) ? idx-nextI : idx+nextI;
-    const int ym = (y>0) ? idx-nextJ : idx+nextJ;
-    const int zm = (z>0) ? idx-nextK : idx+nextK;
+    const Types::GridIndexType xm = (x>0) ? idx-nextI : idx+nextI;
+    const Types::GridIndexType ym = (y>0) ? idx-nextJ : idx+nextJ;
+    const Types::GridIndexType zm = (z>0) ? idx-nextK : idx+nextK;
 
-    const int xp = (x+1 < correctedImageDims[0]) ? idx+nextI : idx-nextI;
-    const int yp = (y+1 < correctedImageDims[1]) ? idx+nextJ : idx-nextJ;
-    const int zp = (z+1 < correctedImageDims[2]) ? idx+nextK : idx-nextK;
+    const Types::GridIndexType xp = (x+1 < correctedImageDims[0]) ? idx+nextI : idx-nextI;
+    const Types::GridIndexType yp = (y+1 < correctedImageDims[1]) ? idx+nextJ : idx-nextJ;
+    const Types::GridIndexType zp = (z+1 < correctedImageDims[2]) ? idx+nextK : idx-nextK;
 
     g(idx+1) += (2 * weight / correctedImageNumPixels) *
       ( this->m_CorrectedImageLaplacians[xm] + this->m_CorrectedImageLaplacians[xp] +

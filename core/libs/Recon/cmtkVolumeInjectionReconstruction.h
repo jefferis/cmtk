@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -73,7 +75,7 @@ public:
    *\param numberOfPasses The number of interleaved passes, i.e., the number of pass images that comprise the final image.
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
    */
-  VolumeInjectionReconstruction( const UniformVolume* originalImage, const int numberOfPasses, const int interleaveAxis );
+  VolumeInjectionReconstruction( const UniformVolume* originalImage, const Types::GridIndexType numberOfPasses, const int interleaveAxis );
 
   /** Constructor for general volume reconstruction from multiple acquired images.
    */
@@ -154,7 +156,7 @@ public:
   
 protected:
   /// Number of interleaved passes.
-  int m_NumberOfPasses;
+  Types::GridIndexType m_NumberOfPasses;
 
   /// Relative weights of the passes in the correction; can be used to underweight or even exclude passes.
   std::vector<Types::Coordinate> m_PassWeights;
