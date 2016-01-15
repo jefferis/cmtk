@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -47,17 +49,17 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 ::Interpolation( const ap::real_1d_array& reconstructedPixelArray )
 {
   this->m_InterpolatedPassImages.clear();
-  for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
+  for ( Types::GridIndexType pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
     const UniformVolume* passImage = this->m_OriginalPassImages[pass];
     UniformVolume::SmartPtr result( passImage->CloneGrid() );
     result->CreateDataArray( TYPE_FLOAT, true/*setToZero*/ );
     
     const DataGrid::IndexType& passImageDims = passImage->GetDims();
-    const int passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
+    const Types::GridIndexType passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
     
     const DataGrid::IndexType& correctedImageDims = this->m_CorrectedImage->GetDims();
-    const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1], correctedImageDimsZ = correctedImageDims[2];    
+    const Types::GridIndexType correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1], correctedImageDimsZ = correctedImageDims[2];    
 
     const AffineXform* inversePassXform = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() );
     if ( ! inversePassXform )
@@ -68,14 +70,14 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     const AffineXform* passXform = inversePassXform->GetInverse();
     
 #pragma omp parallel for
-    for ( int x = 0; x < passImageDimsX; ++x )
+    for ( Types::GridIndexType x = 0; x < passImageDimsX; ++x )
       {
-      int correctedImageGridPoint[3];
+      Types::GridIndexType correctedImageGridPoint[3];
       Types::Coordinate from[3], to[3];
     
-      for ( int y = 0; y < passImageDimsY; ++y )
+      for ( Types::GridIndexType y = 0; y < passImageDimsY; ++y )
 	{
-        for ( int z = 0; z < passImageDimsZ; ++z )
+        for ( Types::GridIndexType z = 0; z < passImageDimsZ; ++z )
 	  {
           Types::DataItem interpolatedData = 0;
 	  Types::Coordinate totalWeight = 0;
@@ -83,9 +85,9 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 
           if ( this->m_CorrectedImage->FindVoxel( v, correctedImageGridPoint, from, to ) )
 	    {
-            const int xx = correctedImageGridPoint[0] + 1 - TInterpolator::RegionSizeLeftRight;
-            const int yy = correctedImageGridPoint[1] + 1 - TInterpolator::RegionSizeLeftRight;
-            const int zz = correctedImageGridPoint[2] + 1 - TInterpolator::RegionSizeLeftRight;
+            const Types::GridIndexType xx = correctedImageGridPoint[0] + 1 - TInterpolator::RegionSizeLeftRight;
+            const Types::GridIndexType yy = correctedImageGridPoint[1] + 1 - TInterpolator::RegionSizeLeftRight;
+            const Types::GridIndexType zz = correctedImageGridPoint[2] + 1 - TInterpolator::RegionSizeLeftRight;
 
             Types::DataItem data;
             Types::Coordinate difference[3];
@@ -93,27 +95,27 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 	    for ( int n = 0; n < 3; ++n )
 	      {
 	      difference[n] = (v[n] - from[n]) / (to[n] - from[n]);
-	      for ( int m = 1-TInterpolator::RegionSizeLeftRight; m <= TInterpolator::RegionSizeLeftRight; ++m )
+	      for ( Types::GridIndexType m = 1-TInterpolator::RegionSizeLeftRight; m <= TInterpolator::RegionSizeLeftRight; ++m )
 		{
 		interpolationWeights[n][m+TInterpolator::RegionSizeLeftRight-1] = TInterpolator::GetWeight(m, difference[n]);
 		}
 	      }
 	    
-	    const int iMin = std::max( 0, -xx );
-	    const int iMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsX - xx );
+	    const Types::GridIndexType iMin = std::max( 0, -xx );
+	    const Types::GridIndexType iMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsX - xx );
 
-	    const int jMin = std::max( 0, -yy );
-	    const int jMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsY - yy );
+	    const Types::GridIndexType jMin = std::max( 0, -yy );
+	    const Types::GridIndexType jMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsY - yy );
 
-	    const int kMin = std::max( 0, -zz );
-	    const int kMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsZ - zz );
+	    const Types::GridIndexType kMin = std::max( 0, -zz );
+	    const Types::GridIndexType kMax = std::min( 2 * TInterpolator::RegionSizeLeftRight, correctedImageDimsZ - zz );
 
-	    for ( int k = kMin; k < kMax; ++k )
+	    for ( Types::GridIndexType k = kMin; k < kMax; ++k )
 	      {
-	      for ( int j = jMin; j < jMax; ++j )
+	      for ( Types::GridIndexType j = jMin; j < jMax; ++j )
 		{
 		const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
-		for ( int i = iMin; i < iMax; ++i )
+		for ( Types::GridIndexType i = iMin; i < iMax; ++i )
 		  {
 		  const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
 		  data = reconstructedPixelArray( 1+this->m_CorrectedImage->GetOffsetFromIndex( xx + i, yy + j, zz + k ) );
@@ -147,10 +149,10 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     g(i) = 0;
 
   const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
-  const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
-  const int correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
+  const Types::GridIndexType correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
+  const Types::GridIndexType correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
 
-  for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
+  for ( Types::GridIndexType pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
     const UniformVolume* differencePassImage = this->m_DifferencePassImages[pass];
     const UniformVolume* interpolatedPassImage = this->m_InterpolatedPassImages[pass];
@@ -170,21 +172,21 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     if ( passImageWeight > 0 )
       {
 #pragma omp parallel for
-      for ( int offset = 0; offset < static_cast<int>( numberOfPixels ); ++offset )
+      for ( Types::GridIndexType offset = 0; offset < static_cast<Types::GridIndexType>( numberOfPixels ); ++offset )
 	{
-	const int correctedImageCurrentGridPoint[3] = 
+	const Types::GridIndexType correctedImageCurrentGridPoint[3] = 
 	  { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 	
-	int passImageDependentRegion[6];
+	Types::GridIndexType passImageDependentRegion[6];
 	this->GetPassImageDependentPixelRegion( passImageDependentRegion, correctedImage, correctedImageCurrentGridPoint, interpolatedPassImage, transformationToPassImage, passImageDims );
 
 	Types::DataItem gradientData = 0;
 	Types::Coordinate from[3], to[3];
-	for (int k = passImageDependentRegion[2]; k <= passImageDependentRegion[5]; ++k)
+	for (Types::GridIndexType k = passImageDependentRegion[2]; k <= passImageDependentRegion[5]; ++k)
 	  {
-	  for (int j = passImageDependentRegion[1]; j <= passImageDependentRegion[4]; ++j)
+	  for (Types::GridIndexType j = passImageDependentRegion[1]; j <= passImageDependentRegion[4]; ++j)
 	    {
-	    for (int i = passImageDependentRegion[0]; i <= passImageDependentRegion[3]; ++i)
+	    for (Types::GridIndexType i = passImageDependentRegion[0]; i <= passImageDependentRegion[3]; ++i)
 	      {
 	      Types::DataItem differenceData;
 	      if ( differencePassImage->GetDataAt( differenceData, i, j, k ) && (differenceData !=0) ) // if differenceData==0, we can skip this, too
@@ -193,10 +195,10 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 	      
 		const UniformVolume::CoordinateVectorType v = inverseTransformationToPassImage->Apply( interpolatedPassImage->GetGridLocation( i, j, k ) );
 	      
-		int correctedImageGridPoint[3];
+		Types::GridIndexType correctedImageGridPoint[3];
 		if ( correctedImage->FindVoxel( v, correctedImageGridPoint, from, to ) )
 		  {
-		  const int correctedImageDifference[3] = 
+		  const Types::GridIndexType correctedImageDifference[3] = 
 		    {
 		      correctedImageCurrentGridPoint[0] - correctedImageGridPoint[0],
 		      correctedImageCurrentGridPoint[1] - correctedImageGridPoint[1],
@@ -235,11 +237,11 @@ template<class TInterpolator>
 void
 InverseInterpolationVolumeReconstruction<TInterpolator>
 ::GetPassImageDependentPixelRegion
-( int* region, const UniformVolume* correctedImage, const int* currentCorrectedGridPoint, 
+( Types::GridIndexType* region, const UniformVolume* correctedImage, const Types::GridIndexType* currentCorrectedGridPoint, 
   const UniformVolume* passImage, const AffineXform* transformationToPassImage, const DataGrid::IndexType& passImageDims )
 {
   // compute neighborhood in corrected image from which interpolated pixels are affected by current corrected image pixel
-  int corners[2][3];
+  Types::GridIndexType corners[2][3];
   for ( int dim = 0; dim < 3; ++dim )
     {
     corners[0][dim] = std::max( currentCorrectedGridPoint[dim] - TInterpolator::RegionSizeLeftRight, 0 );
@@ -312,8 +314,8 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
   if ( this->m_Function->GetMaximumError() <= this->m_Function->m_LowestMaxError )
     {
     this->m_Function->m_LowestMaxError = this->m_Function->GetMaximumError();
-    const int numberOfPixels = this->m_Function->m_CorrectedImage->GetNumberOfPixels();
-    for ( int i = 1; i <= numberOfPixels; ++i )
+    const Types::GridIndexType numberOfPixels = this->m_Function->m_CorrectedImage->GetNumberOfPixels();
+    for ( Types::GridIndexType i = 1; i <= numberOfPixels; ++i )
       this->m_Function->m_CorrectedImage->SetDataAt( x(i), i-1 );
     this->m_Function->m_LowestMaxErrorImage = UniformVolume::SmartPtr( this->m_Function->m_CorrectedImage->Clone( true /*copyData*/ ) );
     }

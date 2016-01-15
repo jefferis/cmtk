@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
@@ -79,7 +81,7 @@ public:
    *\param numberOfPasses The number of interleaved passes, i.e., the number of pass images that comprise the final image.
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
    */
-  InverseInterpolationVolumeReconstructionBase( const UniformVolume* originalImage, const int numberOfPasses, const int interleaveAxis );
+  InverseInterpolationVolumeReconstructionBase( const UniformVolume* originalImage, const Types::GridIndexType numberOfPasses, const int interleaveAxis );
 
   /** Constructor for general volume reconstruction from multiple acquired images.
    */

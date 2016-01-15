@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010, 2013 SRI International
@@ -42,7 +44,7 @@ cmtk
 {
 
 InverseInterpolationVolumeReconstructionBase
-::InverseInterpolationVolumeReconstructionBase( const UniformVolume* originalImage, const int interleaveFactor, const int interleaveAxis )
+::InverseInterpolationVolumeReconstructionBase( const UniformVolume* originalImage, const Types::GridIndexType interleaveFactor, const int interleaveAxis )
   : VolumeInjectionReconstruction( originalImage, interleaveFactor, interleaveAxis ),
     m_RegionalIntensityTruncation( true ),
     m_LowestMaxError( 1e12 ),

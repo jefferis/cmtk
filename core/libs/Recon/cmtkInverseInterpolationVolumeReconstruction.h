@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
@@ -76,7 +78,7 @@ public:
    *\param numberOfPasses The number of interleaved passes, i.e., the number of pass images that comprise the final image.
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
    */
-  InverseInterpolationVolumeReconstruction( const UniformVolume* originalImage, const int numberOfPasses, const int interleaveAxis )
+  InverseInterpolationVolumeReconstruction( const UniformVolume* originalImage, const Types::GridIndexType numberOfPasses, const int interleaveAxis )
     : InverseInterpolationVolumeReconstructionBase( originalImage, numberOfPasses, interleaveAxis )
   { 
     this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
@@ -105,7 +107,7 @@ private:
 
   /// Get pass image region that contains all pixels dependent on currently considered corrected image pixel.
   void GetPassImageDependentPixelRegion
-  ( int* region, const UniformVolume* correctedImage, const int* currentCorrectedGridPoint, 
+  ( Types::GridIndexType* region, const UniformVolume* correctedImage, const Types::GridIndexType* currentCorrectedGridPoint, 
     const UniformVolume* passImage, const AffineXform* transformationToPassImage, const DataGrid::IndexType& passImageDims );
 
   /// Glue class for function and gradient evaluation.
