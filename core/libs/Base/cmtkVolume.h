@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -145,7 +147,7 @@ protected:
    *\return 1 if operation was successful, 0 if no valid data could be found
    * at the given location.
    */
-  bool GetTrilinear ( ProbeInfo&, const int, const int, const int, const Vector3D&, const Types::Coordinate*, const Types::Coordinate* ) const;
+  bool GetTrilinear ( ProbeInfo&, const Types::GridIndexType, const Types::GridIndexType, const Types::GridIndexType, const Vector3D&, const Types::Coordinate*, const Types::Coordinate* ) const;
 };
 
 //@}

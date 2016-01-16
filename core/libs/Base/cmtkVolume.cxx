@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -41,13 +43,13 @@ cmtk
 
 bool
 Volume::GetTrilinear
-( ProbeInfo& probeInfo, const int X, const int Y, const int Z,
+( ProbeInfo& probeInfo, const Types::GridIndexType X, const Types::GridIndexType Y, const Types::GridIndexType Z,
   const Vector3D& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
   const TypedArray* data = this->GetData();
 
-  int offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
+  Types::GridIndexType offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
 
   bool data_present = data->Get( probeInfo.Values[0], offset );
   
