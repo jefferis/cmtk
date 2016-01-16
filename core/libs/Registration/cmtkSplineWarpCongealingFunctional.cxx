@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -53,7 +55,7 @@ void
 SplineWarpCongealingFunctional
 ::SetTemplateGrid
 ( UniformVolume::SmartPtr& templateGrid, 
-  const int downsample,
+  const Types::GridIndexType downsample,
   const bool useTemplateData )
 {
   this->Superclass::SetTemplateGrid( templateGrid, downsample, useTemplateData );
@@ -109,12 +111,12 @@ SplineWarpCongealingFunctional
       bool active = false;
       if ( this->m_ActiveControlPointFlags[cp] )
 	{
-	for ( int z = voi->From()[2]; (z < voi->To()[2]) && !active; ++z ) 
+	for ( Types::GridIndexType z = voi->From()[2]; (z < voi->To()[2]) && !active; ++z ) 
 	  {
-	  for ( int y = voi->From()[1]; (y < voi->To()[1]) && !active; ++y )
+	  for ( Types::GridIndexType y = voi->From()[1]; (y < voi->To()[1]) && !active; ++y )
 	    {
 	    size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
-	    for ( int x = voi->From()[0]; (x < voi->To()[0])  && !active; ++x, ++ofs )
+	    for ( Types::GridIndexType x = voi->From()[0]; (x < voi->To()[0])  && !active; ++x, ++ofs )
 	      {
 	      if ( this->m_StandardDeviationByPixel[ofs] > 0 )
 		{
