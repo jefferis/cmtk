@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2012 SRI International
@@ -71,12 +73,12 @@ SplineWarpGroupwiseRegistrationRMIFunctional
       const byte* dataPtrImg = this->m_Data[img];
       
       byte voiMin = 255, voiMax = 0;
-      for ( int z = voi->From()[2]; z < voi->To()[2]; ++z ) 
+      for ( Types::GridIndexType z = voi->From()[2]; z < voi->To()[2]; ++z ) 
 	{
-	for ( int y = voi->From()[1]; y < voi->To()[1]; ++y )
+	for ( Types::GridIndexType y = voi->From()[1]; y < voi->To()[1]; ++y )
 	  {
 	  size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
-	  for ( int x = voi->From()[0]; x < voi->To()[0]; ++x, ++ofs )
+	  for ( Types::GridIndexType x = voi->From()[0]; x < voi->To()[0]; ++x, ++ofs )
 	    {
 	    const byte data = dataPtrImg[ofs];
 	    if ( data != paddingValue )
