@@ -1,10 +1,11 @@
-Release CMTK-3.3.0 (2016-01-xx):
+Release CMTK-3.3.0 (2016-01-16):
 
 (r5404) Fixed: removed 32bit (31, really) limit on number of pixels in
 	an image, at least for most algorithms. Volume reconstruction
 	will continue to be limited due to 32bit integers being used as
 	vector indexes in AlgLib numerical code.
 (r5394) Changed: limit number of images in groupwise registration to 255.
+	This reduces memory consumption significantly.
 (r5392) Fixed: compile problems with VisualStudio Express 2015.
 (r5391) Fixed: recent system DCMTK versions on Fedora (perhaps elsewhere too)
         have lost constants for ACR-NEMA legacy field tags. Re-added those 

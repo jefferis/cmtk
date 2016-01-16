@@ -17,7 +17,7 @@ Platform Support
 CMTK has been built and tested on the following platforms:
 
 - Linux 64bit (Fedora 23), gcc 5.3.1
-- Cygwin, gcc 4.8.2
+- Cygwin, gcc 4.9.3
 - Windows7 x64, VisualStudio 2013 Express for Desktop
 
 
