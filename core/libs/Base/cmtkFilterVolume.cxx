@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011, 2013 SRI International
@@ -64,19 +66,19 @@ FilterVolume::GaussianFilter
   const DataGrid::IndexType& dims = volume->m_Dims;
   FilterMask<3> filter( dims, volume->Deltas(), radius, FilterMask<3>::Gaussian( kernelWidth ) );
 
-  const int dimsX = dims[AXIS_X];
-  const int dimsY = dims[AXIS_Y];
-  const int dimsZ = dims[AXIS_Z];
+  const Types::GridIndexType dimsX = dims[AXIS_X];
+  const Types::GridIndexType dimsY = dims[AXIS_Y];
+  const Types::GridIndexType dimsZ = dims[AXIS_Z];
   
   Progress::Begin( 0, dimsZ, 1, "Gaussian Filter" );
 
 #pragma omp parallel for
-  for ( int z = 0; z < dimsZ; ++z )
+  for ( Types::GridIndexType z = 0; z < dimsZ; ++z )
     {
     size_t offset = z * dimsX * dimsY;
     Progress::SetProgress( z );
-    for ( int y = 0; y < dimsY; ++y )
-      for ( int x = 0; x < dimsX; ++x, ++offset ) 
+    for ( Types::GridIndexType y = 0; y < dimsY; ++y )
+      for ( Types::GridIndexType x = 0; x < dimsX; ++x, ++offset ) 
 	{
 	Types::DataItem average = 0.0, weight = 0.0;
 	  
@@ -95,11 +97,11 @@ FilterVolume::GaussianFilter
 	  FilterMask<3>::const_iterator it = filter.begin();
 	  while ( it != filter.end() ) 
 	    {
-	    const int xx = x + it->Location[0];
-	    const int yy = y + it->Location[1];
-	    const int zz = z + it->Location[2];
+	    const Types::GridIndexType xx = x + it->Location[0];
+	    const Types::GridIndexType yy = y + it->Location[1];
+	    const Types::GridIndexType zz = z + it->Location[2];
 		    
-	    if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (int)dimsX) && (yy < (int)dimsY) && (zz < (int)dimsZ) ) 
+	    if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (Types::GridIndexType)dimsX) && (yy < (Types::GridIndexType)dimsY) && (zz < (Types::GridIndexType)dimsZ) ) 
 	      {
 	      const size_t srcOffset = volume->GetOffsetFromIndex( xx, yy, zz );
 	      Types::DataItem value;
@@ -175,14 +177,14 @@ FilterVolume
   const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->Deltas(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
-  const unsigned int dimsX = dims[AXIS_X];
-  const unsigned int dimsY = dims[AXIS_Y];
-  const unsigned int dimsZ = dims[AXIS_Z];
+  const Types::GridIndexType dimsX = dims[AXIS_X];
+  const Types::GridIndexType dimsY = dims[AXIS_Y];
+  const Types::GridIndexType dimsZ = dims[AXIS_Z];
   
   Progress::Begin( 0, dimsZ, 1, "Rohlfing Intensity-Consistent Filter" );
 
 #pragma omp parallel for
-  for ( int z = 0; z < static_cast<int>( dimsZ ); ++z ) 
+  for ( Types::GridIndexType z = 0; z < static_cast<Types::GridIndexType>( dimsZ ); ++z ) 
     {      
     size_t offset = z * dimsX * dimsY;
 
@@ -193,8 +195,8 @@ FilterVolume
 #endif // #ifdef _OPENMP
       Progress::SetProgress( z );
 
-    for ( unsigned int y = 0; y < dimsY; ++y )
-      for ( unsigned int x = 0; x < dimsX; ++x, ++offset ) 
+    for ( Types::GridIndexType y = 0; y < dimsY; ++y )
+      for ( Types::GridIndexType x = 0; x < dimsX; ++x, ++offset ) 
 	{
 	Types::DataItem average = 0.0, weight = 0.0;
 	    
@@ -210,11 +212,11 @@ FilterVolume
 	  
 	  for (  FilterMask<3>::const_iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
-	    const int xx = x + it->Location[0];
-	    const int yy = y + it->Location[1];
-	    const int zz = z + it->Location[2];
+	    const Types::GridIndexType xx = x + it->Location[0];
+	    const Types::GridIndexType yy = y + it->Location[1];
+	    const Types::GridIndexType zz = z + it->Location[2];
 		    
-	    if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (int)dimsX) && (yy < (int)dimsY) && (zz < (int)dimsZ) ) 
+	    if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (Types::GridIndexType)dimsX) && (yy < (Types::GridIndexType)dimsY) && (zz < (Types::GridIndexType)dimsZ) ) 
 	      {
 	      Types::DataItem value;
 	      const size_t srcOffset = it->RelativeIndex + offset;
@@ -267,10 +269,10 @@ FilterVolume::StudholmeFilter
   TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
-  const unsigned int dimsX = dims[AXIS_X];
-  const unsigned int dimsY = dims[AXIS_Y];
-  const unsigned int dimsZ = dims[AXIS_Z];
-  const unsigned int numberOfRows = dimsY * dimsZ;
+  const Types::GridIndexType dimsX = dims[AXIS_X];
+  const Types::GridIndexType dimsY = dims[AXIS_Y];
+  const Types::GridIndexType dimsZ = dims[AXIS_Z];
+  const Types::GridIndexType numberOfRows = dimsY * dimsZ;
   
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   std::vector< JointHistogram<Types::DataItem> > histogramByThread( numberOfThreads );
@@ -288,10 +290,10 @@ FilterVolume::StudholmeFilter
   
   Progress::Begin( 0, numberOfRows, 1, "Studholme Intensity-Consistent Filter" );
 #pragma omp parallel for
-  for ( int row = 0; row < static_cast<int>( numberOfRows ); ++row ) 
+  for ( Types::GridIndexType row = 0; row < static_cast<Types::GridIndexType>( numberOfRows ); ++row ) 
     {
-    const unsigned int y = row % dimsY;
-    const unsigned int z = row / dimsY;
+    const Types::GridIndexType y = row % dimsY;
+    const Types::GridIndexType z = row / dimsY;
     
     Progress::SetProgress( z );
     size_t offset = row * dimsX;
@@ -305,7 +307,7 @@ FilterVolume::StudholmeFilter
     JointHistogram<Types::DataItem>& histogram = histogramByThread[thread];
     FilterMask<3>& filter = *(filterByThread[thread]);
  
-    for ( unsigned int x = 0; x < dimsX; ++x, ++offset ) 
+    for ( Types::GridIndexType x = 0; x < dimsX; ++x, ++offset ) 
       {
       Types::DataItem average = 0.0, weight = 0.0;
       histogram.Reset();
@@ -322,11 +324,11 @@ FilterVolume::StudholmeFilter
 	FilterMask<3>::iterator it = filter.begin();
 	for ( ; it != filter.end(); ++it ) 
 	  {
-	  const int xx = x + it->Location[0];
-	  const int yy = y + it->Location[1];
-	  const int zz = z + it->Location[2];
+	  const Types::GridIndexType xx = x + it->Location[0];
+	  const Types::GridIndexType yy = y + it->Location[1];
+	  const Types::GridIndexType zz = z + it->Location[2];
 		    
-	  if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (int)dimsX) && (yy < (int)dimsY) && (zz < (int)dimsZ) ) 
+	  if ( (xx>=0) && (yy>=0) && (zz>=0) && (xx < (Types::GridIndexType)dimsX) && (yy < (Types::GridIndexType)dimsY) && (zz < (Types::GridIndexType)dimsZ) ) 
 	    {
 	    it->Valid = true;	      
 
@@ -418,19 +420,19 @@ FilterVolume::StudholmeFilter
   const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->Deltas(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
-  const unsigned int dimsX = dims[AXIS_X];
-  const unsigned int dimsY = dims[AXIS_Y];
-  const unsigned int dimsZ = dims[AXIS_Z];
+  const Types::GridIndexType dimsX = dims[AXIS_X];
+  const Types::GridIndexType dimsY = dims[AXIS_Y];
+  const Types::GridIndexType dimsZ = dims[AXIS_Z];
 
   Progress::Begin( 0, dimsZ, 1, "Studholme Intensity-Consistent Filter" );
 
   size_t offset = 0;
-  for ( unsigned int z = 0; z < dimsZ; ++z ) 
+  for ( Types::GridIndexType z = 0; z < dimsZ; ++z ) 
     {
     Progress::SetProgress( z );
       
-    for ( unsigned int y = 0; y < dimsY; ++y )
-      for ( unsigned int x = 0; x < dimsX; ++x, ++offset ) 
+    for ( Types::GridIndexType y = 0; y < dimsY; ++y )
+      for ( Types::GridIndexType x = 0; x < dimsX; ++x, ++offset ) 
 	{
 	Types::DataItem average = 0.0, weight = 0.0;
 	histogram.Reset();
@@ -445,9 +447,9 @@ FilterVolume::StudholmeFilter
 	  // first iteration over filter: compute consistency histogram
 	  for ( FilterMask<3>::iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
-	    const unsigned int xx = x + it->Location[0];
-	    const unsigned int yy = y + it->Location[1];
-	    const unsigned int zz = z + it->Location[2];
+	    const Types::GridIndexType xx = x + it->Location[0];
+	    const Types::GridIndexType yy = y + it->Location[1];
+	    const Types::GridIndexType zz = z + it->Location[2];
 		    
 	    if ( (xx < dimsX) && (yy < dimsY) && (zz < dimsZ) ) 
 	      {
@@ -476,9 +478,9 @@ FilterVolume::StudholmeFilter
 	  
 	  for ( FilterMask<3>::iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
-	    const unsigned int xx = x + it->Location[0];
-	    const unsigned int yy = y + it->Location[1];
-	    const unsigned int zz = z + it->Location[2];
+	    const Types::GridIndexType xx = x + it->Location[0];
+	    const Types::GridIndexType yy = y + it->Location[1];
+	    const Types::GridIndexType zz = z + it->Location[2];
 	    
 	    if ( it->Valid ) 
 	      {
