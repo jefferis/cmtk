@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011, 2013 SRI International
@@ -94,7 +96,7 @@ public:
   virtual void RefineTransformationGrids();
 
   /// Call inherited function and allocate local storage.
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1, const bool useTemplateData = false );
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const  downsample = 1, const bool useTemplateData = false );
     
   /// Evaluate functional with currently set parameters.
   virtual Self::ReturnType Evaluate();
