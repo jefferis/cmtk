@@ -3,7 +3,7 @@
 ##
 ##  Copyright 2004-2014 SRI International
 ##
-##  Copyright 2015 Google, Inc.
+##  Copyright 2015, 2016 Google, Inc.
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -45,8 +45,8 @@ SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
 
 PROJECT(CMTK)
 SET(CMTK_VERSION_MAJOR "3")
-SET(CMTK_VERSION_MINOR "2")
-SET(CMTK_VERSION_PATCH "3")
+SET(CMTK_VERSION_MINOR "3")
+SET(CMTK_VERSION_PATCH "0")
 
 SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}")
 
