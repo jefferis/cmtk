@@ -96,7 +96,7 @@ public:
   virtual void RefineTransformationGrids();
 
   /// Call inherited function and allocate local storage.
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const  downsample = 1, const bool useTemplateData = false );
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const Types::GridIndexType downsample = 1, const bool useTemplateData = false );
     
   /// Evaluate functional with currently set parameters.
   virtual Self::ReturnType Evaluate();
