@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2013 SRI International
@@ -277,28 +279,28 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
   const byte paddingValue = This->m_PaddingValue;
   const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
 
-  const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
-  const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
-  const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
+  const Types::GridIndexType dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
+  const Types::GridIndexType dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
+  const Types::GridIndexType dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
 
   std::vector<Xform::SpaceVectorType> v( dimsX );
   byte value;
 
-  const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
-  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
-  int rowsToDo = rowTo - rowFrom;
+  const Types::GridIndexType rowCount = ( dimsY * dimsZ );
+  const Types::GridIndexType rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const Types::GridIndexType rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
+  Types::GridIndexType rowsToDo = rowTo - rowFrom;
   
-  int yFrom = rowFrom % dimsY;
-  int zFrom = rowFrom / dimsY;
+  Types::GridIndexType yFrom = rowFrom % dimsY;
+  Types::GridIndexType zFrom = rowFrom / dimsY;
   
   byte *wptr = destination + rowFrom * dimsX;
-  for ( int z = zFrom; (z < dimsZ) && rowsToDo; ++z ) 
+  for ( Types::GridIndexType z = zFrom; (z < dimsZ) && rowsToDo; ++z ) 
     {
-    for ( int y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
+    for ( Types::GridIndexType y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
       {
       xform->GetTransformedGridRow( dimsX, &v[0], 0, y, z );
-      for ( int x = 0; x < dimsX; ++x )
+      for ( Types::GridIndexType x = 0; x < dimsX; ++x )
 	{
 	if ( target->ProbeData( value, dataPtr, v[x] ) )
 	  {

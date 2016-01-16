@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -106,16 +108,16 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
   byte value;
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
-  const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
-  const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
+  const Types::GridIndexType dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
+  const Types::GridIndexType dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
+  const Types::GridIndexType dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
 
-  for ( int z = taskIdx; (z < dimsZ); z += taskCnt ) 
+  for ( Types::GridIndexType z = taskIdx; (z < dimsZ); z += taskCnt ) 
     {
     byte *wptr = destination + z * dimsX * dimsY;
-    for ( int y = 0; (y < dimsY); ++y )
+    for ( Types::GridIndexType y = 0; (y < dimsY); ++y )
       {
-      for ( int x = 0; x < dimsX; ++x )
+      for ( Types::GridIndexType x = 0; x < dimsX; ++x )
 	{
 	This->m_TemplateGrid->GetGridLocation( v, x, y, z );
 	xform->ApplyInPlace( v );
