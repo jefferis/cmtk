@@ -598,7 +598,13 @@ sub runAffine {
 		# regular affine
 		my $ghtfilepath=File::Spec->catdir($listroot."_ght.list","registration");
 		# use GHT file as input if it exists
-		$initialreg=$ghtfilepath if(-e $ghtfilepath);
+		if(-e $ghtfilepath) {
+			$initialreg=$ghtfilepath ;
+		} else {
+			# try again, looking for registration.gz
+			$ghtfilepath=$ghtfilepath.".gz";
+			$initialreg=$ghtfilepath if(-e $ghtfilepath);
+		}
 	}
 
 	# Continue if an output file doesn't exist or
