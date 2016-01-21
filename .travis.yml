@@ -1,0 +1,24 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq cmake sqlite3 qt4-dev-tools
+
+before_script:
+  - cd core
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script: make
+
+after_script:
+  - if [ -f CTestTestfile.cmake ]; then ctest -V . ; fi
+
+notifications:
+  on_success: change
+  on_failure: always
