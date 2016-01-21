@@ -16,9 +16,6 @@ before_script:
 
 script: make
 
-after_script:
-  - if [ -f CTestTestfile.cmake ]; then ctest -V . ; fi
-
 notifications:
   on_success: change
   on_failure: always
