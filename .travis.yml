@@ -1,16 +1,25 @@
 language: cpp
 
-compiler:
-  - gcc
-  - clang
 addons:
  apt:
   packages:
    - sqlite3
    - qt4-dev-tools
 
+matrix:
+ include:
+  - os: linux
+    sudo: required
+    compiler: gcc
+  - os: osx
+    compiler: clang
 
 before_install:
+  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew update'
+
+install:
+  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew install qt4 sqlite'
+  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew link --force qt4'
 
 before_script:
   - cd core
