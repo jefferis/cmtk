@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 2014 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -75,14 +77,16 @@ PolynomialXform::GetLinearMatrix() const
 {
   CoordinateMatrix3x3 m3 = CoordinateMatrix3x3::Identity();
 
-  size_t paramIdx = 3;
-  for ( size_t j = 0; j < 3; ++j )
-    {
-    for ( size_t i = 0; i < 3; ++i, ++paramIdx )
-      {
-      m3[j][i] += this->m_Parameters[paramIdx];
+  // There is a linear matrix only of degree is non-zero, i.e., the
+  // polynomial transform includes at least the linear monomials.
+  if (m_Degree > 0) {
+    size_t paramIdx = 3;
+    for ( size_t j = 0; j < 3; ++j ) {
+      for ( size_t i = 0; i < 3; ++i, ++paramIdx ) {
+	m3[j][i] += this->m_Parameters[paramIdx];
       }
     }
+  }
 
   return m3;
 }
