@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2012, 2014 SRI International
@@ -94,7 +96,7 @@ public:
   virtual ~DeformationField () {}
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims )
+  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims )
   {
     this->Superclass::InitGrid( domain, dims );
     for ( int dim = 0; dim < 3; ++dim )

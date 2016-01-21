@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2009, 2013 SRI International
@@ -91,13 +93,13 @@ ProtocolCallback::ExecuteWithData
 }
 
 void
-ProtocolCallback::Comment ( const std::string& comment )
+ProtocolCallback::Comment ( const char* comment )
 {
   if ( fp ) 
     {
-    if ( !comment.empty() ) 
+    if ( comment != NULL ) 
       {
-      fprintf( fp, "# %s\n", comment.c_str() );
+      fprintf( fp, "# %s\n", comment );
       fflush( fp );
       } 
     else
@@ -109,8 +111,8 @@ ProtocolCallback::Comment ( const std::string& comment )
   
   if ( Debug )
     {
-    if ( !comment.empty() )
-      fprintf( stderr, "# %s\n", comment.c_str() );
+    if ( comment != NULL )
+      fprintf( stderr, "# %s\n", comment );
     else
       fputs( "#\n", stderr );
     }

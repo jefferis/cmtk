@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
@@ -32,6 +34,8 @@
 
 #ifndef __cmtkFilterVolume_h_included_
 #define __cmtkFilterVolume_h_included_
+
+#include <list>
 
 #include <cmtkconfig.h>
 

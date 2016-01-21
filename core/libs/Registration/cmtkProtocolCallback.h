@@ -1,5 +1,7 @@
 /*
 //
+//  Copyright 2016 Google, Inc.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  Copyright 2004-2009, 2013 SRI International
@@ -61,7 +63,7 @@ public:
   virtual CallbackResult ExecuteWithData ( const CoordinateVector& v, const double metric );
 
   /// Write comment to protocol file.
-  virtual void Comment ( const std::string& comment = "" );
+  virtual void Comment ( const char* comment = NULL );
 
 private:
   /// Protocol stream.
