@@ -45,6 +45,8 @@ MacOS-X
 SolarisStudio Compiler, Linux/Intel
 -----------------------------------
 
+- SolarisStudio cannot build CMTK due to a non-standard, incompatible C++ STL.
+
 - SolarisStudio C++ 12.2 crashes when compiling the "Numerics" library with
   full optimization, -O3. A bug report has been filed with, and accepted by,
   Oracle:
