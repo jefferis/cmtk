@@ -2,6 +2,12 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
+Release Notes -- CMTK 3.3.0
+===========================
+
+This is a minor bugfix release that addresses an issue with polynomial
+transformations that could cause out-of-bounds memory access.
+
 
 Release Notes -- CMTK 3.3.0
 ===========================

@@ -1,4 +1,4 @@
-Release CMTK-3.3.1:
+Release CMTK-3.3.1 (2016-01-23):
 
 (r5419) Fixed: bug in PolynomialXform class, which lead to out-of-range
 	array access in the parameter vector when trying to get the
