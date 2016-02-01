@@ -2,7 +2,7 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 3.3.0
+Release Notes -- CMTK 3.3.1
 ===========================
 
 This is a minor bugfix release that addresses an issue with polynomial
