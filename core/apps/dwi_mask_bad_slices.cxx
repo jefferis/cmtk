@@ -57,6 +57,10 @@ doMain
   cmtk::Types::DataItem standardDeviations = 3.0;
 
   const char* outputDir = NULL;
+
+  const char* badSliceStatisticsFileName = NULL;
+  FILE* badSliceStatisticsFile = NULL;
+
   cmtk::Types::DataItem paddingValue = -1;
   cmtk::ScalarDataType outputDataType = cmtk::TYPE_NONE;
 
@@ -101,6 +105,8 @@ doMain
     typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
     cl.AddOption( Key( 'p', "padding-value" ), &paddingValue, "Padding value to replace data of detected bad slices in output images." );
+    cl.AddOption( Key( 's', "bad-slice-statistics" ), &badSliceStatisticsFileName, "CSV file capturing the slice number and distance of bad slices." );
+   
     cl.AddOption( Key( 'o', "output-directory" ), &outputDir, "File system path for writing images with bad slices masked out (i.e., filled with a padding value)." );
     cl.EndGroup();
 
@@ -135,6 +141,17 @@ doMain
       }
     }
 
+  // Open file for reading 
+  if (badSliceStatisticsFileName) {
+    cmtk::FileUtils::RecursiveMkPrefixDir(badSliceStatisticsFileName);
+    if (badSliceStatisticsFile = fopen( badSliceStatisticsFileName, "w" )) 
+      {
+      fputs( "VolumeNumber,SliceNumber,SliceMean,SliceDistance,VolumFileName\n", badSliceStatisticsFile);
+      fflush( badSliceStatisticsFile );
+      }
+  }
+  
+
   // loop over all slices
   for ( int slice = 0; slice < dwiImages[0]->m_Dims[sliceAxis]; ++slice )
     {
@@ -166,6 +183,12 @@ doMain
       if ( distance > standardDeviations )
 	{
 	cmtk::DebugOutput( 2 ) << "Bad slice #" << slice << " in image #" << i << " mean=" << sliceMeans[i] << " distance=" << distance << " filename " << dwiImagePaths[i] << "\n";
+        // Print out info to file 
+        if (badSliceStatisticsFile)
+	   { 
+	   fprintf(badSliceStatisticsFile, "%d,%d,%f,%f,%s\n",int(i),slice, sliceMeans[i],distance,dwiImagePaths[i].c_str());
+	   fflush( badSliceStatisticsFile );
+	   }
 
 	// if we have an image output path given, mark bad slice using user-provided padding value
 	if ( outputDir )
@@ -180,6 +203,10 @@ doMain
 	}
       }    
     }
+
+
+  // Close text file 
+  if (badSliceStatisticsFile) fclose(badSliceStatisticsFile); 
 
   if ( outputDir )
     {
