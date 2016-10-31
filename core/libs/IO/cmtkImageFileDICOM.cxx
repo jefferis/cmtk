@@ -325,6 +325,8 @@ ImageFileDICOM::DoVendorTagsSiemens()
 	if ( (it != csaImageHeader.end()) && !it->second.empty() )
 	  {
 	  this->m_BValue = atof( it->second[0].c_str() );
+	  // 20161028 djk: make m_IsDWI is always true if the B_value field is defined
+	  this->m_IsDWI = true;
 	  }
 
 	it = csaImageHeader.find( "DiffusionGradientDirection" );	
