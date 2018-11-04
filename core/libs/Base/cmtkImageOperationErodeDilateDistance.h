@@ -36,63 +36,58 @@
 #include <Base/cmtkImageOperation.h>
 #include <Base/cmtkUniformVolumeMorphologicalOperators.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: erode or dilate by distance (rather than pixels).
 class ImageOperationErodeDilateDistance
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor:
-  ImageOperationErodeDilateDistance( const double distance, const bool multiLabels = false ) : m_Distance( distance ), m_MultiLabels( multiLabels ) {}
-  
+  ImageOperationErodeDilateDistance(const double distance,
+                                    const bool multiLabels = false)
+      : m_Distance(distance), m_MultiLabels(multiLabels) {}
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume )
-  {
-    if ( this->m_Distance < 0 )
-      {
-      cmtk::UniformVolumeMorphologicalOperators ops( volume );
-      if ( this->m_MultiLabels )
-	volume->SetData( ops.GetErodedByDistanceMultiLabels( -this->m_Distance ) );
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume) {
+    if (this->m_Distance < 0) {
+      cmtk::UniformVolumeMorphologicalOperators ops(volume);
+      if (this->m_MultiLabels)
+        volume->SetData(ops.GetErodedByDistanceMultiLabels(-this->m_Distance));
       else
-	volume->SetData( ops.GetErodedByDistance( -this->m_Distance ) );
+        volume->SetData(ops.GetErodedByDistance(-this->m_Distance));
+    } else {
+      if (this->m_Distance > 0) {
+        cmtk::UniformVolumeMorphologicalOperators ops(volume);
+        volume->SetData(ops.GetDilatedByDistance(this->m_Distance));
       }
-    else
-      {
-      if ( this->m_Distance > 0 )
-	{
-	cmtk::UniformVolumeMorphologicalOperators ops( volume );
-	volume->SetData( ops.GetDilatedByDistance( this->m_Distance ) );
-	}
-      }
+    }
     return volume;
   }
 
   /// Create new dilation operation.
-  static void NewDilate( const double distance )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( distance ) ) );
+  static void NewDilate(const double distance) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationErodeDilateDistance(distance)));
   }
 
   /// Create new erosion operation.
-  static void NewErode( const double distance )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( -distance ) ) );
+  static void NewErode(const double distance) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationErodeDilateDistance(-distance)));
   }
-  
+
   /// Create new erosion operation for multi-label; data.
-  static void NewErodeMultiLabels( const double distance )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilateDistance( -distance, true ) ) );
+  static void NewErodeMultiLabels(const double distance) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationErodeDilateDistance(-distance, true)));
   }
-  
-private:
+
+ private:
   /// Distance of erosion (if negative) or dilation (if positive).
   double m_Distance;
 
@@ -102,6 +97,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationErodeDilateDistance_h_included_
+#endif  // #ifndef __cmtkImageOperationErodeDilateDistance_h_included_

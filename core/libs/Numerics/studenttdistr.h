@@ -74,12 +74,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ap.h"
 
 #include "gammaf.h"
-#include "normaldistr.h"
 #include "ibetaf.h"
+#include "normaldistr.h"
 
-namespace
-alglib
-{
+namespace alglib {
 
 /*************************************************************************
 Student's t distribution
@@ -124,7 +122,6 @@ Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
 ap::real_value_type studenttdistribution(int k, ap::real_value_type t);
 
-
-} // namespace alglib
+}  // namespace alglib
 
 #endif

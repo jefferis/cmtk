@@ -35,41 +35,43 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Class for computing Hausdorff distance between two label images.
- * Distance computation is implemented via the Euclidean distance maps of the two images.
+ * Distance computation is implemented via the Euclidean distance maps of the
+ * two images.
  */
-class HausdorffDistance
-{
-public:
+class HausdorffDistance {
+ public:
   /// This class.
   typedef HausdorffDistance Self;
 
   /// Constructor.
-  HausdorffDistance( UniformVolume::SmartConstPtr& image0, UniformVolume::SmartConstPtr& image1 );
+  HausdorffDistance(UniformVolume::SmartConstPtr &image0,
+                    UniformVolume::SmartConstPtr &image1);
 
   /// Get distance of two binary label maps.
   Types::Coordinate GetBinary() const;
 
-private:
+ private:
   /// First image.
   UniformVolume::SmartConstPtr m_Image0;
 
   /// Second image.
   UniformVolume::SmartConstPtr m_Image1;
 
-  /// Utility function: compute "half" (i.e., one direction) of the distance term from an image (treated as binary map) and the distance map of the other image.
-  static Types::Coordinate HalfDistanceBinary( const UniformVolume& image, const UniformVolume& dmap );
+  /// Utility function: compute "half" (i.e., one direction) of the distance
+  /// term from an image (treated as binary map) and the distance map of the
+  /// other image.
+  static Types::Coordinate HalfDistanceBinary(const UniformVolume &image,
+                                              const UniformVolume &dmap);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkHausdorffDistance_h_included_
+#endif  // #ifndef __cmtkHausdorffDistance_h_included_

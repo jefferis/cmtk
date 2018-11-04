@@ -30,17 +30,15 @@
 
 #include "cmtkImageOperationRevert.h"
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationRevert::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationRevert::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
   const size_t nPixels = volume->GetNumberOfPixels();
-  for ( size_t n = 0; n < nPixels; ++n )
-    {
-    if ( volume->GetDataAt( n ) )
-      volume->SetDataAt( 0, n );
+  for (size_t n = 0; n < nPixels; ++n) {
+    if (volume->GetDataAt(n))
+      volume->SetDataAt(0, n);
     else
-      volume->SetDataAt( 1, n );
-    }
-  
+      volume->SetDataAt(1, n);
+  }
+
   return volume;
 }

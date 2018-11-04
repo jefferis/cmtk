@@ -35,125 +35,102 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <limits.h>
 #include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
-CompressedStream::Pipe::Pipe( const std::string& filename, const char* command )
-{
+CompressedStream::Pipe::Pipe(const std::string &filename, const char *command) {
   char cmd[PATH_MAX];
 
-#ifndef _MSC_VER  
-  if ( static_cast<size_t>( snprintf( cmd, sizeof( cmd ), command, filename.c_str() ) ) >= sizeof( cmd ) )
-    {
-    StdErr << "WARNING: length of path exceeds system PATH_MAX in CompressedStream::OpenDecompressionPipe and will be truncated.\n";
-    }
+#ifndef _MSC_VER
+  if (static_cast<size_t>(snprintf(cmd, sizeof(cmd), command,
+                                   filename.c_str())) >= sizeof(cmd)) {
+    StdErr
+        << "WARNING: length of path exceeds system PATH_MAX in "
+           "CompressedStream::OpenDecompressionPipe and will be truncated.\n";
+  }
   errno = 0;
-  
-  this->m_File = popen( cmd, CMTK_FILE_MODE );
-  if ( !this->m_File ) 
-    {
-    fprintf( stderr, "ERROR: popen(\"%s\") returned NULL (errno=%d).\n", cmd, errno );
-    perror( "System message" );
+
+  this->m_File = popen(cmd, CMTK_FILE_MODE);
+  if (!this->m_File) {
+    fprintf(stderr, "ERROR: popen(\"%s\") returned NULL (errno=%d).\n", cmd,
+            errno);
+    perror("System message");
     throw 0;
-    } 
+  }
 #else
   this->m_TempName[0] = 0;
-  if ( snprintf( cmd, sizeof( cmd ), command, filename, tmpnam( this->m_TempName) ) >= sizeof( cmd ) )
-    {
-    StdErr << "WARNING: length of path exceeds system PATH_MAX in CompressedStream::OpenDecompressionPipe and will be truncated.\n";
-    }
-  
+  if (snprintf(cmd, sizeof(cmd), command, filename, tmpnam(this->m_TempName)) >=
+      sizeof(cmd)) {
+    StdErr
+        << "WARNING: length of path exceeds system PATH_MAX in "
+           "CompressedStream::OpenDecompressionPipe and will be truncated.\n";
+  }
+
   _flushall();
-  int sysReturn = system( cmd );
-  
-  if ( sysReturn ) 
-    {
-    fprintf( stderr, "Command %s returned %d\n", cmd, sysReturn );
-    fprintf( stderr, "Errno = %d\n", errno );
-    }
-  
-  this->m_File = fopen( this->m_TempName, CMTK_FILE_MODE);
-  
-  if ( !this->m_File )
-    {
+  int sysReturn = system(cmd);
+
+  if (sysReturn) {
+    fprintf(stderr, "Command %s returned %d\n", cmd, sysReturn);
+    fprintf(stderr, "Errno = %d\n", errno);
+  }
+
+  this->m_File = fopen(this->m_TempName, CMTK_FILE_MODE);
+
+  if (!this->m_File) {
     throw 0;
-    }
+  }
 #endif
 
   this->m_BytesRead = 0;
 }
 
-CompressedStream::Pipe::~Pipe()
-{
-  this->Close();
-}
+CompressedStream::Pipe::~Pipe() { this->Close(); }
 
-void 
-CompressedStream::Pipe::Close()
-{
+void CompressedStream::Pipe::Close() {
 #ifndef _MSC_VER
-  if ( this->m_File )
-    {
-    pclose( this->m_File );
+  if (this->m_File) {
+    pclose(this->m_File);
     this->m_File = NULL;
-    }
+  }
 #else
-  if ( this->m_TempName[0] )
-    {
-    remove( this->m_TempName );
+  if (this->m_TempName[0]) {
+    remove(this->m_TempName);
     this->m_TempName[0] = 0;
-    }
-#endif // # ifndef _MSC_VER
+  }
+#endif  // # ifndef _MSC_VER
 }
 
-void
-CompressedStream::Pipe::Rewind() 
-{
+void CompressedStream::Pipe::Rewind() {
   StdErr << "CompressedStream::Pipe::Rewind() is not implemented\n";
-  throw ExitException( 1 );
+  throw ExitException(1);
 }
 
-size_t
-CompressedStream::Pipe::Read( void *data, size_t size, size_t count ) 
-{
-  const size_t result = fread( data, size, count, this->m_File );
+size_t CompressedStream::Pipe::Read(void *data, size_t size, size_t count) {
+  const size_t result = fread(data, size, count, this->m_File);
   this->m_BytesRead += result;
-  return result / size;  
+  return result / size;
 }
 
-bool
-CompressedStream::Pipe::Get ( char &c)
-{
-  const int data = fgetc( this->m_File );
-  if ( data != EOF ) 
-    {
-    c=(char) data;
+bool CompressedStream::Pipe::Get(char &c) {
+  const int data = fgetc(this->m_File);
+  if (data != EOF) {
+    c = (char)data;
     ++this->m_BytesRead;
     return true;
-    }
+  }
 
   return false;
 }
 
-int
-CompressedStream::Pipe::Tell () const 
-{
-  return this->m_BytesRead;
-}
+int CompressedStream::Pipe::Tell() const { return this->m_BytesRead; }
 
-bool
-CompressedStream::Pipe::Feof () const 
-{
-  return (feof( this->m_File ) != 0);
-}
+bool CompressedStream::Pipe::Feof() const { return (feof(this->m_File) != 0); }
 
-} // namespace cmtk
+}  // namespace cmtk

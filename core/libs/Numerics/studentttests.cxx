@@ -61,12 +61,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "studentttests.h"
 
-namespace
-alglib
-{
+namespace alglib {
 
 /*************************************************************************
 Two-sample pooled test
@@ -105,79 +102,71 @@ Output parameters:
   -- ALGLIB --
      Copyright 18.09.2006 by Bochkanov Sergey
 *************************************************************************/
-void studentttest2(const ap::real_1d_array& x,
-     int n,
-     const ap::real_1d_array& y,
-     int m,
-     ap::real_value_type& t,
-     ap::real_value_type& bothtails,
-     ap::real_value_type& lefttail,
-     ap::real_value_type& righttail)
-{
-    int i;
-    ap::real_value_type xmean;
-    ap::real_value_type ymean;
-    ap::real_value_type s;
-    ap::real_value_type p;
+void studentttest2(const ap::real_1d_array &x, int n,
+                   const ap::real_1d_array &y, int m, ap::real_value_type &t,
+                   ap::real_value_type &bothtails,
+                   ap::real_value_type &lefttail,
+                   ap::real_value_type &righttail) {
+  int i;
+  ap::real_value_type xmean;
+  ap::real_value_type ymean;
+  ap::real_value_type s;
+  ap::real_value_type p;
 
-    if( n<=1||m<=1 )
-    {
-        bothtails = 1.0;
-        lefttail = 1.0;
-        righttail = 1.0;
-        return;
-    }
-    
-    //
-    // Mean
-    //
-    xmean = 0;
-    for(i = 0; i <= n-1; i++)
-    {
-        xmean = xmean+x(i);
-    }
-    xmean = xmean/n;
-    ymean = 0;
-    for(i = 0; i <= m-1; i++)
-    {
-        ymean = ymean+y(i);
-    }
-    ymean = ymean/m;
-    
-    //
-    // S
-    //
-    s = 0;
-    for(i = 0; i <= n-1; i++)
-    {
-        s = s+ap::sqr(x(i)-xmean);
-    }
-    for(i = 0; i <= m-1; i++)
-    {
-        s = s+ap::sqr(y(i)-ymean);
-    }
-    s = sqrt(s*(ap::real_value_type(1)/ap::real_value_type(n)+ap::real_value_type(1)/ap::real_value_type(m))/(n+m-2));
-    if( s==0 )
-    {
-        bothtails = 1.0;
-        lefttail = 1.0;
-        righttail = 1.0;
-        return;
-    }
-    
-    //
-    // Statistic (t)
-    //
-    t = (xmean-ymean)/s;
-    if ( s < 0 )
-      {
-      // stop here
-      }
+  if (n <= 1 || m <= 1) {
+    bothtails = 1.0;
+    lefttail = 1.0;
+    righttail = 1.0;
+    return;
+  }
 
-    p = studenttdistribution(n+m-2, t);
-    bothtails = 2*ap::minreal(p, 1-p);
-    lefttail = p;
-    righttail = 1-p;
+  //
+  // Mean
+  //
+  xmean = 0;
+  for (i = 0; i <= n - 1; i++) {
+    xmean = xmean + x(i);
+  }
+  xmean = xmean / n;
+  ymean = 0;
+  for (i = 0; i <= m - 1; i++) {
+    ymean = ymean + y(i);
+  }
+  ymean = ymean / m;
+
+  //
+  // S
+  //
+  s = 0;
+  for (i = 0; i <= n - 1; i++) {
+    s = s + ap::sqr(x(i) - xmean);
+  }
+  for (i = 0; i <= m - 1; i++) {
+    s = s + ap::sqr(y(i) - ymean);
+  }
+  s = sqrt(s *
+           (ap::real_value_type(1) / ap::real_value_type(n) +
+            ap::real_value_type(1) / ap::real_value_type(m)) /
+           (n + m - 2));
+  if (s == 0) {
+    bothtails = 1.0;
+    lefttail = 1.0;
+    righttail = 1.0;
+    return;
+  }
+
+  //
+  // Statistic (t)
+  //
+  t = (xmean - ymean) / s;
+  if (s < 0) {
+    // stop here
+  }
+
+  p = studenttdistribution(n + m - 2, t);
+  bothtails = 2 * ap::minreal(p, 1 - p);
+  lefttail = p;
+  righttail = 1 - p;
 }
 
-} // namespace alglib
+}  // namespace alglib

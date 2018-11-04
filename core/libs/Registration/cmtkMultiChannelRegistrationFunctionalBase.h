@@ -40,27 +40,24 @@
 #include <Base/cmtkUniformVolume.h>
 #include <System/cmtkSmartPtr.h>
 
-#include <Base/cmtkUniformVolumeInterpolator.h>
 #include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for multi-channel registration functionals. */
 class MultiChannelRegistrationFunctionalBase :
-  /** Inherit functional interface. */
-  public Functional
-{
-public:
+    /** Inherit functional interface. */
+    public Functional {
+ public:
   /** This class. */
   typedef MultiChannelRegistrationFunctionalBase Self;
-  
+
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
 
@@ -68,68 +65,73 @@ public:
   typedef Functional Superclass;
 
   /** Default constructor. */
-  MultiChannelRegistrationFunctionalBase() : m_NumberOfChannels( 0 ), m_NormalizedMI( false ) {}
-  
+  MultiChannelRegistrationFunctionalBase()
+      : m_NumberOfChannels(0), m_NormalizedMI(false) {}
+
   /** Destructor: free all converted image arrays. */
-  virtual ~MultiChannelRegistrationFunctionalBase()
-  {
+  virtual ~MultiChannelRegistrationFunctionalBase() {
     this->ClearAllChannels();
   }
 
   /** Set flag for normalized vs. standard MI */
-  void SetNormalizedMI( const bool nmi = true )
-  {
-    this->m_NormalizedMI = nmi;
-  }
+  void SetNormalizedMI(const bool nmi = true) { this->m_NormalizedMI = nmi; }
 
   /** Reset channels, clear all images. */
   virtual void ClearAllChannels();
 
   /** Add reference channel. */
-  virtual void AddReferenceChannel( UniformVolume::SmartPtr& channel );
+  virtual void AddReferenceChannel(UniformVolume::SmartPtr &channel);
 
   /** Add reference channels from stl container. */
   template <class ForwardIterator>
-  void AddReferenceChannels( ForwardIterator first, ForwardIterator last )
-  {
-    while ( first != last )
-      {
-      this->AddReferenceChannel( *first );
+  void AddReferenceChannels(ForwardIterator first, ForwardIterator last) {
+    while (first != last) {
+      this->AddReferenceChannel(*first);
       ++first;
-      }
+    }
   }
 
   /** Get number of reference channels. */
-  size_t GetNumberOfReferenceChannels() const { return this->m_ReferenceChannels.size(); }
+  size_t GetNumberOfReferenceChannels() const {
+    return this->m_ReferenceChannels.size();
+  }
 
   /** Get a reference channel image. */
-  UniformVolume::SmartPtr& GetReferenceChannel( const size_t idx ) { return this->m_ReferenceChannels[idx]; }
+  UniformVolume::SmartPtr &GetReferenceChannel(const size_t idx) {
+    return this->m_ReferenceChannels[idx];
+  }
 
   /** Get constant pointer to reference channel image. */
-  const UniformVolume* GetReferenceChannel( const size_t idx ) const { return this->m_ReferenceChannels[idx]; }
+  const UniformVolume *GetReferenceChannel(const size_t idx) const {
+    return this->m_ReferenceChannels[idx];
+  }
 
   /** Add floating channel. */
-  virtual void AddFloatingChannel( UniformVolume::SmartPtr& channel );
+  virtual void AddFloatingChannel(UniformVolume::SmartPtr &channel);
 
   /** Add floating channels from stl container. */
   template <class ForwardIterator>
-  void AddFloatingChannels( ForwardIterator first, ForwardIterator last )
-  {
-    while ( first != last )
-      {
-      this->AddFloatingChannel( *first );
+  void AddFloatingChannels(ForwardIterator first, ForwardIterator last) {
+    while (first != last) {
+      this->AddFloatingChannel(*first);
       ++first;
-      }
+    }
   }
 
   /** Get number of floating channels. */
-  size_t GetNumberOfFloatingChannels() const { return this->m_FloatingChannels.size(); }
+  size_t GetNumberOfFloatingChannels() const {
+    return this->m_FloatingChannels.size();
+  }
 
   /** Get a floating channel image. */
-  UniformVolume::SmartPtr& GetFloatingChannel( const size_t idx ) { return this->m_FloatingChannels[idx]; }
+  UniformVolume::SmartPtr &GetFloatingChannel(const size_t idx) {
+    return this->m_FloatingChannels[idx];
+  }
 
   /** Get constant pointer to floating channel image. */
-  const UniformVolume* GetFloatingChannel( const size_t idx ) const { return this->m_FloatingChannels[idx]; }
+  const UniformVolume *GetFloatingChannel(const size_t idx) const {
+    return this->m_FloatingChannels[idx];
+  }
 
   /** Vector of reference images. */
   std::vector<UniformVolume::SmartPtr> m_ReferenceChannels;
@@ -137,8 +139,9 @@ public:
   /** Vector of floating images. */
   std::vector<UniformVolume::SmartPtr> m_FloatingChannels;
 
-protected:
-  /** Total number of channels. This is the sum of the floating and reference channel vector sizes. */
+ protected:
+  /** Total number of channels. This is the sum of the floating and reference
+   * channel vector sizes. */
   size_t m_NumberOfChannels;
 
   /// Grid dimensions of the reference volume.
@@ -152,7 +155,7 @@ protected:
 
   /// Rectangular crop region in the reference volume.
   DataGrid::RegionType m_ReferenceCropRegion;
-  
+
   /// Grid dimensions of the floating volume.
   DataGrid::IndexType m_FloatingDims;
 
@@ -164,21 +167,22 @@ protected:
 
   /// Coordinates of the floating image cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegion;
- 
+
   /** Update all transformation-related data after init or refine. */
   virtual void NewReferenceChannelGeometry() {}
 
-protected:
+ protected:
   /** Flag for normalized vs. standard mutual information. */
   bool m_NormalizedMI;
 
-private:
-  /** Verify size and geometry of newly added image channels against already added channels. */
-  void VerifyImageSize( const UniformVolume* imgA, const UniformVolume* imgB );
+ private:
+  /** Verify size and geometry of newly added image channels against already
+   * added channels. */
+  void VerifyImageSize(const UniformVolume *imgA, const UniformVolume *imgB);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkMultiChannelRegistrationFunctionalBase_h_included_
+#endif  // #ifndef __cmtkMultiChannelRegistrationFunctionalBase_h_included_

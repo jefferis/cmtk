@@ -32,18 +32,13 @@
 
 #include "cmtkVoxelMatchingMeanSquaredDifference.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
-( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
-  VoxelMatchingMetricShort( refVolume, fltVolume ),
-  Sum( 0.0 ),
-  Samples( 0 )
-{}
+VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference(
+    const UniformVolume *refVolume, const UniformVolume *fltVolume)
+    : VoxelMatchingMetricShort(refVolume, fltVolume), Sum(0.0), Samples(0) {}
 
-} // namespace cmtk
+}  // namespace cmtk

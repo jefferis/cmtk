@@ -33,29 +33,24 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkStackBacktrace.h>
-namespace cmtk { static StackBacktrace StackBacktraceInstance; }
+namespace cmtk {
+static StackBacktrace StackBacktraceInstance;
+}
 
 #include <System/cmtkCommandLine.h>
 
 #include "cmtkFusionViewApplication.h"
 
-int
-main( int argc, char* argv[] )
-{
+int main(int argc, char *argv[]) {
   int returnCode = 0;
-  try
-    {
-    cmtk::FusionViewApplication app( argc, argv );
+  try {
+    cmtk::FusionViewApplication app(argc, argv);
     returnCode = app.exec();
-    }
-  catch ( const cmtk::CommandLine::Exception& ex )
-    {
+  } catch (const cmtk::CommandLine::Exception &ex) {
     cmtk::StdErr << ex << "\n";
     returnCode = 1;
-    }
-  catch ( const cmtk::ExitException& ex )
-    {
+  } catch (const cmtk::ExitException &ex) {
     returnCode = ex.ExitCode();
-    }
+  }
   return returnCode;
 }

@@ -67,7 +67,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "tridiagonal.h"
 
 /*************************************************************************
@@ -139,152 +138,132 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      October 31, 1992
 *************************************************************************/
-void smatrixtd(ap::real_2d_array& a,
-     int n,
-     bool isupper,
-     ap::real_1d_array& tau,
-     ap::real_1d_array& d,
-     ap::real_1d_array& e)
-{
-    int i;
-    ap::real_value_type alpha;
-    ap::real_value_type taui;
-    ap::real_value_type v;
-    ap::real_1d_array t;
-    ap::real_1d_array t2;
-    ap::real_1d_array t3;
+void smatrixtd(ap::real_2d_array &a, int n, bool isupper,
+               ap::real_1d_array &tau, ap::real_1d_array &d,
+               ap::real_1d_array &e) {
+  int i;
+  ap::real_value_type alpha;
+  ap::real_value_type taui;
+  ap::real_value_type v;
+  ap::real_1d_array t;
+  ap::real_1d_array t2;
+  ap::real_1d_array t3;
 
-    if( n<=0 )
-    {
-        return;
-    }
-    t.setbounds(1, n);
-    t2.setbounds(1, n);
-    t3.setbounds(1, n);
-    if( n>1 )
-    {
-        tau.setbounds(0, n-2);
-    }
-    d.setbounds(0, n-1);
-    if( n>1 )
-    {
-        e.setbounds(0, n-2);
-    }
-    if( isupper )
-    {
-        
+  if (n <= 0) {
+    return;
+  }
+  t.setbounds(1, n);
+  t2.setbounds(1, n);
+  t3.setbounds(1, n);
+  if (n > 1) {
+    tau.setbounds(0, n - 2);
+  }
+  d.setbounds(0, n - 1);
+  if (n > 1) {
+    e.setbounds(0, n - 2);
+  }
+  if (isupper) {
+    //
+    // Reduce the upper triangle of A
+    //
+    for (i = n - 2; i >= 0; i--) {
+      //
+      // Generate elementary reflector H() = E - tau * v * v'
+      //
+      if (i >= 1) {
+        ap::vmove(t.getvector(2, i + 1), a.getcolumn(i + 1, 0, i - 1));
+      }
+      t(1) = a(i, i + 1);
+      generatereflection(t, i + 1, taui);
+      if (i >= 1) {
+        ap::vmove(a.getcolumn(i + 1, 0, i - 1), t.getvector(2, i + 1));
+      }
+      a(i, i + 1) = t(1);
+      e(i) = a(i, i + 1);
+      if (taui != 0) {
         //
-        // Reduce the upper triangle of A
+        // Apply H from both sides to A
         //
-        for(i = n-2; i >= 0; i--)
-        {
-            
-            //
-            // Generate elementary reflector H() = E - tau * v * v'
-            //
-            if( i>=1 )
-            {
-                ap::vmove(t.getvector(2, i+1), a.getcolumn(i+1, 0, i-1));
-            }
-            t(1) = a(i,i+1);
-            generatereflection(t, i+1, taui);
-            if( i>=1 )
-            {
-                ap::vmove(a.getcolumn(i+1, 0, i-1), t.getvector(2, i+1));
-            }
-            a(i,i+1) = t(1);
-            e(i) = a(i,i+1);
-            if( taui!=0 )
-            {
-                
-                //
-                // Apply H from both sides to A
-                //
-                a(i,i+1) = 1;
-                
-                //
-                // Compute  x := tau * A * v  storing x in TAU
-                //
-                ap::vmove(t.getvector(1, i+1), a.getcolumn(i+1, 0, i));
-                symmetricmatrixvectormultiply(a, isupper, 0, i, t, taui, t3);
-                ap::vmove(&tau(0), &t3(1), ap::vlen(0,i));
-                
-                //
-                // Compute  w := x - 1/2 * tau * (x'*v) * v
-                //
-                v = ap::vdotproduct(tau.getvector(0, i), a.getcolumn(i+1, 0, i));
-                alpha = -0.5*taui*v;
-                ap::vadd(tau.getvector(0, i), a.getcolumn(i+1, 0, i), alpha);
-                
-                //
-                // Apply the transformation as a rank-2 update:
-                //    A := A - v * w' - w * v'
-                //
-                ap::vmove(t.getvector(1, i+1), a.getcolumn(i+1, 0, i));
-                ap::vmove(&t3(1), &tau(0), ap::vlen(1,i+1));
-                symmetricrank2update(a, isupper, 0, i, t, t3, t2, ap::real_value_type(-1));
-                a(i,i+1) = e(i);
-            }
-            d(i+1) = a(i+1,i+1);
-            tau(i) = taui;
-        }
-        d(0) = a(0,0);
+        a(i, i + 1) = 1;
+
+        //
+        // Compute  x := tau * A * v  storing x in TAU
+        //
+        ap::vmove(t.getvector(1, i + 1), a.getcolumn(i + 1, 0, i));
+        symmetricmatrixvectormultiply(a, isupper, 0, i, t, taui, t3);
+        ap::vmove(&tau(0), &t3(1), ap::vlen(0, i));
+
+        //
+        // Compute  w := x - 1/2 * tau * (x'*v) * v
+        //
+        v = ap::vdotproduct(tau.getvector(0, i), a.getcolumn(i + 1, 0, i));
+        alpha = -0.5 * taui * v;
+        ap::vadd(tau.getvector(0, i), a.getcolumn(i + 1, 0, i), alpha);
+
+        //
+        // Apply the transformation as a rank-2 update:
+        //    A := A - v * w' - w * v'
+        //
+        ap::vmove(t.getvector(1, i + 1), a.getcolumn(i + 1, 0, i));
+        ap::vmove(&t3(1), &tau(0), ap::vlen(1, i + 1));
+        symmetricrank2update(a, isupper, 0, i, t, t3, t2,
+                             ap::real_value_type(-1));
+        a(i, i + 1) = e(i);
+      }
+      d(i + 1) = a(i + 1, i + 1);
+      tau(i) = taui;
     }
-    else
-    {
-        
+    d(0) = a(0, 0);
+  } else {
+    //
+    // Reduce the lower triangle of A
+    //
+    for (i = 0; i <= n - 2; i++) {
+      //
+      // Generate elementary reflector H = E - tau * v * v'
+      //
+      ap::vmove(t.getvector(1, n - i - 1), a.getcolumn(i, i + 1, n - 1));
+      generatereflection(t, n - i - 1, taui);
+      ap::vmove(a.getcolumn(i, i + 1, n - 1), t.getvector(1, n - i - 1));
+      e(i) = a(i + 1, i);
+      if (taui != 0) {
         //
-        // Reduce the lower triangle of A
+        // Apply H from both sides to A
         //
-        for(i = 0; i <= n-2; i++)
-        {
-            
-            //
-            // Generate elementary reflector H = E - tau * v * v'
-            //
-            ap::vmove(t.getvector(1, n-i-1), a.getcolumn(i, i+1, n-1));
-            generatereflection(t, n-i-1, taui);
-            ap::vmove(a.getcolumn(i, i+1, n-1), t.getvector(1, n-i-1));
-            e(i) = a(i+1,i);
-            if( taui!=0 )
-            {
-                
-                //
-                // Apply H from both sides to A
-                //
-                a(i+1,i) = 1;
-                
-                //
-                // Compute  x := tau * A * v  storing y in TAU
-                //
-                ap::vmove(t.getvector(1, n-i-1), a.getcolumn(i, i+1, n-1));
-                symmetricmatrixvectormultiply(a, isupper, i+1, n-1, t, taui, t2);
-                ap::vmove(&tau(i), &t2(1), ap::vlen(i,n-2));
-                
-                //
-                // Compute  w := x - 1/2 * tau * (x'*v) * v
-                //
-                v = ap::vdotproduct(tau.getvector(i, n-2), a.getcolumn(i, i+1, n-1));
-                alpha = -0.5*taui*v;
-                ap::vadd(tau.getvector(i, n-2), a.getcolumn(i, i+1, n-1), alpha);
-                
-                //
-                // Apply the transformation as a rank-2 update:
-                //     A := A - v * w' - w * v'
-                //
-                //
-                ap::vmove(t.getvector(1, n-i-1), a.getcolumn(i, i+1, n-1));
-                ap::vmove(&t2(1), &tau(i), ap::vlen(1,n-i-1));
-                symmetricrank2update(a, isupper, i+1, n-1, t, t2, t3, ap::real_value_type(-1));
-                a(i+1,i) = e(i);
-            }
-            d(i) = a(i,i);
-            tau(i) = taui;
-        }
-        d(n-1) = a(n-1,n-1);
+        a(i + 1, i) = 1;
+
+        //
+        // Compute  x := tau * A * v  storing y in TAU
+        //
+        ap::vmove(t.getvector(1, n - i - 1), a.getcolumn(i, i + 1, n - 1));
+        symmetricmatrixvectormultiply(a, isupper, i + 1, n - 1, t, taui, t2);
+        ap::vmove(&tau(i), &t2(1), ap::vlen(i, n - 2));
+
+        //
+        // Compute  w := x - 1/2 * tau * (x'*v) * v
+        //
+        v = ap::vdotproduct(tau.getvector(i, n - 2),
+                            a.getcolumn(i, i + 1, n - 1));
+        alpha = -0.5 * taui * v;
+        ap::vadd(tau.getvector(i, n - 2), a.getcolumn(i, i + 1, n - 1), alpha);
+
+        //
+        // Apply the transformation as a rank-2 update:
+        //     A := A - v * w' - w * v'
+        //
+        //
+        ap::vmove(t.getvector(1, n - i - 1), a.getcolumn(i, i + 1, n - 1));
+        ap::vmove(&t2(1), &tau(i), ap::vlen(1, n - i - 1));
+        symmetricrank2update(a, isupper, i + 1, n - 1, t, t2, t3,
+                             ap::real_value_type(-1));
+        a(i + 1, i) = e(i);
+      }
+      d(i) = a(i, i);
+      tau(i) = taui;
     }
+    d(n - 1) = a(n - 1, n - 1);
+  }
 }
-
 
 /*************************************************************************
 Unpacking matrix Q which reduces symmetric matrix to a tridiagonal
@@ -303,70 +282,54 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-void smatrixtdunpackq(const ap::real_2d_array& a,
-     const int& n,
-     const bool& isupper,
-     const ap::real_1d_array& tau,
-     ap::real_2d_array& q)
-{
-    int i;
-    int j;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
+void smatrixtdunpackq(const ap::real_2d_array &a, const int &n,
+                      const bool &isupper, const ap::real_1d_array &tau,
+                      ap::real_2d_array &q) {
+  int i;
+  int j;
+  ap::real_1d_array v;
+  ap::real_1d_array work;
 
-    if( n==0 )
-    {
-        return;
+  if (n == 0) {
+    return;
+  }
+
+  //
+  // init
+  //
+  q.setbounds(0, n - 1, 0, n - 1);
+  v.setbounds(1, n);
+  work.setbounds(0, n - 1);
+  for (i = 0; i <= n - 1; i++) {
+    for (j = 0; j <= n - 1; j++) {
+      if (i == j) {
+        q(i, j) = 1;
+      } else {
+        q(i, j) = 0;
+      }
     }
-    
-    //
-    // init
-    //
-    q.setbounds(0, n-1, 0, n-1);
-    v.setbounds(1, n);
-    work.setbounds(0, n-1);
-    for(i = 0; i <= n-1; i++)
-    {
-        for(j = 0; j <= n-1; j++)
-        {
-            if( i==j )
-            {
-                q(i,j) = 1;
-            }
-            else
-            {
-                q(i,j) = 0;
-            }
-        }
+  }
+
+  //
+  // unpack Q
+  //
+  if (isupper) {
+    for (i = 0; i <= n - 2; i++) {
+      //
+      // Apply H(i)
+      //
+      ap::vmove(v.getvector(1, i + 1), a.getcolumn(i + 1, 0, i));
+      v(i + 1) = 1;
+      applyreflectionfromtheleft(q, tau(i), v, 0, i, 0, n - 1, work);
     }
-    
-    //
-    // unpack Q
-    //
-    if( isupper )
-    {
-        for(i = 0; i <= n-2; i++)
-        {
-            
-            //
-            // Apply H(i)
-            //
-            ap::vmove(v.getvector(1, i+1), a.getcolumn(i+1, 0, i));
-            v(i+1) = 1;
-            applyreflectionfromtheleft(q, tau(i), v, 0, i, 0, n-1, work);
-        }
+  } else {
+    for (i = n - 2; i >= 0; i--) {
+      //
+      // Apply H(i)
+      //
+      ap::vmove(v.getvector(1, n - i - 1), a.getcolumn(i, i + 1, n - 1));
+      v(1) = 1;
+      applyreflectionfromtheleft(q, tau(i), v, i + 1, n - 1, 0, n - 1, work);
     }
-    else
-    {
-        for(i = n-2; i >= 0; i--)
-        {
-            
-            //
-            // Apply H(i)
-            //
-            ap::vmove(v.getvector(1, n-i-1), a.getcolumn(i, i+1, n-1));
-            v(1) = 1;
-            applyreflectionfromtheleft(q, tau(i), v, i+1, n-1, 0, n-1, work);
-        }
-    }
+  }
 }

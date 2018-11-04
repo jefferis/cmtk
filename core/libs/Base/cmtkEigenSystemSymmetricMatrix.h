@@ -40,51 +40,43 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
-/** Compute the eigenvectors and eigenvalues of a symmetric, square matrix of arbitrary size.
-  */  
-template<class TFloat>
-class EigenSystemSymmetricMatrix
-{
-public:
+/** Compute the eigenvectors and eigenvalues of a symmetric, square matrix of
+ * arbitrary size.
+ */
+template <class TFloat>
+class EigenSystemSymmetricMatrix {
+ public:
   /// This class.
   typedef EigenSystemSymmetricMatrix<TFloat> Self;
 
   /// Constructor: compute eigensystem of given matrix.
   EigenSystemSymmetricMatrix( const SymmetricMatrix<TFloat>& matrix /*!< Symmetric  matrix for which we are computing the eigenvalues and eigenvectors.*/ );
-  
+
   /// Get n-th eigenvector.
-  const Vector<TFloat> GetNthEigenvector( const size_t n ) const
-  {
-    return Vector<TFloat>( this->m_Eigenvectors[n] );
+  const Vector<TFloat> GetNthEigenvector(const size_t n) const {
+    return Vector<TFloat>(this->m_Eigenvectors[n]);
   }
-  
+
   /// Get n-th eigenvector.
-  const TFloat EigenvectorElement( const size_t n, const size_t i ) const
-  {
+  const TFloat EigenvectorElement(const size_t n, const size_t i) const {
     return this->m_Eigenvectors[n][i];
   }
-  
+
   /// Get n-th eigenvalue.
-  TFloat GetNthEigenvalue( const size_t n ) const
-  {
+  TFloat GetNthEigenvalue(const size_t n) const {
     return this->m_Eigenvalues[n];
   }
 
   /// Get vector of eigenvalues.
-  std::vector<TFloat> GetEigenvalues() const
-  {
-    return this->m_Eigenvalues;
-  }
+  std::vector<TFloat> GetEigenvalues() const { return this->m_Eigenvalues; }
 
-private:
+ private:
   /// Eigenvector matrix.
-  std::vector< Vector<TFloat> > m_Eigenvectors;
+  std::vector<Vector<TFloat>> m_Eigenvectors;
 
   /// Eigenvalues vector.
   std::vector<TFloat> m_Eigenvalues;
@@ -92,8 +84,8 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkEigenSystemSymmetricMatrix.txx"
 
-#endif // #ifndef __cmtkEigenSystemSymmetricMatrix_h_included_
+#endif  // #ifndef __cmtkEigenSystemSymmetricMatrix_h_included_

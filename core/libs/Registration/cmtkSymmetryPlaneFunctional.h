@@ -36,14 +36,12 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkFunctional.h>
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkParametricPlane.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <Registration/cmtkVoxelMatchingNormMutInf.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -51,14 +49,13 @@ cmtk
 /** Functional for finding a symmetry plane in 3-D volumes.
  */
 class SymmetryPlaneFunctional :
-  /// Inherit functional interface.
-  public Functional 
-{
-protected:
+    /// Inherit functional interface.
+    public Functional {
+ protected:
   /// Volume image.
   UniformVolume::SmartPtr m_Volume;
 
-public:
+ public:
   /// This class.
   typedef SymmetryPlaneFunctional Self;
 
@@ -69,32 +66,28 @@ public:
   typedef Functional Superclass;
 
   /// Constructor.
-  SymmetryPlaneFunctional( UniformVolume::SmartPtr& volume );
+  SymmetryPlaneFunctional(UniformVolume::SmartPtr &volume);
 
   /// Constructor with value range limits.
-  SymmetryPlaneFunctional( UniformVolume::SmartPtr& volume, const Types::DataItemRange& valueRange );
+  SymmetryPlaneFunctional(UniformVolume::SmartPtr &volume,
+                          const Types::DataItemRange &valueRange);
 
   /// Destructor.
   virtual ~SymmetryPlaneFunctional() {}
 
   /// Set volume.
-  void SetVolume( UniformVolume::SmartPtr& volume ) 
-  {
-    m_Volume = volume;
-  }
+  void SetVolume(UniformVolume::SmartPtr &volume) { m_Volume = volume; }
 
-  virtual void GetParamVector ( CoordinateVector& v )  
-  {
-    this->m_ParametricPlane.GetParameters( v );
+  virtual void GetParamVector(CoordinateVector &v) {
+    this->m_ParametricPlane.GetParameters(v);
   }
 
   /// Compute functional value.
   virtual Self::ReturnType Evaluate();
 
   /// Compute functional value.
-  virtual Self::ReturnType EvaluateAt( CoordinateVector& v ) 
-  {
-    this->m_ParametricPlane.SetParameters( v );
+  virtual Self::ReturnType EvaluateAt(CoordinateVector &v) {
+    this->m_ParametricPlane.SetParameters(v);
     return this->Evaluate();
   }
 
@@ -105,11 +98,12 @@ public:
   virtual size_t VariableParamVectorDim() const { return 3; }
 
   /// Return the parameter stepping for 1 mm optimization steps.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;
+  virtual Types::Coordinate GetParamStep(
+      const size_t idx, const Types::Coordinate mmStep = 1) const;
 
-private:
+ private:
   /// Image similarity measure.
-  VoxelMatchingNormMutInf<>* m_Metric;
+  VoxelMatchingNormMutInf<> *m_Metric;
 
   /// The symmetry plane.
   ParametricPlane m_ParametricPlane;
@@ -117,6 +111,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkSymmetryPlaneFunctional_h_included_
+#endif  // #ifndef __cmtkSymmetryPlaneFunctional_h_included_

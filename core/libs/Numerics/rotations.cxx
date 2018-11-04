@@ -66,7 +66,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "rotations.h"
 
 /*************************************************************************
@@ -94,116 +93,87 @@ Output parameters:
 
 Utility subroutine.
 *************************************************************************/
-void applyrotationsfromtheleft(bool isforward,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     const ap::real_1d_array& c,
-     const ap::real_1d_array& s,
-     ap::real_2d_array& a,
-     ap::real_1d_array& work)
-{
-    int j;
-    int jp1;
-    ap::real_value_type ctemp;
-    ap::real_value_type stemp;
-    ap::real_value_type temp;
+void applyrotationsfromtheleft(bool isforward, int m1, int m2, int n1, int n2,
+                               const ap::real_1d_array &c,
+                               const ap::real_1d_array &s, ap::real_2d_array &a,
+                               ap::real_1d_array &work) {
+  int j;
+  int jp1;
+  ap::real_value_type ctemp;
+  ap::real_value_type stemp;
+  ap::real_value_type temp;
 
-    if( m1>m2||n1>n2 )
-    {
-        return;
+  if (m1 > m2 || n1 > n2) {
+    return;
+  }
+
+  //
+  // Form  P * A
+  //
+  if (isforward) {
+    if (n1 != n2) {
+      //
+      // Common case: N1<>N2
+      //
+      for (j = m1; j <= m2 - 1; j++) {
+        ctemp = c(j - m1 + 1);
+        stemp = s(j - m1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          jp1 = j + 1;
+          ap::vmove(&work(n1), &a(jp1, n1), ap::vlen(n1, n2), ctemp);
+          ap::vsub(&work(n1), &a(j, n1), ap::vlen(n1, n2), stemp);
+          ap::vmul(&a(j, n1), ap::vlen(n1, n2), ctemp);
+          ap::vadd(&a(j, n1), &a(jp1, n1), ap::vlen(n1, n2), stemp);
+          ap::vmove(&a(jp1, n1), &work(n1), ap::vlen(n1, n2));
+        }
+      }
+    } else {
+      //
+      // Special case: N1=N2
+      //
+      for (j = m1; j <= m2 - 1; j++) {
+        ctemp = c(j - m1 + 1);
+        stemp = s(j - m1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          temp = a(j + 1, n1);
+          a(j + 1, n1) = ctemp * temp - stemp * a(j, n1);
+          a(j, n1) = stemp * temp + ctemp * a(j, n1);
+        }
+      }
     }
-    
-    //
-    // Form  P * A
-    //
-    if( isforward )
-    {
-        if( n1!=n2 )
-        {
-            
-            //
-            // Common case: N1<>N2
-            //
-            for(j = m1; j <= m2-1; j++)
-            {
-                ctemp = c(j-m1+1);
-                stemp = s(j-m1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    jp1 = j+1;
-                    ap::vmove(&work(n1), &a(jp1, n1), ap::vlen(n1,n2), ctemp);
-                    ap::vsub(&work(n1), &a(j, n1), ap::vlen(n1,n2), stemp);
-                    ap::vmul(&a(j, n1), ap::vlen(n1,n2), ctemp);
-                    ap::vadd(&a(j, n1), &a(jp1, n1), ap::vlen(n1,n2), stemp);
-                    ap::vmove(&a(jp1, n1), &work(n1), ap::vlen(n1,n2));
-                }
-            }
+  } else {
+    if (n1 != n2) {
+      //
+      // Common case: N1<>N2
+      //
+      for (j = m2 - 1; j >= m1; j--) {
+        ctemp = c(j - m1 + 1);
+        stemp = s(j - m1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          jp1 = j + 1;
+          ap::vmove(&work(n1), &a(jp1, n1), ap::vlen(n1, n2), ctemp);
+          ap::vsub(&work(n1), &a(j, n1), ap::vlen(n1, n2), stemp);
+          ap::vmul(&a(j, n1), ap::vlen(n1, n2), ctemp);
+          ap::vadd(&a(j, n1), &a(jp1, n1), ap::vlen(n1, n2), stemp);
+          ap::vmove(&a(jp1, n1), &work(n1), ap::vlen(n1, n2));
         }
-        else
-        {
-            
-            //
-            // Special case: N1=N2
-            //
-            for(j = m1; j <= m2-1; j++)
-            {
-                ctemp = c(j-m1+1);
-                stemp = s(j-m1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    temp = a(j+1,n1);
-                    a(j+1,n1) = ctemp*temp-stemp*a(j,n1);
-                    a(j,n1) = stemp*temp+ctemp*a(j,n1);
-                }
-            }
+      }
+    } else {
+      //
+      // Special case: N1=N2
+      //
+      for (j = m2 - 1; j >= m1; j--) {
+        ctemp = c(j - m1 + 1);
+        stemp = s(j - m1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          temp = a(j + 1, n1);
+          a(j + 1, n1) = ctemp * temp - stemp * a(j, n1);
+          a(j, n1) = stemp * temp + ctemp * a(j, n1);
         }
+      }
     }
-    else
-    {
-        if( n1!=n2 )
-        {
-            
-            //
-            // Common case: N1<>N2
-            //
-            for(j = m2-1; j >= m1; j--)
-            {
-                ctemp = c(j-m1+1);
-                stemp = s(j-m1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    jp1 = j+1;
-                    ap::vmove(&work(n1), &a(jp1, n1), ap::vlen(n1,n2), ctemp);
-                    ap::vsub(&work(n1), &a(j, n1), ap::vlen(n1,n2), stemp);
-                    ap::vmul(&a(j, n1), ap::vlen(n1,n2), ctemp);
-                    ap::vadd(&a(j, n1), &a(jp1, n1), ap::vlen(n1,n2), stemp);
-                    ap::vmove(&a(jp1, n1), &work(n1), ap::vlen(n1,n2));
-                }
-            }
-        }
-        else
-        {
-            
-            //
-            // Special case: N1=N2
-            //
-            for(j = m2-1; j >= m1; j--)
-            {
-                ctemp = c(j-m1+1);
-                stemp = s(j-m1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    temp = a(j+1,n1);
-                    a(j+1,n1) = ctemp*temp-stemp*a(j,n1);
-                    a(j,n1) = stemp*temp+ctemp*a(j,n1);
-                }
-            }
-        }
-    }
+  }
 }
-
 
 /*************************************************************************
 Application of a sequence of  elementary rotations to a matrix
@@ -230,112 +200,83 @@ Output parameters:
 
 Utility subroutine.
 *************************************************************************/
-void applyrotationsfromtheright(bool isforward,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     const ap::real_1d_array& c,
-     const ap::real_1d_array& s,
-     ap::real_2d_array& a,
-     ap::real_1d_array& work)
-{
-    int j;
-    int jp1;
-    ap::real_value_type ctemp;
-    ap::real_value_type stemp;
-    ap::real_value_type temp;
+void applyrotationsfromtheright(bool isforward, int m1, int m2, int n1, int n2,
+                                const ap::real_1d_array &c,
+                                const ap::real_1d_array &s,
+                                ap::real_2d_array &a, ap::real_1d_array &work) {
+  int j;
+  int jp1;
+  ap::real_value_type ctemp;
+  ap::real_value_type stemp;
+  ap::real_value_type temp;
 
-    
-    //
-    // Form A * P'
-    //
-    if( isforward )
-    {
-        if( m1!=m2 )
-        {
-            
-            //
-            // Common case: M1<>M2
-            //
-            for(j = n1; j <= n2-1; j++)
-            {
-                ctemp = c(j-n1+1);
-                stemp = s(j-n1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    jp1 = j+1;
-                    ap::vmove(work.getvector(m1, m2), a.getcolumn(jp1, m1, m2), ctemp);
-                    ap::vsub(work.getvector(m1, m2), a.getcolumn(j, m1, m2), stemp);
-                    ap::vmul(a.getcolumn(j, m1, m2), ctemp);
-                    ap::vadd(a.getcolumn(j, m1, m2), a.getcolumn(jp1, m1, m2), stemp);
-                    ap::vmove(a.getcolumn(jp1, m1, m2), work.getvector(m1, m2));
-                }
-            }
+  //
+  // Form A * P'
+  //
+  if (isforward) {
+    if (m1 != m2) {
+      //
+      // Common case: M1<>M2
+      //
+      for (j = n1; j <= n2 - 1; j++) {
+        ctemp = c(j - n1 + 1);
+        stemp = s(j - n1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          jp1 = j + 1;
+          ap::vmove(work.getvector(m1, m2), a.getcolumn(jp1, m1, m2), ctemp);
+          ap::vsub(work.getvector(m1, m2), a.getcolumn(j, m1, m2), stemp);
+          ap::vmul(a.getcolumn(j, m1, m2), ctemp);
+          ap::vadd(a.getcolumn(j, m1, m2), a.getcolumn(jp1, m1, m2), stemp);
+          ap::vmove(a.getcolumn(jp1, m1, m2), work.getvector(m1, m2));
         }
-        else
-        {
-            
-            //
-            // Special case: M1=M2
-            //
-            for(j = n1; j <= n2-1; j++)
-            {
-                ctemp = c(j-n1+1);
-                stemp = s(j-n1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    temp = a(m1,j+1);
-                    a(m1,j+1) = ctemp*temp-stemp*a(m1,j);
-                    a(m1,j) = stemp*temp+ctemp*a(m1,j);
-                }
-            }
+      }
+    } else {
+      //
+      // Special case: M1=M2
+      //
+      for (j = n1; j <= n2 - 1; j++) {
+        ctemp = c(j - n1 + 1);
+        stemp = s(j - n1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          temp = a(m1, j + 1);
+          a(m1, j + 1) = ctemp * temp - stemp * a(m1, j);
+          a(m1, j) = stemp * temp + ctemp * a(m1, j);
         }
+      }
     }
-    else
-    {
-        if( m1!=m2 )
-        {
-            
-            //
-            // Common case: M1<>M2
-            //
-            for(j = n2-1; j >= n1; j--)
-            {
-                ctemp = c(j-n1+1);
-                stemp = s(j-n1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    jp1 = j+1;
-                    ap::vmove(work.getvector(m1, m2), a.getcolumn(jp1, m1, m2), ctemp);
-                    ap::vsub(work.getvector(m1, m2), a.getcolumn(j, m1, m2), stemp);
-                    ap::vmul(a.getcolumn(j, m1, m2), ctemp);
-                    ap::vadd(a.getcolumn(j, m1, m2), a.getcolumn(jp1, m1, m2), stemp);
-                    ap::vmove(a.getcolumn(jp1, m1, m2), work.getvector(m1, m2));
-                }
-            }
+  } else {
+    if (m1 != m2) {
+      //
+      // Common case: M1<>M2
+      //
+      for (j = n2 - 1; j >= n1; j--) {
+        ctemp = c(j - n1 + 1);
+        stemp = s(j - n1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          jp1 = j + 1;
+          ap::vmove(work.getvector(m1, m2), a.getcolumn(jp1, m1, m2), ctemp);
+          ap::vsub(work.getvector(m1, m2), a.getcolumn(j, m1, m2), stemp);
+          ap::vmul(a.getcolumn(j, m1, m2), ctemp);
+          ap::vadd(a.getcolumn(j, m1, m2), a.getcolumn(jp1, m1, m2), stemp);
+          ap::vmove(a.getcolumn(jp1, m1, m2), work.getvector(m1, m2));
         }
-        else
-        {
-            
-            //
-            // Special case: M1=M2
-            //
-            for(j = n2-1; j >= n1; j--)
-            {
-                ctemp = c(j-n1+1);
-                stemp = s(j-n1+1);
-                if( ctemp!=1||stemp!=0 )
-                {
-                    temp = a(m1,j+1);
-                    a(m1,j+1) = ctemp*temp-stemp*a(m1,j);
-                    a(m1,j) = stemp*temp+ctemp*a(m1,j);
-                }
-            }
+      }
+    } else {
+      //
+      // Special case: M1=M2
+      //
+      for (j = n2 - 1; j >= n1; j--) {
+        ctemp = c(j - n1 + 1);
+        stemp = s(j - n1 + 1);
+        if (ctemp != 1 || stemp != 0) {
+          temp = a(m1, j + 1);
+          a(m1, j + 1) = ctemp * temp - stemp * a(m1, j);
+          a(m1, j) = stemp * temp + ctemp * a(m1, j);
         }
+      }
     }
+  }
 }
-
 
 /*************************************************************************
 The subroutine generates the elementary rotation, so that:
@@ -345,41 +286,32 @@ The subroutine generates the elementary rotation, so that:
 
 CS**2 + SN**2 = 1
 *************************************************************************/
-void generaterotation(ap::real_value_type f, ap::real_value_type g, ap::real_value_type& cs, ap::real_value_type& sn, ap::real_value_type& r)
-{
-    ap::real_value_type f1;
-    ap::real_value_type g1;
+void generaterotation(ap::real_value_type f, ap::real_value_type g,
+                      ap::real_value_type &cs, ap::real_value_type &sn,
+                      ap::real_value_type &r) {
+  ap::real_value_type f1;
+  ap::real_value_type g1;
 
-    if( g==0 )
-    {
-        cs = 1;
-        sn = 0;
-        r = f;
+  if (g == 0) {
+    cs = 1;
+    sn = 0;
+    r = f;
+  } else {
+    if (f == 0) {
+      cs = 0;
+      sn = 1;
+      r = g;
+    } else {
+      f1 = f;
+      g1 = g;
+      r = sqrt(ap::sqr(f1) + ap::sqr(g1));
+      cs = f1 / r;
+      sn = g1 / r;
+      if (fabs(f) > fabs(g) && cs < 0) {
+        cs = -cs;
+        sn = -sn;
+        r = -r;
+      }
     }
-    else
-    {
-        if( f==0 )
-        {
-            cs = 0;
-            sn = 1;
-            r = g;
-        }
-        else
-        {
-            f1 = f;
-            g1 = g;
-            r = sqrt(ap::sqr(f1)+ap::sqr(g1));
-            cs = f1/r;
-            sn = g1/r;
-            if( fabs(f)>fabs(g)&&cs<0 )
-            {
-                cs = -cs;
-                sn = -sn;
-                r = -r;
-            }
-        }
-    }
+  }
 }
-
-
-

@@ -68,13 +68,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ap.h"
 
 #include "gammaf.h"
-#include "normaldistr.h"
 #include "ibetaf.h"
+#include "normaldistr.h"
 #include "studenttdistr.h"
 
-namespace
-alglib
-{
+namespace alglib {
 
 /*************************************************************************
 Two-sample pooled test
@@ -113,16 +111,12 @@ Output parameters:
   -- ALGLIB --
      Copyright 18.09.2006 by Bochkanov Sergey
 *************************************************************************/
-void studentttest2(const ap::real_1d_array& x,
-     int n,
-     const ap::real_1d_array& y,
-     int m,
-     ap::real_value_type& t,
-     ap::real_value_type& bothtails,
-     ap::real_value_type& lefttail,
-     ap::real_value_type& righttail);
+void studentttest2(const ap::real_1d_array &x, int n,
+                   const ap::real_1d_array &y, int m, ap::real_value_type &t,
+                   ap::real_value_type &bothtails,
+                   ap::real_value_type &lefttail,
+                   ap::real_value_type &righttail);
 
-
-} // namespace alglib
+}  // namespace alglib
 
 #endif

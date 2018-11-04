@@ -78,16 +78,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Obsolete 1-based subroutine.
 See RMatrixHessenberg for 0-based replacement.
 *************************************************************************/
-void toupperhessenberg(ap::real_2d_array& a, int n, ap::real_1d_array& tau);
-
+void toupperhessenberg(ap::real_2d_array &a, int n, ap::real_1d_array &tau);
 
 /*************************************************************************
 Obsolete 1-based subroutine.
 See RMatrixHessenbergUnpackQ for 0-based replacement.
 *************************************************************************/
-void unpackqfromupperhessenberg(const ap::real_2d_array& a,
-     int n,
-     const ap::real_1d_array& tau,
-     ap::real_2d_array& q);
+void unpackqfromupperhessenberg(const ap::real_2d_array &a, int n,
+                                const ap::real_1d_array &tau,
+                                ap::real_2d_array &q);
 
 #endif

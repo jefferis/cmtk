@@ -35,68 +35,57 @@
 
 #include <System/cmtkConsole.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /// Class for debug output with different levels of detail.
-class DebugOutput
-{
-public:
+class DebugOutput {
+ public:
   /// This class.
   typedef DebugOutput Self;
 
   /// Constructor.
-  DebugOutput( const int level = 0 ) : m_Level( level ) {}
-  
+  DebugOutput(const int level = 0) : m_Level(level) {}
+
   /// Output operator.
-  template<class T>
-  Console& operator<<( const T data ) const
-  {
+  template <class T>
+  Console &operator<<(const T data) const {
     return this->GetStream() << data;
   }
 
   /// Flush the appropriate stream for this output object.
-  void Flush()
-  {
-    if ( this->m_Level > Self::GetGlobalLevel() )
+  void Flush() {
+    if (this->m_Level > Self::GetGlobalLevel())
       StdNull.flush();
     else
       StdOut.flush();
   }
 
   /// Get the appropriate stream for this output object.
-  Console& GetStream() const
-  {
-    if ( this->m_Level > Self::GetGlobalLevel() )
+  Console &GetStream() const {
+    if (this->m_Level > Self::GetGlobalLevel())
       return StdNull;
     else
       return StdOut;
   }
 
   /// Set global debug level.
-  static void SetGlobalLevel( const long int level )
-  {
+  static void SetGlobalLevel(const long int level) {
     Self::GetGlobalLevel() = level;
   }
 
   /// Increment global debug level by 1.
-  static void IncGlobalLevel()
-  {
-    ++Self::GetGlobalLevel();
-  }
+  static void IncGlobalLevel() { ++Self::GetGlobalLevel(); }
 
   /// Get global debug level (reference to static variable).
-  static int& GetGlobalLevel()
-  {
+  static int &GetGlobalLevel() {
     static int globalLevel = 0;
     return globalLevel;
   }
 
-private:
+ private:
   /** Level for this instance.
    * Output is suppressed if this is higher than the global level.
    */
@@ -105,6 +94,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDebugOutput_h_included_
+#endif  // #ifndef __cmtkDebugOutput_h_included_

@@ -67,122 +67,103 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "hessenberg.h"
-
 
 /*************************************************************************
 Obsolete 1-based subroutine.
 See RMatrixHessenberg for 0-based replacement.
 *************************************************************************/
-void toupperhessenberg(ap::real_2d_array& a, int n, ap::real_1d_array& tau)
-{
-    int i;
-    int ip1;
-    int nmi;
-//    ap::real_value_type aii;
-    ap::real_value_type v;
-    ap::real_1d_array t;
-    ap::real_1d_array work;
+void toupperhessenberg(ap::real_2d_array &a, int n, ap::real_1d_array &tau) {
+  int i;
+  int ip1;
+  int nmi;
+  //    ap::real_value_type aii;
+  ap::real_value_type v;
+  ap::real_1d_array t;
+  ap::real_1d_array work;
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion(n>=0, "ToUpperHessenberg: incorrect N!");
+  ap::ap_error::make_assertion(n >= 0, "ToUpperHessenberg: incorrect N!");
 #endif
-    
-    //
-    // Quick return if possible
-    //
-    if( n<=1 )
-    {
-        return;
-    }
-    tau.setbounds(1, n-1);
-    t.setbounds(1, n);
-    work.setbounds(1, n);
-    for(i = 1; i <= n-1; i++)
-    {
-        
-        //
-        // Compute elementary reflector H(i) to annihilate A(i+2:ihi,i)
-        //
-        ip1 = i+1;
-        nmi = n-i;
-        ap::vmove(t.getvector(1, nmi), a.getcolumn(i, ip1, n));
-        generatereflection(t, nmi, v);
-        ap::vmove(a.getcolumn(i, ip1, n), t.getvector(1, nmi));
-        tau(i) = v;
-        t(1) = 1;
-        
-        //
-        // Apply H(i) to A(1:ihi,i+1:ihi) from the right
-        //
-        applyreflectionfromtheright(a, v, t, 1, n, i+1, n, work);
-        
-        //
-        // Apply H(i) to A(i+1:ihi,i+1:n) from the left
-        //
-        applyreflectionfromtheleft(a, v, t, i+1, n, i+1, n, work);
-    }
-}
 
+  //
+  // Quick return if possible
+  //
+  if (n <= 1) {
+    return;
+  }
+  tau.setbounds(1, n - 1);
+  t.setbounds(1, n);
+  work.setbounds(1, n);
+  for (i = 1; i <= n - 1; i++) {
+    //
+    // Compute elementary reflector H(i) to annihilate A(i+2:ihi,i)
+    //
+    ip1 = i + 1;
+    nmi = n - i;
+    ap::vmove(t.getvector(1, nmi), a.getcolumn(i, ip1, n));
+    generatereflection(t, nmi, v);
+    ap::vmove(a.getcolumn(i, ip1, n), t.getvector(1, nmi));
+    tau(i) = v;
+    t(1) = 1;
+
+    //
+    // Apply H(i) to A(1:ihi,i+1:ihi) from the right
+    //
+    applyreflectionfromtheright(a, v, t, 1, n, i + 1, n, work);
+
+    //
+    // Apply H(i) to A(i+1:ihi,i+1:n) from the left
+    //
+    applyreflectionfromtheleft(a, v, t, i + 1, n, i + 1, n, work);
+  }
+}
 
 /*************************************************************************
 Obsolete 1-based subroutine.
 See RMatrixHessenbergUnpackQ for 0-based replacement.
 *************************************************************************/
-void unpackqfromupperhessenberg(const ap::real_2d_array& a,
-     int n,
-     const ap::real_1d_array& tau,
-     ap::real_2d_array& q)
-{
-    int i;
-    int j;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
-    int ip1;
-    int nmi;
+void unpackqfromupperhessenberg(const ap::real_2d_array &a, int n,
+                                const ap::real_1d_array &tau,
+                                ap::real_2d_array &q) {
+  int i;
+  int j;
+  ap::real_1d_array v;
+  ap::real_1d_array work;
+  int ip1;
+  int nmi;
 
-    if( n==0 )
-    {
-        return;
+  if (n == 0) {
+    return;
+  }
+
+  //
+  // init
+  //
+  q.setbounds(1, n, 1, n);
+  v.setbounds(1, n);
+  work.setbounds(1, n);
+  for (i = 1; i <= n; i++) {
+    for (j = 1; j <= n; j++) {
+      if (i == j) {
+        q(i, j) = 1;
+      } else {
+        q(i, j) = 0;
+      }
     }
-    
+  }
+
+  //
+  // unpack Q
+  //
+  for (i = 1; i <= n - 1; i++) {
     //
-    // init
+    // Apply H(i)
     //
-    q.setbounds(1, n, 1, n);
-    v.setbounds(1, n);
-    work.setbounds(1, n);
-    for(i = 1; i <= n; i++)
-    {
-        for(j = 1; j <= n; j++)
-        {
-            if( i==j )
-            {
-                q(i,j) = 1;
-            }
-            else
-            {
-                q(i,j) = 0;
-            }
-        }
-    }
-    
-    //
-    // unpack Q
-    //
-    for(i = 1; i <= n-1; i++)
-    {
-        
-        //
-        // Apply H(i)
-        //
-        ip1 = i+1;
-        nmi = n-i;
-        ap::vmove(v.getvector(1, nmi), a.getcolumn(i, ip1, n));
-        v(1) = 1;
-        applyreflectionfromtheright(q, tau(i), v, 1, n, i+1, n, work);
-    }
+    ip1 = i + 1;
+    nmi = n - i;
+    ap::vmove(v.getvector(1, nmi), a.getcolumn(i, ip1, n));
+    v(1) = 1;
+    applyreflectionfromtheright(q, tau(i), v, 1, n, i + 1, n, work);
+  }
 }
-
-

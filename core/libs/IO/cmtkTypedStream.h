@@ -37,8 +37,8 @@
 
 #include <Base/cmtkTypes.h>
 
-#include <stack>
 #include <stdio.h>
+#include <stack>
 
 #include <zlib.h>
 
@@ -48,9 +48,7 @@
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
@@ -61,24 +59,21 @@ cmtk
 
 /** base class for reading and writing of "typedstream" archives.
  */
-class TypedStream 
-{
-public:
+class TypedStream {
+ public:
   /// This class.
   typedef TypedStream Self;
 
   /// Condition upon function return.
-  typedef enum 
-  {
+  typedef enum {
     /// There was an error.
     CONDITION_ERROR,
     /// No error encountered; operation completed successfully.
     CONDITION_OK
   } Condition;
-  
+
   /// Classes of error conditions
-  typedef enum 
-  {
+  typedef enum {
     /// No error.
     ERROR_NONE,
     /// Unknown error.
@@ -112,16 +107,15 @@ public:
      */
     ERROR_LEVEL,
     /** The current stream is invalid.
-     * This condition is set when an access is tried without opening a file 
+     * This condition is set when an access is tried without opening a file
      * first.
      */
     ERROR_INVALID,
     ERROR_MAX
   } Status;
-  
-  /// Identifiers for supported primitive data types. 
-  typedef enum 
-  {
+
+  /// Identifiers for supported primitive data types.
+  typedef enum {
     /// Interger.
     TYPE_INT,
     /// Boolean (Yes/No).
@@ -137,8 +131,7 @@ public:
   } Type;
 
   /// Identifiers for tokens in archives.
-  typedef enum 
-  {
+  typedef enum {
     /// End-of-file.
     TOKEN_EOF,
     /// Section beginning "{".
@@ -152,42 +145,36 @@ public:
     /// Comment.
     TOKEN_COMMENT
   } Token;
-  
+
   /// Debug flag values.
-  typedef enum 
-  {
+  typedef enum {
     /// There was an error.
     DEBUG_OFF,
     /// No error encountered; operation completed successfully.
     DEBUG_ON
   } DebugFlag;
-  
+
   /// Default constructor.
   TypedStream();
 
   /** Return validity of archive.
    *\return 1 if an archive is currently open, 0 if not.
    */
-  int IsValid() 
-  {
-    return (this->File != NULL) || (this->GzFile != NULL); 
-  }
+  int IsValid() { return (this->File != NULL) || (this->GzFile != NULL); }
 
   /** Return status of last operation.
    */
-  Self::Status GetStatus() const 
-  { 
-    return this->m_Status; 
-  }
+  Self::Status GetStatus() const { return this->m_Status; }
 
   /// Set debugging flag.
-  void SetDebugFlag( const Self::DebugFlag debugFlag = Self::DEBUG_ON /*!< Set the debug flag to this value. */ )
-  { 
+  void SetDebugFlag(
+      const Self::DebugFlag debugFlag =
+          Self::DEBUG_ON /*!< Set the debug flag to this value. */) {
     this->m_DebugFlag = debugFlag;
   }
-  
-protected:
-  /// Internal: Length of the read buffer for one archive line.  
+
+ protected:
+  /// Internal: Length of the read buffer for one archive line.
   static const int LIMIT_BUFFER = 1024;
 
   /// Pointer to the actual file.
@@ -220,10 +207,10 @@ protected:
   char Buffer[Self::LIMIT_BUFFER];
 
   /// Pointer to the "key" part of the line currently in Buffer.
-  char* BufferKey;
+  char *BufferKey;
 
   /// Pointer to the "value" part of the line currently in Buffer.
-  char* BufferValue;
+  char *BufferValue;
 
   /** Stack of open section levels.
    * This stack holds the starting positions of all currently open sections.
@@ -235,10 +222,10 @@ protected:
    * Other than the standard library's strcmp() function, this implementation
    * ignores upper and lowercase. Also, strings are terminated by either NULL
    * characters or any white space or newline.
-   *\return 0 for identical strings (up to upper-/lowercase), 1 for 
+   *\return 0 for identical strings (up to upper-/lowercase), 1 for
    * non-identical strings.
    */
-  static int StringCmp( const char* s1, const char* s2 );
+  static int StringCmp(const char *s1, const char *s2);
 
   /** Separate next token.
    * This function identifies the next token in the given string, sets a NULL
@@ -246,30 +233,31 @@ protected:
    * character. The state between calls is saved in the "SplitPosition" field.
    * Calling the function with NULL as a parameter resets the internal state.
    */
-  char* StringSplit( char* s1 /*!< String to split into tokens. */ ) const;
+  char *StringSplit(char *s1 /*!< String to split into tokens. */) const;
 
   /// Internal position pointer for "StringSplit()".
-  mutable char* SplitPosition;
+  mutable char *SplitPosition;
 
   /** Return the identifier for the generated archive format (version).
    * This is the earliest CMTK version that can read this archive properly.
    */
-  static const char* GetTypedStreamIdent() 
-  {
-    return "! TYPEDSTREAM 2.4\n";
-  }
-  
+  static const char *GetTypedStreamIdent() { return "! TYPEDSTREAM 2.4\n"; }
+
   /// Debug flag.
   Self::DebugFlag m_DebugFlag;
-  
+
   /// Output diagnostic message if debug flag is set.
-  void DebugOutput( const char* format /*!< printf-style format string for the remaining variable number of function arguments.*/, ... );
+  void DebugOutput(
+      const char *format /*!< printf-style format string for the remaining
+                            variable number of function arguments.*/
+      ,
+      ...);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 //@}
 
-#endif // #ifndef __cmtkTypedstream_h_included_
+#endif  // #ifndef __cmtkTypedstream_h_included_

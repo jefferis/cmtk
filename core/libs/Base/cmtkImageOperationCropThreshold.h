@@ -35,44 +35,47 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: crop by threshold
 class ImageOperationCropThreshold
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor.
-  ImageOperationCropThreshold( const double threshold, const bool writeRegion = false, const bool writeXform = false ) : m_Threshold( threshold ), m_WriteRegion( writeRegion ), m_WriteXform( writeXform ) {}
-  
+  ImageOperationCropThreshold(const double threshold,
+                              const bool writeRegion = false,
+                              const bool writeXform = false)
+      : m_Threshold(threshold),
+        m_WriteRegion(writeRegion),
+        m_WriteXform(writeXform) {}
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new crop operation.
-  static void New( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold ) ) );
+  static void New(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationCropThreshold(threshold)));
   }
-  
+
   /// Create a new crop operation with region output.
-  static void NewWriteRegion( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold, true, false ) ) );
+  static void NewWriteRegion(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationCropThreshold(threshold, true, false)));
   }
-  
+
   /// Create a new crop operation with transformation output.
-  static void NewWriteXform( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold, false, true ) ) );
+  static void NewWriteXform(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationCropThreshold(threshold, false, true)));
   }
-  
-private:
+
+ private:
   /// Cropping threshold.
   double m_Threshold;
 
@@ -85,6 +88,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationCropThreshold_h_included_
+#endif  // #ifndef __cmtkImageOperationCropThreshold_h_included_

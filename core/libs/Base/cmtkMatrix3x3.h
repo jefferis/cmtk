@@ -40,19 +40,15 @@
 
 #include <System/cmtkConsole.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Homogeneous 3x3 transformation matrix.
-template<class T=Types::Coordinate>
-class Matrix3x3 :
-    public FixedSquareMatrix<3,T>
-{
-public:
+template <class T = Types::Coordinate>
+class Matrix3x3 : public FixedSquareMatrix<3, T> {
+ public:
   /// This class.
   typedef Matrix3x3<T> Self;
 
@@ -60,42 +56,44 @@ public:
   typedef T ElementType;
 
   /// Parent class.
-  typedef FixedSquareMatrix<3,T> Superclass;
+  typedef FixedSquareMatrix<3, T> Superclass;
 
   /// Default constructor.
   Matrix3x3() {}
 
   /// Copy constructor.
-  Matrix3x3( const Superclass& other ) : Superclass( other ) {}
+  Matrix3x3(const Superclass &other) : Superclass(other) {}
 
   /** Array constructor.
    * If a NULL parameter is given, an uninitialized matrix is generated. This
    * is intended behaviour.
    */
-  Matrix3x3( const typename Self::ElementType *const values ) : Superclass( values ) {}
-  
+  Matrix3x3(const typename Self::ElementType *const values)
+      : Superclass(values) {}
+
   /// 2D array constructor.
-  template<class T2> Matrix3x3( const T2 (&matrix)[3][3] ) : Superclass( matrix ) {}
+  template <class T2>
+  Matrix3x3(const T2 (&matrix)[3][3]) : Superclass(matrix) {}
 
   /// Compose from canonical parameters.
-  Self& Compose( const typename Self::ElementType params[8] );
-  
+  Self &Compose(const typename Self::ElementType params[8]);
+
   /// Decompose into affine parameters.
-  bool Decompose( typename Self::ElementType params[8], const typename Self::ElementType *center = NULL ) const;
+  bool Decompose(typename Self::ElementType params[8],
+                 const typename Self::ElementType *center = NULL) const;
 
   /// Get determinant.
-  typename Self::ElementType Determinant() const 
-  {
-    return ( (*this)[0][0]*(*this)[1][1]*(*this)[2][2] + 
-	     (*this)[0][1]*(*this)[1][2]*(*this)[2][0] + 
-	     (*this)[0][2]*(*this)[1][0]*(*this)[2][1] - 
-	     (*this)[0][2]*(*this)[1][1]*(*this)[2][0] - 
-	     (*this)[0][0]*(*this)[1][2]*(*this)[2][1] - 
-	     (*this)[0][1]*(*this)[1][0]*(*this)[2][2] );
+  typename Self::ElementType Determinant() const {
+    return ((*this)[0][0] * (*this)[1][1] * (*this)[2][2] +
+            (*this)[0][1] * (*this)[1][2] * (*this)[2][0] +
+            (*this)[0][2] * (*this)[1][0] * (*this)[2][1] -
+            (*this)[0][2] * (*this)[1][1] * (*this)[2][0] -
+            (*this)[0][0] * (*this)[1][2] * (*this)[2][1] -
+            (*this)[0][1] * (*this)[1][0] * (*this)[2][2]);
   }
 
   /// Compute eigenvalues.
-  void ComputeEigenvalues( typename Self::ElementType (&lambda)[3] ) const;
+  void ComputeEigenvalues(typename Self::ElementType (&lambda)[3]) const;
 };
 
 /// Define coordinate matrix.
@@ -103,6 +101,6 @@ typedef Matrix3x3<Types::Coordinate> CoordinateMatrix3x3;
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkMatrix3x3_h_included_
+#endif  // #ifndef __cmtkMatrix3x3_h_included_

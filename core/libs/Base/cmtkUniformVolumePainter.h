@@ -37,20 +37,18 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Class for painting in uniform volume objects.
- * This class provides operations to draw simple geometric objects into UniformVolume objects.
- * This is useful, for example, to create electronic phantom images.
+ * This class provides operations to draw simple geometric objects into
+ * UniformVolume objects. This is useful, for example, to create electronic
+ * phantom images.
  */
-class UniformVolumePainter
-{
-public:
+class UniformVolumePainter {
+ public:
   /// This class.
   typedef UniformVolumePainter Self;
 
@@ -58,27 +56,33 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Enum for coordinate mode.
-  typedef enum
-  {
-    /// Absolute coordinates: all coordinates are absoluate values within the volume field of view.
+  typedef enum {
+    /// Absolute coordinates: all coordinates are absoluate values within the
+    /// volume field of view.
     COORDINATES_ABSOLUTE = 0,
-    /// Relative coordinates: all coordinates are in range [0,1] which is mapped to volume field of view for each dimension.
+    /// Relative coordinates: all coordinates are in range [0,1] which is mapped
+    /// to volume field of view for each dimension.
     COORDINATES_RELATIVE = 1,
     /// Indexed grid coordinates: all coordinates are grid indexes.
     COORDINATES_INDEXED = 2
   } CoordinateModeEnum;
-  
 
   /// Constructor: link to target volume.
-  UniformVolumePainter( UniformVolume::SmartPtr& volume, const CoordinateModeEnum coordinateMode = Self::COORDINATES_INDEXED ) : m_Volume( volume ), m_CoordinateMode( coordinateMode ) {}
+  UniformVolumePainter(
+      UniformVolume::SmartPtr &volume,
+      const CoordinateModeEnum coordinateMode = Self::COORDINATES_INDEXED)
+      : m_Volume(volume), m_CoordinateMode(coordinateMode) {}
 
   /// Draw a sphere.
-  void DrawSphere( const UniformVolume::CoordinateVectorType& center, const Types::Coordinate radius, const Types::DataItem value );
+  void DrawSphere(const UniformVolume::CoordinateVectorType &center,
+                  const Types::Coordinate radius, const Types::DataItem value);
 
   /// Draw a box.
-  void DrawBox( const UniformVolume::CoordinateVectorType& boxFrom, const UniformVolume::CoordinateVectorType& boxTo, const Types::DataItem value );
+  void DrawBox(const UniformVolume::CoordinateVectorType &boxFrom,
+               const UniformVolume::CoordinateVectorType &boxTo,
+               const Types::DataItem value);
 
-private:
+ private:
   /// Pointer to target volume.
   UniformVolume::SmartPtr m_Volume;
 
@@ -88,6 +92,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkUniformVolumePainter_h_included_
+#endif  // #ifndef __cmtkUniformVolumePainter_h_included_

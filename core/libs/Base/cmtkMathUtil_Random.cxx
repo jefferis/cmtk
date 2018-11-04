@@ -36,22 +36,16 @@
 
 #include <ctime>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-double
-MathUtil::UniformRandom()
-{
-
-  static const int seed = (int)time(0) + (int)( 1000 * rand() );
-  static CRandomMersenne randGen( seed );
+double MathUtil::UniformRandom() {
+  static const int seed = (int)time(0) + (int)(1000 * rand());
+  static CRandomMersenne randGen(seed);
 
   return randGen.Random();
 }
 
-} // namespace cmtk
-
+}  // namespace cmtk

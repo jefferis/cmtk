@@ -68,7 +68,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "cholesky.h"
 
-
 /*************************************************************************
 Determinant calculation of the matrix given by the Cholesky decomposition.
 
@@ -87,7 +86,6 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array& a, int n);
-
+ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array &a, int n);
 
 #endif

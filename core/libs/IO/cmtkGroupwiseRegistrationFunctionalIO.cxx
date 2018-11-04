@@ -38,42 +38,36 @@
 #include <Base/cmtkSplineWarpXform.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-ClassStreamOutput&
-operator<<
-  ( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalBase& func )
-{
-  const UniformVolume* templateGrid = func.GetTemplateGrid();
-  stream.Begin( "template" );
-  stream.WriteIntArray( "dims", templateGrid->GetDims().begin(), 3 );
-  stream.WriteCoordinateArray( "delta", templateGrid->Deltas().begin(), 3 );
-  stream.WriteCoordinateArray( "size", templateGrid->m_Size.begin(), 3 );
-  stream.WriteCoordinateArray( "origin", templateGrid->m_Offset.begin(), 3 );
+ClassStreamOutput &operator<<(ClassStreamOutput &stream,
+                              const GroupwiseRegistrationFunctionalBase &func) {
+  const UniformVolume *templateGrid = func.GetTemplateGrid();
+  stream.Begin("template");
+  stream.WriteIntArray("dims", templateGrid->GetDims().begin(), 3);
+  stream.WriteCoordinateArray("delta", templateGrid->Deltas().begin(), 3);
+  stream.WriteCoordinateArray("size", templateGrid->m_Size.begin(), 3);
+  stream.WriteCoordinateArray("origin", templateGrid->m_Offset.begin(), 3);
   stream.End();
-  
-  for ( size_t idx = 0; idx < func.GetNumberOfTargetImages(); ++idx )
-    {
-    const UniformVolume* target = func.GetOriginalTargetImage( idx );
-    stream.WriteString( "target", target->GetMetaInfo( META_FS_PATH ).c_str() );
-    
-    const Xform* xform = func.GetGenericXformByIndex( idx );
-    
-    const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
-    if ( affineXform )
-      stream << (*affineXform);
 
-    const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( xform );
-    if ( splineXform )
-      stream << splineXform;
-    }
-  
+  for (size_t idx = 0; idx < func.GetNumberOfTargetImages(); ++idx) {
+    const UniformVolume *target = func.GetOriginalTargetImage(idx);
+    stream.WriteString("target", target->GetMetaInfo(META_FS_PATH).c_str());
+
+    const Xform *xform = func.GetGenericXformByIndex(idx);
+
+    const AffineXform *affineXform = dynamic_cast<const AffineXform *>(xform);
+    if (affineXform) stream << (*affineXform);
+
+    const SplineWarpXform *splineXform =
+        dynamic_cast<const SplineWarpXform *>(xform);
+    if (splineXform) stream << splineXform;
+  }
+
   return stream;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

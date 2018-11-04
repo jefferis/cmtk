@@ -35,9 +35,7 @@
 
 #include <cmtkconfig.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -46,19 +44,17 @@ cmtk
  * This class provides typedefs and static constants that do not depend on the
  * template parameter of the derived class template.
  */
-class DistanceMap
-{
-public:
-    /// Constant used to mark unprocessed pixels.
+class DistanceMap {
+ public:
+  /// Constant used to mark unprocessed pixels.
   static const long int EDT_MAX_DISTANCE_SQUARED = 2147329548;
 
   /** Enumeration with binary flags that control distance map computation.
    * The defined values can be combined by arithmetic "or".
    */
-  typedef enum 
-  {
-    /** No special functions. 
-     * This flag will create a distance-from-feature map where any non-zero 
+  typedef enum {
+    /** No special functions.
+     * This flag will create a distance-from-feature map where any non-zero
      * voxel in the feature image will be considered.
      */
     DEFAULT = 0,
@@ -78,18 +74,21 @@ public:
      */
     VALUE_WINDOW = 4,
     /** Use window around specific feature value.
-     * If this flag is set, only voxels in the feature image with values that are
-     * within a range from a given constant will be considered feature voxels.
-     * All voxels with lower values will be considered background voxels.
+     * If this flag is set, only voxels in the feature image with values that
+     * are within a range from a given constant will be considered feature
+     * voxels. All voxels with lower values will be considered background
+     * voxels.
      */
     VALUE_THRESHOLD = 8,
     /** Compute signed distance map.
-     * The "INSIDE" flag determines whether negative distance values are assigned to
-     * pixels inside (flag off) or outside (flag on) the labelled region.
+     * The "INSIDE" flag determines whether negative distance values are
+     * assigned to pixels inside (flag off) or outside (flag on) the labelled
+     * region.
      */
     SIGNED = 16,
     /** Compute squared distance - do not apply final sqrt() operator.
-     * This can increase efficiency if the outside code wants the squared distance in the first place.
+     * This can increase efficiency if the outside code wants the squared
+     * distance in the first place.
      */
     SQUARED = 32
   } Flags;
@@ -97,6 +96,6 @@ public:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDistanceMap_h_included_
+#endif  // #ifndef __cmtkDistanceMap_h_included_

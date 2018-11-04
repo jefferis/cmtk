@@ -35,24 +35,21 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <Base/cmtkLandmark.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <list>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// List of landmarks.
 class LandmarkList :
-  /// Inherit STL list container.
-  public std::list<Landmark>
-{
-public:
+    /// Inherit STL list container.
+    public std::list<Landmark> {
+ public:
   /// This class.
   typedef LandmarkList Self;
 
@@ -69,14 +66,14 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Find landmark by name.
-  Self::Iterator FindByName( const std::string& name );
+  Self::Iterator FindByName(const std::string &name);
 
   /// Find landmark by name and return constant pointer.
-  Self::ConstIterator FindByName( const std::string& name ) const;
+  Self::ConstIterator FindByName(const std::string &name) const;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLandmarkList_h_included_
+#endif  // #ifndef __cmtkLandmarkList_h_included_

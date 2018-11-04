@@ -37,21 +37,18 @@
 
 #include <Base/cmtkJointHistogram.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Memory for typed array similarity computation.
- * This class provides for optional persistent memory between similarity 
- * computations. This ensures, for example, identical value ranges in 
+ * This class provides for optional persistent memory between similarity
+ * computations. This ensures, for example, identical value ranges in
  * histogram-based similarity measures.
  */
-class TypedArraySimilarityMemory
-{
-public:
+class TypedArraySimilarityMemory {
+ public:
   /** Initialize a similarity instance with memory.
    * By instantiating a class object, the otherwise static member functions
    * can be given a memory that coordinates their behaviour between calls. For
@@ -62,12 +59,15 @@ public:
    * range exceeds the one stored in this object, the latter will be adapted
    * accordingly.
    */
-  TypedArraySimilarityMemory( const bool repeatCheck = true )
-    : ValidX( false ), RangeX( 0, 0 ), NumberBinsX( 0 ),
-      ValidY( false ), RangeY( 0, 0 ), NumberBinsY( 0 ),
-      MinNumBins( 8 ), 
-      MaxNumBins( 128 )
-  {  
+  TypedArraySimilarityMemory(const bool repeatCheck = true)
+      : ValidX(false),
+        RangeX(0, 0),
+        NumberBinsX(0),
+        ValidY(false),
+        RangeY(0, 0),
+        NumberBinsY(0),
+        MinNumBins(8),
+        MaxNumBins(128) {
     RepeatCheck = repeatCheck;
   }
 
@@ -75,24 +75,27 @@ public:
    * If this object is not yet initialized, the given array is queried for
    * its value range, and this object is initialized accordingly.
    */
-  const Types::DataItemRange GetRangeX( const TypedArray* array, const size_t numBins );
+  const Types::DataItemRange GetRangeX(const TypedArray *array,
+                                       const size_t numBins);
 
   /** Get range of Y distribution.
    * If this object is not yet initialized, the given array is queried for
    * its value range, and this object is initialized accordingly.
    */
-  const Types::DataItemRange GetRangeY( const TypedArray* array, const size_t numBins );
-  
+  const Types::DataItemRange GetRangeY(const TypedArray *array,
+                                       const size_t numBins);
+
   /// Set minimum number of histogram bins.
-  void SetMinNumBins( const size_t minNumBins ) { MinNumBins = minNumBins; }
+  void SetMinNumBins(const size_t minNumBins) { MinNumBins = minNumBins; }
 
   /// Set maximum number of histogram bins.
-  void SetMaxNumBins( const size_t maxNumBins ) { MaxNumBins = maxNumBins; }
+  void SetMaxNumBins(const size_t maxNumBins) { MaxNumBins = maxNumBins; }
 
   /// Create histogram based on memorized settings.
-  JointHistogram<unsigned int>::SmartPtr CreateHistogram( const TypedArray* array0, const TypedArray* array1 );
+  JointHistogram<unsigned int>::SmartPtr CreateHistogram(
+      const TypedArray *array0, const TypedArray *array1);
 
-private:
+ private:
   /// Repeat range check with each call to GetRangeX and GetRangeY.
   bool RepeatCheck;
 
@@ -123,9 +126,9 @@ private:
   /// Allow similarity computation class access.
   friend class TypedArraySimilarity;
 };
-  
+
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTypedArraySimilarityMemory_h_included_
+#endif  // #ifndef __cmtkTypedArraySimilarityMemory_h_included_

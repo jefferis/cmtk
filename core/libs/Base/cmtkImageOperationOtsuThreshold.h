@@ -35,44 +35,48 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: Otsu threshold binarization
 class ImageOperationOtsuThreshold
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor.
-  ImageOperationOtsuThreshold( const size_t nBins = 1024 /*!< Number of histogram bins for threshold computation.*/ ) : m_NumberOfBins( nBins ) {}
-  
+  ImageOperationOtsuThreshold(
+      const size_t nBins =
+          1024 /*!< Number of histogram bins for threshold computation.*/)
+      : m_NumberOfBins(nBins) {}
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new thresholding operation.
-  static void New()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationOtsuThreshold() ) );
+  static void New() {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationOtsuThreshold()));
   }
-  
-  /// Create a new thresholding operation with explicit number of histogram bins.
-  static void NewBins( const long int nBins = 1024 /*!< Number of histogram bins for threshold computation.*/ )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationOtsuThreshold( nBins ) ) );
+
+  /// Create a new thresholding operation with explicit number of histogram
+  /// bins.
+  static void NewBins(
+      const long int nBins =
+          1024 /*!< Number of histogram bins for threshold computation.*/) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationOtsuThreshold(nBins)));
   }
-  
-private:
+
+ private:
   /// Number of histogram bins for threshold computation.
   size_t m_NumberOfBins;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationOtsuThreshold_h_included_
+#endif  // #ifndef __cmtkImageOperationOtsuThreshold_h_included_

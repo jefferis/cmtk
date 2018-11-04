@@ -37,32 +37,33 @@
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-/** Class for reading and writing affine transformations from and to ITK's file format.
- * This should also be understood by Slicer3 for transformation exchange with CMTK tools
- * run as plugins.
+/** Class for reading and writing affine transformations from and to ITK's file
+ * format. This should also be understood by Slicer3 for transformation exchange
+ * with CMTK tools run as plugins.
  */
-class AffineXformITKIO
-{
-public:
+class AffineXformITKIO {
+ public:
   /// This class.
   typedef AffineXformITKIO Self;
-  
+
   /// Write transformation to ITK file.
-  static void Write( const std::string& filename, const AffineXform& affineXform );
-  
-  /// Write transformation to open stream, e.g., for writing more than one transformation to the same file.
-  static void Write( std::ofstream& stream /*!< An open stream to which the ITK file header has already been written.*/,
-		     const AffineXform& affineXform /*!< Transformation to write next.*/,
-		     const size_t idx = 0 /*!< Index of transformation, i.e., its relative position in file when it is written.*/ );
-  
+  static void Write(const std::string &filename,
+                    const AffineXform &affineXform);
+
+  /// Write transformation to open stream, e.g., for writing more than one
+  /// transformation to the same file.
+  static void Write(
+      std::ofstream &stream /*!< An open stream to which the ITK file header has
+                               already been written.*/
+      ,
+      const AffineXform &affineXform /*!< Transformation to write next.*/, const size_t idx = 0 /*!< Index of transformation, i.e., its relative position in file when it is written.*/);
+
   /// Read transformation from ITK file.
-  static AffineXform::SmartPtr Read( const std::string& filename );
+  static AffineXform::SmartPtr Read(const std::string &filename);
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkAffineXformITKIO_h_included__
+#endif  // #ifndef __cmtkAffineXformITKIO_h_included__

@@ -35,17 +35,15 @@
 
 #include "cmtkDeviceMemory.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup GPU */
 //@{
 
-/// Device memory representation of a uniform volume with static helper functions.
-class DeviceHistogram
-{
-public:
+/// Device memory representation of a uniform volume with static helper
+/// functions.
+class DeviceHistogram {
+ public:
   /// This class.
   typedef DeviceHistogram Self;
 
@@ -55,18 +53,14 @@ public:
   /// Create device representation of volume object.
   static Self::SmartPtr Create( const size_t numberOfBins /*!< Allocate device memory for data as multiple of this value.*/ )
   {
-    return Self::SmartPtr( new Self( numberOfBins ) );
-  }
-  
-  /// Return device data pointer.
-  DeviceMemory<float>& GetDataOnDevice()
-  {
-    return *(this->m_OnDeviceData);
+    return Self::SmartPtr(new Self(numberOfBins));
   }
 
   /// Return device data pointer.
-  const DeviceMemory<float>& GetDataOnDevice() const
-  {
+  DeviceMemory<float> &GetDataOnDevice() { return *(this->m_OnDeviceData); }
+
+  /// Return device data pointer.
+  const DeviceMemory<float> &GetDataOnDevice() const {
     return *(this->m_OnDeviceData);
   }
 
@@ -74,17 +68,20 @@ public:
   void Reset();
 
   /// Populate histogram from data on device.
-  void Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo, const bool logScale = false );
+  void Populate(const DeviceMemory<float> &dataOnDevice, const float rangeFrom,
+                const float rangeTo, const bool logScale = false);
 
   /// Populate histogram from data on device using binary mask.
-  void Populate( const DeviceMemory<float>& dataOnDevice, const DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo, const bool logScale = false );
+  void Populate(const DeviceMemory<float> &dataOnDevice,
+                const DeviceMemory<int> &maskOnDevice, const float rangeFrom,
+                const float rangeTo, const bool logScale = false);
 
   /// Get entropy.
   float GetEntropy() const;
 
-private:
+ private:
   /// Constructor.
-  DeviceHistogram( const size_t numberOfBins );
+  DeviceHistogram(const size_t numberOfBins);
 
   /// User-selected number of bins.
   size_t m_NumberOfBins;
@@ -99,6 +96,6 @@ private:
   mutable DeviceMemory<float>::SmartPtr m_OnDeviceResult;
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceHistogram_h_included_
+#endif  // #ifndef __cmtkDeviceHistogram_h_included_

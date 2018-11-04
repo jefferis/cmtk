@@ -31,15 +31,12 @@
 
 #include <Pipeline/cmtkPipelineObject.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Pipeline */
 //@{
 
-PipelineObject::PipelineObject()
-{ 
+PipelineObject::PipelineObject() {
   Owner = NULL;
   // We may use 0 here as the actual time starts at "1". So newly created
   // objects are never marked up-to-date.
@@ -47,53 +44,43 @@ PipelineObject::PipelineObject()
   ExecutePending = 0;
 }
 
-int PipelineObject::Register( PipelineObject *const owner )
-{
-  if ( owner ) 
-    {
+int PipelineObject::Register(PipelineObject *const owner) {
+  if (owner) {
     Owner = owner;
-    }
+  }
   this->Object::Reference();
   return this->GetReferenceCount();
 }
 
-
-void PipelineObject::Unregister( PipelineObject *const owner )
-{
+void PipelineObject::Unregister(PipelineObject *const owner) {
   // Does the primary owner unregister? Then set primary owner to "none".
-  if ( Owner == owner ) Owner = NULL;
+  if (Owner == owner) Owner = NULL;
 
   this->Delete();
 }
 
-long PipelineObject::Update()
-{
-  this->CheckInputForUpdate( Owner );
+long PipelineObject::Update() {
+  this->CheckInputForUpdate(Owner);
   return this->ExecuteIfNecessary();
 }
 
-int PipelineObject::CheckInputForUpdate( PipelineObject *const object )
-{
-  if ( object ) 
-    {
+int PipelineObject::CheckInputForUpdate(PipelineObject *const object) {
+  if (object) {
     const long ObjectTime = object->Update();
-    if ( ObjectTime > ExecuteTime ) 
-      {
+    if (ObjectTime > ExecuteTime) {
       ExecutePending = 1;
       return 1;
-      }
     }
+  }
   return 0;
 }
 
-long PipelineObject::ExecuteIfNecessary()
-{
-  if ( (this->GetModifiedTime() > ExecuteTime) || ExecutePending ) 
-    {
+long PipelineObject::ExecuteIfNecessary() {
+  if ((this->GetModifiedTime() > ExecuteTime) || ExecutePending) {
     this->Execute();
     this->UpdateExecuteTime();
-  } 
+  }
   return ExecuteTime;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

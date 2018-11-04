@@ -32,45 +32,43 @@
 
 #include <Base/cmtkRegionIndexIterator.h>
 
-cmtk::FitToXformListBase::FitToXformListBase( const UniformVolume& sampleGrid, const XformList& xformList, const bool absolute )
-  : m_XformField( sampleGrid )
-{
-  this->m_XformValidAt.resize( this->m_XformField.GetNumberOfPixels() );
-  std::fill( this->m_XformValidAt.begin(), this->m_XformValidAt.end(), true );
+cmtk::FitToXformListBase::FitToXformListBase(const UniformVolume &sampleGrid,
+                                             const XformList &xformList,
+                                             const bool absolute)
+    : m_XformField(sampleGrid) {
+  this->m_XformValidAt.resize(this->m_XformField.GetNumberOfPixels());
+  std::fill(this->m_XformValidAt.begin(), this->m_XformValidAt.end(), true);
 
-  const DataGrid::RegionType wholeImageRegion = this->m_XformField.GetWholeImageRegion();
+  const DataGrid::RegionType wholeImageRegion =
+      this->m_XformField.GetWholeImageRegion();
 
 #ifndef _OPENMP
   const DataGrid::RegionType region = wholeImageRegion;
-#else // _OPENMP
+#else  // _OPENMP
   const int sliceFrom = wholeImageRegion.From()[2];
   const int sliceTo = wholeImageRegion.To()[2];
 #pragma omp parallel for
-  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
-    {
+  for (int slice = sliceFrom; slice < sliceTo; ++slice) {
     DataGrid::RegionType region = wholeImageRegion;
     region.From()[2] = slice;
-    region.To()[2] = slice+1;
+    region.To()[2] = slice + 1;
 #endif
 
-    for ( RegionIndexIterator<DataGrid::RegionType> voxelIt( region ); voxelIt != voxelIt.end(); ++voxelIt )
-      {
-      const size_t ofs = this->m_XformField.GetOffsetFromIndex( voxelIt.Index() );
-      const Xform::SpaceVectorType v = this->m_XformField.GetGridLocation( voxelIt.Index() );
-      
-      Xform::SpaceVectorType u = v;
-      if ( xformList.ApplyInPlace( u ) )
-	{
-	if ( !absolute )
-	  u -= v;
-	this->m_XformField[ofs] = u;
-	}
-      else
-	{
-	this->m_XformValidAt[ofs] = false;
-	}
-      }
-#ifdef _OPENMP
+  for (RegionIndexIterator<DataGrid::RegionType> voxelIt(region);
+       voxelIt != voxelIt.end(); ++voxelIt) {
+    const size_t ofs = this->m_XformField.GetOffsetFromIndex(voxelIt.Index());
+    const Xform::SpaceVectorType v =
+        this->m_XformField.GetGridLocation(voxelIt.Index());
+
+    Xform::SpaceVectorType u = v;
+    if (xformList.ApplyInPlace(u)) {
+      if (!absolute) u -= v;
+      this->m_XformField[ofs] = u;
+    } else {
+      this->m_XformValidAt[ofs] = false;
     }
+  }
+#ifdef _OPENMP
+}
 #endif
 }

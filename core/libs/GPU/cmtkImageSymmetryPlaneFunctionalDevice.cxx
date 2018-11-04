@@ -34,64 +34,61 @@
 
 #include <GPU/cmtkImagePairAffineRegistrationFunctionalDevice_kernels.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
-( UniformVolume::SmartConstPtr& volume ) 
-  : ImageSymmetryPlaneFunctionalBase( volume )
-{
-  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) );
+ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice(
+    UniformVolume::SmartConstPtr &volume)
+    : ImageSymmetryPlaneFunctionalBase(volume) {
+  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr(
+      DeviceUniformVolumeArray::Create(*(this->m_Volume)));
 }
 
-ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
-( UniformVolume::SmartConstPtr& volume, 
-  const Types::DataItemRange& valueRange )
-  : ImageSymmetryPlaneFunctionalBase( volume, valueRange )
-{
-  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) );
+ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice(
+    UniformVolume::SmartConstPtr &volume,
+    const Types::DataItemRange &valueRange)
+    : ImageSymmetryPlaneFunctionalBase(volume, valueRange) {
+  this->m_VolumeOnDevice = DeviceUniformVolumeArray::SmartPtr(
+      DeviceUniformVolumeArray::Create(*(this->m_Volume)));
 }
 
 ImageSymmetryPlaneFunctionalDevice::ReturnType
-ImageSymmetryPlaneFunctionalDevice::Evaluate()
-{
-  const AffineXform::MatrixType mirrorMatrix = this->m_ParametricPlane.GetMirrorXformMatrix();
+ImageSymmetryPlaneFunctionalDevice::Evaluate() {
+  const AffineXform::MatrixType mirrorMatrix =
+      this->m_ParametricPlane.GetMirrorXformMatrix();
 
   float matrix[4][4];
-  for ( size_t j = 0; j < 4; ++j )
-    {
-    for ( size_t i = 0; i < 4; ++i )
-      {
-      matrix[j][i] = static_cast<float>( mirrorMatrix[j][i] );
-      }
+  for (size_t j = 0; j < 4; ++j) {
+    for (size_t i = 0; i < 4; ++i) {
+      matrix[j][i] = static_cast<float>(mirrorMatrix[j][i]);
     }
+  }
 
-  FixedVector<3,float> deltas = this->m_Volume->Deltas();
+  FixedVector<3, float> deltas = this->m_Volume->Deltas();
 
   // multiply deltas for index-to-image space conversion
-  for ( size_t j = 0; j < 3; ++j )
-    {
-    for ( size_t i = 0; i < 3; ++i )
-      {
+  for (size_t j = 0; j < 3; ++j) {
+    for (size_t i = 0; i < 3; ++i) {
       matrix[j][i] *= deltas[j];
-      }
     }
+  }
 
   // divide by size to get to normalized image coordinates after mirror
-  for ( size_t j = 0; j < 4; ++j ) // here, need to run up to 3 because translation is also in output space
-    {
-    for ( size_t i = 0; i < 3; ++i )
-      {
-      matrix[j][i] /= static_cast<float>( this->m_Volume->m_Size[i] );
-      }
+  for (size_t j = 0; j < 4; ++j)  // here, need to run up to 3 because
+                                  // translation is also in output space
+  {
+    for (size_t i = 0; i < 3; ++i) {
+      matrix[j][i] /= static_cast<float>(this->m_Volume->m_Size[i]);
     }
-  
-  return -ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), 
-								  this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
+  }
+
+  return -ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD(
+      this->m_Volume->m_Dims.begin(),
+      this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(),
+      this->m_Volume->m_Dims.begin(),
+      this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

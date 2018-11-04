@@ -35,43 +35,37 @@
 
 #include <Base/cmtkFixedVector.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Class that computes the surface normal.
-class
-SurfaceNormal
-{
-public:
+class SurfaceNormal {
+ public:
   /// This class.
   typedef SurfaceNormal Self;
 
   /// Space vector type.
-  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
+  typedef FixedVector<3, Types::Coordinate> SpaceVectorType;
 
   /// Constructor: takes two non-collinear vectors that span the surface.
-  SurfaceNormal( const SpaceVectorType& s1, const SpaceVectorType& s2 )
-  {
-    this->m_Normal = FixedVectorStaticInitializer<3,Types::Coordinate>::Init( s1[1] * s2[2] - s1[2] * s2[1], s1[2] * s2[0] - s1[0] * s2[2], s1[0] * s2[1] - s1[1] * s2[0] );
+  SurfaceNormal(const SpaceVectorType &s1, const SpaceVectorType &s2) {
+    this->m_Normal = FixedVectorStaticInitializer<3, Types::Coordinate>::Init(
+        s1[1] * s2[2] - s1[2] * s2[1], s1[2] * s2[0] - s1[0] * s2[2],
+        s1[0] * s2[1] - s1[1] * s2[0]);
   }
 
   /// Get the normal vector.
-  const SpaceVectorType& Get() const
-  {
-    return this->m_Normal;
-  }
+  const SpaceVectorType &Get() const { return this->m_Normal; }
 
-private:
+ private:
   /// The surface normal vector.
   SpaceVectorType m_Normal;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkSurfaceNormal_h_included_
+#endif  // #ifndef __cmtkSurfaceNormal_h_included_

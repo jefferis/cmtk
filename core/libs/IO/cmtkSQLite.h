@@ -40,61 +40,56 @@
 
 #include <System/cmtkException.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /** Wrapper class for SQLite database.
  */
-class SQLite
-{
-public:
+class SQLite {
+ public:
   /// This class.
   typedef SQLite Self;
 
-  /// Primary key type for the underlying database. This is used to uniquely identify table entries.
+  /// Primary key type for the underlying database. This is used to uniquely
+  /// identify table entries.
   typedef sqlite3_uint64 PrimaryKeyType;
 
-  /// Primary key value when object is not found: this should be guaranteed to never be used by the database as an actual primary key.
-  static const PrimaryKeyType NOTFOUND = static_cast<PrimaryKeyType>( -1 );
+  /// Primary key value when object is not found: this should be guaranteed to
+  /// never be used by the database as an actual primary key.
+  static const PrimaryKeyType NOTFOUND = static_cast<PrimaryKeyType>(-1);
 
   /// Table type: matrix of strings.
-  typedef std::vector< std::vector< std::string > > TableType;
+  typedef std::vector<std::vector<std::string>> TableType;
 
   /// Exception class for class-specific error reporting.
-  class Exception : 
-    /// Inherit from library-level exception
-    public cmtk::Exception 
-  {
-  public:
+  class Exception :
+      /// Inherit from library-level exception
+      public cmtk::Exception {
+   public:
     /// Constructor with error message.
-    Exception( const std::string& error ) : cmtk::Exception( error ) {};
+    Exception(const std::string &error) : cmtk::Exception(error){};
   };
 
   /// Constructor: open SQLite database.
   SQLite( const std::string& dbPath, /*!< Path to the SQLite3 database file. */
 	  const bool readOnly = false /*!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
-  
+
   /// Destructor: close database.
   virtual ~SQLite();
 
   /// Test "good" flag.
-  bool Good() const
-  {
-    return this->m_Good;
-  }
+  bool Good() const { return this->m_Good; }
 
   /// Execute an SQL command with no return value.
-  void Exec( const std::string& sql );
+  void Exec(const std::string &sql);
 
   /// Query database and return table.
-  void Query( const std::string& sql, Self::TableType& table ) const;
+  void Query(const std::string &sql, Self::TableType &table) const;
 
   /// Check if table exists.
-  bool TableExists( const std::string& tableName ) const;
+  bool TableExists(const std::string &tableName) const;
 
   /// Turn on debug mode.
   void DebugModeOn() { this->m_DebugMode = true; }
@@ -102,19 +97,20 @@ public:
   /// Turn off debug mode.
   void DebugModeOff() { this->m_DebugMode = false; }
 
-protected:
+ protected:
   /// Database object.
   mutable sqlite3 *m_DB;
 
   /// Flag for "good" database object.
   bool m_Good;
 
-  /// Debug mode flag: if this is set, all executed SQL queries will be printed to standard error.
+  /// Debug mode flag: if this is set, all executed SQL queries will be printed
+  /// to standard error.
   bool m_DebugMode;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkSQLite_h_included_
+#endif  // #ifndef __cmtkSQLite_h_included_

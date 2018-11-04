@@ -35,56 +35,55 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkActiveShapeModel.h>
-#include <Base/cmtkWarpXform.h>
 #include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <list>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 /// Active deformation model.
-template<class W>
+template <class W>
 class ActiveDeformationModel :
-  /// This is an active shape model of sorts.
-  public ActiveShapeModel,
-  /// This class is also a deformation (as defined by template parameter).
-  public W
-{
-public:
+    /// This is an active shape model of sorts.
+    public ActiveShapeModel,
+    /// This class is also a deformation (as defined by template parameter).
+    public W {
+ public:
   /// Smart pointer to spline ADM.
-  typedef SmartPointer< ActiveDeformationModel<W> > SmartPtr;
+  typedef SmartPointer<ActiveDeformationModel<W>> SmartPtr;
 
   /** Build deformation model from list of deformations.
    * All deformations in the list must be of the same type, have the same
    * arrangement of control points, and must be defined on the same
    * domain (reference image).
    */
-  ActiveDeformationModel( const std::list< SmartPointer<W> >& deformationList, const unsigned int numberOfModes, const bool includeScaleInModel = true,
-			  const bool includeReferenceInModel = true );
+  ActiveDeformationModel(const std::list<SmartPointer<W>> &deformationList,
+                         const unsigned int numberOfModes,
+                         const bool includeScaleInModel = true,
+                         const bool includeReferenceInModel = true);
 
   /// Compose deformation from mean deformation and modes of variation.
-  W* Compose( const Types::Coordinate* weights = NULL );
+  W *Compose(const Types::Coordinate *weights = NULL);
 
   /** Decompose a deformation into mean and modes of this model.
    *\param input Input deformation.
    *\param weights Weights of the modes that make up the given input vector.
    * This parameter is optional. If not given, no weights will be returned.
-   *\return The value of the multivariate Gaussian PDF represented by this 
+   *\return The value of the multivariate Gaussian PDF represented by this
    * model atr the location of the input vector.
    */
-  float Decompose( const W* input, Types::Coordinate *const weights = NULL ) const;
+  float Decompose(const W *input,
+                  Types::Coordinate *const weights = NULL) const;
 
-
-private:
+ private:
   /** Make ADM sample points from the undeformed c.p.g. of a given deformation.
    * This is for inclusion of the reference individual into the model by
    * putting the identity transformation into the sample set.
    */
-  Types::Coordinate* MakeSamplePointsReference( const W* deformation );
+  Types::Coordinate *MakeSamplePointsReference(const W *deformation);
 
   /** Make ADM sample points from a given deformation.
    * This function applies the inverse affine transformation of the given
@@ -94,7 +93,7 @@ private:
    * coordinate system of the respective floating image, which varies from
    * deformation to deformation.
    */
-  Types::Coordinate* MakeSamplePoints( const W* deformation );
+  Types::Coordinate *MakeSamplePoints(const W *deformation);
 
   /// Flag whether to include scale factors in model.
   bool IncludeScaleInModel;
@@ -108,6 +107,6 @@ typedef ActiveDeformationModel<SplineWarpXform> SplineActiveDeformationModel;
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkActiveDeformationModel_h_included_
+#endif  // #ifndef __cmtkActiveDeformationModel_h_included_

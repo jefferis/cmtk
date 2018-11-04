@@ -35,35 +35,34 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: scale image values to given range.
 class ImageOperationScaleToRange
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor.
-  ImageOperationScaleToRange( const Types::DataItemRange& toRange ) : m_ToRange( toRange ) {}
-  
+  ImageOperationScaleToRange(const Types::DataItemRange &toRange)
+      : m_ToRange(toRange) {}
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new lower thresholding operation.
-  static void New( const char* range );
-  
-private:
+  static void New(const char *range);
+
+ private:
   /// Start of range we're scaling to.
   Types::DataItemRange m_ToRange;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationScaleToRange_h_included_
+#endif  // #ifndef __cmtkImageOperationScaleToRange_h_included_

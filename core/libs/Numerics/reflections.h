@@ -105,24 +105,24 @@ cause an overflow.
 
 
 MODIFICATIONS:
-    24.12.2005 sign(Alpha) was replaced with an analogous to the Fortran SIGN code.
+    24.12.2005 sign(Alpha) was replaced with an analogous to the Fortran SIGN
+code.
 
   -- LAPACK auxiliary routine (version 3.0) --
      Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau);
-
+void generatereflection(ap::real_1d_array &x, int n, ap::real_value_type &tau);
 
 /*************************************************************************
 Application of an elementary reflection to a rectangular matrix of size MxN
 
-The algorithm pre-multiplies the matrix by an elementary reflection transformation
-which is given by column V and scalar Tau (see the description of the
-GenerateReflection procedure). Not the whole matrix but only a part of it
-is transformed (rows from M1 to M2, columns from N1 to N2). Only the elements
-of this submatrix are changed.
+The algorithm pre-multiplies the matrix by an elementary reflection
+transformation which is given by column V and scalar Tau (see the description of
+the GenerateReflection procedure). Not the whole matrix but only a part of it is
+transformed (rows from M1 to M2, columns from N1 to N2). Only the elements of
+this submatrix are changed.
 
 Input parameters:
     C       -   matrix to be transformed.
@@ -143,24 +143,18 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void applyreflectionfromtheleft(ap::real_2d_array& c,
-     ap::real_value_type tau,
-     const ap::real_1d_array& v,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     ap::real_1d_array& work);
-
+void applyreflectionfromtheleft(ap::real_2d_array &c, ap::real_value_type tau,
+                                const ap::real_1d_array &v, int m1, int m2,
+                                int n1, int n2, ap::real_1d_array &work);
 
 /*************************************************************************
 Application of an elementary reflection to a rectangular matrix of size MxN
 
-The algorithm post-multiplies the matrix by an elementary reflection transformation
-which is given by column V and scalar Tau (see the description of the
-GenerateReflection procedure). Not the whole matrix but only a part of it
-is transformed (rows from M1 to M2, columns from N1 to N2). Only the
-elements of this submatrix are changed.
+The algorithm post-multiplies the matrix by an elementary reflection
+transformation which is given by column V and scalar Tau (see the description of
+the GenerateReflection procedure). Not the whole matrix but only a part of it is
+transformed (rows from M1 to M2, columns from N1 to N2). Only the elements of
+this submatrix are changed.
 
 Input parameters:
     C       -   matrix to be transformed.
@@ -181,14 +175,8 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void applyreflectionfromtheright(ap::real_2d_array& c,
-     ap::real_value_type tau,
-     const ap::real_1d_array& v,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     ap::real_1d_array& work);
-
+void applyreflectionfromtheright(ap::real_2d_array &c, ap::real_value_type tau,
+                                 const ap::real_1d_array &v, int m1, int m2,
+                                 int n1, int n2, ap::real_1d_array &work);
 
 #endif

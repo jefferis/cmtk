@@ -37,31 +37,28 @@
 
 #include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
+#include <System/cmtkMutexLock.h>
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkThreads.h>
-#include <System/cmtkMutexLock.h>
 
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkXform.h>
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkSymmetricMatrix.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkXform.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Functional for groupwise registration.
  */
-template<class TXform>
-class GroupwiseRegistrationRMIFunctional : 
-  public GroupwiseRegistrationFunctionalXformTemplate<TXform>
-{
-public:
+template <class TXform>
+class GroupwiseRegistrationRMIFunctional
+    : public GroupwiseRegistrationFunctionalXformTemplate<TXform> {
+ public:
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Superclass;
 
@@ -85,8 +82,12 @@ public:
 
   /** Set template grid.
    */
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid /*!< The template grid that defines size and resolution for the implicit registration template.*/, 
-				const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template pixel data, not just grid, in registration */ );
+  virtual void SetTemplateGrid(
+      UniformVolume::SmartPtr
+          &templateGrid /*!< The template grid that defines size and resolution
+                           for the implicit registration template.*/
+      ,
+      const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template pixel data, not just grid, in registration */);
 
   /** Compute functional value and gradient.
    *\param v Parameter vector.
@@ -95,12 +96,14 @@ public:
    *  is 1 mm.
    *\return Const function value for given parameters.
    */
-  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
+  virtual typename Self::ReturnType EvaluateWithGradient(
+      CoordinateVector &v, CoordinateVector &g,
+      const Types::Coordinate step = 1);
 
   /// Evaluate functional with currently set parameters.
   virtual typename Self::ReturnType Evaluate();
-  
-protected:
+
+ protected:
   /// Covariance matrix type.
   typedef SymmetricMatrix<typename Self::ReturnType> CovarianceMatrixType;
 
@@ -117,11 +120,11 @@ protected:
   SumsAndProductsVectorType m_SumsVector;
 
   /// Compute metric from partial matrices using temporary matrix storage.
-  typename Self::ReturnType GetMetric
-  ( const SumsAndProductsVectorType& sumOfProductsMatrix, 
-    const SumsAndProductsVectorType& sumsVector,
-    const unsigned int totalNumberOfSamples,
-    typename Self::CovarianceMatrixType& covarianceMatrix ) const;
+  typename Self::ReturnType GetMetric(
+      const SumsAndProductsVectorType &sumOfProductsMatrix,
+      const SumsAndProductsVectorType &sumsVector,
+      const unsigned int totalNumberOfSamples,
+      typename Self::CovarianceMatrixType &covarianceMatrix) const;
 
   /// Sum of products matrix.
   std::vector<SumsAndProductsVectorType> m_ThreadSumOfProductsMatrix;
@@ -139,26 +142,30 @@ protected:
   /// Update probabilistic sample table..
   virtual bool Wiggle();
 
-private:
+ private:
   /// Thread parameters with no further data.
   typedef ThreadParameters<Self> ThreadParametersType;
 
   /// Thread parameter for entropy evaluation.
-  class EvaluateThreadParameters : 
-    /// Inherit from generic thread parameter class.
-    public ThreadParametersType
-  {
-  };
-  
-  /// Evaluate functional with currently set parameters.
-  static void EvaluateThread( void *const threadParameters, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  class EvaluateThreadParameters :
+      /// Inherit from generic thread parameter class.
+      public ThreadParametersType {};
 
-  /// Evaluate functional with currently set parameters with probabilistic sampling.
-  static void EvaluateProbabilisticThread( void *const threadParameters, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  /// Evaluate functional with currently set parameters.
+  static void EvaluateThread(void *const threadParameters, const size_t taskIdx,
+                             const size_t taskCnt, const size_t threadIdx,
+                             const size_t);
+
+  /// Evaluate functional with currently set parameters with probabilistic
+  /// sampling.
+  static void EvaluateProbabilisticThread(void *const threadParameters,
+                                          const size_t taskIdx,
+                                          const size_t taskCnt,
+                                          const size_t threadIdx, const size_t);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkGroupwiseRegistrationRMIFunctional_h_included_
+#endif  // #ifndef __cmtkGroupwiseRegistrationRMIFunctional_h_included_

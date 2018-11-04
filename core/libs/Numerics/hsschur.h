@@ -76,14 +76,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "reflections.h"
 #include "rotations.h"
 
-void internalschurdecomposition(ap::real_2d_array& h,
-     int n,
-     int tneeded,
-     int zneeded,
-     ap::real_1d_array& wr,
-     ap::real_1d_array& wi,
-     ap::real_2d_array& z,
-     int& info);
-
+void internalschurdecomposition(ap::real_2d_array &h, int n, int tneeded,
+                                int zneeded, ap::real_1d_array &wr,
+                                ap::real_1d_array &wi, ap::real_2d_array &z,
+                                int &info);
 
 #endif

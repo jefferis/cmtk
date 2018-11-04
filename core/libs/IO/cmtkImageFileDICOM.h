@@ -35,24 +35,24 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <Base/cmtkFixedVector.h>
 
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmimgle/didocu.h>
 
-#define DCM_GE_EffectiveEchoSpacing DcmTagKey(0x0043,0x102c)
-#define DCM_GE_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
-#define DCM_GE_AssetRFactors DcmTagKey(0x0043,0x1083)
+#define DCM_GE_EffectiveEchoSpacing DcmTagKey(0x0043, 0x102c)
+#define DCM_GE_RawDataType_ImageType DcmTagKey(0x0043, 0x102f)
+#define DCM_GE_AssetRFactors DcmTagKey(0x0043, 0x1083)
 
-#define DCM_GE_PulseSequenceName DcmTagKey(0x0019,0x109c)
-#define DCM_GE_PulseSequenceDate DcmTagKey(0x0019,0x109d)
-#define DCM_GE_InternalPulseSequenceName DcmTagKey(0x0019,0x109e)
+#define DCM_GE_PulseSequenceName DcmTagKey(0x0019, 0x109c)
+#define DCM_GE_PulseSequenceDate DcmTagKey(0x0019, 0x109d)
+#define DCM_GE_InternalPulseSequenceName DcmTagKey(0x0019, 0x109e)
 
 #ifndef DCM_ManufacturerModelName
-#define DCM_ManufacturerModelName DcmTagKey(0x0008,0x1090)
+#define DCM_ManufacturerModelName DcmTagKey(0x0008, 0x1090)
 #endif
 
 #ifndef DCM_PatientsName
@@ -61,24 +61,21 @@
 
 #ifndef DCM_Siemens_MosaicRefAcqTimes
 // Siemens tag for relative timing of all slices in a mosaic file
-#define DCM_Siemens_MosaicRefAcqTimes DcmTagKey(0x0019,0x1029)
+#define DCM_Siemens_MosaicRefAcqTimes DcmTagKey(0x0019, 0x1029)
 #endif
 
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Class handling a single DICOM image file and its meta data.
-class ImageFileDICOM
-{
-public:
+class ImageFileDICOM {
+ public:
   /// This class.
   typedef ImageFileDICOM Self;
 
@@ -110,7 +107,8 @@ public:
   double m_DwellTime;
 
   /** Sign for phase encode direction.
-   * This is "pos" for "positive" phase encoding, "neg" for "negative", or "unknown"
+   * This is "pos" for "positive" phase encoding, "neg" for "negative", or
+   * "unknown"
    */
   std::string m_PhaseEncodeDirectionSign;
 
@@ -118,9 +116,10 @@ public:
   double m_BValue;
 
   /// B vector for DWI.
-  cmtk::FixedVector<3,double> m_BVector;
+  cmtk::FixedVector<3, double> m_BVector;
 
-  /// Flag whether this image has a valid B vector (false for average DWI images).
+  /// Flag whether this image has a valid B vector (false for average DWI
+  /// images).
   bool m_HasBVector;
 
   /// Raw data type string.
@@ -130,7 +129,7 @@ public:
   std::vector<double> m_SliceTimes;
 
   /// Constructor.
-  ImageFileDICOM( const std::string& filename );
+  ImageFileDICOM(const std::string &filename);
 
   /// Determine whether two images match, i.e., belong to the same volume.
   bool Match( const Self& other, const Types::Coordinate numericalTolerance = 0, /*!< Numerical comparison tolerance; values with absolute difference less than this threshold are considered equal. */
@@ -138,20 +137,19 @@ public:
 	      const bool ignoreAcquisitionNumber = false /*!< When this flag is set, the AcquisitionNumber DICOM tag is ignore for matching images*/ ) const;
 
   /// Test if this image matches at least one from a list of DICOM tag patterns.
-  bool MatchAnyPattern( const std::map<DcmTagKey,std::string>& patterns ) const;
+  bool MatchAnyPattern(const std::map<DcmTagKey, std::string> &patterns) const;
 
-  /// Test if this image matches all from a list of DICOM tag patterns (or list is empty).
-  bool MatchAllPatterns( const std::map<DcmTagKey,std::string>& patterns ) const;
+  /// Test if this image matches all from a list of DICOM tag patterns (or list
+  /// is empty).
+  bool MatchAllPatterns(const std::map<DcmTagKey, std::string> &patterns) const;
 
   /// Compare order based on file name (for lexicographic sorting).
-  static bool lessFileName( const Self* lhs, const Self* rhs )
-  {
+  static bool lessFileName(const Self *lhs, const Self *rhs) {
     return lhs->m_FileName < rhs->m_FileName;
   }
 
   /// Compare order based on image instace (for sorting in acquisition order).
-  static bool lessInstanceNumber( const Self* lhs, const Self* rhs )
-  {
+  static bool lessInstanceNumber(const Self *lhs, const Self *rhs) {
     return lhs->m_InstanceNumber < rhs->m_InstanceNumber;
   }
 
@@ -159,22 +157,22 @@ public:
   void Print() const;
 
   /// Release memory allocated for complete DICOM document.
-  void ReleaseDocument()
-  {
-    this->m_Document = std::auto_ptr<DiDocument>( NULL );
-  }
+  void ReleaseDocument() { this->m_Document = std::auto_ptr<DiDocument>(NULL); }
 
   /// Get tag value.
-  const std::string& GetTagValue( const DcmTagKey& tag /*!< Find value string for this tag in DICOM file */, const std::string& defaultString = "" /*!< Return this default value if tag does not exist */ ) const
-  {
-    std::map<DcmTagKey,std::string>::const_iterator it = this->m_TagToStringMap.find( tag );
-    if ( it != this->m_TagToStringMap.end() )
+  const std::string &GetTagValue(
+      const DcmTagKey &tag /*!< Find value string for this tag in DICOM file */,
+      const std::string &defaultString =
+          "" /*!< Return this default value if tag does not exist */) const {
+    std::map<DcmTagKey, std::string>::const_iterator it =
+        this->m_TagToStringMap.find(tag);
+    if (it != this->m_TagToStringMap.end())
       return it->second;
     else
       return defaultString;
   }
 
-private:
+ private:
   /// Pointer to DICOM dataset object
   std::auto_ptr<DcmDataset> m_Dataset;
 
@@ -182,7 +180,7 @@ private:
   std::auto_ptr<DiDocument> m_Document;
 
   /// Map DCMTK tags to their string values in this image file.
-  std::map<DcmTagKey,std::string> m_TagToStringMap;
+  std::map<DcmTagKey, std::string> m_TagToStringMap;
 
   /// Handle Siemens private tags.
   void DoVendorTagsSiemens();
@@ -196,6 +194,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageFileDICOM_h_included_
+#endif  // #ifndef __cmtkImageFileDICOM_h_included_

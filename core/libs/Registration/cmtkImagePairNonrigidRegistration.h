@@ -41,31 +41,29 @@
 
 #include <string.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Generic multiresolution voxel-registration class.
  * By implementing member functions to retrieve parameters and report results
- * in derived classes, registration can be integrated into various 
+ * in derived classes, registration can be integrated into various
  * environments.
- *\version $Revision$ $Date$
+ *\version $Revision$ $Date: 2012-06-11 16:13:37 -0700 (Mon, 11 Jun 2012)
+ *$
  */
-class ImagePairNonrigidRegistration : 
-  /// Inherit basic voxel registration functions.
-  public ImagePairRegistration 
-{
-public:
+class ImagePairNonrigidRegistration :
+    /// Inherit basic voxel registration functions.
+    public ImagePairRegistration {
+ public:
   /// This class.
   typedef ImagePairNonrigidRegistration Self;
 
   /// Parent class.
   typedef ImagePairRegistration Superclass;
 
-protected:
+ protected:
   /// Initial deformation.
   SplineWarpXform::SmartPtr InitialWarpXform;
 
@@ -73,47 +71,48 @@ protected:
   SplineWarpXform::SmartPtr InverseWarpXform;
 
   /// Flag whether to adjust floating image histogram to match reference image.
-  cmtkGetSetMacro(bool,MatchFltToRefHistogram);
+  cmtkGetSetMacro(bool, MatchFltToRefHistogram);
 
   /** Flag for repeated application of histogram-based intensity matching.
-   * If this flag is set, histogram-based intensity matching is repeatedly applied
-   * throughout the registration process to match the floating image intensities
-   * with consideration for changing volume proportions as the deformation progresses.
+   * If this flag is set, histogram-based intensity matching is repeatedly
+   * applied throughout the registration process to match the floating image
+   * intensities with consideration for changing volume proportions as the
+   * deformation progresses.
    */
-  cmtkGetSetMacroDefault(bool,RepeatMatchFltToRefHistogram,true);
+  cmtkGetSetMacroDefault(bool, RepeatMatchFltToRefHistogram, true);
 
   /// This value determines how often the control point grid is refined.
-  cmtkGetSetMacro(int,RefineGrid);
+  cmtkGetSetMacro(int, RefineGrid);
 
   /** Flag whether to delay grid refinement.
-   * If this flag is set, a newly entered image resolution level is run with 
+   * If this flag is set, a newly entered image resolution level is run with
    * the previous, coarser deformation grid first before refining.
    */
-  cmtkGetSetMacro(bool,DelayRefineGrid);
+  cmtkGetSetMacro(bool, DelayRefineGrid);
 
   /// Initial spacing of the control point grid.
-  cmtkGetSetMacro(Types::Coordinate,GridSpacing);
+  cmtkGetSetMacro(Types::Coordinate, GridSpacing);
 
   /** Force exact grid spacing.
    * If this flag is set, then the CPG will be spaced at exactly the distance
-   * given in the GridSpacing field. Otherwise, the grid spacing will be 
+   * given in the GridSpacing field. Otherwise, the grid spacing will be
    * adjusted so that there is an integral number of CPG cells that cover the
    * reference image domain.
    */
-  cmtkGetSetMacro(bool,ExactGridSpacing);
+  cmtkGetSetMacro(bool, ExactGridSpacing);
 
   /// This counter determines how many edge control points are fixed.
   unsigned int IgnoreEdge;
 
   /** Restrict deformation to one or more coordinate axes.
    */
-  const char* RestrictToAxes;
+  const char *RestrictToAxes;
 
   /// Flag for fast mode (less accurate) of spline deformations.
-  cmtkGetSetMacro(bool,FastMode);
+  cmtkGetSetMacro(bool, FastMode);
 
   /// Flag for adaptive selection of active and passive parameters.
-  cmtkGetSetMacro(bool,AdaptiveFixParameters);
+  cmtkGetSetMacro(bool, AdaptiveFixParameters);
 
   /** Set threshold factor for selecting passive warp parameters adaptively.
    * If the flag AdaptiveFixParameters is set, this value determines the
@@ -122,23 +121,23 @@ protected:
    * below this factor times sum of min and max region entropy. The default
    * value is 0.5.
    */
-  cmtkGetSetMacro(float,AdaptiveFixThreshFactor);
+  cmtkGetSetMacro(float, AdaptiveFixThreshFactor);
 
   /// Weighting of Jacobian constraint relative to similairy measure.
-  cmtkGetSetMacro(float,JacobianConstraintWeight);
+  cmtkGetSetMacro(float, JacobianConstraintWeight);
 
   /// Weighting of grid bending energy constraint relative to image similarity.
-  cmtkGetSetMacro(float,GridEnergyWeight);
+  cmtkGetSetMacro(float, GridEnergyWeight);
 
   /// Factor by which to relax constraint weights for a relaxation step.
-  cmtkGetSetMacro(float,RelaxWeight);
+  cmtkGetSetMacro(float, RelaxWeight);
 
   /** Weight for inverse consistency weight.
    * If this is set to a value greater than 0, inverse consistency of the
    * transformation is enforced. In fact, both forward and backward
    * transformation are optimized simultaneously.
    */
-  cmtkGetSetMacro(float,InverseConsistencyWeight);
+  cmtkGetSetMacro(float, InverseConsistencyWeight);
 
   /// Flag to turn on deformation unfolding before each level.
   bool m_RelaxToUnfold;
@@ -151,7 +150,7 @@ protected:
   /** Destructor.
    * Free local objects for this class.
    */
-  virtual ~ImagePairNonrigidRegistration() {};
+  virtual ~ImagePairNonrigidRegistration(){};
 
   /**\name Member functions to be overwritten.
    */
@@ -160,33 +159,36 @@ protected:
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *\return 
+   *\return
    */
-  virtual CallbackResult InitRegistration ();
+  virtual CallbackResult InitRegistration();
 
   /** Enter resolution level.
-  */
-  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+   */
+  virtual void EnterResolution(CoordinateVector::SmartPtr &,
+                               Functional::SmartPtr &, const int, const int);
 
   /** Finish resolution level.
    * In addition to operations necessary for general registration, we have
    * to make some additional modifications. In particular the sampling of
    * the warp transformations' control point mesh has to be refined before
-   * entering the next resolution. 
-  */
-  virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+   * entering the next resolution.
+   */
+  virtual int DoneResolution(CoordinateVector::SmartPtr &,
+                             Functional::SmartPtr &, const int, const int);
   //@}
 
   /// Return final transformation.
-  SplineWarpXform::SmartPtr GetTransformation() const
-  {
-    return SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  SplineWarpXform::SmartPtr GetTransformation() const {
+    return SplineWarpXform::SmartPtr::DynamicCastFrom(this->m_Xform);
   }
 
   /// Get reformatted floating image.
-  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
+  const UniformVolume::SmartPtr GetReformattedFloatingImage(
+      Interpolators::InterpolationEnum interpolator =
+          Interpolators::LINEAR) const;
 
-private:
+ private:
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;
 
@@ -206,16 +208,18 @@ private:
    *\param size Reference volume size.
    *\param initialAffine Initial affine transformation for the warp.
    */
-  SplineWarpXform::SmartPtr MakeWarpXform( const UniformVolume::CoordinateVectorType& size, const AffineXform* initialAffine ) const;
+  SplineWarpXform::SmartPtr MakeWarpXform(
+      const UniformVolume::CoordinateVectorType &size,
+      const AffineXform *initialAffine) const;
 
   /// Base class for registration level parameters.
   class LevelParameters
-    /// Inherit from superclass parameters.
-    : public Superclass::LevelParameters
-  {
-  public:
+      /// Inherit from superclass parameters.
+      : public Superclass::LevelParameters {
+   public:
     /// Constructor: take image resolution.
-    LevelParameters( const Types::Coordinate resolution ) : m_Resolution( resolution ) {}
+    LevelParameters(const Types::Coordinate resolution)
+        : m_Resolution(resolution) {}
 
     /// Image resolution for this level.
     Types::Coordinate m_Resolution;
@@ -223,11 +227,12 @@ private:
 
   /** Create functional with current level settings.
    */
-  virtual Functional* MakeFunctional( const int level, const Superclass::LevelParameters* levelParameters );
+  virtual Functional *MakeFunctional(
+      const int level, const Superclass::LevelParameters *levelParameters);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // __cmtkImagePairNonrigidRegistration_h_included_
+#endif  // __cmtkImagePairNonrigidRegistration_h_included_

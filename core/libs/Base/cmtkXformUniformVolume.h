@@ -40,9 +40,7 @@
 
 #include <Base/cmtkVector3D.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -50,10 +48,9 @@ cmtk
 /** Pre-compute transformation for grid locations in a uniform volume.
  */
 class XformUniformVolume :
-  /// Inherit from class to prevent copying.
-  private CannotBeCopied
-{
-public:
+    /// Inherit from class to prevent copying.
+    private CannotBeCopied {
+ public:
   /// This class.
   typedef XformUniformVolume Self;
 
@@ -65,18 +62,21 @@ public:
 
   /// Virtual destructor.
   virtual ~XformUniformVolume() {}
-  
+
   /** Get transformed location of linked grid pixel.
    */
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const = 0;
+  virtual void GetTransformedGrid(Vector3D &v, const int idxX, const int idxY,
+                                  const int idxZ) const = 0;
 
   /** Get transformed locations of a series (scanline) of linked grid pixels.
    */
-  virtual void GetTransformedGridRow( Vector3D *const v, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) const = 0;
+  virtual void GetTransformedGridRow(Vector3D *const v, const size_t numPoints,
+                                     const int idxX, const int idxY,
+                                     const int idxZ) const = 0;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifdef __cmtkXformUniformVolume_h_included_
+#endif  // #ifdef __cmtkXformUniformVolume_h_included_

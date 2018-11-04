@@ -40,39 +40,32 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Label voting image combination.
- * This class implements combination of multiple multi-class or binary label images
- * using label voting. Each pixel in the output image is assigned the label that the
- * majority of input images assign to that pixel. Pixels with tied voting are assigned
- * a value of 256. The output image is allocated as 16bit short data to accommodate
- * this overflow value.
- *\attention All labels must be between 0 and 255.
+ * This class implements combination of multiple multi-class or binary label
+ *images using label voting. Each pixel in the output image is assigned the
+ *label that the majority of input images assign to that pixel. Pixels with tied
+ *voting are assigned a value of 256. The output image is allocated as 16bit
+ *short data to accommodate this overflow value. \attention All labels must be
+ *between 0 and 255.
  */
-class
-LabelCombinationVoting
-{
-public:
+class LabelCombinationVoting {
+ public:
   /// Constructor: compute label combination.
-  LabelCombinationVoting( const std::vector<TypedArray::SmartPtr>& data );
+  LabelCombinationVoting(const std::vector<TypedArray::SmartPtr> &data);
 
   /// Get result.
-  TypedArray::SmartPtr& GetResult()
-  {
-    return this->m_Result;
-  }
+  TypedArray::SmartPtr &GetResult() { return this->m_Result; }
 
-private:
+ private:
   /// Resulting data array.
   TypedArray::SmartPtr m_Result;
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationVoting_h_included_
+#endif  // #ifndef __cmtkLabelCombinationVoting_h_included_

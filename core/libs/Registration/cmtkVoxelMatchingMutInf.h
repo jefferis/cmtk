@@ -35,16 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkRegistrationJointHistogram.h>
 #include <Base/cmtkInterpolator.h>
+#include <Registration/cmtkRegistrationJointHistogram.h>
 #include <System/cmtkSmartPtr.h>
 
 #include <stdio.h>
 #include <cassert>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -52,12 +50,11 @@ cmtk
 /** Voxel metric "mutual information".
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNCC instead.
  */
-template<Interpolators::InterpolationEnum I=Interpolators::LINEAR>
-class VoxelMatchingMutInf : 
-  /// Inherit basic functionality from 2D histogram.
-  public RegistrationJointHistogram<I> 
-{
-public:
+template <Interpolators::InterpolationEnum I = Interpolators::LINEAR>
+class VoxelMatchingMutInf :
+    /// Inherit basic functionality from 2D histogram.
+    public RegistrationJointHistogram<I> {
+ public:
   /// This type.
   typedef VoxelMatchingMutInf<I> Self;
 
@@ -68,35 +65,40 @@ public:
    * For reference and model volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The model (transformed) volume.
-   *\param numRefBins The desired number of bins to classify the 
+   *\param numRefBins The desired number of bins to classify the
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *\param numFltBins The desired number of bins to classify the 
+   *\param numFltBins The desired number of bins to classify the
    * model data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */
-  VoxelMatchingMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
-    : RegistrationJointHistogram<I>( refVolume, fltVolume, numRefBins, numFltBins ) {};
-  
+  VoxelMatchingMutInf(const UniformVolume *refVolume,
+                      const UniformVolume *fltVolume,
+                      const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS,
+                      const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS)
+      : RegistrationJointHistogram<I>(refVolume, fltVolume, numRefBins,
+                                      numFltBins){};
+
   /// Return mutual information.
-  typename Self::ReturnType Get () const 
-  {
-    double HX, HY;    
-    this->GetMarginalEntropies(HX,HY);
+  typename Self::ReturnType Get() const {
+    double HX, HY;
+    this->GetMarginalEntropies(HX, HY);
     const double HXY = this->GetJointEntropy();
-    
-    return static_cast<typename Self::ReturnType>( HX + HY - HXY );
+
+    return static_cast<typename Self::ReturnType>(HX + HY - HXY);
   }
 };
 
 /// Mutual information with trilinear interpolation.
-typedef VoxelMatchingMutInf<Interpolators::LINEAR> VoxelMatchingMutInf_Trilinear;
+typedef VoxelMatchingMutInf<Interpolators::LINEAR>
+    VoxelMatchingMutInf_Trilinear;
 
 /// Mutual information with nearest-neighbor interpolation.
-typedef VoxelMatchingMutInf<Interpolators::NEAREST_NEIGHBOR> VoxelMatchingMutInf_NearestNeighbor;
+typedef VoxelMatchingMutInf<Interpolators::NEAREST_NEIGHBOR>
+    VoxelMatchingMutInf_NearestNeighbor;
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef _VoxelMatchingMUTINF_H_
+#endif  // #ifndef _VoxelMatchingMUTINF_H_

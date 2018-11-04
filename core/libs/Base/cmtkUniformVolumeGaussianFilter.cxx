@@ -37,36 +37,46 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-TypedArray::SmartPtr
-UniformVolumeGaussianFilter::GetFiltered3D( const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
-{
-  return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[0], maxError ),
-						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[1], maxError ),
-						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[2], maxError ) );
+TypedArray::SmartPtr UniformVolumeGaussianFilter::GetFiltered3D(
+    const Units::GaussianSigma &sigma, const Types::Coordinate maxError) const {
+  return DataGridFilter::GetDataKernelFiltered(
+      GaussianKernel<Types::DataItem>::GetHalfKernel(
+          sigma / this->m_UniformVolume->Deltas()[0], maxError),
+      GaussianKernel<Types::DataItem>::GetHalfKernel(
+          sigma / this->m_UniformVolume->Deltas()[1], maxError),
+      GaussianKernel<Types::DataItem>::GetHalfKernel(
+          sigma / this->m_UniformVolume->Deltas()[2], maxError));
 }
 
-TypedArray::SmartPtr
-UniformVolumeGaussianFilter::GetFiltered1D( const int direction, const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
-{
-  const std::vector<Types::Coordinate> empty( 1, 1.0 );
+TypedArray::SmartPtr UniformVolumeGaussianFilter::GetFiltered1D(
+    const int direction, const Units::GaussianSigma &sigma,
+    const Types::Coordinate maxError) const {
+  const std::vector<Types::Coordinate> empty(1, 1.0);
 
-  switch ( direction )
-    {
+  switch (direction) {
     default:
     case 0:
-      return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[0], maxError ), empty, empty );
+      return DataGridFilter::GetDataKernelFiltered(
+          GaussianKernel<Types::DataItem>::GetHalfKernel(
+              sigma / this->m_UniformVolume->Deltas()[0], maxError),
+          empty, empty);
     case 1:
-      return DataGridFilter::GetDataKernelFiltered( empty, GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[1], maxError ), empty );
+      return DataGridFilter::GetDataKernelFiltered(
+          empty,
+          GaussianKernel<Types::DataItem>::GetHalfKernel(
+              sigma / this->m_UniformVolume->Deltas()[1], maxError),
+          empty);
     case 2:
-      return DataGridFilter::GetDataKernelFiltered( empty, empty, GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[2], maxError ) );
-    }
+      return DataGridFilter::GetDataKernelFiltered(
+          empty, empty,
+          GaussianKernel<Types::DataItem>::GetHalfKernel(
+              sigma / this->m_UniformVolume->Deltas()[2], maxError));
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

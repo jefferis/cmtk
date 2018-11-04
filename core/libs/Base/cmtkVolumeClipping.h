@@ -36,12 +36,10 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkTypes.h>
-#include <Base/cmtkVector3D.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVector3D.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -49,14 +47,14 @@ cmtk
 /** Utility class for volume clipping.
  * This class provides functions to compute intersections of volumes with
  * lines, planes, and other volumes. Line-to-volume intersection can be
- * computed by a single function call. 
+ * computed by a single function call.
  *
  * Plane to volume intersection is done by first computing a range of parallel
  * lines that intersect the volume. Then, for each line the line to volume
  * intersection has to be computed to determine the exact intersection.
  *
  * Analog, for volume to volume intersection, first a range of parallel planes
- * is determined. Those then have to be examined in separate as described 
+ * is determined. Those then have to be examined in separate as described
  * before.
  *
  * This class' main application is ray clipping for DRR computation and volume
@@ -64,13 +62,14 @@ cmtk
  * are static, so they can be used without contructing an object.
  *\author T. Rohlfing
  */
-class VolumeClipping 
-{
-public:
+class VolumeClipping {
+ public:
   /** Set clipping boundaries.
    * This function sets the boundaries by which clipping is performed.
    */
-  void SetClippingBoundaries( const UniformVolume::CoordinateRegionType& region /*!< The clipping region in image coordinates */ );
+  void SetClippingBoundaries(
+      const UniformVolume::CoordinateRegionType
+          &region /*!< The clipping region in image coordinates */);
 
   /** Set clipped volumes spanning vector in x-direction.
    *\param deltaX The direction vector of the rows in the volume to be clipped.
@@ -78,36 +77,27 @@ public:
    * applied to this vector previously inorder for the clipping to be performed
    * correctly.
    */
-  void SetDeltaX( const Vector3D& deltaX ) 
-  {
-    this->DeltaX = deltaX;
-  }
+  void SetDeltaX(const Vector3D &deltaX) { this->DeltaX = deltaX; }
 
   /** Set clipped volumes spanning vector in y-direction.
-   *\param deltaY The direction vector of the columns in the volume to be 
+   *\param deltaY The direction vector of the columns in the volume to be
    * clipped. This is the vector from the origin of the first row in each
    * plane to the origin of the last row in that same plane.
    * The coordinate transformation applied to the clipped volume must have been
    * applied to this vector previously inorder for the clipping to be performed
    * correctly.
    */
-  void SetDeltaY( const Vector3D& deltaY ) 
-  {
-    this->DeltaY = deltaY;
-  }
-  
+  void SetDeltaY(const Vector3D &deltaY) { this->DeltaY = deltaY; }
+
   /** Set clipped volumes spanning vector in z-direction.
-   *\param deltaZ The direction vector of the planes in the volume to be 
+   *\param deltaZ The direction vector of the planes in the volume to be
    * clipped. This is the vector from the origin of the first plane in the
    * volume to the origin of the last plane.
    * The coordinate transformation applied to the clipped volume must have been
    * applied to this vector previously inorder for the clipping to be performed
    * correctly.
    */
-  void SetDeltaZ( const Vector3D& deltaZ ) 
-  {
-    this->DeltaZ = deltaZ;
-  }
+  void SetDeltaZ(const Vector3D &deltaZ) { this->DeltaZ = deltaZ; }
 
   /** Compute line-to-volume intersection.
    * This function computes the part of a lines that lies within a given
@@ -118,7 +108,7 @@ public:
    *\param fromFactor If the function returned 1, this variable holds the
    * relative distance to the entrance point of the line into the volume.
    * 0 means the line's starting point, 1 means its end.
-   *\param toFactor If the function returned 1, this variable holds the 
+   *\param toFactor If the function returned 1, this variable holds the
    * relative distance to the exit point of the line from the volume. Possible
    * values range from 0 to 1 and have the same meaning as fromFactor.
    *\param offset This 3D vector is the line's starting point.
@@ -134,20 +124,19 @@ public:
    * intervals, which may be important for subsequent computation such as
    * volume probing.
    *\param lowerClosed This flag defines whether lower range boundaries are
-   * open (value 0, default) or closed (value 1). In case of an open range, 
+   * open (value 0, default) or closed (value 1). In case of an open range,
    * the bounding value itself is not an element of the range. Thus, if an
    * intersection is entirely on the boundary, then it is empty in case of an
    * open range.
    *\param upperClosed This flag has the same meaning and default as
    * lowerClosed, but refers to the ranges' upper bounds.
    */
-  int ClipX ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
-	      const Vector3D& offset,
-	      const Types::Coordinate initFromFactor = 0,
-	      const Types::Coordinate initToFactor = 1,
-	      const bool lowerClosed = false,
-	      const bool upperClosed = false ) const;
-  
+  int ClipX(Types::Coordinate &fromFactor, Types::Coordinate &toFactor,
+            const Vector3D &offset, const Types::Coordinate initFromFactor = 0,
+            const Types::Coordinate initToFactor = 1,
+            const bool lowerClosed = false,
+            const bool upperClosed = false) const;
+
   /** Compute plane-to-volume intersection.
    * This function computes the part of a plane that intersects with a given
    * volume. The intersection is only tested with respect to the dY direction.
@@ -156,11 +145,10 @@ public:
    *
    * Parameters and return value are identical to IntersectionX.
    */
-  int ClipY ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
-	      const Vector3D& offset, 
-	      const Types::Coordinate initFromFactor = 0,
-	      const Types::Coordinate initToFactor = 1 ) const;
-  
+  int ClipY(Types::Coordinate &fromFactor, Types::Coordinate &toFactor,
+            const Vector3D &offset, const Types::Coordinate initFromFactor = 0,
+            const Types::Coordinate initToFactor = 1) const;
+
   /** Compute volume-to-volume intersection.
    * This function computes the part of a volume that intersects with a given
    * volume. The intersection is only tested with respect to the dZ direction.
@@ -170,12 +158,11 @@ public:
    *
    * Parameters and return value are identical to IntersectionX.
    */
-  int ClipZ ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
-	      const Vector3D& offset,
-	      const Types::Coordinate initFromFactor = 0,
-	      const Types::Coordinate initToFactor = 1 ) const;
-  
-private:
+  int ClipZ(Types::Coordinate &fromFactor, Types::Coordinate &toFactor,
+            const Vector3D &offset, const Types::Coordinate initFromFactor = 0,
+            const Types::Coordinate initToFactor = 1) const;
+
+ private:
   /// Clipping boundaries.
   UniformVolume::CoordinateRegionType m_ClippingRegion;
 
@@ -187,11 +174,10 @@ private:
 
   /// Spanning vector of the clipped volume in z-direction.
   Vector3D DeltaZ;
-
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkVolumeClipping_h_included_
+#endif  // #ifndef __cmtkVolumeClipping_h_included_

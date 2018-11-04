@@ -40,9 +40,7 @@
 #include <Registration/cmtkImagePairSimilarityMeasure.h>
 #include <Registration/cmtkImagePairSimilarityMeasureMSD.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -50,10 +48,9 @@ cmtk
 /** Functional for finding a symmetry plane in 3-D volumes.
  */
 class ImageSymmetryPlaneFunctional :
-  /// Inherit functional interface.
-  public ImageSymmetryPlaneFunctionalBase
-{
-public:
+    /// Inherit functional interface.
+    public ImageSymmetryPlaneFunctionalBase {
+ public:
   /// This class.
   typedef ImageSymmetryPlaneFunctional Self;
 
@@ -65,12 +62,13 @@ public:
 
   /// Type of metric we're using.
   typedef ImagePairSimilarityMeasureMSD MetricType;
-  
+
   /// Constructor.
-  ImageSymmetryPlaneFunctional( UniformVolume::SmartConstPtr& volume );
+  ImageSymmetryPlaneFunctional(UniformVolume::SmartConstPtr &volume);
 
   /// Constructor with value range limits.
-  ImageSymmetryPlaneFunctional( UniformVolume::SmartConstPtr& volume, const Types::DataItemRange& valueRange );
+  ImageSymmetryPlaneFunctional(UniformVolume::SmartConstPtr &volume,
+                               const Types::DataItemRange &valueRange);
 
   /// Destructor.
   virtual ~ImageSymmetryPlaneFunctional() {}
@@ -78,13 +76,13 @@ public:
   /// Compute functional value.
   virtual Self::ReturnType Evaluate();
 
-private:
+ private:
   /// Image similarity measure.
   Self::MetricType::SmartPtr m_Metric;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageSymmetryPlaneFunctional_h_included_
+#endif  // #ifndef __cmtkImageSymmetryPlaneFunctional_h_included_

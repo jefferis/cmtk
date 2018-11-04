@@ -32,18 +32,17 @@
 
 #include "cmtkJointHistogramBase.h"
 
-size_t
-cmtk::JointHistogramBase::CalcNumBins
-( const size_t numberOfSamples, const Types::DataItemRange& valueRange ) 
-{
-  const size_t side = static_cast<size_t>( sqrt( static_cast<float>( numberOfSamples )) );
-  const size_t dataRange = static_cast<size_t>( valueRange.Width() + 1 );
-  const int upperLimit = std::min<size_t>( std::min<size_t>( dataRange, 128), side );
-  return std::max<size_t>( 8, upperLimit );
+size_t cmtk::JointHistogramBase::CalcNumBins(
+    const size_t numberOfSamples, const Types::DataItemRange &valueRange) {
+  const size_t side =
+      static_cast<size_t>(sqrt(static_cast<float>(numberOfSamples)));
+  const size_t dataRange = static_cast<size_t>(valueRange.Width() + 1);
+  const int upperLimit =
+      std::min<size_t>(std::min<size_t>(dataRange, 128), side);
+  return std::max<size_t>(8, upperLimit);
 }
 
-size_t 
-cmtk::JointHistogramBase::CalcNumBins ( const UniformVolume* volume ) 
-{
-  return Self::CalcNumBins( volume->CropRegion().Size(), volume->GetData()->GetRange() ) ;
+size_t cmtk::JointHistogramBase::CalcNumBins(const UniformVolume *volume) {
+  return Self::CalcNumBins(volume->CropRegion().Size(),
+                           volume->GetData()->GetRange());
 }

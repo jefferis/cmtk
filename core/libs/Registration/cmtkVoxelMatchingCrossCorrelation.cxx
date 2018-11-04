@@ -32,31 +32,31 @@
 
 #include "cmtkVoxelMatchingCrossCorrelation.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-VoxelMatchingCrossCorrelation
-::VoxelMatchingCrossCorrelation( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
-  VoxelMatchingMetricShort( refVolume, fltVolume ),
-  SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 )
-{}
+VoxelMatchingCrossCorrelation ::VoxelMatchingCrossCorrelation(
+    const UniformVolume *refVolume, const UniformVolume *fltVolume)
+    : VoxelMatchingMetricShort(refVolume, fltVolume),
+      SumX(0.0),
+      SumY(0.0),
+      SumXY(0.0),
+      SumSqX(0.0),
+      SumSqY(0.0),
+      Samples(0) {}
 
-VoxelMatchingCrossCorrelation::ReturnType
-VoxelMatchingCrossCorrelation
-::Get() const
-{
+VoxelMatchingCrossCorrelation::ReturnType VoxelMatchingCrossCorrelation ::Get()
+    const {
   const double muX = SumX / Samples;
   const double muY = SumY / Samples;
 
   const double p = SumXY - muY * SumX - muX * SumY + Samples * muX * muY;
   const double qX = SumSqX - 2 * muX * SumX + Samples * muX * muX;
   const double qY = SumSqY - 2 * muY * SumY + Samples * muY * muY;
-  
-  return static_cast<Self::ReturnType>( p / sqrt( qX * qY ) );
+
+  return static_cast<Self::ReturnType>(p / sqrt(qX * qY));
 }
 
-} // namespace cmtk
+}  // namespace cmtk

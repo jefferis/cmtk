@@ -40,31 +40,30 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkXformUniformVolume.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Label image combination by Shape Based Averaging.
- *\see T. Rohlfing and C. R. Maurer, Jr., "Shape-based averaging," IEEE Transactions on Image Processing, vol. 16, no. 1, pp. 153-161, 2007. http://dx.doi.org/10.1109/TIP.2006.884936
+ *\see T. Rohlfing and C. R. Maurer, Jr., "Shape-based averaging," IEEE
+ *Transactions on Image Processing, vol. 16, no. 1, pp. 153-161, 2007.
+ *http://dx.doi.org/10.1109/TIP.2006.884936
  */
-class LabelCombinationShapeBasedAveragingInterpolation 
-  : private LabelCombinationShapeBasedAveraging
-{
-public:
+class LabelCombinationShapeBasedAveragingInterpolation
+    : private LabelCombinationShapeBasedAveraging {
+ public:
   /// This class.
   typedef LabelCombinationShapeBasedAveragingInterpolation Self;
 
   /// Parent class.
   typedef LabelCombinationShapeBasedAveraging Superclass;
-  
+
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
@@ -73,20 +72,47 @@ public:
 
   /// Label index type.
   typedef Superclass::LabelIndexType LabelIndexType;
-  
+
   /// Real-value type for distance maps.
   typedef Superclass::DistanceMapRealType DistanceMapRealType;
-  
+
   /// Constructor: compute label combination.
-  LabelCombinationShapeBasedAveragingInterpolation( const std::vector<UniformVolume::SmartConstPtr>& labelImages /*!< Input label images. */,
-						    const std::vector<cmtk::XformUniformVolume::SmartConstPtr>& xformsToLabelImages /*!< Transformations with pre-assigned reference image grid.*/,
-						    const UniformVolume::SmartConstPtr& targetGrid /*!< Target grid for all transformations. */,
-						    const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
-  
+  LabelCombinationShapeBasedAveragingInterpolation(const std::vector<
+                                                       UniformVolume::
+                                                           SmartConstPtr>&
+                                                       labelImages /*!< Input
+                                                                      label
+                                                                      images. */
+                                                   ,
+                                                   const std::vector<
+                                                       cmtk::
+                                                           XformUniformVolume::
+                                                               SmartConstPtr>&
+                                                       xformsToLabelImages /*!<
+                                                                              Transformations
+                                                                              with
+                                                                              pre-assigned
+                                                                              reference
+                                                                              image
+                                                                              grid.*/
+                                                   ,
+                                                   const UniformVolume::
+                                                       SmartConstPtr&
+                                                           targetGrid /*!<
+                                                                         Target
+                                                                         grid
+                                                                         for all
+                                                                         transformations.
+                                                                       */
+                                                   ,
+                                                   const Self::
+                                                       LabelIndexType
+                                                           numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */);
+
   /// Get result.
   TypedArray::SmartPtr GetResult() const;
 
-private:
+ private:
   /// Target grid for all transformations.
   const UniformVolume::SmartConstPtr m_TargetGrid;
 
@@ -94,6 +120,7 @@ private:
   const std::vector<cmtk::XformUniformVolume::SmartConstPtr> m_Transformations;
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationShapeBasedAveragingInterpolation_h_included_
+#endif  // #ifndef
+        // __cmtkLabelCombinationShapeBasedAveragingInterpolation_h_included_

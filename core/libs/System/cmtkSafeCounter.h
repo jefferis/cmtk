@@ -36,12 +36,15 @@
 #include <cmtkconfig.h>
 
 #ifdef CMTK_USE_GCD
-#  include "cmtkSafeCounterGCD.h"
-namespace cmtk { typedef SafeCounterGCD SafeCounter; }
+#include "cmtkSafeCounterGCD.h"
+namespace cmtk {
+typedef SafeCounterGCD SafeCounter;
+}
 #else
-#  include "cmtkSafeCounterMutex.h"
-namespace cmtk { typedef SafeCounterMutex SafeCounter; }
-#endif // #ifdef CMTK_USE_GCD
+#include "cmtkSafeCounterMutex.h"
+namespace cmtk {
+typedef SafeCounterMutex SafeCounter;
+}
+#endif  // #ifdef CMTK_USE_GCD
 
-
-#endif // #ifndef __cmtkSafePtr_h_included_
+#endif  // #ifndef __cmtkSafePtr_h_included_

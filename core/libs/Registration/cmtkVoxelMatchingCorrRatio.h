@@ -35,13 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkRegistrationJointHistogram.h>
 #include <Base/cmtkInterpolator.h>
+#include <Registration/cmtkRegistrationJointHistogram.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -49,11 +47,10 @@ cmtk
 /** Voxel metric "correlation ratio".
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricCR instead.
  */
-template< Interpolators::InterpolationEnum I = Interpolators::LINEAR >
-class VoxelMatchingCorrRatio : 
-  public VoxelMatchingMetric<short,TYPE_SHORT,I>
-{
-public:
+template <Interpolators::InterpolationEnum I = Interpolators::LINEAR>
+class VoxelMatchingCorrRatio
+    : public VoxelMatchingMetric<short, TYPE_SHORT, I> {
+ public:
   /// This type.
   typedef VoxelMatchingCorrRatio<I> Self;
 
@@ -62,136 +59,134 @@ public:
 
   /** Constructor.
    * The inherited constructor is called to initialize the given datasets.
-   * Afterwards, the original (untransformed) probability distribution 
+   * Afterwards, the original (untransformed) probability distribution
    * functions of model and reference are calculated.
    */
-  VoxelMatchingCorrRatio ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const unsigned int numBins = CMTK_HISTOGRAM_AUTOBINS )
-    : VoxelMatchingMetric<short,TYPE_SHORT,I>( refVolume, fltVolume )
-  { 
+  VoxelMatchingCorrRatio(const UniformVolume *refVolume,
+                         const UniformVolume *fltVolume,
+                         const unsigned int numBins = CMTK_HISTOGRAM_AUTOBINS)
+      : VoxelMatchingMetric<short, TYPE_SHORT, I>(refVolume, fltVolume) {
     NumBinsX = NumBinsY = numBins;
 
-    if ( NumBinsX == CMTK_HISTOGRAM_AUTOBINS )
-      NumBinsX = std::max<unsigned>( std::min<unsigned>( refVolume->GetNumberOfPixels(), 128 ), 8 );
-    HistogramI.Resize( NumBinsX );
+    if (NumBinsX == CMTK_HISTOGRAM_AUTOBINS)
+      NumBinsX = std::max<unsigned>(
+          std::min<unsigned>(refVolume->GetNumberOfPixels(), 128), 8);
+    HistogramI.Resize(NumBinsX);
 
-    if ( NumBinsY == CMTK_HISTOGRAM_AUTOBINS )
-      NumBinsY = std::max<unsigned>( std::min<unsigned>( fltVolume->GetNumberOfPixels(), 128 ), 8 );
-    HistogramJ.Resize( NumBinsY );
+    if (NumBinsY == CMTK_HISTOGRAM_AUTOBINS)
+      NumBinsY = std::max<unsigned>(
+          std::min<unsigned>(fltVolume->GetNumberOfPixels(), 128), 8);
+    HistogramJ.Resize(NumBinsY);
 
-    HistogramI.SetRange( refVolume->GetData()->GetRange() );
+    HistogramI.SetRange(refVolume->GetData()->GetRange());
 
-    SumJ.resize( NumBinsX );
-    SumJ2.resize( NumBinsX );
-    
-    fltVolume->GetData()->GetStatistics( MuJ, SigmaSqJ );
+    SumJ.resize(NumBinsX);
+    SumJ2.resize(NumBinsX);
 
-    HistogramJ.SetRange( fltVolume->GetData()->GetRange() );
+    fltVolume->GetData()->GetStatistics(MuJ, SigmaSqJ);
 
-    SumI.resize( NumBinsY );
-    SumI2.resize( NumBinsY );
-    
-    refVolume->GetData()->GetStatistics( MuI, SigmaSqI );
+    HistogramJ.SetRange(fltVolume->GetData()->GetRange());
+
+    SumI.resize(NumBinsY);
+    SumI2.resize(NumBinsY);
+
+    refVolume->GetData()->GetStatistics(MuI, SigmaSqI);
   }
 
   /** Reset computation.
    * Initialize arrays that hold the sums of all floating values and their
    * squares, separated by histogram classes of the reference image.
    */
-  void Reset() 
-  {
+  void Reset() {
     HistogramI.Reset();
     HistogramJ.Reset();
-    std::fill( SumI.begin(), SumI.end(), 0 );
-    std::fill( SumJ.begin(), SumJ.end(), 0 );
-    std::fill( SumI2.begin(), SumI2.end(), 0 );
-    std::fill( SumJ2.begin(), SumJ2.end(), 0 );
+    std::fill(SumI.begin(), SumI.end(), 0);
+    std::fill(SumJ.begin(), SumJ.end(), 0);
+    std::fill(SumI2.begin(), SumI2.end(), 0);
+    std::fill(SumJ2.begin(), SumJ2.end(), 0);
   }
 
   /** Continue incremental calculation.
    */
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
+  template <class T>
+  void Increment(const T a, const T b) {
     // what's the reference histogram bin?
-    size_t bin = HistogramI.ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin(a);
     // count this sample
-    HistogramI.Increment( bin );
+    HistogramI.Increment(bin);
     // add floating value to sum of values for this class
     SumJ[bin] += b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] += b * b;
 
     // same in reverse
-    bin = HistogramJ.ValueToBin( b );
-    HistogramJ.Increment( bin );
+    bin = HistogramJ.ValueToBin(b);
+    HistogramJ.Increment(bin);
     SumI[bin] += a;
     SumI2[bin] += a * a;
   }
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
+  template <class T>
+  void Decrement(const T a, const T b) {
     // what's the reference histogram bin?
-    size_t bin = HistogramI.ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin(a);
     // count this sample
-    HistogramI.Decrement( bin );
+    HistogramI.Decrement(bin);
     // add floating value to sum of values for this class
     SumJ[bin] -= b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] -= b * b;
 
     // same in reverse
-    bin = HistogramJ.ValueToBin( b );
-    HistogramJ.Decrement( bin );
+    bin = HistogramJ.ValueToBin(b);
+    HistogramJ.Decrement(bin);
     SumI[bin] -= a;
     SumI2[bin] -= a * a;
   }
 
   /**
    */
-  void AddMetric ( const Self& other )
-  {
-    HistogramI.AddHistogram( other.HistogramI );
-    for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
-      {
+  void AddMetric(const Self &other) {
+    HistogramI.AddHistogram(other.HistogramI);
+    for (size_t bin = 0; bin < NumBinsX; ++bin) {
       SumJ[bin] += other.SumJ[bin];
       SumJ2[bin] += other.SumJ2[bin];
-      }
-    
-    HistogramJ.AddHistogram( other.HistogramJ );
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
-      {
+    }
+
+    HistogramJ.AddHistogram(other.HistogramJ);
+    for (size_t bin = 0; bin < NumBinsY; ++bin) {
       SumI[bin] += other.SumI[bin];
       SumI2[bin] += other.SumI2[bin];
-      }
+    }
   }
-  
+
   /**
    */
-  void RemoveMetric ( const Self& other )
-  {
-    HistogramI.RemoveHistogram( other.HistogramI );
-    for ( size_t bin = 0; bin < NumBinsX; ++bin ) {
+  void RemoveMetric(const Self &other) {
+    HistogramI.RemoveHistogram(other.HistogramI);
+    for (size_t bin = 0; bin < NumBinsX; ++bin) {
       SumJ[bin] -= other.SumJ[bin];
       SumJ2[bin] -= other.SumJ2[bin];
     }
 
-    HistogramJ.RemoveHistogram( other.HistogramJ );
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) {
+    HistogramJ.RemoveHistogram(other.HistogramJ);
+    for (size_t bin = 0; bin < NumBinsY; ++bin) {
       SumI[bin] -= other.SumI[bin];
       SumI2[bin] -= other.SumI2[bin];
     }
   }
 
   /// Return correlation ratio.
-  typename Self::ReturnType Get () const;
+  typename Self::ReturnType Get() const;
 
-private:
+ private:
   /// Number of bins for the X-distribution.
   size_t NumBinsX;
-  
+
   /// Array with sums of all Y-values by X-bins.
   std::vector<double> SumJ;
 
@@ -209,7 +204,7 @@ private:
 
   /// Number of bins for the Y-distribution.
   size_t NumBinsY;
-  
+
   /// Array with sums of all X-values by Y-bins.
   std::vector<double> SumI;
 
@@ -227,13 +222,15 @@ private:
 };
 
 /// Correlation ratio with trilinear interpolation.
-typedef VoxelMatchingCorrRatio<Interpolators::LINEAR> VoxelMatchingCorrRatio_Trilinear;
+typedef VoxelMatchingCorrRatio<Interpolators::LINEAR>
+    VoxelMatchingCorrRatio_Trilinear;
 
 /// Correlation ratio with nearest-neighbor interpolation.
-typedef VoxelMatchingCorrRatio<Interpolators::NEAREST_NEIGHBOR> VoxelMatchingCorrRatio_NearestNeighbor;
+typedef VoxelMatchingCorrRatio<Interpolators::NEAREST_NEIGHBOR>
+    VoxelMatchingCorrRatio_NearestNeighbor;
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkVoxelMatchingCorrRatio_h_included_
+#endif  // #ifndef __cmtkVoxelMatchingCorrRatio_h_included_

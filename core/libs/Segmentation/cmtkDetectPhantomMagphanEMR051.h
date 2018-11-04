@@ -35,24 +35,21 @@
 
 #include <System/cmtkException.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkDetectedPhantomMagphanEMR051.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
-/** Class for detecting landmark locations of the Magphan EMR051 structural imaging phantom
- * (a.k.a The ADNI Phantom).
+/** Class for detecting landmark locations of the Magphan EMR051 structural
+ * imaging phantom (a.k.a The ADNI Phantom).
  */
-class DetectPhantomMagphanEMR051
-{
-public:
+class DetectPhantomMagphanEMR051 {
+ public:
   /// This class.
   typedef DetectPhantomMagphanEMR051 Self;
 
@@ -63,43 +60,44 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Class for parameters that control the phantom detection
-  class Parameters
-  {
-  public:
+  class Parameters {
+   public:
     /// Default constructor.
-    Parameters() : 
-      m_CorrectSphereBiasField( true ), 
-      m_TolerateTruncation( false ),
-      m_StandardOrientation( true ),
-      m_ForceFallbackCentroidCNR( false ),
-      m_BipolarFilterMargin( 1 ), 
-      m_RefineMarginPixels( 1 ), 
-      m_SphereExcludeSafetyMargin( 10.0 ),
-      m_ErodeSNR( 10.0 ), 
-      m_ErodeCNR( 5.0 ),
-      m_Erode10mm( 1.0 ),
-      m_RefineXformEachLandmark( false ),
-      m_RefineOutliers( false ),
-      m_ExcludeOutliers( false ),
-      m_LandmarkFitResidualThreshold( 5.0 )
-    {}
+    Parameters()
+        : m_CorrectSphereBiasField(true),
+          m_TolerateTruncation(false),
+          m_StandardOrientation(true),
+          m_ForceFallbackCentroidCNR(false),
+          m_BipolarFilterMargin(1),
+          m_RefineMarginPixels(1),
+          m_SphereExcludeSafetyMargin(10.0),
+          m_ErodeSNR(10.0),
+          m_ErodeCNR(5.0),
+          m_Erode10mm(1.0),
+          m_RefineXformEachLandmark(false),
+          m_RefineOutliers(false),
+          m_ExcludeOutliers(false),
+          m_LandmarkFitResidualThreshold(5.0) {}
 
     /// Flag for correction of (linear) bias field for each sphere.
     bool m_CorrectSphereBiasField;
 
-    /** Flag for tolerant operation - if set, we are lenient when spheres are slightly truncated.
-     * This should be considered a last resort, and both phantom scans and results should be carefully inspected.
+    /** Flag for tolerant operation - if set, we are lenient when spheres are
+     * slightly truncated. This should be considered a last resort, and both
+     * phantom scans and results should be carefully inspected.
      */
     bool m_TolerateTruncation;
 
     /** Flag for standard orientation.
-     * Setting this assumes that the phantom was scanned with the correct side up, rather than upside down.
-     * This will make detection of defective phantoms more robust, but it will also prevent detection of
-     * phantoms scanned upside down.
+     * Setting this assumes that the phantom was scanned with the correct side
+     * up, rather than upside down. This will make detection of defective
+     * phantoms more robust, but it will also prevent detection of phantoms
+     * scanned upside down.
      */
     bool m_StandardOrientation;
 
-    /// Flag for forcing the fallback to use CNR centroid instead of SNR sphere center (e.g., when SNR sphere is broken off)
+    /// Flag for forcing the fallback to use CNR centroid instead of SNR sphere
+    /// center (e.g., when SNR sphere is broken off)
     bool m_ForceFallbackCentroidCNR;
 
     /// Margin (in pixels) for the bipolar sphere detection matched filter.
@@ -108,31 +106,34 @@ public:
     /// Margin in pixels for center-of-mass-based refinement.
     int m_RefineMarginPixels;
 
-    /// Safety margin (in mm) around detected spheres - no other sphere centers are permitted within this margin.
+    /// Safety margin (in mm) around detected spheres - no other sphere centers
+    /// are permitted within this margin.
     Types::Coordinate m_SphereExcludeSafetyMargin;
 
     /// Erode SNR sphere by this many pixels for SNR computation
     Types::Coordinate m_ErodeSNR;
-    
+
     /// Erode CNR spheres by this many pixels for SNR computation
     Types::Coordinate m_ErodeCNR;
 
     /// Erode 10mm spheres by this many pixels for brightness computation
     Types::Coordinate m_Erode10mm;
 
-    /// Flag for optional refinement of transformation after each new landmark has been added.
+    /// Flag for optional refinement of transformation after each new landmark
+    /// has been added.
     bool m_RefineXformEachLandmark;
-    
+
     /// Flag for optional refinement of outlier landmarks
     bool m_RefineOutliers;
 
-    /// Flag for optional exclusion of outlier landmarks from the final, fitted transformation
+    /// Flag for optional exclusion of outlier landmarks from the final, fitted
+    /// transformation
     bool m_ExcludeOutliers;
-    
+
     /// Threshold for detecting outliers based on landmark fitting residuals.
     Types::Coordinate m_LandmarkFitResidualThreshold;
 
-  private:
+   private:
     /// Static default parameters.
     static Parameters Default;
 
@@ -143,15 +144,17 @@ public:
   /// Spatial coordinate vector.
   typedef UniformVolume::SpaceVectorType SpaceVectorType;
 
-  /// Exception thrown if a landmark sphere cannot be localized in the search region.
+  /// Exception thrown if a landmark sphere cannot be localized in the search
+  /// region.
   class NoSphereInSearchRegion : public Exception {};
-  
+
   /// Exception thrown if the field of view is insufficient.
-  class OutsideFieldOfView : public Exception 
-  {
-  public:
+  class OutsideFieldOfView : public Exception {
+   public:
     // Constructor takes index and predicted location of offending landmark.
-    OutsideFieldOfView( const size_t idx, const UniformVolume::CoordinateVectorType& v ) : m_Idx( idx ), m_Location( v ) {}
+    OutsideFieldOfView(const size_t idx,
+                       const UniformVolume::CoordinateVectorType &v)
+        : m_Idx(idx), m_Location(v) {}
 
     // Offending landmark index.
     size_t m_Idx;
@@ -159,35 +162,36 @@ public:
     // Offending predicted location.
     UniformVolume::CoordinateVectorType m_Location;
   };
-  
+
   /// Constructor: detect all landmark spheres.
-  DetectPhantomMagphanEMR051( UniformVolume::SmartConstPtr& phantomImage, Self::Parameters& parameters = Self::Parameters::Default );
+  DetectPhantomMagphanEMR051(
+      UniformVolume::SmartConstPtr &phantomImage,
+      Self::Parameters &parameters = Self::Parameters::Default);
 
   /// Get comprehensive description of phantom as detected in image.
   DetectedPhantomMagphanEMR051::SmartPtr GetDetectedPhantom();
-  
+
   /// Get rigid phantom-to-image transformation.
-  AffineXform::SmartConstPtr GetPhantomToImageTransformationRigid() const
-  {
+  AffineXform::SmartConstPtr GetPhantomToImageTransformationRigid() const {
     return this->m_PhantomToImageTransformationRigid;
   }
-  
+
   /// Get affine phantom-to-image transformation.
-  AffineXform::SmartConstPtr GetPhantomToImageTransformationAffine() const
-  {
+  AffineXform::SmartConstPtr GetPhantomToImageTransformationAffine() const {
     return this->m_PhantomToImageTransformationAffine;
   }
-  
+
   /// Get the image-space label map of detected spheres.
   UniformVolume::SmartPtr GetDetectedSpheresLabelMap();
 
-  /// Get expected landmark locations given rigid phantom-to-image transformation.
+  /// Get expected landmark locations given rigid phantom-to-image
+  /// transformation.
   LandmarkList GetExpectedLandmarks( const bool includeUnreliable = false /*!< If true, include unreliable landmarks, i.e., SNR and CNR spheres. */ ) const;
 
   /// Get actual, detected landmark locations.
   LandmarkList GetDetectedLandmarks( const bool includeOutliers = false /*!< If true, include landmarks detected as outliers based on linear affine transformation fitting residual */ ) const;
 
-private:
+ private:
   /// Parameters that control the phantom detection
   Self::Parameters m_Parameters;
 
@@ -198,24 +202,26 @@ private:
   UniformVolume::SmartConstPtr m_PhantomImage;
 
   /** Evolving exclusion mask.
-   * When a sphere is detected, its volume is marked as off-limits herein so other spheres are not incorrectly detected in the same place.
+   * When a sphere is detected, its volume is marked as off-limits herein so
+   * other spheres are not incorrectly detected in the same place.
    */
   UniformVolume::SmartPtr m_ExcludeMask;
 
   /** Temporary inclusion mask.
-   * When we detect a sphere in a specific pre-determined area, this mask contains as non-zero the candidate pixels.
+   * When we detect a sphere in a specific pre-determined area, this mask
+   * contains as non-zero the candidate pixels.
    */
   UniformVolume::SmartPtr m_IncludeMask;
 
   /// Class for landmarks and validity flags
-  class LandmarkType
-  {
-  public:
+  class LandmarkType {
+   public:
     /// Default constructor.
-    LandmarkType() : m_Location( 0 ), m_Valid( false ) {}
+    LandmarkType() : m_Location(0), m_Valid(false) {}
 
     /// Constructor.
-    LandmarkType( const Self::SpaceVectorType& location, const bool valid = true ) : m_Location( location ), m_Valid( valid ) {}
+    LandmarkType(const Self::SpaceVectorType &location, const bool valid = true)
+        : m_Location(location), m_Valid(valid) {}
 
     /// Location of the landmark
     Self::SpaceVectorType m_Location;
@@ -237,44 +243,62 @@ private:
   std::vector<Types::Coordinate> m_LandmarkFitResiduals;
 
   /** Find a sphere of given radius.
-   *\return Location of the sphere center - this is the point where the filter response is maximal.
+   *\return Location of the sphere center - this is the point where the filter
+   *response is maximal.
    */
   Self::SpaceVectorType FindSphere( const TypedArray& filterResponse /*!< Response of the matched filter used for sphere finding. */ );
 
   /** Find a sphere in a band of given radius.
-   * If the given search region is already excluded from searching based on previously identified spheres, then the
-   * NoSphereInSearchRegion exception is thrown.
-   *\return Location of the sphere center. This is the location of maximum filter response in the search band, minus exclusion.
+   * If the given search region is already excluded from searching based on
+   *previously identified spheres, then the NoSphereInSearchRegion exception is
+   *thrown. \return Location of the sphere center. This is the location of
+   *maximum filter response in the search band, minus exclusion.
    */
-  Self::SpaceVectorType FindSphereAtDistance( const TypedArray& filterResponse /*!< Response of the matched filter used for sphere finding. */, 
-					      const Self::SpaceVectorType& bandCenter /*!< Center of the band to search in. */, 
-					      const Types::Coordinate bandRadius /*!< Radius of the band to search in. If this is zero, the search region is a sphere around bandCenter.*/, 
-					      const Types::Coordinate bandWidth /*!< Width of the band to search in.*/ );
-  
+  Self::SpaceVectorType FindSphereAtDistance(
+      const TypedArray &filterResponse /*!< Response of the matched filter used
+                                          for sphere finding. */
+      ,
+      const Self::SpaceVectorType
+          &bandCenter /*!< Center of the band to search in. */,
+      const Types::Coordinate
+          bandRadius /*!< Radius of the band to search in. If this is zero, the
+                        search region is a sphere around bandCenter.*/
+      ,
+      const Types::Coordinate bandWidth /*!< Width of the band to search in.*/);
+
   /// Refine sphere position based on intensity-weighted center of mass.
-  Self::SpaceVectorType RefineSphereLocation( const Self::SpaceVectorType& estimate, const Types::Coordinate radius, const int label );
+  Self::SpaceVectorType RefineSphereLocation(
+      const Self::SpaceVectorType &estimate, const Types::Coordinate radius,
+      const int label);
 
   /** Compute landmark fitting residuals under given linear transformation
-   *\return The maximum residual over all landmarks. This can be compared with a threshold to
-   * determine whether refinement of outliers is necessary.
+   *\return The maximum residual over all landmarks. This can be compared with a
+   *threshold to determine whether refinement of outliers is necessary.
    */
-  Types::Coordinate ComputeLandmarkFitResiduals( const AffineXform& xform /*!< Linear transformation fitted to the landmarks.*/ );
+  Types::Coordinate ComputeLandmarkFitResiduals(
+      const AffineXform
+          &xform /*!< Linear transformation fitted to the landmarks.*/);
 
   /// Try to refine outlier (by current fitted linear transformation) landmarks.
-  void RefineOutlierLandmarks( const TypedArray& filterResponse /*!< Existing filter response map. */ );
+  void RefineOutlierLandmarks(
+      const TypedArray &filterResponse /*!< Existing filter response map. */);
 
   /// Exclude outlier landmarks and re-fit linear transformation.
   void ExcludeOutlierLandmarks();
 
-  /// Get the mean and standard deviation of intensities within a sphere of given location and radius.
-  void GetSphereMeanStdDeviation( Types::DataItem& mean /*!< Reference to return mean intensity */, Types::DataItem& stdev /*!< Reference to return intensity standard deviation */, 
-				  const Self::SpaceVectorType& center /*!< Center coordinate of the sphere. */, const Types::Coordinate radius /*!< Radius of the sphere */, 
-				  const Types::Coordinate erodeBy /*!< Distance to erode the sphere by before computing mean and standard deviation. */,
-				  const int biasFieldDegree /*!< Polynomial degree of the estimated bias field before computing mean and standard deviation (0 = no bias field correction) */ );
+  /// Get the mean and standard deviation of intensities within a sphere of
+  /// given location and radius.
+  void GetSphereMeanStdDeviation(
+      Types::DataItem &mean /*!< Reference to return mean intensity */,
+      Types::DataItem
+          &stdev /*!< Reference to return intensity standard deviation */,
+      const Self::SpaceVectorType
+          &center /*!< Center coordinate of the sphere. */,
+      const Types::Coordinate radius /*!< Radius of the sphere */, const Types::Coordinate erodeBy /*!< Distance to erode the sphere by before computing mean and standard deviation. */, const int biasFieldDegree /*!< Polynomial degree of the estimated bias field before computing mean and standard deviation (0 = no bias field correction) */);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDetectPhantomMagphanEMR051_h_included_
+#endif  // #ifndef __cmtkDetectPhantomMagphanEMR051_h_included_

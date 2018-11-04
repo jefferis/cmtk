@@ -30,24 +30,22 @@
 
 #include "cmtkImageOperationCropRegion.h"
 
-cmtk::UniformVolume::SmartPtr 
-cmtk::ImageOperationCropRegion
-::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
-  volume->SetCropRegion( this->m_Region );
-  return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationCropRegion ::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  volume->SetCropRegion(this->m_Region);
+  return cmtk::UniformVolume::SmartPtr(volume->GetCroppedVolume());
 }
 
-void
-cmtk::ImageOperationCropRegion
-::New( const char* arg )
-{
+void cmtk::ImageOperationCropRegion ::New(const char *arg) {
   int from[3], to[3];
-  const bool okay = (6 == sscanf( arg, "%5d,%5d,%5d,%5d,%5d,%5d", &from[0], &from[1], &from[2], &to[0], &to[1], &to[2] ) );
-  if ( ! okay )
-    {
+  const bool okay = (6 == sscanf(arg, "%5d,%5d,%5d,%5d,%5d,%5d", &from[0],
+                                 &from[1], &from[2], &to[0], &to[1], &to[2]));
+  if (!okay) {
     throw "Expected six comma-separated integer values.";
-    }
-  
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( DataGrid::RegionType( DataGrid::IndexType::FromPointer(from), DataGrid::IndexType::FromPointer(to) ) ) ) );
+  }
+
+  ImageOperation::m_ImageOperationList.push_back(
+      SmartPtr(new ImageOperationCropRegion(
+          DataGrid::RegionType(DataGrid::IndexType::FromPointer(from),
+                               DataGrid::IndexType::FromPointer(to)))));
 }

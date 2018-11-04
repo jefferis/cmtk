@@ -37,85 +37,86 @@
 #include <Base/cmtkMathUtil.h>
 #include <IO/cmtkVolumeIO.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-template<class TXform>
-GroupwiseRegistrationFunctionalXformTemplateBase<TXform>::GroupwiseRegistrationFunctionalXformTemplateBase() :
-  m_HistogramBins( 64 ),
-  m_HistogramKernelRadiusMax( 0 ),
-  m_MaxRelativeNumberOutsidePixels( 0.99f ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
-  m_PrivateUserBackgroundValue( 0.0 ),
-  m_CropImageHistograms( false )
-{}
+template <class TXform>
+GroupwiseRegistrationFunctionalXformTemplateBase<
+    TXform>::GroupwiseRegistrationFunctionalXformTemplateBase()
+    : m_HistogramBins(64),
+      m_HistogramKernelRadiusMax(0),
+      m_MaxRelativeNumberOutsidePixels(
+          0.99f),  // if there is an image with more then 99% pixels outside
+                   // FOV, registration probably failed
+      m_PrivateUserBackgroundValue(0.0),
+      m_CropImageHistograms(false) {}
 
-template<class TXform>
-GroupwiseRegistrationFunctionalXformTemplateBase<TXform>::~GroupwiseRegistrationFunctionalXformTemplateBase()
-{
-}
+template <class TXform>
+GroupwiseRegistrationFunctionalXformTemplateBase<
+    TXform>::~GroupwiseRegistrationFunctionalXformTemplateBase() {}
 
-template<class TXform>
-void
-GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
-::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
-{
+template <class TXform>
+void GroupwiseRegistrationFunctionalXformTemplateBase<
+    TXform>::SetNumberOfHistogramBins(const size_t numberOfHistogramBins) {
   this->m_HistogramBins = numberOfHistogramBins;
-  if ( this->m_OriginalImageVector.size() )
-    {
-    std::cerr << "WARNING: you called GroupwiseRegistrationFunctionalBase::SetNumberOfHistogramBins(),\n"
-	      << "         but target images were already set. To be safe, I am re-generating\n"
-	      << "         pre-scaled images.\n\n";
-    this->SetTargetImages( this->m_OriginalImageVector );
-    }
+  if (this->m_OriginalImageVector.size()) {
+    std::cerr
+        << "WARNING: you called "
+           "GroupwiseRegistrationFunctionalBase::SetNumberOfHistogramBins(),\n"
+        << "         but target images were already set. To be safe, I am "
+           "re-generating\n"
+        << "         pre-scaled images.\n\n";
+    this->SetTargetImages(this->m_OriginalImageVector);
+  }
 }
 
-template<class TXform>
+template <class TXform>
 UniformVolume::SmartPtr
-GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
-::PrepareSingleImage( UniformVolume::SmartPtr& image )
-{
-  UniformVolume::SmartPtr newTargetImage = this->Superclass::PrepareSingleImage( image );
+GroupwiseRegistrationFunctionalXformTemplateBase<TXform>::PrepareSingleImage(
+    UniformVolume::SmartPtr &image) {
+  UniformVolume::SmartPtr newTargetImage =
+      this->Superclass::PrepareSingleImage(image);
 
   TypedArray::SmartPtr data = newTargetImage->GetData();
-  if ( this->m_CropImageHistograms )
-    {
-    data->PruneHistogram( true, false, this->m_HistogramBins );
-    }
-  
-  data->RescaleToRange( Types::DataItemRange( this->m_HistogramKernelRadiusMax, this->m_HistogramKernelRadiusMax + this->m_HistogramBins-1 ) );
-			
-  newTargetImage->SetData( TypedArray::SmartPtr( data->Convert( TYPE_BYTE ) ) );
+  if (this->m_CropImageHistograms) {
+    data->PruneHistogram(true, false, this->m_HistogramBins);
+  }
+
+  data->RescaleToRange(Types::DataItemRange(
+      this->m_HistogramKernelRadiusMax,
+      this->m_HistogramKernelRadiusMax + this->m_HistogramBins - 1));
+
+  newTargetImage->SetData(TypedArray::SmartPtr(data->Convert(TYPE_BYTE)));
   return newTargetImage;
 }
 
-template<class TXform>
-void
-GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
-::PrepareTargetImages()
-{
-  this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
+template <class TXform>
+void GroupwiseRegistrationFunctionalXformTemplateBase<
+    TXform>::PrepareTargetImages() {
+  this->m_ImageVector.resize(this->m_OriginalImageVector.size());
 
   const size_t imageFrom = 0;
   const size_t imageSkip = 1;
 
-  for ( size_t i = imageFrom; i < this->m_ImageVector.size(); i += imageSkip )
-    {
-    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
-    }
-  
-  this->m_PrivateUserBackgroundValue = this->m_UserBackgroundValue + this->m_HistogramKernelRadiusMax;
+  for (size_t i = imageFrom; i < this->m_ImageVector.size(); i += imageSkip) {
+    this->m_ImageVector[i] = UniformVolume::SmartPtr(
+        this->PrepareSingleImage(this->m_OriginalImageVector[i]));
+  }
+
+  this->m_PrivateUserBackgroundValue =
+      this->m_UserBackgroundValue + this->m_HistogramKernelRadiusMax;
 }
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkSplineWarpXform.h>
 
-template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<cmtk::AffineXform>;
-template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<cmtk::SplineWarpXform>;
+template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<
+    cmtk::AffineXform>;
+template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<
+    cmtk::SplineWarpXform>;

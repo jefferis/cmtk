@@ -35,19 +35,17 @@
 
 #include <Base/cmtkHistogram.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-/** Class for computing binarization threshold from intensity histogram based on desired volume.
+/** Class for computing binarization threshold from intensity histogram based on
+ * desired volume.
  */
-template<class THistogram>
-class HistogramThresholdByVolume
-{
-public:
+template <class THistogram>
+class HistogramThresholdByVolume {
+ public:
   /// This class.
   typedef HistogramThresholdByVolume<THistogram> Self;
 
@@ -60,24 +58,24 @@ public:
   /// The histogram template parameter type.
   typedef THistogram HistogramType;
 
-  /// Constructor: compute minimum threshold such that the number of samples above threshold is at least "volumeAbove".
-  HistogramThresholdByVolume( const typename Self::HistogramType& histogram, const typename Self::HistogramType::BinType volumeAbove );
+  /// Constructor: compute minimum threshold such that the number of samples
+  /// above threshold is at least "volumeAbove".
+  HistogramThresholdByVolume(
+      const typename Self::HistogramType &histogram,
+      const typename Self::HistogramType::BinType volumeAbove);
 
   /// Get the computed threshold.
-  Types::DataItem Get() const 
-  {
-    return this->m_Threshold;
-  }
-  
-private:
+  Types::DataItem Get() const { return this->m_Threshold; }
+
+ private:
   /// Computed threshold.
   Types::DataItem m_Threshold;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkHistogramThresholdByVolume.txx"
 
-#endif // #ifndef __cmtkHistogramThresholdByVolume_h_included_
+#endif  // #ifndef __cmtkHistogramThresholdByVolume_h_included_

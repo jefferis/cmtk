@@ -35,87 +35,84 @@
 
 #include <System/cmtkConsole.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
-void
-CommandLine::PrintWiki
-() const
-{
-  ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_TITLE);
-  if ( ppit != this->m_ProgramInfo.end() )
-    {
+void CommandLine::PrintWiki() const {
+  ProgramPropertiesMapType::const_iterator ppit =
+      this->m_ProgramInfo.find(PRG_TITLE);
+  if (ppit != this->m_ProgramInfo.end()) {
     StdOut << "== Title ==\n\n";
     StdOut << ppit->second << "\n\n";
-    }
+  }
 
   ppit = this->m_ProgramInfo.find(PRG_DESCR);
-  if ( ppit != this->m_ProgramInfo.end() )
-    {
+  if (ppit != this->m_ProgramInfo.end()) {
     StdOut << "== Description ==\n\n";
     StdOut << ppit->second << "\n\n";
-    }
-  
+  }
+
   ppit = this->m_ProgramInfo.find(PRG_SYNTX);
-  if ( ppit != this->m_ProgramInfo.end() )
-    {
+  if (ppit != this->m_ProgramInfo.end()) {
     StdOut << "== Syntax ==\n\n";
     StdOut << ppit->second << "\n\n";
-    }
-  else
-    {
-    if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
-      {
+  } else {
+    if (this->m_NonOptionParameterList.size() ||
+        this->m_NonOptionParameterVectorList.size()) {
       StdOut << "== Syntax ==\n\n";
-      
+
       StdOut << ": <tt>[options] ";
-      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
-	{
-	StdOut << (*it)->m_Name << " ";
-	}
-      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
-	{
-	StdOut << (*it)->m_Name << " ";
-	}
+      for (NonOptionParameterListType::const_iterator it =
+               this->m_NonOptionParameterList.begin();
+           it != this->m_NonOptionParameterList.end(); ++it) {
+        StdOut << (*it)->m_Name << " ";
+      }
+      for (NonOptionParameterVectorListType::const_iterator it =
+               this->m_NonOptionParameterVectorList.begin();
+           it != this->m_NonOptionParameterVectorList.end(); ++it) {
+        StdOut << (*it)->m_Name << " ";
+      }
       StdOut << "</tt>\n\nwhere\n";
 
-      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
-	{
-	StdOut << "\n";
-	StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
-	StdOut << (*it)->m_Comment << "\n";;
-	}
-      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
-	{
-	StdOut << "\n";
-	StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
-	StdOut << (*it)->m_Comment << "\n";;
-	}
+      for (NonOptionParameterListType::const_iterator it =
+               this->m_NonOptionParameterList.begin();
+           it != this->m_NonOptionParameterList.end(); ++it) {
+        StdOut << "\n";
+        StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
+        StdOut << (*it)->m_Comment << "\n";
+        ;
+      }
+      for (NonOptionParameterVectorListType::const_iterator it =
+               this->m_NonOptionParameterVectorList.begin();
+           it != this->m_NonOptionParameterVectorList.end(); ++it) {
+        StdOut << "\n";
+        StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
+        StdOut << (*it)->m_Comment << "\n";
+        ;
       }
     }
-  
+  }
+
   StdOut << "\n== List of Supported Options ==\n\n";
 
-  for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
-    {
-    if ( ! (*grp)->m_KeyActionList.empty() )
-      {
+  for (KeyActionGroupListType::const_iterator grp =
+           this->m_KeyActionGroupList.begin();
+       grp != this->m_KeyActionGroupList.end(); ++grp) {
+    if (!(*grp)->m_KeyActionList.empty()) {
       StdOut << "=== " << (*grp)->m_Description << " ===\n\n";
-      
-      const KeyActionListType& kal = (*grp)->m_KeyActionList;
-      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
-	{
-	(*it)->PrintWikiWithPrefix();
-	StdOut << "\n";
-	}
+
+      const KeyActionListType &kal = (*grp)->m_KeyActionList;
+      for (KeyActionListType::const_iterator it = kal.begin(); it != kal.end();
+           ++it) {
+        (*it)->PrintWikiWithPrefix();
+        StdOut << "\n";
       }
     }
-  
+  }
+
   StdOut << "\n";
 }
 
-} // namespace cmtk
+}  // namespace cmtk

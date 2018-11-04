@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -32,11 +33,5 @@
 #include "cmtkQtIcons.h"
 
 #include "xpm/icon_main_window.xpm"
-//Added by qt3to4:
-#include <QPixmap>
 
-QPixmap
-cmtk::QtIcons::WindowIcon() 
-{ 
-  return QPixmap( icon_main_window_xpm ); 
-}
+QPixmap cmtk::QtIcons::WindowIcon() { return QPixmap(icon_main_window_xpm); }

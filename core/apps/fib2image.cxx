@@ -38,94 +38,102 @@
 #include <Base/cmtkXform.h>
 #include <Base/cmtkXformList.h>
 
+#include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkXformListIO.h>
-#include <IO/cmtkVolumeIO.h>
 
 #include <iostream>
 #include <sstream>
 
-int
-doMain( const int argc, const char* argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   std::string trackingImagePath;
   std::string outputImagePath = "fib2image.nii";
 
   cmtk::Types::DataItem value = 1;
 
-  try
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Draw image from point coordinates of fiber tracks from .fib file." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fiber tracking results from the UNC Fiber Tracking tool are read from Standard Input and all fiber points are drawn into a 3D image. The result is written in one of the supported image file formats." );
-    
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_TITLE,
+        "Draw image from point coordinates of fiber tracks from .fib file.");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "Fiber tracking results from the UNC Fiber Tracking tool are read from "
+        "Standard Input and all fiber points are drawn into a 3D image. The "
+        "result is written in one of the supported image file formats.");
+
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( "value" ), &value, "Value used for drawing fiber points." );
-    cl.AddOption( Key( 'o', "output" ), &outputImagePath, "Output image file name." );
+    cl.AddOption(Key("value"), &value, "Value used for drawing fiber points.");
+    cl.AddOption(Key('o', "output"), &outputImagePath,
+                 "Output image file name.");
 
-    cl.AddParameter( &trackingImagePath, "TrackingImage", "Image defining the grid and space in which fiber tracking was performed to correct for differences in orientation and coordinate space." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    
-    cl.Parse( argc, argv );
-    }
-  catch ( cmtk::CommandLine::Exception& ex )
-    {
+    cl.AddParameter(&trackingImagePath, "TrackingImage",
+                    "Image defining the grid and space in which fiber tracking "
+                    "was performed to correct for differences in orientation "
+                    "and coordinate space.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
+
+    cl.Parse(argc, argv);
+  } catch (cmtk::CommandLine::Exception &ex) {
     cmtk::StdErr << ex << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  // read target image in NATIVE orientation because that's what UNC Fiber Tracking uses
-  cmtk::UniformVolume::SmartPtr trackingImage( cmtk::VolumeIO::ReadOriented( trackingImagePath ) );
-  if ( ! trackingImage )
-    {
-    cmtk::StdErr << "ERROR: could not read tracking image '" << trackingImagePath << "'\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
+  // read target image in NATIVE orientation because that's what UNC Fiber
+  // Tracking uses
+  cmtk::UniformVolume::SmartPtr trackingImage(
+      cmtk::VolumeIO::ReadOriented(trackingImagePath));
+  if (!trackingImage) {
+    cmtk::StdErr << "ERROR: could not read tracking image '"
+                 << trackingImagePath << "'\n";
+    throw cmtk::ExitException(1);
+  }
+
   // don't need data
-  trackingImage->SetData( cmtk::TypedArray::SmartPtr( NULL ) );
-  cmtk::UniformVolume::SmartPtr outputImage( trackingImage->CloneGrid() );
+  trackingImage->SetData(cmtk::TypedArray::SmartPtr(NULL));
+  cmtk::UniformVolume::SmartPtr outputImage(trackingImage->CloneGrid());
 
-  trackingImage->ChangeCoordinateSpace( trackingImage->GetMetaInfo( cmtk::META_SPACE_ORIGINAL ) );
-  cmtk::AffineXform fromTrackingSpace( trackingImage->GetImageToPhysicalMatrix() );
+  trackingImage->ChangeCoordinateSpace(
+      trackingImage->GetMetaInfo(cmtk::META_SPACE_ORIGINAL));
+  cmtk::AffineXform fromTrackingSpace(
+      trackingImage->GetImageToPhysicalMatrix());
 
   // don't need data - make new array
-  outputImage->CreateDataArray( cmtk::TYPE_SHORT, true /*setToZero*/ );
-  
+  outputImage->CreateDataArray(cmtk::TYPE_SHORT, true /*setToZero*/);
+
   cmtk::Xform::SpaceVectorType xyz;
   cmtk::DataGrid::IndexType ijk;
 
   std::string line;
-  while ( !std::cin.eof() )
-    {
-    std::getline( std::cin, line );
+  while (!std::cin.eof()) {
+    std::getline(std::cin, line);
 
-    if ( line.compare( 0, 7, "NPoints" ) == 0 )
-      {
-      const size_t npoints = atoi( line.substr( line.find( '=' )+1, std::string::npos ).c_str() );
+    if (line.compare(0, 7, "NPoints") == 0) {
+      const size_t npoints =
+          atoi(line.substr(line.find('=') + 1, std::string::npos).c_str());
 
       // skip "Points = "
-      std::getline( std::cin, line );
-      
-      for ( size_t n = 0; n<npoints; ++n )
-	{
-	// read x,y,z from beginning of line
-	std::cin >> xyz[0] >> xyz[1] >> xyz[2];
-	
-	// read everything else on the same line to skip.
-	std::string restOfLine;
-	std::getline( std::cin, restOfLine );
+      std::getline(std::cin, line);
 
-	// transform from fib space into image space
-	if ( outputImage->GetClosestGridPointIndex( fromTrackingSpace.Apply( xyz ), ijk ) )
-	  {
-	  outputImage->SetDataAt( value, trackingImage->GetOffsetFromIndex( ijk ) );
-	  }
-	}
+      for (size_t n = 0; n < npoints; ++n) {
+        // read x,y,z from beginning of line
+        std::cin >> xyz[0] >> xyz[1] >> xyz[2];
+
+        // read everything else on the same line to skip.
+        std::string restOfLine;
+        std::getline(std::cin, restOfLine);
+
+        // transform from fib space into image space
+        if (outputImage->GetClosestGridPointIndex(fromTrackingSpace.Apply(xyz),
+                                                  ijk)) {
+          outputImage->SetDataAt(value, trackingImage->GetOffsetFromIndex(ijk));
+        }
       }
     }
-  
+  }
+
   // write output image
-  cmtk::VolumeIO::Write( *outputImage, outputImagePath );
+  cmtk::VolumeIO::Write(*outputImage, outputImagePath);
 
   // if we got here, the program probably ran
   return 0;

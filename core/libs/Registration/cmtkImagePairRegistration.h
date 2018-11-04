@@ -35,60 +35,57 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkTimers.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkTimers.h>
 
-#include <Base/cmtkMacros.h>
-#include <Base/cmtkTypes.h>
-#include <Base/cmtkXform.h>
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkFunctional.h>
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkVector.h>
-#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkXform.h>
 
-#include <Registration/cmtkRegistrationCallback.h>
 #include <Registration/cmtkOptimizer.h>
+#include <Registration/cmtkRegistrationCallback.h>
 
 #include <IO/cmtkClassStreamOutput.h>
 
-#include <stack>
 #include <string.h>
+#include <stack>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Generic multiresolution voxel-registration class.
  * By implementing member functions to retrieve parameters and report results
- * in derived classes, registration can be integrated into various 
+ * in derived classes, registration can be integrated into various
  * environments.
  */
-class ImagePairRegistration 
-{
-public:
+class ImagePairRegistration {
+ public:
   /// This class.
   typedef ImagePairRegistration Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-protected:
+ protected:
   /// Image pair similarity measure to use as the registration metric.
   int m_Metric;
-  
+
   /** Override default interpolation method.
    * For intensity images, the default interpolator is LINEAR, for label images
    * it is NEARESTNEIGHBOR. These are used if this field is left at its initial
    * value, DEFAULT.
    */
-  cmtkGetSetMacro(Interpolators::InterpolationEnum,FloatingImageInterpolation);
-  
+  cmtkGetSetMacro(Interpolators::InterpolationEnum, FloatingImageInterpolation);
+
   /// Optimization algorithm to use.
-  cmtkGetSetMacro(int,Algorithm);
+  cmtkGetSetMacro(int, Algorithm);
 
   /// Number of levels for automatic parameter generation.
   unsigned int m_AutoMultiLevels;
@@ -108,19 +105,20 @@ protected:
 
   /// Flag whether the last resolution level uses the original images.
   bool m_UseOriginalData;
- 
- /// Factor between optimization step sizes.
+
+  /// Factor between optimization step sizes.
   double m_OptimizerStepFactor;
 
   /// Use maximum norm instead of Euclid where applicable.
   bool m_UseMaxNorm;
 
-  /// Threshold for terminating optimization based on changes of the target function.
+  /// Threshold for terminating optimization based on changes of the target
+  /// function.
   Optimizer::ReturnType m_DeltaFThreshold;
 
   /** Image sampling.
-   * This is the finest resampled image resolution in the multi-resolution image pyramid.
-   * The only finer resolution images are the original ones.
+   * This is the finest resampled image resolution in the multi-resolution image
+   * pyramid. The only finer resolution images are the original ones.
    */
   Types::Coordinate m_Sampling;
 
@@ -131,43 +129,45 @@ protected:
   Types::DataItem m_ForceOutsideValue;
 
   /// First data volume.
-  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_1);
+  cmtkGetSetMacro(UniformVolume::SmartPtr, Volume_1);
 
   /// Second data volume.
-  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_2);
+  cmtkGetSetMacro(UniformVolume::SmartPtr, Volume_2);
 
   /** Reference data volume.
-   * This is a pointer to the actual reference volume, which is either Volume_1 or Volume_2 above,
-   * depending on whether registration was instructed to switch the two or not.
+   * This is a pointer to the actual reference volume, which is either Volume_1
+   * or Volume_2 above, depending on whether registration was instructed to
+   * switch the two or not.
    */
-  cmtkGetSetMacro(UniformVolume::SmartPtr,ReferenceVolume);
+  cmtkGetSetMacro(UniformVolume::SmartPtr, ReferenceVolume);
 
   /** Floating data volume.
-   * This is a pointer to the actual floating volume, which is either Volume_2 or Volume_1 above,
-   * depending on whether registration was instructed to switch the two or not.
+   * This is a pointer to the actual floating volume, which is either Volume_2
+   * or Volume_1 above, depending on whether registration was instructed to
+   * switch the two or not.
    */
-  cmtkGetSetMacro(UniformVolume::SmartPtr,FloatingVolume);
+  cmtkGetSetMacro(UniformVolume::SmartPtr, FloatingVolume);
 
   /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
-  {
+  virtual void SetForceOutside(const bool flag = true,
+                               const Types::DataItem value = 0) {
     this->m_ForceOutsideFlag = flag;
     this->m_ForceOutsideValue = value;
   }
 
-  /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
-  class ImagePreprocessor
-  {
-  public:
+  /// Local class for preprocessing image data, e.g., by histogram operations,
+  /// thresholding, and cropping.
+  class ImagePreprocessor {
+   public:
     /// Data class string ("grey", "labels", or "binary")
-    const char* m_DataClassString;
+    const char *m_DataClassString;
 
     /// Data class ID.
     DataClass m_DataClass;
-    
+
     /// Flag for pixel padding.
     bool m_PaddingFlag;
-    
+
     /// Padding value.
     Types::DataItem m_PaddingValue;
 
@@ -176,7 +176,7 @@ protected:
 
     /// Lower threshold value.
     Types::DataItem m_LowerThresholdValue;
-  
+
     /// Upper threshold flag.
     bool m_UpperThresholdActive;
 
@@ -199,31 +199,32 @@ protected:
     bool m_SobelFilter;
 
     /// Crop region in index coordinates.
-    const char* m_CropIndex;
+    const char *m_CropIndex;
 
     /// Crop region in world coordinates.
-    const char* m_CropWorld;
+    const char *m_CropWorld;
 
     /// Flag for auto cropping.
     bool m_AutoCropFlag;
 
     /// Auto cropping level.
     Types::DataItem m_AutoCropLevel;
-    
+
     /// Constructor.
     ImagePreprocessor( const std::string& name /*!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.*/,
 		       const std::string& key /*!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.*/ );
-    
-    /// Attach this preprocessor to a command line parse.
-    void AttachToCommandLine( CommandLine& cl /*!< The command line object to add our options to.*/ ); 
-    
-    /// Get pre-processed image from original image.
-    UniformVolume::SmartPtr GetProcessedImage( const UniformVolume* original );
-    
-    /// Write settings of this object to class stream for archiving.
-    void WriteSettings( ClassStreamOutput& stream ) const;
 
-  private:
+    /// Attach this preprocessor to a command line parse.
+    void AttachToCommandLine(
+        CommandLine &cl /*!< The command line object to add our options to.*/);
+
+    /// Get pre-processed image from original image.
+    UniformVolume::SmartPtr GetProcessedImage(const UniformVolume *original);
+
+    /// Write settings of this object to class stream for archiving.
+    void WriteSettings(ClassStreamOutput &stream) const;
+
+   private:
     /// Store the name that identifies this instance ("Reference" or "Floating")
     std::string m_Name;
 
@@ -236,23 +237,22 @@ protected:
 
   /// Image preprocessor for floating image.
   ImagePreprocessor m_PreprocessorFlt;
-  
+
   /// Pointer to callback object.
-  cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
+  cmtkGetSetMacro(RegistrationCallback::SmartPtr, Callback);
 
   /// Initial transformation.
-  cmtkGetSetMacro(AffineXform::SmartPtr,InitialTransformation);
+  cmtkGetSetMacro(AffineXform::SmartPtr, InitialTransformation);
 
   /// FLag whether initial transformation is an inverse.
-  cmtkGetSetMacro(bool,InitialXformIsInverse);
+  cmtkGetSetMacro(bool, InitialXformIsInverse);
 
   /// Current / final transformation.
   Xform::SmartPtr m_Xform;
 
   /// Base class for registration level parameters.
-  class LevelParameters
-  {
-  public:
+  class LevelParameters {
+   public:
     /// This class.
     typedef LevelParameters Self;
 
@@ -267,7 +267,8 @@ protected:
   std::stack<Self::LevelParameters::SmartPtr> m_ParameterStack;
 
   /// Make functional for a set of registration level parameters.
-  virtual Functional* MakeFunctional( const int level, const Self::LevelParameters* levelParameters ) = 0;
+  virtual Functional *MakeFunctional(
+      const int level, const Self::LevelParameters *levelParameters) = 0;
 
   /// Pointer to optimizer object.
   Optimizer::SmartPtr m_Optimizer;
@@ -279,9 +280,9 @@ protected:
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *\return 
+   *\return
    */
-  virtual CallbackResult InitRegistration ();
+  virtual CallbackResult InitRegistration();
 
   /** Output registration result.
    * This function is called after finishing registration. It can overloaded
@@ -290,13 +291,13 @@ protected:
    */
   virtual void OutputResult ( const CoordinateVector* /*!< The vector of resulting transformation parameters. */, 
 			      const CallbackResult = CALLBACK_OK /*!< The interrupt status - this allows the output function to determine whether computation finished or was interrupted.*/ ) {}
-  
+
   /** Finalize registration.
    * This function is called after registration has been terminated. It can
    * be used to destroy progress dialog windows, free memory etc. Its last
    * operation should be a call to the respective parent class' implementation.
    */
-  virtual void DoneRegistration ( const CoordinateVector* v = NULL);
+  virtual void DoneRegistration(const CoordinateVector *v = NULL);
 
   /** Enter resolution level.
    * This function is called before entering each resolution level. It can
@@ -307,7 +308,9 @@ protected:
    * subsequent (finer) resolutions have increasing numbers.
    *\param total Total number of resolution levels.
    */
-  virtual void EnterResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int idx, const int total );
+  virtual void EnterResolution(CoordinateVector::SmartPtr &v,
+                               Functional::SmartPtr &f, const int idx,
+                               const int total);
 
   /** Finish resolution level.
    * This function is called after every resolution level. It should do any
@@ -318,20 +321,23 @@ protected:
    * to make repeated runs of the same level with different numbers of degrees
    * of freedom. Be careful not to create any inifinite loops.
    */
-  virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int ) { return 1; }
+  virtual int DoneResolution(CoordinateVector::SmartPtr &,
+                             Functional::SmartPtr &, const int, const int) {
+    return 1;
+  }
   //@}
 
-public:
+ public:
   /// Exception class.
   class ConstructorFailed {};
 
-  /** Default constructor. 
+  /** Default constructor.
    */
-  ImagePairRegistration ();
+  ImagePairRegistration();
 
   /** Destructor.
    */
-  virtual ~ImagePairRegistration () {}
+  virtual ~ImagePairRegistration() {}
 
   /** Do registration.
    * This function must be called to start the multiresolution optimization
@@ -339,51 +345,45 @@ public:
    *\return 1 if registration was terminated by a user interrupt, 0 if
    * registration was finished.
    */
-  virtual CallbackResult Register ();
+  virtual CallbackResult Register();
 
   /** Return total elapsed process time.
    */
-  double GetTotalElapsedTime() const 
-  {
+  double GetTotalElapsedTime() const {
     return cmtk::Timers::GetTimeProcess() - this->m_TimeStartRegistration;
   }
-  
+
   /** Return elapsed process time during current level.
    */
-  double GetLevelElapsedTime() const 
-  {
+  double GetLevelElapsedTime() const {
     return cmtk::Timers::GetTimeProcess() - this->m_TimeStartLevel;
   }
-  
+
   /** Return total elapsed walltime.
    */
-  double GetTotalElapsedWalltime() const 
-  {
+  double GetTotalElapsedWalltime() const {
     return cmtk::Timers::GetWalltime() - this->m_WalltimeStartRegistration;
   }
-  
+
   /** Return elapsed walltime during current level.
    */
-  double GetLevelElapsedWalltime() const 
-  {
+  double GetLevelElapsedWalltime() const {
     return cmtk::Timers::GetWalltime() - this->m_WalltimeStartLevel;
   }
-  
+
   /** Return total elapsed thread time.
    */
-  double GetThreadTotalElapsedTime() const 
-  {
+  double GetThreadTotalElapsedTime() const {
     return cmtk::Timers::GetTimeThread() - this->m_ThreadTimeStartRegistration;
   }
-  
+
   /** Return elapsed thread time during current level.
    */
-  double GetThreadLevelElapsedTime() const 
-  {
+  double GetThreadLevelElapsedTime() const {
     return cmtk::Timers::GetTimeThread() - this->m_ThreadTimeStartLevel;
   }
 
-private:
+ private:
   /** Time of registration start.
    * This is used as the reference for absolute computation time calculation.
    */
@@ -417,6 +417,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairRegistration_h_included_
+#endif  // #ifndef __cmtkImagePairRegistration_h_included_

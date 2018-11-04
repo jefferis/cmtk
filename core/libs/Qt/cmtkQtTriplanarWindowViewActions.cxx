@@ -32,78 +32,34 @@
 
 #include "cmtkQtTriplanarWindow.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-void 
-QtTriplanarWindow::slotView25()
-{
-  this->slotSetZoom( 25 );
-}
+void QtTriplanarWindow::slotView25() { this->slotSetZoom(25); }
 
-void 
-QtTriplanarWindow::slotView33()
-{
-  this->slotSetZoom( 33 );
-}
+void QtTriplanarWindow::slotView33() { this->slotSetZoom(33); }
 
-void 
-QtTriplanarWindow::slotView50()
-{
-  this->slotSetZoom( 50 );
-}
+void QtTriplanarWindow::slotView50() { this->slotSetZoom(50); }
 
-void 
-QtTriplanarWindow::slotView100()
-{
-  this->slotSetZoom( 100 );
-}
+void QtTriplanarWindow::slotView100() { this->slotSetZoom(100); }
 
-void 
-QtTriplanarWindow::slotView200()
-{
-  this->slotSetZoom( 200 );
-}
+void QtTriplanarWindow::slotView200() { this->slotSetZoom(200); }
 
-void 
-QtTriplanarWindow::slotView300()
-{
-  this->slotSetZoom( 300 );
-}
+void QtTriplanarWindow::slotView300() { this->slotSetZoom(300); }
 
-void 
-QtTriplanarWindow::slotView400()
-{
-  this->slotSetZoom( 400 );
-}
+void QtTriplanarWindow::slotView400() { this->slotSetZoom(400); }
 
-void 
-QtTriplanarWindow::slotView500()
-{
-  this->slotSetZoom( 500 );
-}
+void QtTriplanarWindow::slotView500() { this->slotSetZoom(500); }
 
-void 
-QtTriplanarWindow::slotViewInterpolation()
-{
-  this->slotRenderAll();
-}
+void QtTriplanarWindow::slotViewInterpolation() { this->slotRenderAll(); }
 
-void
-QtTriplanarWindow::slotViewCrosshair()
-{
+void QtTriplanarWindow::slotViewCrosshair() {
   const bool mode = this->m_CrosshairAction->isChecked();
-  ScrollRenderViewAx->GetRenderImage()->SetCrosshairMode( mode );
-  ScrollRenderViewCo->GetRenderImage()->SetCrosshairMode( mode );
-  ScrollRenderViewSa->GetRenderImage()->SetCrosshairMode( mode );
+  ScrollRenderViewAx->GetRenderImage()->SetCrosshairMode(mode);
+  ScrollRenderViewCo->GetRenderImage()->SetCrosshairMode(mode);
+  ScrollRenderViewSa->GetRenderImage()->SetCrosshairMode(mode);
   this->slotRenderAll();
 }
-      
-void
-QtTriplanarWindow::slotViewCheckerbox()
-{
-  this->slotRenderAll();
-}
-      
-} // namespace cmtk
+
+void QtTriplanarWindow::slotViewCheckerbox() { this->slotRenderAll(); }
+
+}  // namespace cmtk

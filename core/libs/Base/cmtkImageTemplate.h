@@ -37,27 +37,25 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Uniform volume template.
- * This class is a templated generalization of the UniformVolume class. Here, the type of pixel data is determined by template instantiation.
+ * This class is a templated generalization of the UniformVolume class. Here,
+ * the type of pixel data is determined by template instantiation.
  */
-template<class TPixelType>
-class ImageTemplate : 
-  /// Inherit from generic Volume class.
-  public UniformVolume 
-{
-public:
+template <class TPixelType>
+class ImageTemplate :
+    /// Inherit from generic Volume class.
+    public UniformVolume {
+ public:
   /// Pixel data type.
   typedef TPixelType PixelType;
 
@@ -86,39 +84,35 @@ public:
    *\param dims Number of grid elements for the three spatial dimensions.
    *\param size Size of the volume in real-world coordinates.
    */
-  ImageTemplate( const DataGrid::IndexType& dims, const typename Self::CoordinateVectorType& size ) : Superclass( dims, size ) 
-  {
-    this->m_DataArray.resize( this->GetNumberOfPixels() );
+  ImageTemplate(const DataGrid::IndexType &dims,
+                const typename Self::CoordinateVectorType &size)
+      : Superclass(dims, size) {
+    this->m_DataArray.resize(this->GetNumberOfPixels());
   }
 
   /** Create volume from base class instance.
    *\param dims Number of grid elements for the three spatial dimensions.
    *\param size Size of the volume in real-world coordinates.
    */
-  ImageTemplate( const Superclass& from ) : Superclass( from ) 
-  {
-    this->m_DataArray.resize( this->GetNumberOfPixels() );
+  ImageTemplate(const Superclass &from) : Superclass(from) {
+    this->m_DataArray.resize(this->GetNumberOfPixels());
   }
 
   /// Access operator.
-  PixelType& operator[]( const size_t idx )
-  {
+  PixelType &operator[](const size_t idx) { return this->m_DataArray[idx]; }
+
+  /// Const access operator.
+  const PixelType &operator[](const size_t idx) const {
     return this->m_DataArray[idx];
   }
 
-  /// Const access operator.
-  const PixelType& operator[]( const size_t idx ) const
-  {
-    return this->m_DataArray[idx];
-  }
-  
-private:
+ private:
   /// The actual data array.
   std::vector<PixelType> m_DataArray;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageTemplate_h_included_
+#endif  // #ifndef __cmtkImageTemplate_h_included_

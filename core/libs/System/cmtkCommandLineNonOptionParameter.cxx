@@ -34,58 +34,47 @@
 
 #include <sstream>
 
-void
-cmtk::CommandLine::NonOptionParameter
-::Evaluate( const size_t argc, const char* argv[], size_t& index )
-{
-  if ( this->Flag ) 
-    *this->Flag = true;
-  
-  if ( index < argc ) 
-    {
+void cmtk::CommandLine::NonOptionParameter ::Evaluate(const size_t argc,
+                                                      const char *argv[],
+                                                      size_t &index) {
+  if (this->Flag) *this->Flag = true;
+
+  if (index < argc) {
     *this->Var = argv[index];
-    } 
-  else
-    {
-    if ( ! (this->m_Properties & PROPS_OPTIONAL) )
-      throw( Exception( "Argument missing", index ) );
-    }
+  } else {
+    if (!(this->m_Properties & PROPS_OPTIONAL))
+      throw(Exception("Argument missing", index));
+  }
 }
 
+mxml_node_t *cmtk::CommandLine::NonOptionParameter ::MakeXMLWithIndex(
+    mxml_node_t *const parent, const int index) const {
+  mxml_node_t *node = Item::Helper<const char *>::MakeXML(this, parent);
 
-mxml_node_t* 
-cmtk::CommandLine::NonOptionParameter
-::MakeXMLWithIndex( mxml_node_t *const parent, const int index ) const
-{
-  mxml_node_t *node = Item::Helper<const char*>::MakeXML( this, parent );
-
-  if ( node )
-    {
-    if ( ! this->m_Name.empty() )
-      {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name.c_str() ) );
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name.c_str() ) );
-      }
-    
-    if ( ! this->m_Comment.empty() )
-      {
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() ) );
-      }
-    
-    if ( index >= 0 )
-      {
-      std::ostringstream strm;
-      strm << index;
-      Coverity::FakeFree( mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() ) );
-      }
+  if (node) {
+    if (!this->m_Name.empty()) {
+      Coverity::FakeFree(
+          mxmlNewText(mxmlNewElement(node, "name"), 0, this->m_Name.c_str()));
+      Coverity::FakeFree(
+          mxmlNewText(mxmlNewElement(node, "label"), 0, this->m_Name.c_str()));
     }
 
-  return node;
-} 
+    if (!this->m_Comment.empty()) {
+      Coverity::FakeFree(mxmlNewText(mxmlNewElement(node, "description"), 0,
+                                     this->m_Comment.c_str()));
+    }
 
-std::string
-cmtk::CommandLine::NonOptionParameter
-::GetParamTypeString() const
-{
-  return Item::Helper<const char*>::GetParamTypeString( this );
+    if (index >= 0) {
+      std::ostringstream strm;
+      strm << index;
+      Coverity::FakeFree(
+          mxmlNewText(mxmlNewElement(node, "index"), 0, strm.str().c_str()));
+    }
+  }
+
+  return node;
+}
+
+std::string cmtk::CommandLine::NonOptionParameter ::GetParamTypeString() const {
+  return Item::Helper<const char *>::GetParamTypeString(this);
 }

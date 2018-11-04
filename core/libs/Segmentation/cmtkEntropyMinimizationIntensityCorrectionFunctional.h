@@ -37,30 +37,28 @@
 
 #include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
+#include <Base/cmtkDataGrid.h>
 #include <Base/cmtkPolynomial.h>
 #include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkDataGrid.h>
 
-#include <System/cmtkThreadPool.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreadPool.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 /** Functional to correct MR intensity bias by miniming image entropy.
  */
-template<unsigned int NOrderAdd,unsigned int NOrderMul>
+template <unsigned int NOrderAdd, unsigned int NOrderMul>
 class EntropyMinimizationIntensityCorrectionFunctional :
-  /// Inherit from base class.
-  public EntropyMinimizationIntensityCorrectionFunctionalBase
-{
-public:
+    /// Inherit from base class.
+    public EntropyMinimizationIntensityCorrectionFunctionalBase {
+ public:
   /// This class type.
-  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> Self;
-  
+  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd, NOrderMul>
+      Self;
+
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
@@ -68,114 +66,121 @@ public:
   typedef EntropyMinimizationIntensityCorrectionFunctionalBase Superclass;
 
   /// Additive correction polynomial.
-  typedef Polynomial<NOrderAdd,Types::Coordinate> PolynomialTypeAdd;
+  typedef Polynomial<NOrderAdd, Types::Coordinate> PolynomialTypeAdd;
 
   /// Multiplicative correction polynomial.
-  typedef Polynomial<NOrderMul,Types::Coordinate> PolynomialTypeMul;
+  typedef Polynomial<NOrderMul, Types::Coordinate> PolynomialTypeMul;
 
   /// Constructor.
-  EntropyMinimizationIntensityCorrectionFunctional() 
-  {
-    this->m_ParameterVector.SetDim( this->ParamVectorDim() );
-    this->m_ParameterVector.SetAll( 0.0 );
+  EntropyMinimizationIntensityCorrectionFunctional() {
+    this->m_ParameterVector.SetDim(this->ParamVectorDim());
+    this->m_ParameterVector.SetAll(0.0);
 
-    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+    ThreadPool &threadPool = ThreadPool::GetGlobalThreadPool();
     this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
-    this->m_MonomialsPerThread = std::max( (int)PolynomialTypeAdd::NumberOfMonomials, (int)PolynomialTypeMul::NumberOfMonomials );
-    this->m_MonomialsVec = Memory::ArrayC::Allocate<Types::Coordinate>( this->m_NumberOfThreads * this->m_MonomialsPerThread  );
+    this->m_MonomialsPerThread =
+        std::max((int)PolynomialTypeAdd::NumberOfMonomials,
+                 (int)PolynomialTypeMul::NumberOfMonomials);
+    this->m_MonomialsVec = Memory::ArrayC::Allocate<Types::Coordinate>(
+        this->m_NumberOfThreads * this->m_MonomialsPerThread);
   }
 
   /// Virtual destructor.
-  virtual ~EntropyMinimizationIntensityCorrectionFunctional() 
-  {
-    Memory::ArrayC::Delete( this->m_MonomialsVec );
+  virtual ~EntropyMinimizationIntensityCorrectionFunctional() {
+    Memory::ArrayC::Delete(this->m_MonomialsVec);
   }
 
-  /// Total number of parameters is number of additive plus number of multiplicative parameters, each minus because we ignore the constant (zero-order) monomial.
-  static const size_t m_NumberOfParameters = PolynomialTypeAdd::NumberOfMonomials - 1 + PolynomialTypeMul::NumberOfMonomials - 1;
+  /// Total number of parameters is number of additive plus number of
+  /// multiplicative parameters, each minus because we ignore the constant
+  /// (zero-order) monomial.
+  static const size_t m_NumberOfParameters =
+      PolynomialTypeAdd::NumberOfMonomials - 1 +
+      PolynomialTypeMul::NumberOfMonomials - 1;
 
   /// Return parameter vector length.
-  virtual size_t ParamVectorDim() const
-  {
-    return Self::m_NumberOfParameters;
-  }
+  virtual size_t ParamVectorDim() const { return Self::m_NumberOfParameters; }
 
   /// Return parameter stepping.
 #pragma GCC diagnostic ignored "-Wtype-limits"
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
-  {
-    if ( idx < PolynomialTypeAdd::NumberOfMonomials-1 )
-      return (this->m_InputImageRange / 256) * this->m_StepSizeAdd[1+idx] * mmStep;
+  virtual Types::Coordinate GetParamStep(
+      const size_t idx, const Types::Coordinate mmStep = 1) const {
+    if (idx < PolynomialTypeAdd::NumberOfMonomials - 1)
+      return (this->m_InputImageRange / 256) * this->m_StepSizeAdd[1 + idx] *
+             mmStep;
     else
-      return (this->m_InputImageRange / 256) * this->m_StepSizeMul[1+idx-PolynomialTypeAdd::NumberOfMonomials+1] * mmStep;
+      return (this->m_InputImageRange / 256) *
+             this->m_StepSizeMul[1 + idx -
+                                 PolynomialTypeAdd::NumberOfMonomials + 1] *
+             mmStep;
   }
 
   /// Get number of additive monomials.
-  virtual size_t GetNumberOfMonomialsAdd() const 
-  {
+  virtual size_t GetNumberOfMonomialsAdd() const {
     return PolynomialTypeAdd::NumberOfMonomials - 1;
   }
 
   /// Get number of multiplicative monomials.
-  virtual size_t GetNumberOfMonomialsMul() const 
-  {
+  virtual size_t GetNumberOfMonomialsMul() const {
     return PolynomialTypeMul::NumberOfMonomials - 1;
   }
 
   /// Copy parameters to the two correction polynomials.
-  virtual void SetParamVector( CoordinateVector& v )
-  {
+  virtual void SetParamVector(CoordinateVector &v) {
     this->m_ParameterVector = v;
 
     size_t ofs = 0;
-    for ( int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i, ++ofs )
+    for (int i = 1; i < PolynomialTypeAdd::NumberOfMonomials; ++i, ++ofs)
       this->m_CoefficientsAdd[i] = v[ofs] * this->m_MulCorrectionAdd[i];
-    
-    for ( int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i, ++ofs )
+
+    for (int i = 1; i < PolynomialTypeMul::NumberOfMonomials; ++i, ++ofs)
       this->m_CoefficientsMul[i] = v[ofs] * this->m_MulCorrectionMul[i];
   }
 
   /// Extract parameter vector from the two correction polynomials.
-  virtual void GetParamVector( CoordinateVector& v )
-  {
+  virtual void GetParamVector(CoordinateVector &v) {
     v = this->m_ParameterVector;
   }
 
   /** Fast implementation of gradient evaluation.
-   * This function only updates either the additive of the multiplicative bias 
+   * This function only updates either the additive of the multiplicative bias
    * field, depending on which gradient component is being determined.
    */
-  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step );
+  virtual typename Self::ReturnType EvaluateWithGradient(
+      CoordinateVector &v, CoordinateVector &g, const Types::Coordinate step);
 
-protected:
+ protected:
   /// Keep a copy of the current parameter vector.
   CoordinateVector m_ParameterVector;
 
   /// Additive correction term coefficients.
-  Types::Coordinate m_StepSizeAdd[1+PolynomialTypeAdd::NumberOfMonomials];
-  
+  Types::Coordinate m_StepSizeAdd[1 + PolynomialTypeAdd::NumberOfMonomials];
+
   /// Multiplicative correction term coefficients.
-  Types::Coordinate m_StepSizeMul[1+PolynomialTypeMul::NumberOfMonomials];
+  Types::Coordinate m_StepSizeMul[1 + PolynomialTypeMul::NumberOfMonomials];
 
   /// Additive correction term coefficients.
-  Types::Coordinate m_CoefficientsAdd[1+PolynomialTypeAdd::NumberOfMonomials];
-  
+  Types::Coordinate m_CoefficientsAdd[1 + PolynomialTypeAdd::NumberOfMonomials];
+
   /// Multiplicative correction term coefficients.
-  Types::Coordinate m_CoefficientsMul[1+PolynomialTypeMul::NumberOfMonomials];
+  Types::Coordinate m_CoefficientsMul[1 + PolynomialTypeMul::NumberOfMonomials];
 
   /// Additive correction constants for additive polynomials.
-  Types::Coordinate m_AddCorrectionAdd[1+PolynomialTypeAdd::NumberOfMonomials];
+  Types::Coordinate
+      m_AddCorrectionAdd[1 + PolynomialTypeAdd::NumberOfMonomials];
 
   /// Multiplicative correction constants for additive polynomials.
-  Types::Coordinate m_MulCorrectionAdd[1+PolynomialTypeAdd::NumberOfMonomials];
+  Types::Coordinate
+      m_MulCorrectionAdd[1 + PolynomialTypeAdd::NumberOfMonomials];
 
   /// Additive correction constants for multiplicative polynomials.
-  Types::Coordinate m_AddCorrectionMul[1+PolynomialTypeMul::NumberOfMonomials];
+  Types::Coordinate
+      m_AddCorrectionMul[1 + PolynomialTypeMul::NumberOfMonomials];
 
   /// Multiplicative correction constants for additive polynomials.
-  Types::Coordinate m_MulCorrectionMul[1+PolynomialTypeMul::NumberOfMonomials];
+  Types::Coordinate
+      m_MulCorrectionMul[1 + PolynomialTypeMul::NumberOfMonomials];
 
-private:
+ private:
   /** Number of parallel threads.
    * Because the constructor allocated temporary storage for monomial
    * computation, we need to know in advance how many threads there will
@@ -184,69 +189,91 @@ private:
    */
   size_t m_NumberOfThreads;
 
-  /// Maximum number of monomials per thread (maximum of additive and multiplicative polynomial number of monomials).
+  /// Maximum number of monomials per thread (maximum of additive and
+  /// multiplicative polynomial number of monomials).
   size_t m_MonomialsPerThread;
 
   /// Temporary storage for evaluating monomials.
-  Types::Coordinate* m_MonomialsVec;
+  Types::Coordinate *m_MonomialsVec;
 
   /// Update polynomial correctionfactors from input image.
   virtual void UpdateCorrectionFactors();
 
   /// Jointly update both bias images.
-  virtual void UpdateBiasFields( const bool foregroundOnly = true );
+  virtual void UpdateBiasFields(const bool foregroundOnly = true);
 
   /// Thread function: jointly update both bias images.
-  static void UpdateBiasFieldsThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldsThreadFunc(void *args, const size_t taskIdx,
+                                         const size_t taskCnt,
+                                         const size_t threadIdx, const size_t);
 
   /// Thread function: jointly update both bias images.
-  static void UpdateBiasFieldsAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldsAllThreadFunc(void *args, const size_t taskIdx,
+                                            const size_t taskCnt,
+                                            const size_t threadIdx,
+                                            const size_t);
 
   /// Update additive bias image.
-  virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true );
+  virtual void UpdateBiasFieldAdd(const bool foregroundOnly = true);
 
   /// Thread function: update foreground additive bias images.
-  static void UpdateBiasFieldAddThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldAddThreadFunc(void *args, const size_t taskIdx,
+                                           const size_t taskCnt,
+                                           const size_t threadIdx,
+                                           const size_t);
 
   /// Thread function: update complete additive bias images.
-  static void UpdateBiasFieldAddAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldAddAllThreadFunc(void *args, const size_t taskIdx,
+                                              const size_t taskCnt,
+                                              const size_t threadIdx,
+                                              const size_t);
 
   /// Update multiplicative bias image.
-  virtual void UpdateBiasFieldMul( const bool foregroundOnly = true );
+  virtual void UpdateBiasFieldMul(const bool foregroundOnly = true);
 
   /// Thread function: update foreground multiplicative bias images.
-  static void UpdateBiasFieldMulThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldMulThreadFunc(void *args, const size_t taskIdx,
+                                           const size_t taskCnt,
+                                           const size_t threadIdx,
+                                           const size_t);
 
   /// Thread function: update complete multiplicative bias images.
-  static void UpdateBiasFieldMulAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateBiasFieldMulAllThreadFunc(void *args, const size_t taskIdx,
+                                              const size_t taskCnt,
+                                              const size_t threadIdx,
+                                              const size_t);
 };
 
 /// Create functional templated over polynomial degrees.
-template<unsigned int NDegreeMul>
+template <unsigned int NDegreeMul>
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctional
-( const unsigned int polynomialDegreeAdd );
+CreateEntropyMinimizationIntensityCorrectionFunctional(
+    const unsigned int polynomialDegreeAdd);
 
 /// Create functional templated over polynomial degrees.
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctional
-( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul );
+CreateEntropyMinimizationIntensityCorrectionFunctional(
+    const unsigned int polynomialDegreeAdd,
+    const unsigned int polynomialDegreeMul);
 
-/** Create functional templated over polynomial degrees with initialization from old functional.
- * This function creates a new functional and copies the polynomial coefficients from an existing
- * functional of equal or lower polynomial degrees into the correct locations of the new functional's
+/** Create functional templated over polynomial degrees with initialization from
+ * old functional. This function creates a new functional and copies the
+ * polynomial coefficients from an existing functional of equal or lower
+ * polynomial degrees into the correct locations of the new functional's
  * parameter vector. This is for incremental computation.
  */
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctional
-( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul,
-  EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr oldFunctional );
+CreateEntropyMinimizationIntensityCorrectionFunctional(
+    const unsigned int polynomialDegreeAdd,
+    const unsigned int polynomialDegreeMul,
+    EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
+        oldFunctional);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctional.txx"
 
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctional_h_included_
-
+#endif  // #ifndef
+        // __cmtkEntropyMinimizationIntensityCorrectionFunctional_h_included_

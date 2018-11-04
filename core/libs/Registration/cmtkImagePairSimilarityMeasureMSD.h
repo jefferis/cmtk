@@ -37,27 +37,24 @@
 
 #include <Registration/cmtkImagePairSimilarityMeasure.h>
 
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkUniformVolume.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 #ifdef _MSC_VER
-#pragma warning (disable:4521)
+#pragma warning(disable : 4521)
 #endif
 /** Mean squared difference metric.
  */
 class ImagePairSimilarityMeasureMSD :
-  /// Inherit generic pairwise similarity measure class
-  public ImagePairSimilarityMeasure
-{
-public:
+    /// Inherit generic pairwise similarity measure class
+    public ImagePairSimilarityMeasure {
+ public:
   /// This type.
   typedef ImagePairSimilarityMeasureMSD Self;
 
@@ -73,54 +70,54 @@ public:
    *\param fltVolume The floating (moving) volume.
    *\param interpolation ID of the interpolator to use for the floating image.
    */
-  ImagePairSimilarityMeasureMSD( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
+  ImagePairSimilarityMeasureMSD(const UniformVolume::SmartConstPtr &refVolume,
+                                const UniformVolume::SmartConstPtr &fltVolume,
+                                const Interpolators::InterpolationEnum
+                                    interpolation = Interpolators::DEFAULT);
 
   /** Virtual destructor.
    */
-  virtual ~ImagePairSimilarityMeasureMSD() {};
+  virtual ~ImagePairSimilarityMeasureMSD(){};
 
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
+  template <class T>
+  void Increment(const T a, const T b) {
     ++this->m_NumberOfSamples;
-    this->m_SumOfDifferences -= MathUtil::Square( a - b );
+    this->m_SumOfDifferences -= MathUtil::Square(a - b);
   }
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
+  template <class T>
+  void Decrement(const T a, const T b) {
     --this->m_NumberOfSamples;
-    this->m_SumOfDifferences += MathUtil::Square( a - b );
+    this->m_SumOfDifferences += MathUtil::Square(a - b);
   }
 
   /// Reset internal variables for next computation.
-  virtual void Reset () 
-  {
+  virtual void Reset() {
     this->m_SumOfDifferences = 0;
     this->m_NumberOfSamples = 0;
   }
-  
+
   /// Get the value of the metric.
-  virtual Self::ReturnType Get() const 
-  {
-    return static_cast<Self::ReturnType>( this->m_SumOfDifferences / this->m_NumberOfSamples );
+  virtual Self::ReturnType Get() const {
+    return static_cast<Self::ReturnType>(this->m_SumOfDifferences /
+                                         this->m_NumberOfSamples);
   }
 
-  void Add ( const Self& other )
-  {
+  void Add(const Self &other) {
     this->m_SumOfDifferences += other.m_SumOfDifferences;
     this->m_NumberOfSamples += other.m_NumberOfSamples;
   }
 
-  void Remove ( const Self& other )
-  {
+  void Remove(const Self &other) {
     this->m_SumOfDifferences -= other.m_SumOfDifferences;
     this->m_NumberOfSamples -= other.m_NumberOfSamples;
   }
-  
-private:
+
+ private:
   /// this->m_SumOfDifferences of all sample pair differences
   double m_SumOfDifferences;
 
@@ -130,6 +127,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairSimilarityMeasureMSD_h_included_
+#endif  // #ifndef __cmtkImagePairSimilarityMeasureMSD_h_included_

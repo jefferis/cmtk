@@ -35,27 +35,24 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkSmartPtr.h>
 
-#include <Base/cmtkVector.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkVector.h>
 
 #ifdef HAVE_UNISTD_H
-#  include <unistd.h>
+#include <unistd.h>
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Class defining a real-valued functional on a multi-dimensional domain.
-class Functional
-{
-public:
+class Functional {
+ public:
   /// This class.
   typedef Functional Self;
 
@@ -63,9 +60,10 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Functional return type.
-   * This is the higher resolution type of either data item or spatial coordinate type.
+   * This is the higher resolution type of either data item or spatial
+   * coordinate type.
    */
-  typedef Types::Combined<Types::Coordinate,Types::DataItem>::Type ReturnType;
+  typedef Types::Combined<Types::Coordinate, Types::DataItem>::Type ReturnType;
 
   /// Parameter vector type.
   typedef Vector<Types::Coordinate> ParameterVectorType;
@@ -74,36 +72,40 @@ public:
   typedef Types::Coordinate ParameterType;
 
   /// Set parameter vector.
-  virtual void SetParamVector ( ParameterVectorType& )
-  {
-    StdErr << "ERROR: Functional::SetParamVector() was called but not implemented\n";
-    exit( 1 );
+  virtual void SetParamVector(ParameterVectorType &) {
+    StdErr << "ERROR: Functional::SetParamVector() was called but not "
+              "implemented\n";
+    exit(1);
   }
 
   /// Return parameter vector.
-  virtual void GetParamVector ( ParameterVectorType& )
-  {
-    StdErr << "ERROR: Functional::GetParamVector() was called but not implemented\n";
-    exit( 1 );
+  virtual void GetParamVector(ParameterVectorType &) {
+    StdErr << "ERROR: Functional::GetParamVector() was called but not "
+              "implemented\n";
+    exit(1);
   }
 
   /// Evaluate functional.
-  virtual Self::ReturnType Evaluate() { return 0; } // cannot make this abstract because we need to instantiate this for generic initialization
+  virtual Self::ReturnType Evaluate() {
+    return 0;
+  }  // cannot make this abstract because we need to instantiate this for
+     // generic initialization
 
   /// Evaluate functional with new parameter vector.
-  virtual Self::ReturnType EvaluateAt( ParameterVectorType& v )
-  {
-    this->SetParamVector( v );
+  virtual Self::ReturnType EvaluateAt(ParameterVectorType &v) {
+    this->SetParamVector(v);
     return this->Evaluate();
   }
 
 #ifdef CMTK_BUILD_DEMO
   /// Create a snapshot (to disk) of current functional result.
-  virtual void SnapshotAt( ParameterVectorType& ) {}
+  virtual void SnapshotAt(ParameterVectorType &) {}
 #endif
 
   /// Evaluate functional and also return its gradient.
-  virtual Self::ReturnType EvaluateWithGradient( ParameterVectorType& v, ParameterVectorType& g, const Types::Coordinate step = 1 );
+  virtual Self::ReturnType EvaluateWithGradient(
+      ParameterVectorType &v, ParameterVectorType &g,
+      const Types::Coordinate step = 1);
 
   /// Return dimension of the parameter vector.
   virtual size_t ParamVectorDim() const = 0;
@@ -114,30 +116,29 @@ public:
    * computation. By default this function returns the total parameter
    * vector length.
    */
-  virtual size_t VariableParamVectorDim() const
-  {
+  virtual size_t VariableParamVectorDim() const {
     return this->ParamVectorDim();
   }
 
   /// Virtual destructor.
-  virtual ~Functional() {};
+  virtual ~Functional(){};
 
   /** Get stepping for one parameter.
-   * This function serves to make sure that optimizers optimize all parameters with
-   * approximately equal impact. If a parameter has smaller impact than another, it should
-   * return a smaller value here.
+   * This function serves to make sure that optimizers optimize all parameters
+   * with approximately equal impact. If a parameter has smaller impact than
+   * another, it should return a smaller value here.
    */
-  virtual Types::Coordinate GetParamStep( const size_t, const Types::Coordinate mmStep = 1 ) const 
-  {
+  virtual Types::Coordinate GetParamStep(
+      const size_t, const Types::Coordinate mmStep = 1) const {
     return mmStep;
   }
 
   /** Wiggle a little.
    * If the functional is not time-invariant, e.g., due to randomization,
    * then the optimizer can tell it to re-organize itself for example for
-   * a repeated search. 
+   * a repeated search.
    *\return If this function returns true, then the functional did indeed
-   * wiggle a little, i.e., potentially change. If the function returns 
+   * wiggle a little, i.e., potentially change. If the function returns
    * false, then the functional does not support this operation, and the
    * optimizer can assume that further evaluations will produce exactly
    * the same values as before.
@@ -147,6 +148,6 @@ public:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef _FUNCTIONAL_H_
+#endif  // #ifndef _FUNCTIONAL_H_

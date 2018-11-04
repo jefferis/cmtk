@@ -35,81 +35,66 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Class template for variable-size symmetric matrix.
-template<class TElement>
-class SymmetricMatrix
-{
-public:
+template <class TElement>
+class SymmetricMatrix {
+ public:
   /// This class.
   typedef SymmetricMatrix<TElement> Self;
 
   /// Constructor.
-  SymmetricMatrix( const size_t dim = 0 ) : m_Dim( dim ), m_MatrixElements( Self::NumberOfElements( dim ) ) {}
+  SymmetricMatrix(const size_t dim = 0)
+      : m_Dim(dim), m_MatrixElements(Self::NumberOfElements(dim)) {}
 
   /// Reference to matrix element.
-  TElement& operator()( const size_t i, const size_t j )
-  {
-    if ( i > j )
-      return this->m_MatrixElements[j + i*(i+1)/2];
+  TElement &operator()(const size_t i, const size_t j) {
+    if (i > j)
+      return this->m_MatrixElements[j + i * (i + 1) / 2];
     else
-      return this->m_MatrixElements[i + j*(j+1)/2];
+      return this->m_MatrixElements[i + j * (j + 1) / 2];
   }
-  
+
   /// Reference to const matrix element.
-  const TElement& operator()( const size_t i, const size_t j ) const
-  {
-    if ( i > j )
-      return this->m_MatrixElements[j + i*(i+1)/2];
+  const TElement &operator()(const size_t i, const size_t j) const {
+    if (i > j)
+      return this->m_MatrixElements[j + i * (i + 1) / 2];
     else
-      return this->m_MatrixElements[i + j*(j+1)/2];
+      return this->m_MatrixElements[i + j * (j + 1) / 2];
   }
 
   /// Get matrix dimension.
-  size_t Dim() const
-  {
-    return this->m_Dim;
-  }
-  
+  size_t Dim() const { return this->m_Dim; }
+
   /// Resize matrix.
-  void Resize( const size_t newDim )
-  {
+  void Resize(const size_t newDim) {
     this->m_Dim = newDim;
-    this->m_MatrixElements.resize( Self::NumberOfElements( newDim ) );
+    this->m_MatrixElements.resize(Self::NumberOfElements(newDim));
   }
-  
+
   /// Resize matrix with explicit initializer for newly allocated elements.
-  void Resize( const size_t newDim, const TElement initValue )
-  {
+  void Resize(const size_t newDim, const TElement initValue) {
     this->m_Dim = newDim;
-    this->m_MatrixElements.resize( Self::NumberOfElements( newDim ), initValue );
+    this->m_MatrixElements.resize(Self::NumberOfElements(newDim), initValue);
   }
 
   /// Equality operator.
-  bool operator==( const Self& other ) const
-  {
-    if ( this->m_Dim != other.m_Dim )
-      return false;
+  bool operator==(const Self &other) const {
+    if (this->m_Dim != other.m_Dim) return false;
     return (this->m_MatrixElements == other.m_MatrixElements);
   }
-  
+
   /// Inequality operator.
-  bool operator!=( const Self& other ) const
-  {
-    return ! (*this == other);
-  }
-  
-private:
+  bool operator!=(const Self &other) const { return !(*this == other); }
+
+ private:
   /// Static member: compute number of elements from dimension.
-  static size_t NumberOfElements( const size_t dim )
-  {
-    return dim*(dim+1) / 2;
+  static size_t NumberOfElements(const size_t dim) {
+    return dim * (dim + 1) / 2;
   }
 
   /// Matrix dimension.
@@ -121,7 +106,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-
-#endif // #ifndef __cmtkSymmetricMatrix_h_included_
+#endif  // #ifndef __cmtkSymmetricMatrix_h_included_

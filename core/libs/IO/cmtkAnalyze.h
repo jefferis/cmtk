@@ -34,9 +34,7 @@
 
 #include <cmtkconfig.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
@@ -44,7 +42,7 @@ cmtk
 /// IDs for data types in Analyze image file.
 typedef enum {
   ANALYZE_TYPE_NONE = 0,
-  ANALYZE_TYPE_BINARY =  1,
+  ANALYZE_TYPE_BINARY = 1,
   ANALYZE_TYPE_UNSIGNED_CHAR = 2,
   ANALYZE_TYPE_SIGNED_SHORT = 4,
   ANALYZE_TYPE_SIGNED_INT = 8,
@@ -52,8 +50,8 @@ typedef enum {
   ANALYZE_TYPE_COMPLEX = 32,
   ANALYZE_TYPE_DOUBLE = 64,
   ANALYZE_TYPE_RGB = 128,
-  ANALYZE_TYPE_USHORT = 132, //SPM extension
-  ANALYZE_TYPE_UINT = 136, // SPM extension
+  ANALYZE_TYPE_USHORT = 132,  // SPM extension
+  ANALYZE_TYPE_UINT = 136,    // SPM extension
   ANALYZE_TYPE_ALL = 255
 } AnalyzeDataType;
 
@@ -70,6 +68,6 @@ typedef enum {
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkAnalyze_h_included_
+#endif  // #ifndef __cmtkAnalyze_h_included_

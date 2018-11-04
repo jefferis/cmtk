@@ -40,45 +40,39 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
-/** Compute the eigenvectors and eigenvalues of a symmetric, square matrix of arbitrary size.
-  */  
-template<class TFloat>
-class EigenValuesSymmetricMatrix
-{
-public:
+/** Compute the eigenvectors and eigenvalues of a symmetric, square matrix of
+ * arbitrary size.
+ */
+template <class TFloat>
+class EigenValuesSymmetricMatrix {
+ public:
   /// This class.
   typedef EigenValuesSymmetricMatrix<TFloat> Self;
 
   /// Constructor: compute eigensystem of given matrix.
   EigenValuesSymmetricMatrix( const SymmetricMatrix<TFloat>& matrix /*!< Symmetric  matrix for which we are computing the eigenvalues and eigenvectors.*/ );
-  
+
   /// Get n-th eigenvalue.
-  TFloat GetNthEigenvalue( const size_t n ) const
-  {
+  TFloat GetNthEigenvalue(const size_t n) const {
     return this->m_Eigenvalues[n];
   }
 
   /// Get vector of eigenvalues.
-  std::vector<TFloat> GetEigenvalues() const
-  {
-    return this->m_Eigenvalues;
-  }
+  std::vector<TFloat> GetEigenvalues() const { return this->m_Eigenvalues; }
 
-protected:
+ protected:
   /// Eigenvalues vector.
   std::vector<TFloat> m_Eigenvalues;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkEigenValuesSymmetricMatrix.txx"
 
-#endif // #ifndef __cmtkEigenValuesSymmetricMatrix_h_included_
+#endif  // #ifndef __cmtkEigenValuesSymmetricMatrix_h_included_

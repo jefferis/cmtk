@@ -39,59 +39,55 @@
 
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 
-cmtk::ImageOperationMatchIntensities::ImageOperationMatchIntensities( const Self::Mode mode, const std::string& referenceImagePath )
-  : m_Mode( mode )
-{
-  UniformVolume::SmartPtr referenceImage = VolumeIO::Read( referenceImagePath );
-  if ( ! referenceImage )
-    {
+cmtk::ImageOperationMatchIntensities::ImageOperationMatchIntensities(
+    const Self::Mode mode, const std::string &referenceImagePath)
+    : m_Mode(mode) {
+  UniformVolume::SmartPtr referenceImage = VolumeIO::Read(referenceImagePath);
+  if (!referenceImage) {
     StdErr << "ERROR: cannot read image " << referenceImagePath << "\n";
-    throw ExitException( 1 );
-    }
+    throw ExitException(1);
+  }
 
   this->m_ReferenceData = referenceImage->GetData();
-  if ( ! this->m_ReferenceData )
-    {
-    StdErr << "ERROR: read geometry but could not read pixel data from " << referenceImagePath << "\n";
-    throw ExitException( 1 );
-    }
-}
-
-cmtk::UniformVolume::SmartPtr  
-cmtk::ImageOperationMatchIntensities::Apply( cmtk::UniformVolume::SmartPtr& volume )
-  {
-    TypedArray& volumeData = *(volume->GetData());
-    switch ( this->m_Mode ) 
-      {
-      case Self::MATCH_HISTOGRAMS:
-	volumeData.ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( volumeData, *(this->m_ReferenceData) ) );
-	break;
-      case Self::MATCH_MEAN_SDEV:
-      {
-      cmtk::Types::DataItem rMean, rVar;
-      this->m_ReferenceData->GetStatistics( rMean, rVar );
-      
-      cmtk::Types::DataItem mMean, mVar;
-      volumeData.GetStatistics( mMean, mVar );
-      
-      const cmtk::Types::DataItem scale = sqrt( rVar / mVar );
-      const cmtk::Types::DataItem offset = rMean - scale * mMean;
-      volumeData.Rescale( scale, offset );
-      break;
-      }
-      }
-    return volume;
+  if (!this->m_ReferenceData) {
+    StdErr << "ERROR: read geometry but could not read pixel data from "
+           << referenceImagePath << "\n";
+    throw ExitException(1);
   }
-  
-void
-cmtk::ImageOperationMatchIntensities::NewMatchHistograms( const char* referenceImagePath )
-{
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( Self::MATCH_HISTOGRAMS, referenceImagePath ) ) );
-}
-  
-void
-cmtk::ImageOperationMatchIntensities::NewMatchMeanSDev( const char* referenceImagePath )
-{
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( Self::MATCH_MEAN_SDEV, referenceImagePath ) ) );
 }
 
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationMatchIntensities::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  TypedArray &volumeData = *(volume->GetData());
+  switch (this->m_Mode) {
+    case Self::MATCH_HISTOGRAMS:
+      volumeData.ApplyFunctionObject(cmtk::TypedArrayFunctionHistogramMatching(
+          volumeData, *(this->m_ReferenceData)));
+      break;
+    case Self::MATCH_MEAN_SDEV: {
+      cmtk::Types::DataItem rMean, rVar;
+      this->m_ReferenceData->GetStatistics(rMean, rVar);
+
+      cmtk::Types::DataItem mMean, mVar;
+      volumeData.GetStatistics(mMean, mVar);
+
+      const cmtk::Types::DataItem scale = sqrt(rVar / mVar);
+      const cmtk::Types::DataItem offset = rMean - scale * mMean;
+      volumeData.Rescale(scale, offset);
+      break;
+    }
+  }
+  return volume;
+}
+
+void cmtk::ImageOperationMatchIntensities::NewMatchHistograms(
+    const char *referenceImagePath) {
+  ImageOperation::m_ImageOperationList.push_back(
+      SmartPtr(new Self(Self::MATCH_HISTOGRAMS, referenceImagePath)));
+}
+
+void cmtk::ImageOperationMatchIntensities::NewMatchMeanSDev(
+    const char *referenceImagePath) {
+  ImageOperation::m_ImageOperationList.push_back(
+      SmartPtr(new Self(Self::MATCH_MEAN_SDEV, referenceImagePath)));
+}

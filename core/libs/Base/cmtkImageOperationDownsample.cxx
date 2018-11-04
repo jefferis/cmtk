@@ -32,38 +32,34 @@
 
 #include "cmtkImageOperationDownsample.h"
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationDownsample
-::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
-  const Types::GridIndexType factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
-  if ( this->m_DoAverage )
-    return cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationDownsample ::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  const Types::GridIndexType factors[3] = {this->m_FactorX, this->m_FactorY,
+                                           this->m_FactorZ};
+  if (this->m_DoAverage)
+    return cmtk::UniformVolume::SmartPtr(
+        volume->GetDownsampledAndAveraged(factors));
   else
-    return cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
+    return cmtk::UniformVolume::SmartPtr(volume->GetDownsampled(factors));
 }
 
-void
-cmtk::ImageOperationDownsample
-::NewGeneric( const bool doAverage, const char* arg )
-{
+void cmtk::ImageOperationDownsample ::NewGeneric(const bool doAverage,
+                                                 const char *arg) {
   Types::GridIndexType factorsX = 1;
   Types::GridIndexType factorsY = 1;
   Types::GridIndexType factorsZ = 1;
-  
-  const size_t nFactors = sscanf( arg, "%5d,%5d,%5d", &factorsX, &factorsY, &factorsZ );
-  if ( nFactors == 1 )
-    {
-    factorsZ = factorsY = factorsX;
-    }
-  else
-    {
-    if ( nFactors != 3 )
-      {
-      cmtk::StdErr << "ERROR: downsampling factors must either be three integers, x,y,z, or a single integer\n";
-      exit( 1 );
-      }
-    }
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDownsample( doAverage, factorsX, factorsY, factorsZ ) ) );
-}
 
+  const size_t nFactors =
+      sscanf(arg, "%5d,%5d,%5d", &factorsX, &factorsY, &factorsZ);
+  if (nFactors == 1) {
+    factorsZ = factorsY = factorsX;
+  } else {
+    if (nFactors != 3) {
+      cmtk::StdErr << "ERROR: downsampling factors must either be three "
+                      "integers, x,y,z, or a single integer\n";
+      exit(1);
+    }
+  }
+  ImageOperation::m_ImageOperationList.push_back(SmartPtr(
+      new ImageOperationDownsample(doAverage, factorsX, factorsY, factorsZ)));
+}

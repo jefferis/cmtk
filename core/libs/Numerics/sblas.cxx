@@ -67,145 +67,117 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "sblas.h"
 
-void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
-     bool isupper,
-     int i1,
-     int i2,
-     const ap::real_1d_array& x,
-     ap::real_value_type alpha,
-     ap::real_1d_array& y)
-{
-    int i;
-    int ba1;
-    int by1;
-    int by2;
-    int bx1;
-    int bx2;
-    int n;
-    ap::real_value_type v;
+void symmetricmatrixvectormultiply(const ap::real_2d_array &a, bool isupper,
+                                   int i1, int i2, const ap::real_1d_array &x,
+                                   ap::real_value_type alpha,
+                                   ap::real_1d_array &y) {
+  int i;
+  int ba1;
+  int by1;
+  int by2;
+  int bx1;
+  int bx2;
+  int n;
+  ap::real_value_type v;
 
-    n = i2-i1+1;
-    if( n<=0 )
-    {
-        return;
+  n = i2 - i1 + 1;
+  if (n <= 0) {
+    return;
+  }
+
+  //
+  // Let A = L + D + U, where
+  //  L is strictly lower triangular (main diagonal is zero)
+  //  D is diagonal
+  //  U is strictly upper triangular (main diagonal is zero)
+  //
+  // A*x = L*x + D*x + U*x
+  //
+  // Calculate D*x first
+  //
+  for (i = i1; i <= i2; i++) {
+    y(i - i1 + 1) = a(i, i) * x(i - i1 + 1);
+  }
+
+  //
+  // Add L*x + U*x
+  //
+  if (isupper) {
+    for (i = i1; i <= i2 - 1; i++) {
+      //
+      // Add L*x to the result
+      //
+      v = x(i - i1 + 1);
+      by1 = i - i1 + 2;
+      by2 = n;
+      ba1 = i + 1;
+      ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1, by2), v);
+
+      //
+      // Add U*x to the result
+      //
+      bx1 = i - i1 + 2;
+      bx2 = n;
+      ba1 = i + 1;
+      v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1, bx2));
+      y(i - i1 + 1) = y(i - i1 + 1) + v;
     }
-    
-    //
-    // Let A = L + D + U, where
-    //  L is strictly lower triangular (main diagonal is zero)
-    //  D is diagonal
-    //  U is strictly upper triangular (main diagonal is zero)
-    //
-    // A*x = L*x + D*x + U*x
-    //
-    // Calculate D*x first
-    //
-    for(i = i1; i <= i2; i++)
-    {
-        y(i-i1+1) = a(i,i)*x(i-i1+1);
+  } else {
+    for (i = i1 + 1; i <= i2; i++) {
+      //
+      // Add L*x to the result
+      //
+      bx1 = 1;
+      bx2 = i - i1;
+      ba1 = i1;
+      v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1, bx2));
+      y(i - i1 + 1) = y(i - i1 + 1) + v;
+
+      //
+      // Add U*x to the result
+      //
+      v = x(i - i1 + 1);
+      by1 = 1;
+      by2 = i - i1;
+      ba1 = i1;
+      ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1, by2), v);
     }
-    
-    //
-    // Add L*x + U*x
-    //
-    if( isupper )
-    {
-        for(i = i1; i <= i2-1; i++)
-        {
-            
-            //
-            // Add L*x to the result
-            //
-            v = x(i-i1+1);
-            by1 = i-i1+2;
-            by2 = n;
-            ba1 = i+1;
-            ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1,by2), v);
-            
-            //
-            // Add U*x to the result
-            //
-            bx1 = i-i1+2;
-            bx2 = n;
-            ba1 = i+1;
-            v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1,bx2));
-            y(i-i1+1) = y(i-i1+1)+v;
-        }
-    }
-    else
-    {
-        for(i = i1+1; i <= i2; i++)
-        {
-            
-            //
-            // Add L*x to the result
-            //
-            bx1 = 1;
-            bx2 = i-i1;
-            ba1 = i1;
-            v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1,bx2));
-            y(i-i1+1) = y(i-i1+1)+v;
-            
-            //
-            // Add U*x to the result
-            //
-            v = x(i-i1+1);
-            by1 = 1;
-            by2 = i-i1;
-            ba1 = i1;
-            ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1,by2), v);
-        }
-    }
-    ap::vmul(&y(1), ap::vlen(1,n), alpha);
+  }
+  ap::vmul(&y(1), ap::vlen(1, n), alpha);
 }
 
+void symmetricrank2update(ap::real_2d_array &a, bool isupper, int i1, int i2,
+                          const ap::real_1d_array &x,
+                          const ap::real_1d_array &y, ap::real_1d_array &t,
+                          ap::real_value_type alpha) {
+  int i;
+  int tp1;
+  int tp2;
+  ap::real_value_type v;
 
-void symmetricrank2update(ap::real_2d_array& a,
-     bool isupper,
-     int i1,
-     int i2,
-     const ap::real_1d_array& x,
-     const ap::real_1d_array& y,
-     ap::real_1d_array& t,
-     ap::real_value_type alpha)
-{
-    int i;
-    int tp1;
-    int tp2;
-    ap::real_value_type v;
-
-    if( isupper )
-    {
-        for(i = i1; i <= i2; i++)
-        {
-            tp1 = i+1-i1;
-            tp2 = i2-i1+1;
-            v = x(i+1-i1);
-            ap::vmove(&t(tp1), &y(tp1), ap::vlen(tp1,tp2), v);
-            v = y(i+1-i1);
-            ap::vadd(&t(tp1), &x(tp1), ap::vlen(tp1,tp2), v);
-            ap::vmul(&t(tp1), ap::vlen(tp1,tp2), alpha);
-            ap::vadd(&a(i, i), &t(tp1), ap::vlen(i,i2));
-        }
+  if (isupper) {
+    for (i = i1; i <= i2; i++) {
+      tp1 = i + 1 - i1;
+      tp2 = i2 - i1 + 1;
+      v = x(i + 1 - i1);
+      ap::vmove(&t(tp1), &y(tp1), ap::vlen(tp1, tp2), v);
+      v = y(i + 1 - i1);
+      ap::vadd(&t(tp1), &x(tp1), ap::vlen(tp1, tp2), v);
+      ap::vmul(&t(tp1), ap::vlen(tp1, tp2), alpha);
+      ap::vadd(&a(i, i), &t(tp1), ap::vlen(i, i2));
     }
-    else
-    {
-        for(i = i1; i <= i2; i++)
-        {
-            tp1 = 1;
-            tp2 = i+1-i1;
-            v = x(i+1-i1);
-            ap::vmove(&t(tp1), &y(tp1), ap::vlen(tp1,tp2), v);
-            v = y(i+1-i1);
-            ap::vadd(&t(tp1), &x(tp1), ap::vlen(tp1,tp2), v);
-            ap::vmul(&t(tp1), ap::vlen(tp1,tp2), alpha);
-            ap::vadd(&a(i, i1), &t(tp1), ap::vlen(i1,i));
-        }
+  } else {
+    for (i = i1; i <= i2; i++) {
+      tp1 = 1;
+      tp2 = i + 1 - i1;
+      v = x(i + 1 - i1);
+      ap::vmove(&t(tp1), &y(tp1), ap::vlen(tp1, tp2), v);
+      v = y(i + 1 - i1);
+      ap::vadd(&t(tp1), &x(tp1), ap::vlen(tp1, tp2), v);
+      ap::vmul(&t(tp1), ap::vlen(tp1, tp2), alpha);
+      ap::vadd(&a(i, i1), &t(tp1), ap::vlen(i1, i));
     }
+  }
 }
-
-
-

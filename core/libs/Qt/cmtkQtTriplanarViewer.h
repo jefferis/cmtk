@@ -40,9 +40,7 @@
 
 #include <qlistwidget.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Qt */
 //@{
@@ -50,24 +48,23 @@ cmtk
 /** Stand-alone triplanar image viewer.
  */
 class QtTriplanarViewer :
-  /// Inherit from triplanar viewer widget.
-  public QtTriplanarWindow
-{
-  Q_OBJECT // we're using slots
+    /// Inherit from triplanar viewer widget.
+    public QtTriplanarWindow {
+  Q_OBJECT  // we're using slots
 
-public:
-  /// Constructor.
-  QtTriplanarViewer();
+      public :
+      /// Constructor.
+      QtTriplanarViewer();
 
   /// Virtual destructor.
-  virtual ~QtTriplanarViewer() {};
+  virtual ~QtTriplanarViewer(){};
 
   /// Execute in batch mode.
-  virtual int ExecuteBatchMode( const int argc, char* argv[] );
+  virtual int ExecuteBatchMode(const int argc, char *argv[]);
 
-public slots:
+ public slots:
   /// Add study by filesystem path.
-  void slotAddStudy( const char* fname );
+  void slotAddStudy(const char *fname);
 
   /// Load image from file.
   void slotLoadFile();
@@ -78,26 +75,26 @@ public slots:
   /// Copy current image colormap to all other images.
   void slotCopyColormapToOtherImages();
 
-private:
+ private:
   /// Window/Level dialog.
-  QtWindowLevelDialog* WindowLevel;
+  QtWindowLevelDialog *WindowLevel;
 
   /// Vector of loaded studies.
   std::vector<Study::SmartPtr> m_Studies;
 
   /// Tab for the images list.
-  QWidget* m_ImagesTab;
+  QWidget *m_ImagesTab;
 
   /// List box with loaded studies' names.
-  QListWidget* m_StudiesListBox;
+  QListWidget *m_StudiesListBox;
 
-private slots:
+ private slots:
   /// Study was double-clicked in listbox.
-  void slotSwitchStudy( const QString & study );
+  void slotSwitchStudy(const QString &study);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkQtTriplanarViewer_h_included_
+#endif  // #ifndef __cmtkQtTriplanarViewer_h_included_

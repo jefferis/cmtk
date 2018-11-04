@@ -32,8 +32,8 @@
 
 #include "cmtkQtSliderEntry.h"
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <qfont.h>
 
@@ -42,176 +42,147 @@
 
 #include <Base/cmtkMathUtil.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Qt */
 //@{
 
-QtSliderEntry::QtSliderEntry( QWidget* parent )
-  : QWidget( parent )
-{
+QtSliderEntry::QtSliderEntry(QWidget *parent) : QWidget(parent) {
   QFont font = this->font();
-  font.setPointSize( 2 * font.pointSize() / 4 );
-  
-  Layout = new QGridLayout( this );
-  Layout->setColumnStretch( 0, 1 );
-  Layout->setColumnStretch( 1, 1 );
-  Layout->setColumnStretch( 2, 0 );
-  Layout->setColumnStretch( 3, 0 );
+  font.setPointSize(2 * font.pointSize() / 4);
 
-  Slider = new QSlider( Qt::Horizontal, this );
-  QObject::connect( Slider, SIGNAL( valueChanged( int ) ), this, SLOT( slotSliderValueChanged( int ) ) );
-//  Layout->addWidget( Slider, 1, 1, 0, 1 );
-  Layout->addWidget( Slider, 1, 0, 1, 2 );
+  Layout = new QGridLayout(this);
+  Layout->setColumnStretch(0, 1);
+  Layout->setColumnStretch(1, 1);
+  Layout->setColumnStretch(2, 0);
+  Layout->setColumnStretch(3, 0);
 
-  Edit = new QLineEdit( this );
-  Edit->setFixedWidth( 100 );
-  Validator = new QDoubleValidator( Edit );
-  Edit->setValidator( Validator );
-  QObject::connect( Edit, SIGNAL( returnPressed() ), this, SLOT( slotEditReturnPressed() ) );
-  Layout->addWidget( Edit, 1, 3 );
+  Slider = new QSlider(Qt::Horizontal, this);
+  QObject::connect(Slider, SIGNAL(valueChanged(int)), this,
+                   SLOT(slotSliderValueChanged(int)));
+  //  Layout->addWidget( Slider, 1, 1, 0, 1 );
+  Layout->addWidget(Slider, 1, 0, 1, 2);
 
-  TitleLabel = new QLabel( this );
+  Edit = new QLineEdit(this);
+  Edit->setFixedWidth(100);
+  Validator = new QDoubleValidator(Edit);
+  Edit->setValidator(Validator);
+  QObject::connect(Edit, SIGNAL(returnPressed()), this,
+                   SLOT(slotEditReturnPressed()));
+  Layout->addWidget(Edit, 1, 3);
+
+  TitleLabel = new QLabel(this);
   TitleLabel->hide();
-  MinLabel = new QLabel( this );
-  MinLabel->setFont( font );
+  MinLabel = new QLabel(this);
+  MinLabel->setFont(font);
   MinLabel->hide();
-  MaxLabel = new QLabel( this );
-  MaxLabel->setFont( font );
-  MaxLabel->setAlignment( Qt::AlignRight );
+  MaxLabel = new QLabel(this);
+  MaxLabel->setFont(font);
+  MaxLabel->setAlignment(Qt::AlignRight);
   MaxLabel->hide();
 
   Precision = 0;
   PrecisionFactor = 1;
 }
 
-double 
-QtSliderEntry::GetValue() const
-{
-  return Edit->text().toDouble();
-}
+double QtSliderEntry::GetValue() const { return Edit->text().toDouble(); }
 
-double
-QtSliderEntry::GetMinValue() const
-{
+double QtSliderEntry::GetMinValue() const {
   return 1.0 * Slider->minimum() / PrecisionFactor;
 }
 
-double
-QtSliderEntry::GetMaxValue() const
-{
+double QtSliderEntry::GetMaxValue() const {
   return 1.0 * Slider->minimum() / PrecisionFactor;
 }
 
-void
-QtSliderEntry::slotSetRange( double rangeFrom, double rangeTo )
-{
+void QtSliderEntry::slotSetRange(double rangeFrom, double rangeTo) {
   const double rangeWidth = rangeTo - rangeFrom;
-  
-  if ( rangeWidth > 0 ) 
-    {
-    const int autoPrecision = static_cast<int>( (log( 0.001 ) + log( rangeWidth )) / log( 0.1 ) );
-    this->slotSetPrecision( std::max<int>( this->Precision, autoPrecision ) );
-    }
-  
-  Slider->setRange( static_cast<int>( rangeFrom * PrecisionFactor ), static_cast<int>( rangeTo * PrecisionFactor ) );
-  
-  Validator->setRange( rangeFrom - 10 * rangeWidth, rangeTo + 10 * rangeWidth, Precision );
-  
-  MinLabel->setNum( rangeFrom );
-  MaxLabel->setNum( rangeTo );
+
+  if (rangeWidth > 0) {
+    const int autoPrecision =
+        static_cast<int>((log(0.001) + log(rangeWidth)) / log(0.1));
+    this->slotSetPrecision(std::max<int>(this->Precision, autoPrecision));
+  }
+
+  Slider->setRange(static_cast<int>(rangeFrom * PrecisionFactor),
+                   static_cast<int>(rangeTo * PrecisionFactor));
+
+  Validator->setRange(rangeFrom - 10 * rangeWidth, rangeTo + 10 * rangeWidth,
+                      Precision);
+
+  MinLabel->setNum(rangeFrom);
+  MaxLabel->setNum(rangeTo);
 }
 
-void
-QtSliderEntry::slotSetPrecision( int precision )
-{
+void QtSliderEntry::slotSetPrecision(int precision) {
   Precision = precision;
-  PrecisionFactor = static_cast<uint>( pow( 10.0, precision ) );
-  Validator->setDecimals( Precision );
+  PrecisionFactor = static_cast<uint>(pow(10.0, precision));
+  Validator->setDecimals(Precision);
 }
 
-void
-QtSliderEntry::slotSetTitle( const QString& title )
-{
-  TitleLabel->setText( title );
-//  Layout->addWidget( TitleLabel, 0, 0, 0, 2 );
-  Layout->addWidget( TitleLabel, 0, 0, 1, 3 );
+void QtSliderEntry::slotSetTitle(const QString &title) {
+  TitleLabel->setText(title);
+  //  Layout->addWidget( TitleLabel, 0, 0, 0, 2 );
+  Layout->addWidget(TitleLabel, 0, 0, 1, 3);
   TitleLabel->show();
 }
 
-void
-QtSliderEntry::slotSetMinMaxLabels( const QString& minLabel, const QString& maxLabel )
-{
-  if ( minLabel != QString::null ) 
-    {
-    MinLabel->setText( minLabel );
-    } 
-  else
-    {
-    MinLabel->setNum( Validator->bottom() );
-    }
-  Layout->addWidget( MinLabel, 2, 0 );
+void QtSliderEntry::slotSetMinMaxLabels(const QString &minLabel,
+                                        const QString &maxLabel) {
+  if (minLabel != QString::null) {
+    MinLabel->setText(minLabel);
+  } else {
+    MinLabel->setNum(Validator->bottom());
+  }
+  Layout->addWidget(MinLabel, 2, 0);
   MinLabel->show();
-  
-  if ( maxLabel != QString::null ) 
-    {
-    MaxLabel->setText( maxLabel );
-    } 
-  else
-    {
-    MaxLabel->setNum( Validator->top() );
-    }
-  Layout->addWidget( MaxLabel, 2, 1 );
+
+  if (maxLabel != QString::null) {
+    MaxLabel->setText(maxLabel);
+  } else {
+    MaxLabel->setNum(Validator->top());
+  }
+  Layout->addWidget(MaxLabel, 2, 1);
   MaxLabel->show();
 }
 
-void 
-QtSliderEntry::slotEditReturnPressed()
-{
+void QtSliderEntry::slotEditReturnPressed() {
   double value = Edit->text().toDouble();
-  int valueSlider = static_cast<int>( value * PrecisionFactor );
+  int valueSlider = static_cast<int>(value * PrecisionFactor);
 
-  if ( valueSlider < Slider->minimum() )
-    this->slotSetRange( value, Slider->maximum() / PrecisionFactor );
-  if ( valueSlider > Slider->maximum() )
-    this->slotSetRange( Slider->minimum() / PrecisionFactor, value );
+  if (valueSlider < Slider->minimum())
+    this->slotSetRange(value, Slider->maximum() / PrecisionFactor);
+  if (valueSlider > Slider->maximum())
+    this->slotSetRange(Slider->minimum() / PrecisionFactor, value);
 
-  Slider->setValue( valueSlider );
-  emit valueChanged( value );
+  Slider->setValue(valueSlider);
+  emit valueChanged(value);
 }
 
-void 
-QtSliderEntry::slotSliderValueChanged( int value )
-{
+void QtSliderEntry::slotSliderValueChanged(int value) {
   double realValue = 1.0 * value / PrecisionFactor;
   QString valueString;
-  Edit->setText( valueString.setNum( realValue, 'f', Precision ) );
-  emit valueChanged( realValue );
+  Edit->setText(valueString.setNum(realValue, 'f', Precision));
+  emit valueChanged(realValue);
 }
 
-void 
-QtSliderEntry::slotCenter()
-{
-  Slider->setValue( (Slider->minimum() + Slider->maximum()) / 2 );
+void QtSliderEntry::slotCenter() {
+  Slider->setValue((Slider->minimum() + Slider->maximum()) / 2);
   // valueChanged signal should be emitted indirectly by slotSliderValueChanged
 }
 
-void 
-QtSliderEntry::slotSetValue( const double value )
-{
+void QtSliderEntry::slotSetValue(const double value) {
   QString valueString;
-  Edit->setText( valueString.setNum( value, 'f', Precision ) );
-  int valueSlider = static_cast<int>( value * PrecisionFactor );
+  Edit->setText(valueString.setNum(value, 'f', Precision));
+  int valueSlider = static_cast<int>(value * PrecisionFactor);
 
-  if ( valueSlider < Slider->minimum() )
-    this->slotSetRange( value, Slider->maximum() / PrecisionFactor );
-  if ( valueSlider > Slider->maximum() )
-    this->slotSetRange( Slider->minimum() / PrecisionFactor, value );
+  if (valueSlider < Slider->minimum())
+    this->slotSetRange(value, Slider->maximum() / PrecisionFactor);
+  if (valueSlider > Slider->maximum())
+    this->slotSetRange(Slider->minimum() / PrecisionFactor, value);
 
-  Slider->setValue( valueSlider );
-  emit valueChanged( value );
+  Slider->setValue(valueSlider);
+  emit valueChanged(value);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

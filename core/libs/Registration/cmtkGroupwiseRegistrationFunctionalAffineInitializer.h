@@ -39,24 +39,21 @@
 
 #include <System/cmtkSmartPtr.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkHistogram.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Affine initialization of groupwise registration functionals.
  */
-class GroupwiseRegistrationFunctionalAffineInitializer
-{
-public:
+class GroupwiseRegistrationFunctionalAffineInitializer {
+ public:
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalAffineInitializer Self;
 
@@ -65,15 +62,12 @@ public:
 
   /** Initialize affine transformations.
    */
-  static void InitializeXforms( GroupwiseRegistrationFunctionalBase& functional /*!<The functional to initialize.*/,
-				const bool alignCenters = true /*!< If set, the centers of all target images will be aligned with the center of the template grid via translations.*/,
-				const bool alignCenterOfMass = false /*!< If set, target images will be aligned via translations according to their centers of mass.*/,
-				const bool initScales = false /*!< If set, approximate initial scaling factors will be computed based on image centers of mass and moments.*/,
-				const bool centerInTemplateFOV = false /*!< If set, center aligned images inside template field of view.*/ );
+  static void InitializeXforms(GroupwiseRegistrationFunctionalBase &functional /*!<The functional to initialize.*/, const bool alignCenters = true /*!< If set, the centers of all target images will be aligned with the center of the template grid via translations.*/, const bool alignCenterOfMass = false /*!< If set, target images will be aligned via translations according to their centers of mass.*/, const bool initScales = false /*!< If set, approximate initial scaling factors will be computed based on image centers of mass and moments.*/, const bool centerInTemplateFOV = false /*!< If set, center aligned images inside template field of view.*/);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalAffineInitializer_h_included_
+#endif  // #ifndef
+        // __cmtkGroupwiseRegistrationFunctionalAffineInitializer_h_included_

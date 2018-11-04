@@ -32,60 +32,60 @@
 
 #include <Registration/cmtkImagePairSimilarityMeasure.h>
 
-#include <Base/cmtkUniformVolumeInterpolator.h>
 #include <Base/cmtkLinearInterpolator.h>
 #include <Base/cmtkNearestNeighborInterpolator.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
 
 #include <Registration/cmtkReformatVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
-( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : m_InterpolationMethod( interpolation )
-{
-  this->SetReferenceVolume( refVolume );
-  this->SetFloatingVolume( fltVolume );
+ImagePairSimilarityMeasure::ImagePairSimilarityMeasure(
+    const UniformVolume::SmartConstPtr &refVolume,
+    const UniformVolume::SmartConstPtr &fltVolume,
+    const Interpolators::InterpolationEnum interpolation)
+    : m_InterpolationMethod(interpolation) {
+  this->SetReferenceVolume(refVolume);
+  this->SetFloatingVolume(fltVolume);
 }
 
-void
-ImagePairSimilarityMeasure::SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume )
-{
+void ImagePairSimilarityMeasure::SetReferenceVolume(
+    const UniformVolume::SmartConstPtr &refVolume) {
   this->m_ReferenceVolume = refVolume;
   this->m_ReferenceData = this->m_ReferenceVolume->GetData();
 }
 
-void
-ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume )
-{
+void ImagePairSimilarityMeasure::SetFloatingVolume(
+    const UniformVolume::SmartConstPtr &fltVolume) {
   this->m_FloatingVolume = fltVolume;
   this->m_FloatingData = fltVolume->GetData();
-  
-  if ( this->m_InterpolationMethod == Interpolators::DEFAULT )
-    {
+
+  if (this->m_InterpolationMethod == Interpolators::DEFAULT) {
     // decide based on floating image data class.
-    switch ( this->m_FloatingData->GetDataClass() ) 
-      {
-      case DATACLASS_UNKNOWN :
-      case DATACLASS_GREY :
-	this->m_InterpolationMethod = Interpolators::LINEAR;
-	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( *fltVolume ) );
-	break;
-      case DATACLASS_LABEL :
-	this->m_InterpolationMethod = Interpolators::NEAREST_NEIGHBOR;
-	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( *fltVolume ) );
-	break;
-      }
+    switch (this->m_FloatingData->GetDataClass()) {
+      case DATACLASS_UNKNOWN:
+      case DATACLASS_GREY:
+        this->m_InterpolationMethod = Interpolators::LINEAR;
+        this->m_FloatingImageInterpolator =
+            cmtk::UniformVolumeInterpolatorBase::SmartPtr(
+                new cmtk::UniformVolumeInterpolator<
+                    cmtk::Interpolators::Linear>(*fltVolume));
+        break;
+      case DATACLASS_LABEL:
+        this->m_InterpolationMethod = Interpolators::NEAREST_NEIGHBOR;
+        this->m_FloatingImageInterpolator =
+            cmtk::UniformVolumeInterpolatorBase::SmartPtr(
+                new cmtk::UniformVolumeInterpolator<
+                    cmtk::Interpolators::NearestNeighbor>(*fltVolume));
+        break;
     }
-  else
-    {
-    this->m_FloatingImageInterpolator = ReformatVolume::CreateInterpolator( this->m_InterpolationMethod, fltVolume );
-    }
+  } else {
+    this->m_FloatingImageInterpolator = ReformatVolume::CreateInterpolator(
+        this->m_InterpolationMethod, fltVolume);
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

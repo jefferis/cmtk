@@ -33,9 +33,9 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkValueSequence.h>
 
@@ -43,13 +43,10 @@
 
 #include <IO/cmtkVolumeIO.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
-int
-doMain
-( const int argc, const char *argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   std::vector<std::string> imagePaths;
 
   int sliceAxis = cmtk::AXIS_Z;
@@ -59,119 +56,137 @@ doMain
 
   size_t badSlicesThresh = 0;
 
-  try
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Find bad slices in a time series of interleaved images (e.g., a resting-state fMRI series)." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool reads a time series of 3D images and detects outliers." );
-    
-    cl.AddParameterVector( &imagePaths, "ImagePaths", "List of file system paths for all images in the time series.");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Find bad slices in a time series of interleaved images "
+                      "(e.g., a resting-state fMRI series).");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "This tool reads a time series of 3D images and detects outliers.");
+
+    cl.AddParameterVector(
+        &imagePaths, "ImagePaths",
+        "List of file system paths for all images in the time series.");
 
     typedef cmtk::CommandLine::Key Key;
 
-    cl.BeginGroup( "Input", "Input Options" );
-    cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup = cl.AddEnum( "slice-orientation", &sliceAxis, "Define slice orientation of the diffusion images." );
-    sliceGroup->AddSwitch( Key( "axial" ), (int)cmtk::AXIS_Z, "Axial slices" );
-    sliceGroup->AddSwitch( Key( "sagittal" ),(int)cmtk::AXIS_X, "Sagittal slices" );
-    sliceGroup->AddSwitch( Key( "coronal" ), (int)cmtk::AXIS_Y, "Coronal slices" );
-    sliceGroup->AddSwitch( Key( "slice-x" ), (int)cmtk::AXIS_X, "X coordinate axis is slice direction" );
-    sliceGroup->AddSwitch( Key( "slice-y" ), (int)cmtk::AXIS_Y, "Y coordinate axis is slice direction" );
-    sliceGroup->AddSwitch( Key( "slice-z" ), (int)cmtk::AXIS_Z, "Z coordinate axis is slice direction" );
+    cl.BeginGroup("Input", "Input Options");
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup =
+        cl.AddEnum("slice-orientation", &sliceAxis,
+                   "Define slice orientation of the diffusion images.");
+    sliceGroup->AddSwitch(Key("axial"), (int)cmtk::AXIS_Z, "Axial slices");
+    sliceGroup->AddSwitch(Key("sagittal"), (int)cmtk::AXIS_X,
+                          "Sagittal slices");
+    sliceGroup->AddSwitch(Key("coronal"), (int)cmtk::AXIS_Y, "Coronal slices");
+    sliceGroup->AddSwitch(Key("slice-x"), (int)cmtk::AXIS_X,
+                          "X coordinate axis is slice direction");
+    sliceGroup->AddSwitch(Key("slice-y"), (int)cmtk::AXIS_Y,
+                          "Y coordinate axis is slice direction");
+    sliceGroup->AddSwitch(Key("slice-z"), (int)cmtk::AXIS_Z,
+                          "Z coordinate axis is slice direction");
     cl.EndGroup();
 
-    cl.BeginGroup( "detection", "Bad Slice Detection" );
-    cmtk::CommandLine::EnumGroup<cmtk::TypedArraySimilarity::ID>::SmartPtr metricGroup = cl.AddEnum( "metric", &metric, "Image-to-image similarity metric to compare neighbouring slices." );
-    metricGroup->AddSwitch( Key( "ncc" ), cmtk::TypedArraySimilarity::CC, "Normalized cross correlation." );
-    metricGroup->AddSwitch( Key( "rms" ), cmtk::TypedArraySimilarity::MSD, "Root of mean squared differences." );
-    cl.AddOption( Key( "stdev-thresh" ), &standardDeviationsThreshold, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
+    cl.BeginGroup("detection", "Bad Slice Detection");
+    cmtk::CommandLine::EnumGroup<cmtk::TypedArraySimilarity::ID>::SmartPtr
+        metricGroup = cl.AddEnum(
+            "metric", &metric,
+            "Image-to-image similarity metric to compare neighbouring slices.");
+    metricGroup->AddSwitch(Key("ncc"), cmtk::TypedArraySimilarity::CC,
+                           "Normalized cross correlation.");
+    metricGroup->AddSwitch(Key("rms"), cmtk::TypedArraySimilarity::MSD,
+                           "Root of mean squared differences.");
+    cl.AddOption(Key("stdev-thresh"), &standardDeviationsThreshold,
+                 "Threshold for bad slice identification in units of intensity "
+                 "standard deviations over all corresponding slices from the "
+                 "remaining diffusion images.");
     cl.EndGroup();
 
-    cl.BeginGroup( "output", "Output Options" );
-    cl.AddOption( Key( "bad-slices-thresh" ), &badSlicesThresh, "Minimum number of detected bad slices before reporting a volume (only number of detected bad slices is reported in this case, rather than each slice separately)." );
+    cl.BeginGroup("output", "Output Options");
+    cl.AddOption(Key("bad-slices-thresh"), &badSlicesThresh,
+                 "Minimum number of detected bad slices before reporting a "
+                 "volume (only number of detected bad slices is reported in "
+                 "this case, rather than each slice separately).");
     cl.EndGroup();
 
-    cl.Parse( argc, argv );
-    }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
+    cl.Parse(argc, argv);
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
-  // read all diffusion images and make sure their grids match
-  std::vector<cmtk::UniformVolume::SmartConstPtr> images( imagePaths.size() );
-  for ( size_t i = 0; i < imagePaths.size(); ++i )
-    {
-    images[i] = cmtk::UniformVolume::SmartConstPtr( cmtk::VolumeIO::Read( imagePaths[i] ) );
+    throw cmtk::ExitException(1);
+  }
 
-    if ( i && ! images[0]->GridMatches( *images[i] ) )
-      {
-      cmtk::StdErr << "ERROR: geometry of image '" << imagePaths[i] << "' does not match that of image '" << imagePaths[0] << "'\n";
-      throw cmtk::ExitException( 1 );
-      }
+  // read all diffusion images and make sure their grids match
+  std::vector<cmtk::UniformVolume::SmartConstPtr> images(imagePaths.size());
+  for (size_t i = 0; i < imagePaths.size(); ++i) {
+    images[i] =
+        cmtk::UniformVolume::SmartConstPtr(cmtk::VolumeIO::Read(imagePaths[i]));
+
+    if (i && !images[0]->GridMatches(*images[i])) {
+      cmtk::StdErr << "ERROR: geometry of image '" << imagePaths[i]
+                   << "' does not match that of image '" << imagePaths[0]
+                   << "'\n";
+      throw cmtk::ExitException(1);
     }
-  
+  }
+
   // Build slice pair difference tables and statistics
-  std::vector< cmtk::ValueSequence<double> > slicePairStatistics( images[0]->m_Dims[sliceAxis]-1 );
-  std::vector< std::vector< double> > slicePairSamples( images[0]->m_Dims[sliceAxis]-1 );
-  for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
-    {
-    slicePairSamples[slice].resize( images.size() );
-    for ( size_t i = 0; i < images.size(); ++i )
-      {    
+  std::vector<cmtk::ValueSequence<double>> slicePairStatistics(
+      images[0]->m_Dims[sliceAxis] - 1);
+  std::vector<std::vector<double>> slicePairSamples(
+      images[0]->m_Dims[sliceAxis] - 1);
+  for (int slice = 0; slice < images[0]->m_Dims[sliceAxis] - 1; ++slice) {
+    slicePairSamples[slice].resize(images.size());
+    for (size_t i = 0; i < images.size(); ++i) {
       double difference = 0;
-      switch ( metric )
-	{
-	case cmtk::TypedArraySimilarity::CC:
-	  difference = cmtk::TypedArraySimilarity::GetCrossCorrelation( images[i]->ExtractSlice( sliceAxis, slice )->GetData(), images[i]->ExtractSlice( sliceAxis, slice+1 )->GetData() );
-	  break;
-	case cmtk::TypedArraySimilarity::MSD:
-	  difference = sqrt( fabs( cmtk::TypedArraySimilarity::GetMinusMeanSquaredDifference( images[i]->ExtractSlice( sliceAxis, slice )->GetData(), images[i]->ExtractSlice( sliceAxis, slice+1 )->GetData() ) ) );
-	  break;
-	default:
-	  break;
-	}
+      switch (metric) {
+        case cmtk::TypedArraySimilarity::CC:
+          difference = cmtk::TypedArraySimilarity::GetCrossCorrelation(
+              images[i]->ExtractSlice(sliceAxis, slice)->GetData(),
+              images[i]->ExtractSlice(sliceAxis, slice + 1)->GetData());
+          break;
+        case cmtk::TypedArraySimilarity::MSD:
+          difference = sqrt(
+              fabs(cmtk::TypedArraySimilarity::GetMinusMeanSquaredDifference(
+                  images[i]->ExtractSlice(sliceAxis, slice)->GetData(),
+                  images[i]->ExtractSlice(sliceAxis, slice + 1)->GetData())));
+          break;
+        default:
+          break;
+      }
 
       slicePairSamples[slice][i] = difference;
-      slicePairStatistics[slice].Proceed( difference );
-      }
+      slicePairStatistics[slice].Proceed(difference);
     }
-  
+  }
+
   // Search for outliers
-  std::vector<double> means( images[0]->m_Dims[sliceAxis]-1 );
-  std::vector<double> sdevs( images[0]->m_Dims[sliceAxis]-1 );
-  for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
-    {
+  std::vector<double> means(images[0]->m_Dims[sliceAxis] - 1);
+  std::vector<double> sdevs(images[0]->m_Dims[sliceAxis] - 1);
+  for (int slice = 0; slice < images[0]->m_Dims[sliceAxis] - 1; ++slice) {
     means[slice] = slicePairStatistics[slice].GetAverage();
-    sdevs[slice] = sqrt( slicePairStatistics[slice].GetVariance() );
-    }
+    sdevs[slice] = sqrt(slicePairStatistics[slice].GetVariance());
+  }
 
-  for ( size_t i = 0; i < images.size(); ++i )
-    { 
-    if ( badSlicesThresh )
-      {
+  for (size_t i = 0; i < images.size(); ++i) {
+    if (badSlicesThresh) {
       size_t badSlices = 0;
-      for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
-	{
-	if ( fabs( slicePairSamples[slice][i]-means[slice] ) / sdevs[slice] > standardDeviationsThreshold )
-	  ++badSlices;
-	}
-
-      if ( badSlices >= badSlicesThresh )
-	{
-	cmtk::StdOut << imagePaths[i] << "\t" << badSlices << "\n";
-	}
+      for (int slice = 0; slice < images[0]->m_Dims[sliceAxis] - 1; ++slice) {
+        if (fabs(slicePairSamples[slice][i] - means[slice]) / sdevs[slice] >
+            standardDeviationsThreshold)
+          ++badSlices;
       }
-    else
-      {
-      for ( int slice = 0; slice < images[0]->m_Dims[sliceAxis]-1; ++slice )
-	{
-	if ( fabs( slicePairSamples[slice][i]-means[slice] ) / sdevs[slice] > standardDeviationsThreshold )
-	  cmtk::StdOut << imagePaths[i] << "\t" << slice << "\n";
-	}
+
+      if (badSlices >= badSlicesThresh) {
+        cmtk::StdOut << imagePaths[i] << "\t" << badSlices << "\n";
+      }
+    } else {
+      for (int slice = 0; slice < images[0]->m_Dims[sliceAxis] - 1; ++slice) {
+        if (fabs(slicePairSamples[slice][i] - means[slice]) / sdevs[slice] >
+            standardDeviationsThreshold)
+          cmtk::StdOut << imagePaths[i] << "\t" << slice << "\n";
       }
     }
-  
+  }
 
   return 0;
 }

@@ -35,37 +35,35 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <Registration/cmtkImagePairRegistration.h>
 #include <Registration/cmtkMakeInitialAffineTransformation.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Class for affine multi-resolution voxel registration.
  */
-class ImagePairAffineRegistration : 
-  /// Inherit general voxel registration interface and functionality.
-  public ImagePairRegistration 
-{
-protected:
+class ImagePairAffineRegistration :
+    /// Inherit general voxel registration interface and functionality.
+    public ImagePairRegistration {
+ protected:
   /** Flag for initial alignment of volume centers.
    */
-  cmtkGetSetMacro(MakeInitialAffineTransformation::Mode,Initializer);
-  
-  /// Flag: use symmetric registration functional for simultaneous forward/inverse transformation computation.
+  cmtkGetSetMacro(MakeInitialAffineTransformation::Mode, Initializer);
+
+  /// Flag: use symmetric registration functional for simultaneous
+  /// forward/inverse transformation computation.
   bool m_SymmetricFwdBwd;
 
   /// Flag whether to adjust floating image histogram to match reference image.
-  cmtkGetSetMacro(bool,MatchFltToRefHistogram);
+  cmtkGetSetMacro(bool, MatchFltToRefHistogram);
 
   /** Numbers of degrees of freedom.
    * This list contains the numbers of degrees of freedom for every resolution
@@ -93,18 +91,20 @@ protected:
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *\return Overriding functions should return a value other than 
+   *\return Overriding functions should return a value other than
    * CALLBACK_OK if the registration is to be interrupted.
    */
-  virtual CallbackResult InitRegistration ();
+  virtual CallbackResult InitRegistration();
 
   /** Enter a resolution level.
    * This function mainly determines the next effective number of degrees of
    * freedom of the optimization. It sets the transformation object accordingly
-   * and writes a comment to the "Callback" object. Afterwards, the inherited 
+   * and writes a comment to the "Callback" object. Afterwards, the inherited
    * EnterResolution() function is called.
    */
-  virtual void EnterResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total );
+  virtual void EnterResolution(CoordinateVector::SmartPtr &v,
+                               Functional::SmartPtr &f, const int level,
+                               const int total);
 
   /** Finish resolution level.
    * This function determines whether there are any remaining numbers in the
@@ -113,53 +113,53 @@ protected:
    * With no number left, 1 is returned indicating that the current level has
    * been completed.
    */
-  virtual int DoneResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total );
+  virtual int DoneResolution(CoordinateVector::SmartPtr &v,
+                             Functional::SmartPtr &f, const int level,
+                             const int total);
 
-public:
+ public:
   /// This class.
   typedef ImagePairAffineRegistration Self;
 
   /// Parent class.
   typedef ImagePairRegistration Superclass;
 
-  /** Default constructor. 
+  /** Default constructor.
    */
-  ImagePairAffineRegistration ();
+  ImagePairAffineRegistration();
 
   /** Destructor.
    */
-  virtual ~ImagePairAffineRegistration ();
+  virtual ~ImagePairAffineRegistration();
 
   /// Return final transformation.
   AffineXform::SmartPtr GetTransformation() const;
-  
+
   /// Get reformatted floating image.
-  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
+  const UniformVolume::SmartPtr GetReformattedFloatingImage(
+      Interpolators::InterpolationEnum interpolator =
+          Interpolators::LINEAR) const;
 
   /// Add a number to the general list of numbers of DOFs.
-  void AddNumberDOFs( const int numberDOFs ) 
-  {
-    NumberDOFs.push_back( numberDOFs );
-  }
-  
+  void AddNumberDOFs(const int numberDOFs) { NumberDOFs.push_back(numberDOFs); }
+
   /// Add a number to the list of numbers of DOFs for the last level.
-  void AddNumberDOFsFinal( const int numberDOFs ) 
-  {
-    NumberDOFsFinal.push_back( numberDOFs );
+  void AddNumberDOFsFinal(const int numberDOFs) {
+    NumberDOFsFinal.push_back(numberDOFs);
   }
 
-private:
+ private:
   /// Iterator for NumberDOFs and NumberDOFsFinal
   std::vector<short>::iterator NumberDOFsIterator;
 
   /// Base class for registration level parameters.
   class LevelParameters
-    /// Inherit from superclass parameters.
-    : public Superclass::LevelParameters
-  {
-  public:
+      /// Inherit from superclass parameters.
+      : public Superclass::LevelParameters {
+   public:
     /// Constructor: take image resolution.
-    LevelParameters( const Types::Coordinate resolution ) : m_Resolution( resolution ) {}
+    LevelParameters(const Types::Coordinate resolution)
+        : m_Resolution(resolution) {}
 
     /// Image resolution for this level.
     Types::Coordinate m_Resolution;
@@ -167,11 +167,12 @@ private:
 
   /** Create functional with all settings for next level.
    */
-  virtual Functional* MakeFunctional( const int level, const Superclass::LevelParameters* );
+  virtual Functional *MakeFunctional(const int level,
+                                     const Superclass::LevelParameters *);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // __cmtkImagePairAffineRegistration_h_included_
+#endif  // __cmtkImagePairAffineRegistration_h_included_

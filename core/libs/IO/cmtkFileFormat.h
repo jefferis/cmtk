@@ -37,9 +37,7 @@
 
 #include <string>
 
-namespace 
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
@@ -93,49 +91,50 @@ typedef enum {
 } FileFormatID;
 
 /// Table of file format ID names.
-extern const char* FileFormatName[];
+extern const char *FileFormatName[];
 
 /** Identify file (and directory) formats.
  */
-class FileFormat 
-{
-public:
+class FileFormat {
+ public:
   /** Identify file or directory with given path.
    * Compressed files as supported by CompressedStream are handled. If both
    * an uncompressed and a compressed file exist for the same path prefix, then
    * the uncompressed file has precedence.
    */
-  static FileFormatID Identify( const std::string& path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
+  static FileFormatID
+  Identify(const std::string &path /*!< Image path. */, const bool
+                                                            decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/);
 
   /** Return textual description of identified file format.
    */
-  static std::string Describe( const FileFormatID id );
+  static std::string Describe(const FileFormatID id);
 
   /** Return textual description of a file's format.
    */
-  static std::string Describe( const std::string& path ) 
-  {
-    return Describe( Identify( path ) );
+  static std::string Describe(const std::string &path) {
+    return Describe(Identify(path));
   }
 
   /// Say whether given file format is an image file format.
-  static bool IsImage( const FileFormatID& id );
+  static bool IsImage(const FileFormatID &id);
 
   /// Say whether given file format is a transformation file format.
-  static bool IsXform( const FileFormatID& id );
+  static bool IsXform(const FileFormatID &id);
 
-private:
+ private:
   /** Identify directory with given path.
    */
-  static FileFormatID IdentifyDirectory( const std::string& path );
+  static FileFormatID IdentifyDirectory(const std::string &path);
 
   /** Identify regular file with given path.
    */
-  static FileFormatID IdentifyFile( const std::string& path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/ );
+  static FileFormatID IdentifyFile(
+      const std::string &path /*!< Image path. */, const bool decompress = true /*!< If set, compressed files are decompressed before determining their file type.*/);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFileFormat_h_included_
+#endif  // #ifndef __cmtkFileFormat_h_included_

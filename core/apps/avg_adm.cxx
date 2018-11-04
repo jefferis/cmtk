@@ -33,13 +33,13 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
+#include <System/cmtkStrUtility.h>
 #include <System/cmtkThreads.h>
 #include <System/cmtkTimers.h>
-#include <System/cmtkStrUtility.h>
 
 #include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamOutput.h>
@@ -47,17 +47,17 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <Base/cmtkActiveDeformationModel.h>
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkFilterMask.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <Registration/cmtkReformatVolume.h>
 
 #include <string.h>
+#include <iostream>
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
-#include <list>
-#include <iostream>
 
 bool Labels = false;
 bool Jacobian = false;
@@ -65,24 +65,21 @@ bool Jacobian = false;
 bool AutoScale = false;
 
 cmtk::ScalarDataType UserDataType = cmtk::TYPE_NONE;
-cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
+cmtk::Interpolators::InterpolationEnum Interpolation =
+    cmtk::Interpolators::LINEAR;
 
-const char* ReplaceFrom;
-std::map<std::string,std::string> ReplaceMap;
+const char *ReplaceFrom;
+std::map<std::string, std::string> ReplaceMap;
 
-void AddReplaceFrom( const char* arg )
-{
-  ReplaceFrom = arg;
+void AddReplaceFrom(const char *arg) { ReplaceFrom = arg; }
+
+void AddReplaceTo(const char *arg) {
+  ReplaceMap[std::string(ReplaceFrom)] = std::string(arg);
 }
 
-void AddReplaceTo( const char* arg )
-{
-  ReplaceMap[std::string(ReplaceFrom)] = std::string( arg );
-}
-
-const char* OutImageName = NULL;
-const char* OutWarpName = NULL;
-const char* InWarpName = NULL;
+const char *OutImageName = NULL;
+const char *OutWarpName = NULL;
+const char *InWarpName = NULL;
 
 bool IncludeScale = true;
 bool IncludeReferenceModel = true;
@@ -99,275 +96,276 @@ bool ReplacePaddingValue = false;
 cmtk::Types::DataItem PadOutValue = 0;
 bool HavePadOutValue = false;
 
-int
-doMain( int argc, const char* argv[] )
-{
-  std::list<const char*> inFileList;
+int doMain(int argc, const char *argv[]) {
+  std::list<const char *> inFileList;
 
-  try 
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average using ADM" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute average-shape average-intensity images and deformation maps using an active deformation model." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "avg_adm [options] list0 [list1 ...]" );
-    
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Average using ADM");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "Compute average-shape average-intensity images and "
+                      "deformation maps using an active deformation model.");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
+                      "avg_adm [options] list0 [list1 ...]");
+
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'l', "label" ), &Labels, true, "Label mode (as opposed to grey)" );
-    cl.AddOption( Key( "set-padding" ), &PaddingValue, "Set padding value in input files", &SetPaddingValue );
-    cl.AddOption( Key( "replace-padding" ), &NewPaddingValue, "Replace padding value in input files", &ReplacePaddingValue );
-    cl.AddOption( Key( 'p', "pad-out" ), &PadOutValue, "Padding value for output file", &HavePadOutValue );
-    cl.AddSwitch( Key( 'j', "jacobian" ), &Jacobian, true, "Average Jacobian determinants of deformations." );
-    cl.AddSwitch( Key( 'a', "auto-scale" ), &AutoScale, true, "Auto-scale image intensities" );
+    cl.AddSwitch(Key('l', "label"), &Labels, true,
+                 "Label mode (as opposed to grey)");
+    cl.AddOption(Key("set-padding"), &PaddingValue,
+                 "Set padding value in input files", &SetPaddingValue);
+    cl.AddOption(Key("replace-padding"), &NewPaddingValue,
+                 "Replace padding value in input files", &ReplacePaddingValue);
+    cl.AddOption(Key('p', "pad-out"), &PadOutValue,
+                 "Padding value for output file", &HavePadOutValue);
+    cl.AddSwitch(Key('j', "jacobian"), &Jacobian, true,
+                 "Average Jacobian determinants of deformations.");
+    cl.AddSwitch(Key('a', "auto-scale"), &AutoScale, true,
+                 "Auto-scale image intensities");
 
-    cl.AddSwitch( Key( "char" ), &UserDataType, cmtk::TYPE_CHAR, "Output is 8 bits, signed [default: automatic]" );
-    cl.AddSwitch( Key( "byte" ), &UserDataType, cmtk::TYPE_BYTE, "Output is 8 bits, unsigned" );
-    cl.AddSwitch( Key( "short" ), &UserDataType, cmtk::TYPE_SHORT, "Output is 16 bits, signed" );
-    cl.AddSwitch( Key( "ushort" ), &UserDataType, cmtk::TYPE_USHORT, "Output is 16 bits, unsigned" );
-    cl.AddSwitch( Key( "int" ), &UserDataType, cmtk::TYPE_INT, "Output is 32 bits signed" );
-    cl.AddSwitch( Key( "float" ), &UserDataType, cmtk::TYPE_FLOAT, "Output is 32 bits floating point" );
-    cl.AddSwitch( Key( "double" ), &UserDataType, cmtk::TYPE_DOUBLE, "Output is 64 bits floating point\n" );
+    cl.AddSwitch(Key("char"), &UserDataType, cmtk::TYPE_CHAR,
+                 "Output is 8 bits, signed [default: automatic]");
+    cl.AddSwitch(Key("byte"), &UserDataType, cmtk::TYPE_BYTE,
+                 "Output is 8 bits, unsigned");
+    cl.AddSwitch(Key("short"), &UserDataType, cmtk::TYPE_SHORT,
+                 "Output is 16 bits, signed");
+    cl.AddSwitch(Key("ushort"), &UserDataType, cmtk::TYPE_USHORT,
+                 "Output is 16 bits, unsigned");
+    cl.AddSwitch(Key("int"), &UserDataType, cmtk::TYPE_INT,
+                 "Output is 32 bits signed");
+    cl.AddSwitch(Key("float"), &UserDataType, cmtk::TYPE_FLOAT,
+                 "Output is 32 bits floating point");
+    cl.AddSwitch(Key("double"), &UserDataType, cmtk::TYPE_DOUBLE,
+                 "Output is 64 bits floating point\n");
 
-    cl.AddSwitch( Key( 'S', "no-scale-model" ), &IncludeScale, false, "Exclude scale from statistical deformation model" );
-    cl.AddSwitch( Key( 'R', "no-ref-model" ), &IncludeReferenceModel, false, "Exclude reference coordinate frame from deformation model" );
-    cl.AddSwitch( Key( 'r', "no-ref-data" ), &IncludeReferenceData, false, "Exclude reference data from averaging" );
+    cl.AddSwitch(Key('S', "no-scale-model"), &IncludeScale, false,
+                 "Exclude scale from statistical deformation model");
+    cl.AddSwitch(Key('R', "no-ref-model"), &IncludeReferenceModel, false,
+                 "Exclude reference coordinate frame from deformation model");
+    cl.AddSwitch(Key('r', "no-ref-data"), &IncludeReferenceData, false,
+                 "Exclude reference data from averaging");
 
-    cl.AddOption( Key( 'o', "output" ), &OutImageName, "Output file name [FORMAT:]path" );
-    cl.AddOption( Key( 'I', "input-warp" ), &InWarpName, "Input file name for average warp" );
-    cl.AddOption( Key( 'O', "output-warp" ), &OutWarpName, "Output file name for average warp" );
+    cl.AddOption(Key('o', "output"), &OutImageName,
+                 "Output file name [FORMAT:]path");
+    cl.AddOption(Key('I', "input-warp"), &InWarpName,
+                 "Input file name for average warp");
+    cl.AddOption(Key('O', "output-warp"), &OutWarpName,
+                 "Output file name for average warp");
 
-    cl.AddSwitch( Key( 'A', "with-affine" ), &WriteIncludeAffine, true, "Include affine component of first warp in output" );
+    cl.AddSwitch(Key('A', "with-affine"), &WriteIncludeAffine, true,
+                 "Include affine component of first warp in output");
 
-    cl.AddSwitch( Key( "nn" ), &Interpolation, cmtk::Interpolators::NEAREST_NEIGHBOR, "Use nearest neigbor interpolation" );
-    cl.AddSwitch( Key( "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Use tri-cubic interpolation" );
+    cl.AddSwitch(Key("nn"), &Interpolation,
+                 cmtk::Interpolators::NEAREST_NEIGHBOR,
+                 "Use nearest neigbor interpolation");
+    cl.AddSwitch(Key("cubic"), &Interpolation, cmtk::Interpolators::CUBIC,
+                 "Use tri-cubic interpolation");
 
-    cl.AddCallback( Key( "replace-from" ), AddReplaceFrom, "Replace from pattern" );
-    cl.AddCallback( Key( "replace-to" ), AddReplaceTo, "Replace to pattern" );
+    cl.AddCallback(Key("replace-from"), AddReplaceFrom, "Replace from pattern");
+    cl.AddCallback(Key("replace-to"), AddReplaceTo, "Replace to pattern");
 
-    cl.Parse( argc, const_cast<const char**>( argv ) );
+    cl.Parse(argc, const_cast<const char **>(argv));
 
-    inFileList.push_back( cl.GetNext() );
-    
-    const char* next = cl.GetNextOptional();
-    while ( next ) 
-      {
-      inFileList.push_back( next );
+    inFileList.push_back(cl.GetNext());
+
+    const char *next = cl.GetNextOptional();
+    while (next) {
+      inFileList.push_back(next);
       next = cl.GetNextOptional();
-      }
     }
-  catch ( const cmtk::CommandLine::Exception& e ) 
-    {
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e;
-    throw cmtk::ExitException( 1 );
-    }
-  
+    throw cmtk::ExitException(1);
+  }
+
   std::vector<cmtk::SplineWarpXform::SmartPtr> warpList;
   std::list<cmtk::SplineWarpXform::SmartPtr> splineWarpList;
   std::vector<cmtk::UniformVolume::SmartPtr> volumeList;
   cmtk::TypedStreamStudylist studylist;
 
-  char* referenceStudy = NULL;
+  char *referenceStudy = NULL;
   size_t idx = 0;
 
-  for ( std::list<const char*>::const_iterator inFile = inFileList.begin(); inFile != inFileList.end(); ++inFile ) 
-    {
-    cmtk::DebugOutput( 1 ) << "Opening studylist" << *inFile << "\n";
-    
-    if ( !studylist.Read( *inFile ) )
-      {
+  for (std::list<const char *>::const_iterator inFile = inFileList.begin();
+       inFile != inFileList.end(); ++inFile) {
+    cmtk::DebugOutput(1) << "Opening studylist" << *inFile << "\n";
+
+    if (!studylist.Read(*inFile)) {
       cmtk::StdErr << "ERROR: Unable to read studylist " << *inFile << "\n";
-      throw cmtk::ExitException( 1 );
+      throw cmtk::ExitException(1);
+    }
+
+    if (!idx) {
+      referenceStudy = strdup(studylist.GetReferenceStudyPath());
+    } else {
+      if (strcmp(studylist.GetReferenceStudyPath(), referenceStudy)) {
+        cmtk::StdErr.printf(
+            "ERROR: Studylist #%u has a different reference study.\n", idx);
+        // continue;
+        throw cmtk::ExitException(1);
       }
-    
-    if ( ! idx ) 
-      {
-      referenceStudy = strdup( studylist.GetReferenceStudyPath() );
-      } 
-    else
-      {
-      if ( strcmp( studylist.GetReferenceStudyPath(), referenceStudy ) ) 
-	{
-	cmtk::StdErr.printf( "ERROR: Studylist #%u has a different reference study.\n", idx );
-	//continue;
-	throw cmtk::ExitException( 1 );
-	}
-      }
-    
-    cmtk::SplineWarpXform::SmartPtr splineWarp = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( studylist.GetWarpXform() );
-    if ( splineWarp ) 
-      {
-      std::string actualPath = cmtk::StrReplaceByRules( studylist.GetFloatingStudyPath(), ReplaceMap );
-      
+    }
+
+    cmtk::SplineWarpXform::SmartPtr splineWarp =
+        cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom(
+            studylist.GetWarpXform());
+    if (splineWarp) {
+      std::string actualPath =
+          cmtk::StrReplaceByRules(studylist.GetFloatingStudyPath(), ReplaceMap);
+
       cmtk::UniformVolume::SmartPtr nextVolume;
 
-      if ( OutImageName && !Jacobian ) 
-	// no out image, no need for input images
-	nextVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( actualPath ) );
+      if (OutImageName && !Jacobian)
+        // no out image, no need for input images
+        nextVolume = cmtk::UniformVolume::SmartPtr(
+            cmtk::VolumeIO::ReadOriented(actualPath));
 
-      if ( OutImageName && !Jacobian && !nextVolume ) 
-	{
-	cmtk::StdErr.printf( "WARNING: Cannot read volume %s in studylist #%u.\n", actualPath.c_str(), idx );
-	} 
-      else
-	{	
-	// everything worked out, so let's push this item onto lists
-	if ( SetPaddingValue )
-	  {
-	  nextVolume->GetData()->SetPaddingValue( PaddingValue );
-	  if ( ReplacePaddingValue )
-	    {
-	    nextVolume->GetData()->ReplacePaddingData( NewPaddingValue );
-	    }
-	  }
+      if (OutImageName && !Jacobian && !nextVolume) {
+        cmtk::StdErr.printf(
+            "WARNING: Cannot read volume %s in studylist #%u.\n",
+            actualPath.c_str(), idx);
+      } else {
+        // everything worked out, so let's push this item onto lists
+        if (SetPaddingValue) {
+          nextVolume->GetData()->SetPaddingValue(PaddingValue);
+          if (ReplacePaddingValue) {
+            nextVolume->GetData()->ReplacePaddingData(NewPaddingValue);
+          }
+        }
 
-	warpList.push_back( splineWarp );
-	splineWarpList.push_back( splineWarp );
-	if ( OutImageName ) 
-	  volumeList.push_back( nextVolume );
-	// and increase valid warp counter.
-	++idx;
-	}
-      } 
-    else 
-      {
-      cmtk::StdErr.printf( "ERROR: Studylist #%u has no spline warp.\n", idx );
-      throw cmtk::ExitException( 1 );
+        warpList.push_back(splineWarp);
+        splineWarpList.push_back(splineWarp);
+        if (OutImageName) volumeList.push_back(nextVolume);
+        // and increase valid warp counter.
+        ++idx;
       }
+    } else {
+      cmtk::StdErr.printf("ERROR: Studylist #%u has no spline warp.\n", idx);
+      throw cmtk::ExitException(1);
     }
-  
-  std::string actualPath = cmtk::StrReplaceByRules( studylist.GetReferenceStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath ) );
-  
-  if ( ! refVolume ) 
-    {
-    cmtk::StdErr.printf( "ERROR: Cannot read reference volume %s.\n", actualPath.c_str() );
-    throw cmtk::ExitException( 1 );
-    }
-  
+  }
+
+  std::string actualPath =
+      cmtk::StrReplaceByRules(studylist.GetReferenceStudyPath(), ReplaceMap);
+  cmtk::UniformVolume::SmartPtr refVolume(
+      cmtk::VolumeIO::ReadOriented(actualPath));
+
+  if (!refVolume) {
+    cmtk::StdErr.printf("ERROR: Cannot read reference volume %s.\n",
+                        actualPath.c_str());
+    throw cmtk::ExitException(1);
+  }
+
   // everything worked out, so let's push this item onto lists
-  if ( SetPaddingValue )
-    {
-    refVolume->GetData()->SetPaddingValue( PaddingValue );
-    if ( ReplacePaddingValue )
-      {
-      refVolume->GetData()->ReplacePaddingData( NewPaddingValue );
-      }
+  if (SetPaddingValue) {
+    refVolume->GetData()->SetPaddingValue(PaddingValue);
+    if (ReplacePaddingValue) {
+      refVolume->GetData()->ReplacePaddingData(NewPaddingValue);
     }
-  
-  if ( AutoScale )
-    {
-    if ( Jacobian ) 
-      {
-      cmtk::StdErr << "Warning: we don't really use image data for Jacobian map -- \nSkipping auto normalization step.\n";
-      }
-    else 
-      {
-      cmtk::Types::DataItem meanRef, varRef;
-      refVolume->GetData()->GetStatistics( meanRef, varRef );
-      
-      for ( size_t volIdx = 0; volIdx < volumeList.size(); ++volIdx ) 
-	{
-	cmtk::TypedArray::SmartPtr data( volumeList[volIdx]->GetData() );
-	cmtk::Types::DataItem meanFlt, varFlt;
-	data->GetStatistics( meanFlt, varFlt );
-	
-	cmtk::DebugOutput( 1 ).GetStream().printf( "Before auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
+  }
 
-	// auto rescale, that is, determine scaling factor and offset so that 
-	// after scaling, the intensities in both images have the same mean and
-	// standard deviation. Note that due to the squaring of values in 
-	// std.dev. computation, the spread will not be exactly identical.
-	const cmtk::Types::DataItem factor = sqrt(varRef) / sqrt(varFlt);
-	data->Rescale( factor, meanRef - factor * meanFlt );
-	
-	if ( cmtk::DebugOutput::GetGlobalLevel() > 0 ) 
-	  {
-	  data->GetStatistics( meanFlt, varFlt );
-	  cmtk::DebugOutput( 1 ).GetStream().printf( "After auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
-	  }
-	}
+  if (AutoScale) {
+    if (Jacobian) {
+      cmtk::StdErr << "Warning: we don't really use image data for Jacobian "
+                      "map -- \nSkipping auto normalization step.\n";
+    } else {
+      cmtk::Types::DataItem meanRef, varRef;
+      refVolume->GetData()->GetStatistics(meanRef, varRef);
+
+      for (size_t volIdx = 0; volIdx < volumeList.size(); ++volIdx) {
+        cmtk::TypedArray::SmartPtr data(volumeList[volIdx]->GetData());
+        cmtk::Types::DataItem meanFlt, varFlt;
+        data->GetStatistics(meanFlt, varFlt);
+
+        cmtk::DebugOutput(1).GetStream().printf(
+            "Before auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef,
+            sqrt(varRef), meanFlt, sqrt(varFlt));
+
+        // auto rescale, that is, determine scaling factor and offset so that
+        // after scaling, the intensities in both images have the same mean and
+        // standard deviation. Note that due to the squaring of values in
+        // std.dev. computation, the spread will not be exactly identical.
+        const cmtk::Types::DataItem factor = sqrt(varRef) / sqrt(varFlt);
+        data->Rescale(factor, meanRef - factor * meanFlt);
+
+        if (cmtk::DebugOutput::GetGlobalLevel() > 0) {
+          data->GetStatistics(meanFlt, varFlt);
+          cmtk::DebugOutput(1).GetStream().printf(
+              "After auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef,
+              sqrt(varRef), meanFlt, sqrt(varFlt));
+        }
       }
     }
-  
-  if ( Labels ) 
-    {
-    refVolume->GetData()->SetDataClass( cmtk::DATACLASS_LABEL );
-    }
+  }
+
+  if (Labels) {
+    refVolume->GetData()->SetDataClass(cmtk::DATACLASS_LABEL);
+  }
 
   cmtk::WarpXform::SmartPtr warpXform;
-  if ( InWarpName ) 
-    {
-    cmtk::ClassStreamInput stream( InWarpName );
-    if ( stream.IsValid() )
-      {
+  if (InWarpName) {
+    cmtk::ClassStreamInput stream(InWarpName);
+    if (stream.IsValid()) {
       stream >> warpXform;
-      }
-    else
-      {
-      cmtk::StdErr << "ERROR: cannot read transformation from " << InWarpName << "\n";
-      throw cmtk::ExitException( 1 );
-      }
-    } 
-  else
-    {
-    cmtk::SmartPointer<cmtk::SplineActiveDeformationModel> adm( new cmtk::SplineActiveDeformationModel( splineWarpList, 0, IncludeScale, IncludeReferenceModel ) );
-    adm->Compose();  
-    warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( adm );
+    } else {
+      cmtk::StdErr << "ERROR: cannot read transformation from " << InWarpName
+                   << "\n";
+      throw cmtk::ExitException(1);
     }
-  
-  if ( OutWarpName ) 
-    {
-    if ( WriteIncludeAffine ) 
-      {
-      try
-	{
-	warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
-	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-	{
-	cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
-	throw cmtk::ExitException( 1 );
-	}
-      }
-      
-    cmtk::ClassStreamOutput stream( OutWarpName, cmtk::ClassStreamOutput::MODE_WRITE );
-    if ( stream.IsValid() )
-      {
-      stream << warpXform;
-      }
-    else
-      {
-      cmtk::StdErr << "ERROR: cannot write to " << OutWarpName << "\n";      
+  } else {
+    cmtk::SmartPointer<cmtk::SplineActiveDeformationModel> adm(
+        new cmtk::SplineActiveDeformationModel(splineWarpList, 0, IncludeScale,
+                                               IncludeReferenceModel));
+    adm->Compose();
+    warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom(adm);
+  }
+
+  if (OutWarpName) {
+    if (WriteIncludeAffine) {
+      try {
+        warpXform->ReplaceInitialAffine(
+            (*(warpList.begin()))->GetInitialAffineXform());
+      } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
+        cmtk::StdErr << "ERROR: singular matrix encountered in call to "
+                        "cmtk::WarpXform::ReplaceInitialAffine()\n";
+        throw cmtk::ExitException(1);
       }
     }
 
-  if ( OutImageName ) 
-    {
-    cmtk::ProgressConsole progressIndicator;
-    
-    cmtk::ReformatVolume reformat;
-    reformat.SetReferenceVolume( refVolume );
-    reformat.SetWarpXform( warpXform );
-    reformat.SetInterpolation( Interpolation );
-    reformat.SetUsePaddingValue( HavePadOutValue );    
-    reformat.SetPaddingValue( PadOutValue );
-    if ( UserDataType != cmtk::TYPE_NONE )
-      reformat.SetUserDataType( UserDataType );
-    
-    cmtk::UniformVolume::SmartPtr average;
-    if ( Jacobian ) 
-      {
-      average = cmtk::UniformVolume::SmartPtr( reformat.GetTransformedReferenceJacobianAvg( &warpList, NULL /*origin*/, IncludeReferenceData ) );
-      } 
-    else 
-      {
-      average = cmtk::UniformVolume::SmartPtr( reformat.GetTransformedReference( &warpList, &volumeList, NULL /*origin*/, IncludeReferenceData ) );
-      }
-    
-      cmtk::VolumeIO::Write( *average, OutImageName );
+    cmtk::ClassStreamOutput stream(OutWarpName,
+                                   cmtk::ClassStreamOutput::MODE_WRITE);
+    if (stream.IsValid()) {
+      stream << warpXform;
+    } else {
+      cmtk::StdErr << "ERROR: cannot write to " << OutWarpName << "\n";
     }
-  
-  free( referenceStudy );
-  
+  }
+
+  if (OutImageName) {
+    cmtk::ProgressConsole progressIndicator;
+
+    cmtk::ReformatVolume reformat;
+    reformat.SetReferenceVolume(refVolume);
+    reformat.SetWarpXform(warpXform);
+    reformat.SetInterpolation(Interpolation);
+    reformat.SetUsePaddingValue(HavePadOutValue);
+    reformat.SetPaddingValue(PadOutValue);
+    if (UserDataType != cmtk::TYPE_NONE) reformat.SetUserDataType(UserDataType);
+
+    cmtk::UniformVolume::SmartPtr average;
+    if (Jacobian) {
+      average = cmtk::UniformVolume::SmartPtr(
+          reformat.GetTransformedReferenceJacobianAvg(
+              &warpList, NULL /*origin*/, IncludeReferenceData));
+    } else {
+      average = cmtk::UniformVolume::SmartPtr(reformat.GetTransformedReference(
+          &warpList, &volumeList, NULL /*origin*/, IncludeReferenceData));
+    }
+
+    cmtk::VolumeIO::Write(*average, OutImageName);
+  }
+
+  free(referenceStudy);
+
   return 0;
 }
 

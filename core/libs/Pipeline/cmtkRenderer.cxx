@@ -32,45 +32,32 @@
 
 #include <Pipeline/cmtkRenderer.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Pipeline */
 //@{
 
-Renderer::Renderer()
-{
+Renderer::Renderer() {
   Input = NULL;
   Active = true;
   RenderPending = false;
 }
 
-Renderer::~Renderer()
-{
-  if ( Input != NULL ) Input->Delete();
+Renderer::~Renderer() {
+  if (Input != NULL) Input->Delete();
 }
 
-void
-Renderer::SetInput( ImageRGB *const input )
-{
-  ReplaceObject( Input, input );
-};
+void Renderer::SetInput(ImageRGB *const input) { ReplaceObject(Input, input); };
 
-long
-Renderer::Update()
-{
-  if ( this->IsActive() )
-    this->CheckInputForUpdate( Input );
+long Renderer::Update() {
+  if (this->IsActive()) this->CheckInputForUpdate(Input);
   return this->Superclass::Update();
 }
 
-void 
-Renderer::Render()
-{
+void Renderer::Render() {
   // Is this renderer being updated already, ie. do we have a recursion here?
   // If no: go through it.
-  if ( ! RenderPending ) {
+  if (!RenderPending) {
     RenderPending = true;
 
     // Fake modification to make sure we WILL update ourselves.
@@ -81,4 +68,4 @@ Renderer::Render()
   }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

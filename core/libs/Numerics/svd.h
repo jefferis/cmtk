@@ -66,14 +66,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-#include "reflections.h"
-#include "bidiagonal.h"
-#include "qr.h"
-#include "lq.h"
-#include "blas.h"
-#include "rotations.h"
 #include "bdsvd.h"
-
+#include "bidiagonal.h"
+#include "blas.h"
+#include "lq.h"
+#include "qr.h"
+#include "reflections.h"
+#include "rotations.h"
 
 /*************************************************************************
 Singular value decomposition of a rectangular matrix.
@@ -127,15 +126,8 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-bool rmatrixsvd(ap::real_2d_array a,
-     int m,
-     int n,
-     int uneeded,
-     int vtneeded,
-     int additionalmemory,
-     ap::real_1d_array& w,
-     ap::real_2d_array& u,
-     ap::real_2d_array& vt);
-
+bool rmatrixsvd(ap::real_2d_array a, int m, int n, int uneeded, int vtneeded,
+                int additionalmemory, ap::real_1d_array &w,
+                ap::real_2d_array &u, ap::real_2d_array &vt);
 
 #endif

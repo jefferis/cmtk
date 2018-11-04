@@ -35,64 +35,68 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: thresholding
 class ImageOperationThreshold
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor.
-  ImageOperationThreshold( const double threshold, const bool above = false, const bool toPadding = false, const bool binarize = false ) 
-    : m_Threshold( threshold ), m_Above( above ), m_ToPadding( toPadding ), m_Binarize( binarize ) {}
-  
+  ImageOperationThreshold(const double threshold, const bool above = false,
+                          const bool toPadding = false,
+                          const bool binarize = false)
+      : m_Threshold(threshold),
+        m_Above(above),
+        m_ToPadding(toPadding),
+        m_Binarize(binarize) {}
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new lower thresholding operation.
-  static void NewBelow( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, false, false, false ) ) );
+  static void NewBelow(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationThreshold(threshold, false, false, false)));
   }
-  
+
   /// Create a new upper thresholding operation.
-  static void NewAbove( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, true, false, false ) ) );
+  static void NewAbove(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationThreshold(threshold, true, false, false)));
   }
-  
+
   /// Create a new lower thresholding operation to padding.
-  static void NewBelowToPadding( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, false, true, false ) ) );
+  static void NewBelowToPadding(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationThreshold(threshold, false, true, false)));
   }
-  
+
   /// Create a new upper thresholding operation to padding.
-  static void NewAboveToPadding( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, true, true, false ) ) );
+  static void NewAboveToPadding(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationThreshold(threshold, true, true, false)));
   }
-  
+
   /// Create a new binarization thresholding operation.
-  static void NewBinarize( const double threshold )
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, false, false, true ) ) );
+  static void NewBinarize(const double threshold) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationThreshold(threshold, false, false, true)));
   }
-  
-private:
+
+ private:
   /// Threshold.
   double m_Threshold;
 
   /// Flag for using the threshold as an upper, rather than lower, threshold.
   bool m_Above;
 
-  /// Flag for setting values beyond threshold to padding, rather than to threshold value.
+  /// Flag for setting values beyond threshold to padding, rather than to
+  /// threshold value.
   bool m_ToPadding;
 
   /// Flag for binarization.
@@ -101,6 +105,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationThreshold_h_included_
+#endif  // #ifndef __cmtkImageOperationThreshold_h_included_

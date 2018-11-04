@@ -30,9 +30,9 @@
 
 #include "cmtkImageOperationPruneHistogram.h"
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationPruneHistogram::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
-  volume->GetData()->PruneHistogram( this->m_High, this->m_Low, this->m_NumberOfBins );
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationPruneHistogram::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  volume->GetData()->PruneHistogram(this->m_High, this->m_Low,
+                                    this->m_NumberOfBins);
   return volume;
 }

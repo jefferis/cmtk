@@ -37,33 +37,31 @@
 
 #include <mxml.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Read and write imaging phantom descriptions to and from XML files.
-class PhantomIO
-{
-public:
+class PhantomIO {
+ public:
   /// This class.
   typedef PhantomIO Self;
 
   /// Read detected Magphan EMR051 description.
-  static DetectedPhantomMagphanEMR051::SmartPtr Read( const std::string& path );
-  
-  /// Write detected Magphan EMR051 description.
-  static void Write( const DetectedPhantomMagphanEMR051& phantom, const std::string& fpath );
+  static DetectedPhantomMagphanEMR051::SmartPtr Read(const std::string &path);
 
-private:
+  /// Write detected Magphan EMR051 description.
+  static void Write(const DetectedPhantomMagphanEMR051 &phantom,
+                    const std::string &fpath);
+
+ private:
   /// Whitespace callback function for MiniXML.
-  static const char* WhitespaceWriteMiniXML( mxml_node_t* node, int where);
+  static const char *WhitespaceWriteMiniXML(mxml_node_t *node, int where);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkPhantomIO_h_included_
+#endif  // #ifndef __cmtkPhantomIO_h_included_

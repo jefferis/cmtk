@@ -32,16 +32,13 @@
 
 #include "cmtkLandmark.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-Landmark::Landmark( const std::string& name, const Self::SpaceVectorType& location )
-  : m_Name( name ),
-    m_Location( location )
-{}
+Landmark::Landmark(const std::string &name,
+                   const Self::SpaceVectorType &location)
+    : m_Name(name), m_Location(location) {}
 
-} // namespace
+}  // namespace cmtk

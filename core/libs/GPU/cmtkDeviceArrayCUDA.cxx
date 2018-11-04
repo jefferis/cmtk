@@ -30,65 +30,62 @@
 
 #include "cmtkDeviceArrayCUDA.h"
 
-#include <cuda_runtime_api.h>
 #include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
 
 #include <GPU/cmtkCUDA.h>
 
-cmtk::DeviceArrayCUDA
-::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )
-  : m_Dims( dims3 )
-{
+cmtk::DeviceArrayCUDA ::DeviceArrayCUDA(const FixedVector<3, int> &dims3)
+    : m_Dims(dims3) {
   const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>();
-  cmtkCheckCallCUDA( cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] ) ) );
+  cmtkCheckCallCUDA(cudaMalloc3DArray(
+      &(this->m_DeviceArrayPtr), &desc,
+      make_cudaExtent(this->m_Dims[0], this->m_Dims[1], this->m_Dims[2])));
 }
 
-
-cmtk::DeviceArrayCUDA
-::~DeviceArrayCUDA()
-{
-  if ( this->m_DeviceArrayPtr )
-    cmtkCheckCallCUDA( cudaFreeArray( this->m_DeviceArrayPtr ) );
+cmtk::DeviceArrayCUDA ::~DeviceArrayCUDA() {
+  if (this->m_DeviceArrayPtr)
+    cmtkCheckCallCUDA(cudaFreeArray(this->m_DeviceArrayPtr));
 }
 
-void
-cmtk::DeviceArrayCUDA
-::CopyToDevice( const float* data )
-{
+void cmtk::DeviceArrayCUDA ::CopyToDevice(const float *data) {
   cudaMemcpy3DParms copyParams = {0};
-  
-  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+
+  copyParams.srcPtr =
+      make_cudaPitchedPtr((void *)data, this->m_Dims[0] * sizeof(float),
+                          this->m_Dims[0], this->m_Dims[1]);
   copyParams.dstArray = this->m_DeviceArrayPtr;
-  copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
-  copyParams.kind     = cudaMemcpyHostToDevice;
+  copyParams.extent =
+      make_cudaExtent(this->m_Dims[0], this->m_Dims[1], this->m_Dims[2]);
+  copyParams.kind = cudaMemcpyHostToDevice;
 
-  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
+  cmtkCheckCallCUDA(cudaMemcpy3D(&copyParams));
 }
 
-void
-cmtk::DeviceArrayCUDA
-::CopyOnDeviceToArray( const float* data )
-{
+void cmtk::DeviceArrayCUDA ::CopyOnDeviceToArray(const float *data) {
   cudaMemcpy3DParms copyParams = {0};
-  
-  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+
+  copyParams.srcPtr =
+      make_cudaPitchedPtr((void *)data, this->m_Dims[0] * sizeof(float),
+                          this->m_Dims[0], this->m_Dims[1]);
   copyParams.dstArray = this->m_DeviceArrayPtr;
-  copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
-  copyParams.kind     = cudaMemcpyDeviceToDevice;
+  copyParams.extent =
+      make_cudaExtent(this->m_Dims[0], this->m_Dims[1], this->m_Dims[2]);
+  copyParams.kind = cudaMemcpyDeviceToDevice;
 
-  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
+  cmtkCheckCallCUDA(cudaMemcpy3D(&copyParams));
 }
 
-void
-cmtk::DeviceArrayCUDA
-::CopyOnDeviceToLinear( float* data )
-{
+void cmtk::DeviceArrayCUDA ::CopyOnDeviceToLinear(float *data) {
   cudaMemcpy3DParms copyParams = {0};
-  
-  copyParams.dstPtr   = make_cudaPitchedPtr( (void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+
+  copyParams.dstPtr =
+      make_cudaPitchedPtr((void *)data, this->m_Dims[0] * sizeof(float),
+                          this->m_Dims[0], this->m_Dims[1]);
   copyParams.srcArray = this->m_DeviceArrayPtr;
-  copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
-  copyParams.kind     = cudaMemcpyDeviceToDevice;
-  
-  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
+  copyParams.extent =
+      make_cudaExtent(this->m_Dims[0], this->m_Dims[1], this->m_Dims[2]);
+  copyParams.kind = cudaMemcpyDeviceToDevice;
+
+  cmtkCheckCallCUDA(cudaMemcpy3D(&copyParams));
 }

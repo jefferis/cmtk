@@ -76,9 +76,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gammaf.h"
 #include "normaldistr.h"
 
-namespace
-alglib
-{
+namespace alglib {
 
 /*************************************************************************
 Incomplete beta integral
@@ -121,9 +119,9 @@ were excluded from these statistics.
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type x);
+ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b,
+                                   ap::real_value_type x);
 
-
-} // namespace alglib
+}  // namespace alglib
 
 #endif

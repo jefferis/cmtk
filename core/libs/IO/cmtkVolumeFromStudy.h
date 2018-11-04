@@ -41,17 +41,14 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Class for building 3D volumes from an Study object.
-class VolumeFromStudy : private VolumeFromSlices
-{
-public:
+class VolumeFromStudy : private VolumeFromSlices {
+ public:
   /// This class.
   typedef VolumeFromStudy Self;
 
@@ -61,14 +58,17 @@ public:
   /** Build volume from slice images.
    *\see VolumeFromSlices#AssembleVolume
    */
-  const UniformVolume::SmartPtr AssembleVolume ( const StudyImageSet* study );
+  const UniformVolume::SmartPtr AssembleVolume(const StudyImageSet *study);
 
   /// Read from generic Study object.
-  static const UniformVolume::SmartPtr Read( const Study* study, const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ );
+  static const UniformVolume::SmartPtr Read(const Study *study, const Types::
+                                                                    Coordinate
+                                                                        tolerance =
+                                                                            0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkVolumeFromStudy_h_included_
+#endif  // #ifndef __cmtkVolumeFromStudy_h_included_

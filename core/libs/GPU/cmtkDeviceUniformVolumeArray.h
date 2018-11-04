@@ -37,17 +37,14 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup GPU */
 //@{
 
 /// Representation of a uniform volume as 3D texture in device memory.
-class DeviceUniformVolumeArray
-{
-public:
+class DeviceUniformVolumeArray {
+ public:
   /// This class.
   typedef DeviceUniformVolumeArray Self;
 
@@ -55,25 +52,23 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create( const UniformVolume& volume )
-  {
-    return Self::SmartPtr( new Self( volume ) );
+  static Self::SmartPtr Create(const UniformVolume &volume) {
+    return Self::SmartPtr(new Self(volume));
   }
 
   /// Get volume array on device.
-  DeviceArray::SmartPtr& GetDeviceArrayPtr()
-  {
+  DeviceArray::SmartPtr &GetDeviceArrayPtr() {
     return this->m_DeviceArrayPointer;
   }
-  
-private:
+
+ private:
   /// Constructor.
-  DeviceUniformVolumeArray( const UniformVolume& volume );
+  DeviceUniformVolumeArray(const UniformVolume &volume);
 
   /// Device array pointer.
   DeviceArray::SmartPtr m_DeviceArrayPointer;
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceUniformVolumeArray_h_included_
+#endif  // #ifndef __cmtkDeviceUniformVolumeArray_h_included_

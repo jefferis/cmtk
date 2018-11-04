@@ -61,7 +61,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "det.h"
 
 /*************************************************************************
@@ -80,28 +79,23 @@ Result: matrix determinant.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-ap::real_value_type rmatrixludet(const ap::real_2d_array& a,
-     const ap::integer_1d_array& pivots,
-     int n)
-{
-    ap::real_value_type result;
-    int i;
-    int s;
+ap::real_value_type rmatrixludet(const ap::real_2d_array &a,
+                                 const ap::integer_1d_array &pivots, int n) {
+  ap::real_value_type result;
+  int i;
+  int s;
 
-    result = 1;
-    s = 1;
-    for(i = 0; i <= n-1; i++)
-    {
-        result = result*a(i,i);
-        if( pivots(i)!=i )
-        {
-            s = -s;
-        }
+  result = 1;
+  s = 1;
+  for (i = 0; i <= n - 1; i++) {
+    result = result * a(i, i);
+    if (pivots(i) != i) {
+      s = -s;
     }
-    result = result*s;
-    return result;
+  }
+  result = result * s;
+  return result;
 }
-
 
 /*************************************************************************
 Calculation of the determinant of a general matrix
@@ -115,12 +109,11 @@ Result: determinant of matrix A.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-ap::real_value_type rmatrixdet(ap::real_2d_array a, int n)
-{
-    ap::real_value_type result;
-    ap::integer_1d_array pivots;
+ap::real_value_type rmatrixdet(ap::real_2d_array a, int n) {
+  ap::real_value_type result;
+  ap::integer_1d_array pivots;
 
-    rmatrixlu(a, n, n, pivots);
-    result = rmatrixludet(a, pivots, n);
-    return result;
+  rmatrixlu(a, n, n, pivots);
+  result = rmatrixludet(a, pivots, n);
+  return result;
 }

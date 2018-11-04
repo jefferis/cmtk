@@ -34,92 +34,76 @@
 
 #include <limits>
 
-cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, const bool exclusive )
-  : m_Exclusive( exclusive )
-{
-  const char* rptr = mapping;
+cmtk::ImageOperationMapValues::ImageOperationMapValues(const char *mapping,
+                                                       const bool exclusive)
+    : m_Exclusive(exclusive) {
+  const char *rptr = mapping;
 
-  while ( rptr )
-    {
-    const char* comma = strchr( rptr, ',' );
-    const char* plus = strchr( rptr, '+' );
-    
+  while (rptr) {
+    const char *comma = strchr(rptr, ',');
+    const char *plus = strchr(rptr, '+');
+
     double value;
     std::vector<Types::DataItem> fromValues;
-    while ( comma && ( !plus || comma < plus) )
-      {
-      if ( 1 == sscanf( rptr, "%20lf", &value ) )
-	fromValues.push_back( value );
-      rptr = comma+1;
-      comma = strchr( rptr, ',' );
-      }
-    
-    double newValue;
-    if ( 2 == sscanf( rptr, "%20lf:%20lf", &value, &newValue ) )
-      {
-      fromValues.push_back( value );
-      
-      for ( size_t i = 0; i < fromValues.size(); ++i )
-	{
-	this->m_Mapping[fromValues[i]] = newValue;
-	}
-      }
-    else
-      {
-      if ( 1 == sscanf( rptr, "%20lf", &value ) )
-	{
-	fromValues.push_back( value );
-	
-	for ( size_t i = 0; i < fromValues.size(); ++i )
-	  {
-	  this->m_Mapping[fromValues[i]] = std::numeric_limits<double>::signaling_NaN();
-	  }
-	}
-      else
-	{
-	StdErr << "ERROR: could not parse mapping\n\t" << mapping << "\nwhich is supposed to be VAL0[,VAL1,...][:NEWVAL]\n";
-	}
-      }
-
-    // if more rules are following, separated by "+", then move to next one, otherwise terminate loop.
-    if ( plus )
-      {
-      rptr = plus + 1;
-      }
-    else
-      rptr = NULL;
+    while (comma && (!plus || comma < plus)) {
+      if (1 == sscanf(rptr, "%20lf", &value)) fromValues.push_back(value);
+      rptr = comma + 1;
+      comma = strchr(rptr, ',');
     }
+
+    double newValue;
+    if (2 == sscanf(rptr, "%20lf:%20lf", &value, &newValue)) {
+      fromValues.push_back(value);
+
+      for (size_t i = 0; i < fromValues.size(); ++i) {
+        this->m_Mapping[fromValues[i]] = newValue;
+      }
+    } else {
+      if (1 == sscanf(rptr, "%20lf", &value)) {
+        fromValues.push_back(value);
+
+        for (size_t i = 0; i < fromValues.size(); ++i) {
+          this->m_Mapping[fromValues[i]] =
+              std::numeric_limits<double>::signaling_NaN();
+        }
+      } else {
+        StdErr << "ERROR: could not parse mapping\n\t" << mapping
+               << "\nwhich is supposed to be VAL0[,VAL1,...][:NEWVAL]\n";
+      }
+    }
+
+    // if more rules are following, separated by "+", then move to next one,
+    // otherwise terminate loop.
+    if (plus) {
+      rptr = plus + 1;
+    } else
+      rptr = NULL;
+  }
 }
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationMapValues::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
-  TypedArray& volumeData = *(volume->GetData());
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationMapValues::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  TypedArray &volumeData = *(volume->GetData());
 #pragma omp parallel for
-  for ( int i = 0; i < static_cast<int>( volumeData.GetDataSize() ); ++i )
-    {
+  for (int i = 0; i < static_cast<int>(volumeData.GetDataSize()); ++i) {
     Types::DataItem value = 0;
-    if ( volumeData.Get( value, i ) )
-      {
-      std::map<Types::DataItem,Types::DataItem>::const_iterator it = this->m_Mapping.find( value );
-      if ( it != this->m_Mapping.end() )
-	{
-	const Types::DataItem newValue = it->second;
-	if ( finite( newValue ) )
-	  volumeData.Set( newValue, i );
-	else
-	  volumeData.SetPaddingAt( i );
-	}
-      else
-	{
-	// value not explicitly mapped; see if we're in "exclusive" mode.
-	if ( this->m_Exclusive )
-	  {
-	  volumeData.SetPaddingAt( i );
-	  }
-	}
+    if (volumeData.Get(value, i)) {
+      std::map<Types::DataItem, Types::DataItem>::const_iterator it =
+          this->m_Mapping.find(value);
+      if (it != this->m_Mapping.end()) {
+        const Types::DataItem newValue = it->second;
+        if (finite(newValue))
+          volumeData.Set(newValue, i);
+        else
+          volumeData.SetPaddingAt(i);
+      } else {
+        // value not explicitly mapped; see if we're in "exclusive" mode.
+        if (this->m_Exclusive) {
+          volumeData.SetPaddingAt(i);
+        }
       }
     }
-  
+  }
+
   return volume;
 }

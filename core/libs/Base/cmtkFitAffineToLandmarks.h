@@ -37,41 +37,34 @@
 #include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkMatrix3x3.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Fit affine transformation to a set of landmark pairs.
  */
-class FitAffineToLandmarks
-{
-public:
+class FitAffineToLandmarks {
+ public:
   /// This class.
   typedef FitAffineToLandmarks Self;
 
   /// Constructor.
-  FitAffineToLandmarks( const LandmarkPairList& landmarkPairs );
+  FitAffineToLandmarks(const LandmarkPairList &landmarkPairs);
 
   /// Return the affine transformation.
-  AffineXform::SmartPtr GetAffineXform()
-  {
-    return this->m_AffineXform;
-  }
-  
+  AffineXform::SmartPtr GetAffineXform() { return this->m_AffineXform; }
+
   /// Return the constant affine transformation.
-  AffineXform::SmartConstPtr GetAffineXform() const
-  {
+  AffineXform::SmartConstPtr GetAffineXform() const {
     return this->m_AffineXform;
   }
-  
-private:
+
+ private:
   /// The fitted transformation.
   AffineXform::SmartPtr m_AffineXform;
 };
 
-} // namespace
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFitAffineToLandmarks_h_included_
+#endif  // #ifndef __cmtkFitAffineToLandmarks_h_included_

@@ -32,35 +32,32 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include <System/cmtkConsole.h>
 #include <System/cmtkCompressedStream.h>
+#include <System/cmtkConsole.h>
 
 #include <Base/cmtkTypes.h>
 
 #include <stdio.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
-//@{ 
+//@{
 
 /// BioRad microscopy image file header
-typedef struct
-{
-  unsigned short nx, ny;    //  0   2*2     image width and height in pixels
-  short npic;               //  4   2       number of images in file
-  short ramp1_min;          //  6   2*2     LUT1 ramp min. and max.
+typedef struct {
+  unsigned short nx, ny;  //  0   2*2     image width and height in pixels
+  short npic;             //  4   2       number of images in file
+  short ramp1_min;        //  6   2*2     LUT1 ramp min. and max.
   short ramp1_max;
-  int notes;                // 10   4       no notes=0; has notes=non zero
-  short byte_format;        // 14   2       bytes=TRUE(1); words=FALSE(0)
-  unsigned short n;         // 16   2       image number within file
-  char name[32];            // 18   32      file name
-  short merged;             // 50   2       merged format
-  unsigned short color1;    // 52   2       LUT1 color status
-  unsigned short file_id;   // 54   2       valid .PIC file=12345
-  short ramp2_min;          // 56   2*2     LUT2 ramp min. and max.
+  int notes;               // 10   4       no notes=0; has notes=non zero
+  short byte_format;       // 14   2       bytes=TRUE(1); words=FALSE(0)
+  unsigned short n;        // 16   2       image number within file
+  char name[32];           // 18   32      file name
+  short merged;            // 50   2       merged format
+  unsigned short color1;   // 52   2       LUT1 color status
+  unsigned short file_id;  // 54   2       valid .PIC file=12345
+  short ramp2_min;         // 56   2*2     LUT2 ramp min. and max.
   short ramp2_max;
   unsigned short color2;    // 60   2       LUT2 color status
   short edited;             // 62   2       image has been edited=TRUE(1)
@@ -69,97 +66,93 @@ typedef struct
   unsigned short dummy[3];  // 70   6       NOT USED (old ver.=real lens mag.)
 } FileHeaderBioRad;
 
-const UniformVolume::SmartPtr
-VolumeFromFile::ReadBioRad( const std::string& path )
-{
-  CompressedStream stream( path );
+const UniformVolume::SmartPtr VolumeFromFile::ReadBioRad(
+    const std::string &path) {
+  CompressedStream stream(path);
 
   // Biorad header is 76 bytes
   char buffer[76];
-  if ( 1 != stream.Read( &buffer, sizeof(buffer), 1 ) ) 
-    {
-    StdErr << "ERROR: cannot read header from BioRad file " << path << ". Bailing out.\n";
-    return UniformVolume::SmartPtr( NULL );
-    }
-  
-  FileHeaderBioRad header;
-  memcpy( &header.nx, buffer+0, sizeof( header.nx ) );
-  memcpy( &header.ny, buffer+2, sizeof( header.ny ) );
-  memcpy( &header.npic, buffer+4, sizeof( header.npic ) );
+  if (1 != stream.Read(&buffer, sizeof(buffer), 1)) {
+    StdErr << "ERROR: cannot read header from BioRad file " << path
+           << ". Bailing out.\n";
+    return UniformVolume::SmartPtr(NULL);
+  }
 
-  memcpy( &header.notes, buffer+10, sizeof( header.notes ) );
-  memcpy( &header.byte_format, buffer+14, sizeof( header.byte_format ) );
-  memcpy( &header.file_id, buffer+54, sizeof( header.file_id ) );
+  FileHeaderBioRad header;
+  memcpy(&header.nx, buffer + 0, sizeof(header.nx));
+  memcpy(&header.ny, buffer + 2, sizeof(header.ny));
+  memcpy(&header.npic, buffer + 4, sizeof(header.npic));
+
+  memcpy(&header.notes, buffer + 10, sizeof(header.notes));
+  memcpy(&header.byte_format, buffer + 14, sizeof(header.byte_format));
+  memcpy(&header.file_id, buffer + 54, sizeof(header.file_id));
 
   // check MagicNumber
-#ifdef WORDS_BIGENDIAN    
-  if ( Memory::ByteSwap( header.file_id ) != 12345 ) 
-    {
-    StdErr << "ERROR: BioRad file " << path << " has invalid magic number. Bailing out.\n";
-    return UniformVolume::SmartPtr( NULL );
-    }
+#ifdef WORDS_BIGENDIAN
+  if (Memory::ByteSwap(header.file_id) != 12345) {
+    StdErr << "ERROR: BioRad file " << path
+           << " has invalid magic number. Bailing out.\n";
+    return UniformVolume::SmartPtr(NULL);
+  }
 #else
-  if ( header.file_id != 12345 ) 
-    {
-    StdErr << "ERROR: BioRad file " << path << " has invalid magic number. Bailing out.\n";
-    return UniformVolume::SmartPtr( NULL );
-    }
+  if (header.file_id != 12345) {
+    StdErr << "ERROR: BioRad file " << path
+           << " has invalid magic number. Bailing out.\n";
+    return UniformVolume::SmartPtr(NULL);
+  }
 #endif
 
-#ifdef WORDS_BIGENDIAN    
-  int dims[3] = { Memory::ByteSwap( header.nx ), Memory::ByteSwap( header.ny ), Memory::ByteSwap( header.npic ) };
+#ifdef WORDS_BIGENDIAN
+  int dims[3] = {Memory::ByteSwap(header.nx), Memory::ByteSwap(header.ny),
+                 Memory::ByteSwap(header.npic)};
 #else
-  int dims[3] = { header.nx, header.ny, header.npic };
+  int dims[3] = {header.nx, header.ny, header.npic};
 #endif
   int numPixels = dims[0] * dims[1] * dims[2];
-  
+
   TypedArray::SmartPtr dataArray;
-  if ( header.byte_format ) 
-    {
-    dataArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_BYTE, numPixels ) );
-    } 
-  else
-    {
-    dataArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_USHORT, numPixels ) );    
-    }
-  
-  stream.Read( dataArray->GetDataPtr(), dataArray->GetItemSize(), dataArray->GetDataSize() );
-  
+  if (header.byte_format) {
+    dataArray = TypedArray::SmartPtr(TypedArray::Create(TYPE_BYTE, numPixels));
+  } else {
+    dataArray =
+        TypedArray::SmartPtr(TypedArray::Create(TYPE_USHORT, numPixels));
+  }
+
+  stream.Read(dataArray->GetDataPtr(), dataArray->GetItemSize(),
+              dataArray->GetDataSize());
+
   double pixelsizeX = 1, pixelsizeY = 1, pixelsizeZ = 1;
-  bool flipX = false, flipY = false, flipZ = false;;
-  
-  while ( ! stream.Feof() ) 
-    {
+  bool flipX = false, flipY = false, flipZ = false;
+  ;
+
+  while (!stream.Feof()) {
     char lineheader[16], line[80];
-    stream.Read( lineheader, sizeof( lineheader ), 1 );
-    stream.Read( line, sizeof( line ), 1 );
-    
+    stream.Read(lineheader, sizeof(lineheader), 1);
+    stream.Read(line, sizeof(line), 1);
+
     //      StdErr.printf( "%s\n->%s\n", lineheader, line );
-    
+
     double d1, d2, d3;
-    if ( 3 == sscanf( line, "AXIS_2 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
-      {
-      pixelsizeX = fabs( d3 );
-      flipX = (d3 < 0 );
-      }
-    if ( 3 == sscanf( line, "AXIS_3 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
-      {
-      pixelsizeY = fabs( d3 );
-      flipY = (d3 < 0 );
-      }
-    if ( 3 == sscanf( line, "AXIS_4 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
-      {
-      pixelsizeZ = fabs( d3 );
-      flipZ = (d3 < 0 );
-      }
+    if (3 == sscanf(line, "AXIS_2 %20lf %20lf %20lf", &d1, &d2, &d3)) {
+      pixelsizeX = fabs(d3);
+      flipX = (d3 < 0);
     }
-  
+    if (3 == sscanf(line, "AXIS_3 %20lf %20lf %20lf", &d1, &d2, &d3)) {
+      pixelsizeY = fabs(d3);
+      flipY = (d3 < 0);
+    }
+    if (3 == sscanf(line, "AXIS_4 %20lf %20lf %20lf", &d1, &d2, &d3)) {
+      pixelsizeZ = fabs(d3);
+      flipZ = (d3 < 0);
+    }
+  }
+
 #ifdef WORDS_BIGENDIAN
-  Types::Coordinate lensScale = 1; //Memory::ByteSwap( header.lens );
+  Types::Coordinate lensScale = 1;  // Memory::ByteSwap( header.lens );
 #else
-  Types::Coordinate lensScale = 1; //header.lens;
+  Types::Coordinate lensScale = 1;  // header.lens;
 #endif
-  
+
 // GJ I think this was backwards - want to swap if we ARE on big endian
 // since Biorad is always little endian
 //#ifndef WORDS_BIGENDIAN
@@ -167,26 +160,28 @@ VolumeFromFile::ReadBioRad( const std::string& path )
   // change endianness from Sun to whatever we're currently on.
   dataArray->ChangeEndianness();
 #endif
-  
-  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), lensScale * pixelsizeX, lensScale * pixelsizeY, lensScale * pixelsizeZ, dataArray ) );
 
-  if ( flipX )
-    {
-    StdErr << "WARNING: x pixel spacing is negative. Resulting volume will be mirrored accordingly.\n";
-    volume->ApplyMirrorPlane( AXIS_X );
-    }
-  if ( flipY )
-    {
-    StdErr << "WARNING: y pixel spacing is negative. Resulting volume will be mirrored accordingly.\n";
-    volume->ApplyMirrorPlane( AXIS_Y );
-    }
-  if ( flipZ )
-    {
-    StdErr << "WARNING: z pixel spacing is negative. Resulting volume will be mirrored accordingly.\n";
-    volume->ApplyMirrorPlane( AXIS_Z );
-    }
+  UniformVolume::SmartPtr volume(new UniformVolume(
+      DataGrid::IndexType::FromPointer(dims), lensScale * pixelsizeX,
+      lensScale * pixelsizeY, lensScale * pixelsizeZ, dataArray));
+
+  if (flipX) {
+    StdErr << "WARNING: x pixel spacing is negative. Resulting volume will be "
+              "mirrored accordingly.\n";
+    volume->ApplyMirrorPlane(AXIS_X);
+  }
+  if (flipY) {
+    StdErr << "WARNING: y pixel spacing is negative. Resulting volume will be "
+              "mirrored accordingly.\n";
+    volume->ApplyMirrorPlane(AXIS_Y);
+  }
+  if (flipZ) {
+    StdErr << "WARNING: z pixel spacing is negative. Resulting volume will be "
+              "mirrored accordingly.\n";
+    volume->ApplyMirrorPlane(AXIS_Z);
+  }
 
   return volume;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

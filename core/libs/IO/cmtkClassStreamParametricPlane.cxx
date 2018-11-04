@@ -33,42 +33,39 @@
 #include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamOutput.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-ClassStreamInput& 
-ClassStreamInput::operator>>( ParametricPlane*& parametricPlane )
-{
+ClassStreamInput &ClassStreamInput::operator>>(
+    ParametricPlane *&parametricPlane) {
   parametricPlane = NULL;
 
-  if ( this->Seek( "plane" ) != TypedStream::CONDITION_OK )
-    return *this;
-  
+  if (this->Seek("plane") != TypedStream::CONDITION_OK) return *this;
+
   parametricPlane = new ParametricPlane();
 
   Types::Coordinate planeOrigin[3];
-  this->ReadCoordinateArray( "origin", planeOrigin, 3 );
-  parametricPlane->SetOrigin( FixedVector<3,Types::Coordinate>::FromPointer( planeOrigin ) );
+  this->ReadCoordinateArray("origin", planeOrigin, 3);
+  parametricPlane->SetOrigin(
+      FixedVector<3, Types::Coordinate>::FromPointer(planeOrigin));
 
-  parametricPlane->SetRho( this->ReadCoordinate( "rho" ) );
-  parametricPlane->SetTheta( Units::Degrees( this->ReadCoordinate( "theta" ) ) );
-  parametricPlane->SetPhi( Units::Degrees( this->ReadCoordinate( "phi" ) ) );
+  parametricPlane->SetRho(this->ReadCoordinate("rho"));
+  parametricPlane->SetTheta(Units::Degrees(this->ReadCoordinate("theta")));
+  parametricPlane->SetPhi(Units::Degrees(this->ReadCoordinate("phi")));
 
   return *this;
 }
 
-ClassStreamOutput&
-ClassStreamOutput::operator<<( const ParametricPlane* parametricPlane )
-{  
-  this->Begin( "plane" );
-  this->WriteCoordinateArray( "origin", parametricPlane->GetOrigin().begin(), 3 );
-  this->WriteDouble( "rho", parametricPlane->GetRho() );
-  this->WriteDouble( "theta", Units::Degrees( parametricPlane->GetTheta() ).Value() );
-  this->WriteDouble( "phi", Units::Degrees( parametricPlane->GetPhi() ).Value() );
+ClassStreamOutput &ClassStreamOutput::operator<<(
+    const ParametricPlane *parametricPlane) {
+  this->Begin("plane");
+  this->WriteCoordinateArray("origin", parametricPlane->GetOrigin().begin(), 3);
+  this->WriteDouble("rho", parametricPlane->GetRho());
+  this->WriteDouble("theta",
+                    Units::Degrees(parametricPlane->GetTheta()).Value());
+  this->WriteDouble("phi", Units::Degrees(parametricPlane->GetPhi()).Value());
 
-  this->WriteCoordinateArray( "normal", parametricPlane->GetNormal().begin(), 3 );
+  this->WriteCoordinateArray("normal", parametricPlane->GetNormal().begin(), 3);
   return *this;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

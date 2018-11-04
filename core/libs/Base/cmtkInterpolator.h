@@ -35,17 +35,14 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 /// Interpolation kernels to be used with UniformVolumeInterpolator.
-namespace Interpolators
-{
+namespace Interpolators {
 /// Constants for interpolation modes.
-typedef enum 
-{
+typedef enum {
   /// Nearest neighbour interpolation.
   NEAREST_NEIGHBOR,
   /// Partial volume interpolation.
@@ -62,8 +59,7 @@ typedef enum
   DEFAULT
 } InterpolationEnum;
 
-} // namespace Interpolators
-} // namespace cmtk
+}  // namespace Interpolators
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkInterpolator_h_included_
-
+#endif  // #ifndef __cmtkInterpolator_h_included_

@@ -33,8 +33,8 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -43,71 +43,82 @@
 
 #include <list>
 
-int
-doMain( const int argc, const char* argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   bool fast = false;
-  
+
   std::string targetImageName;
   std::string atlasImageName;
   std::string atlasLabelName;
   std::string outImageName;
 
-  try
-    {
-    cmtk::CommandLine  cl( cmtk::CommandLine::PROPS_XML );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Atlas-based segmentation" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to an atlas, using affine followed by nonrigid B-spline registration, then reformat the atlas label map to the target image." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
+  try {
+    cmtk::CommandLine cl(cmtk::CommandLine::PROPS_XML);
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Atlas-based segmentation");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "Register a target image to an atlas, using affine "
+                      "followed by nonrigid B-spline registration, then "
+                      "reformat the atlas label map to the target image.");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
-    
-    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &atlasImageName, "AtlasImage", "Atlas image path. This is the structural channel (e.g., T1-weighted MRI) of the atlas to be used." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &atlasLabelName, "AtlasLabels", "Atlas label image path. This is the label map to be reformatted to the target image." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
-    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )
-      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddSwitch(Key('f', "fast"), &fast, true, "Fast mode.");
 
-    cl.Parse( argc, argv );
-    }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
+    cl.AddParameter(&targetImageName, "TargetImage",
+                    "Target image path. This is the image to be segmented.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
+    cl.AddParameter(&atlasImageName, "AtlasImage",
+                    "Atlas image path. This is the structural channel (e.g., "
+                    "T1-weighted MRI) of the atlas to be used.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
+    cl.AddParameter(&atlasLabelName, "AtlasLabels",
+                    "Atlas label image path. This is the label map to be "
+                    "reformatted to the target image.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
+                        cmtk::CommandLine::PROPS_LABELS);
+    cl.AddParameter(&outImageName, "OutputImage",
+                    "Output image path. This is where the reformatted label "
+                    "map is written.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
+                        cmtk::CommandLine::PROPS_LABELS |
+                        cmtk::CommandLine::PROPS_OUTPUT);
+
+    cl.Parse(argc, argv);
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
+    throw cmtk::ExitException(1);
+  }
+
   // Instantiate programm progress indicator.
-  cmtk::ProgressConsole progressIndicator( "Atlas-based Segmentation" );
+  cmtk::ProgressConsole progressIndicator("Atlas-based Segmentation");
 
-  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName ) );
-  if ( !targetImg ) 
-    {
-    cmtk::StdErr << "ERROR: could not read target image " << targetImageName << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
-  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName ) );
-  if ( !atlasImg ) 
-    {
-    cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
-  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName ) );
-  if ( !atlasLbl ) 
-    {
-    cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-    
-  cmtk::AtlasSegmentation segment( targetImg, atlasImg, atlasLbl );
-  segment.SetFast( fast );
+  cmtk::UniformVolume::SmartPtr targetImg(
+      cmtk::VolumeIO::ReadOriented(targetImageName));
+  if (!targetImg) {
+    cmtk::StdErr << "ERROR: could not read target image " << targetImageName
+                 << "\n";
+    throw cmtk::ExitException(1);
+  }
 
-  cmtk::VolumeIO::Write( *(segment.GetLabelMap()), outImageName );
+  cmtk::UniformVolume::SmartPtr atlasImg(
+      cmtk::VolumeIO::ReadOriented(atlasImageName));
+  if (!atlasImg) {
+    cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName
+                 << "\n";
+    throw cmtk::ExitException(1);
+  }
+
+  cmtk::UniformVolume::SmartPtr atlasLbl(
+      cmtk::VolumeIO::ReadOriented(atlasLabelName));
+  if (!atlasLbl) {
+    cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName
+                 << "\n";
+    throw cmtk::ExitException(1);
+  }
+
+  cmtk::AtlasSegmentation segment(targetImg, atlasImg, atlasLbl);
+  segment.SetFast(fast);
+
+  cmtk::VolumeIO::Write(*(segment.GetLabelMap()), outImageName);
 
   return 0;
 }

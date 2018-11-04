@@ -67,7 +67,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "reflections.h"
 
 /*************************************************************************
@@ -104,84 +103,75 @@ cause an overflow.
 
 
 MODIFICATIONS:
-    24.12.2005 sign(Alpha) was replaced with an analogous to the Fortran SIGN code.
+    24.12.2005 sign(Alpha) was replaced with an analogous to the Fortran SIGN
+code.
 
   -- LAPACK auxiliary routine (version 3.0) --
      Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau)
-{
-    int j;
-    ap::real_value_type alpha;
-    ap::real_value_type xnorm;
-    ap::real_value_type v;
-    ap::real_value_type beta;
-    ap::real_value_type mx;
+void generatereflection(ap::real_1d_array &x, int n, ap::real_value_type &tau) {
+  int j;
+  ap::real_value_type alpha;
+  ap::real_value_type xnorm;
+  ap::real_value_type v;
+  ap::real_value_type beta;
+  ap::real_value_type mx;
 
-    
-    //
-    // Executable Statements ..
-    //
-    if( n<=1 )
-    {
-        tau = 0;
-        return;
+  //
+  // Executable Statements ..
+  //
+  if (n <= 1) {
+    tau = 0;
+    return;
+  }
+
+  //
+  // XNORM = DNRM2( N-1, X, INCX )
+  //
+  alpha = x(1);
+  mx = 0;
+  for (j = 2; j <= n; j++) {
+    mx = ap::maxreal(fabs(x(j)), mx);
+  }
+  xnorm = 0;
+  if (mx != 0) {
+    for (j = 2; j <= n; j++) {
+      xnorm = xnorm + ap::sqr(x(j) / mx);
     }
-    
+    xnorm = sqrt(xnorm) * mx;
+  }
+  if (xnorm == 0) {
     //
-    // XNORM = DNRM2( N-1, X, INCX )
+    // H  =  I
     //
-    alpha = x(1);
-    mx = 0;
-    for(j = 2; j <= n; j++)
-    {
-        mx = ap::maxreal(fabs(x(j)), mx);
-    }
-    xnorm = 0;
-    if( mx!=0 )
-    {
-        for(j = 2; j <= n; j++)
-        {
-            xnorm = xnorm+ap::sqr(x(j)/mx);
-        }
-        xnorm = sqrt(xnorm)*mx;
-    }
-    if( xnorm==0 )
-    {
-        
-        //
-        // H  =  I
-        //
-        tau = 0;
-        return;
-    }
-    
-    //
-    // general case
-    //
-    mx = ap::maxreal(fabs(alpha), fabs(xnorm));
-    beta = -mx*sqrt(ap::sqr(alpha/mx)+ap::sqr(xnorm/mx));
-    if( alpha<0 )
-    {
-        beta = -beta;
-    }
-    tau = (beta-alpha)/beta;
-    v = 1/(alpha-beta);
-    ap::vmul(&x(2), ap::vlen(2,n), v);
-    x(1) = beta;
+    tau = 0;
+    return;
+  }
+
+  //
+  // general case
+  //
+  mx = ap::maxreal(fabs(alpha), fabs(xnorm));
+  beta = -mx * sqrt(ap::sqr(alpha / mx) + ap::sqr(xnorm / mx));
+  if (alpha < 0) {
+    beta = -beta;
+  }
+  tau = (beta - alpha) / beta;
+  v = 1 / (alpha - beta);
+  ap::vmul(&x(2), ap::vlen(2, n), v);
+  x(1) = beta;
 }
-
 
 /*************************************************************************
 Application of an elementary reflection to a rectangular matrix of size MxN
 
-The algorithm pre-multiplies the matrix by an elementary reflection transformation
-which is given by column V and scalar Tau (see the description of the
-GenerateReflection procedure). Not the whole matrix but only a part of it
-is transformed (rows from M1 to M2, columns from N1 to N2). Only the elements
-of this submatrix are changed.
+The algorithm pre-multiplies the matrix by an elementary reflection
+transformation which is given by column V and scalar Tau (see the description of
+the GenerateReflection procedure). Not the whole matrix but only a part of it is
+transformed (rows from M1 to M2, columns from N1 to N2). Only the elements of
+this submatrix are changed.
 
 Input parameters:
     C       -   matrix to be transformed.
@@ -202,55 +192,44 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void applyreflectionfromtheleft(ap::real_2d_array& c,
-     ap::real_value_type tau,
-     const ap::real_1d_array& v,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     ap::real_1d_array& work)
-{
-    ap::real_value_type t;
-    int i;
+void applyreflectionfromtheleft(ap::real_2d_array &c, ap::real_value_type tau,
+                                const ap::real_1d_array &v, int m1, int m2,
+                                int n1, int n2, ap::real_1d_array &work) {
+  ap::real_value_type t;
+  int i;
 
-    if( tau==0||n1>n2||m1>m2 )
-    {
-        return;
-    }
-    
-    //
-    // w := C' * v
-    //
-    for(i = n1; i <= n2; i++)
-    {
-        work(i) = 0;
-    }
-    for(i = m1; i <= m2; i++)
-    {
-        t = v(i+1-m1);
-        ap::vadd(&work(n1), &c(i, n1), ap::vlen(n1,n2), t);
-    }
-    
-    //
-    // C := C - tau * v * w'
-    //
-    for(i = m1; i <= m2; i++)
-    {
-        t = v(i-m1+1)*tau;
-        ap::vsub(&c(i, n1), &work(n1), ap::vlen(n1,n2), t);
-    }
+  if (tau == 0 || n1 > n2 || m1 > m2) {
+    return;
+  }
+
+  //
+  // w := C' * v
+  //
+  for (i = n1; i <= n2; i++) {
+    work(i) = 0;
+  }
+  for (i = m1; i <= m2; i++) {
+    t = v(i + 1 - m1);
+    ap::vadd(&work(n1), &c(i, n1), ap::vlen(n1, n2), t);
+  }
+
+  //
+  // C := C - tau * v * w'
+  //
+  for (i = m1; i <= m2; i++) {
+    t = v(i - m1 + 1) * tau;
+    ap::vsub(&c(i, n1), &work(n1), ap::vlen(n1, n2), t);
+  }
 }
-
 
 /*************************************************************************
 Application of an elementary reflection to a rectangular matrix of size MxN
 
-The algorithm post-multiplies the matrix by an elementary reflection transformation
-which is given by column V and scalar Tau (see the description of the
-GenerateReflection procedure). Not the whole matrix but only a part of it
-is transformed (rows from M1 to M2, columns from N1 to N2). Only the
-elements of this submatrix are changed.
+The algorithm post-multiplies the matrix by an elementary reflection
+transformation which is given by column V and scalar Tau (see the description of
+the GenerateReflection procedure). Not the whole matrix but only a part of it is
+transformed (rows from M1 to M2, columns from N1 to N2). Only the elements of
+this submatrix are changed.
 
 Input parameters:
     C       -   matrix to be transformed.
@@ -271,41 +250,29 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void applyreflectionfromtheright(ap::real_2d_array& c,
-     ap::real_value_type tau,
-     const ap::real_1d_array& v,
-     int m1,
-     int m2,
-     int n1,
-     int n2,
-     ap::real_1d_array& work)
-{
-    ap::real_value_type t;
-    int i;
+void applyreflectionfromtheright(ap::real_2d_array &c, ap::real_value_type tau,
+                                 const ap::real_1d_array &v, int m1, int m2,
+                                 int n1, int n2, ap::real_1d_array &work) {
+  ap::real_value_type t;
+  int i;
 
-    if( tau==0||n1>n2||m1>m2 )
-    {
-        return;
-    }
-    
-    //
-    // w := C * v
-    //
-    for(i = m1; i <= m2; i++)
-    {
-        t = ap::vdotproduct(&c(i, n1), &v(1), ap::vlen(n1,n2));
-        work(i) = t;
-    }
-    
-    //
-    // C := C - w * v'
-    //
-    for(i = m1; i <= m2; i++)
-    {
-        t = work(i)*tau;
-        ap::vsub(&c(i, n1), &v(1), ap::vlen(n1,n2), t);
-    }
+  if (tau == 0 || n1 > n2 || m1 > m2) {
+    return;
+  }
+
+  //
+  // w := C * v
+  //
+  for (i = m1; i <= m2; i++) {
+    t = ap::vdotproduct(&c(i, n1), &v(1), ap::vlen(n1, n2));
+    work(i) = t;
+  }
+
+  //
+  // C := C - w * v'
+  //
+  for (i = m1; i <= m2; i++) {
+    t = work(i) * tau;
+    ap::vsub(&c(i, n1), &v(1), ap::vlen(n1, n2), t);
+  }
 }
-
-
-

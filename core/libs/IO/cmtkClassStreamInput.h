@@ -35,30 +35,27 @@
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkTypedStreamInput.h>
 #include <IO/cmtkStudy.h>
+#include <IO/cmtkTypedStreamInput.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkWarpXform.h>
-#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkParametricPlane.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /** Class for reading various library classes to and from disk.
  */
-class ClassStreamInput : 
-  /// Inherit basic functionality from typed stream.
-  public TypedStreamInput
-{
-public:
+class ClassStreamInput :
+    /// Inherit basic functionality from typed stream.
+    public TypedStreamInput {
+ public:
   /// This class.
   typedef ClassStreamInput Self;
 
@@ -71,32 +68,35 @@ public:
   /** Open constructor.
    *\param filename Name of the archive to open.
    */
-  ClassStreamInput( const std::string& filename ) : TypedStreamInput( filename ) {}
+  ClassStreamInput(const std::string &filename) : TypedStreamInput(filename) {}
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    */
-  ClassStreamInput( const std::string& dir, const std::string& archive ) : TypedStreamInput( dir, archive ) {}
+  ClassStreamInput(const std::string &dir, const std::string &archive)
+      : TypedStreamInput(dir, archive) {}
 
   /// Read (spline or linear) warp transformation.
-  ClassStreamInput& operator >> ( WarpXform::SmartPtr& warpXform );
+  ClassStreamInput &operator>>(WarpXform::SmartPtr &warpXform);
 
   /// Read (spline or linear) warp transformation.
-  ClassStreamInput& operator >> ( WarpXform*& warpXform );
+  ClassStreamInput &operator>>(WarpXform *&warpXform);
 
   /// Actually read warp transformation object.
-  ClassStreamInput& Get ( WarpXform::SmartPtr& warpXform, const AffineXform* affineXform = NULL  );
+  ClassStreamInput &Get(WarpXform::SmartPtr &warpXform,
+                        const AffineXform *affineXform = NULL);
 
   /// Actually read warp transformation object.
-  ClassStreamInput& Get ( WarpXform*& warpXform, const AffineXform* affineXform = NULL  );
+  ClassStreamInput &Get(WarpXform *&warpXform,
+                        const AffineXform *affineXform = NULL);
 
   /// Read parametric plane.
-  ClassStreamInput& operator >> ( ParametricPlane*& parametricPlane );
+  ClassStreamInput &operator>>(ParametricPlane *&parametricPlane);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkClassStreamInput_h_included_
+#endif  // #ifndef __cmtkClassStreamInput_h_included_

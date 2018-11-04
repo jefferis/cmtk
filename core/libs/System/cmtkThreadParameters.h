@@ -35,9 +35,7 @@
 
 #include <System/cmtkThreadSystemTypes.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
@@ -45,12 +43,11 @@ cmtk
 /** Base class for thread parameter blocks.
  * This doesn't hurt to have, even if we're building without thread support.
  */
-template<class T> 
-class ThreadParameters
-{
-public:
+template <class T>
+class ThreadParameters {
+ public:
   /// Template pointer to the object starting this thread.
-  T* thisObject;
+  T *thisObject;
   /// Unique index of this thread instance among all threads.
   unsigned int ThisThreadIndex;
   /// Total number of threads created.
@@ -60,12 +57,12 @@ public:
   ThreadIDType m_ThreadID;
 
 #ifdef _MSC_VER
-  void* m_Handle;
+  void *m_Handle;
 #endif
 
   /// Default constructor.
-  ThreadParameters() : thisObject( NULL ), ThisThreadIndex( 0 ), NumberOfThreads( 0 )
-  {
+  ThreadParameters()
+      : thisObject(NULL), ThisThreadIndex(0), NumberOfThreads(0) {
     this->m_ThreadID = 0;
 #ifdef _MSC_VER
     this->m_Handle = NULL;
@@ -75,6 +72,6 @@ public:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkThreadParameters_h_included_
+#endif  // #ifndef __cmtkThreadParameters_h_included_

@@ -33,114 +33,105 @@
 #include "cmtkLabelCombinationSTAPLE.h"
 
 #ifdef CMTK_USE_GCD
-#  include <System/cmtkThreads.h>
-#  include <dispatch/dispatch.h>
+#include <System/cmtkThreads.h>
+#include <dispatch/dispatch.h>
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
-LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::SmartPtr>& data, const int maxIterations, const ScalarDataType resultType )
-{
+LabelCombinationSTAPLE::LabelCombinationSTAPLE(
+    const std::vector<TypedArray::SmartPtr> &data, const int maxIterations,
+    const ScalarDataType resultType) {
   const size_t numberOfInputs = data.size();
-  const size_t numberOfPixels = data[ 0 ]->GetDataSize();
-  this->m_Result = TypedArray::SmartPtr( TypedArray::Create( resultType, numberOfPixels ) );
-  this->m_Result->SetDataClass( DATACLASS_LABEL );
+  const size_t numberOfPixels = data[0]->GetDataSize();
+  this->m_Result =
+      TypedArray::SmartPtr(TypedArray::Create(resultType, numberOfPixels));
+  this->m_Result->SetDataClass(DATACLASS_LABEL);
 
   // compute initial estimate as the average of all inputs;
   // this is also the first E-step with all p/q equal to 0.5
   double totalSum = 0;
 
 // The following is currently broken due to Apple bug:
-//  http://forums.macrumors.com/showthread.php?t=952857 
+//  http://forums.macrumors.com/showthread.php?t=952857
 //  http://lists.apple.com/archives/perfoptimization-dev/2009/Sep/msg00043.html
 //#ifdef CMTK_USE_GCD
 //  const cmtk::Threads::Stride stride( numberOfPixels );
 //  float* threadSum = new float[stride.NBlocks()];
-//  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-//		  { for ( size_t numberOfPixels = stride.From( b ); numberOfPixels < stride.To( b ); ++numberOfPixels )
-//#else
-#pragma omp parallel for reduction(+:totalSum)
-  for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
-//#endif
-    {
+//  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t
+//  b)
+//		  { for ( size_t numberOfPixels = stride.From( b );
+//numberOfPixels < stride.To( b ); ++numberOfPixels ) #else
+#pragma omp parallel for reduction(+ : totalSum)
+  for (int n = 0; n < static_cast<int>(numberOfPixels); ++n)
+  //#endif
+  {
     Types::DataItem w = 0;
-    for ( size_t i = 0; i < numberOfInputs; ++i )
-      {
+    for (size_t i = 0; i < numberOfInputs; ++i) {
       Types::DataItem value;
-      if ( data[i]->Get( value, n ) )
-	{
-	w += value;
-	totalSum += value;
-	}
+      if (data[i]->Get(value, n)) {
+        w += value;
+        totalSum += value;
       }
-    this->m_Result->Set( w / numberOfInputs, n );
     }
-//#ifdef CMTK_USE_GCD
-//		  });
-//#endif
+    this->m_Result->Set(w / numberOfInputs, n);
+  }
+  //#ifdef CMTK_USE_GCD
+  //		  });
+  //#endif
 
   // global prior probability
-  const double globalPrior = totalSum / (numberOfInputs * numberOfPixels );
+  const double globalPrior = totalSum / (numberOfInputs * numberOfPixels);
 
   // expert parameters
-  this->m_VecP.resize( numberOfInputs );
-  this->m_VecQ.resize( numberOfInputs );
+  this->m_VecP.resize(numberOfInputs);
+  this->m_VecQ.resize(numberOfInputs);
 
   // iterate
-  for ( int it = 0; it < maxIterations; ++it )
-    {
+  for (int it = 0; it < maxIterations; ++it) {
     // M-step
-    for ( size_t i = 0; i < numberOfInputs; ++i ) 
-      {
+    for (size_t i = 0; i < numberOfInputs; ++i) {
       this->m_VecP[i] = this->m_VecQ[i] = 0;
-      }
+    }
 
     double sumW = 0;
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
+    for (size_t n = 0; n < numberOfPixels; ++n) {
       Types::DataItem w;
-      this->m_Result->Get( w, n );
+      this->m_Result->Get(w, n);
       sumW += w;
-      
-      for ( size_t i = 0; i < numberOfInputs; ++i ) 
-	{
-	Types::DataItem value;
-	data[i]->Get( value, n );
-	this->m_VecP[i] += w * value;
-	this->m_VecQ[i] += (1.0 - w) * (1.0 - value);
-	}
-      }
 
-    for ( size_t i = 0; i < numberOfInputs; ++i ) 
-      {
+      for (size_t i = 0; i < numberOfInputs; ++i) {
+        Types::DataItem value;
+        data[i]->Get(value, n);
+        this->m_VecP[i] += w * value;
+        this->m_VecQ[i] += (1.0 - w) * (1.0 - value);
+      }
+    }
+
+    for (size_t i = 0; i < numberOfInputs; ++i) {
       this->m_VecP[i] /= sumW;
       this->m_VecQ[i] /= (numberOfPixels - sumW);
-      }
+    }
 
     // E-step
 #pragma omp parallel for
-    for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
-      {
+    for (int n = 0; n < static_cast<int>(numberOfPixels); ++n) {
       double alpha = globalPrior;
-      double beta = (1.0-globalPrior);
-    
+      double beta = (1.0 - globalPrior);
+
       Types::DataItem w = 0;
-      for ( size_t i = 0; i < numberOfInputs; ++i )
-	{
-	if ( data[i]->Get( w, n ) )
-	  {
-	  alpha *= (1.0-w-m_VecP[i]);
-	  beta *= (w-m_VecQ[i]);
-	  }
-	}
-      this->m_Result->Set( alpha / (alpha+beta), n );
+      for (size_t i = 0; i < numberOfInputs; ++i) {
+        if (data[i]->Get(w, n)) {
+          alpha *= (1.0 - w - m_VecP[i]);
+          beta *= (w - m_VecQ[i]);
+        }
       }
+      this->m_Result->Set(alpha / (alpha + beta), n);
     }
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

@@ -37,31 +37,28 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkImagePairSimilarityMeasure.h>
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Registration/cmtkImagePairSimilarityMeasure.h>
 
 #include <Base/cmtkMathUtil.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 #ifdef _MSC_VER
-#pragma warning (disable:4521)
+#pragma warning(disable : 4521)
 #endif
 /** Normalized Cross Correlation Metric.
  */
 class ImagePairSimilarityMeasureNCC :
-  /// Inherit generic pairwise similarity measure class
-  public ImagePairSimilarityMeasure
-{
-public:
+    /// Inherit generic pairwise similarity measure class
+    public ImagePairSimilarityMeasure {
+ public:
   /// This type.
   typedef ImagePairSimilarityMeasureNCC Self;
 
@@ -70,27 +67,31 @@ public:
 
   /** Default constructor.
    */
-  ImagePairSimilarityMeasureNCC() {};
+  ImagePairSimilarityMeasureNCC(){};
 
   /** Virtual destructor.
    */
-  virtual ~ImagePairSimilarityMeasureNCC() {};
+  virtual ~ImagePairSimilarityMeasureNCC(){};
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The floating (moving) volume.
-   *\param interpolation ID of the interpolation algorithm to use for the floating image.
+   *\param interpolation ID of the interpolation algorithm to use for the
+   *floating image.
    */
-  ImagePairSimilarityMeasureNCC ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
+  ImagePairSimilarityMeasureNCC(const UniformVolume::SmartPtr &refVolume,
+                                const UniformVolume::SmartPtr &fltVolume,
+                                const Interpolators::InterpolationEnum
+                                    interpolation = Interpolators::DEFAULT);
 
   /// Constant copy constructor.
-  ImagePairSimilarityMeasureNCC ( const Self& other );
-  
+  ImagePairSimilarityMeasureNCC(const Self &other);
+
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
+  template <class T>
+  void Increment(const T a, const T b) {
     ++Samples;
     SumX += a;
     SumY += b;
@@ -101,8 +102,8 @@ public:
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
+  template <class T>
+  void Decrement(const T a, const T b) {
     --Samples;
     SumX -= a;
     SumY -= b;
@@ -110,20 +111,18 @@ public:
     SumSqY -= b * b;
     SumXY -= a * b;
   }
-  
+
   /// Start with a new computation.
-  virtual void Reset () 
-  {
+  virtual void Reset() {
     SumX = SumY = SumSqX = SumSqY = SumXY = 0;
     Samples = 0;
   }
-  
+
   /// Compute cross correlation.
   virtual Self::ReturnType Get() const;
 
   /// Add contribution from another (partial) metric object.
-  void Add ( const Self& other )
-  {
+  void Add(const Self &other) {
     SumX += other.SumX;
     SumY += other.SumY;
     SumXY += other.SumXY;
@@ -133,9 +132,8 @@ public:
   }
 
   /// Remove contribution from another (partial) metric object.
-  void Remove ( const Self& other )
-  {
-    assert( Samples >= other.Samples );
+  void Remove(const Self &other) {
+    assert(Samples >= other.Samples);
     SumX -= other.SumX;
     SumY -= other.SumY;
     SumXY -= other.SumXY;
@@ -144,7 +142,7 @@ public:
     Samples -= other.Samples;
   }
 
-private:
+ private:
   /// Sum over all samples in X distribution.
   double SumX;
 
@@ -166,6 +164,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairSimilarityMeasureNCC_h_included_
+#endif  // #ifndef __cmtkImagePairSimilarityMeasureNCC_h_included_

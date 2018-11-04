@@ -35,32 +35,28 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkProgressConsole.h>
 #include <System/cmtkExitException.h>
+#include <System/cmtkProgressConsole.h>
 
 #include <Segmentation/cmtkSimpleLevelsetCommandLineBase.h>
 
 #include <IO/cmtkVolumeIO.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include <Registration/cmtkImageXformDB.h>
+#include <Registration/cmtkImageXformDB.h>
 #endif
 
-
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
-/** Command line interface class template for simple levelset segmentation with a particular implementation (CPU or GPU).
+/** Command line interface class template for simple levelset segmentation with
+ * a particular implementation (CPU or GPU).
  */
-template<class TImpl>
-class SimpleLevelsetCommandLine
-  : public SimpleLevelsetCommandLineBase
-{
-public:
+template <class TImpl>
+class SimpleLevelsetCommandLine : public SimpleLevelsetCommandLineBase {
+ public:
   /// This class.
   typedef SimpleLevelsetCommandLine<TImpl> Self;
 
@@ -68,49 +64,42 @@ public:
   typedef TImpl SimpleLevelsetImplementation;
 
   /// Execute levelset segmentation.
-  void Execute()
-  {
+  void Execute() {
     // Instantiate programm progress indicator.
-    cmtk::ProgressConsole progressIndicator( "LevelsetSegmentation" );
-    
-    SimpleLevelsetImplementation levelset( this->m_Volume );
-    levelset.SetScaleInitialSphere( this->m_ScaleInitialSphere );
-    levelset.SetFilterSigma( cmtk::Units::GaussianSigma( this->m_FilterSigma ) );
-    levelset.SetTimeDelta( this->m_TimeDelta );
-    levelset.SetLevelsetThreshold( this->m_LevelsetThreshold );
-    
+    cmtk::ProgressConsole progressIndicator("LevelsetSegmentation");
+
+    SimpleLevelsetImplementation levelset(this->m_Volume);
+    levelset.SetScaleInitialSphere(this->m_ScaleInitialSphere);
+    levelset.SetFilterSigma(cmtk::Units::GaussianSigma(this->m_FilterSigma));
+    levelset.SetTimeDelta(this->m_TimeDelta);
+    levelset.SetLevelsetThreshold(this->m_LevelsetThreshold);
+
     levelset.InitializeCenteredSphere();
 
-    try
-      {
-      levelset.Evolve( this->m_NumberOfIterations, this->m_ForceIterations );
-      }
-    catch ( const SimpleLevelset::DegenerateLevelsetException& )
-      {
-      StdErr << "ERROR: degenerate levelset (all foreground or all background).\n";
-      throw ExitException( 1 );
-      }
-    
-    cmtk::VolumeIO::Write( *levelset.GetLevelset( this->m_Binarize ), this->m_OutFile );
-    
+    try {
+      levelset.Evolve(this->m_NumberOfIterations, this->m_ForceIterations);
+    } catch (const SimpleLevelset::DegenerateLevelsetException &) {
+      StdErr
+          << "ERROR: degenerate levelset (all foreground or all background).\n";
+      throw ExitException(1);
+    }
+
+    cmtk::VolumeIO::Write(*levelset.GetLevelset(this->m_Binarize),
+                          this->m_OutFile);
+
 #ifdef CMTK_USE_SQLITE
-    if ( this->m_UpdateDB )
-      {
-      try
-	{
-	cmtk::ImageXformDB db( this->m_UpdateDB );
-	db.AddImage( this->m_OutFile, this->m_InFile );
-	}
-      catch ( const cmtk::SQLite::Exception& ex )
-	{
-	StdErr << "ERROR: cmtk::SQLite threw exception - " << ex.what() << "\n";	
-	}
+    if (this->m_UpdateDB) {
+      try {
+        cmtk::ImageXformDB db(this->m_UpdateDB);
+        db.AddImage(this->m_OutFile, this->m_InFile);
+      } catch (const cmtk::SQLite::Exception &ex) {
+        StdErr << "ERROR: cmtk::SQLite threw exception - " << ex.what() << "\n";
       }
+    }
 #endif
   }
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkSimpleLevelsetCommandLine_h_included_
-
+#endif  // #ifndef __cmtkSimpleLevelsetCommandLine_h_included_

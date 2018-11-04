@@ -39,17 +39,15 @@
 #include <string>
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /** Safe search for a string within a non-null-terminated string.
  */
-const char*
-StrNStr( const char* haystack, const size_t nBytes, const char* needle );
+const char *StrNStr(const char *haystack, const size_t nBytes,
+                    const char *needle);
 
 /** Safe string comparison.
  * This function is a wrapper for the standard library's "strcmp" function.
@@ -60,25 +58,33 @@ StrNStr( const char* haystack, const size_t nBytes, const char* needle );
  * if s1 is smaller than s2. NULL pointers are considered smaller than any
  * other string except the NULL pointer itself.
  */
-int StrCmp( const char *s1, const char* s2 );
+int StrCmp(const char *s1, const char *s2);
 
 /** Replace string components.
  *\todo This is highly unsafe, since we're not checking for infinite loops and
  * the likes. We should really work on this sometimes... or be REALLY carefull.
  */
-std::string StrReplaceByRules( const std::string& str, const std::map<std::string,std::string>& rules, const bool multiple = false );
+std::string StrReplaceByRules(const std::string &str,
+                              const std::map<std::string, std::string> &rules,
+                              const bool multiple = false);
 
 /// Replace a search string with a replacement string.
-std::string StrReplace( const std::string& str /*!< The string to replace in */, const std::string& search /*!< Substring to replace */, const std::string& replace /*!< String to replace search string with */ );
-  
+std::string StrReplace(
+    const std::string &str /*!< The string to replace in */,
+    const std::string &search /*!< Substring to replace */,
+    const std::string &replace /*!< String to replace search string with */);
+
 /// Make a string legal in a path by replacing spaces and colons with "_".
-std::string StrMakeLegalInPath( const std::string& s );
+std::string StrMakeLegalInPath(const std::string &s);
 
 /// Split a string into a vector of strings.
-std::vector<std::string> StrSplit( const std::string& s /*<! The string to split. */, const std::string separators = "," /*!< String of separator characters. Any of these will separate two parts in the input string. */ );
+std::vector<std::string> StrSplit(
+    const std::string &s /*<! The string to split. */, const std::
+                                                           string
+                                                               separators = "," /*!< String of separator characters. Any of these will separate two parts in the input string. */);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkStrUtility_h_included_
+#endif  // #ifndef __cmtkStrUtility_h_included_

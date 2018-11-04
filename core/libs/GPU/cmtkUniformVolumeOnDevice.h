@@ -34,25 +34,22 @@
 /** \addtogroup GPU */
 //@{
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /// Copy from host to device.
-typedef struct 
-{
+typedef struct {
   /// Volume dimensions.
   int m_Dims[3];
-  
+
   /// Pixel sizes.
   float m_Delta[3];
-  
+
   /// Pointer to volume data.
-  float* m_Data;
+  float *m_Data;
 } UniformVolumeOnDevice;
 
-} // namespace cmtk
+}  // namespace cmtk
 
 //@}
 
-#endif // #ifndef __cmtkUniformVolumeOnDevice_h_included_
+#endif  // #ifndef __cmtkUniformVolumeOnDevice_h_included_

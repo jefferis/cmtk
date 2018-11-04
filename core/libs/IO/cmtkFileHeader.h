@@ -37,52 +37,49 @@
 
 #include <IO/cmtkFileConstHeader.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /** Read and write ccess to fields in a binary file header.
  */
-class FileHeader
-  : public FileConstHeader
-{
-public:
+class FileHeader : public FileConstHeader {
+ public:
   /// Constructor.
-  FileHeader( void *const header, const bool isBigEndian = true ) : FileConstHeader( header, isBigEndian ) 
-  { 
-    this->m_Header = static_cast<char*>( header );
+  FileHeader(void *const header, const bool isBigEndian = true)
+      : FileConstHeader(header, isBigEndian) {
+    this->m_Header = static_cast<char *>(header);
   }
 
   /// Store field of arbitrary type to header.
-  template<class T> void StoreField( const size_t offset, T value ) 
-  {
+  template <class T>
+  void StoreField(const size_t offset, T value) {
 #ifdef WORDS_BIGENDIAN
-    if ( (sizeof(T) > 1) && ! this->m_IsBigEndian ) value = Memory::ByteSwap( value );
+    if ((sizeof(T) > 1) && !this->m_IsBigEndian)
+      value = Memory::ByteSwap(value);
 #else
-    if ( (sizeof(T) > 1) && this->m_IsBigEndian ) value = Memory::ByteSwap( value );
+    if ((sizeof(T) > 1) && this->m_IsBigEndian) value = Memory::ByteSwap(value);
 #endif
-    memcpy( this->m_Header+offset, &value, sizeof( T ) );
+    memcpy(this->m_Header + offset, &value, sizeof(T));
   }
-  
+
   /// Store null-terminated string to header.
-  void StoreFieldString( const size_t offset, const char* value, const size_t maxlen = 0 ) 
-  {
-    if ( maxlen )
-      strncpy( this->m_Header+offset, value, maxlen );
+  void StoreFieldString(const size_t offset, const char *value,
+                        const size_t maxlen = 0) {
+    if (maxlen)
+      strncpy(this->m_Header + offset, value, maxlen);
     else
-      strcpy( this->m_Header+offset, value );
+      strcpy(this->m_Header + offset, value);
   }
-    
-private:
+
+ private:
   /// Pointer to the binary header.
   char *m_Header;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFileHeader_h_included_
+#endif  // #ifndef __cmtkFileHeader_h_included_

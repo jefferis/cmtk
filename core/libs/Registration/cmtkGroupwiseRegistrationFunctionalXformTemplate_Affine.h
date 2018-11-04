@@ -40,23 +40,21 @@
 #include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkClassStreamOutput.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** Template specialization for groupwise affine registration functionals.
  * This class is the specialization of the generic transformation-dependent
  * functional class template, specialized for affine transformations.
  */
-template<>
-class GroupwiseRegistrationFunctionalXformTemplate<AffineXform> : 
-  /** Inherit from generic groupwise functional. */
-  public GroupwiseRegistrationFunctionalXformTemplateBase<AffineXform>
-{
-public:
+template <>
+class GroupwiseRegistrationFunctionalXformTemplate<AffineXform> :
+    /** Inherit from generic groupwise functional. */
+    public GroupwiseRegistrationFunctionalXformTemplateBase<AffineXform> {
+ public:
   /// Type of this class.
-  typedef GroupwiseRegistrationFunctionalXformTemplateBase<AffineXform> Superclass;
-  
+  typedef GroupwiseRegistrationFunctionalXformTemplateBase<AffineXform>
+      Superclass;
+
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalXformTemplate<AffineXform> Self;
 
@@ -64,9 +62,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  GroupwiseRegistrationFunctionalXformTemplate()
-    : m_XformNumberDOFs( 9 )
-  {
+  GroupwiseRegistrationFunctionalXformTemplate() : m_XformNumberDOFs(9) {
     this->m_ParametersPerXform = AffineXform::TotalNumberOfParameters;
   }
 
@@ -74,36 +70,33 @@ public:
   virtual ~GroupwiseRegistrationFunctionalXformTemplate() {}
 
   /// Set number of degrees of freedom per transformation.
-  void SetXformNumberDOFs( const int numberDOFs )
-  { 
+  void SetXformNumberDOFs(const int numberDOFs) {
     this->m_XformNumberDOFs = numberDOFs;
     std::vector<Xform::SmartPtr>::iterator it = this->m_XformVector.begin();
-    while ( it != this->m_XformVector.end() )
-      {
-      AffineXform::SmartPtr::DynamicCastFrom(*it)->SetNumberDOFs( this->m_XformNumberDOFs );
+    while (it != this->m_XformVector.end()) {
+      AffineXform::SmartPtr::DynamicCastFrom(*it)->SetNumberDOFs(
+          this->m_XformNumberDOFs);
       ++it;
-      }
+    }
   }
-  
+
   /** Set affine transformations.
    */
-  void SetXforms( const std::vector<AffineXform::SmartPtr>& xformVector )
-  {
-    this->m_XformVector.resize( xformVector.size() );
-    for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
-      {
-      AffineXform::SmartPtr xform( new AffineXform( *(xformVector[i]) ) );
-      xform->SetNumberDOFs( this->m_XformNumberDOFs );
-      xform->SetUseLogScaleFactors( true );
-      
+  void SetXforms(const std::vector<AffineXform::SmartPtr> &xformVector) {
+    this->m_XformVector.resize(xformVector.size());
+    for (size_t i = 0; i < this->m_XformVector.size(); ++i) {
+      AffineXform::SmartPtr xform(new AffineXform(*(xformVector[i])));
+      xform->SetNumberDOFs(this->m_XformNumberDOFs);
+      xform->SetUseLogScaleFactors(true);
+
       const Vector3D center = this->m_ImageVector[i]->GetCenterCropRegion();
-      xform->ChangeCenter( center );
-      
+      xform->ChangeCenter(center);
+
       this->m_XformVector[i] = xform;
-      }
+    }
   }
-  
-protected:
+
+ protected:
   /// Number of DOFs per transformation.
   int m_XformNumberDOFs;
 
@@ -114,148 +107,166 @@ protected:
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage( const size_t idx, byte* const destination )
-  {
-    const TransformedVolumeAxes gridHash( *this->m_TemplateGrid, this->GetXformByIndex( idx ) );
-    
-    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  virtual void InterpolateImage(const size_t idx, byte *const destination) {
+    const TransformedVolumeAxes gridHash(*this->m_TemplateGrid,
+                                         this->GetXformByIndex(idx));
 
-    std::vector<InterpolateImageThreadParameters> params( 4 * threadPool.GetNumberOfThreads() );
-    for ( size_t thread = 0; thread < params.size(); ++thread )
-      {
+    ThreadPool &threadPool = ThreadPool::GetGlobalThreadPool();
+
+    std::vector<InterpolateImageThreadParameters> params(
+        4 * threadPool.GetNumberOfThreads());
+    for (size_t thread = 0; thread < params.size(); ++thread) {
       params[thread].thisObject = this;
       params[thread].m_Idx = idx;
-      params[thread].m_Destination = destination;    
+      params[thread].m_Destination = destination;
       params[thread].m_HashX = gridHash[0];
       params[thread].m_HashY = gridHash[1];
       params[thread].m_HashZ = gridHash[2];
-      }
-    
-    if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-      threadPool.Run( InterpolateImageProbabilisticThread, params );
+    }
+
+    if ((this->m_ProbabilisticSampleDensity > 0) &&
+        (this->m_ProbabilisticSampleDensity < 1))
+      threadPool.Run(InterpolateImageProbabilisticThread, params);
     else
-      threadPool.Run( InterpolateImageThread, params );
+      threadPool.Run(InterpolateImageThread, params);
   }
-  
+
   /// Image interpolation thread function.
-  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
-  {
-    InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
-    
-    const Self* This = threadParameters->thisObject;
+  static void InterpolateImageThread(void *const args, const size_t taskIdx,
+                                     const size_t taskCnt, const size_t,
+                                     const size_t) {
+    InterpolateImageThreadParameters *threadParameters =
+        static_cast<InterpolateImageThreadParameters *>(args);
+
+    const Self *This = threadParameters->thisObject;
     const size_t idx = threadParameters->m_Idx;
-    byte* destination = threadParameters->m_Destination;
-    
-    const UniformVolume* target = This->m_ImageVector[idx];
-    
+    byte *destination = threadParameters->m_Destination;
+
+    const UniformVolume *target = This->m_ImageVector[idx];
+
     const byte paddingValue = This->m_PaddingValue;
-    const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
-    
+    const byte backgroundValue = This->m_UserBackgroundFlag
+                                     ? This->m_PrivateUserBackgroundValue
+                                     : paddingValue;
+
     Vector3D v;
     byte value;
-    const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
-    
+    const byte *dataPtr =
+        static_cast<const byte *>(target->GetData()->GetDataPtr());
+
     const Types::GridIndexType dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
     const Types::GridIndexType dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
     const Types::GridIndexType dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
-    
-    const Types::GridIndexType rowCount = ( dimsY * dimsZ );
-    const Types::GridIndexType rowFrom = ( rowCount / taskCnt ) * taskIdx;
-    const Types::GridIndexType rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
+
+    const Types::GridIndexType rowCount = (dimsY * dimsZ);
+    const Types::GridIndexType rowFrom = (rowCount / taskCnt) * taskIdx;
+    const Types::GridIndexType rowTo =
+        (taskIdx == (taskCnt - 1)) ? rowCount
+                                   : (rowCount / taskCnt) * (taskIdx + 1);
     Types::GridIndexType rowsToDo = rowTo - rowFrom;
-    
+
     Types::GridIndexType yFrom = rowFrom % dimsY;
     Types::GridIndexType zFrom = rowFrom / dimsY;
-    
+
     UniformVolume::CoordinateVectorType planeStart, rowStart;
     byte *wptr = destination + rowFrom * dimsX;
-    for ( Types::GridIndexType z = zFrom; (z < dimsZ) && rowsToDo; ++z ) 
-      {
+    for (Types::GridIndexType z = zFrom; (z < dimsZ) && rowsToDo; ++z) {
       planeStart = threadParameters->m_HashZ[z];
-      for ( Types::GridIndexType y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
-	{
-	(rowStart = planeStart) += threadParameters->m_HashY[y];
-	for ( Types::GridIndexType x = 0; x < dimsX; ++x )
-	  {
-	  (v = rowStart) += threadParameters->m_HashX[x];	
-	  if ( target->ProbeData( value, dataPtr, v ) )
-	    {
-	    *wptr = value;
-	    }
-	  else
-	    {
-	    *wptr = backgroundValue;
-	    }
-	  
-	  ++wptr;
-	  }
-	}
+      for (Types::GridIndexType y = yFrom; (y < dimsY) && rowsToDo;
+           yFrom = 0, ++y, --rowsToDo) {
+        (rowStart = planeStart) += threadParameters->m_HashY[y];
+        for (Types::GridIndexType x = 0; x < dimsX; ++x) {
+          (v = rowStart) += threadParameters->m_HashX[x];
+          if (target->ProbeData(value, dataPtr, v)) {
+            *wptr = value;
+          } else {
+            *wptr = backgroundValue;
+          }
+
+          ++wptr;
+        }
       }
-  }
-  
-  /// Image interpolation with probabilistic sampling thread function.
-  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
-  {
-    InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
-    
-    const Self* This = threadParameters->thisObject;
-    const size_t idx = threadParameters->m_Idx;
-    byte* destination = threadParameters->m_Destination;
-    
-    const AffineXform* xform = This->GetXformByIndex( idx );
-    const UniformVolume* target = This->m_ImageVector[idx];
-    
-    const byte paddingValue = This->m_PaddingValue;
-    const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
-    
-    byte value;
-    const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
-    
-    const size_t startIdx = taskIdx * (This->m_ProbabilisticSamples.size() / taskCnt);
-    const size_t endIdx = ( taskIdx == (taskCnt-1) ) ? This->m_ProbabilisticSamples.size() : (taskIdx+1) * (This->m_ProbabilisticSamples.size() / taskCnt);
-    
-    byte *wptr = destination + startIdx;
-    for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
-      {
-      const size_t offset = This->m_ProbabilisticSamples[i];
-      const UniformVolume::CoordinateVectorType v = xform->Apply( This->m_TemplateGrid->GetGridLocation( offset ) );
-      
-      if ( target->ProbeData( value, dataPtr, v ) )
-	{
-	*wptr = value;
-	}
-      else
-	{
-	*wptr = backgroundValue;
-	}
-      }
+    }
   }
 
-private:
+  /// Image interpolation with probabilistic sampling thread function.
+  static void InterpolateImageProbabilisticThread(void *const args,
+                                                  const size_t taskIdx,
+                                                  const size_t taskCnt,
+                                                  const size_t, const size_t) {
+    InterpolateImageThreadParameters *threadParameters =
+        static_cast<InterpolateImageThreadParameters *>(args);
+
+    const Self *This = threadParameters->thisObject;
+    const size_t idx = threadParameters->m_Idx;
+    byte *destination = threadParameters->m_Destination;
+
+    const AffineXform *xform = This->GetXformByIndex(idx);
+    const UniformVolume *target = This->m_ImageVector[idx];
+
+    const byte paddingValue = This->m_PaddingValue;
+    const byte backgroundValue = This->m_UserBackgroundFlag
+                                     ? This->m_PrivateUserBackgroundValue
+                                     : paddingValue;
+
+    byte value;
+    const byte *dataPtr =
+        static_cast<const byte *>(target->GetData()->GetDataPtr());
+
+    const size_t startIdx =
+        taskIdx * (This->m_ProbabilisticSamples.size() / taskCnt);
+    const size_t endIdx =
+        (taskIdx == (taskCnt - 1))
+            ? This->m_ProbabilisticSamples.size()
+            : (taskIdx + 1) * (This->m_ProbabilisticSamples.size() / taskCnt);
+
+    byte *wptr = destination + startIdx;
+    for (size_t i = startIdx; i < endIdx; ++i, ++wptr) {
+      const size_t offset = This->m_ProbabilisticSamples[i];
+      const UniformVolume::CoordinateVectorType v =
+          xform->Apply(This->m_TemplateGrid->GetGridLocation(offset));
+
+      if (target->ProbeData(value, dataPtr, v)) {
+        *wptr = value;
+      } else {
+        *wptr = backgroundValue;
+      }
+    }
+  }
+
+ private:
   /// Thread function parameters for image interpolation.
-  class InterpolateImageThreadParameters : 
-    /// Inherit from generic thread parameters.
-    public ThreadParameters<Self>
-  {
-  public:
+  class InterpolateImageThreadParameters :
+      /// Inherit from generic thread parameters.
+      public ThreadParameters<Self> {
+   public:
     /// Index of the image to be interpolated.
     size_t m_Idx;
 
     /// Pointer to storage that will hold the reformatted pixel data.
-    byte* m_Destination;
+    byte *m_Destination;
 
-    const Vector3D* m_HashX;
-    const Vector3D* m_HashY;
-    const Vector3D* m_HashZ;
+    const Vector3D *m_HashX;
+    const Vector3D *m_HashY;
+    const Vector3D *m_HashZ;
   };
 
-  friend ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
-  friend ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+  friend ClassStreamOutput &operator<<(
+      ClassStreamOutput &stream,
+      const GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func);
+  friend ClassStreamInput &operator>>(
+      ClassStreamInput &stream,
+      GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func);
 };
 
-ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
-ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+ClassStreamOutput &operator<<(
+    ClassStreamOutput &stream,
+    const GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func);
+ClassStreamInput &operator>>(
+    ClassStreamInput &stream,
+    GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func);
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
+#endif  // #ifndef
+        // __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_

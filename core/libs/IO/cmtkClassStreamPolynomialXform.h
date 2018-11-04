@@ -40,21 +40,20 @@
 
 #include <Base/cmtkPolynomialXform.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Write affine transformation object.
-ClassStreamOutput& operator << ( ClassStreamOutput& stream, const PolynomialXform& xform );
+ClassStreamOutput &operator<<(ClassStreamOutput &stream,
+                              const PolynomialXform &xform);
 
 /// Read affine transformation.
-ClassStreamInput& operator >> ( ClassStreamInput& stream, PolynomialXform& xform );
+ClassStreamInput &operator>>(ClassStreamInput &stream, PolynomialXform &xform);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkClassStreamPolynomialXform_h_included_
+#endif  // #ifndef __cmtkClassStreamPolynomialXform_h_included_

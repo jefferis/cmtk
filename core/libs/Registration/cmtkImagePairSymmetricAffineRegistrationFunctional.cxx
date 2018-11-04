@@ -35,48 +35,53 @@
 #include <Registration/cmtkImagePairSymmetricAffineRegistrationFunctionalTemplate.h>
 
 #include <Registration/cmtkImagePairSimilarityMeasureCR.h>
+#include <Registration/cmtkImagePairSimilarityMeasureMI.h>
 #include <Registration/cmtkImagePairSimilarityMeasureMSD.h>
 #include <Registration/cmtkImagePairSimilarityMeasureNCC.h>
 #include <Registration/cmtkImagePairSimilarityMeasureNMI.h>
-#include <Registration/cmtkImagePairSimilarityMeasureMI.h>
 
 #include <Base/cmtkInterpolator.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairSymmetricAffineRegistrationFunctional* 
-ImagePairSymmetricAffineRegistrationFunctional
-::Create( const int metric, 
-	  UniformVolume::SmartPtr& refVolume,  
-	  UniformVolume::SmartPtr& fltVolume,
-	  const Interpolators::InterpolationEnum interpolation,
-	  AffineXform::SmartPtr& affineXform )
-{
-  switch ( metric ) 
-    {
+ImagePairSymmetricAffineRegistrationFunctional *
+ImagePairSymmetricAffineRegistrationFunctional ::Create(
+    const int metric, UniformVolume::SmartPtr &refVolume,
+    UniformVolume::SmartPtr &fltVolume,
+    const Interpolators::InterpolationEnum interpolation,
+    AffineXform::SmartPtr &affineXform) {
+  switch (metric) {
     case 0:
-      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI>( refVolume, fltVolume, interpolation, affineXform );
+      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<
+          ImagePairSimilarityMeasureNMI>(refVolume, fltVolume, interpolation,
+                                         affineXform);
     case 1:
-      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI>( refVolume, fltVolume, interpolation, affineXform );
+      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<
+          ImagePairSimilarityMeasureMI>(refVolume, fltVolume, interpolation,
+                                        affineXform);
     case 2:
-      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, interpolation, affineXform );
+      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<
+          ImagePairSimilarityMeasureCR>(refVolume, fltVolume, interpolation,
+                                        affineXform);
     case 3:
-      return NULL; // masked NMI retired
+      return NULL;  // masked NMI retired
     case 4:
-      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, interpolation, affineXform );
+      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<
+          ImagePairSimilarityMeasureMSD>(refVolume, fltVolume, interpolation,
+                                         affineXform);
     case 5:
-      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC>( refVolume, fltVolume, interpolation, affineXform );
+      return new ImagePairSymmetricAffineRegistrationFunctionalTemplate<
+          ImagePairSimilarityMeasureNCC>(refVolume, fltVolume, interpolation,
+                                         affineXform);
     default:
       return NULL;
-    }
+  }
 
   return NULL;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

@@ -33,23 +33,22 @@
 #include <Base/cmtkTypedArrayFunctionHistogramEqualization.h>
 #include <System/cmtkCommandLine.h>
 
-void
-cmtk::ImageOperationHistogramEqualization::New()
-{
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationHistogramEqualization( ImageOperationHistogramEqualization::DefaultNumberOfBins ) ) );
+void cmtk::ImageOperationHistogramEqualization::New() {
+  ImageOperation::m_ImageOperationList.push_back(
+      SmartPtr(new ImageOperationHistogramEqualization(
+          ImageOperationHistogramEqualization::DefaultNumberOfBins)));
 }
 
-void
-cmtk::ImageOperationHistogramEqualization::NewBins( const long int nBins )
-{
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationHistogramEqualization( nBins ) ) );
+void cmtk::ImageOperationHistogramEqualization::NewBins(const long int nBins) {
+  ImageOperation::m_ImageOperationList.push_back(
+      SmartPtr(new ImageOperationHistogramEqualization(nBins)));
 }
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationHistogramEqualization::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationHistogramEqualization::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  volumeData->ApplyFunctionObject( TypedArrayFunctionHistogramEqualization( *volumeData, this->m_NumberOfBins ) );
-//  volumeData->HistogramEqualization( this->m_NumberOfBins );
+  volumeData->ApplyFunctionObject(TypedArrayFunctionHistogramEqualization(
+      *volumeData, this->m_NumberOfBins));
+  //  volumeData->HistogramEqualization( this->m_NumberOfBins );
   return volume;
 }

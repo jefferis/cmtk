@@ -37,9 +37,7 @@
 
 #include "cmtkImageSymmetryPlaneCommandLineBase.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -48,12 +46,11 @@ cmtk
  * This is templated over the symmetry plane functional, which can be either
  * CPU-based or GPU-based.
  */
-template<class TFunctional>
+template <class TFunctional>
 class ImageSymmetryPlaneCommandLine :
-  /// Inherit from non-template base class.
-  public ImageSymmetryPlaneCommandLineBase
-{
-public:
+    /// Inherit from non-template base class.
+    public ImageSymmetryPlaneCommandLineBase {
+ public:
   /// The functional type.
   typedef TFunctional FunctionalType;
 
@@ -69,20 +66,24 @@ public:
   /// Smart pointer to const.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-protected:
+ protected:
   /// Make a functional of the given template type using an image volume.
-  virtual ImageSymmetryPlaneFunctionalBase::SmartPtr CreateFunctional( UniformVolume::SmartPtr& volume )
-  {
-    return ImageSymmetryPlaneFunctionalBase::SmartPtr( new FunctionalType( volume ) );
+  virtual ImageSymmetryPlaneFunctionalBase::SmartPtr CreateFunctional(
+      UniformVolume::SmartPtr &volume) {
+    return ImageSymmetryPlaneFunctionalBase::SmartPtr(
+        new FunctionalType(volume));
   }
 
-  /// Make a functional of the given template type using an image volume and a value range.
-  virtual ImageSymmetryPlaneFunctionalBase::SmartPtr CreateFunctional( UniformVolume::SmartPtr& volume, const cmtk::Types::DataItemRange& range )
-  {
-    return ImageSymmetryPlaneFunctionalBase::SmartPtr( new FunctionalType( volume, range ) );
+  /// Make a functional of the given template type using an image volume and a
+  /// value range.
+  virtual ImageSymmetryPlaneFunctionalBase::SmartPtr CreateFunctional(
+      UniformVolume::SmartPtr &volume,
+      const cmtk::Types::DataItemRange &range) {
+    return ImageSymmetryPlaneFunctionalBase::SmartPtr(
+        new FunctionalType(volume, range));
   }
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef  __cmtkImageSymmetryPlaneCommandLine_h_included_
+#endif  // #ifndef  __cmtkImageSymmetryPlaneCommandLine_h_included_

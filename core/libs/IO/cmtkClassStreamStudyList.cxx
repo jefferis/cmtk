@@ -34,93 +34,77 @@
 
 #include <System/cmtkMountPoints.h>
 
-#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkClassStreamOutput.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-void 
-ClassStreamStudyList::Write
-( const std::string& path, const StudyList* studyList )
-{
+void ClassStreamStudyList::Write(const std::string &path,
+                                 const StudyList *studyList) {
   ClassStreamOutput stream;
 
-  stream.Open( path, "studylist", ClassStreamOutput::MODE_WRITE );
-  if ( stream.IsValid() ) 
-    {
+  stream.Open(path, "studylist", ClassStreamOutput::MODE_WRITE);
+  if (stream.IsValid()) {
     StudyList::const_iterator it = studyList->begin();
-    while ( it != studyList->end() ) 
-      {
-      stream.Begin( "source" );
-      stream.WriteString( "studyname", it->first->GetFileSystemPath() );
+    while (it != studyList->end()) {
+      stream.Begin("source");
+      stream.WriteString("studyname", it->first->GetFileSystemPath());
       stream.End();
       ++it;
-      }
-    stream.Close();
     }
-  else
-    {
+    stream.Close();
+  } else {
     StdErr << "ERROR: could not open archive " << path << "/studylist\n";
-    }  
-  
-  stream.Open( path, "registration", ClassStreamOutput::MODE_WRITE_ZLIB );
-  if ( stream.IsValid() ) 
-    {
+  }
+
+  stream.Open(path, "registration", ClassStreamOutput::MODE_WRITE_ZLIB);
+  if (stream.IsValid()) {
     StudyList::const_iterator it = studyList->begin();
-    while ( it != studyList->end() ) 
-      {
+    while (it != studyList->end()) {
       StudyToXform targetList = it->second;
-      
-      std::map<Study::SmartPtr,bool> seen;
-      
+
+      std::map<Study::SmartPtr, bool> seen;
+
       StudyToXform::const_iterator tit;
-      for ( tit = targetList.begin(); tit != targetList.end(); ++tit ) 
-	{
-	if ( seen.find( tit->first ) == seen.end() )
-	  {
-	  seen[tit->first] = true;
-	  
-	  stream.Begin( "registration" );
-	  stream.WriteString( "reference_study", it->first->GetFileSystemPath() );
-	  stream.WriteString( "floating_study", tit->first->GetFileSystemPath() );
-	  
-	  StudyToXform::const_iterator tit2;
-	  for ( tit2 = targetList.begin(); tit2 != targetList.end(); ++tit2 ) 
-	    {
-	    if ( tit2->first == tit->first )
-	      {
-	      Xform::SmartPtr xform = tit2->second;
-	      
-	      AffineXform::SmartPtr affine = AffineXform::SmartPtr::DynamicCastFrom( xform );
-	      if ( affine )
-		{
-		stream << (*affine);
-		}
-	      
-	      WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( xform );
-	      if ( warp ) 
-		{
-		stream << warp;
-		}
-	      }
-	    }
-	  stream.End();
-	  }
-	}
-      ++it;
+      for (tit = targetList.begin(); tit != targetList.end(); ++tit) {
+        if (seen.find(tit->first) == seen.end()) {
+          seen[tit->first] = true;
+
+          stream.Begin("registration");
+          stream.WriteString("reference_study", it->first->GetFileSystemPath());
+          stream.WriteString("floating_study", tit->first->GetFileSystemPath());
+
+          StudyToXform::const_iterator tit2;
+          for (tit2 = targetList.begin(); tit2 != targetList.end(); ++tit2) {
+            if (tit2->first == tit->first) {
+              Xform::SmartPtr xform = tit2->second;
+
+              AffineXform::SmartPtr affine =
+                  AffineXform::SmartPtr::DynamicCastFrom(xform);
+              if (affine) {
+                stream << (*affine);
+              }
+
+              WarpXform::SmartPtr warp =
+                  WarpXform::SmartPtr::DynamicCastFrom(xform);
+              if (warp) {
+                stream << warp;
+              }
+            }
+          }
+          stream.End();
+        }
       }
-    
-    stream.Close();
+      ++it;
     }
-  else
-    {
+
+    stream.Close();
+  } else {
     StdErr << "ERROR: could not open archive " << path << "/registration\n";
-    }  
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

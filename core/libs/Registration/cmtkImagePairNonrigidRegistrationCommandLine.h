@@ -37,21 +37,19 @@
 
 #include <Registration/cmtkImagePairNonrigidRegistration.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 /** Class for command line controlled  voxel registration.
  *\author T. Rohlfing
- *\version $Revision$ $Date$
+ *\version $Revision$ $Date: 2013-09-12 15:48:47 -0700 (Thu, 12 Sep 2013)
+ *$
  */
-class ImagePairNonrigidRegistrationCommandLine : 
-  /// Inherit generic elastic registration.
-  public ImagePairNonrigidRegistration 
-{
-public:
+class ImagePairNonrigidRegistrationCommandLine :
+    /// Inherit generic elastic registration.
+    public ImagePairNonrigidRegistration {
+ public:
   /// This class.
   typedef ImagePairNonrigidRegistrationCommandLine Self;
 
@@ -67,16 +65,16 @@ public:
    *\param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
    */
-  ImagePairNonrigidRegistrationCommandLine ( const int argc, const char *argv[] );
+  ImagePairNonrigidRegistrationCommandLine(const int argc, const char *argv[]);
 
   /// Destructor.
-  ~ImagePairNonrigidRegistrationCommandLine ();
+  ~ImagePairNonrigidRegistrationCommandLine();
 
   /** Perform registration.
    */
-  virtual CallbackResult Register ();
+  virtual CallbackResult Register();
 
-protected:
+ protected:
   /** Initialize registration.
    * So far, this function has no effect other than calling the equivalent
    * inherited function.
@@ -85,25 +83,29 @@ protected:
 
   /** Output registration result.
    * This function write the transformation that was found to a studylist
-   * archive with the name provided by command line arguments. The result is 
+   * archive with the name provided by command line arguments. The result is
    * also printed to stderr in parameter list form.
    *\param v The vector of resulting transformation parameters.
-   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
+   *\param irq The interrupt status - this allows the output function to
+   *determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
+  virtual void OutputResult(const CoordinateVector *v,
+                            const CallbackResult irq = CALLBACK_OK);
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
    * written.
    */
-  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+  virtual void EnterResolution(CoordinateVector::SmartPtr &,
+                               Functional::SmartPtr &, const int, const int);
 
   /** Leave resolution level.
    * The transformation found so far is written to a file if desired.
    */
-  virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+  virtual int DoneResolution(CoordinateVector::SmartPtr &,
+                             Functional::SmartPtr &, const int, const int);
 
-private:
+ private:
   /** Name of input studylist.
    */
   std::string InputStudylist;
@@ -128,7 +130,7 @@ private:
    * This is given as the second non-option command line paramter.
    */
   std::string Study2;
-  
+
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */
@@ -139,7 +141,7 @@ private:
   bool m_OutputIntermediate;
 
   /// Write deformation to studylist archive.
-  void OutputWarp ( const std::string& ) const;
+  void OutputWarp(const std::string &) const;
 
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.
@@ -152,24 +154,23 @@ private:
   /// Path for reformatted floating image.
   std::string m_ReformattedImagePath;
 
-public:
+ public:
   /// Static pointer to this object.
-  static Self* StaticThis;
+  static Self *StaticThis;
 
   /// Counter for intermediate result files.
   int IntermediateResultIndex;
 
   /// Write intermediate deformation file.
-  void OutputIntermediate( const bool incrementCount = true );
+  void OutputIntermediate(const bool incrementCount = true);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 /// Signal handler that writes intermediate result during a level.
-extern "C" void cmtkImagePairNonrigidRegistrationCommandLineDispatchSIGUSR1( int sig );
+extern "C" void cmtkImagePairNonrigidRegistrationCommandLineDispatchSIGUSR1(
+    int sig);
 
-
-
-#endif // #ifndef __cmtkImagePairNonrigidRegistrationCommandLine_h_included_
+#endif  // #ifndef __cmtkImagePairNonrigidRegistrationCommandLine_h_included_

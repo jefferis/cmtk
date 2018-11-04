@@ -32,18 +32,18 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkImageSymmetryPlaneCommandLineBase.h>
 #include <Registration/cmtkImageSymmetryPlaneCommandLine.h>
+#include <Registration/cmtkImageSymmetryPlaneCommandLineBase.h>
 
 #include <GPU/cmtkImageSymmetryPlaneFunctionalDevice.h>
 
-int
-doMain ( const int argc, const char* argv[] ) 
-{
-  cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctionalDevice> sympl;
-  sympl.GetCommandLine().SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration.GPU" );
+int doMain(const int argc, const char *argv[]) {
+  cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctionalDevice>
+      sympl;
+  sympl.GetCommandLine().SetProgramInfo(cmtk::CommandLine::PRG_CATEG,
+                                        "CMTK.Registration.GPU");
 
-  return sympl.Run( argc, argv );
+  return sympl.Run(argc, argv);
 }
 
 #include "cmtkSafeMain"

@@ -34,72 +34,63 @@
 
 #include <Base/cmtkMathUtil.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-bool
-SplineWarpXform::ApplyInverse
-( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy ) const
-{
-  return this->ApplyInverseWithInitial( v, u, this->FindClosestControlPoint( v ), accuracy );
+bool SplineWarpXform::ApplyInverse(const Self::SpaceVectorType &v,
+                                   Self::SpaceVectorType &u,
+                                   const Types::Coordinate accuracy) const {
+  return this->ApplyInverseWithInitial(v, u, this->FindClosestControlPoint(v),
+                                       accuracy);
 }
 
-SplineWarpXform::SpaceVectorType
-SplineWarpXform::FindClosestControlPoint
-( const Self::SpaceVectorType& v ) const
-{
+SplineWarpXform::SpaceVectorType SplineWarpXform::FindClosestControlPoint(
+    const Self::SpaceVectorType &v) const {
   // find closest control point -- we'll go from there.
   Types::Coordinate closestDistance = FLT_MAX;
   Types::Coordinate idx[3];
-  for ( int dim = 0; dim < 3; ++dim ) 
-    idx[dim] = 0.5 * this->m_Dims[dim];
+  for (int dim = 0; dim < 3; ++dim) idx[dim] = 0.5 * this->m_Dims[dim];
 
-  for ( Types::Coordinate step = 0.25 * MathUtil::Min( 3, idx ); step > 0.01; step *= 0.5 )
-    {
+  for (Types::Coordinate step = 0.25 * MathUtil::Min(3, idx); step > 0.01;
+       step *= 0.5) {
     bool improved = true;
-    while ( improved ) 
-      {
+    while (improved) {
       improved = false;
       int closestDim = 0, closestDir = 0;
-      
-      for ( int dim = 0; dim < 3; ++dim ) 
-	{
-	for ( int dir = -1; dir < 2; dir +=2 )
-	  {
-	  const Types::Coordinate oldIdx = idx[dim];
-	  idx[dim] += dir * step;
-	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
-	    {
-	    Self::SpaceVectorType cp = this->Apply( this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] ) );
-	    cp -= v;
-	    const Types::Coordinate distance = cp.RootSumOfSquares();
-	    if ( distance < closestDistance ) 
-	      {
-	      closestDistance = distance;
-	      closestDim = dim;
-	      closestDir = dir;
-	      improved = true;
-	      } 
-	    }
-	  idx[dim] = oldIdx;
-	  }
-	}
-      
-      if ( improved )
-	{
-	idx[closestDim] += closestDir * step;
-	}
+
+      for (int dim = 0; dim < 3; ++dim) {
+        for (int dir = -1; dir < 2; dir += 2) {
+          const Types::Coordinate oldIdx = idx[dim];
+          idx[dim] += dir * step;
+          if ((idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim] - 2)) {
+            Self::SpaceVectorType cp = this->Apply(
+                this->GetOriginalControlPointPosition(idx[0], idx[1], idx[2]));
+            cp -= v;
+            const Types::Coordinate distance = cp.RootSumOfSquares();
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestDim = dim;
+              closestDir = dir;
+              improved = true;
+            }
+          }
+          idx[dim] = oldIdx;
+        }
+      }
+
+      if (improved) {
+        idx[closestDim] += closestDir * step;
       }
     }
-  
-  assert( (idx[0] <= this->m_Dims[0]-1) && (idx[1] <= this->m_Dims[1]-1 ) && (idx[2] <= this->m_Dims[2]-1) );
-  assert( idx[0] >= 0 && idx[1] >= 0 && idx[2] >= 0 );
+  }
 
-  return this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] );
+  assert((idx[0] <= this->m_Dims[0] - 1) && (idx[1] <= this->m_Dims[1] - 1) &&
+         (idx[2] <= this->m_Dims[2] - 1));
+  assert(idx[0] >= 0 && idx[1] >= 0 && idx[2] >= 0);
+
+  return this->GetOriginalControlPointPosition(idx[0], idx[1], idx[2]);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

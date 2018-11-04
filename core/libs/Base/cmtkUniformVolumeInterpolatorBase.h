@@ -37,29 +37,26 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
-#include <Base/cmtkVector3D.h>
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVector3D.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 /** Base class for kernel-based uniform volume.
  */
-class UniformVolumeInterpolatorBase
-{
-public:
+class UniformVolumeInterpolatorBase {
+ public:
   /// This class type.
   typedef UniformVolumeInterpolatorBase Self;
-  
+
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
@@ -67,21 +64,21 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorBase( const UniformVolume& volume )
-  {
-    this->SetVolume( volume );
+  UniformVolumeInterpolatorBase(const UniformVolume &volume) {
+    this->SetVolume(volume);
   }
 
   /// Virtual dummy destructor.
-  virtual ~UniformVolumeInterpolatorBase() {};
+  virtual ~UniformVolumeInterpolatorBase(){};
 
   /** Set volume.
    * This function sets a smart pointer to the volume the class will interpolate
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( const UniformVolume& volume /*!< Source volume for interpolation */ );
-  
+  virtual void SetVolume(
+      const UniformVolume &volume /*!< Source volume for interpolation */);
+
   /** Get data at location.
    *
    * This function performs interpolation of one value from m_Volume at location
@@ -91,44 +88,56 @@ public:
    * m_Volume at v, and it should return false if v is outside the range
    * where a value can be interpolated (i.e., outside the volume boundaries).
    *
-   *\return True is the interpolation was successful and a valid value is returned in "value".
+   *\return True is the interpolation was successful and a valid value is
+   *returned in "value".
    */
-  virtual bool GetDataAt( const Vector3D& v /*!< Location for interpolation.*/, Types::DataItem& value /*!< The interpolated value is stored via this reference*/ ) const = 0;
+  virtual bool GetDataAt(
+      const Vector3D &v /*!< Location for interpolation.*/,
+      Types::DataItem
+          &value /*!< The interpolated value is stored via this reference*/)
+      const = 0;
 
-  /** Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
+  /** Get data at a pre-computed relative pixel index. This is faster if we
+   *already know the pixel index and fractional coordinate of a location.
    *\return Interpolated value.
    */
-  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint /*!< Grid index in image */, const Types::Coordinate* insidePixel /*!< Relative position inside indexed pixel */ ) const = 0;
+  virtual Types::DataItem GetDataDirect(
+      const Types::GridIndexType *imageGridPoint /*!< Grid index in image */,
+      const Types::Coordinate *
+          insidePixel /*!< Relative position inside indexed pixel */) const = 0;
 
-protected:
+ protected:
   /// Pointer to volume data array.
   std::vector<Types::DataItem> m_VolumeDataArray;
 
   /// Image dimensions.
   DataGrid::IndexType m_VolumeDims;
-  
+
   /// Image pixel size.
   UniformVolume::CoordinateVectorType m_VolumeDeltas;
 
   /// Image offset vector.
   UniformVolume::CoordinateVectorType m_VolumeOffset;
 
-  /// Index increment when increasing "j" pixel index (i.e., moving to next image row).
+  /// Index increment when increasing "j" pixel index (i.e., moving to next
+  /// image row).
   Types::GridIndexType m_NextJ;
 
-  /// Index increment when increasing "k" pixel index (i.e., moving to next image plane).
+  /// Index increment when increasing "k" pixel index (i.e., moving to next
+  /// image plane).
   Types::GridIndexType m_NextK;
 
   /// Get offset from pixel index.
-  size_t GetOffsetFromIndex( const Types::GridIndexType i /*!< Grid index #0 */, const Types::GridIndexType j /*!< Grid index #1 */, const Types::GridIndexType k /*!< Grid index #2 */ ) const
-  {
+  size_t GetOffsetFromIndex(
+      const Types::GridIndexType i /*!< Grid index #0 */,
+      const Types::GridIndexType j /*!< Grid index #1 */,
+      const Types::GridIndexType k /*!< Grid index #2 */) const {
     return i + j * this->m_NextJ + k * this->m_NextK;
   }
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkUniformVolumeInterpolatorBase_h_included_
-
+#endif  // #ifndef __cmtkUniformVolumeInterpolatorBase_h_included_

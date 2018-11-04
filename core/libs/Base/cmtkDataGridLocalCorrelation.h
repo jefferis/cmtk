@@ -36,39 +36,36 @@
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkFixedVector.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Compute local correlation between two data grid objects.
  */
-class DataGridLocalCorrelation
-{
-public:
+class DataGridLocalCorrelation {
+ public:
   /// This class.
   typedef DataGridLocalCorrelation Self;
 
   /// Constructor.
-  DataGridLocalCorrelation( const DataGrid& dg1 /*!< First input data grid. */, const DataGrid& dg2 /*!< Second input data grid */ ) : m_Grid1( dg1 ), m_Grid2( dg2 ), m_Result( NULL ) {}
+  DataGridLocalCorrelation(const DataGrid &dg1 /*!< First input data grid. */,
+                           const DataGrid &dg2 /*!< Second input data grid */)
+      : m_Grid1(dg1), m_Grid2(dg2), m_Result(NULL) {}
 
   /// Get result.
-  DataGrid::SmartPtr& GetResult()
-  {
-    if ( ! this->m_Result )
-      this->ComputeResult();
+  DataGrid::SmartPtr &GetResult() {
+    if (!this->m_Result) this->ComputeResult();
 
     return this->m_Result;
   }
 
-private:
+ private:
   /// First input data grid.
-  const DataGrid& m_Grid1;
+  const DataGrid &m_Grid1;
 
   /// Second input data grid.
-  const DataGrid& m_Grid2;
+  const DataGrid &m_Grid2;
 
   /// Window radius.
   DataGrid::IndexType m_Radius;
@@ -82,6 +79,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDataGridLocalCorrelation_h_included_
+#endif  // #ifndef __cmtkDataGridLocalCorrelation_h_included_

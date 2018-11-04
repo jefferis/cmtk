@@ -34,132 +34,111 @@
 
 #include <string.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
-int
-StrCmp( const char* s1, const char* s2 )
-{
-  if ( s1 == NULL ) 
-    {
-    if ( s2 == NULL ) return 0;
-    else return -1;
-    } 
-  else
-    {
-    if ( s2 == NULL ) return 1;
-    else return strcmp( s1, s2 );
-    }
+int StrCmp(const char *s1, const char *s2) {
+  if (s1 == NULL) {
+    if (s2 == NULL)
+      return 0;
+    else
+      return -1;
+  } else {
+    if (s2 == NULL)
+      return 1;
+    else
+      return strcmp(s1, s2);
+  }
 }
 
-const char*
-StrNStr( const char* haystack, const size_t nBytes, const char* needle )
-{
-  for ( size_t hofs = 0; hofs < nBytes; ++hofs )
-    {
+const char *StrNStr(const char *haystack, const size_t nBytes,
+                    const char *needle) {
+  for (size_t hofs = 0; hofs < nBytes; ++hofs) {
     size_t hidx = hofs;
-    const char* nchr = needle;
+    const char *nchr = needle;
 
-    while ( (*nchr!=0) && (hidx<nBytes) && (*nchr==haystack[hidx]) ) 
-      {
+    while ((*nchr != 0) && (hidx < nBytes) && (*nchr == haystack[hidx])) {
       ++nchr;
       ++hidx;
-      }
-    
-    // found?
-    if ( *nchr == 0 )
-      return haystack+hofs;
     }
-  
+
+    // found?
+    if (*nchr == 0) return haystack + hofs;
+  }
+
   return NULL;
 }
 
-std::string
-StrReplaceByRules
-( const std::string& str, const std::map<std::string,std::string>& rules, const bool multiple )
-{
+std::string StrReplaceByRules(const std::string &str,
+                              const std::map<std::string, std::string> &rules,
+                              const bool multiple) {
   std::string result = str;
-  
-  std::map<std::string,std::string>::const_iterator it = rules.begin();
-  while ( it != rules.end() ) 
-    {
+
+  std::map<std::string, std::string>::const_iterator it = rules.begin();
+  while (it != rules.end()) {
     bool replaced = true;
-    while ( replaced ) 
-      {
+    while (replaced) {
       replaced = false;
-      std::string::size_type pos = result.find( it->first );
-      while ( pos != std::string::npos ) 
-	{
-	result.replace( pos, it->first.length(), it->second );
-	replaced = true;
-	pos = result.find( it->first );
-	if ( ! multiple ) break;
-	}
-      
-      if ( ! multiple ) break;
+      std::string::size_type pos = result.find(it->first);
+      while (pos != std::string::npos) {
+        result.replace(pos, it->first.length(), it->second);
+        replaced = true;
+        pos = result.find(it->first);
+        if (!multiple) break;
       }
-    ++it;
+
+      if (!multiple) break;
     }
+    ++it;
+  }
   return result;
 }
 
-std::string
-StrReplace( const std::string& str, const std::string& search, const std::string& replace )
-{
+std::string StrReplace(const std::string &str, const std::string &search,
+                       const std::string &replace) {
   std::string result = str;
 
-  if ( ! search.empty() )
-    {
-    for ( size_t b = result.find(search, 0); b != result.npos; b = result.find(search, b) )
-      {
-      result.replace( b, search.size(), replace );
+  if (!search.empty()) {
+    for (size_t b = result.find(search, 0); b != result.npos;
+         b = result.find(search, b)) {
+      result.replace(b, search.size(), replace);
       b += (replace.size() - search.size());
-      }
     }
+  }
 
   return result;
 }
 
-std::string
-StrMakeLegalInPath( const std::string& s )
-{
+std::string StrMakeLegalInPath(const std::string &s) {
   std::string result = s;
-  
-  result = StrReplace( result, " ", "_" );      
-  result = StrReplace( result, ":", "_" );  
-  
+
+  result = StrReplace(result, " ", "_");
+  result = StrReplace(result, ":", "_");
+
   return result;
 }
 
-std::vector<std::string> 
-StrSplit( const std::string& s, const std::string separators )
-{
+std::vector<std::string> StrSplit(const std::string &s,
+                                  const std::string separators) {
   std::vector<std::string> result;
 
-  if ( ! s.empty() )
-    {
+  if (!s.empty()) {
     size_t prev = 0;
-    while ( prev != std::string::npos )
-      {
-      size_t next = s.find_first_of( separators, prev );
-      if ( next != std::string::npos )
-	{
-	result.push_back( s.substr( prev, next-prev ) );
-	prev = next+1;
-	}
-      else
-	{
-	result.push_back( s.substr( prev ) );
-	prev = next;
-	}
+    while (prev != std::string::npos) {
+      size_t next = s.find_first_of(separators, prev);
+      if (next != std::string::npos) {
+        result.push_back(s.substr(prev, next - prev));
+        prev = next + 1;
+      } else {
+        result.push_back(s.substr(prev));
+        prev = next;
       }
     }
+  }
 
   return result;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

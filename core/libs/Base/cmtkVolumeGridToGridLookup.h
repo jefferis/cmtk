@@ -37,9 +37,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -47,57 +45,58 @@ cmtk
 /** Class for grid to grid lookup tables.
  * This class is only for internal use by the Resmple function(s) of
  * the UniformVolume class. The lookup table basically records for
- * each pixel in the target grid, which pixels in the source grid it 
+ * each pixel in the target grid, which pixels in the source grid it
  * depends on, and with what relative weight each source pixel contributes
  * to the target pixel. The contributions are computed as relative overlaps
  * of boxcar-shaped pixel profiles.
  */
-class VolumeGridToGridLookup
-{
-public:
+class VolumeGridToGridLookup {
+ public:
   /// Constructor: takes original and new image grids.
-  VolumeGridToGridLookup( const UniformVolume& fromGrid, const UniformVolume& toGrid );
+  VolumeGridToGridLookup(const UniformVolume &fromGrid,
+                         const UniformVolume &toGrid);
 
   /// Get number of source pixels that contribute to the given target pixel.
-  int GetSourceCount( const int dim, const int idx ) const
-  {
+  int GetSourceCount(const int dim, const int idx) const {
     return this->m_SourceCount[dim][idx];
   }
 
-  /// Get index of first source pixel that contributes to the given target pixel.
-  int GetFromIndex( const int dim, const int idx ) const
-  {
+  /// Get index of first source pixel that contributes to the given target
+  /// pixel.
+  int GetFromIndex(const int dim, const int idx) const {
     return this->m_FromIndex[dim][idx];
   }
 
-  /// Get weight with which a given source pixel contributes to the given target pixel.
-  Types::Coordinate GetWeight( const int dim, const int idx, const int fromIdx ) const
-  {
+  /// Get weight with which a given source pixel contributes to the given target
+  /// pixel.
+  Types::Coordinate GetWeight(const int dim, const int idx,
+                              const int fromIdx) const {
     return this->m_Weight[dim][idx][fromIdx];
   }
 
   /// Length (width) of a given target pixel.
-  Types::Coordinate GetLength( const int dim, const int idx ) const
-  {
+  Types::Coordinate GetLength(const int dim, const int idx) const {
     return this->m_Length[dim][idx];
   }
 
-private:
-  /// Array of arrays of numbers of source pixels that contribute to the given target pixel.
-  std::vector< std::vector< int > > m_SourceCount;
+ private:
+  /// Array of arrays of numbers of source pixels that contribute to the given
+  /// target pixel.
+  std::vector<std::vector<int>> m_SourceCount;
 
-  /// Array of arrays of first source pixels that contributes to the given target pixels.
-  std::vector< std::vector< int > > m_FromIndex;
+  /// Array of arrays of first source pixels that contributes to the given
+  /// target pixels.
+  std::vector<std::vector<int>> m_FromIndex;
 
   /// Array of arrays of weight arrays.
-  std::vector< std::vector< std::vector<Types::Coordinate> > > m_Weight;
+  std::vector<std::vector<std::vector<Types::Coordinate>>> m_Weight;
 
   /// Array of array of target pixel lengths.
-  std::vector< std::vector< Types::Coordinate > > m_Length;
+  std::vector<std::vector<Types::Coordinate>> m_Length;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #define __cmtkUniformVolume_h_included_
+#endif  // #define __cmtkUniformVolume_h_included_

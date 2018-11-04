@@ -36,28 +36,24 @@
 #include <System/cmtkCompressedStream.h>
 
 #ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
+#include <sys/types.h>
 #endif
 
 #ifdef HAVE_SYS_STAT_H
-#  include <sys/stat.h>
+#include <sys/stat.h>
 #endif
 
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Structure that holds information on magic file number.
-typedef 
-struct
-{
+typedef struct {
   /// Offset of the magic number within the file.
   unsigned short offset;
   /// Magic number as string of characters.
@@ -68,95 +64,88 @@ struct
 
 /// Magic number records for known file types.
 const FileFormatMagic FileFormatMagicNumbers[] = {
-  { 0, NULL, 0 }, // NEXIST
-  { 0, NULL, 0 }, // ARCHIVE
-  { 0, NULL, 0 }, // STUDY
-  { 0, NULL, 0 }, // STUDYLIST
-  { 0, "! TYPEDSTREAM", 13 }, // TypedStream archive
-  { 0, "P5", 2 }, // PGM
-  { 128, "DICM", 4 }, // DICOM
-  { 0, "Modality :=", 11 }, // VANDERBILT
-  { 0, "# AmiraMesh 3D", 14 },
-  { 0, NULL, 0 }, // RAW
-  { 0, NULL, 0 }, // RAW3D
-  { 54, "\x39\x30", 2 }, // BIORAD
-  { 344, "ni1\x00", 4 }, // Nifti, detached header
-  { 344, "n+1\x00", 4 }, // Nifti, single file
-  { 0, "AVW_ImageFile", 13 }, // Analyze AVW file.
-  { 0, NULL, 0 }, // MetaImage
-  { 0, "NRRD", 4 }, //NRRD
-  { 0, "\x5C\x01\x00\x00", 4 }, // Analyze little endian
-  { 0, "\x00\x00\x01\x5C", 4 }, // Analyze big endian
-  { 0, "#Insight Transform File V1.0", 28 }, // ITK transformation file
-  { 0, NULL, 0 }  // Unknown.
+    {0, NULL, 0},              // NEXIST
+    {0, NULL, 0},              // ARCHIVE
+    {0, NULL, 0},              // STUDY
+    {0, NULL, 0},              // STUDYLIST
+    {0, "! TYPEDSTREAM", 13},  // TypedStream archive
+    {0, "P5", 2},              // PGM
+    {128, "DICM", 4},          // DICOM
+    {0, "Modality :=", 11},    // VANDERBILT
+    {0, "# AmiraMesh 3D", 14},
+    {0, NULL, 0},                             // RAW
+    {0, NULL, 0},                             // RAW3D
+    {54, "\x39\x30", 2},                      // BIORAD
+    {344, "ni1\x00", 4},                      // Nifti, detached header
+    {344, "n+1\x00", 4},                      // Nifti, single file
+    {0, "AVW_ImageFile", 13},                 // Analyze AVW file.
+    {0, NULL, 0},                             // MetaImage
+    {0, "NRRD", 4},                           // NRRD
+    {0, "\x5C\x01\x00\x00", 4},               // Analyze little endian
+    {0, "\x00\x00\x01\x5C", 4},               // Analyze big endian
+    {0, "#Insight Transform File V1.0", 28},  // ITK transformation file
+    {0, NULL, 0}                              // Unknown.
 };
 
-const char* FileFormatName[] =
-{
-  /// File of this name does not exist.
-  "",
-  /// File is a compressed archive.
-  "COMPRESSED-ARCHIVE",
-  /// Path is a typedstream study directory.
-  "STUDY",
-  /// Path is a typedstream studylist directory.
-  "STUDYLIST",
-  /// Path is a typedstream archive.
-  "TYPEDSTREAM",
-  /// Path is a PGM image.
-  "PGM",
-  /// Path is a DICOM image.
-  "DICOM",
-  /// Path is a Vanderbilt image description file.
-  "VANDERBILT",
-  /// Path is a Amira image file.
-  "AMIRA",
-  /// Path is some raw binary file (2-D).
-  "RAW-DATA",
-  /// Path is some raw binary file (3-D).
-  "RAW3D",
-  /// Path is a BioRad .PIC file.
-  "BIORAD",
-  /// Nifti, detached header
-  "NIFTI-DETACHED-HEADER",
-  /// Nifti, single file
-  "NIFTI-SINGLE-FILE",
-  /// Path is an Analyze AVW file.
-  "ANALYZE-AVW",
-  /// MetaImage
-  "METAIMAGE",
-  /// NRRD
-  "NRRD",
-  /// Path is an Analyze 7.5 file in little endian.
-  "ANALYZE-HDR-LITTLEENDIAN",
-  /// Path is an Analyze 7.5 file in big endian.
-  "ANALYZE-HDR-BIGENDIAN",
-  /** File type cannot be determined.
-   * This ID always has to be the last one!
-   */
-  NULL
-};
+const char *FileFormatName[] = {
+    /// File of this name does not exist.
+    "",
+    /// File is a compressed archive.
+    "COMPRESSED-ARCHIVE",
+    /// Path is a typedstream study directory.
+    "STUDY",
+    /// Path is a typedstream studylist directory.
+    "STUDYLIST",
+    /// Path is a typedstream archive.
+    "TYPEDSTREAM",
+    /// Path is a PGM image.
+    "PGM",
+    /// Path is a DICOM image.
+    "DICOM",
+    /// Path is a Vanderbilt image description file.
+    "VANDERBILT",
+    /// Path is a Amira image file.
+    "AMIRA",
+    /// Path is some raw binary file (2-D).
+    "RAW-DATA",
+    /// Path is some raw binary file (3-D).
+    "RAW3D",
+    /// Path is a BioRad .PIC file.
+    "BIORAD",
+    /// Nifti, detached header
+    "NIFTI-DETACHED-HEADER",
+    /// Nifti, single file
+    "NIFTI-SINGLE-FILE",
+    /// Path is an Analyze AVW file.
+    "ANALYZE-AVW",
+    /// MetaImage
+    "METAIMAGE",
+    /// NRRD
+    "NRRD",
+    /// Path is an Analyze 7.5 file in little endian.
+    "ANALYZE-HDR-LITTLEENDIAN",
+    /// Path is an Analyze 7.5 file in big endian.
+    "ANALYZE-HDR-BIGENDIAN",
+    /** File type cannot be determined.
+     * This ID always has to be the last one!
+     */
+    NULL};
 
-FileFormatID 
-FileFormat::Identify( const std::string& path, const bool decompress )
-{
+FileFormatID FileFormat::Identify(const std::string &path,
+                                  const bool decompress) {
   CompressedStream::StatType buf;
-  if ( CompressedStream::Stat( path, &buf ) < 0 ) 
-    return FILEFORMAT_NEXIST;
+  if (CompressedStream::Stat(path, &buf) < 0) return FILEFORMAT_NEXIST;
 
-  if ( buf.st_mode & S_IFDIR ) 
-    return FileFormat::IdentifyDirectory( path );
-  else if ( buf.st_mode & S_IFREG ) 
-    return FileFormat::IdentifyFile( path, decompress );
+  if (buf.st_mode & S_IFDIR)
+    return FileFormat::IdentifyDirectory(path);
+  else if (buf.st_mode & S_IFREG)
+    return FileFormat::IdentifyFile(path, decompress);
 
   return FILEFORMAT_NEXIST;
 }
 
-std::string
-FileFormat::Describe( const FileFormatID id )
-{
-  switch ( id ) 
-    {
+std::string FileFormat::Describe(const FileFormatID id) {
+  switch (id) {
     case FILEFORMAT_NEXIST:
       return "File or directory does not exist.";
     case FILEFORMAT_STUDY:
@@ -174,9 +163,9 @@ FileFormat::Describe( const FileFormatID id )
     case FILEFORMAT_BIORAD:
       return "BioRad image file [File].";
     case FILEFORMAT_NIFTI_DETACHED:
-      return "NIFTI detached header+image [File]";      
+      return "NIFTI detached header+image [File]";
     case FILEFORMAT_NIFTI_SINGLEFILE:
-      return "NIFTI single file [File]";      
+      return "NIFTI single file [File]";
     case FILEFORMAT_ANALYZE_HDR:
       return "Analyze 7.5 file [Header+Binary File/Little Endian].";
     case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
@@ -190,69 +179,66 @@ FileFormat::Describe( const FileFormatID id )
     case FILEFORMAT_UNKNOWN:
     default:
       break;
-    }
+  }
   return "ILLEGAL ID tag in FileFormat::Describe().";
 }
 
-FileFormatID 
-FileFormat::IdentifyDirectory( const std::string& path )
-{
+FileFormatID FileFormat::IdentifyDirectory(const std::string &path) {
   char filename[PATH_MAX];
   struct stat buf;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages", path.c_str(), (int)CMTK_PATH_SEPARATOR );
-  if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
+  snprintf(filename, sizeof(filename), "%s%cimages", path.c_str(),
+           (int)CMTK_PATH_SEPARATOR);
+  if ((!stat(filename, &buf)) && (buf.st_mode & S_IFREG))
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages.gz", path.c_str(), (int)CMTK_PATH_SEPARATOR );
-  if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
+  snprintf(filename, sizeof(filename), "%s%cimages.gz", path.c_str(),
+           (int)CMTK_PATH_SEPARATOR);
+  if ((!stat(filename, &buf)) && (buf.st_mode & S_IFREG))
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist", path.c_str(), (int)CMTK_PATH_SEPARATOR );
-  if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
+  snprintf(filename, sizeof(filename), "%s%cstudylist", path.c_str(),
+           (int)CMTK_PATH_SEPARATOR);
+  if ((!stat(filename, &buf)) && (buf.st_mode & S_IFREG))
     return FILEFORMAT_STUDYLIST;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", path.c_str(), (int)CMTK_PATH_SEPARATOR );
-  if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
+  snprintf(filename, sizeof(filename), "%s%cstudylist.gz", path.c_str(),
+           (int)CMTK_PATH_SEPARATOR);
+  if ((!stat(filename, &buf)) && (buf.st_mode & S_IFREG))
     return FILEFORMAT_STUDYLIST;
 
   return FILEFORMAT_UNKNOWN;
 }
 
-FileFormatID 
-FileFormat::IdentifyFile( const std::string& path, const bool decompress )
-{
-  CompressedStream stream( path );
-  if ( ! stream.IsValid() )
-    return FILEFORMAT_NEXIST;
+FileFormatID FileFormat::IdentifyFile(const std::string &path,
+                                      const bool decompress) {
+  CompressedStream stream(path);
+  if (!stream.IsValid()) return FILEFORMAT_NEXIST;
 
-  if ( stream.IsCompressed() && !decompress )
+  if (stream.IsCompressed() && !decompress)
     return FILEFORMAT_COMPRESSED_ARCHIVE;
-    
+
   char buffer[348];
-  memset( buffer, 0, sizeof( buffer ) );
-  stream.Read( buffer, 1, 348 );
-  
-  FileFormatID id = FILEFORMAT_NEXIST; 
-  while ( id != FILEFORMAT_UNKNOWN ) 
-    {
-    if ( FileFormatMagicNumbers[id].magicString ) 
-      {
-      if ( !memcmp( buffer+FileFormatMagicNumbers[id].offset, FileFormatMagicNumbers[id].magicString, FileFormatMagicNumbers[id].magicStringLength ) )
-	return id;
-      }
-    char cid = static_cast<char>( id );
-    id = static_cast<FileFormatID>( ++cid );
+  memset(buffer, 0, sizeof(buffer));
+  stream.Read(buffer, 1, 348);
+
+  FileFormatID id = FILEFORMAT_NEXIST;
+  while (id != FILEFORMAT_UNKNOWN) {
+    if (FileFormatMagicNumbers[id].magicString) {
+      if (!memcmp(buffer + FileFormatMagicNumbers[id].offset,
+                  FileFormatMagicNumbers[id].magicString,
+                  FileFormatMagicNumbers[id].magicStringLength))
+        return id;
     }
-  
+    char cid = static_cast<char>(id);
+    id = static_cast<FileFormatID>(++cid);
+  }
+
   return FILEFORMAT_UNKNOWN;
 }
 
-bool
-FileFormat::IsImage( const FileFormatID& id )
-{
-  switch ( id )
-    {
+bool FileFormat::IsImage(const FileFormatID &id) {
+  switch (id) {
     case FILEFORMAT_STUDY:
     case FILEFORMAT_PGM:
     case FILEFORMAT_DICOM:
@@ -269,22 +255,19 @@ FileFormat::IsImage( const FileFormatID& id )
       return true;
     default:
       break;
-    }
+  }
   return false;
 }
 
-bool
-FileFormat::IsXform( const FileFormatID& id )
-{
-  switch ( id )
-    {
+bool FileFormat::IsXform(const FileFormatID &id) {
+  switch (id) {
     case FILEFORMAT_STUDYLIST:
     case FILEFORMAT_TYPEDSTREAM:
       return true;
     default:
       break;
-    }
+  }
   return false;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

@@ -40,36 +40,36 @@
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-/// Compute affine coordinate transformation in standard space from transformation in native reference and floating image coordinate spaces.
-class TransformChangeFromSpaceAffine
-{
-public:
-  /// Simplified constructor: compute transformation between images in new, common space.
-  TransformChangeFromSpaceAffine( const AffineXform& xform /*!< Transformation from reference to floating in their current spaces.*/,
-				  const UniformVolume& reference /*!< Reference (fixed) image.*/,
-				  const UniformVolume& floating /*! Floating (moving) image.*/,
-				  const char* forceSpace = NULL /*!< Force transformation to be in this coordinate space.*/ );
-  
-  /// Return transformation in native spaces.
-  const AffineXform& GetTransformation() const
-  {
-    return this->m_NewXform;
-  }
+/// Compute affine coordinate transformation in standard space from
+/// transformation in native reference and floating image coordinate spaces.
+class TransformChangeFromSpaceAffine {
+ public:
+  /// Simplified constructor: compute transformation between images in new,
+  /// common space.
+  TransformChangeFromSpaceAffine(
+      const AffineXform &xform /*!< Transformation from reference to floating in
+                                  their current spaces.*/
+      ,
+      const UniformVolume &reference /*!< Reference (fixed) image.*/,
+      const UniformVolume &floating /*! Floating (moving) image.*/,
+      const char *forceSpace =
+          NULL /*!< Force transformation to be in this coordinate space.*/);
 
-private:
+  /// Return transformation in native spaces.
+  const AffineXform &GetTransformation() const { return this->m_NewXform; }
+
+ private:
   /// Transformation between native spaces.
   AffineXform m_NewXform;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTransformChangeFromSpaceAffine_h_included_
+#endif  // #ifndef __cmtkTransformChangeFromSpaceAffine_h_included_

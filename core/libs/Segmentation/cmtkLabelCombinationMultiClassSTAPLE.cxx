@@ -33,291 +33,243 @@
 #include <Segmentation/cmtkLabelCombinationMultiClassSTAPLE.h>
 #include <Segmentation/cmtkLabelCombinationVoting.h>
 
-#include <System/cmtkProgress.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkProgress.h>
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
-LabelCombinationMultiClassSTAPLE
-::LabelCombinationMultiClassSTAPLE
-( const std::vector<TypedArray::SmartPtr>& data, const int maxIterations, const bool disputedOnly )
-{
+LabelCombinationMultiClassSTAPLE ::LabelCombinationMultiClassSTAPLE(
+    const std::vector<TypedArray::SmartPtr> &data, const int maxIterations,
+    const bool disputedOnly) {
   const size_t numberOfInputs = data.size();
-  const size_t numberOfPixels = data[ 0 ]->GetDataSize();
+  const size_t numberOfPixels = data[0]->GetDataSize();
 
-  // First, determine which pixels are "active" and will be considered by the algorithm.
-  // If "disputedOnly" is true, these will be the pixels for which at least one input map disagrees with the others.
-  std::vector<bool> activePixels( numberOfPixels );
+  // First, determine which pixels are "active" and will be considered by the
+  // algorithm. If "disputedOnly" is true, these will be the pixels for which at
+  // least one input map disagrees with the others.
+  std::vector<bool> activePixels(numberOfPixels);
 
-  if ( disputedOnly )
-    {
+  if (disputedOnly) {
     size_t nDisputed = 0;
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
+    for (size_t n = 0; n < numberOfPixels; ++n) {
       bool disputed = false;
 
       Types::DataItem refVal = -1;
-      for ( size_t k = 0; (k < numberOfInputs) && !disputed; ++k )
-	{
-	Types::DataItem lVal;
-	if ( data[k]->Get( lVal, n ) )
-	  {
-	  if ( refVal == -1 )
-	    {
-	    refVal = lVal;
-	    }
-	  else
-	    {
-	    if ( lVal != refVal )
-	      {
-	      disputed = true;
-	      ++nDisputed;
-	      }
-	    }
-	  }
-	}
-
-      activePixels[n] = disputed;
+      for (size_t k = 0; (k < numberOfInputs) && !disputed; ++k) {
+        Types::DataItem lVal;
+        if (data[k]->Get(lVal, n)) {
+          if (refVal == -1) {
+            refVal = lVal;
+          } else {
+            if (lVal != refVal) {
+              disputed = true;
+              ++nDisputed;
+            }
+          }
+        }
       }
 
-    DebugOutput( 5 ) << "MultiClassSTAPLE running for " << nDisputed << " disputed out of " << numberOfPixels << " total pixels.\n";
+      activePixels[n] = disputed;
     }
-  else
-    {
-    std::fill( activePixels.begin(), activePixels.end(), true );
-    DebugOutput( 5 ) << "MultiClassSTAPLE running for all pixels.\n";
-    }
+
+    DebugOutput(5) << "MultiClassSTAPLE running for " << nDisputed
+                   << " disputed out of " << numberOfPixels
+                   << " total pixels.\n";
+  } else {
+    std::fill(activePixels.begin(), activePixels.end(), true);
+    DebugOutput(5) << "MultiClassSTAPLE running for all pixels.\n";
+  }
 
   // Next figure out how many classes thare are in the first place.
   int numberOfClasses = 1;
-  for ( size_t k = 0; k < numberOfInputs; ++k )
-    {
+  for (size_t k = 0; k < numberOfInputs; ++k) {
     const Types::DataItemRange range = data[k]->GetRange();
-    numberOfClasses = std::max( numberOfClasses, 1+static_cast<int>( range.m_UpperBound ) );
-    }
+    numberOfClasses =
+        std::max(numberOfClasses, 1 + static_cast<int>(range.m_UpperBound));
+  }
 
   // allocate priors vector
-  this->m_Priors.resize( numberOfClasses );
+  this->m_Priors.resize(numberOfClasses);
 
   // init priors
   size_t totalMass = 0;
-  std::fill( this->m_Priors.begin(), this->m_Priors.end(), static_cast<RealValueType>( 0.0 ) );
-  for ( size_t k = 0; k < numberOfInputs; ++k )
-    {
+  std::fill(this->m_Priors.begin(), this->m_Priors.end(),
+            static_cast<RealValueType>(0.0));
+  for (size_t k = 0; k < numberOfInputs; ++k) {
     Types::DataItem lVal;
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
-      if ( activePixels[n] )
-	{
-	if ( data[k]->Get( lVal, n ) )
-	  {
-	  this->m_Priors[static_cast<int>(lVal)]++;
-	  ++totalMass;
-	  }
-	}
+    for (size_t n = 0; n < numberOfPixels; ++n) {
+      if (activePixels[n]) {
+        if (data[k]->Get(lVal, n)) {
+          this->m_Priors[static_cast<int>(lVal)]++;
+          ++totalMass;
+        }
       }
     }
+  }
 
-  if ( totalMass )
-    {
-    for ( int l = 0; l < numberOfClasses; ++l )
-      this->m_Priors[l] /= totalMass;
-    }
+  if (totalMass) {
+    for (int l = 0; l < numberOfClasses; ++l) this->m_Priors[l] /= totalMass;
+  }
 
   // initialize result using simple voting.
-  { LabelCombinationVoting voting( data ); this->m_Result = voting.GetResult(); } // use local scope to free voting object storage right away
+  {
+    LabelCombinationVoting voting(data);
+    this->m_Result = voting.GetResult();
+  }  // use local scope to free voting object storage right away
 
   // allocate current and updated confusion matrix arrays
-  this->m_Confusion.resize( numberOfInputs );
-  this->m_ConfusionNew.resize( numberOfInputs );
-  for ( size_t k = 0; k < numberOfInputs; ++k )
-    {
-    this->m_Confusion[k].Resize( 1+numberOfClasses, numberOfClasses );
-    this->m_ConfusionNew[k].Resize( 1+numberOfClasses, numberOfClasses );
-    }
+  this->m_Confusion.resize(numberOfInputs);
+  this->m_ConfusionNew.resize(numberOfInputs);
+  for (size_t k = 0; k < numberOfInputs; ++k) {
+    this->m_Confusion[k].Resize(1 + numberOfClasses, numberOfClasses);
+    this->m_ConfusionNew[k].Resize(1 + numberOfClasses, numberOfClasses);
+  }
 
   // initialize confusion matrices from voting result
-  for ( size_t k = 0; k < numberOfInputs; ++k )
-    {
-    this->m_Confusion[k].SetAll( 0.0 );
+  for (size_t k = 0; k < numberOfInputs; ++k) {
+    this->m_Confusion[k].SetAll(0.0);
 
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
-      if ( activePixels[n] )
-	{
-	Types::DataItem lValue, vValue;
-	if ( data[k]->Get( lValue, n ) )
-	  {
-	  if ( this->m_Result->Get( vValue, n ) && (vValue >= 0) )
-	    ++(this->m_Confusion[k][static_cast<int>(lValue)][static_cast<int>(vValue)]);
-	  }
-	}
+    for (size_t n = 0; n < numberOfPixels; ++n) {
+      if (activePixels[n]) {
+        Types::DataItem lValue, vValue;
+        if (data[k]->Get(lValue, n)) {
+          if (this->m_Result->Get(vValue, n) && (vValue >= 0))
+            ++(this->m_Confusion[k][static_cast<int>(lValue)]
+                                [static_cast<int>(vValue)]);
+        }
       }
     }
-  
+  }
+
   // normalize matrix rows to unit probability sum
-  for ( size_t k = 0; k < numberOfInputs; ++k )
-    {
-    for ( int inLabel = 0; inLabel <= numberOfClasses; ++inLabel )
-      {
+  for (size_t k = 0; k < numberOfInputs; ++k) {
+    for (int inLabel = 0; inLabel <= numberOfClasses; ++inLabel) {
       // compute sum over all output labels for given input label
       double sum = 0;
-      for ( int outLabel = 0; outLabel < numberOfClasses; ++outLabel )
-	{
-	sum += this->m_Confusion[k][inLabel][outLabel];
-	}
-      
+      for (int outLabel = 0; outLabel < numberOfClasses; ++outLabel) {
+        sum += this->m_Confusion[k][inLabel][outLabel];
+      }
+
       // make sure that this input label did in fact show up in the input!!
-      if ( sum > 0 )
-	{
-	// normalize
-	for ( int outLabel = 0; outLabel < numberOfClasses; ++outLabel )
-	  {
-	  this->m_Confusion[k][inLabel][outLabel] /= sum;
-	  }
-	}
+      if (sum > 0) {
+        // normalize
+        for (int outLabel = 0; outLabel < numberOfClasses; ++outLabel) {
+          this->m_Confusion[k][inLabel][outLabel] /= sum;
+        }
       }
     }
-  
-  // allocate array for pixel class weights
-  std::vector<double> W( numberOfClasses );
+  }
 
-  Progress::Begin( 0, maxIterations, 1, "Multi-label STAPLE" );
-  
+  // allocate array for pixel class weights
+  std::vector<double> W(numberOfClasses);
+
+  Progress::Begin(0, maxIterations, 1, "Multi-label STAPLE");
+
   // main EM loop
-  for ( int it = 0; it < maxIterations; ++it )
-    {
-    Progress::SetProgress( it );
+  for (int it = 0; it < maxIterations; ++it) {
+    Progress::SetProgress(it);
 
     // reset updated confusion matrices.
-    for ( size_t k = 0; k < numberOfInputs; ++k )
-      {
-      this->m_ConfusionNew[k].SetAll( 0.0 );
-      }
+    for (size_t k = 0; k < numberOfInputs; ++k) {
+      this->m_ConfusionNew[k].SetAll(0.0);
+    }
 
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
-      if ( activePixels[n] )
-	{
-	// the following is the E step
-	for ( int ci = 0; ci < numberOfClasses; ++ci )
-	  W[ci] = this->m_Priors[ci];
-	
-	for ( size_t k = 0; k < numberOfInputs; ++k )
-	  {
-	  Types::DataItem lValue;
-	  if ( data[k]->Get( lValue, n ) )
-	    {
-	    for ( int ci = 0; ci < numberOfClasses; ++ci )
-	      {
-	      W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
-	      }
-	    }
-	  }
-	
-	// the following is the M step
-	double sumW = W[0];
-	for ( int ci = 1; ci < numberOfClasses; ++ci )
-	  sumW += W[ci];
-	
-	if ( sumW )
-	  {
-	  for ( int ci = 0; ci < numberOfClasses; ++ci )
-	    W[ci] /= sumW;
-	  }
-	
-	for ( size_t k = 0; k < numberOfInputs; ++k )
-	  {
-	  Types::DataItem lValue;
-	  if ( data[k]->Get( lValue, n ) )
-	    {
-	    for ( int ci = 0; ci < numberOfClasses; ++ci )
-	      {
-	      this->m_ConfusionNew[k][static_cast<int>(lValue)][ci] += W[ci];	    
-	      }
-	    }
-	  }
-	}
+    for (size_t n = 0; n < numberOfPixels; ++n) {
+      if (activePixels[n]) {
+        // the following is the E step
+        for (int ci = 0; ci < numberOfClasses; ++ci) W[ci] = this->m_Priors[ci];
+
+        for (size_t k = 0; k < numberOfInputs; ++k) {
+          Types::DataItem lValue;
+          if (data[k]->Get(lValue, n)) {
+            for (int ci = 0; ci < numberOfClasses; ++ci) {
+              W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
+            }
+          }
+        }
+
+        // the following is the M step
+        double sumW = W[0];
+        for (int ci = 1; ci < numberOfClasses; ++ci) sumW += W[ci];
+
+        if (sumW) {
+          for (int ci = 0; ci < numberOfClasses; ++ci) W[ci] /= sumW;
+        }
+
+        for (size_t k = 0; k < numberOfInputs; ++k) {
+          Types::DataItem lValue;
+          if (data[k]->Get(lValue, n)) {
+            for (int ci = 0; ci < numberOfClasses; ++ci) {
+              this->m_ConfusionNew[k][static_cast<int>(lValue)][ci] += W[ci];
+            }
+          }
+        }
       }
+    }
 
     // Normalize matrix elements of each of the updated confusion matrices
     // with sum over all expert decisions.
-    for ( size_t k = 0; k < numberOfInputs; ++k )
-      {
+    for (size_t k = 0; k < numberOfInputs; ++k) {
       // compute sum over all output classifications
-      for ( int ci = 0; ci < numberOfClasses; ++ci ) 
-	{
-	double sumW = this->m_ConfusionNew[k][0][ci]; 
-	for ( int j = 1; j <= numberOfClasses; ++j )
-	  sumW += this->m_ConfusionNew[k][j][ci];
-	
-	// normalize with for each class ci
-	if ( sumW )
-	  {
-	  for ( int j = 0; j <= numberOfClasses; ++j )
-	    this->m_ConfusionNew[k][j][ci] /= sumW;
-	  }
-	}
+      for (int ci = 0; ci < numberOfClasses; ++ci) {
+        double sumW = this->m_ConfusionNew[k][0][ci];
+        for (int j = 1; j <= numberOfClasses; ++j)
+          sumW += this->m_ConfusionNew[k][j][ci];
+
+        // normalize with for each class ci
+        if (sumW) {
+          for (int j = 0; j <= numberOfClasses; ++j)
+            this->m_ConfusionNew[k][j][ci] /= sumW;
+        }
       }
-  
+    }
+
     // now we're applying the update to the confusion matrices and compute the
     // maximum parameter change in the process.
-    for ( size_t k = 0; k < numberOfInputs; ++k )
-      for ( int j = 0; j <= numberOfClasses; ++j )
-	for ( int ci = 0; ci < numberOfClasses; ++ci )
-	  {
-	  this->m_Confusion[k][j][ci] = this->m_ConfusionNew[k][j][ci];
-	  }    
-    } // main EM loop
+    for (size_t k = 0; k < numberOfInputs; ++k)
+      for (int j = 0; j <= numberOfClasses; ++j)
+        for (int ci = 0; ci < numberOfClasses; ++ci) {
+          this->m_Confusion[k][j][ci] = this->m_ConfusionNew[k][j][ci];
+        }
+  }  // main EM loop
 
-  // assemble output (this time, all voxels, disputed and non-disputed, to get the complete image)
-  for ( size_t n = 0; n < numberOfPixels; ++n )
-    {
+  // assemble output (this time, all voxels, disputed and non-disputed, to get
+  // the complete image)
+  for (size_t n = 0; n < numberOfPixels; ++n) {
     // basically, we'll repeat the E step from above
-    for ( int ci = 0; ci < numberOfClasses; ++ci )
-      W[ci] = this->m_Priors[ci];
-    
-    for ( size_t k = 0; k < numberOfInputs; ++k )
-      {
+    for (int ci = 0; ci < numberOfClasses; ++ci) W[ci] = this->m_Priors[ci];
+
+    for (size_t k = 0; k < numberOfInputs; ++k) {
       Types::DataItem lValue;
-      if ( data[k]->Get( lValue, n ) )
-	{
-	for ( int ci = 0; ci < numberOfClasses; ++ci )
-	  {
-	  W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
-	  }
-	}
+      if (data[k]->Get(lValue, n)) {
+        for (int ci = 0; ci < numberOfClasses; ++ci) {
+          W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
+        }
       }
-    
+    }
+
     // now determine the label with the maximum W
     int winningLabel = -1;
     double winningLabelW = 0;
-    for ( int ci = 0; ci < numberOfClasses; ++ci )
-      {
-      if ( W[ci] > winningLabelW )
-	{
-	winningLabelW = W[ci];
-	winningLabel = ci;
-	}
-      else
-	if ( ! (W[ci] < winningLabelW ) )
-	  {
-	  winningLabel = -1;
-	  }
+    for (int ci = 0; ci < numberOfClasses; ++ci) {
+      if (W[ci] > winningLabelW) {
+        winningLabelW = W[ci];
+        winningLabel = ci;
+      } else if (!(W[ci] < winningLabelW)) {
+        winningLabel = -1;
       }
-    
-    this->m_Result->Set( winningLabel, n );
     }
+
+    this->m_Result->Set(winningLabel, n);
+  }
 
   Progress::Done();
 }
 
-} // namespace cmtk
+}  // namespace cmtk

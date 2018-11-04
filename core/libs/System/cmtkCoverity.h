@@ -33,18 +33,15 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk
-{
+namespace cmtk {
 
-class
-Coverity
-{
-public:
-/// Pretend to free allocated memory to suppress CoverityScan false positives.
-// coverity[+free : arg-0]
-  static void FakeFree( void *const ) {}
+class Coverity {
+ public:
+  /// Pretend to free allocated memory to suppress CoverityScan false positives.
+  // coverity[+free : arg-0]
+  static void FakeFree(void *const) {}
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkCoverity_h_included_
+#endif  // #ifndef __cmtkCoverity_h_included_

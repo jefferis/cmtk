@@ -30,4 +30,5 @@
 
 #include "cmtkImageOperation.h"
 
-std::list<cmtk::ImageOperation::SmartPtr> cmtk::ImageOperation::m_ImageOperationList;
+std::list<cmtk::ImageOperation::SmartPtr>
+    cmtk::ImageOperation::m_ImageOperationList;

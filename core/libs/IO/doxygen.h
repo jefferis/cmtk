@@ -31,6 +31,6 @@
 */
 
 /** \defgroup IO cmtkIO Library
- * This library provides classes for input and output of images, transformations,
- * and other types of objects.
+ * This library provides classes for input and output of images,
+ * transformations, and other types of objects.
  */

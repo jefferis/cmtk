@@ -38,16 +38,14 @@
 #include <System/cmtkCannotBeCopied.h>
 
 #if defined(CMTK_USE_PTHREADS)
-#  include <pthread.h>
+#include <pthread.h>
 #endif
 
 #ifdef _MSC_VER
-#  include <Windows.h>
+#include <Windows.h>
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
@@ -57,62 +55,57 @@ cmtk
  * that requires mutually exclusive access.
  */
 class MutexLock :
-  /// Make class uncopyable via inheritance.
-  private CannotBeCopied
-{
-public:
+    /// Make class uncopyable via inheritance.
+    private CannotBeCopied {
+ public:
   /// Constructor: initialize low-level lock.
-  MutexLock() 
-  {
+  MutexLock() {
 #if defined(CMTK_USE_PTHREADS)
-    pthread_mutex_init( &this->m_MutexLock, NULL );
+    pthread_mutex_init(&this->m_MutexLock, NULL);
 #else
 #ifdef _MSC_VER
-    InitializeCriticalSection( &this->m_MutexObject );
+    InitializeCriticalSection(&this->m_MutexObject);
 #endif
 #endif
   }
 
   /// Destructor: clean up low-level lock.
-  ~MutexLock() 
-  {
+  ~MutexLock() {
 #if defined(CMTK_USE_PTHREADS)
-    pthread_mutex_destroy( &this->m_MutexLock );
+    pthread_mutex_destroy(&this->m_MutexLock);
 #else
 #ifdef _MSC_VER
-    DeleteCriticalSection( &this->m_MutexObject );
+    DeleteCriticalSection(&this->m_MutexObject);
 #endif
 #endif
   }
 
   /// Lock: if already locked, wait until unlocked, then lock.
-  void Lock() 
-  {
+  void Lock() {
 #if defined(CMTK_USE_PTHREADS)
-    pthread_mutex_lock( &this->m_MutexLock );
+    pthread_mutex_lock(&this->m_MutexLock);
 #else
 #ifdef _MSC_VER
-    EnterCriticalSection( &this->m_MutexObject );
+    EnterCriticalSection(&this->m_MutexObject);
 #endif
 #endif
   }
 
   /// Unlock.
-  void Unlock() 
-  {
+  void Unlock() {
 #if defined(CMTK_USE_PTHREADS)
-    pthread_mutex_unlock( &this->m_MutexLock );
+    pthread_mutex_unlock(&this->m_MutexLock);
 #else
 #ifdef _MSC_VER
-    LeaveCriticalSection( &this->m_MutexObject );
+    LeaveCriticalSection(&this->m_MutexObject);
 #endif
 #endif
   }
 
 #if defined(CMTK_USE_PTHREADS)
-protected:
+ protected:
   /** Low-level mutex lock for POSIX threads.
-    */
+   */
   pthread_mutex_t m_MutexLock;
 #else
 #ifdef _MSC_VER
@@ -123,6 +116,6 @@ protected:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkMutexLock_h_included_
+#endif  // #ifndef __cmtkMutexLock_h_included_

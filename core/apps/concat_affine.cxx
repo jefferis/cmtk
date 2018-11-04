@@ -32,120 +32,115 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <IO/cmtkXformIO.h>
-#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkClassStreamOutput.h>
+#include <IO/cmtkXformIO.h>
 
-const char* OutputName = "concat.xform";
+const char *OutputName = "concat.xform";
 bool AppendToOutput = false;
 bool InvertOutput = false;
 
-int 
-doMain( const int argc, const char* argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   cmtk::AffineXform concat;
-  try 
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Concatenate affine transformations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the explicit concatenation of multiple affine coordinate transformations, each of which can be optionally inverted." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "concat_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #. "
-		       "(If the first transformation in the sequence is inverted, then '--inverse' must be preceded by '--', i.e., use '-- --inverse xform.path').");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Concatenate affine transformations");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "This tool computes the explicit concatenation of "
+                      "multiple affine coordinate transformations, each of "
+                      "which can be optionally inverted.");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
+                      "concat_affine [options] x0 [x1 ...] \n WHERE x0 ... xN "
+                      "is [{-i,--inverse}] affine transformation #. "
+                      "(If the first transformation in the sequence is "
+                      "inverted, then '--inverse' must be preceded by '--', "
+                      "i.e., use '-- --inverse xform.path').");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( 'o', "outfile" ), &OutputName, "Output transformation." );
-    cl.AddSwitch( Key( 'a', "append" ), &AppendToOutput, true, "Append to output file [default: overwrite]." );
-    cl.AddSwitch( Key( 'I', "invert-output" ), &InvertOutput, true, "Invert concatenated transformation before output [default: no]." );
+    cl.AddOption(Key('o', "outfile"), &OutputName, "Output transformation.");
+    cl.AddSwitch(Key('a', "append"), &AppendToOutput, true,
+                 "Append to output file [default: overwrite].");
+    cl.AddSwitch(
+        Key('I', "invert-output"), &InvertOutput, true,
+        "Invert concatenated transformation before output [default: no].");
 
-    cl.Parse( argc, argv );
+    cl.Parse(argc, argv);
 
     bool firstXform = true;
-    const char* next = cl.GetNextOptional();
-    while ( next ) 
-      {
-      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
-      if ( inverse ) 
-	next = cl.GetNext();
-      
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next ) );
-      if ( ! xform ) 
-	{
-	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
-	throw cmtk::ExitException( 1 );
-	}
+    const char *next = cl.GetNextOptional();
+    while (next) {
+      const bool inverse = !strcmp(next, "-i") || !strcmp(next, "--inverse");
+      if (inverse) next = cl.GetNext();
 
-      cmtk::AffineXform::SmartPtr affine( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
-      if ( ! affine )
-	{
-	cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
-	throw cmtk::ExitException( 1 );
-	}
-
-      if ( inverse )
-	{
-	try
-	  {
-	  affine = affine->GetInverse();
-	  }
-	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-	  {
-	  cmtk::StdErr << "ERROR: input transformation " << next << " has singular matrix and cannot be inverted\n";
-	  throw cmtk::ExitException( 1 );
-	  }
-	}
-
-      concat.Concat( *affine );
-      if ( firstXform )
-	{
-	concat.ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( affine->RetCenter() ) );
-	firstXform = false;
-	}
-      
-      next = cl.GetNextOptional();
+      cmtk::Xform::SmartPtr xform(cmtk::XformIO::Read(next));
+      if (!xform) {
+        cmtk::StdErr << "ERROR: could not read transformation from " << next
+                     << "\n";
+        throw cmtk::ExitException(1);
       }
+
+      cmtk::AffineXform::SmartPtr affine(
+          cmtk::AffineXform::SmartPtr::DynamicCastFrom(xform));
+      if (!affine) {
+        cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
+        throw cmtk::ExitException(1);
+      }
+
+      if (inverse) {
+        try {
+          affine = affine->GetInverse();
+        } catch (
+            const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
+          cmtk::StdErr << "ERROR: input transformation " << next
+                       << " has singular matrix and cannot be inverted\n";
+          throw cmtk::ExitException(1);
+        }
+      }
+
+      concat.Concat(*affine);
+      if (firstXform) {
+        concat.ChangeCenter(
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(
+                affine->RetCenter()));
+        firstXform = false;
+      }
+
+      next = cl.GetNextOptional();
     }
-  catch ( const cmtk::CommandLine::Exception& e ) 
-    {
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
   cmtk::ClassStreamOutput outStream;
 
-  if ( AppendToOutput )
-    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_APPEND );
+  if (AppendToOutput)
+    outStream.Open(OutputName, cmtk::ClassStreamOutput::MODE_APPEND);
   else
-    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_WRITE );
+    outStream.Open(OutputName, cmtk::ClassStreamOutput::MODE_WRITE);
 
-  if ( outStream.IsValid() )
-    {
-    if ( InvertOutput )
-      {
-      try
-	{
-	outStream << (*concat.GetInverse());
-	}
-      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-	{
-	cmtk::StdErr << "ERROR: output transformation has singular matrix and cannot be inverted\n";
-	throw cmtk::ExitException( 1 );
-	}
+  if (outStream.IsValid()) {
+    if (InvertOutput) {
+      try {
+        outStream << (*concat.GetInverse());
+      } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
+        cmtk::StdErr << "ERROR: output transformation has singular matrix and "
+                        "cannot be inverted\n";
+        throw cmtk::ExitException(1);
       }
-    else
-      {
+    } else {
       outStream << concat;
-      }
     }
-  else
-    {
+  } else {
     cmtk::StdErr << "ERROR: could not open output file " << OutputName << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
   return 0;
 }

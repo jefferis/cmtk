@@ -35,32 +35,29 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypes.h>
-#include <Base/cmtkUnits.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkUnits.h>
 
 #include <System/cmtkSmartPtr.h>
 
 #include <math.h>
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Filter mask pixel entry.
  * This class handles a single entry in a pre-computed filter mask for
- * multidimensional images with relative coordinates and filter coeffiecient 
+ * multidimensional images with relative coordinates and filter coeffiecient
  * for a single pixel.
  */
-template<int DIM>
-class FilterMaskPixel
-{
-public:
+template <int DIM>
+class FilterMaskPixel {
+ public:
   /// This class.
   typedef FilterMaskPixel Self;
 
@@ -71,17 +68,16 @@ public:
   FilterMaskPixel() {}
 
   /// Explicit constructor.
-  FilterMaskPixel
-  ( const FixedVector<DIM,int>& location, const int relativeIndex, const Types::DataItem coefficient ) 
-    : Location( location ),
-      RelativeIndex ( relativeIndex ),
-      Coefficient( coefficient ),
-      PixelIndex( 0 ),
-      Valid( false )
-  {}
+  FilterMaskPixel(const FixedVector<DIM, int> &location,
+                  const int relativeIndex, const Types::DataItem coefficient)
+      : Location(location),
+        RelativeIndex(relativeIndex),
+        Coefficient(coefficient),
+        PixelIndex(0),
+        Valid(false) {}
 
   /// Relative location of this pixel.
-  FixedVector<DIM,int> Location;
+  FixedVector<DIM, int> Location;
 
   /// Relative index of this pixel in source image from center of kernel.
   int RelativeIndex;
@@ -105,101 +101,92 @@ public:
  * This class handles pre-computed filter masks for multidimensional images
  * with relative pixel coordinates and filter coeffiecients.
  */
-template<int DIM>
-class FilterMask : 
-  /// Inherit from STL container.
-  public std::vector< FilterMaskPixel<DIM> >
-{
-public:
+template <int DIM>
+class FilterMask :
+    /// Inherit from STL container.
+    public std::vector<FilterMaskPixel<DIM>> {
+ public:
   /// This class type.
   typedef FilterMask<DIM> Self;
 
   /// Direct parent class.
-  typedef std::vector< FilterMaskPixel<DIM> > Superclass;
-  
+  typedef std::vector<FilterMaskPixel<DIM>> Superclass;
+
   /// Smert pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  template<class F>
-  FilterMask( const FixedVector<DIM,int>& dims, const FixedVector<DIM,Types::Coordinate>& deltas, const Types::Coordinate radius, F filter ) 
-  {
-    FixedVector<DIM,int> pixel;
-    FixedVector<DIM,int> width;
-    FixedVector<DIM,Types::Coordinate> position;
+  template <class F>
+  FilterMask(const FixedVector<DIM, int> &dims,
+             const FixedVector<DIM, Types::Coordinate> &deltas,
+             const Types::Coordinate radius, F filter) {
+    FixedVector<DIM, int> pixel;
+    FixedVector<DIM, int> width;
+    FixedVector<DIM, Types::Coordinate> position;
 
-    for ( int dim = 0; dim < DIM; ++dim ) 
-      {
-      pixel[dim] = - (width[dim] = 1+static_cast<int>( radius / deltas[dim] ));
+    for (int dim = 0; dim < DIM; ++dim) {
+      pixel[dim] = -(width[dim] = 1 + static_cast<int>(radius / deltas[dim]));
       position[dim] = pixel[dim] * deltas[dim];
-      }
+    }
 
     bool done = false;
-    while ( ! done ) 
-      {
+    while (!done) {
       // increment the DIM-digit pixel index counter including overflow.
-      for ( int dim = 0; dim < DIM; ++dim ) 
-	{
-	++pixel[dim];
-	if ( pixel[dim] <= width[dim] ) 
-	  {
-	  // no overflow, leave for loop since we're done
-	  dim = DIM;
-	  } 
-	else
-	  {
-	  if ( dim+1 == DIM ) 
-	    // was this the last dimension? if so, leave while() loop
-	    done = true;
-	  else 
-	    { 
-	    // no, then reset this dimension and repeat loop to increment next
-	    pixel[dim] = -width[dim];
-	    }
-	  }
-	}
-      // are we done with the kernel?
-      if ( ! done ) 
-	{
-	// no, then compute Euclidean distance from center
-	Types::Coordinate distance = 0.0;
-	for ( int dim = 0; dim < DIM; ++dim ) 
-	  {
-	  position[dim] = pixel[dim] * deltas[dim];
-	  distance += position[dim] * position[dim];
-	  }
-	distance = sqrt( distance );
-	// if distance is within radius then add a pixel to the filter mask
-	if ( distance < radius ) 
-	  {
-	  const int index = pixel[0] + dims[0] * (pixel[1] + dims[1] * pixel[2] );
-	  this->push_back( FilterMaskPixel<DIM>( pixel, index, filter( position ) ) );
-	  }
-	}
+      for (int dim = 0; dim < DIM; ++dim) {
+        ++pixel[dim];
+        if (pixel[dim] <= width[dim]) {
+          // no overflow, leave for loop since we're done
+          dim = DIM;
+        } else {
+          if (dim + 1 == DIM)
+            // was this the last dimension? if so, leave while() loop
+            done = true;
+          else {
+            // no, then reset this dimension and repeat loop to increment next
+            pixel[dim] = -width[dim];
+          }
+        }
       }
+      // are we done with the kernel?
+      if (!done) {
+        // no, then compute Euclidean distance from center
+        Types::Coordinate distance = 0.0;
+        for (int dim = 0; dim < DIM; ++dim) {
+          position[dim] = pixel[dim] * deltas[dim];
+          distance += position[dim] * position[dim];
+        }
+        distance = sqrt(distance);
+        // if distance is within radius then add a pixel to the filter mask
+        if (distance < radius) {
+          const int index =
+              pixel[0] + dims[0] * (pixel[1] + dims[1] * pixel[2]);
+          this->push_back(FilterMaskPixel<DIM>(pixel, index, filter(position)));
+        }
+      }
+    }
   }
-  
+
   /// Gaussian filter as an example of a concrete filter implementation.
-  class Gaussian 
-  {
-  public:
+  class Gaussian {
+   public:
     /// Constructor.
-    Gaussian( const Units::GaussianSigma& standardDeviation ) 
-    {
+    Gaussian(const Units::GaussianSigma &standardDeviation) {
       InvStandardDeviation = 1.0 / standardDeviation.Value();
       NormFactor = 1.0 / (sqrt(2.0 * M_PI) * standardDeviation.Value());
     }
-    
+
     /// Get filter coefficient at relative location from filter center.
-    Types::DataItem operator() ( const FixedVector<DIM,Types::Coordinate>& relativePosition ) 
-    {
+    Types::DataItem operator()(
+        const FixedVector<DIM, Types::Coordinate> &relativePosition) {
       Types::Coordinate distance = 0;
-      for ( int i = 0; i < DIM; ++i ) 
-	distance += relativePosition[i] * relativePosition[i];
-      return static_cast<Types::DataItem>( NormFactor * exp( -distance * MathUtil::Square( InvStandardDeviation ) / 2 ) );
+      for (int i = 0; i < DIM; ++i)
+        distance += relativePosition[i] * relativePosition[i];
+      return static_cast<Types::DataItem>(
+          NormFactor *
+          exp(-distance * MathUtil::Square(InvStandardDeviation) / 2));
     }
-    
-  private:
+
+   private:
     /// Standard deviation.
     Types::Coordinate InvStandardDeviation;
 
@@ -208,6 +195,6 @@ public:
   };
 };
 
-} // namespace  cmtk
+}  // namespace  cmtk
 
-#endif // #ifndef __cmtkFilterMask_h_included_
+#endif  // #ifndef __cmtkFilterMask_h_included_

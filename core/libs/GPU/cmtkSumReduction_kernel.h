@@ -34,18 +34,16 @@
 /** \addtogroup GPU */
 //@{
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** Compute sum reduction of data.
  *\warning The data is destroyed in the process.
  */
-template<class T>
-T SumReduction( T* data, const int n );
+template <class T>
+T SumReduction(T *data, const int n);
 
-} // namespace cmtk
+}  // namespace cmtk
 
 //@}
 
-#endif // #ifndef __cmtkSumReduction_kernel_h_included_
+#endif  // #ifndef __cmtkSumReduction_kernel_h_included_

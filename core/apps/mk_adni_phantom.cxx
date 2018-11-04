@@ -33,19 +33,17 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkMagphanEMR051.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <IO/cmtkVolumeIO.h>
 
 #include <fstream>
 
-int
-doMain( const int argc, const char* argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   cmtk::Types::Coordinate resolution = 1.0;
   bool labels = false;
 
@@ -53,57 +51,65 @@ doMain( const int argc, const char* argv[] )
   std::string outputLabelsName;
   std::string outputLandmarksName;
 
-  try 
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Generate ADNI phantom image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Generate image of the ADNI structural imaging calibration phantom (a.k.a. Magphan EMR051)." );
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Generate ADNI phantom image");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "Generate image of the ADNI structural imaging "
+                      "calibration phantom (a.k.a. Magphan EMR051).");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( "resolution" ), &resolution, "Set output image resolution in [mm]" );
-    cl.AddSwitch( Key( "labels" ), &labels, true, "Draw each marker sphere with a label value defined by its index in the marker table. Otherwise, estimated T1 is used." );
-    cl.AddOption( Key( "write-labels" ), &outputLabelsName, "Optional path to write text file with label names." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-landmarks" ), &outputLandmarksName, "Optional path to write text file with landmark locations." )->SetProperties( cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption(Key("resolution"), &resolution,
+                 "Set output image resolution in [mm]");
+    cl.AddSwitch(Key("labels"), &labels, true,
+                 "Draw each marker sphere with a label value defined by its "
+                 "index in the marker table. Otherwise, estimated T1 is used.");
+    cl.AddOption(Key("write-labels"), &outputLabelsName,
+                 "Optional path to write text file with label names.")
+        ->SetProperties(cmtk::CommandLine::PROPS_OUTPUT);
+    cl.AddOption(Key("write-landmarks"), &outputLandmarksName,
+                 "Optional path to write text file with landmark locations.")
+        ->SetProperties(cmtk::CommandLine::PROPS_OUTPUT);
 
-    cl.AddParameter( &outputFileName, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    
-    cl.Parse( argc, argv );
-    }
-  catch ( const cmtk::CommandLine::Exception& e ) 
-    {
+    cl.AddParameter(&outputFileName, "OutputImage", "Output image path")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
+                        cmtk::CommandLine::PROPS_OUTPUT);
+
+    cl.Parse(argc, argv);
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e;
     return 1;
-    }
+  }
 
-  cmtk::VolumeIO::Write( *(cmtk::MagphanEMR051::GetPhantomImage( resolution, labels )), outputFileName );
+  cmtk::VolumeIO::Write(
+      *(cmtk::MagphanEMR051::GetPhantomImage(resolution, labels)),
+      outputFileName);
 
   // write optional labels file
-  if ( !outputLabelsName.empty() )
-    {
-    std::ofstream stream( outputLabelsName.c_str() );
-    if ( stream.good() )
-      {
-      for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )
-	{
-	stream << i+1 << "\t" << cmtk::MagphanEMR051::SphereName( i ) << std::endl;
-	}
+  if (!outputLabelsName.empty()) {
+    std::ofstream stream(outputLabelsName.c_str());
+    if (stream.good()) {
+      for (size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i) {
+        stream << i + 1 << "\t" << cmtk::MagphanEMR051::SphereName(i)
+               << std::endl;
       }
     }
-  
+  }
+
   // write optional landmarks file
-  if ( !outputLandmarksName.empty() )
-    {
-    std::ofstream stream( outputLandmarksName.c_str() );
-    if ( stream.good() )
-      {
-      for ( size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i )
-	{
-	stream << cmtk::MagphanEMR051::SphereCenter( i )[0] << "\t" << cmtk::MagphanEMR051::SphereCenter( i )[1] << "\t" << cmtk::MagphanEMR051::SphereCenter( i )[2] << "\t" 
-	       << cmtk::MagphanEMR051::SphereName( i ) << "\t" << std::endl;
-	}
+  if (!outputLandmarksName.empty()) {
+    std::ofstream stream(outputLandmarksName.c_str());
+    if (stream.good()) {
+      for (size_t i = 0; i < cmtk::MagphanEMR051::NumberOfSpheres; ++i) {
+        stream << cmtk::MagphanEMR051::SphereCenter(i)[0] << "\t"
+               << cmtk::MagphanEMR051::SphereCenter(i)[1] << "\t"
+               << cmtk::MagphanEMR051::SphereCenter(i)[2] << "\t"
+               << cmtk::MagphanEMR051::SphereName(i) << "\t" << std::endl;
       }
     }
-  
+  }
+
   return 0;
 }
 

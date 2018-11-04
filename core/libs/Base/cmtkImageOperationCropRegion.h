@@ -35,38 +35,35 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: crop to region.
 class ImageOperationCropRegion
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// Constructor:
-  ImageOperationCropRegion( const DataGrid::RegionType& region ) 
-  {
-    this->m_Region = region; 
+  ImageOperationCropRegion(const DataGrid::RegionType &region) {
+    this->m_Region = region;
   }
-  
+
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new downsampler.
-  static void New( const char* arg );
-  
-private:
+  static void New(const char *arg);
+
+ private:
   /// Cropping region: x0,y0,z0,x1,y1,z1
   DataGrid::RegionType m_Region;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationCropRegion_h_included_
+#endif  // #ifndef __cmtkImageOperationCropRegion_h_included_

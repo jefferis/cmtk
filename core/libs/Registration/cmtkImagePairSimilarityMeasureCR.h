@@ -40,20 +40,17 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Pairwise image similarity measure "correlation ratio".
  */
-class ImagePairSimilarityMeasureCR : 
-  /// Inherit generic image pair similarity measure
-  public ImagePairSimilarityMeasure
-{
-public:
+class ImagePairSimilarityMeasureCR :
+    /// Inherit generic image pair similarity measure
+    public ImagePairSimilarityMeasure {
+ public:
   /// This type.
   typedef ImagePairSimilarityMeasureCR Self;
 
@@ -62,116 +59,111 @@ public:
 
   /** Constructor.
    * The inherited constructor is called to initialize the given datasets.
-   * Afterwards, the original (untransformed) probability distribution 
+   * Afterwards, the original (untransformed) probability distribution
    * functions of model and reference are calculated.
    */
-  ImagePairSimilarityMeasureCR ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
-				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
+  ImagePairSimilarityMeasureCR(const UniformVolume::SmartPtr &refVolume,
+                               const UniformVolume::SmartPtr &fltVolume,
+                               const Interpolators::InterpolationEnum
+                                   interpolation = Interpolators::DEFAULT);
 
   /// Destructor: free internal data structures.
   virtual ~ImagePairSimilarityMeasureCR() {}
-  
+
   /** Reset computation.
    * Initialize arrays that hold the sums of all floating values and their
    * squares, separated by histogram classes of the reference image.
    */
-  virtual void Reset() 
-  {
+  virtual void Reset() {
     HistogramI.Reset();
     HistogramJ.Reset();
-    std::fill( SumI.begin(), SumI.end(), 0 );
-    std::fill( SumJ.begin(), SumJ.end(), 0 );
-    std::fill( SumI2.begin(), SumI2.end(), 0 );
-    std::fill( SumJ2.begin(), SumJ2.end(), 0 );
+    std::fill(SumI.begin(), SumI.end(), 0);
+    std::fill(SumJ.begin(), SumJ.end(), 0);
+    std::fill(SumI2.begin(), SumI2.end(), 0);
+    std::fill(SumJ2.begin(), SumJ2.end(), 0);
   }
 
   /** Continue incremental calculation.
    */
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
+  template <class T>
+  void Increment(const T a, const T b) {
     // what's the reference histogram bin?
-    size_t bin = HistogramI.ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin(a);
     // count this sample
-    HistogramI.Increment( bin );
+    HistogramI.Increment(bin);
     // add floating value to sum of values for this class
     SumJ[bin] += b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] += b * b;
 
     // same in reverse
-    bin = HistogramJ.ValueToBin( b );
-    HistogramJ.Increment( bin );
+    bin = HistogramJ.ValueToBin(b);
+    HistogramJ.Increment(bin);
     SumI[bin] += a;
     SumI2[bin] += a * a;
   }
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
+  template <class T>
+  void Decrement(const T a, const T b) {
     // what's the reference histogram bin?
-    size_t bin = HistogramI.ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin(a);
     // count this sample
-    HistogramI.Decrement( bin );
+    HistogramI.Decrement(bin);
     // add floating value to sum of values for this class
     SumJ[bin] -= b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] -= b * b;
 
     // same in reverse
-    bin = HistogramJ.ValueToBin( b );
-    HistogramJ.Decrement( bin );
+    bin = HistogramJ.ValueToBin(b);
+    HistogramJ.Decrement(bin);
     SumI[bin] -= a;
     SumI2[bin] -= a * a;
   }
 
   /**
    */
-  void Add ( const Self& other )
-  {
-    HistogramI.AddHistogram( other.HistogramI );
-    for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
-      {
+  void Add(const Self &other) {
+    HistogramI.AddHistogram(other.HistogramI);
+    for (size_t bin = 0; bin < NumBinsX; ++bin) {
       SumJ[bin] += other.SumJ[bin];
       SumJ2[bin] += other.SumJ2[bin];
-      }
-    
-    HistogramJ.AddHistogram( other.HistogramJ );
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
-      {
+    }
+
+    HistogramJ.AddHistogram(other.HistogramJ);
+    for (size_t bin = 0; bin < NumBinsY; ++bin) {
       SumI[bin] += other.SumI[bin];
       SumI2[bin] += other.SumI2[bin];
-      }
+    }
   }
-  
+
   /**
    */
-  void Remove ( const Self& other )
-  {
-    HistogramI.RemoveHistogram( other.HistogramI );
-    for ( size_t bin = 0; bin < NumBinsX; ++bin )
-      {
+  void Remove(const Self &other) {
+    HistogramI.RemoveHistogram(other.HistogramI);
+    for (size_t bin = 0; bin < NumBinsX; ++bin) {
       SumJ[bin] -= other.SumJ[bin];
       SumJ2[bin] -= other.SumJ2[bin];
-      }
-    
-    HistogramJ.RemoveHistogram( other.HistogramJ );
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
-      {
+    }
+
+    HistogramJ.RemoveHistogram(other.HistogramJ);
+    for (size_t bin = 0; bin < NumBinsY; ++bin) {
       SumI[bin] -= other.SumI[bin];
       SumI2[bin] -= other.SumI2[bin];
-      }
+    }
   }
 
   /// Return correlation ratio.
-  virtual Self::ReturnType Get () const;
+  virtual Self::ReturnType Get() const;
 
-private:
+ private:
   /// Number of bins for the X-distribution.
   size_t NumBinsX;
-  
+
   /// Array with sums of all Y-values by X-bins.
   std::vector<double> SumJ;
 
@@ -189,7 +181,7 @@ private:
 
   /// Number of bins for the Y-distribution.
   size_t NumBinsY;
-  
+
   /// Array with sums of all X-values by Y-bins.
   std::vector<double> SumI;
 
@@ -208,6 +200,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairSimilarityMeasureCR_h_included_
+#endif  // #ifndef __cmtkImagePairSimilarityMeasureCR_h_included_

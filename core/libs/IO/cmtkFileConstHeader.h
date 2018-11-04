@@ -39,88 +39,81 @@
 
 #include <string.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /** Read-only access to fields in a binary file header.
  */
-class FileConstHeader
-{
-public:
+class FileConstHeader {
+ public:
   /// Constructor.
-  FileConstHeader( const void *const header, const bool isBigEndian = true ) 
-  {
-    this->m_ConstHeader = static_cast<const char*>( header );
+  FileConstHeader(const void *const header, const bool isBigEndian = true) {
+    this->m_ConstHeader = static_cast<const char *>(header);
     this->m_IsBigEndian = isBigEndian;
   }
-  
+
   /// Retrieve field of arbitrary type from header.
-  template<class T> T GetField( const size_t offset ) 
-  {
+  template <class T>
+  T GetField(const size_t offset) {
     T result;
-    memcpy( &result, this->m_ConstHeader+offset, sizeof( T ) );
+    memcpy(&result, this->m_ConstHeader + offset, sizeof(T));
 #ifdef WORDS_BIGENDIAN
-    if ( ! this->m_IsBigEndian ) result = Memory::ByteSwap( result );
+    if (!this->m_IsBigEndian) result = Memory::ByteSwap(result);
 #else
-    if ( this->m_IsBigEndian ) result = Memory::ByteSwap( result );
+    if (this->m_IsBigEndian) result = Memory::ByteSwap(result);
 #endif
     return result;
   }
 
   /// Get null-terminated string from header.
-  char* GetFieldString( const size_t offset, char* value, const size_t maxlen = 0 ) 
-  {
-    if ( maxlen )
-      strncpy( value, this->m_ConstHeader+offset, maxlen );
+  char *GetFieldString(const size_t offset, char *value,
+                       const size_t maxlen = 0) {
+    if (maxlen)
+      strncpy(value, this->m_ConstHeader + offset, maxlen);
     else
-      strcpy( value, this->m_ConstHeader+offset );
+      strcpy(value, this->m_ConstHeader + offset);
     return value;
   }
-  
+
   /** Compare n-character string.
-   *\return The comparison result code as returned by memcmp(), i.e., the result is 0 if the given string matches
-   * the respective portion of the header.
+   *\return The comparison result code as returned by memcmp(), i.e., the result
+   *is 0 if the given string matches the respective portion of the header.
    */
-  bool CompareFieldStringN( const size_t offset, const char* value, const size_t len ) const
-  {
-    return !memcmp( this->m_ConstHeader+offset, value, len );
+  bool CompareFieldStringN(const size_t offset, const char *value,
+                           const size_t len) const {
+    return !memcmp(this->m_ConstHeader + offset, value, len);
   }
-  
+
   /// Retrieve array of arbitrary type from header.
-  template<class T> void GetArray
-  ( T *const target, const size_t offset, const size_t length = 1 ) 
-  {
-    memcpy( target, this->m_ConstHeader+offset, length * sizeof( T ) );
+  template <class T>
+  void GetArray(T *const target, const size_t offset, const size_t length = 1) {
+    memcpy(target, this->m_ConstHeader + offset, length * sizeof(T));
 #ifdef WORDS_BIGENDIAN
-    if ( ! this->m_IsBigEndian ) 
-      {
-      for ( size_t i = 0; i < length; ++i ) 
-	target[i] = Memory::ByteSwap( target[i] );
-      }
+    if (!this->m_IsBigEndian) {
+      for (size_t i = 0; i < length; ++i)
+        target[i] = Memory::ByteSwap(target[i]);
+    }
 #else
-    if ( this->m_IsBigEndian ) 
-      {
-      for ( size_t i = 0; i < length; ++i ) 
-	target[i] = Memory::ByteSwap( target[i] );
-      }
+    if (this->m_IsBigEndian) {
+      for (size_t i = 0; i < length; ++i)
+        target[i] = Memory::ByteSwap(target[i]);
+    }
 #endif
   }
-  
-private:
+
+ private:
   /// Pointer to the binary header.
   const char *m_ConstHeader;
 
-protected:
+ protected:
   /// Flag for endianness.
   bool m_IsBigEndian;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFileConstHeader_h_included_
+#endif  // #ifndef __cmtkFileConstHeader_h_included_

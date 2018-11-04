@@ -39,82 +39,131 @@
 #define NULL 0
 #endif
 
-/** Macro to define a protected pointer class parameter and public read and 
+/** Macro to define a protected pointer class parameter and public read and
  * write access member functions.
  */
-#define cmtkGetSetMacroObject(t,name) \
-  protected: t *m_##name; \
-  public:    void Set##name( t *const v ) { if (v) v->Reference(); if (this->m_##name) this->m_##name->Delete(); this->m_##name = v; } \
-             t* Get##name() { return this->m_##name; } \
-             const t* Get##name() const { return this->m_##name; } \
-             void Get##name( t*& to ) { to = this->m_##name; }
+#define cmtkGetSetMacroObject(t, name)                  \
+ protected:                                             \
+  t *m_##name;                                          \
+                                                        \
+ public:                                                \
+  void Set##name(t *const v) {                          \
+    if (v) v->Reference();                              \
+    if (this->m_##name) this->m_##name->Delete();       \
+    this->m_##name = v;                                 \
+  }                                                     \
+  t *Get##name() { return this->m_##name; }             \
+  const t *Get##name() const { return this->m_##name; } \
+  void Get##name(t *&to) { to = this->m_##name; }
 
-/** Macro to define a protected scalar class parameter and public read and 
+/** Macro to define a protected scalar class parameter and public read and
  * write access member functions.
  */
-#define igsClassParameter(type,name) \
-  public: type name; \
-             void Set##name( const type v ) { if ( name != v ) this->UpdateModifiedTime(); name = v; } \
-             type Get##name() const { return name; } \
-             void Get##name( type& to ) { to = name; }
+#define igsClassParameter(type, name)          \
+ public:                                       \
+  type name;                                   \
+  void Set##name(const type v) {               \
+    if (name != v) this->UpdateModifiedTime(); \
+    name = v;                                  \
+  }                                            \
+  type Get##name() const { return name; }      \
+  void Get##name(type &to) { to = name; }
 
-/** Macro to define a protected scalar class parameter and public read and 
+/** Macro to define a protected scalar class parameter and public read and
  * write access member functions.
  */
-#define cmtkClassParameter(type,name) \
-  public: type m_##name; \
-             void Set##name( const type v ) { if ( this->m_##name != v ) this->UpdateModifiedTime(); this->m_##name = v; } \
-             type Get##name() const { return this->m_##name; } \
-             void Get##name( type& to ) { to = this->m_##name; }
+#define cmtkClassParameter(type, name)                   \
+ public:                                                 \
+  type m_##name;                                         \
+  void Set##name(const type v) {                         \
+    if (this->m_##name != v) this->UpdateModifiedTime(); \
+    this->m_##name = v;                                  \
+  }                                                      \
+  type Get##name() const { return this->m_##name; }      \
+  void Get##name(type &to) { to = this->m_##name; }
 
-/** Macro to define a protected 2D array class parameter and public read and 
+/** Macro to define a protected 2D array class parameter and public read and
  * write access member functions.
  */
-#define igsClassParameter2Array(type,name) \
-  protected: type name[2]; \
-  public:    void Set##name( const type v0, const type v1 ) \
-                  { if ( (name[0] != v0) || (name[1] != v1) ) this->UpdateModifiedTime(); name[0] = v0; name[1] = v1; } \
-             void SetByIndex##name( const int axis, const type v ) \
-                  { if (name[axis] != v) this->UpdateModifiedTime(); name[axis] = v; } \
-             void Set##name( const type* v ) \
-                  { if ( (name[0] != v[0]) || (name[1] != v[1]) ) this->UpdateModifiedTime(); name[0] = v[0]; name[1] = v[1]; } \
-             void Get##name( type &v0, type &v1 ) const \
-                  { v0 = name[0]; v1 = name[1]; } \
-             void Get##name( type *const v ) const \
-                  { v[0] = name[0]; v[1] = name[1]; } \
-             const type* Get##name() const { return name; } \
-             type* Get##name() { return name; } \
-             type Get##name( const int i ) const { return name[i]; }
+#define igsClassParameter2Array(type, name)                                 \
+ protected:                                                                 \
+  type name[2];                                                             \
+                                                                            \
+ public:                                                                    \
+  void Set##name(const type v0, const type v1) {                            \
+    if ((name[0] != v0) || (name[1] != v1)) this->UpdateModifiedTime();     \
+    name[0] = v0;                                                           \
+    name[1] = v1;                                                           \
+  }                                                                         \
+  void SetByIndex##name(const int axis, const type v) {                     \
+    if (name[axis] != v) this->UpdateModifiedTime();                        \
+    name[axis] = v;                                                         \
+  }                                                                         \
+  void Set##name(const type *v) {                                           \
+    if ((name[0] != v[0]) || (name[1] != v[1])) this->UpdateModifiedTime(); \
+    name[0] = v[0];                                                         \
+    name[1] = v[1];                                                         \
+  }                                                                         \
+  void Get##name(type &v0, type &v1) const {                                \
+    v0 = name[0];                                                           \
+    v1 = name[1];                                                           \
+  }                                                                         \
+  void Get##name(type *const v) const {                                     \
+    v[0] = name[0];                                                         \
+    v[1] = name[1];                                                         \
+  }                                                                         \
+  const type *Get##name() const { return name; }                            \
+  type *Get##name() { return name; }                                        \
+  type Get##name(const int i) const { return name[i]; }
 
-/** Macro to define a protected 3D array class parameter and public read and 
+/** Macro to define a protected 3D array class parameter and public read and
  * write access member functions.
  */
-#define igsClassParameter3Array(type,name) \
-  protected: type name[3]; \
-  public:    void Set##name( const type v0, const type v1, const type v2 ) \
-                  { if ( (name[0] != v0) || (name[1] != v1) || (name[2] != v2) ) this->UpdateModifiedTime(); name[0] = v0; name[1] = v1; name[2] = v2; } \
-             void SetByIndex##name( const int axis, const type v ) \
-                  { if (name[axis] != v) this->UpdateModifiedTime(); name[axis] = v; } \
-             void Set##name( const type* v ) \
-                  { if ( (name[0] != v[0]) || (name[1] != v[1]) || (name[2] != v[2]) ) this->UpdateModifiedTime(); name[0] = v[0]; name[1] = v[1]; name[2] = v[2]; } \
-             void Get##name( type &v0, type &v1, type &v2 ) const \
-                  { v0 = name[0]; v1 = name[1]; v2 = name[2]; } \
-             void Get##name( type *const v ) const \
-                  { v[0] = name[0]; v[1] = name[1]; v[2] = name[2]; } \
-             const type* Get##name() const { return name; } \
-             type* Get##name() { return name; } \
-             type Get##name( const int i ) const { return name[i]; }
+#define igsClassParameter3Array(type, name)                          \
+ protected:                                                          \
+  type name[3];                                                      \
+                                                                     \
+ public:                                                             \
+  void Set##name(const type v0, const type v1, const type v2) {      \
+    if ((name[0] != v0) || (name[1] != v1) || (name[2] != v2))       \
+      this->UpdateModifiedTime();                                    \
+    name[0] = v0;                                                    \
+    name[1] = v1;                                                    \
+    name[2] = v2;                                                    \
+  }                                                                  \
+  void SetByIndex##name(const int axis, const type v) {              \
+    if (name[axis] != v) this->UpdateModifiedTime();                 \
+    name[axis] = v;                                                  \
+  }                                                                  \
+  void Set##name(const type *v) {                                    \
+    if ((name[0] != v[0]) || (name[1] != v[1]) || (name[2] != v[2])) \
+      this->UpdateModifiedTime();                                    \
+    name[0] = v[0];                                                  \
+    name[1] = v[1];                                                  \
+    name[2] = v[2];                                                  \
+  }                                                                  \
+  void Get##name(type &v0, type &v1, type &v2) const {               \
+    v0 = name[0];                                                    \
+    v1 = name[1];                                                    \
+    v2 = name[2];                                                    \
+  }                                                                  \
+  void Get##name(type *const v) const {                              \
+    v[0] = name[0];                                                  \
+    v[1] = name[1];                                                  \
+    v[2] = name[2];                                                  \
+  }                                                                  \
+  const type *Get##name() const { return name; }                     \
+  type *Get##name() { return name; }                                 \
+  type Get##name(const int i) const { return name[i]; }
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Pipeline */
 //@{
 
 /** Static counter representing the current (discrete) processing time.
- * This variable is incremented with every query using 
- * Object::GetCurrentTime(). Direct access MUST NOT occur in order 
+ * This variable is incremented with every query using
+ * Object::GetCurrentTime(). Direct access MUST NOT occur in order
  * to prevent inconsistent object times.
  *\name igsCurrentTime
  *\see PipelineObject#GetCurrentTime
@@ -125,65 +174,48 @@ extern long CurrentTime;
  * This class to some extent shadows VTK's respective class. However, our
  * class should make be a little more runtime- and memory-efficient.
  */
-class Object 
-{
-public:
+class Object {
+ public:
   /** Register another object as this objects owner.
    * The reference counter of this object is also incremented.
    *\return The new value of the reference counter.
    *\see ReferenceCount
    */
-  virtual int Reference() const 
-  {
-    return ++ReferenceCount;
-  }
+  virtual int Reference() const { return ++ReferenceCount; }
 
   /** Destroy this object.
    * This function decrements this object's reference counter. If the updated
    * reference count is zero, this object is deleted.
    */
-  virtual void Delete() 
-  {
-    if ( (--ReferenceCount) <= 0 ) delete this;
+  virtual void Delete() {
+    if ((--ReferenceCount) <= 0) delete this;
   }
-  
+
   /** Directly set the reference counter.
    * This function should be used CAREFULLY.
    */
-  void SetReferenceCount ( const int referenceCount ) 
-  {
+  void SetReferenceCount(const int referenceCount) {
     ReferenceCount = referenceCount;
   }
-  
+
   /** Get the reference counter.
    */
-  int GetReferenceCount () const 
-  { 
-    return ReferenceCount;
-  }
-  
+  int GetReferenceCount() const { return ReferenceCount; }
+
   /// Return this objects last modification time.
-  long GetModifiedTime() const
-  { 
-    return ModifiedTime;
-  }
-  
+  long GetModifiedTime() const { return ModifiedTime; }
+
   /// Set time of last modification to current time.
-  void UpdateModifiedTime() 
-  {
-    ModifiedTime = this->GetCurrentTime(); 
-  }
-  
+  void UpdateModifiedTime() { ModifiedTime = this->GetCurrentTime(); }
+
   /** Explicitly set time of last modification.
    * Only monotone updates, ie. setting the update time to a more recent time,
    * are allowed.
    */
-  void UpdateModifiedTime( long modifiedTime ) 
-  { 
-    if ( modifiedTime > ModifiedTime ) 
-      ModifiedTime = modifiedTime;
+  void UpdateModifiedTime(long modifiedTime) {
+    if (modifiedTime > ModifiedTime) ModifiedTime = modifiedTime;
   }
-  
+
   /** Utility function: Replace one reference counted object by another.
    * References are updated accordingly. Substitution of a pointer by itself
    * does not have any effect. The function is NULL safe.
@@ -198,11 +230,11 @@ public:
    * was basically replaced by itself, "false" is returned instead. Note that
    * only POINTERS are compared to find out which of both has happened.
    */
-  template<class C> bool ReplaceObject( C*& to, C *const from ) 
-  {
-    if ( from == to ) return false;
-    if ( from ) from->Reference();    
-    if ( to ) to->Delete();
+  template <class C>
+  bool ReplaceObject(C *&to, C *const from) {
+    if (from == to) return false;
+    if (from) from->Reference();
+    if (to) to->Delete();
     to = from;
     this->UpdateModifiedTime();
     return true;
@@ -211,16 +243,16 @@ public:
   /** Default constructor.
    * Set the reference counter to zero initially.
    */
-  Object() 
-  { 
-    ReferenceCount = 1; ModifiedTime = 0;
+  Object() {
+    ReferenceCount = 1;
+    ModifiedTime = 0;
   }
 
   /** Virtual constructor.
    * This function is only present to ensure that derived classes can have a
    * virtual destructor function.
    */
-  virtual ~Object() {};
+  virtual ~Object(){};
 
   /** Query the time processing counter.
    * Immediately after returning the present time, the time counter is
@@ -228,12 +260,9 @@ public:
    *\return The present time.
    *\see igsCurrentTime
    */
-  static long GetCurrentTime () 
-  { 
-    return CurrentTime++; 
-  }
-  
-private:
+  static long GetCurrentTime() { return CurrentTime++; }
+
+ private:
   /// The actual reference counter.
   mutable int ReferenceCount;
 
@@ -246,6 +275,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkObject_h_included_
+#endif  // #ifndef __cmtkObject_h_included_

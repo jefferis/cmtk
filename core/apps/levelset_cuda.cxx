@@ -32,19 +32,17 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkExitException.h>
-#include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
 #include <GPU/cmtkSimpleLevelsetDevice.h>
+#include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
+#include <System/cmtkExitException.h>
 
-int
-doMain( const int argc, const char* argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   cmtk::SimpleLevelsetCommandLine<cmtk::SimpleLevelsetDevice> levelset;
-  levelset.GetCommandLine().SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation.GPU" );
+  levelset.GetCommandLine().SetProgramInfo(cmtk::CommandLine::PRG_CATEG,
+                                           "CMTK.Segmentation.GPU");
 
-  const int init = levelset.Init( argc, argv );
-  if ( init )
-    return init;
+  const int init = levelset.Init(argc, argv);
+  if (init) return init;
 
   levelset.Execute();
   return 0;

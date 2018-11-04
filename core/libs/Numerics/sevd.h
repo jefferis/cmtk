@@ -67,12 +67,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ap.h"
 
 #include "blas.h"
-#include "rotations.h"
-#include "tdevd.h"
-#include "sblas.h"
 #include "reflections.h"
+#include "rotations.h"
+#include "sblas.h"
+#include "tdevd.h"
 #include "tridiagonal.h"
-
 
 /*************************************************************************
 Finding the eigenvalues and eigenvectors of a symmetric matrix
@@ -107,11 +106,7 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-bool smatrixevd(ap::real_2d_array a,
-     int n,
-     int zneeded,
-     bool isupper,
-     ap::real_1d_array& d,
-     ap::real_2d_array& z);
+bool smatrixevd(ap::real_2d_array a, int n, int zneeded, bool isupper,
+                ap::real_1d_array &d, ap::real_2d_array &z);
 
 #endif

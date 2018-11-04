@@ -35,34 +35,32 @@
 
 #include <cmtkconfig.h>
 
-#include <qwidget.h>
-#include <qslider.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qvalidator.h>
 #include <qcombobox.h>
-#include <qmenubar.h>
-#include <qstatusbar.h>
 #include <qlabel.h>
+#include <qlayout.h>
+#include <qlineedit.h>
+#include <qmenubar.h>
+#include <qpushbutton.h>
+#include <qslider.h>
+#include <qstatusbar.h>
 #include <qtabwidget.h>
-#include <QGridLayout>
+#include <qvalidator.h>
+#include <qwidget.h>
 #include <QActionGroup>
+#include <QGridLayout>
 
 #include <Base/cmtkMacros.h>
 #include <IO/cmtkStudy.h>
 
-#include <Pipeline/cmtkImage.h>
 #include <Pipeline/cmtkColormap.h>
+#include <Pipeline/cmtkImage.h>
 #include <Pipeline/cmtkImageToImageRGB.h>
 
 #include <Qt/cmtkQtProgress.h>
 #include <Qt/cmtkQtScrollRenderView.h>
 #include <Qt/cmtkQtWindowLevelControls.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Qt */
 //@{
@@ -70,27 +68,26 @@ cmtk
 /** Triplanar image viewer window.
  */
 class QtTriplanarWindow :
-  /// Inherit from Qt widget.
-  public QWidget
-{
-  Q_OBJECT // we're using slots
+    /// Inherit from Qt widget.
+    public QWidget {
+  Q_OBJECT  // we're using slots
 
-public:
-  /// Constructor.
-  QtTriplanarWindow();
+      public :
+      /// Constructor.
+      QtTriplanarWindow();
 
-protected:
+ protected:
   /// The Study object we're working on.
-  cmtkGetSetMacro(Study::SmartPtr,Study);
+  cmtkGetSetMacro(Study::SmartPtr, Study);
 
   /// Use (linear) interpolation when rendering slices.
-  QAction* m_InterpolateAction;
+  QAction *m_InterpolateAction;
 
   /// Use (linear) interpolation when rendering slices.
-  QAction* m_CrosshairAction;
+  QAction *m_CrosshairAction;
 
   /// Fill Null data areas with a checkerbox pattern
-  QAction* m_CheckerboxAction;
+  QAction *m_CheckerboxAction;
 
   /// Zoom factor in percent.
   int m_ZoomFactor;
@@ -102,15 +99,15 @@ protected:
   bool m_BatchMode;
 
   /// Action group for zoom factor adjustment.
-  QActionGroup* m_ZoomActions;
+  QActionGroup *m_ZoomActions;
 
-public slots:
-  void slotDataChanged( Study::SmartPtr& study );
-  void slotColormapChanged( Study::SmartPtr& study );
-  void slotSwitchToStudy( Study::SmartPtr& study );
-  void slotSwitchToStudyInternal( Study::SmartPtr& study );
+ public slots:
+  void slotDataChanged(Study::SmartPtr &study);
+  void slotColormapChanged(Study::SmartPtr &study);
+  void slotSwitchToStudy(Study::SmartPtr &study);
+  void slotSwitchToStudyInternal(Study::SmartPtr &study);
 
-protected slots:
+ protected slots:
   void slotView25();
   void slotView33();
   void slotView50();
@@ -124,36 +121,36 @@ protected slots:
   void slotViewCrosshair();
   void slotViewCheckerbox();
 
-  void slotExportMenuCmd( QAction* );
+  void slotExportMenuCmd(QAction *);
   void slotRenderAll();
 
   /// Batch mode slots
-  void slotSetColormap( const QString& cmap );
-  void slotSetWindowLevel( const QString& wl );
-  void slotGoToPixel( const QString& xyz );
-  void slotGoToLocation( const QString& xyz );
-  void slotExportImage( const QString& filename, const int command );
-  void slotSetInterpolateMode( const bool mode );
-  void slotSetCrosshairMode( const bool mode );
-  void slotSetCheckerboardMode( const bool mode );
-  void slotSetZoom( const int zoomPercent );
+  void slotSetColormap(const QString &cmap);
+  void slotSetWindowLevel(const QString &wl);
+  void slotGoToPixel(const QString &xyz);
+  void slotGoToLocation(const QString &xyz);
+  void slotExportImage(const QString &filename, const int command);
+  void slotSetInterpolateMode(const bool mode);
+  void slotSetCrosshairMode(const bool mode);
+  void slotSetCheckerboardMode(const bool mode);
+  void slotSetZoom(const int zoomPercent);
 
   /// Switch image in axial viewer.
-  void slotSwitchImageAx( int imageIndex );
-  void slotSwitchImageSa( int imageIndex );
-  void slotSwitchImageCo( int imageIndex );
+  void slotSwitchImageAx(int imageIndex);
+  void slotSwitchImageSa(int imageIndex);
+  void slotSwitchImageCo(int imageIndex);
 
   /// Three-dimensional mouse event.
-  void slotMouse3D( Qt::MouseButton, const Vector3D& );
+  void slotMouse3D(Qt::MouseButton, const Vector3D &);
 
   /// Three-dimensional mouse event from axial slice.
-  void slotMouseAx( Qt::MouseButton, const Vector3D& );
+  void slotMouseAx(Qt::MouseButton, const Vector3D &);
 
   /// Three-dimensional mouse event from sagittal slice.
-  void slotMouseSa( Qt::MouseButton, const Vector3D& );
+  void slotMouseSa(Qt::MouseButton, const Vector3D &);
 
   /// Three-dimensional mouse event from coronal slice.
-  void slotMouseCo( Qt::MouseButton, const Vector3D& );
+  void slotMouseCo(Qt::MouseButton, const Vector3D &);
 
   /// This slot is called when the "Center" button is clicked.
   void slotCenter();
@@ -176,63 +173,63 @@ protected slots:
   /// This slot is called when the "Import Landmarks" button is clicked.
   void slotImportLandmarks();
 
-protected:
+ protected:
   /// The "View" menu.
-  QMenu* ViewMenu;
+  QMenu *ViewMenu;
 
   /// The "Export" menu.
-  QMenu* ExportMenu;
+  QMenu *ExportMenu;
 
   /// Store volume dimensions here for convenient access.
   DataGrid::IndexType VolumeDims;
 
   /// The scrolled view we display an image in.
-  QtScrollRenderView* ScrollRenderViewAx;
-  QtScrollRenderView* ScrollRenderViewSa;
-  QtScrollRenderView* ScrollRenderViewCo;
+  QtScrollRenderView *ScrollRenderViewAx;
+  QtScrollRenderView *ScrollRenderViewSa;
+  QtScrollRenderView *ScrollRenderViewCo;
 
-  Image* PipelineImageAx;
-  Image* PipelineImageSa;
-  Image* PipelineImageCo;
+  Image *PipelineImageAx;
+  Image *PipelineImageSa;
+  Image *PipelineImageCo;
 
-  Colormap* m_Colormap;
+  Colormap *m_Colormap;
 
-  ImageToImageRGB* ImageToImageRGBAx;
-  ImageToImageRGB* ImageToImageRGBSa;
-  ImageToImageRGB* ImageToImageRGBCo;
+  ImageToImageRGB *ImageToImageRGBAx;
+  ImageToImageRGB *ImageToImageRGBSa;
+  ImageToImageRGB *ImageToImageRGBCo;
 
-  QMenuBar* MenuBar;
-  QGridLayout* GridLayout;
-  QStatusBar* StatusBar;
+  QMenuBar *MenuBar;
+  QGridLayout *GridLayout;
+  QStatusBar *StatusBar;
 
-  QGridLayout* LandmarksLayout;
-  QLineEdit* LocationEntryX;
-  QLineEdit* LocationEntryY;
-  QLineEdit* LocationEntryZ;
-  QDoubleValidator* LocationValidatorX;
-  QDoubleValidator* LocationValidatorY;
-  QDoubleValidator* LocationValidatorZ;
+  QGridLayout *LandmarksLayout;
+  QLineEdit *LocationEntryX;
+  QLineEdit *LocationEntryY;
+  QLineEdit *LocationEntryZ;
+  QDoubleValidator *LocationValidatorX;
+  QDoubleValidator *LocationValidatorY;
+  QDoubleValidator *LocationValidatorZ;
 
-  QPushButton* GoToLocationButton;
-  QPushButton* CenterButton;
-  QPushButton* GoToLandmarkButton;
-  QPushButton* AddLandmarkButton;
-  QPushButton* DeleteLandmarkButton;
-  QPushButton* ExportLandmarksButton;
-  QPushButton* ImportLandmarksButton;
-    
-  QComboBox* LandmarkBox;
-  QtWindowLevelControls* WindowLevelControls;
+  QPushButton *GoToLocationButton;
+  QPushButton *CenterButton;
+  QPushButton *GoToLandmarkButton;
+  QPushButton *AddLandmarkButton;
+  QPushButton *DeleteLandmarkButton;
+  QPushButton *ExportLandmarksButton;
+  QPushButton *ImportLandmarksButton;
 
-  QTabWidget* m_ControlsTab;
-  QtProgress* m_ProgressReporter;
+  QComboBox *LandmarkBox;
+  QtWindowLevelControls *WindowLevelControls;
 
-private:
+  QTabWidget *m_ControlsTab;
+  QtProgress *m_ProgressReporter;
+
+ private:
   /// The pixel grid index of the current location.
   DataGrid::IndexType GridIndex;
 
   /// Status bar output of grid coordinate.
-  QLabel* GridIndexInfo;
+  QLabel *GridIndexInfo;
 
   /// Update status bar.
   void UpdateGridInfo();
@@ -240,6 +237,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkQtTriplanarWindow_h_included_
+#endif  // #ifndef __cmtkQtTriplanarWindow_h_included_

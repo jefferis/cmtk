@@ -36,11 +36,15 @@
 #include <cmtkconfig.h>
 
 #ifdef CMTK_USE_GCD
-#  include "cmtkThreadPoolGCD.h"
-namespace cmtk { typedef ThreadPoolGCD ThreadPool; }
+#include "cmtkThreadPoolGCD.h"
+namespace cmtk {
+typedef ThreadPoolGCD ThreadPool;
+}
 #else
-#  include "cmtkThreadPoolThreads.h"
-namespace cmtk { typedef ThreadPoolThreads ThreadPool; }
+#include "cmtkThreadPoolThreads.h"
+namespace cmtk {
+typedef ThreadPoolThreads ThreadPool;
+}
 #endif
 
-#endif // #ifndef __cmtkThreadPool_h_included_
+#endif  // #ifndef __cmtkThreadPool_h_included_

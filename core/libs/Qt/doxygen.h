@@ -31,5 +31,6 @@
 */
 
 /** \defgroup Qt cmtkQt Library
- * This library provides classes to interface lower-level CMTK classes with the Qt toolkit.
+ * This library provides classes to interface lower-level CMTK classes with the
+ * Qt toolkit.
  */

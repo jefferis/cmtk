@@ -32,74 +32,64 @@
 
 #include "cmtkThreadPoolGCD.h"
 
-#include <System/cmtkThreads.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkThreads.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-ThreadPoolGCD::ThreadPoolGCD( const size_t nThreads )
-{
-  if ( ! nThreads )
+ThreadPoolGCD::ThreadPoolGCD(const size_t nThreads) {
+  if (!nThreads)
     this->m_NumberOfThreads = cmtk::Threads::GetNumberOfThreads();
   else
     this->m_NumberOfThreads = nThreads;
-  
-  this->m_Queues.resize( this->m_NumberOfThreads );
-  for ( size_t i = 0; i < this->m_NumberOfThreads; ++i )
-    {
-    this->m_Queues[i] = dispatch_queue_create( "ThreadPoolGCD", 0 );
-    }
+
+  this->m_Queues.resize(this->m_NumberOfThreads);
+  for (size_t i = 0; i < this->m_NumberOfThreads; ++i) {
+    this->m_Queues[i] = dispatch_queue_create("ThreadPoolGCD", 0);
+  }
 }
 
-ThreadPoolGCD::~ThreadPoolGCD()
-{
-  for ( size_t i = 0; i < this->m_NumberOfThreads; ++i )
-    {
-    dispatch_release( this->m_Queues[i] );
-    }
+ThreadPoolGCD::~ThreadPoolGCD() {
+  for (size_t i = 0; i < this->m_NumberOfThreads; ++i) {
+    dispatch_release(this->m_Queues[i]);
+  }
 }
 
-void
-ThreadPoolGCD::Dispatch( Self::TaskFunction taskFunction, std::vector<void*>& taskParameters, const size_t numberOfTasksOverride )
-{
-  const size_t numberOfTasks = numberOfTasksOverride ? numberOfTasksOverride : taskParameters.size();
-  if ( ! numberOfTasks )
-    {
-    StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget to resize the parameter vector?\n";
-    exit( 1 );
-    }
+void ThreadPoolGCD::Dispatch(Self::TaskFunction taskFunction,
+                             std::vector<void *> &taskParameters,
+                             const size_t numberOfTasksOverride) {
+  const size_t numberOfTasks =
+      numberOfTasksOverride ? numberOfTasksOverride : taskParameters.size();
+  if (!numberOfTasks) {
+    StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget "
+              "to resize the parameter vector?\n";
+    exit(1);
+  }
 
-  const std::vector<void*>& vParams = taskParameters;
+  const std::vector<void *> &vParams = taskParameters;
 
   const size_t nQueues = this->m_Queues.size();
-  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; )
-    {
-    for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx, ++taskIdx )
-      {
-      if ( taskIdx < numberOfTasks )
-	{
-        dispatch_async( this->m_Queues[queueIdx], 
-			^{
-			  taskFunction( (void*)( vParams[taskIdx] ), taskIdx, numberOfTasks, queueIdx, nQueues );
-			} );
-	}
+  for (size_t taskIdx = 0; taskIdx < numberOfTasks;) {
+    for (size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx, ++taskIdx) {
+      if (taskIdx < numberOfTasks) {
+        dispatch_async(this->m_Queues[queueIdx], ^{
+          taskFunction((void *)(vParams[taskIdx]), taskIdx, numberOfTasks,
+                       queueIdx, nQueues);
+        });
       }
     }
+  }
 
   // wait for all queues to finish
-  for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx )
-    {
-    dispatch_sync( this->m_Queues[queueIdx], ^{} );
-    }
+  for (size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx) {
+    dispatch_sync(this->m_Queues[queueIdx], ^{
+                  });
+  }
 }
 
-ThreadPoolGCD& 
-ThreadPoolGCD::GetGlobalThreadPool()
-{
+ThreadPoolGCD &ThreadPoolGCD::GetGlobalThreadPool() {
   static ThreadPoolGCD globalThreadPoolGCD;
   return globalThreadPoolGCD;
 }
 
-}
+}  // namespace cmtk

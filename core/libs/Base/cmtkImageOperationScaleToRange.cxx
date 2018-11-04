@@ -32,24 +32,22 @@
 
 #include <System/cmtkCommandLine.h>
 
-void
-cmtk::ImageOperationScaleToRange::New( const char* range )
-{
+void cmtk::ImageOperationScaleToRange::New(const char *range) {
   double rangeFrom, rangeTo;
-  if ( 2 == sscanf( range, "%20lf:%20lf", &rangeFrom, &rangeTo ) )
-    {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationScaleToRange( Types::DataItemRange( rangeFrom, rangeTo ) ) ) );
-    }
-  else
-    {
-    throw CommandLine::Exception( "Range must be given as two floating point numbers separated by ':', e.g., '0.5:1.0'" );
-    }
+  if (2 == sscanf(range, "%20lf:%20lf", &rangeFrom, &rangeTo)) {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationScaleToRange(
+            Types::DataItemRange(rangeFrom, rangeTo))));
+  } else {
+    throw CommandLine::Exception(
+        "Range must be given as two floating point "
+        "numbers separated by ':', e.g., '0.5:1.0'");
+  }
 }
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationScaleToRange::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationScaleToRange::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  volumeData->RescaleToRange( this->m_ToRange );
+  volumeData->RescaleToRange(this->m_ToRange);
   return volume;
 }

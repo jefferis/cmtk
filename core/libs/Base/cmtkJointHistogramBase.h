@@ -35,20 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <Base/cmtkUniformVolume.h>
+#include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Basic (non-template) 2-D histogram functions.
-class JointHistogramBase
-{
-public:
+class JointHistogramBase {
+ public:
   /// This class.
   typedef JointHistogramBase Self;
 
@@ -56,14 +53,17 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Calculate optimum number of histogram bins.
-  static size_t CalcNumBins( const size_t numberOfSamples /*!< Number of data values. */, const Types::DataItemRange& valueRange /*!< Range of values in the data.*/ );
+  static size_t CalcNumBins(
+      const size_t numberOfSamples /*!< Number of data values. */,
+      const Types::DataItemRange
+          &valueRange /*!< Range of values in the data.*/);
 
   /// Calculate optimum number of histogram bins for given volume.
-  static size_t CalcNumBins ( const UniformVolume* volume );
+  static size_t CalcNumBins(const UniformVolume *volume);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkJointHistogramBase_h_included_
+#endif  // #ifndef __cmtkJointHistogramBase_h_included_

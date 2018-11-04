@@ -36,47 +36,53 @@
 #include <cmtkconfig.h>
 
 #include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
-#include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
 #include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Class for spline warp multi-channel registration functional. */
-template<class TMetricFunctional = MultiChannelRMIRegistrationFunctional<> >
+template <class TMetricFunctional = MultiChannelRMIRegistrationFunctional<>>
 class SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional :
-  /** Inherit from multi-channel registration functional base class. */
-  public SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-{
-public:
+    /** Inherit from multi-channel registration functional base class. */
+    public SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional> {
+ public:
   /** This class. */
-  typedef SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctional> Self;
+  typedef SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<
+      TMetricFunctional>
+      Self;
 
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
 
   /** This class. */
-  typedef SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional> Superclass;
+  typedef SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
+      Superclass;
 
   /** Metric data class. */
   typedef typename TMetricFunctional::MetricData MetricData;
 
-private:
-  /** Continue metric computation and store reformatted floating channels for local recomputation. */
-  virtual void ContinueMetricStoreReformatted( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
+ private:
+  /** Continue metric computation and store reformatted floating channels for
+   * local recomputation. */
+  virtual void ContinueMetricStoreReformatted(MetricData &metricData,
+                                              const size_t rindex,
+                                              const Vector3D &fvector);
 
-  /** Continue metric computation and store reformatted floating channels for local recomputation. */
-  virtual void ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
+  /** Continue metric computation and store reformatted floating channels for
+   * local recomputation. */
+  virtual void ContinueMetric(MetricData &metricData, const size_t rindex,
+                              const Vector3D &fvector);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional.txx"
 
-#endif // #ifndef __cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional_h_included_
+#endif  // #ifndef
+        // __cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional_h_included_

@@ -35,24 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkFunctional.h>
 #include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-/// Symmtric affine registration functional for simultaneous forward/inverse transformation estimation.
+/// Symmtric affine registration functional for simultaneous forward/inverse
+/// transformation estimation.
 class ImagePairSymmetricAffineRegistrationFunctional :
-  /** Inherit from generic functional. */
-  public Functional
-{
-public:
+    /** Inherit from generic functional. */
+    public Functional {
+ public:
   /// This class.
   typedef ImagePairSymmetricAffineRegistrationFunctional Self;
 
@@ -63,31 +61,37 @@ public:
   typedef Functional Superclass;
 
   /// Constructor.
-  ImagePairSymmetricAffineRegistrationFunctional( AffineXform::SmartPtr& affineXform ) : m_FwdXform( affineXform ) {};
+  ImagePairSymmetricAffineRegistrationFunctional(
+      AffineXform::SmartPtr &affineXform)
+      : m_FwdXform(affineXform){};
 
   /// Set warp for forward and backward functional.
-  virtual void SetXform( AffineXform::SmartPtr& forward )
-  {
+  virtual void SetXform(AffineXform::SmartPtr &forward) {
     this->m_FwdXform = forward;
   }
 
   /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
+  virtual void SetForceOutside(const bool flag = true,
+                               const Types::DataItem value = 0) = 0;
 
   /// Set optional restriction to axis-orthogonal in-plane transformations.
-  virtual void SetRestrictToInPlane( const int axis ) = 0;
+  virtual void SetRestrictToInPlane(const int axis) = 0;
 
   /// Constructor function.
-  static ImagePairSymmetricAffineRegistrationFunctional* Create
-  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation, AffineXform::SmartPtr& affineXform );
+  static ImagePairSymmetricAffineRegistrationFunctional *Create(
+      const int metric, UniformVolume::SmartPtr &refVolume,
+      UniformVolume::SmartPtr &fltVolume,
+      const Interpolators::InterpolationEnum interpolation,
+      AffineXform::SmartPtr &affineXform);
 
-protected:
+ protected:
   /// Forward transformation.
   AffineXform::SmartPtr m_FwdXform;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairSymmetricAffineRegistrationFunctional_h_included_
+#endif  // #ifndef
+        // __cmtkImagePairSymmetricAffineRegistrationFunctional_h_included_

@@ -40,11 +40,26 @@
 
 #include "System/cmtkStackBacktrace.h"
 
-#define cmtkCheckCallCUDA(cmd) \
-  { const cudaError_t cudaError = cmd; if ( cudaError != cudaSuccess ) { fprintf( stderr, "CUDA command failed with error '%s' at %s:%d\n", cudaGetErrorString( cudaError ), __FILE__, __LINE__ ); cmtk::StackBacktrace::PrintBacktrace(); exit(1); } }
-  
-#define cmtkCheckLastErrorCUDA \
-  { const cudaError_t cudaError = cudaGetLastError(); if ( cudaError != cudaSuccess ) { fprintf( stderr, "CUDA error '%s' at %s:%d\n", cudaGetErrorString( cudaError ), __FILE__, __LINE__ ); cmtk::StackBacktrace::PrintBacktrace(); exit( 1 ); } }
+#define cmtkCheckCallCUDA(cmd)                                          \
+  {                                                                     \
+    const cudaError_t cudaError = cmd;                                  \
+    if (cudaError != cudaSuccess) {                                     \
+      fprintf(stderr, "CUDA command failed with error '%s' at %s:%d\n", \
+              cudaGetErrorString(cudaError), __FILE__, __LINE__);       \
+      cmtk::StackBacktrace::PrintBacktrace();                           \
+      exit(1);                                                          \
+    }                                                                   \
+  }
 
+#define cmtkCheckLastErrorCUDA                                    \
+  {                                                               \
+    const cudaError_t cudaError = cudaGetLastError();             \
+    if (cudaError != cudaSuccess) {                               \
+      fprintf(stderr, "CUDA error '%s' at %s:%d\n",               \
+              cudaGetErrorString(cudaError), __FILE__, __LINE__); \
+      cmtk::StackBacktrace::PrintBacktrace();                     \
+      exit(1);                                                    \
+    }                                                             \
+  }
 
-#endif // #ifndef __cmtkCUDA_h_included_
+#endif  // #ifndef __cmtkCUDA_h_included_

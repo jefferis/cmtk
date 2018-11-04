@@ -33,12 +33,12 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
+#include <Base/cmtkFixedVector.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumePainter.h>
-#include <Base/cmtkFixedVector.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -46,215 +46,246 @@
 #include <memory>
 
 #ifdef CMTK_USE_DCMTK
-#  include <dcmtk/dcmdata/dctk.h>
+#include <dcmtk/dcmdata/dctk.h>
 #endif
 
-int Dims[3] = { 256, 256, 256 };
+int Dims[3] = {256, 256, 256};
 
-void
-SetDims( const char* arg )
-{
-  if ( 3 != sscanf( arg, "%6d,%6d,%6d", &Dims[0], &Dims[1], &Dims[2] ) )
-    {
-    cmtk::StdErr << "ERROR: cannot extract grid dimensions X,Y,Z from argument '" << arg << "'\n";
-    throw cmtk::ExitException( 1 );
-    }
+void SetDims(const char *arg) {
+  if (3 != sscanf(arg, "%6d,%6d,%6d", &Dims[0], &Dims[1], &Dims[2])) {
+    cmtk::StdErr
+        << "ERROR: cannot extract grid dimensions X,Y,Z from argument '" << arg
+        << "'\n";
+    throw cmtk::ExitException(1);
+  }
 }
 
-float Delta[3] = { 1.0, 1.0, 1.0 };
+float Delta[3] = {1.0, 1.0, 1.0};
 
-void
-SetDeltas( const char* arg )
-{
-  if ( 3 != sscanf( arg, "%15f,%15f,%15f", &Delta[0], &Delta[1], &Delta[2] ) )
-    {
-    cmtk::StdErr << "ERROR: cannot extract pixel size dX,dY,dZ from argument '" << arg << "'\n";
-    throw cmtk::ExitException( 1 );
-    }
+void SetDeltas(const char *arg) {
+  if (3 != sscanf(arg, "%15f,%15f,%15f", &Delta[0], &Delta[1], &Delta[2])) {
+    cmtk::StdErr << "ERROR: cannot extract pixel size dX,dY,dZ from argument '"
+                 << arg << "'\n";
+    throw cmtk::ExitException(1);
+  }
 }
 
 cmtk::ScalarDataType DataType = cmtk::TYPE_USHORT;
 cmtk::Types::DataItem Background = 0;
 
-const char* InputImageName = NULL;
+const char *InputImageName = NULL;
 bool InputImageGridOnly = false;
 
-const char* OutputFileName = "phantom.nii";
+const char *OutputFileName = "phantom.nii";
 
-cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::COORDINATES_INDEXED;
+cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode =
+    cmtk::UniformVolumePainter::COORDINATES_INDEXED;
 
-int
-doMain( const int argc, const char* argv[] )
-{
-  try 
-    {
+int doMain(const int argc, const char *argv[]) {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Generate phantom image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Generate 3D digital phantom images using a selection of drawing commands" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "mk_phantom_3d [options] command0 [command1 ...]\n"
-		       "\t sphere x,y,z radius value\n"
-		       "\t box x0,y0,z0 x1,y1,z1 value\n");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Generate phantom image");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "Generate 3D digital phantom images using a selection of "
+                      "drawing commands");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
+                      "mk_phantom_3d [options] command0 [command1 ...]\n"
+                      "\t sphere x,y,z radius value\n"
+                      "\t box x0,y0,z0 x1,y1,z1 value\n");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );
-    cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
+    cl.AddCallback(Key('D', "dims"), SetDims, "Set dimensions in voxels");
+    cl.AddCallback(Key('V', "voxel"), SetDeltas, "Set voxel size in [mm]");
 
-    cmtk::CommandLine::EnumGroup<cmtk::UniformVolumePainter::CoordinateModeEnum>::SmartPtr modeGroup = cl.AddEnum( "coordinates", &CoordinateMode, "Coordinate specification mode." );
-    modeGroup->AddSwitch( Key( "indexed" ), cmtk::UniformVolumePainter::COORDINATES_INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
-    modeGroup->AddSwitch( Key( "absolute" ), cmtk::UniformVolumePainter::COORDINATES_ABSOLUTE, "Use absolute volume coordinates. For each dimension, the valid range is [0,FOV]." );
-    modeGroup->AddSwitch( Key( "relative" ), cmtk::UniformVolumePainter::COORDINATES_RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
-    
-    cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
-    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );
-    cl.AddSwitch( Key( 's', "short" ), &DataType, cmtk::TYPE_SHORT, "16 bits, signed" );
-    cl.AddSwitch( Key( 'u', "ushort" ), &DataType, cmtk::TYPE_USHORT, "16 bits, unsigned" );
-    cl.AddSwitch( Key( 'i', "int" ), &DataType, cmtk::TYPE_INT, "32 bits signed" );
-    cl.AddSwitch( Key( 'f', "float" ), &DataType, cmtk::TYPE_FLOAT, "32 bits floating point" );
-    cl.AddSwitch( Key( 'd', "double" ), &DataType, cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
+    cmtk::CommandLine::EnumGroup<
+        cmtk::UniformVolumePainter::CoordinateModeEnum>::SmartPtr modeGroup =
+        cl.AddEnum("coordinates", &CoordinateMode,
+                   "Coordinate specification mode.");
+    modeGroup->AddSwitch(Key("indexed"),
+                         cmtk::UniformVolumePainter::COORDINATES_INDEXED,
+                         "Use grid indexes to specify coordinates. For each "
+                         "dimension, the valid value range is [0,Dims-1].");
+    modeGroup->AddSwitch(Key("absolute"),
+                         cmtk::UniformVolumePainter::COORDINATES_ABSOLUTE,
+                         "Use absolute volume coordinates. For each dimension, "
+                         "the valid range is [0,FOV].");
+    modeGroup->AddSwitch(Key("relative"),
+                         cmtk::UniformVolumePainter::COORDINATES_RELATIVE,
+                         "Use relative volume coordinates. For each dimension, "
+                         "the valid range is [0,1].");
 
-    cl.AddOption( Key( 'B', "bg" ), &Background, "Set the image background value (use to initialize newly created image)." );
+    cl.AddSwitch(Key('c', "char"), &DataType, cmtk::TYPE_CHAR,
+                 "8 bits, signed");
+    cl.AddSwitch(Key('b', "byte"), &DataType, cmtk::TYPE_BYTE,
+                 "8 bits, unsigned");
+    cl.AddSwitch(Key('s', "short"), &DataType, cmtk::TYPE_SHORT,
+                 "16 bits, signed");
+    cl.AddSwitch(Key('u', "ushort"), &DataType, cmtk::TYPE_USHORT,
+                 "16 bits, unsigned");
+    cl.AddSwitch(Key('i', "int"), &DataType, cmtk::TYPE_INT, "32 bits signed");
+    cl.AddSwitch(Key('f', "float"), &DataType, cmtk::TYPE_FLOAT,
+                 "32 bits floating point");
+    cl.AddSwitch(Key('d', "double"), &DataType, cmtk::TYPE_DOUBLE,
+                 "64 bits floating point\n");
 
-    cl.AddOption( Key( 'I', "import" ), &InputImageName, "Import image" );
-    cl.AddOption( Key( "import-grid" ), &InputImageName, "Import image grid only, ignore data", &InputImageGridOnly );    
-    cl.AddOption( Key( 'o', "outfile" ), &OutputFileName, "File name for output image" );
-    
-    cl.Parse( argc, argv );
+    cl.AddOption(Key('B', "bg"), &Background,
+                 "Set the image background value (use to initialize newly "
+                 "created image).");
+
+    cl.AddOption(Key('I', "import"), &InputImageName, "Import image");
+    cl.AddOption(Key("import-grid"), &InputImageName,
+                 "Import image grid only, ignore data", &InputImageGridOnly);
+    cl.AddOption(Key('o', "outfile"), &OutputFileName,
+                 "File name for output image");
+
+    cl.Parse(argc, argv);
 
     cmtk::UniformVolume::SmartPtr volume;
-    if ( InputImageName )
-      {
-      if ( InputImageGridOnly )
-	{
-	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( InputImageName ) );
-	volume->CreateDataArray( DataType );
-	volume->GetData()->Fill( Background );
-	}
-      else
-	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( InputImageName ) );
-      }
-    else
-      {
-      const cmtk::Types::Coordinate size[3] = { Delta[0] * (Dims[0]-1),  Delta[1] * (Dims[1]-1),  Delta[2] * (Dims[2]-1) };
-      volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType::FromPointer( Dims ), cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( size ) ) );
-      volume->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
-      volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
-      cmtk::TypedArray::SmartPtr data( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
-      volume->SetData( data );
-      data->Fill( Background );
-      }
-    
-    cmtk::UniformVolumePainter painter( volume, CoordinateMode );
-    
-    const char* nextCmd = cl.GetNextOptional();
-    while (  nextCmd )
-      {
-      if ( ! strcmp( nextCmd, "sphere" ) )
-	{
-	const char* center = cl.GetNext();
-	const char* radius = cl.GetNext();
-	const char* value = cl.GetNext();
+    if (InputImageName) {
+      if (InputImageGridOnly) {
+        volume = cmtk::UniformVolume::SmartPtr(
+            cmtk::VolumeIO::ReadGridOriented(InputImageName));
+        volume->CreateDataArray(DataType);
+        volume->GetData()->Fill(Background);
+      } else
+        volume = cmtk::UniformVolume::SmartPtr(
+            cmtk::VolumeIO::ReadOriented(InputImageName));
+    } else {
+      const cmtk::Types::Coordinate size[3] = {Delta[0] * (Dims[0] - 1),
+                                               Delta[1] * (Dims[1] - 1),
+                                               Delta[2] * (Dims[2] - 1)};
+      volume = cmtk::UniformVolume::SmartPtr(new cmtk::UniformVolume(
+          cmtk::UniformVolume::IndexType::FromPointer(Dims),
+          cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(size)));
+      volume->SetMetaInfo(cmtk::META_SPACE,
+                          cmtk::AnatomicalOrientation::ORIENTATION_STANDARD);
+      volume->SetMetaInfo(cmtk::META_SPACE_ORIGINAL,
+                          cmtk::AnatomicalOrientation::ORIENTATION_STANDARD);
+      cmtk::TypedArray::SmartPtr data(
+          cmtk::TypedArray::Create(DataType, volume->GetNumberOfPixels()));
+      volume->SetData(data);
+      data->Fill(Background);
+    }
 
-	float cc[3];
-	if ( sscanf( center, "%15f,%15f,%15f", &cc[0], &cc[1], &cc[2] ) != 3 )
-	  {
-	  cmtk::StdErr << "Parameter 'center' of 'sphere' command must be x,y,z\n";
-	  return 1;
-	  }
-	painter.DrawSphere( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( cc ), atof( radius ), atof( value ) );
-	}
+    cmtk::UniformVolumePainter painter(volume, CoordinateMode);
 
-      if ( ! strcmp( nextCmd, "box" ) )
-	{
-	const char* fromCorner = cl.GetNext();
-	const char* toCorner = cl.GetNext();
-	const char* value = cl.GetNext();
-	
-	float boxFrom[3], boxTo[3];
-	if ( sscanf( fromCorner, "%15f,%15f,%15f", &boxFrom[0], &boxFrom[1], &boxFrom[2] ) != 3 )
-	  {
-	  cmtk::StdErr << "Parameter 'corner0' of 'box' command must be three number x,y,z\n";
-	  return 1;
-	  }
-	if ( sscanf( toCorner, "%15f,%15f,%15f", &boxTo[0], &boxTo[1], &boxTo[2] ) != 3 )
-	  {
-	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three numbers x,y,z\n";
-	  return 1;
-	  }
-	painter.DrawBox( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( boxFrom ), cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( boxTo ), atof( value ) );
-	}
+    const char *nextCmd = cl.GetNextOptional();
+    while (nextCmd) {
+      if (!strcmp(nextCmd, "sphere")) {
+        const char *center = cl.GetNext();
+        const char *radius = cl.GetNext();
+        const char *value = cl.GetNext();
+
+        float cc[3];
+        if (sscanf(center, "%15f,%15f,%15f", &cc[0], &cc[1], &cc[2]) != 3) {
+          cmtk::StdErr
+              << "Parameter 'center' of 'sphere' command must be x,y,z\n";
+          return 1;
+        }
+        painter.DrawSphere(
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(cc),
+            atof(radius), atof(value));
+      }
+
+      if (!strcmp(nextCmd, "box")) {
+        const char *fromCorner = cl.GetNext();
+        const char *toCorner = cl.GetNext();
+        const char *value = cl.GetNext();
+
+        float boxFrom[3], boxTo[3];
+        if (sscanf(fromCorner, "%15f,%15f,%15f", &boxFrom[0], &boxFrom[1],
+                   &boxFrom[2]) != 3) {
+          cmtk::StdErr << "Parameter 'corner0' of 'box' command must be three "
+                          "number x,y,z\n";
+          return 1;
+        }
+        if (sscanf(toCorner, "%15f,%15f,%15f", &boxTo[0], &boxTo[1],
+                   &boxTo[2]) != 3) {
+          cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three "
+                          "numbers x,y,z\n";
+          return 1;
+        }
+        painter.DrawBox(
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(boxFrom),
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(boxTo),
+            atof(value));
+      }
 
 #ifdef CMTK_USE_DCMTK
-      if ( ! strcmp( nextCmd, "mrs-voxel" ) )
-	{
-	const char* dicom = cl.GetNext();
-	const char* value = cl.GetNext();
-	
-	std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
-	
-	fileformat->transferInit();
-	OFCondition status = fileformat->loadFile( dicom );
-	fileformat->transferEnd();
-	
-	if ( !status.good() ) 
-	  {
-	  cmtk::StdErr << "Error: cannot read DICOM file " << dicom << " (" << status.text() << ")\n";
-	  exit( 1 );
-	  }
-	
-	DcmDataset *dataset = fileformat->getDataset();
-	if ( ! dataset )
-	  {
-	  exit( 1 );
-	  }
-	
-	Float64 cntr[3];
-	Float64 size[3];
+      if (!strcmp(nextCmd, "mrs-voxel")) {
+        const char *dicom = cl.GetNext();
+        const char *value = cl.GetNext();
 
-	const DcmTagKey keyVoxelLocation( 0x0043, 0x108c); // private GE tag "Voxel Location"
-	if ( dataset->findAndGetFloat64( keyVoxelLocation, cntr[0], 0 ).good() )
-	  {
-	  cntr[0] *= -1; // convert RL to LR
-	  dataset->findAndGetFloat64( keyVoxelLocation, cntr[1], 1 ); cntr[1] *= -1; // convert AP to PA
-	  dataset->findAndGetFloat64( keyVoxelLocation, cntr[2], 2 );
-	  
-	  dataset->findAndGetFloat64( keyVoxelLocation, size[0], 3 );
-	  dataset->findAndGetFloat64( keyVoxelLocation, size[1], 4 );
-	  dataset->findAndGetFloat64( keyVoxelLocation, size[2], 5 );
-	  }
-	else
-	  {
-	  // Some image GE MRS DICOM files do not have "Voxel Location" tag, but store location in different undocumented tags.
-	  // Order of x/y is switched, and some values have negative signs.
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b3 ), cntr[0] ); // already * -1
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b2 ), cntr[1] ); cntr[1] *= -1;
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b4 ), cntr[2] ); 
+        std::auto_ptr<DcmFileFormat> fileformat(new DcmFileFormat);
 
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b0 ), size[0] ); 
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10af ), size[1] );
-	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b1 ), size[2] );
-	  }
+        fileformat->transferInit();
+        OFCondition status = fileformat->loadFile(dicom);
+        fileformat->transferEnd();
 
-	cmtk::UniformVolumePainter roiPainter( volume, cmtk::UniformVolumePainter::COORDINATES_INDEXED );
+        if (!status.good()) {
+          cmtk::StdErr << "Error: cannot read DICOM file " << dicom << " ("
+                       << status.text() << ")\n";
+          exit(1);
+        }
 
-	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiCntr = cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( cntr );
-	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiSize = cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( size );
-	roiSize *= 0.5;
+        DcmDataset *dataset = fileformat->getDataset();
+        if (!dataset) {
+          exit(1);
+        }
 
-	roiPainter.DrawBox( volume->PhysicalToIndex( roiCntr - roiSize ), volume->PhysicalToIndex( roiCntr + roiSize ), atof( value ) );
-	}
-#endif // #ifdef CMTK_USE_DCMTK
+        Float64 cntr[3];
+        Float64 size[3];
+
+        const DcmTagKey keyVoxelLocation(
+            0x0043, 0x108c);  // private GE tag "Voxel Location"
+        if (dataset->findAndGetFloat64(keyVoxelLocation, cntr[0], 0).good()) {
+          cntr[0] *= -1;  // convert RL to LR
+          dataset->findAndGetFloat64(keyVoxelLocation, cntr[1], 1);
+          cntr[1] *= -1;  // convert AP to PA
+          dataset->findAndGetFloat64(keyVoxelLocation, cntr[2], 2);
+
+          dataset->findAndGetFloat64(keyVoxelLocation, size[0], 3);
+          dataset->findAndGetFloat64(keyVoxelLocation, size[1], 4);
+          dataset->findAndGetFloat64(keyVoxelLocation, size[2], 5);
+        } else {
+          // Some image GE MRS DICOM files do not have "Voxel Location" tag, but
+          // store location in different undocumented tags. Order of x/y is
+          // switched, and some values have negative signs.
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10b3),
+                                     cntr[0]);  // already * -1
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10b2), cntr[1]);
+          cntr[1] *= -1;
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10b4), cntr[2]);
+
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10b0), size[0]);
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10af), size[1]);
+          dataset->findAndGetFloat64(DcmTagKey(0x0019, 0x10b1), size[2]);
+        }
+
+        cmtk::UniformVolumePainter roiPainter(
+            volume, cmtk::UniformVolumePainter::COORDINATES_INDEXED);
+
+        cmtk::FixedVector<3, cmtk::Types::Coordinate> roiCntr =
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(cntr);
+        cmtk::FixedVector<3, cmtk::Types::Coordinate> roiSize =
+            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(size);
+        roiSize *= 0.5;
+
+        roiPainter.DrawBox(volume->PhysicalToIndex(roiCntr - roiSize),
+                           volume->PhysicalToIndex(roiCntr + roiSize),
+                           atof(value));
+      }
+#endif  // #ifdef CMTK_USE_DCMTK
 
       nextCmd = cl.GetNextOptional();
-      }
-    
-    cmtk::VolumeIO::Write( *volume, OutputFileName );
     }
-  catch ( const cmtk::CommandLine::Exception& e ) 
-    {
+
+    cmtk::VolumeIO::Write(*volume, OutputFileName);
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e;
     return 1;
-    }
-  
+  }
+
   return 0;
 }
 

@@ -42,19 +42,16 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// A set of directions in n-dimensional space.
 class DirectionSet :
-  /// This is a vector of coordinate vectors.
-  public std::vector<CoordinateVector::SmartPtr>
-{
-public:
+    /// This is a vector of coordinate vectors.
+    public std::vector<CoordinateVector::SmartPtr> {
+ public:
   /// Smart pointer to DirectionSet.
   typedef SmartPointer<DirectionSet> SmartPtr;
 
@@ -66,28 +63,28 @@ public:
 
   /** Normalizes each direction vector to have max norm = value.
    */
-  void NormalizeMaxNorm( const double value = 1.0 );
+  void NormalizeMaxNorm(const double value = 1.0);
 
   /** Normalizes each direction vector to have euclid norm = value.
    */
-  void NormalizeEuclidNorm( const double value = 1.0 );
+  void NormalizeEuclidNorm(const double value = 1.0);
 
   /// Default constructor.
   DirectionSet() { Dimension = 0; }
 
   /// Allocation constructor.
-  DirectionSet( const unsigned int dimension ) { Dimension = dimension; }
+  DirectionSet(const unsigned int dimension) { Dimension = dimension; }
 
   /// Destructor.
   ~DirectionSet() {}
 
-private:
+ private:
   /// Dimension of direction space.
   unsigned int Dimension;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDirectionSet_h_included_
+#endif  // #ifndef __cmtkDirectionSet_h_included_

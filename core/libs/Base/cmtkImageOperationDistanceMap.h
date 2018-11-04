@@ -39,47 +39,45 @@
 #include <Base/cmtkUniformDistanceMap.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Compute distance map.
 class ImageOperationDistanceMap
-/// Inherit generic image operation.
-  : public ImageOperation
-{
-public:
+    /// Inherit generic image operation.
+    : public ImageOperation {
+ public:
   /// Distance map type.
   typedef UniformDistanceMap<double> DistanceMapType;
 
   /// Constructor.
-  ImageOperationDistanceMap( const bool signedDistance ) : m_SignedDistance( signedDistance ) {}
+  ImageOperationDistanceMap(const bool signedDistance)
+      : m_SignedDistance(signedDistance) {}
 
   /// Apply this operation to an image in place.
-  virtual UniformVolume::SmartPtr Apply( UniformVolume::SmartPtr& volume );
+  virtual UniformVolume::SmartPtr Apply(UniformVolume::SmartPtr &volume);
 
   /// Create new signed distance map operation.
-  static void NewSigned()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDistanceMap( true /*signedDistance*/) ) );
+  static void NewSigned() {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationDistanceMap(true /*signedDistance*/)));
   }
 
   /// Create new unsigned distance map operation.
-  static void NewUnsigned()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDistanceMap( false /*signedDistance*/) ) );
+  static void NewUnsigned() {
+    ImageOperation::m_ImageOperationList.push_back(
+        SmartPtr(new ImageOperationDistanceMap(false /*signedDistance*/)));
   }
-  
-private:
+
+ private:
   /// Flag for signed (inside/outside) vs. unsigned (outside only) distance map.
   bool m_SignedDistance;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationDistanceMap_h_included_
+#endif  // #ifndef __cmtkImageOperationDistanceMap_h_included_

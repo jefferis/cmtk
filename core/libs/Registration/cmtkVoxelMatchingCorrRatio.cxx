@@ -32,54 +32,53 @@
 
 #include "cmtkVoxelMatchingCorrRatio.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-template<Interpolators::InterpolationEnum I>
-typename VoxelMatchingCorrRatio<I>::ReturnType
-VoxelMatchingCorrRatio<I>::Get () const
-{
+template <Interpolators::InterpolationEnum I>
+typename VoxelMatchingCorrRatio<I>::ReturnType VoxelMatchingCorrRatio<I>::Get()
+    const {
   double invSampleCount = 1.0 / HistogramI.SampleCount();
   // initialize variable for the weighted sum of the sigma^2 values over all
   // reference intensity classes.
   double sumSigmaSquare = 0;
   // run over all bins, i.e., reference classes
-  for ( unsigned int j = 0; j < NumBinsX; ++j ) 
-    {
+  for (unsigned int j = 0; j < NumBinsX; ++j) {
     // are there any values in the current class?
-    if ( HistogramI[j] ) 
-      {
+    if (HistogramI[j]) {
       // compute mean floating value for this reference class
       double mu = SumJ[j] / HistogramI[j];
       // compute variance of floating values for this reference class
-      double sigmaSq = ( mu*mu*HistogramI[j] - 2.0*mu*SumJ[j] + SumJ2[j] ) / HistogramI[j]; 
+      double sigmaSq =
+          (mu * mu * HistogramI[j] - 2.0 * mu * SumJ[j] + SumJ2[j]) /
+          HistogramI[j];
       // update sum over all classes with weighted sigma^2 for this class.
       sumSigmaSquare += (invSampleCount * HistogramI[j]) * sigmaSq;
-      }
     }
-  
+  }
+
   // compute (supposedly) correlation ratio
-  typename Self::ReturnType cr = static_cast<typename Self::ReturnType>( 1.0 - (1.0 /  SigmaSqJ ) * sumSigmaSquare );
-  
+  typename Self::ReturnType cr = static_cast<typename Self::ReturnType>(
+      1.0 - (1.0 / SigmaSqJ) * sumSigmaSquare);
+
   sumSigmaSquare = 0;
-  for ( unsigned int i = 0; i < NumBinsY; ++i ) 
-    {
-    if ( HistogramJ[i] ) 
-      {
+  for (unsigned int i = 0; i < NumBinsY; ++i) {
+    if (HistogramJ[i]) {
       double mu = SumI[i] / HistogramJ[i];
-      double sigmaSq = ( mu*mu*HistogramJ[i] - 2.0*mu*SumI[i] + SumI2[i] ) / HistogramJ[i]; 
+      double sigmaSq =
+          (mu * mu * HistogramJ[i] - 2.0 * mu * SumI[i] + SumI2[i]) /
+          HistogramJ[i];
       // update sum over all classes with weighted sigma^2 for this class.
       sumSigmaSquare += (invSampleCount * HistogramJ[i]) * sigmaSq;
-      }
     }
-  
+  }
+
   // add reverse correlation ratio
-  cr += static_cast<typename Self::ReturnType>(1.0 - (1.0 /  SigmaSqI ) * sumSigmaSquare);
-  
+  cr += static_cast<typename Self::ReturnType>(1.0 - (1.0 / SigmaSqI) *
+                                                         sumSigmaSquare);
+
   return cr;
 }
 
@@ -89,4 +88,4 @@ template class VoxelMatchingCorrRatio<Interpolators::LINEAR>;
 /// Explicit instantiation.
 template class VoxelMatchingCorrRatio<Interpolators::NEAREST_NEIGHBOR>;
 
-} // namespace cmtk
+}  // namespace cmtk

@@ -40,9 +40,9 @@
 #include <iostream>
 
 /// Landmark output operator
-std::ostream& operator<<( std::ostream& stream, const cmtk::Landmark& lm );
+std::ostream &operator<<(std::ostream &stream, const cmtk::Landmark &lm);
 
 /// Landmark input operator.
-std::istream& operator>>( std::istream& stream, cmtk::Landmark& lm );
+std::istream &operator>>(std::istream &stream, cmtk::Landmark &lm);
 
-#endif // #ifndef __cmtkLandmarkIO_h_included_
+#endif  // #ifndef __cmtkLandmarkIO_h_included_

@@ -32,209 +32,168 @@
 
 #include "cmtkStudyList.h"
 
-#include <System/cmtkConsole.h>
 #include <Base/cmtkSplineWarpXform.h>
+#include <System/cmtkConsole.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-const Study*
-StudyList::GetStudy( const unsigned int studyIndex ) const
-{
-  if ( studyIndex < this->size() ) 
-    {
+const Study *StudyList::GetStudy(const unsigned int studyIndex) const {
+  if (studyIndex < this->size()) {
     const_iterator it = this->begin();
-    for ( unsigned int i = 0; i < studyIndex; ++i ) ++it;
+    for (unsigned int i = 0; i < studyIndex; ++i) ++it;
     return it->first;
-    } 
-  else
+  } else
     return NULL;
 }
 
-Study::SmartPtr
-StudyList::GetStudy( const unsigned int studyIndex )
-{
-  if ( studyIndex < this->size() ) 
-    {
+Study::SmartPtr StudyList::GetStudy(const unsigned int studyIndex) {
+  if (studyIndex < this->size()) {
     const_iterator it = this->begin();
-    for ( unsigned int i = 0; i < studyIndex; ++i ) ++it;
+    for (unsigned int i = 0; i < studyIndex; ++i) ++it;
     return it->first;
-    } 
-  else
+  } else
     return Study::SmartPtr::Null();
 }
 
-const Study*
-StudyList::FindStudyPath( const std::string& fileSystemPath ) const
-{
-  if ( fileSystemPath.empty() ) 
-    return NULL;
+const Study *StudyList::FindStudyPath(const std::string &fileSystemPath) const {
+  if (fileSystemPath.empty()) return NULL;
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->first->GetFileSystemPath() == fileSystemPath )
-      return it->first;
+  while (it != this->end()) {
+    if (it->first->GetFileSystemPath() == fileSystemPath) return it->first;
     ++it;
-    }
-  
+  }
+
   // not found: return NULL;
   return NULL;
 }
 
-Study::SmartPtr
-StudyList::FindStudyPath( const std::string& fileSystemPath, const bool create )
-{
-  if ( fileSystemPath.empty() ) 
-    return Study::SmartPtr::Null();
+Study::SmartPtr StudyList::FindStudyPath(const std::string &fileSystemPath,
+                                         const bool create) {
+  if (fileSystemPath.empty()) return Study::SmartPtr::Null();
 
   iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->first->GetFileSystemPath() == fileSystemPath )
-      return it->first;
+  while (it != this->end()) {
+    if (it->first->GetFileSystemPath() == fileSystemPath) return it->first;
     ++it;
-    }
-  
+  }
+
   // not found: return NULL or create;
-  if ( !create )
-    return Study::SmartPtr::Null();
-  
-  Study::SmartPtr newStudy( new Study );
-  newStudy->SetFileSystemPath( fileSystemPath );
-  this->AddStudy( newStudy );
+  if (!create) return Study::SmartPtr::Null();
+
+  Study::SmartPtr newStudy(new Study);
+  newStudy->SetFileSystemPath(fileSystemPath);
+  this->AddStudy(newStudy);
   return newStudy;
 }
 
-const Study*
-StudyList::FindStudyName( const std::string& name ) const
-{
-  if ( name.empty() ) 
-    return NULL;
+const Study *StudyList::FindStudyName(const std::string &name) const {
+  if (name.empty()) return NULL;
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->first->GetName() == name )
-      return it->first;
+  while (it != this->end()) {
+    if (it->first->GetName() == name) return it->first;
     ++it;
-    }
-  
+  }
+
   // not found: return NULL;
   return NULL;
 }
 
-Study::SmartPtr
-StudyList::FindStudyName( const std::string& name )
-{
-  if ( name.empty() ) 
-    return Study::SmartPtr::Null();
+Study::SmartPtr StudyList::FindStudyName(const std::string &name) {
+  if (name.empty()) return Study::SmartPtr::Null();
 
   iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->first->GetName() == name )
-      return it->first;
+  while (it != this->end()) {
+    if (it->first->GetName() == name) return it->first;
     ++it;
-    }
-  
+  }
+
   // not found: return NULL;
   return Study::SmartPtr::Null();
 }
 
-Study::SmartPtr
-StudyList::AddStudy( const std::string& fileSystemPath )
-{
-  if ( fileSystemPath.empty() ) 
-    return Study::SmartPtr::Null();
+Study::SmartPtr StudyList::AddStudy(const std::string &fileSystemPath) {
+  if (fileSystemPath.empty()) return Study::SmartPtr::Null();
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
+  while (it != this->end()) {
     // if this study is already in the list, we're done.
-    if ( it->first->GetFileSystemPath() == fileSystemPath )
+    if (it->first->GetFileSystemPath() == fileSystemPath)
       return Study::SmartPtr::Null();
     ++it;
-    }
-  
-  Study::SmartPtr newStudy( Study::Read( fileSystemPath ) );
-  if ( newStudy ) 
-    {
+  }
+
+  Study::SmartPtr newStudy(Study::Read(fileSystemPath));
+  if (newStudy) {
     int suffix = 0;
-    while ( this->FindStudyName( newStudy->GetName() ) ) {
-    newStudy->SetMakeName( "", suffix++ );
+    while (this->FindStudyName(newStudy->GetName())) {
+      newStudy->SetMakeName("", suffix++);
     }
-    
+
     (*this)[newStudy];
   }
 
   return newStudy;
 }
 
-void 
-StudyList::AddStudy( Study::SmartPtr& study )
-{
-  if ( !study ) return;
+void StudyList::AddStudy(Study::SmartPtr &study) {
+  if (!study) return;
 
-  const std::string& newStudyPath = study->GetFileSystemPath();
+  const std::string &newStudyPath = study->GetFileSystemPath();
 
   const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
+  while (it != this->end()) {
     // if this study is already in the list, we're done.
-    if ( it->first->GetFileSystemPath() == newStudyPath )
-      return;
+    if (it->first->GetFileSystemPath() == newStudyPath) return;
     ++it;
-    }
-  
+  }
+
   // insert new study into map.
   (*this)[study];
 }
 
-void 
-StudyList::AddXform
-( const std::string& fromStudyPath, const std::string& toStudyPath, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform )
-{
-  Study::SmartPtr fromStudy = this->FindStudyPath( fromStudyPath, true /*create*/ );
-  Study::SmartPtr toStudy = this->FindStudyPath( toStudyPath, true /*create*/ );
+void StudyList::AddXform(const std::string &fromStudyPath,
+                         const std::string &toStudyPath,
+                         AffineXform::SmartPtr &affineXform,
+                         WarpXform::SmartPtr &warpXform) {
+  Study::SmartPtr fromStudy =
+      this->FindStudyPath(fromStudyPath, true /*create*/);
+  Study::SmartPtr toStudy = this->FindStudyPath(toStudyPath, true /*create*/);
 
-  this->AddXform( fromStudy, toStudy, affineXform, warpXform );
+  this->AddXform(fromStudy, toStudy, affineXform, warpXform);
 }
 
-void 
-StudyList::AddXform
-( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform )
-{
-  if ( !fromStudy || !toStudy ) return;
+void StudyList::AddXform(Study::SmartPtr &fromStudy, Study::SmartPtr &toStudy,
+                         AffineXform::SmartPtr &affineXform,
+                         WarpXform::SmartPtr &warpXform) {
+  if (!fromStudy || !toStudy) return;
 
-  if ( affineXform ) 
-    {
+  if (affineXform) {
     Xform::SmartPtr xform = affineXform;
-    (*this)[fromStudy].insert( std::multimap<Study::SmartPtr,Xform::SmartPtr>::value_type( toStudy, xform ) );
-    }
-  if ( warpXform ) 
-    {
+    (*this)[fromStudy].insert(
+        std::multimap<Study::SmartPtr, Xform::SmartPtr>::value_type(toStudy,
+                                                                    xform));
+  }
+  if (warpXform) {
     Xform::SmartPtr xform = warpXform;
-    (*this)[fromStudy].insert( std::multimap<Study::SmartPtr,Xform::SmartPtr>::value_type( toStudy, xform ) );
-    }
+    (*this)[fromStudy].insert(
+        std::multimap<Study::SmartPtr, Xform::SmartPtr>::value_type(toStudy,
+                                                                    xform));
+  }
 }
 
-void 
-StudyList::DeleteStudy( const Study* study )
-{
+void StudyList::DeleteStudy(const Study *study) {
   iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->first == study ) 
-      {
-      this->erase( it );
-      }
-    break;
+  while (it != this->end()) {
+    if (it->first == study) {
+      this->erase(it);
     }
+    break;
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

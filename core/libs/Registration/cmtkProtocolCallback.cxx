@@ -36,86 +36,66 @@
 
 #include <Base/cmtkMathUtil.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ProtocolCallback::ProtocolCallback
-( const std::string& filename, const bool debug ) 
-{ 
-  if ( !filename.empty() ) 
-    {
-    if ( (fp = fopen( filename.c_str(), "w" )) ) 
-      {
-      fputs( "4\n1 3 3 3\n", fp );
-      fflush( fp );
-      }
+ProtocolCallback::ProtocolCallback(const std::string &filename,
+                                   const bool debug) {
+  if (!filename.empty()) {
+    if ((fp = fopen(filename.c_str(), "w"))) {
+      fputs("4\n1 3 3 3\n", fp);
+      fflush(fp);
     }
-  else
-    fp = NULL; 
-  
+  } else
+    fp = NULL;
+
   Debug = debug;
 }
 
-ProtocolCallback::~ProtocolCallback () 
-{
-  if (fp) fclose(fp); 
+ProtocolCallback::~ProtocolCallback() {
+  if (fp) fclose(fp);
 }
 
-CallbackResult
-ProtocolCallback::ExecuteWithData
-( const CoordinateVector& v, const double metric ) 
-{
-  size_t dim = std::min<unsigned int>( 20, v.Dim );
-  if (fp) 
-    {
-    fprintf( fp, "%f", metric );    
-    for ( size_t i = 0; i < dim; ++i )
-      fprintf( fp, " %f", (float) v[i] );
-    
-    if ( v.Dim > 20 ) fputs( " ...", fp );
-    fputs( "\n", fp );
-    fflush( fp );
-    }
-  
-  if ( Debug ) 
-    {
-    fprintf( stderr, "%f", metric );
-    for ( size_t i = 0; i < dim; ++i )
-      fprintf( stderr, " %f", (float) v[i] );
-    fputs( "\n", stderr );
-    }
-  
-  return this->Superclass::ExecuteWithData( v, metric );
+CallbackResult ProtocolCallback::ExecuteWithData(const CoordinateVector &v,
+                                                 const double metric) {
+  size_t dim = std::min<unsigned int>(20, v.Dim);
+  if (fp) {
+    fprintf(fp, "%f", metric);
+    for (size_t i = 0; i < dim; ++i) fprintf(fp, " %f", (float)v[i]);
+
+    if (v.Dim > 20) fputs(" ...", fp);
+    fputs("\n", fp);
+    fflush(fp);
+  }
+
+  if (Debug) {
+    fprintf(stderr, "%f", metric);
+    for (size_t i = 0; i < dim; ++i) fprintf(stderr, " %f", (float)v[i]);
+    fputs("\n", stderr);
+  }
+
+  return this->Superclass::ExecuteWithData(v, metric);
 }
 
-void
-ProtocolCallback::Comment ( const char* comment )
-{
-  if ( fp ) 
-    {
-    if ( comment != NULL ) 
-      {
-      fprintf( fp, "# %s\n", comment );
-      fflush( fp );
-      } 
+void ProtocolCallback::Comment(const char *comment) {
+  if (fp) {
+    if (comment != NULL) {
+      fprintf(fp, "# %s\n", comment);
+      fflush(fp);
+    } else {
+      fputs("#\n", fp);
+      fflush(fp);
+    }
+  }
+
+  if (Debug) {
+    if (comment != NULL)
+      fprintf(stderr, "# %s\n", comment);
     else
-      {
-      fputs( "#\n", fp );
-      fflush( fp );
-      }
-    }
-  
-  if ( Debug )
-    {
-    if ( comment != NULL )
-      fprintf( stderr, "# %s\n", comment );
-    else
-      fputs( "#\n", stderr );
-    }
+      fputs("#\n", stderr);
+  }
 }
 
-} // namespace cmtk
+}  // namespace cmtk

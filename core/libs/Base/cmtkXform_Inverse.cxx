@@ -32,46 +32,42 @@
 
 #include "cmtkXform.h"
 
-bool
-cmtk::Xform::ApplyInverseWithInitial
-( const Self::SpaceVectorType& target, Self::SpaceVectorType& source, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy ) 
-  const
-{
-  Self::SpaceVectorType u( initial );
-  this->ProjectToDomain( u );
+bool cmtk::Xform::ApplyInverseWithInitial(
+    const Self::SpaceVectorType &target, Self::SpaceVectorType &source,
+    const Self::SpaceVectorType &initial,
+    const Types::Coordinate accuracy) const {
+  Self::SpaceVectorType u(initial);
+  this->ProjectToDomain(u);
 
-  Self::SpaceVectorType vu( this->Apply( initial ) ), delta;
+  Self::SpaceVectorType vu(this->Apply(initial)), delta;
   ((delta = vu) -= target);
 
   Types::Coordinate error = delta.RootSumOfSquares();
 
   Types::Coordinate step = 1.0;
-  while ( ( error > accuracy) && (step > 0.001) ) 
-    {
-    // transform difference vector into original coordinate system using inverse Jacobian.
-    delta *= this->GetJacobian( u ).GetInverse().GetTranspose();
-    
+  while ((error > accuracy) && (step > 0.001)) {
+    // transform difference vector into original coordinate system using inverse
+    // Jacobian.
+    delta *= this->GetJacobian(u).GetInverse().GetTranspose();
+
     // initialize line search
     (vu = u) -= (delta *= step);
 
     // project back into transformation domain, if necessary
-    this->ProjectToDomain( vu );
-    
+    this->ProjectToDomain(vu);
+
     // line search along transformed error direction
-    Self::SpaceVectorType uNext( vu );
-    vu = this->Apply( vu );
-    
+    Self::SpaceVectorType uNext(vu);
+    vu = this->Apply(vu);
+
     (delta = vu) -= target;
-    if ( error > delta.RootSumOfSquares() ) 
-      {
+    if (error > delta.RootSumOfSquares()) {
       error = delta.RootSumOfSquares();
       u = uNext;
-      } 
-    else
-      {
+    } else {
       step *= 0.5;
-      }
     }
+  }
 
   source = u;
   return !(error > accuracy);

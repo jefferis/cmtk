@@ -35,50 +35,44 @@
 
 #include <cmtkconfig.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
-namespace 
-Interpolators
-{
+namespace Interpolators {
 
 /// Linear interpolator.
-class Linear
-{
-public:
+class Linear {
+ public:
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = 1;
- 
+
   /// Flag whether this interpolator is suitable for labels.
   static const bool SuitableForLabels = false;
 
- /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x )
-  {
-    switch (weight)
-      {
-      case 0: 
-	return 1 - x;
+  /// Get specific interpolation weight for relative coordinate.
+  static Types::Coordinate GetWeight(const int weight,
+                                     const Types::Coordinate x) {
+    switch (weight) {
+      case 0:
+        return 1 - x;
       case 1:
-	return x;
+        return x;
       default:
 #ifdef DEBUG
-	std::cerr << "weight=" << weight << " shouldn't happen!" << std::endl;
-	exit( 1 );
+        std::cerr << "weight=" << weight << " shouldn't happen!" << std::endl;
+        exit(1);
 #endif
-	break;
-      }
+        break;
+    }
     return 0;
   }
 };
 
-} // namespace Interpolators
+}  // namespace Interpolators
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #endif

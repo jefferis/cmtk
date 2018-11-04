@@ -73,9 +73,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-namespace
-alglib
-{
+namespace alglib {
 
 /*************************************************************************
 Error function
@@ -104,7 +102,6 @@ Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
 ap::real_value_type erf(ap::real_value_type x);
-
 
 /*************************************************************************
 Complementary error function
@@ -162,6 +159,6 @@ Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
 ap::real_value_type invnormaldistribution(ap::real_value_type y0);
 
-} // namespace alglib
+}  // namespace alglib
 
 #endif

@@ -33,22 +33,19 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkFileUtils.h>
 
 #include <IO/cmtkVolumeIO.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
-int
-doMain
-( const int argc, const char *argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   std::vector<std::string> dwiImagePaths;
   int b0ImageCount = 0;
 
@@ -56,166 +53,203 @@ doMain
 
   cmtk::Types::DataItem standardDeviations = 3.0;
 
-  const char* outputDir = NULL;
+  const char *outputDir = NULL;
 
-  const char* badSliceStatisticsFileName = NULL;
-  FILE* badSliceStatisticsFile = NULL;
+  const char *badSliceStatisticsFileName = NULL;
+  FILE *badSliceStatisticsFile = NULL;
 
   cmtk::Types::DataItem paddingValue = -1;
   cmtk::ScalarDataType outputDataType = cmtk::TYPE_NONE;
 
-  try
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Find bad slices in set of diffusion-weighted images." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool reads a set of 3D diffusion-weighted MR images and finds bad slices. A bad slice in a diffusion image is detected as one whose mean intensity is outside a specified "
-		       "interval around the mean of the means of all corresponding slices from the remaining diffusion images." );
-    
-    cl.AddParameterVector( &dwiImagePaths, "DiffusionImagePaths", "List of file system paths for all diffusion-weighted images. This will usually not include any b=0 images, although it is possible to include these as well.");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Find bad slices in set of diffusion-weighted images.");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "This tool reads a set of 3D diffusion-weighted MR images and finds "
+        "bad slices. A bad slice in a diffusion image is detected as one whose "
+        "mean intensity is outside a specified "
+        "interval around the mean of the means of all corresponding slices "
+        "from the remaining diffusion images.");
+
+    cl.AddParameterVector(
+        &dwiImagePaths, "DiffusionImagePaths",
+        "List of file system paths for all diffusion-weighted images. This "
+        "will usually not include any b=0 images, although it is possible to "
+        "include these as well.");
 
     typedef cmtk::CommandLine::Key Key;
 
-    cl.BeginGroup( "Input", "Input Options" );
-    cl.AddOption( Key( "b0count" ), &b0ImageCount, "Number of b=0 images at the beginning of the image list. These are not included in the bad slice detection or masking, "
-		  "but are also written to the output directory for convenience. It is assumed that all b=0 images are at the beginning of the list of input images, but not at the end or in the middle." );
-    cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup = cl.AddEnum( "slice-orientation", &sliceAxis, "Define slice orientation of the diffusion images." );
-    sliceGroup->AddSwitch( Key( "axial" ), (int)cmtk::AXIS_Z, "Axial slices" );
-    sliceGroup->AddSwitch( Key( "sagittal" ),(int)cmtk::AXIS_X, "Sagittal slices" );
-    sliceGroup->AddSwitch( Key( "coronal" ), (int)cmtk::AXIS_Y, "Coronal slices" );
-    sliceGroup->AddSwitch( Key( "slice-x" ), (int)cmtk::AXIS_X, "X coordinate axis is slice direction" );
-    sliceGroup->AddSwitch( Key( "slice-y" ), (int)cmtk::AXIS_Y, "Y coordinate axis is slice direction" );
-    sliceGroup->AddSwitch( Key( "slice-z" ), (int)cmtk::AXIS_Z, "Z coordinate axis is slice direction" );
+    cl.BeginGroup("Input", "Input Options");
+    cl.AddOption(
+        Key("b0count"), &b0ImageCount,
+        "Number of b=0 images at the beginning of the image list. These are "
+        "not included in the bad slice detection or masking, "
+        "but are also written to the output directory for convenience. It is "
+        "assumed that all b=0 images are at the beginning of the list of input "
+        "images, but not at the end or in the middle.");
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup =
+        cl.AddEnum("slice-orientation", &sliceAxis,
+                   "Define slice orientation of the diffusion images.");
+    sliceGroup->AddSwitch(Key("axial"), (int)cmtk::AXIS_Z, "Axial slices");
+    sliceGroup->AddSwitch(Key("sagittal"), (int)cmtk::AXIS_X,
+                          "Sagittal slices");
+    sliceGroup->AddSwitch(Key("coronal"), (int)cmtk::AXIS_Y, "Coronal slices");
+    sliceGroup->AddSwitch(Key("slice-x"), (int)cmtk::AXIS_X,
+                          "X coordinate axis is slice direction");
+    sliceGroup->AddSwitch(Key("slice-y"), (int)cmtk::AXIS_Y,
+                          "Y coordinate axis is slice direction");
+    sliceGroup->AddSwitch(Key("slice-z"), (int)cmtk::AXIS_Z,
+                          "Z coordinate axis is slice direction");
     cl.EndGroup();
 
-    cl.BeginGroup( "detection", "Bad Slice Detection" );
-    cl.AddOption( Key( "stdev" ), &standardDeviations, "Threshold for bad slice identification in units of intensity standard deviations over all corresponding slices from the remaining diffusion images." );
+    cl.BeginGroup("detection", "Bad Slice Detection");
+    cl.AddOption(Key("stdev"), &standardDeviations,
+                 "Threshold for bad slice identification in units of intensity "
+                 "standard deviations over all corresponding slices from the "
+                 "remaining diffusion images.");
     cl.EndGroup();
 
-    cl.BeginGroup( "output", "Output Options" );
-    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr typeGroup = 
-      cl.AddEnum( "convert-to", &outputDataType, "Scalar data type for the output images. If your padding value is negative but your input data unsigned, for example, make sure to select a signed data type for the output. "
-		  "By default, the output data type is the same as the input type.");
-    typeGroup->AddSwitch( Key( "char" ), cmtk::TYPE_CHAR, "8 bits, signed" );
-    typeGroup->AddSwitch( Key( "byte" ), cmtk::TYPE_BYTE, "8 bits, unsigned" );
-    typeGroup->AddSwitch( Key( "short" ), cmtk::TYPE_SHORT, "16 bits, signed" );
-    typeGroup->AddSwitch( Key( "ushort" ), cmtk::TYPE_USHORT, "16 bits, unsigned" );
-    typeGroup->AddSwitch( Key( "int" ), cmtk::TYPE_INT, "32 bits signed" );
-    typeGroup->AddSwitch( Key( "uint" ), cmtk::TYPE_UINT, "32 bits unsigned" );
-    typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
-    typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
+    cl.BeginGroup("output", "Output Options");
+    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr typeGroup =
+        cl.AddEnum(
+            "convert-to", &outputDataType,
+            "Scalar data type for the output images. If your padding value is "
+            "negative but your input data unsigned, for example, make sure to "
+            "select a signed data type for the output. "
+            "By default, the output data type is the same as the input type.");
+    typeGroup->AddSwitch(Key("char"), cmtk::TYPE_CHAR, "8 bits, signed");
+    typeGroup->AddSwitch(Key("byte"), cmtk::TYPE_BYTE, "8 bits, unsigned");
+    typeGroup->AddSwitch(Key("short"), cmtk::TYPE_SHORT, "16 bits, signed");
+    typeGroup->AddSwitch(Key("ushort"), cmtk::TYPE_USHORT, "16 bits, unsigned");
+    typeGroup->AddSwitch(Key("int"), cmtk::TYPE_INT, "32 bits signed");
+    typeGroup->AddSwitch(Key("uint"), cmtk::TYPE_UINT, "32 bits unsigned");
+    typeGroup->AddSwitch(Key("float"), cmtk::TYPE_FLOAT,
+                         "32 bits floating point");
+    typeGroup->AddSwitch(Key("double"), cmtk::TYPE_DOUBLE,
+                         "64 bits floating point\n");
 
-    cl.AddOption( Key( 'p', "padding-value" ), &paddingValue, "Padding value to replace data of detected bad slices in output images." );
-    cl.AddOption( Key( 's', "bad-slice-statistics" ), &badSliceStatisticsFileName, "CSV file capturing the slice number and distance of bad slices." );
-   
-    cl.AddOption( Key( 'o', "output-directory" ), &outputDir, "File system path for writing images with bad slices masked out (i.e., filled with a padding value)." );
+    cl.AddOption(Key('p', "padding-value"), &paddingValue,
+                 "Padding value to replace data of detected bad slices in "
+                 "output images.");
+    cl.AddOption(
+        Key('s', "bad-slice-statistics"), &badSliceStatisticsFileName,
+        "CSV file capturing the slice number and distance of bad slices.");
+
+    cl.AddOption(Key('o', "output-directory"), &outputDir,
+                 "File system path for writing images with bad slices masked "
+                 "out (i.e., filled with a padding value).");
     cl.EndGroup();
 
-    cl.Parse( argc, argv );
+    cl.Parse(argc, argv);
 
-    if ( dwiImagePaths.size() < 6 )
-      {
-      throw cmtk::CommandLine::Exception( "At least 6 diffusion images are needed for a DTI acquisition." );
-      }
+    if (dwiImagePaths.size() < 6) {
+      throw cmtk::CommandLine::Exception(
+          "At least 6 diffusion images are needed for a DTI acquisition.");
     }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  
+    throw cmtk::ExitException(1);
+  }
+
   // read all diffusion images and make sure their grids match
-  std::vector<cmtk::UniformVolume::SmartPtr> dwiImages( dwiImagePaths.size() );
-  for ( size_t i = 0; i < dwiImagePaths.size(); ++i )
-    {
-    dwiImages[i] = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::Read( dwiImagePaths[i] ) );
+  std::vector<cmtk::UniformVolume::SmartPtr> dwiImages(dwiImagePaths.size());
+  for (size_t i = 0; i < dwiImagePaths.size(); ++i) {
+    dwiImages[i] =
+        cmtk::UniformVolume::SmartPtr(cmtk::VolumeIO::Read(dwiImagePaths[i]));
 
-    if ( i && ! dwiImages[0]->GridMatches( *dwiImages[i] ) )
-      {
-      cmtk::StdErr << "ERROR: geometry of image '" << dwiImagePaths[i] << "' does not match that of image '" << dwiImagePaths[0] << "'\n";
-      throw cmtk::ExitException( 1 );
-      }
-
-    if ( outputDataType != cmtk::TYPE_NONE )
-      {
-      dwiImages[i]->SetData( dwiImages[i]->GetData()->Convert( outputDataType ) );
-      }
+    if (i && !dwiImages[0]->GridMatches(*dwiImages[i])) {
+      cmtk::StdErr << "ERROR: geometry of image '" << dwiImagePaths[i]
+                   << "' does not match that of image '" << dwiImagePaths[0]
+                   << "'\n";
+      throw cmtk::ExitException(1);
     }
 
-  // Open file for reading 
+    if (outputDataType != cmtk::TYPE_NONE) {
+      dwiImages[i]->SetData(dwiImages[i]->GetData()->Convert(outputDataType));
+    }
+  }
+
+  // Open file for reading
   if (badSliceStatisticsFileName) {
     cmtk::FileUtils::RecursiveMkPrefixDir(badSliceStatisticsFileName);
-    if (badSliceStatisticsFile = fopen( badSliceStatisticsFileName, "w" )) 
-      {
-      fputs( "VolumeNumber,SliceNumber,SliceMean,SliceDistance,VolumFileName\n", badSliceStatisticsFile);
-      fflush( badSliceStatisticsFile );
-      }
+    if (badSliceStatisticsFile = fopen(badSliceStatisticsFileName, "w")) {
+      fputs("VolumeNumber,SliceNumber,SliceMean,SliceDistance,VolumFileName\n",
+            badSliceStatisticsFile);
+      fflush(badSliceStatisticsFile);
+    }
   }
-  
 
   // loop over all slices
-  for ( int slice = 0; slice < dwiImages[0]->m_Dims[sliceAxis]; ++slice )
-    {
+  for (int slice = 0; slice < dwiImages[0]->m_Dims[sliceAxis]; ++slice) {
     // compute the mean intensity for this slice in each volume
-    std::vector<cmtk::Types::DataItem> sliceMeans( dwiImages.size() );
-    for ( size_t i = b0ImageCount; i < dwiImages.size(); ++i )
-      {
-      cmtk::Types::DataItem variance = 0; // dummy variable; don't need variance
-      dwiImages[i]->ExtractSlice( sliceAxis, slice )->GetData()->GetStatistics( sliceMeans[i], variance );
-      }
+    std::vector<cmtk::Types::DataItem> sliceMeans(dwiImages.size());
+    for (size_t i = b0ImageCount; i < dwiImages.size(); ++i) {
+      cmtk::Types::DataItem variance =
+          0;  // dummy variable; don't need variance
+      dwiImages[i]
+          ->ExtractSlice(sliceAxis, slice)
+          ->GetData()
+          ->GetStatistics(sliceMeans[i], variance);
+    }
 
     // test for each image whether this slice is bad in it
-    for ( size_t i = b0ImageCount; i < dwiImages.size(); ++i )
-      {
+    for (size_t i = b0ImageCount; i < dwiImages.size(); ++i) {
       // get a vector of means without the current test image
       std::vector<cmtk::Types::DataItem> meansOtherImages;
-      for ( size_t ii = b0ImageCount; ii < dwiImages.size(); ++ii )
-	{
-	if ( i != ii )
-	  {
-	  meansOtherImages.push_back( sliceMeans[ii] );
-	  }
-	}
+      for (size_t ii = b0ImageCount; ii < dwiImages.size(); ++ii) {
+        if (i != ii) {
+          meansOtherImages.push_back(sliceMeans[ii]);
+        }
+      }
 
-      const cmtk::Types::DataItem otherImagesMean = cmtk::MathUtil::Mean( meansOtherImages );
-      const cmtk::Types::DataItem otherImagesSdev = sqrt( cmtk::MathUtil::Variance( meansOtherImages, otherImagesMean ) );
+      const cmtk::Types::DataItem otherImagesMean =
+          cmtk::MathUtil::Mean(meansOtherImages);
+      const cmtk::Types::DataItem otherImagesSdev =
+          sqrt(cmtk::MathUtil::Variance(meansOtherImages, otherImagesMean));
 
-      const cmtk::Types::DataItem distance = fabs( sliceMeans[i] - otherImagesMean ) / otherImagesSdev;
-      if ( distance > standardDeviations )
-	{
-	cmtk::DebugOutput( 2 ) << "Bad slice #" << slice << " in image #" << i << " mean=" << sliceMeans[i] << " distance=" << distance << " filename " << dwiImagePaths[i] << "\n";
-        // Print out info to file 
-        if (badSliceStatisticsFile)
-	   { 
-	   fprintf(badSliceStatisticsFile, "%d,%d,%f,%f,%s\n",int(i),slice, sliceMeans[i],distance,dwiImagePaths[i].c_str());
-	   fflush( badSliceStatisticsFile );
-	   }
+      const cmtk::Types::DataItem distance =
+          fabs(sliceMeans[i] - otherImagesMean) / otherImagesSdev;
+      if (distance > standardDeviations) {
+        cmtk::DebugOutput(2)
+            << "Bad slice #" << slice << " in image #" << i
+            << " mean=" << sliceMeans[i] << " distance=" << distance
+            << " filename " << dwiImagePaths[i] << "\n";
+        // Print out info to file
+        if (badSliceStatisticsFile) {
+          fprintf(badSliceStatisticsFile, "%d,%d,%f,%f,%s\n", int(i), slice,
+                  sliceMeans[i], distance, dwiImagePaths[i].c_str());
+          fflush(badSliceStatisticsFile);
+        }
 
-	// if we have an image output path given, mark bad slice using user-provided padding value
-	if ( outputDir )
-	  {
-	  cmtk::DataGrid& image = *(dwiImages[i]);
-	  const cmtk::DataGrid::RegionType sliceRegion = dwiImages[i]->GetSliceRegion( sliceAxis, slice );
-	  for ( cmtk::RegionIndexIterator<cmtk::DataGrid::RegionType> it( sliceRegion ); it != it.end(); ++it )
-	    {
-	    image.SetDataAt( paddingValue, image.GetOffsetFromIndex( it.Index() ) );
-	    }
-	  }
-	}
-      }    
-    }
-
-
-  // Close text file 
-  if (badSliceStatisticsFile) fclose(badSliceStatisticsFile); 
-
-  if ( outputDir )
-    {
-    for ( size_t i = 0; i < dwiImages.size(); ++i )
-      {
-      const std::string outputPath = std::string( outputDir ) + CMTK_PATH_SEPARATOR + cmtk::FileUtils::Basename( dwiImagePaths[i] );
-      cmtk::VolumeIO::Write( *(dwiImages[i]), outputPath );
+        // if we have an image output path given, mark bad slice using
+        // user-provided padding value
+        if (outputDir) {
+          cmtk::DataGrid &image = *(dwiImages[i]);
+          const cmtk::DataGrid::RegionType sliceRegion =
+              dwiImages[i]->GetSliceRegion(sliceAxis, slice);
+          for (cmtk::RegionIndexIterator<cmtk::DataGrid::RegionType> it(
+                   sliceRegion);
+               it != it.end(); ++it) {
+            image.SetDataAt(paddingValue, image.GetOffsetFromIndex(it.Index()));
+          }
+        }
       }
     }
+  }
+
+  // Close text file
+  if (badSliceStatisticsFile) fclose(badSliceStatisticsFile);
+
+  if (outputDir) {
+    for (size_t i = 0; i < dwiImages.size(); ++i) {
+      const std::string outputPath =
+          std::string(outputDir) + CMTK_PATH_SEPARATOR +
+          cmtk::FileUtils::Basename(dwiImagePaths[i]);
+      cmtk::VolumeIO::Write(*(dwiImages[i]), outputPath);
+    }
+  }
 
   return 0;
 }

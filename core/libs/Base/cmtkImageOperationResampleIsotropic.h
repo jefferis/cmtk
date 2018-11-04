@@ -35,35 +35,35 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: anisotropic resampling
 class ImageOperationResampleIsotropic
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
+    /// Inherit from image operation base class.
+    : public ImageOperation {
+ public:
   /// This class.
   typedef ImageOperationResampleIsotropic Self;
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
-  
+  virtual cmtk::UniformVolume::SmartPtr Apply(
+      cmtk::UniformVolume::SmartPtr &volume);
+
   /// Create a new resampler.
-  static void New( const double resolution );
-  
+  static void New(const double resolution);
+
   /// Create a new resampler.
-  static void NewExact( const double resolution );
-  
-private:
+  static void NewExact(const double resolution);
+
+ private:
   /// Constructor:
-  ImageOperationResampleIsotropic( const double resolution, const bool exact = false ) : m_Resolution( resolution ), m_Exact( exact ) {}
-  
+  ImageOperationResampleIsotropic(const double resolution,
+                                  const bool exact = false)
+      : m_Resolution(resolution), m_Exact(exact) {}
+
   /// Anisotropic resampling resolution
   double m_Resolution;
 
@@ -73,6 +73,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageOperationResampleIsotropic_h_included_
+#endif  // #ifndef __cmtkImageOperationResampleIsotropic_h_included_

@@ -29,6 +29,7 @@
 //
 */
 //
-// This is a dummy cxx file to make sure the "Unstable" library can always be built, even
-// when there is currently no unstable code, or if all unstable code is in headers.
+// This is a dummy cxx file to make sure the "Unstable" library can always be
+// built, even when there is currently no unstable code, or if all unstable code
+// is in headers.
 //

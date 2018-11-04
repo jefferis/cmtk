@@ -32,23 +32,25 @@
 
 #include "cmtkImagePairSimilarityMeasureNCC.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairSimilarityMeasureNCC::ImagePairSimilarityMeasureNCC
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation ),
-    SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 )
-{}
+ImagePairSimilarityMeasureNCC::ImagePairSimilarityMeasureNCC(
+    const UniformVolume::SmartPtr &refVolume,
+    const UniformVolume::SmartPtr &fltVolume,
+    const Interpolators::InterpolationEnum interpolation)
+    : ImagePairSimilarityMeasure(refVolume, fltVolume, interpolation),
+      SumX(0.0),
+      SumY(0.0),
+      SumXY(0.0),
+      SumSqX(0.0),
+      SumSqY(0.0),
+      Samples(0) {}
 
-ImagePairSimilarityMeasureNCC
-::ImagePairSimilarityMeasureNCC( const Self& other ) :
-  ImagePairSimilarityMeasure( other )
-{
+ImagePairSimilarityMeasureNCC ::ImagePairSimilarityMeasureNCC(const Self &other)
+    : ImagePairSimilarityMeasure(other) {
   SumX = other.SumX;
   SumY = other.SumY;
   SumXY = other.SumXY;
@@ -57,18 +59,16 @@ ImagePairSimilarityMeasureNCC
   Samples = other.Samples;
 }
 
-ImagePairSimilarityMeasureNCC::ReturnType
-ImagePairSimilarityMeasureNCC
-::Get() const
-{
+ImagePairSimilarityMeasureNCC::ReturnType ImagePairSimilarityMeasureNCC ::Get()
+    const {
   const double muX = SumX / Samples;
   const double muY = SumY / Samples;
 
   const double p = SumXY - muY * SumX - muX * SumY + Samples * muX * muY;
   const double qX = SumSqX - 2.0 * muX * SumX + Samples * muX * muX;
   const double qY = SumSqY - 2.0 * muY * SumY + Samples * muY * muY;
-  
-  return static_cast<Self::ReturnType>( p / sqrt( qX * qY ) );
+
+  return static_cast<Self::ReturnType>(p / sqrt(qX * qY));
 }
 
-} // namespace cmtk
+}  // namespace cmtk

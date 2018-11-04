@@ -32,38 +32,36 @@
 
 #include "cmtkSplineWarpCongealingFunctional.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-void
-SplineWarpCongealingFunctional::StaticThreadStorage::Initialize( const Self* This )
-{
+void SplineWarpCongealingFunctional::StaticThreadStorage::Initialize(
+    const Self *This) {
   const size_t numberOfXforms = This->m_XformVector.size();
-  
-  this->m_FPlus.resize( 3 * numberOfXforms );
-  this->m_FMinus.resize( 3 * numberOfXforms );
-  this->m_CountByParameterPlus.resize( 3 * numberOfXforms );
-  this->m_CountByParameterMinus.resize( 3 * numberOfXforms );
-  
-  this->m_Xforms.resize( numberOfXforms );
-  for ( size_t xi = 0; xi < numberOfXforms; ++xi )
-    {
-    this->m_Xforms[xi] = SplineWarpXform::SmartPtr( This->GetXformByIndex(xi)->Clone() );
-    }
-  
-  this->m_VectorList.resize( This->m_MaximumNumberOfPixelsPerLineVOI );
-  this->m_Count.resize( This->m_MaximumNumberOfPixelsPerLineVOI );
-  this->m_Histogram.resize( This->m_MaximumNumberOfPixelsPerLineVOI );
-  for ( size_t x = 0; x < This->m_MaximumNumberOfPixelsPerLineVOI; ++x )
-    {
-    this->m_Histogram[x].Resize( This->m_HistogramBins + 2 * This->m_HistogramKernelRadiusMax, false /*reset*/ );
-    }    
+
+  this->m_FPlus.resize(3 * numberOfXforms);
+  this->m_FMinus.resize(3 * numberOfXforms);
+  this->m_CountByParameterPlus.resize(3 * numberOfXforms);
+  this->m_CountByParameterMinus.resize(3 * numberOfXforms);
+
+  this->m_Xforms.resize(numberOfXforms);
+  for (size_t xi = 0; xi < numberOfXforms; ++xi) {
+    this->m_Xforms[xi] =
+        SplineWarpXform::SmartPtr(This->GetXformByIndex(xi)->Clone());
+  }
+
+  this->m_VectorList.resize(This->m_MaximumNumberOfPixelsPerLineVOI);
+  this->m_Count.resize(This->m_MaximumNumberOfPixelsPerLineVOI);
+  this->m_Histogram.resize(This->m_MaximumNumberOfPixelsPerLineVOI);
+  for (size_t x = 0; x < This->m_MaximumNumberOfPixelsPerLineVOI; ++x) {
+    this->m_Histogram[x].Resize(
+        This->m_HistogramBins + 2 * This->m_HistogramKernelRadiusMax,
+        false /*reset*/);
+  }
 
   this->m_NeedToCopyXformParameters = true;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

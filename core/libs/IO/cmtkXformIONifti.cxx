@@ -42,72 +42,66 @@
 #include "nifti1_io_math.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef HAVE_ZLIB
-#  include <zlib.h>
+#include <zlib.h>
 #endif
 
 #ifdef HAVE_SYS_STAT_H
-#  include <sys/stat.h>
+#include <sys/stat.h>
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-void 
-XformIO::WriteNIFTI
-( const Xform* xform, const std::string& path )
-{
-  const DeformationField* dfield = dynamic_cast<const DeformationField*>( xform );
-  if ( ! dfield )
-    {
-    StdErr << "ERROR: XformIO::WriteNIFTI can only write DeformationField objects so far.\n"
-	   << "       No data was written.\n";
+void XformIO::WriteNIFTI(const Xform *xform, const std::string &path) {
+  const DeformationField *dfield =
+      dynamic_cast<const DeformationField *>(xform);
+  if (!dfield) {
+    StdErr << "ERROR: XformIO::WriteNIFTI can only write DeformationField "
+              "objects so far.\n"
+           << "       No data was written.\n";
     return;
-    }
-  
+  }
+
   const size_t dfieldRegionSize = dfield->m_Dims.Product();
-  TypedArray::SmartPtr data = TypedArray::Create( TYPE_COORDINATE, 3 * dfieldRegionSize );
-  for ( size_t ofs = 0; ofs < dfieldRegionSize; ++ofs )
-    {
-    for ( int dim = 0; dim < 3; ++dim )
-      {
-      data->Set( dfield->m_Parameters[3*ofs+dim], ofs + dim * dfieldRegionSize );
-      }
+  TypedArray::SmartPtr data =
+      TypedArray::Create(TYPE_COORDINATE, 3 * dfieldRegionSize);
+  for (size_t ofs = 0; ofs < dfieldRegionSize; ++ofs) {
+    for (int dim = 0; dim < 3; ++dim) {
+      data->Set(dfield->m_Parameters[3 * ofs + dim],
+                ofs + dim * dfieldRegionSize);
     }
-  
+  }
+
   bool detachedHeader = false;
   bool forceCompressed = false;
 
-  std::string pathImg( path );
+  std::string pathImg(path);
 
   // first, look for .gz
-  size_t suffixPosGz = pathImg.rfind( std::string( ".gz" ) );
-  if ( suffixPosGz != std::string::npos )
-    {
+  size_t suffixPosGz = pathImg.rfind(std::string(".gz"));
+  if (suffixPosGz != std::string::npos) {
     // found: set force compression flag and remove .gz from path
     forceCompressed = true;
-    pathImg = pathImg.substr( 0, suffixPosGz );
-    }
-  
-  std::string pathHdr( pathImg );
-  size_t suffixPos = pathHdr.rfind( ".img" );
-  if ( suffixPos != std::string::npos )
-    {
-    detachedHeader = true;
-    pathHdr.replace( suffixPos, 4, ".hdr" );
-    }
-  
-  nifti_1_header header;
-  memset( &header, 0, sizeof( header ) );
+    pathImg = pathImg.substr(0, suffixPosGz);
+  }
 
-  header.sizeof_hdr = 348; // header size
+  std::string pathHdr(pathImg);
+  size_t suffixPos = pathHdr.rfind(".img");
+  if (suffixPos != std::string::npos) {
+    detachedHeader = true;
+    pathHdr.replace(suffixPos, 4, ".hdr");
+  }
+
+  nifti_1_header header;
+  memset(&header, 0, sizeof(header));
+
+  header.sizeof_hdr = 348;  // header size
   header.dim_info = 0;
 
   // ndims
@@ -123,112 +117,96 @@ XformIO::WriteNIFTI
   header.dim[7] = 0;
 
   header.pixdim[0] = 1.0;
-  header.pixdim[1] = static_cast<float>( dfield->m_Spacing[AXIS_X] );
-  header.pixdim[2] = static_cast<float>( dfield->m_Spacing[AXIS_Y] );
-  header.pixdim[3] = static_cast<float>( dfield->m_Spacing[AXIS_Z] );
+  header.pixdim[1] = static_cast<float>(dfield->m_Spacing[AXIS_X]);
+  header.pixdim[2] = static_cast<float>(dfield->m_Spacing[AXIS_Y]);
+  header.pixdim[3] = static_cast<float>(dfield->m_Spacing[AXIS_Z]);
   header.pixdim[4] = 0.0;
   header.pixdim[5] = 1.0;
-  
+
   header.intent_code = NIFTI_INTENT_DISPVECT;
 
   header.qform_code = header.sform_code = 0;
 
-  header.bitpix = 8 * sizeof( Types::Coordinate );
-  if ( sizeof( Types::Coordinate ) == sizeof( float ) )
-    {
+  header.bitpix = 8 * sizeof(Types::Coordinate);
+  if (sizeof(Types::Coordinate) == sizeof(float)) {
     header.datatype = DT_FLOAT;
-    }
-  else
-    {
+  } else {
     header.datatype = DT_DOUBLE;
-    }  
-  
+  }
+
   // determine data range;
   const Types::DataItemRange dataRange = data->GetRange();
-  header.cal_max = static_cast<float>( dataRange.m_UpperBound );
-  header.cal_min = static_cast<float>( dataRange.m_LowerBound );
+  header.cal_max = static_cast<float>(dataRange.m_UpperBound);
+  header.cal_min = static_cast<float>(dataRange.m_LowerBound);
 
 #ifdef _MSC_VER
   const char *const modestr = "wb";
 #else
   const char *const modestr = "w";
 #endif
-    
-  if ( detachedHeader )
-    {
-    memcpy( &header.magic, "ni1\x00", 4 );
-    header.vox_offset = 0;
-    FILE *hdrFile = fopen( pathHdr.c_str(), modestr );
-    if ( hdrFile ) 
-      {
-      fwrite( &header, 1, sizeof( header ), hdrFile );
-      const int extension = 0;
-      fwrite( &extension, 1, 4, hdrFile );
-      fclose( hdrFile );
-      }
-    else
-      {
-      StdErr << "ERROR: NIFTI header file '" << pathHdr << "' could not be opened for writing!\n";
-      }
-    }
-  else
-    {
-    memcpy( &header.magic, "n+1\x00", 4 );
-    header.vox_offset = 352;
-    }
-  
-  if ( VolumeIO::GetWriteCompressed() || forceCompressed )
-    {
-    struct stat buf;
-    if ( ! stat( pathImg.c_str(), &buf ) )
-      {
-      StdErr << "WARNING: NIFTI file '" << path << "' will be written compressed, but uncompressed file exists!\n";
-      }
-    
-    gzFile imgFile = gzopen( (pathImg+".gz").c_str(), modestr );
-    if ( imgFile ) 
-      {
-      if ( ! detachedHeader )
-	{
-	gzwrite( imgFile, &header, sizeof( header ) );
-	const int extension = 0;
-	gzwrite( imgFile, &extension, 4 );
-	}
-      
-      const size_t dataSize = data->GetItemSize() * data->GetDataSize();
-      if ( dataSize != CompressedStream::Zlib::StaticSafeWrite( imgFile, data->GetDataPtr(), dataSize ) )
-	{
-	StdErr << "WARNING: gzwrite() returned error when writing to " << pathImg << "\n";
-	}
-      gzclose( imgFile );
-      }
-    else
-      {
-      StdErr << "ERROR: could not open file '" << pathImg << ".gz' for writing\n";
-      }
-    }
-  else
-    {
-    FILE *imgFile = fopen( pathImg.c_str(), modestr );
-    if ( imgFile ) 
-      {
-      if ( ! detachedHeader )
-	{
-	fwrite( &header, 1, sizeof( header ), imgFile );
-	const int extension = 0;
-	fwrite( &extension, 1, 4, imgFile );
-	}
 
-      fwrite( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(), imgFile );
-      fclose( imgFile );
-      }
-    else
-      {
-      StdErr << "ERROR: could not open file '" << pathImg << "' for writing\n";
-      }
+  if (detachedHeader) {
+    memcpy(&header.magic, "ni1\x00", 4);
+    header.vox_offset = 0;
+    FILE *hdrFile = fopen(pathHdr.c_str(), modestr);
+    if (hdrFile) {
+      fwrite(&header, 1, sizeof(header), hdrFile);
+      const int extension = 0;
+      fwrite(&extension, 1, 4, hdrFile);
+      fclose(hdrFile);
+    } else {
+      StdErr << "ERROR: NIFTI header file '" << pathHdr
+             << "' could not be opened for writing!\n";
     }
+  } else {
+    memcpy(&header.magic, "n+1\x00", 4);
+    header.vox_offset = 352;
+  }
+
+  if (VolumeIO::GetWriteCompressed() || forceCompressed) {
+    struct stat buf;
+    if (!stat(pathImg.c_str(), &buf)) {
+      StdErr << "WARNING: NIFTI file '" << path
+             << "' will be written compressed, but uncompressed file exists!\n";
+    }
+
+    gzFile imgFile = gzopen((pathImg + ".gz").c_str(), modestr);
+    if (imgFile) {
+      if (!detachedHeader) {
+        gzwrite(imgFile, &header, sizeof(header));
+        const int extension = 0;
+        gzwrite(imgFile, &extension, 4);
+      }
+
+      const size_t dataSize = data->GetItemSize() * data->GetDataSize();
+      if (dataSize != CompressedStream::Zlib::StaticSafeWrite(
+                          imgFile, data->GetDataPtr(), dataSize)) {
+        StdErr << "WARNING: gzwrite() returned error when writing to "
+               << pathImg << "\n";
+      }
+      gzclose(imgFile);
+    } else {
+      StdErr << "ERROR: could not open file '" << pathImg
+             << ".gz' for writing\n";
+    }
+  } else {
+    FILE *imgFile = fopen(pathImg.c_str(), modestr);
+    if (imgFile) {
+      if (!detachedHeader) {
+        fwrite(&header, 1, sizeof(header), imgFile);
+        const int extension = 0;
+        fwrite(&extension, 1, 4, imgFile);
+      }
+
+      fwrite(data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(),
+             imgFile);
+      fclose(imgFile);
+    } else {
+      StdErr << "ERROR: could not open file '" << pathImg << "' for writing\n";
+    }
+  }
 }
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk

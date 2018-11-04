@@ -36,94 +36,70 @@
 
 #include <memory.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-BitVector::BitVector( const size_t size, const bool initial )
-{
-  this->m_Size = (size+7) / 8; // +7 to allocate an extra byte for 8n+1...8n+7 bits
-  this->m_BitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
+BitVector::BitVector(const size_t size, const bool initial) {
+  this->m_Size =
+      (size + 7) / 8;  // +7 to allocate an extra byte for 8n+1...8n+7 bits
+  this->m_BitVector = Memory::ArrayC::Allocate<byte>(this->m_Size);
 
-  if ( initial )
+  if (initial)
     this->Set();
   else
     this->Reset();
 }
 
-BitVector::BitVector( const size_t size, byte *const bitSet )
-{
-  this->m_Size = (size+7) / 8; // +7 to allocate an extra byte for 8n+1...8n+7 bits
+BitVector::BitVector(const size_t size, byte *const bitSet) {
+  this->m_Size =
+      (size + 7) / 8;  // +7 to allocate an extra byte for 8n+1...8n+7 bits
   this->m_BitVector = bitSet;
 }
 
-BitVector::~BitVector()
-{
-  Memory::ArrayC::Delete( this->m_BitVector );
+BitVector::~BitVector() { Memory::ArrayC::Delete(this->m_BitVector); }
+
+BitVector *BitVector::Clone() const {
+  byte *newBitVector = Memory::ArrayC::Allocate<byte>(this->m_Size);
+  memcpy(newBitVector, this->m_BitVector, this->m_Size);
+  return new BitVector(8 * this->m_Size, newBitVector);
 }
 
-BitVector* 
-BitVector::Clone() const
-{
-  byte *newBitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
-  memcpy( newBitVector, this->m_BitVector, this->m_Size );
-  return new BitVector( 8*this->m_Size, newBitVector );
+void BitVector::Set() {
+  memset(this->m_BitVector, 255, sizeof(*this->m_BitVector) * this->m_Size);
 }
 
-void
-BitVector::Set()
-{
-  memset( this->m_BitVector, 255, sizeof( *this->m_BitVector ) * this->m_Size );
+void BitVector::Set(const size_t pos, const bool val) {
+  if (val) {
+    this->m_BitVector[pos / 8] |= (1 << (pos % 8));
+  } else {
+    this->m_BitVector[pos / 8] &= ~(1 << (pos % 8));
+  }
 }
 
-void
-BitVector::Set( const size_t pos, const bool val )
-{
-  if ( val )
-    {
-    this->m_BitVector[pos/8] |= (1<<(pos%8));
-    } 
+void BitVector::Reset(const bool value) {
+  if (value)
+    memset(this->m_BitVector, 255, sizeof(*this->m_BitVector) * this->m_Size);
   else
-    {
-    this->m_BitVector[pos/8] &= ~(1<<(pos%8));
-    }
+    memset(this->m_BitVector, 0, sizeof(*this->m_BitVector) * this->m_Size);
 }
 
-void
-BitVector::Reset( const bool value )
-{
-  if ( value )
-    memset( this->m_BitVector, 255, sizeof( *this->m_BitVector ) * this->m_Size );
-  else
-    memset( this->m_BitVector, 0, sizeof( *this->m_BitVector ) * this->m_Size );
+void BitVector::Reset(const size_t pos) {
+  this->m_BitVector[pos / 8] &= ~(1 << (pos % 8));
 }
 
-void
-BitVector::Reset( const size_t pos )
-{
-  this->m_BitVector[pos/8] &= ~(1<<(pos%8));
-}
-
-void
-BitVector::Flip()
-{
-  for ( size_t i=0; i<this->m_Size; ++i )
+void BitVector::Flip() {
+  for (size_t i = 0; i < this->m_Size; ++i)
     this->m_BitVector[i] = ~this->m_BitVector[i];
 }
 
-void
-BitVector::Flip( const size_t pos )
-{
-  this->m_BitVector[pos/8] ^= (1<<(pos%8));
+void BitVector::Flip(const size_t pos) {
+  this->m_BitVector[pos / 8] ^= (1 << (pos % 8));
 }
 
-bool
-BitVector::operator[]( const size_t pos ) const
-{
-  return ( this->m_BitVector[pos/8] >> (pos%8) ) & 1;
+bool BitVector::operator[](const size_t pos) const {
+  return (this->m_BitVector[pos / 8] >> (pos % 8)) & 1;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

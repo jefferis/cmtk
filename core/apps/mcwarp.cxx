@@ -32,46 +32,46 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkUniformVolumeInterpolator.h>
-#include <Base/cmtkLinearInterpolator.h>
 #include <Base/cmtkCubicInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumeGaussianFilter.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
 
-#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
-#include <Registration/cmtkMultiChannelHistogramRegistrationFunctional.h>
 #include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
-#include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkMultiChannelHistogramRegistrationFunctional.h>
+#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
 #include <Registration/cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional.h>
+#include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
 
 #include <Registration/cmtkBestDirectionOptimizer.h>
 #include <Registration/cmtkRegistrationCallback.h>
 
 #include <IO/cmtkClassStreamInput.h>
-#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkClassStreamMultiChannelRegistration.h>
+#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkVolumeIO.h>
 
+#include <algorithm>
 #include <list>
 #include <queue>
-#include <algorithm>
 
 #ifdef HAVE_STDINT_H
-#  include <stdint.h>
+#include <stdint.h>
 #else
 typedef long int uint64_t;
 #endif
 
-std::list<const char*> fileListRef;
-std::list<const char*> fileListFlt;
+std::list<const char *> fileListRef;
+std::list<const char *> fileListFlt;
 
-const char* mcaffineOutput = NULL;
-const char* outArchive = NULL;
+const char *mcaffineOutput = NULL;
+const char *outArchive = NULL;
 
 std::list<cmtk::UniformVolume::SmartPtr> refChannelList;
 std::list<cmtk::UniformVolume::SmartPtr> fltChannelList;
@@ -105,270 +105,307 @@ bool downsampleWithAverage = false;
 
 float smoothSigmaFactor = 0.0;
 
-cmtk::UniformVolume::SmartPtr
-MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample, const cmtk::Types::Coordinate smoothSigmaFactor )
-{
-  if ( downsampleWithAverage )
-    return cmtk::UniformVolume::SmartPtr( image->GetDownsampled( downsample * image->GetMinDelta() ) );
+cmtk::UniformVolume::SmartPtr MakeDownsampled(
+    cmtk::UniformVolume::SmartConstPtr &image, const int downsample,
+    const cmtk::Types::Coordinate smoothSigmaFactor) {
+  if (downsampleWithAverage)
+    return cmtk::UniformVolume::SmartPtr(
+        image->GetDownsampled(downsample * image->GetMinDelta()));
 
-  cmtk::UniformVolume::SmartPtr result( image->CloneGrid() );
+  cmtk::UniformVolume::SmartPtr result(image->CloneGrid());
 
-  if ( (smoothSigmaFactor > 0) && downsample )
-    {
-    const cmtk::Units::GaussianSigma sigma( smoothSigmaFactor * downsample * image->GetMinDelta() );
-    result->SetData( cmtk::UniformVolumeGaussianFilter( image ).GetFiltered3D( sigma ) );
-    }
-  else
-    {
-    result->SetData( image->GetData() );
-    }
+  if ((smoothSigmaFactor > 0) && downsample) {
+    const cmtk::Units::GaussianSigma sigma(smoothSigmaFactor * downsample *
+                                           image->GetMinDelta());
+    result->SetData(
+        cmtk::UniformVolumeGaussianFilter(image).GetFiltered3D(sigma));
+  } else {
+    result->SetData(image->GetData());
+  }
 
-  if ( downsample > 1 )
-    result = cmtk::UniformVolume::SmartPtr( result->GetDownsampledAndAveraged( downsample, true /*approxIsotropic*/ ) );
+  if (downsample > 1)
+    result = cmtk::UniformVolume::SmartPtr(result->GetDownsampledAndAveraged(
+        downsample, true /*approxIsotropic*/));
   return result;
 }
 
-template<class TMetricFunctional>
-void
-DoRegistration()
-{
-  typedef cmtk::SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional> FunctionalType;
-  typedef cmtk::SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctional> ICFunctionalType;
+template <class TMetricFunctional>
+void DoRegistration() {
+  typedef cmtk::SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
+      FunctionalType;
+  typedef cmtk::SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<
+      TMetricFunctional>
+      ICFunctionalType;
   typename FunctionalType::SmartPtr functional;
-  if ( intensityCorrection )
-    {
-    functional = typename FunctionalType::SmartPtr( new ICFunctionalType );
-    }
-  else
-    {
-    functional = typename FunctionalType::SmartPtr( new FunctionalType );
-    }
-  functional->SetNormalizedMI( metricNMI );  
-  functional->SetAdaptiveFixEntropyThreshold( adaptiveFixEntropy );
-  functional->SetAdaptiveFixThreshFactor( adaptiveFixThreshFactor );
-  functional->SetJacobianConstraintWeight( jacobianConstraintWeight );
+  if (intensityCorrection) {
+    functional = typename FunctionalType::SmartPtr(new ICFunctionalType);
+  } else {
+    functional = typename FunctionalType::SmartPtr(new FunctionalType);
+  }
+  functional->SetNormalizedMI(metricNMI);
+  functional->SetAdaptiveFixEntropyThreshold(adaptiveFixEntropy);
+  functional->SetAdaptiveFixThreshFactor(adaptiveFixThreshFactor);
+  functional->SetJacobianConstraintWeight(jacobianConstraintWeight);
 
-  if ( fixWarpX ) functional->AddFixedCoordinateDimension( 0 );
-  if ( fixWarpY ) functional->AddFixedCoordinateDimension( 1 );
-  if ( fixWarpZ ) functional->AddFixedCoordinateDimension( 2 );
+  if (fixWarpX) functional->AddFixedCoordinateDimension(0);
+  if (fixWarpY) functional->AddFixedCoordinateDimension(1);
+  if (fixWarpZ) functional->AddFixedCoordinateDimension(2);
 
-  if ( mcaffineOutput )
-    {
-    cmtk::AffineMultiChannelRegistrationFunctional<TMetricFunctional> affineFunctional;
-    cmtk::ClassStreamInput inStream( mcaffineOutput );
-    if ( !inStream.IsValid() )
-      {
-      cmtk::StdErr << "ERROR: could not open '" << mcaffineOutput << "' for reading.\n";
-      throw cmtk::ExitException( 1 );
-      }
+  if (mcaffineOutput) {
+    cmtk::AffineMultiChannelRegistrationFunctional<TMetricFunctional>
+        affineFunctional;
+    cmtk::ClassStreamInput inStream(mcaffineOutput);
+    if (!inStream.IsValid()) {
+      cmtk::StdErr << "ERROR: could not open '" << mcaffineOutput
+                   << "' for reading.\n";
+      throw cmtk::ExitException(1);
+    }
     inStream >> affineFunctional;
     inStream.Close();
 
-    functional->SetInitialAffineTransformation( affineFunctional.GetTransformation() );
-    for ( size_t idx = 0; idx < affineFunctional.GetNumberOfReferenceChannels(); ++idx )
-      {
-      cmtk::UniformVolume::SmartPtr channel = affineFunctional.GetReferenceChannel(idx);
-      refChannelList.push_back( channel );
-      }
-    for ( size_t idx = 0; idx < affineFunctional.GetNumberOfFloatingChannels(); ++idx )
-      {
-      cmtk::UniformVolume::SmartPtr channel = affineFunctional.GetFloatingChannel(idx);
-      fltChannelList.push_back( channel );
-      }
+    functional->SetInitialAffineTransformation(
+        affineFunctional.GetTransformation());
+    for (size_t idx = 0; idx < affineFunctional.GetNumberOfReferenceChannels();
+         ++idx) {
+      cmtk::UniformVolume::SmartPtr channel =
+          affineFunctional.GetReferenceChannel(idx);
+      refChannelList.push_back(channel);
     }
+    for (size_t idx = 0; idx < affineFunctional.GetNumberOfFloatingChannels();
+         ++idx) {
+      cmtk::UniformVolume::SmartPtr channel =
+          affineFunctional.GetFloatingChannel(idx);
+      fltChannelList.push_back(channel);
+    }
+  }
 
   const cmtk::Vector3D referenceImageDomain = (*refChannelList.begin())->m_Size;
 
   cmtk::Types::Coordinate minPixelSize = FLT_MAX;
-  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
-    {
-    minPixelSize = std::min( (*it)->GetMinDelta(), minPixelSize );
-    }
-  for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
-    {
-    minPixelSize = std::min( (*it)->GetMinDelta(), minPixelSize );
-    }
-  
+  for (std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it =
+           refChannelList.begin();
+       it != refChannelList.end(); ++it) {
+    minPixelSize = std::min((*it)->GetMinDelta(), minPixelSize);
+  }
+  for (std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it =
+           fltChannelList.begin();
+       it != fltChannelList.end(); ++it) {
+    minPixelSize = std::min((*it)->GetMinDelta(), minPixelSize);
+  }
+
   cmtk::BestDirectionOptimizer optimizer;
-  optimizer.SetDeltaFThreshold( optimizerDeltaFThreshold );
-  optimizer.SetCallback( cmtk::RegistrationCallback::SmartPtr( new cmtk::RegistrationCallback ) );
-  optimizer.SetFunctional( functional );
+  optimizer.SetDeltaFThreshold(optimizerDeltaFThreshold);
+  optimizer.SetCallback(
+      cmtk::RegistrationCallback::SmartPtr(new cmtk::RegistrationCallback));
+  optimizer.SetFunctional(functional);
 
   int gridRefinementsLeft = gridRefinements;
   std::queue<int> refinementSchedule;
-  refinementSchedule.push( -1 ); // init marker
-  for ( int downsample = std::max(downsampleFrom, downsampleTo); (downsample >= std::min(downsampleFrom,downsampleTo)) || gridRefinementsLeft; )
-    {
+  refinementSchedule.push(-1);  // init marker
+  for (int downsample = std::max(downsampleFrom, downsampleTo);
+       (downsample >= std::min(downsampleFrom, downsampleTo)) ||
+       gridRefinementsLeft;) {
     int refinementFlags = 0;
-    if ( gridRefinementsLeft )
-      {
+    if (gridRefinementsLeft) {
       refinementFlags |= 2;
       --gridRefinementsLeft;
-      }
+    }
 
-    if ( downsample > downsampleTo )
-      {
+    if (downsample > downsampleTo) {
       refinementFlags |= 1;
       --downsample;
-      }
-
-    if ( ! refinementFlags )
-      break;
-
-    if ( delayGridRefine && (refinementFlags == 3) )
-      {
-      refinementSchedule.push( 1 );
-      refinementSchedule.push( 2 );
-      }
-    else
-      {
-      refinementSchedule.push( refinementFlags );
-      }
     }
-  refinementSchedule.push( 0 ); // last iteration marker
+
+    if (!refinementFlags) break;
+
+    if (delayGridRefine && (refinementFlags == 3)) {
+      refinementSchedule.push(1);
+      refinementSchedule.push(2);
+    } else {
+      refinementSchedule.push(refinementFlags);
+    }
+  }
+  refinementSchedule.push(0);  // last iteration marker
 
   cmtk::CoordinateVector params;
-  for ( int downsample = downsampleFrom; !refinementSchedule.empty(); refinementSchedule.pop() )
-    {
-    cmtk::DebugOutput( 1 ) << "Downsampling stage 1:" << downsample << "\n";
+  for (int downsample = downsampleFrom; !refinementSchedule.empty();
+       refinementSchedule.pop()) {
+    cmtk::DebugOutput(1) << "Downsampling stage 1:" << downsample << "\n";
 
     functional->ClearAllChannels();
-    if ( (downsample == 0) || ( (downsample==1) && (smoothSigmaFactor==0) ) )
-      {
-      functional->AddReferenceChannels( refChannelList.begin(), refChannelList.end() );
-      functional->AddFloatingChannels( fltChannelList.begin(), fltChannelList.end() );
-      }
-    else
-      {
-      for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
-	{
-	cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
-	image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
-	functional->AddReferenceChannel( image );
-	}
-
-      for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
-	{
-	cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
-	image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
-	functional->AddFloatingChannel( image );
-	}
+    if ((downsample == 0) || ((downsample == 1) && (smoothSigmaFactor == 0))) {
+      functional->AddReferenceChannels(refChannelList.begin(),
+                                       refChannelList.end());
+      functional->AddFloatingChannels(fltChannelList.begin(),
+                                      fltChannelList.end());
+    } else {
+      for (std::list<cmtk::UniformVolume::SmartPtr>::iterator it =
+               refChannelList.begin();
+           it != refChannelList.end(); ++it) {
+        cmtk::UniformVolume::SmartPtr image =
+            MakeDownsampled((*it), downsample, smoothSigmaFactor);
+        image->CopyMetaInfo(**it, cmtk::META_FS_PATH);
+        functional->AddReferenceChannel(image);
       }
 
-    if ( refinementSchedule.front() == -1 )
-      {
-      functional->InitTransformation( referenceImageDomain, gridSpacing, exactGridSpacing );
-      functional->GetParamVector( params );
-      refinementSchedule.pop();
-      }
-    
-    cmtk::DebugOutput( 1 ) << "Number of parameters is" << functional->VariableParamVectorDim() << "\n";
-    
-    if ( optimizer.Optimize( params, initialStepSize * downsample * minPixelSize, finalStepSize * downsample * minPixelSize )!= cmtk::CALLBACK_OK )
-      break;
-    
-    if ( refinementSchedule.front() & 1 )
-      {
-      --downsample;
-      }
-
-    if ( refinementSchedule.front() & 2 )
-      {
-      functional->RefineTransformation();
-      functional->GetParamVector( params );
+      for (std::list<cmtk::UniformVolume::SmartPtr>::iterator it =
+               fltChannelList.begin();
+           it != fltChannelList.end(); ++it) {
+        cmtk::UniformVolume::SmartPtr image =
+            MakeDownsampled((*it), downsample, smoothSigmaFactor);
+        image->CopyMetaInfo(**it, cmtk::META_FS_PATH);
+        functional->AddFloatingChannel(image);
       }
     }
-  
-  if ( outArchive )
-    {
-    cmtk::ClassStreamOutput stream( outArchive, cmtk::ClassStreamOutput::MODE_WRITE_ZLIB );
+
+    if (refinementSchedule.front() == -1) {
+      functional->InitTransformation(referenceImageDomain, gridSpacing,
+                                     exactGridSpacing);
+      functional->GetParamVector(params);
+      refinementSchedule.pop();
+    }
+
+    cmtk::DebugOutput(1) << "Number of parameters is"
+                         << functional->VariableParamVectorDim() << "\n";
+
+    if (optimizer.Optimize(params, initialStepSize * downsample * minPixelSize,
+                           finalStepSize * downsample * minPixelSize) !=
+        cmtk::CALLBACK_OK)
+      break;
+
+    if (refinementSchedule.front() & 1) {
+      --downsample;
+    }
+
+    if (refinementSchedule.front() & 2) {
+      functional->RefineTransformation();
+      functional->GetParamVector(params);
+    }
+  }
+
+  if (outArchive) {
+    cmtk::ClassStreamOutput stream(outArchive,
+                                   cmtk::ClassStreamOutput::MODE_WRITE_ZLIB);
     stream << *functional;
     stream.Close();
-    }
+  }
 }
 
-int
-doMain( const int argc, const char* argv[] ) 
-{
-  try 
-    {
+int doMain(const int argc, const char *argv[]) {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Multi-channel nonrigid registration" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Multi-channel nonrigid B-spline image registration using histogram-based or covariance-based joint entropy measures" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "mcwarp [options] mcaffineOutput" );    
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Multi-channel nonrigid registration");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "Multi-channel nonrigid B-spline image registration using "
+        "histogram-based or covariance-based joint entropy measures");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
+                      "mcwarp [options] mcaffineOutput");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( 'o', "out-archive" ), &outArchive, "Output archive path." );
+    cl.AddOption(Key('o', "out-archive"), &outArchive, "Output archive path.");
 
-    cl.AddOption( Key( 'd', "downsample-from" ), &downsampleFrom, "Initial downsampling factor [1]." );
-    cl.AddOption( Key( 'D', "downsample-to" ), &downsampleTo, "Final downsampling factor [1]." );
-    cl.AddOption( Key( "downsample-average" ), &downsampleWithAverage, "Downsample using sliding-window averaging [default: off] )" );
-    cl.AddOption( Key( "smooth" ), &smoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
+    cl.AddOption(Key('d', "downsample-from"), &downsampleFrom,
+                 "Initial downsampling factor [1].");
+    cl.AddOption(Key('D', "downsample-to"), &downsampleTo,
+                 "Final downsampling factor [1].");
+    cl.AddOption(Key("downsample-average"), &downsampleWithAverage,
+                 "Downsample using sliding-window averaging [default: off] )");
+    cl.AddOption(Key("smooth"), &smoothSigmaFactor,
+                 "Sigma of Gaussian smoothing kernel in multiples of template "
+                 "image pixel size [default: off] )");
 
-    cl.AddOption( Key( "grid-spacing" ), &gridSpacing, "Initial control point grid spacing in mm." );
-    cl.AddOption( Key( "grid-spacing-exact" ), &gridSpacing, "Exact initial grid spacing, even if it doesn't match image FOV.", &exactGridSpacing );
-    cl.AddOption( Key( "refine-grid" ), &gridRefinements, "Number of control point grid refinements." );
-    cl.AddSwitch( Key( "delay-refine-grid" ), &delayGridRefine, true, "Delay control point grid refinement until after pixel refinement." );
-    cl.AddOption( Key( "adaptive-fix-thresh-factor" ), &adaptiveFixThreshFactor, "Intensity threshold factor [0..1] for adaptive parameter fixing. [default: 0 -- no fixing]" );
-    cl.AddOption( Key( "adaptive-fix-thresh-factor-entropy" ), &adaptiveFixThreshFactor, "Entropy threshold factor [0..1] for adaptive parameter fixing. [default: 0 -- no fixing]", &adaptiveFixEntropy );
+    cl.AddOption(Key("grid-spacing"), &gridSpacing,
+                 "Initial control point grid spacing in mm.");
+    cl.AddOption(
+        Key("grid-spacing-exact"), &gridSpacing,
+        "Exact initial grid spacing, even if it doesn't match image FOV.",
+        &exactGridSpacing);
+    cl.AddOption(Key("refine-grid"), &gridRefinements,
+                 "Number of control point grid refinements.");
+    cl.AddSwitch(
+        Key("delay-refine-grid"), &delayGridRefine, true,
+        "Delay control point grid refinement until after pixel refinement.");
+    cl.AddOption(Key("adaptive-fix-thresh-factor"), &adaptiveFixThreshFactor,
+                 "Intensity threshold factor [0..1] for adaptive parameter "
+                 "fixing. [default: 0 -- no fixing]");
+    cl.AddOption(Key("adaptive-fix-thresh-factor-entropy"),
+                 &adaptiveFixThreshFactor,
+                 "Entropy threshold factor [0..1] for adaptive parameter "
+                 "fixing. [default: 0 -- no fixing]",
+                 &adaptiveFixEntropy);
 
-    cl.AddSwitch( Key( "fix-warp-x" ), &fixWarpX, true, "Fix transformation (do not warp) in x-direction." );
-    cl.AddSwitch( Key( "fix-warp-y" ), &fixWarpY, true, "Fix transformation (do not warp) in y-direction." );
-    cl.AddSwitch( Key( "fix-warp-z" ), &fixWarpZ, true, "Fix transformation (do not warp) in z-direction." );
+    cl.AddSwitch(Key("fix-warp-x"), &fixWarpX, true,
+                 "Fix transformation (do not warp) in x-direction.");
+    cl.AddSwitch(Key("fix-warp-y"), &fixWarpY, true,
+                 "Fix transformation (do not warp) in y-direction.");
+    cl.AddSwitch(Key("fix-warp-z"), &fixWarpZ, true,
+                 "Fix transformation (do not warp) in z-direction.");
 
-    cl.AddOption( Key( "jacobian-constraint-weight" ), &jacobianConstraintWeight, "Weight for Jacobian volume preservation constraint" );
+    cl.AddOption(Key("jacobian-constraint-weight"), &jacobianConstraintWeight,
+                 "Weight for Jacobian volume preservation constraint");
 
-    cl.AddSwitch( Key( 'H', "histograms" ), &useHistograms, true, "Use multi-dimensional histograms to compute entropies [default." );
-    cl.AddSwitch( Key( 'C', "covariance" ), &useHistograms, false, "Use covariance matrix determinants to compute entropies." );
-    cl.AddSwitch( Key( 'c', "cubic" ), &useCubicInterpolation, true, "Use cubic interpolation [default: linear]" );
+    cl.AddSwitch(
+        Key('H', "histograms"), &useHistograms, true,
+        "Use multi-dimensional histograms to compute entropies [default.");
+    cl.AddSwitch(Key('C', "covariance"), &useHistograms, false,
+                 "Use covariance matrix determinants to compute entropies.");
+    cl.AddSwitch(Key('c', "cubic"), &useCubicInterpolation, true,
+                 "Use cubic interpolation [default: linear]");
 
-    cl.AddSwitch( Key( "mi" ), &metricNMI, false, "Use standard mutual information metric [default]" );
-    cl.AddSwitch( Key( "nmi" ), &metricNMI, true, "Use normalized mutual information metric" );
-    cl.AddSwitch( Key( 'I', "intensity-correction" ), &intensityCorrection, true, "Correct image intensities using local transformation Jacobian to preserve total signal" );
-    
-    cl.AddOption( Key( "initial-step-size" ), &initialStepSize, "Initial optimizer step size in pixels." );
-    cl.AddOption( Key( "final-step-size" ), &finalStepSize, "Initial optimizer step size in pixels." );
-    cl.AddOption( Key( "delta-f-threshold" ), &optimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
+    cl.AddSwitch(Key("mi"), &metricNMI, false,
+                 "Use standard mutual information metric [default]");
+    cl.AddSwitch(Key("nmi"), &metricNMI, true,
+                 "Use normalized mutual information metric");
+    cl.AddSwitch(Key('I', "intensity-correction"), &intensityCorrection, true,
+                 "Correct image intensities using local transformation "
+                 "Jacobian to preserve total signal");
 
-    cl.Parse( argc, argv );
+    cl.AddOption(Key("initial-step-size"), &initialStepSize,
+                 "Initial optimizer step size in pixels.");
+    cl.AddOption(Key("final-step-size"), &finalStepSize,
+                 "Initial optimizer step size in pixels.");
+    cl.AddOption(Key("delta-f-threshold"), &optimizerDeltaFThreshold,
+                 "Optional threshold to terminate optimization (level) if "
+                 "relative change of target function drops below this value.");
+
+    cl.Parse(argc, argv);
 
     mcaffineOutput = cl.GetNext();
-    }
-  catch ( const cmtk::CommandLine::Exception& e ) 
-    {
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  if ( useCubicInterpolation )
-    {
-    typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Cubic> InterpolatorType;
-    if ( useHistograms )
-      {
-      typedef cmtk::MultiChannelHistogramRegistrationFunctional<float,InterpolatorType,uint64_t,6> MetricFunctionalType;
+  if (useCubicInterpolation) {
+    typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Cubic>
+        InterpolatorType;
+    if (useHistograms) {
+      typedef cmtk::MultiChannelHistogramRegistrationFunctional<
+          float, InterpolatorType, uint64_t, 6>
+          MetricFunctionalType;
       DoRegistration<MetricFunctionalType>();
-      }
-    else
-      {
-      typedef cmtk::MultiChannelRMIRegistrationFunctional<float> MetricFunctionalType;
+    } else {
+      typedef cmtk::MultiChannelRMIRegistrationFunctional<float>
+          MetricFunctionalType;
       DoRegistration<MetricFunctionalType>();
-      }
     }
-  else
-    {
-    typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> InterpolatorType;
-    if ( useHistograms )
-      {
-      typedef cmtk::MultiChannelHistogramRegistrationFunctional<float,InterpolatorType,uint64_t,6> MetricFunctionalType;
+  } else {
+    typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>
+        InterpolatorType;
+    if (useHistograms) {
+      typedef cmtk::MultiChannelHistogramRegistrationFunctional<
+          float, InterpolatorType, uint64_t, 6>
+          MetricFunctionalType;
       DoRegistration<MetricFunctionalType>();
-      }
-    else
-      {
-      typedef cmtk::MultiChannelRMIRegistrationFunctional<float> MetricFunctionalType;
+    } else {
+      typedef cmtk::MultiChannelRMIRegistrationFunctional<float>
+          MetricFunctionalType;
       DoRegistration<MetricFunctionalType>();
-      }
     }
+  }
 
   return 0;
 }

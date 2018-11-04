@@ -32,51 +32,54 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 #include <System/cmtkProgress.h>
 
-#include <Base/cmtkWarpXform.h>
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkFitAffineToWarpXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <IO/cmtkXformIO.h>
 
 std::string InputPath;
 std::string OutputPath;
 
-int
-doMain ( const int argc, const char *argv[] ) 
-{
-  try
-    {
+int doMain(const int argc, const char *argv[]) {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fit Affine Transformation to Nonrigid Transformation" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a linear affine transformation to a nonrigid transformation, either a B-spline free-form deformation or a non-parametric deformation field." );
-    
-    cl.AddParameter( &InputPath, "InputDField", "Input transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
-    cl.AddParameter( &OutputPath, "OutputXform", "Path for output fitted affine transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
-    
-    cl.Parse( argc, argv );
-    }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
-    cmtk::StdErr << e;
-    throw cmtk::ExitException( 1 );
-    }
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
+                      "Fit Affine Transformation to Nonrigid Transformation");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
+                      "Fit a linear affine transformation to a nonrigid "
+                      "transformation, either a B-spline free-form deformation "
+                      "or a non-parametric deformation field.");
 
-  cmtk::WarpXform::SmartPtr warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
-  
-  cmtk::FitAffineToWarpXform fitAffine( warpXform );
-  try
-    {
-    cmtk::XformIO::Write( fitAffine.Fit(), OutputPath );
-    }
-  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
-    {
-    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitAffineToWarpXform::Fit()\n";
-    throw cmtk::ExitException( 1 );
-    }
+    cl.AddParameter(&InputPath, "InputDField", "Input transformation.")
+        ->SetProperties(cmtk::CommandLine::PROPS_XFORM);
+    cl.AddParameter(&OutputPath, "OutputXform",
+                    "Path for output fitted affine transformation.")
+        ->SetProperties(cmtk::CommandLine::PROPS_XFORM |
+                        cmtk::CommandLine::PROPS_OUTPUT);
+
+    cl.Parse(argc, argv);
+  } catch (const cmtk::CommandLine::Exception &e) {
+    cmtk::StdErr << e;
+    throw cmtk::ExitException(1);
+  }
+
+  cmtk::WarpXform::SmartPtr warpXform =
+      cmtk::WarpXform::SmartPtr::DynamicCastFrom(
+          cmtk::XformIO::Read(InputPath));
+
+  cmtk::FitAffineToWarpXform fitAffine(warpXform);
+  try {
+    cmtk::XformIO::Write(fitAffine.Fit(), OutputPath);
+  } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
+    cmtk::StdErr << "ERROR: singular matrix encountered in "
+                    "cmtk::FitAffineToWarpXform::Fit()\n";
+    throw cmtk::ExitException(1);
+  }
 
   return 0;
 }

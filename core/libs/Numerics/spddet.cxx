@@ -61,7 +61,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "spddet.h"
 
 /*************************************************************************
@@ -82,15 +81,13 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array& a, int n)
-{
-    ap::real_value_type result;
-    int i;
+ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array &a, int n) {
+  ap::real_value_type result;
+  int i;
 
-    result = 1;
-    for(i = 0; i <= n-1; i++)
-    {
-        result = result*ap::sqr(a(i,i));
-    }
-    return result;
+  result = 1;
+  for (i = 0; i <= n - 1; i++) {
+    result = result * ap::sqr(a(i, i));
+  }
+  return result;
 }

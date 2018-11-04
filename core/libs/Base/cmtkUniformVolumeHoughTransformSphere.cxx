@@ -32,63 +32,65 @@
 
 #include "cmtkUniformVolumeHoughTransformSphere.h"
 
-#include <Base/cmtkRegionSphereSurfaceIterator.h>
 #include <Base/cmtkRegionIndexIterator.h>
+#include <Base/cmtkRegionSphereSurfaceIterator.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-TypedArray::SmartPtr
-UniformVolumeHoughTransformSphere::Get( const Types::Coordinate radius ) const
-{
-  const UniformVolume& volume = *(this->m_UniformVolume);
-  TypedArray::SmartPtr result( TypedArray::Create( volume.GetData()->GetType(), volume.GetNumberOfPixels() ) );
+TypedArray::SmartPtr UniformVolumeHoughTransformSphere::Get(
+    const Types::Coordinate radius) const {
+  const UniformVolume &volume = *(this->m_UniformVolume);
+  TypedArray::SmartPtr result(TypedArray::Create(volume.GetData()->GetType(),
+                                                 volume.GetNumberOfPixels()));
 
-  const int dRadius[3] = { MathUtil::Round( radius / volume.m_Delta[0] ), MathUtil::Round( radius / volume.m_Delta[1] ), MathUtil::Round( radius / volume.m_Delta[2] ) };
-  RegionSphereSurfaceIterator<DataGrid::RegionType> sphereIterator( (DataGrid::IndexType::FromPointer( dRadius )) );
+  const int dRadius[3] = {MathUtil::Round(radius / volume.m_Delta[0]),
+                          MathUtil::Round(radius / volume.m_Delta[1]),
+                          MathUtil::Round(radius / volume.m_Delta[2])};
+  RegionSphereSurfaceIterator<DataGrid::RegionType> sphereIterator(
+      (DataGrid::IndexType::FromPointer(dRadius)));
 
   const DataGrid::RegionType wholeImageRegion = volume.GetWholeImageRegion();
 
-  const DataGrid::IndexType center = 0.5 * (wholeImageRegion.To() - wholeImageRegion.From());
-  for ( sphereIterator = sphereIterator.begin(); sphereIterator != sphereIterator.end(); ++sphereIterator )
-    {
-    const DataGrid::IndexType pt = center+sphereIterator.Index();
-    result->Set( 1, volume.GetOffsetFromIndex( pt ) );
-    }
+  const DataGrid::IndexType center =
+      0.5 * (wholeImageRegion.To() - wholeImageRegion.From());
+  for (sphereIterator = sphereIterator.begin();
+       sphereIterator != sphereIterator.end(); ++sphereIterator) {
+    const DataGrid::IndexType pt = center + sphereIterator.Index();
+    result->Set(1, volume.GetOffsetFromIndex(pt));
+  }
 
   return result;
 
 #ifndef _OPENMP
   const DataGrid::RegionType region = wholeImageRegion;
-#else // _OPENMP
+#else  // _OPENMP
   const int sliceFrom = wholeImageRegion.From()[2];
   const int sliceTo = wholeImageRegion.To()[2];
 #pragma omp parallel for
-  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
-    {
+  for (int slice = sliceFrom; slice < sliceTo; ++slice) {
     DataGrid::RegionType region = wholeImageRegion;
     region.From()[2] = slice;
-    region.To()[2] = slice+1;
-#endif // #ifdef _OPENMP
-    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
-      {
-      const DataGrid::IndexType center = it.Index();
-      const size_t toOffset = volume.GetOffsetFromIndex( center );
-      for ( sphereIterator = sphereIterator.begin(); sphereIterator != sphereIterator.end(); ++sphereIterator )
-	{
-	const DataGrid::IndexType pt = center+sphereIterator.Index();
-	if ( region.IsInside( pt ) )
-	  {
-	  result->Set( result->ValueAt( toOffset ) + volume.GetDataAt( volume.GetOffsetFromIndex( pt ) ), toOffset );
-	  }
-	}
+    region.To()[2] = slice + 1;
+#endif  // #ifdef _OPENMP
+  for (RegionIndexIterator<DataGrid::RegionType> it(region); it != it.end();
+       ++it) {
+    const DataGrid::IndexType center = it.Index();
+    const size_t toOffset = volume.GetOffsetFromIndex(center);
+    for (sphereIterator = sphereIterator.begin();
+         sphereIterator != sphereIterator.end(); ++sphereIterator) {
+      const DataGrid::IndexType pt = center + sphereIterator.Index();
+      if (region.IsInside(pt)) {
+        result->Set(result->ValueAt(toOffset) +
+                        volume.GetDataAt(volume.GetOffsetFromIndex(pt)),
+                    toOffset);
       }
-#ifdef _OPENMP
     }
-#endif // #ifdef _OPENMP
-  
-  return result;
+  }
+#ifdef _OPENMP
 }
+#endif  // #ifdef _OPENMP
 
-} // namespace cmtk
+return result;
+}  // namespace cmtk
+
+}  // namespace cmtk

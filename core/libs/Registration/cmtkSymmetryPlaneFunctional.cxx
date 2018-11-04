@@ -36,60 +36,57 @@
 
 #include <Base/cmtkTransformedVolumeAxes.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-SymmetryPlaneFunctional::SymmetryPlaneFunctional
-( UniformVolume::SmartPtr& volume ) : m_Volume( NULL )
-{
-  this->SetVolume( volume );
-  
-  m_Metric = new VoxelMatchingNormMutInf<>( volume, volume );
+SymmetryPlaneFunctional::SymmetryPlaneFunctional(
+    UniformVolume::SmartPtr &volume)
+    : m_Volume(NULL) {
+  this->SetVolume(volume);
+
+  m_Metric = new VoxelMatchingNormMutInf<>(volume, volume);
 }
 
-SymmetryPlaneFunctional::SymmetryPlaneFunctional
-( UniformVolume::SmartPtr& volume, 
-  const Types::DataItemRange& valueRange )
-  : m_Volume( NULL )
-{
-  this->SetVolume( volume );
-  
-  m_Metric = new VoxelMatchingNormMutInf<>( volume, volume, valueRange, valueRange );
+SymmetryPlaneFunctional::SymmetryPlaneFunctional(
+    UniformVolume::SmartPtr &volume, const Types::DataItemRange &valueRange)
+    : m_Volume(NULL) {
+  this->SetVolume(volume);
+
+  m_Metric =
+      new VoxelMatchingNormMutInf<>(volume, volume, valueRange, valueRange);
 }
 
-Types::Coordinate 
-SymmetryPlaneFunctional::GetParamStep 
-( const size_t idx, const Types::Coordinate mmStep ) 
-  const
-{
-  switch ( idx ) 
-    {
+Types::Coordinate SymmetryPlaneFunctional::GetParamStep(
+    const size_t idx, const Types::Coordinate mmStep) const {
+  switch (idx) {
     // plane offset is a translation
     case 0:
       return mmStep;
       // the other two parameters are rotations
     case 1:
     case 2:
-      return mmStep / sqrt( MathUtil::Square( 0.5 * m_Volume->m_Size[0] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[1] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[2] ) ) * 90/M_PI;
-    }
+      return mmStep /
+             sqrt(MathUtil::Square(0.5 * m_Volume->m_Size[0]) +
+                  MathUtil::Square(0.5 * m_Volume->m_Size[1]) +
+                  MathUtil::Square(0.5 * m_Volume->m_Size[2])) *
+             90 / M_PI;
+  }
   return mmStep;
 }
 
-SymmetryPlaneFunctional::ReturnType
-SymmetryPlaneFunctional::Evaluate()
-{
-  const TransformedVolumeAxes gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->Deltas().begin() );
-  const Vector3D *HashX = gridHash[0], *HashY = gridHash[1], *HashZ = gridHash[2];
+SymmetryPlaneFunctional::ReturnType SymmetryPlaneFunctional::Evaluate() {
+  const TransformedVolumeAxes gridHash(*m_Volume, this->m_ParametricPlane,
+                                       m_Volume->Deltas().begin());
+  const Vector3D *HashX = gridHash[0], *HashY = gridHash[1],
+                 *HashZ = gridHash[2];
 
   Vector3D pFloating;
-    
+
   m_Metric->Reset();
-    
-  const DataGrid::IndexType& Dims = m_Volume->GetDims();
+
+  const DataGrid::IndexType &Dims = m_Volume->GetDims();
   const Types::GridIndexType DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
   Types::GridIndexType fltIdx[3];
@@ -98,33 +95,30 @@ SymmetryPlaneFunctional::Evaluate()
   Vector3D planeStart, rowStart;
 
   Types::GridIndexType r = 0;
-  for ( Types::GridIndexType pZ = 0; pZ<DimsZ; ++pZ ) 
-    {
+  for (Types::GridIndexType pZ = 0; pZ < DimsZ; ++pZ) {
     planeStart = HashZ[pZ];
-    
-    for ( Types::GridIndexType pY = 0; pY<DimsY; ++pY ) 
-      {
+
+    for (Types::GridIndexType pY = 0; pY < DimsY; ++pY) {
       (rowStart = planeStart) += HashY[pY];
-      
-      for ( Types::GridIndexType pX = 0; pX<DimsX; ++pX, ++r ) 
-	{
-	(pFloating = rowStart) += HashX[pX];
-	
-	// Tell us whether the current location is still within the model
-	// volume and get the respective voxel.
-	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) ) 
-	  {
-	  // Compute data index of the model voxel in the model volume.
-	  Types::GridIndexType offset = fltIdx[0] + DimsX * (fltIdx[1] + DimsY * fltIdx[2]);
-	  
-	  // Continue metric computation.
-	  m_Metric->Proceed( (Types::GridIndexType) r, offset, fltFrac );
-	  }
-	}
+
+      for (Types::GridIndexType pX = 0; pX < DimsX; ++pX, ++r) {
+        (pFloating = rowStart) += HashX[pX];
+
+        // Tell us whether the current location is still within the model
+        // volume and get the respective voxel.
+        if (m_Volume->FindVoxelByIndex(pFloating, fltIdx, fltFrac)) {
+          // Compute data index of the model voxel in the model volume.
+          Types::GridIndexType offset =
+              fltIdx[0] + DimsX * (fltIdx[1] + DimsY * fltIdx[2]);
+
+          // Continue metric computation.
+          m_Metric->Proceed((Types::GridIndexType)r, offset, fltFrac);
+        }
       }
     }
-  
+  }
+
   return m_Metric->Get();
 }
 
-} // namespace cmtk
+}  // namespace cmtk

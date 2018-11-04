@@ -35,40 +35,34 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypedArrayFunction.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkHistogram.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypedArrayFunction.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Lookup class for histogram intensity matching.
- * This class provides a lookup table that is computed from the histograms of two
- * cmtk::TypedArray objects. The lookup can then be applied to the "variable" array
- * so that its distribution afterwards matches, as closely as possible, the distribution
- * of the "fixed" array.
+ * This class provides a lookup table that is computed from the histograms of
+ *two cmtk::TypedArray objects. The lookup can then be applied to the "variable"
+ *array so that its distribution afterwards matches, as closely as possible, the
+ *distribution of the "fixed" array.
  *
- * To apply histogram matching to "variableArray" based on the distribution of "fixedArray",
- * use the following:
- *\code
- *  variableArray->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( variableArray, fixedArray ) );
+ * To apply histogram matching to "variableArray" based on the distribution of
+ *"fixedArray", use the following: \code variableArray->ApplyFunction(
+ *cmtk::TypedArrayFunctionHistogramMatching( variableArray, fixedArray ) );
  *\endcode
- * The variable array for setting up the matching function need not be the same as the array
- * that the function is applied to:
- *\code
- *  variableArray->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( testArray, fixedArray ) );
- *\endcode
+ * The variable array for setting up the matching function need not be the same
+ *as the array that the function is applied to: \code
+ *  variableArray->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching(
+ *testArray, fixedArray ) ); \endcode
  */
-class
-TypedArrayFunctionHistogramMatching
-/// Inherit from base class.
-  : public TypedArrayFunction
-{
-public:
+class TypedArrayFunctionHistogramMatching
+    /// Inherit from base class.
+    : public TypedArrayFunction {
+ public:
   /// This class.
   typedef TypedArrayFunctionHistogramMatching Self;
 
@@ -79,15 +73,19 @@ public:
   typedef Histogram<unsigned int> HistogramType;
 
   /// Constructor: build lookup from two data arrays.
-  TypedArrayFunctionHistogramMatching( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins );
+  TypedArrayFunctionHistogramMatching(
+      const TypedArray &variableArray, const TypedArray &fixedArray,
+      const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins);
 
   /// Constructor: build lookup from two histograms.
-  TypedArrayFunctionHistogramMatching( const Self::HistogramType& variableHistogram, const Self::HistogramType& fixedHistogram );
+  TypedArrayFunctionHistogramMatching(
+      const Self::HistogramType &variableHistogram,
+      const Self::HistogramType &fixedHistogram);
 
   /// Map a single value from the variable array to its new value.
-  virtual Types::DataItem operator()( const Types::DataItem valueIn ) const;
+  virtual Types::DataItem operator()(const Types::DataItem valueIn) const;
 
-private:
+ private:
   /// Fixed array histogram.
   HistogramType::SmartPtr m_FixedArrayHistogram;
 
@@ -103,6 +101,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTypedArrayFunctionHistogramMatching_h_included_
+#endif  // #ifndef __cmtkTypedArrayFunctionHistogramMatching_h_included_

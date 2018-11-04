@@ -35,200 +35,186 @@
 #include <Base/cmtkMathUtil.h>
 #include <Registration/cmtkScaleHistogramValueTrait.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-template<class TXform>
-CongealingFunctional<TXform>::CongealingFunctional() 
-  : m_NeedsUpdateStandardDeviationByPixel( true )
-{
-  this->SetNumberOfHistogramBins( this->m_HistogramBins );
+template <class TXform>
+CongealingFunctional<TXform>::CongealingFunctional()
+    : m_NeedsUpdateStandardDeviationByPixel(true) {
+  this->SetNumberOfHistogramBins(this->m_HistogramBins);
 }
 
-template<class TXform>
-CongealingFunctional<TXform>::~CongealingFunctional()
-{
-  for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
-    if ( this->m_HistogramKernel[idx] )
-      Memory::ArrayC::Delete( this->m_HistogramKernel[idx] );
+template <class TXform>
+CongealingFunctional<TXform>::~CongealingFunctional() {
+  for (size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx)
+    if (this->m_HistogramKernel[idx])
+      Memory::ArrayC::Delete(this->m_HistogramKernel[idx]);
   this->m_HistogramKernel.clear();
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>
-::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
-{
+template <class TXform>
+void CongealingFunctional<TXform>::SetNumberOfHistogramBins(
+    const size_t numberOfHistogramBins) {
   this->m_HistogramBins = numberOfHistogramBins;
   this->m_HistogramKernelRadiusMax = this->m_HistogramBins / 2;
   this->CreateGaussianKernels();
 
-  this->Superclass::SetNumberOfHistogramBins( numberOfHistogramBins );
+  this->Superclass::SetNumberOfHistogramBins(numberOfHistogramBins);
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>::CreateGaussianKernels()
-{
-  for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
-    if ( this->m_HistogramKernel[idx] )
-      Memory::ArrayC::Delete( this->m_HistogramKernel[idx] );
+template <class TXform>
+void CongealingFunctional<TXform>::CreateGaussianKernels() {
+  for (size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx)
+    if (this->m_HistogramKernel[idx])
+      Memory::ArrayC::Delete(this->m_HistogramKernel[idx]);
 
-  this->m_HistogramKernel.resize( this->m_HistogramKernelRadiusMax+1 );
-  this->m_HistogramKernelRadius.resize( this->m_HistogramKernelRadiusMax+1 );
-  for ( size_t idx = 0; idx <= this->m_HistogramKernelRadiusMax; ++idx )
-    {
+  this->m_HistogramKernel.resize(this->m_HistogramKernelRadiusMax + 1);
+  this->m_HistogramKernelRadius.resize(this->m_HistogramKernelRadiusMax + 1);
+  for (size_t idx = 0; idx <= this->m_HistogramKernelRadiusMax; ++idx) {
     const size_t radius = idx + 1;
     const double sigma = idx;
-    
+
     this->m_HistogramKernelRadius[idx] = radius;
-    this->m_HistogramKernel[idx] = Memory::ArrayC::Allocate<HistogramBinType>( radius );
-    
-    if ( idx < 1.0 )
-      {
-      this->m_HistogramKernel[idx][0] = cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale( 1.0 );
-      for ( size_t i = 1; i < radius; ++i )
-	this->m_HistogramKernel[idx][i] = cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale( 0.0 );
-      }
-    else
-      {
-      const double normFactor = 1.0/(sqrt(2*M_PI) * sigma);
-      for ( size_t i = 0; i < radius; ++i )
-	{
-	this->m_HistogramKernel[idx][i] = cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale( normFactor * exp( -MathUtil::Square( 1.0 * i / sigma ) / 2 ) );
-	}
+    this->m_HistogramKernel[idx] =
+        Memory::ArrayC::Allocate<HistogramBinType>(radius);
+
+    if (idx < 1.0) {
+      this->m_HistogramKernel[idx][0] =
+          cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale(1.0);
+      for (size_t i = 1; i < radius; ++i)
+        this->m_HistogramKernel[idx][i] =
+            cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale(0.0);
+    } else {
+      const double normFactor = 1.0 / (sqrt(2 * M_PI) * sigma);
+      for (size_t i = 0; i < radius; ++i) {
+        this->m_HistogramKernel[idx][i] =
+            cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale(
+                normFactor * exp(-MathUtil::Square(1.0 * i / sigma) / 2));
       }
     }
+  }
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>::SetTemplateGrid
-( UniformVolume::SmartPtr& templateGrid,
-  const int downsample,
-  const bool useTemplateData )
-{  
-  this->Superclass::SetTemplateGrid( templateGrid, downsample, useTemplateData );
+template <class TXform>
+void CongealingFunctional<TXform>::SetTemplateGrid(
+    UniformVolume::SmartPtr &templateGrid, const int downsample,
+    const bool useTemplateData) {
+  this->Superclass::SetTemplateGrid(templateGrid, downsample, useTemplateData);
   this->m_NeedsUpdateStandardDeviationByPixel = true;
 }
 
-template<class TXform>
+template <class TXform>
 typename CongealingFunctional<TXform>::ReturnType
-CongealingFunctional<TXform>::Evaluate()
-{
-  if ( this->m_NeedsUpdateStandardDeviationByPixel )
+CongealingFunctional<TXform>::Evaluate() {
+  if (this->m_NeedsUpdateStandardDeviationByPixel)
     this->UpdateStandardDeviationByPixel();
-  
+
   double entropy = 0;
   unsigned int count = 0;
 
-  this->m_ThreadHistograms.resize( this->m_NumberOfThreads );
+  this->m_ThreadHistograms.resize(this->m_NumberOfThreads);
 
-  std::vector<EvaluateThreadParameters> params( this->m_NumberOfTasks );
-  for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
+  std::vector<EvaluateThreadParameters> params(this->m_NumberOfTasks);
+  for (size_t idx = 0; idx < this->m_NumberOfTasks; ++idx)
     params[idx].thisObject = this;
-  
-  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  if ( this->m_ProbabilisticSamples.size() )
-    threadPool.Run( Self::EvaluateProbabilisticThread, params );
+
+  ThreadPool &threadPool = ThreadPool::GetGlobalThreadPool();
+  if (this->m_ProbabilisticSamples.size())
+    threadPool.Run(Self::EvaluateProbabilisticThread, params);
   else
-    threadPool.Run( Self::EvaluateThread, params );
-  
+    threadPool.Run(Self::EvaluateThread, params);
+
   // gather partial entropies from tasks
-  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
-    {
+  for (size_t task = 0; task < this->m_NumberOfTasks; ++task) {
     entropy += params[task].m_Entropy;
     count += params[task].m_Count;
-    }
+  }
 
-  if ( count )
-    return static_cast<typename Self::ReturnType>( entropy / count );
+  if (count)
+    return static_cast<typename Self::ReturnType>(entropy / count);
   else
     return -FLT_MAX;
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>::EvaluateThread
-( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
-{
-  EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
-  
-  Self* This = threadParameters->thisObject;
-  const Self* ThisConst = threadParameters->thisObject;
-  
-  HistogramType& histogram = This->m_ThreadHistograms[threadIdx];
-  histogram.Resize( ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax, false /*reset*/ );
-  
+template <class TXform>
+void CongealingFunctional<TXform>::EvaluateThread(void *const args,
+                                                  const size_t taskIdx,
+                                                  const size_t taskCnt,
+                                                  const size_t threadIdx,
+                                                  const size_t) {
+  EvaluateThreadParameters *threadParameters =
+      static_cast<EvaluateThreadParameters *>(args);
+
+  Self *This = threadParameters->thisObject;
+  const Self *ThisConst = threadParameters->thisObject;
+
+  HistogramType &histogram = This->m_ThreadHistograms[threadIdx];
+  histogram.Resize(
+      ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax,
+      false /*reset*/);
+
   double entropy = 0;
   unsigned int count = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-  const size_t pixelsPerThread = 1+(numberOfPixels / taskCnt);
+  const size_t pixelsPerThread = 1 + (numberOfPixels / taskCnt);
   const size_t pixelFrom = taskIdx * pixelsPerThread;
-  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
+  const size_t pixelTo = std::min(numberOfPixels, pixelFrom + pixelsPerThread);
 
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
   const byte paddingValue = ThisConst->m_PaddingValue;
-  
-  for ( size_t ofs = pixelFrom; ofs < pixelTo; ++ofs )
-    {
+
+  for (size_t ofs = pixelFrom; ofs < pixelTo; ++ofs) {
     histogram.Reset();
     const size_t kernelIdx = ThisConst->m_StandardDeviationByPixel[ofs];
     const size_t kernelRadius = ThisConst->m_HistogramKernelRadius[kernelIdx];
-    const HistogramBinType* kernel = ThisConst->m_HistogramKernel[kernelIdx];
+    const HistogramBinType *kernel = ThisConst->m_HistogramKernel[kernelIdx];
 
     bool fullCount = true;
-    if ( ThisConst->m_UseTemplateData )
-      {
+    if (ThisConst->m_UseTemplateData) {
       const byte templateValue = ThisConst->m_TemplateData[ofs];
-      if ( (fullCount = (templateValue != paddingValue )) )
-	{
-	histogram.AddWeightedSymmetricKernel( templateValue, kernelRadius, kernel );
-	}
-      }
-    
-    for ( size_t idx = imagesFrom; (idx < imagesTo) && fullCount; ++idx )
-      {
-      const byte value = ThisConst->m_Data[idx][ofs];
-      if ( value != paddingValue )
-	{
-	histogram.AddWeightedSymmetricKernel( value, kernelRadius, kernel );
-	}
-      else
-	{
-	fullCount = false;
-	}
-      }
-
-    if ( fullCount )
-      {
-      entropy -= histogram.GetEntropy();
-      ++count;
+      if ((fullCount = (templateValue != paddingValue))) {
+        histogram.AddWeightedSymmetricKernel(templateValue, kernelRadius,
+                                             kernel);
       }
     }
-  
+
+    for (size_t idx = imagesFrom; (idx < imagesTo) && fullCount; ++idx) {
+      const byte value = ThisConst->m_Data[idx][ofs];
+      if (value != paddingValue) {
+        histogram.AddWeightedSymmetricKernel(value, kernelRadius, kernel);
+      } else {
+        fullCount = false;
+      }
+    }
+
+    if (fullCount) {
+      entropy -= histogram.GetEntropy();
+      ++count;
+    }
+  }
+
   threadParameters->m_Entropy = entropy;
   threadParameters->m_Count = count;
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>::EvaluateProbabilisticThread
-( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
-{
-  EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
-  
-  Self* This = threadParameters->thisObject;
-  const Self* ThisConst = threadParameters->thisObject;
-  
-  HistogramType& histogram = This->m_ThreadHistograms[threadIdx];
-  histogram.Resize( ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax, false /*reset*/ );
+template <class TXform>
+void CongealingFunctional<TXform>::EvaluateProbabilisticThread(
+    void *const args, const size_t taskIdx, const size_t taskCnt,
+    const size_t threadIdx, const size_t) {
+  EvaluateThreadParameters *threadParameters =
+      static_cast<EvaluateThreadParameters *>(args);
+
+  Self *This = threadParameters->thisObject;
+  const Self *ThisConst = threadParameters->thisObject;
+
+  HistogramType &histogram = This->m_ThreadHistograms[threadIdx];
+  histogram.Resize(
+      ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax,
+      false /*reset*/);
 
   double entropy = 0;
   unsigned int count = 0;
@@ -240,209 +226,179 @@ CongealingFunctional<TXform>::EvaluateProbabilisticThread
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
   const size_t samplesPerThread = numberOfSamples / taskCnt;
   const size_t sampleFrom = taskIdx * samplesPerThread;
-  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
+  const size_t sampleTo =
+      std::min(numberOfSamples, sampleFrom + samplesPerThread);
 
-  for ( size_t sample = sampleFrom; sample < sampleTo; ++sample )
-    {
+  for (size_t sample = sampleFrom; sample < sampleTo; ++sample) {
     histogram.Reset();
     bool fullCount = true;
-    
+
     const size_t kernelIdx = ThisConst->m_StandardDeviationByPixel[sample];
     const size_t kernelRadius = ThisConst->m_HistogramKernelRadius[kernelIdx];
-    const HistogramBinType* kernel = ThisConst->m_HistogramKernel[kernelIdx];
+    const HistogramBinType *kernel = ThisConst->m_HistogramKernel[kernelIdx];
 
-    if ( ThisConst->m_UseTemplateData )
-      {
+    if (ThisConst->m_UseTemplateData) {
       const byte templateValue = ThisConst->m_TemplateData[sample];
-      if ( (fullCount = (templateValue != paddingValue)) )
-	{
-	histogram.AddWeightedSymmetricKernel( templateValue, kernelRadius, kernel );
-	}
-      }
-    
-    for ( size_t idx = imagesFrom; (idx < imagesTo) && fullCount; ++idx )
-      {
-      const byte value = ThisConst->m_Data[idx][sample];
-      if ( value != paddingValue )
-	{
-	histogram.AddWeightedSymmetricKernel( value, kernelRadius, kernel );
-	}
-      else
-	{
-	fullCount = false;
-	}
-      }
-    
-    if ( fullCount )
-      {
-      entropy -= histogram.GetEntropy();
-      ++count;
-      }	
-    else
-      {
+      if ((fullCount = (templateValue != paddingValue))) {
+        histogram.AddWeightedSymmetricKernel(templateValue, kernelRadius,
+                                             kernel);
       }
     }
-    
+
+    for (size_t idx = imagesFrom; (idx < imagesTo) && fullCount; ++idx) {
+      const byte value = ThisConst->m_Data[idx][sample];
+      if (value != paddingValue) {
+        histogram.AddWeightedSymmetricKernel(value, kernelRadius, kernel);
+      } else {
+        fullCount = false;
+      }
+    }
+
+    if (fullCount) {
+      entropy -= histogram.GetEntropy();
+      ++count;
+    } else {
+    }
+  }
+
   threadParameters->m_Entropy = entropy;
   threadParameters->m_Count = count;
 }
 
-template<class TXform>
-bool
-CongealingFunctional<TXform>
-::Wiggle()
-{
+template <class TXform>
+bool CongealingFunctional<TXform>::Wiggle() {
   bool wiggle = this->Superclass::Wiggle();
 
-  if ( wiggle )
-    {
+  if (wiggle) {
     this->m_NeedsUpdateStandardDeviationByPixel = true;
-    }
-  
+  }
+
   return wiggle;
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>
-::UpdateStandardDeviationByPixel()
-{
-  if ( this->m_ProbabilisticSamples.size() )
-    {
+template <class TXform>
+void CongealingFunctional<TXform>::UpdateStandardDeviationByPixel() {
+  if (this->m_ProbabilisticSamples.size()) {
     const size_t numberOfSamples = this->m_ProbabilisticSamples.size();
-    this->m_StandardDeviationByPixel.resize( numberOfSamples );
-    }
-  else
-    {
+    this->m_StandardDeviationByPixel.resize(numberOfSamples);
+  } else {
     const size_t numberOfPixels = this->m_TemplateNumberOfPixels;
-    this->m_StandardDeviationByPixel.resize( numberOfPixels );
-    }
+    this->m_StandardDeviationByPixel.resize(numberOfPixels);
+  }
 
-  std::vector<ThreadParametersType> params( this->m_NumberOfTasks );
-  for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
+  std::vector<ThreadParametersType> params(this->m_NumberOfTasks);
+  for (size_t idx = 0; idx < this->m_NumberOfTasks; ++idx)
     params[idx].thisObject = this;
 
-  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  threadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, params );
-  
+  ThreadPool &threadPool = ThreadPool::GetGlobalThreadPool();
+  threadPool.Run(Self::UpdateStandardDeviationByPixelThreadFunc, params);
+
   this->m_NeedsUpdateStandardDeviationByPixel = false;
 }
 
-template<class TXform>
-void
-CongealingFunctional<TXform>
-::UpdateStandardDeviationByPixelThreadFunc
-( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
-{
-  ThreadParametersType* taskParameters = static_cast<ThreadParametersType*>( args );
-  
-  Self* This = taskParameters->thisObject;
-  const Self* ThisConst = taskParameters->thisObject;
+template <class TXform>
+void CongealingFunctional<TXform>::UpdateStandardDeviationByPixelThreadFunc(
+    void *const args, const size_t taskIdx, const size_t taskCnt, const size_t,
+    const size_t) {
+  ThreadParametersType *taskParameters =
+      static_cast<ThreadParametersType *>(args);
+
+  Self *This = taskParameters->thisObject;
+  const Self *ThisConst = taskParameters->thisObject;
 
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
   const byte paddingValue = ThisConst->m_PaddingValue;
-  
-  if ( ThisConst->m_ProbabilisticSamples.size() )
-    {
-    const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
-    const size_t samplesPerTask = 1 + (numberOfSamples / taskCnt );
-    const size_t sampleFrom = taskIdx * samplesPerTask;
-    const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
 
-    for ( size_t smpl = sampleFrom; smpl < sampleTo; ++smpl )
-      {
+  if (ThisConst->m_ProbabilisticSamples.size()) {
+    const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
+    const size_t samplesPerTask = 1 + (numberOfSamples / taskCnt);
+    const size_t sampleFrom = taskIdx * samplesPerTask;
+    const size_t sampleTo =
+        std::min(numberOfSamples, sampleFrom + samplesPerTask);
+
+    for (size_t smpl = sampleFrom; smpl < sampleTo; ++smpl) {
       double sum = 0, sumsq = 0;
       unsigned int count = 0;
 
-      if ( ThisConst->m_UseTemplateData )
-	{
-	const byte templateValue = ThisConst->m_TemplateData[smpl];
-	if ( templateValue != paddingValue )
-	  {
-	  sum += templateValue;
-	  sumsq += templateValue * templateValue;
-	  ++count;
-	  }
-	}
+      if (ThisConst->m_UseTemplateData) {
+        const byte templateValue = ThisConst->m_TemplateData[smpl];
+        if (templateValue != paddingValue) {
+          sum += templateValue;
+          sumsq += templateValue * templateValue;
+          ++count;
+        }
+      }
 
-      for ( size_t idx = imagesFrom; idx < imagesTo; ++idx )
-	{
-	const byte value = ThisConst->m_Data[idx][smpl];
-	if ( value != paddingValue )
-	  {
-	  const double data = static_cast<double>( value );
-	  sum += data;
-	  sumsq += data * data;
-	  ++count;
-	  }
-	}
-      
-      if ( count > 1 ) // count>0 not enough for unbiased estimate of sdev below
-	{
-	const double mu = sum / count;
-	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );
+      for (size_t idx = imagesFrom; idx < imagesTo; ++idx) {
+        const byte value = ThisConst->m_Data[idx][smpl];
+        if (value != paddingValue) {
+          const double data = static_cast<double>(value);
+          sum += data;
+          sumsq += data * data;
+          ++count;
+        }
+      }
 
-	This->m_StandardDeviationByPixel[smpl] = sdev;
-	}
-      else
-	{
-	This->m_StandardDeviationByPixel[smpl] = 0;
-	}
+      if (count > 1)  // count>0 not enough for unbiased estimate of sdev below
+      {
+        const double mu = sum / count;
+        const byte sdev = std::min<byte>(
+            ThisConst->m_HistogramKernelRadiusMax,
+            (byte)(
+                sqrt((count * mu * mu - 2 * mu * sum + sumsq) / (count - 1))));
+
+        This->m_StandardDeviationByPixel[smpl] = sdev;
+      } else {
+        This->m_StandardDeviationByPixel[smpl] = 0;
       }
     }
-  else
-    {
+  } else {
     const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
     const size_t pixelsPerTask = 1 + (numberOfPixels / taskCnt);
     const size_t pixelFrom = taskIdx * pixelsPerTask;
-    const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
+    const size_t pixelTo = std::min(numberOfPixels, pixelFrom + pixelsPerTask);
 
-    for ( size_t px = pixelFrom; px < pixelTo; ++px )
-      {
+    for (size_t px = pixelFrom; px < pixelTo; ++px) {
       double sum = 0, sumsq = 0;
       unsigned int count = 0;
 
-      if ( ThisConst->m_UseTemplateData )
-	{
-	const byte templateValue = ThisConst->m_TemplateData[px];
-	if ( templateValue != paddingValue )
-	  {
-	  sum += templateValue;
-	  sumsq += templateValue * templateValue;
-	  ++count;
-	  }
-	}
+      if (ThisConst->m_UseTemplateData) {
+        const byte templateValue = ThisConst->m_TemplateData[px];
+        if (templateValue != paddingValue) {
+          sum += templateValue;
+          sumsq += templateValue * templateValue;
+          ++count;
+        }
+      }
 
-      for ( size_t idx = imagesFrom; idx < imagesTo; ++idx )
-	{
-	const byte value = ThisConst->m_Data[idx][px];
-	if ( value != paddingValue )
-	  {
-	  const double data = static_cast<double>( value );
-	  sum += data;
-	  sumsq += data * data;
-	  ++count;
-	  }
-	}
-      
-      if ( count > 1 )
-	{
-	const double mu = sum / count;
-	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );
-	This->m_StandardDeviationByPixel[px] = sdev;
-	}
-      else
-	{
-	This->m_StandardDeviationByPixel[px] = 0;
-	}
+      for (size_t idx = imagesFrom; idx < imagesTo; ++idx) {
+        const byte value = ThisConst->m_Data[idx][px];
+        if (value != paddingValue) {
+          const double data = static_cast<double>(value);
+          sum += data;
+          sumsq += data * data;
+          ++count;
+        }
+      }
+
+      if (count > 1) {
+        const double mu = sum / count;
+        const byte sdev = std::min<byte>(
+            ThisConst->m_HistogramKernelRadiusMax,
+            (byte)(
+                sqrt((count * mu * mu - 2 * mu * sum + sumsq) / (count - 1))));
+        This->m_StandardDeviationByPixel[px] = sdev;
+      } else {
+        This->m_StandardDeviationByPixel[px] = 0;
       }
     }
+  }
 }
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkSplineWarpXform.h>

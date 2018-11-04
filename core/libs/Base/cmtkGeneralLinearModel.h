@@ -35,30 +35,27 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkMatrix.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkThreads.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Pixelwise linear modeling and t statistics of data.
- * \note This class formerly contained a method for 
- * getting the covariance matrix of an SVD.  It has 
- * been removed due to obsolete implementation 
+ * \note This class formerly contained a method for
+ * getting the covariance matrix of an SVD.  It has
+ * been removed due to obsolete implementation
  * (Numerical Recipes) and un-use
  */
-class GeneralLinearModel
-{
-public:
+class GeneralLinearModel {
+ public:
   /// This class.
   typedef GeneralLinearModel Self;
 
@@ -69,8 +66,9 @@ public:
    * This will take care of SVD of the design matrix and perform all necessary
    * pre-computations for the actual modeling.
    */
-  GeneralLinearModel( const size_t nParameters, const size_t nData, const double* designMatrix );
-  
+  GeneralLinearModel(const size_t nParameters, const size_t nData,
+                     const double *designMatrix);
+
   /// Destructor.
   ~GeneralLinearModel();
 
@@ -78,14 +76,11 @@ public:
    *\param n Index of the model parameter [0..NParameters-1].
    *\return The singular value for parameter n.
    */
-  double GetSingularValue( const size_t n ) const 
-  {
-    return (*(this->W))[n];
-  }
+  double GetSingularValue(const size_t n) const { return (*(this->W))[n]; }
 
   /** Get the parameter correlation matrix from design matrix.
    */
-  Matrix2D<double>* GetCorrelationMatrix() const;
+  Matrix2D<double> *GetCorrelationMatrix() const;
 
   /** Model y[] distribution and return model parameters a[].
    *\param y A vector of TypedArray smart pointers. Each object in this
@@ -94,42 +89,33 @@ public:
    * linear model parameters are normalized w.r.t. the maghnitudes of the
    * respective measurements.
    */
-  void FitModel( std::vector<TypedArray::SmartPtr>& y, const bool normalizeParameters = true );
+  void FitModel(std::vector<TypedArray::SmartPtr> &y,
+                const bool normalizeParameters = true);
 
   /// Get pointer to n-th model parameter array.
-  TypedArray::SmartPtr& GetModel( const size_t n )
-  {
-    return this->Model[n];
-  }
+  TypedArray::SmartPtr &GetModel(const size_t n) { return this->Model[n]; }
 
   /// Get normalization factor for parameter number 'p'.
-  double GetNormFactor( const size_t p )
-  {
+  double GetNormFactor(const size_t p) {
     // do not normalize constant part
-    if ( this->VariableSD[p] > 0 ) 
+    if (this->VariableSD[p] > 0)
       return this->VariableSD[p];
     else
       return 1.0;
   }
 
   /// Get pointer to n-th parameter t statistics array.
-  TypedArray::SmartPtr& GetTStat( const size_t n )
-  {
-    return this->TStat[n];
-  }
+  TypedArray::SmartPtr &GetTStat(const size_t n) { return this->TStat[n]; }
 
   /// Get pointer to n-th parameter t statistics array.
-  TypedArray::SmartPtr& GetFStat()
-  {
-    return this->FStat;
-  }
+  TypedArray::SmartPtr &GetFStat() { return this->FStat; }
 
-private:
+ private:
   /// Solve least-squares problem.
   void LeastSquares();
 
   /// Initialize results arrays with the correct number of pixels.
-  void InitResults( const size_t nPixels );
+  void InitResults(const size_t nPixels);
 
   /// Number of model parameters.
   size_t NParameters;
@@ -141,22 +127,22 @@ private:
   Matrix2D<double> DesignMatrix;
 
   /// Matrix U of the design matrix SVD.
-  Matrix2D<double>* U;
+  Matrix2D<double> *U;
 
   /// Array of partial design matrices.
-  std::vector< Matrix2D<double>* > Up;
+  std::vector<Matrix2D<double> *> Up;
 
   /// Matrix V the design matrix SVD.
-  Matrix2D<double>* V;
+  Matrix2D<double> *V;
 
   /// SVD of partial design matrices.
-  std::vector< Matrix2D<double>* > Vp;
+  std::vector<Matrix2D<double> *> Vp;
 
   /// Vector W (workspace).
-  std::vector<double>* W;
+  std::vector<double> *W;
 
   /// Workspace vectors for partial regressions.
-  std::vector< std::vector<double>* > Wp;
+  std::vector<std::vector<double> *> Wp;
 
   /// Means of variables.
   std::vector<double> VariableMean;
@@ -176,6 +162,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkGeneralLinearModel_h_included_
+#endif  // #ifndef __cmtkGeneralLinearModel_h_included_

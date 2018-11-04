@@ -36,51 +36,51 @@
 
 #include <iostream>
 
-int
-main( const int, const char*[] )
-{
+int main(const int, const char *[]) {
   int version = 0;
-  if ( cudaDriverGetVersion( &version ) != cudaSuccess )
-    {
+  if (cudaDriverGetVersion(&version) != cudaSuccess) {
     std::cerr << "Call to cudaDriverGetVersion() failed." << std::endl;
     return 1;
-    }
-  
+  }
+
   std::cerr << "Found CUDA driver version " << version << std::endl;
 
   int deviceCount = 0;
-  if ( cudaGetDeviceCount( &deviceCount ) != cudaSuccess )
-    {
+  if (cudaGetDeviceCount(&deviceCount) != cudaSuccess) {
     std::cerr << "Call to cudaGetDeviceCount() failed." << std::endl;
     return 1;
-    }
-  
+  }
+
   std::cerr << "CUDA reports " << deviceCount << " device(s)." << std::endl;
 
-  for ( int device = 0; device < deviceCount; ++device )
-    {
+  for (int device = 0; device < deviceCount; ++device) {
     std::cerr << std::endl << "Device #" << device << ":" << std::endl;
     struct cudaDeviceProp props;
-    if ( cudaGetDeviceProperties( &props, device ) != cudaSuccess )
-      {
+    if (cudaGetDeviceProperties(&props, device) != cudaSuccess) {
       std::cerr << "\tFailed to get device properties." << std::endl;
-      }
-    else
-      {
+    } else {
       std::cerr << "\tName: " << props.name << std::endl << std::endl;
-      std::cerr << "\tMultiprocessor count: " << props.multiProcessorCount << std::endl;
-      std::cerr << "\tCompute capability: " << props.major << "." << props.minor << std::endl;
+      std::cerr << "\tMultiprocessor count: " << props.multiProcessorCount
+                << std::endl;
+      std::cerr << "\tCompute capability: " << props.major << "." << props.minor
+                << std::endl;
       std::cerr << "\tTotal memory: " << props.totalGlobalMem << std::endl;
       std::cerr << "\tConstant memory: " << props.totalConstMem << std::endl;
-      std::cerr << "\tShared memory per block: " << props.sharedMemPerBlock << std::endl << std::endl;
+      std::cerr << "\tShared memory per block: " << props.sharedMemPerBlock
+                << std::endl
+                << std::endl;
       std::cerr << "\tWarp size: " << props.warpSize << std::endl;
-      std::cerr << "\tMax threads per block: " << props.maxThreadsPerBlock << std::endl;
-      std::cerr << "\tMaximum thread block size: (" << props.maxThreadsDim[0] << "," << props.maxThreadsDim[1] << "," << props.maxThreadsDim[2] << ")" << std::endl;
-      std::cerr << "\tMaximum grid size size: (" << props.maxGridSize[0] << "," << props.maxGridSize[1] << "," << props.maxGridSize[2] << ")" << std::endl;
-      }
+      std::cerr << "\tMax threads per block: " << props.maxThreadsPerBlock
+                << std::endl;
+      std::cerr << "\tMaximum thread block size: (" << props.maxThreadsDim[0]
+                << "," << props.maxThreadsDim[1] << ","
+                << props.maxThreadsDim[2] << ")" << std::endl;
+      std::cerr << "\tMaximum grid size size: (" << props.maxGridSize[0] << ","
+                << props.maxGridSize[1] << "," << props.maxGridSize[2] << ")"
+                << std::endl;
     }
+  }
 
   // if we got here, the program probably ran
   return 0;
 }
-

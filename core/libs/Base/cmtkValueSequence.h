@@ -37,9 +37,7 @@
 
 #include <math.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -55,42 +53,39 @@ cmtk
  * evaluation of more elementary expressions, you are encouraged to implement
  * these directly; this present class is merely a convenience tool.
  */
-template<class T=float> 
-class ValueSequence 
-{
-public:
+template <class T = float>
+class ValueSequence {
+ public:
   /// This class.
   typedef ValueSequence<T> Self;
 
   /// Default constructor.
-  ValueSequence() 
-  { 
-    this->Reset(); 
-  }
+  ValueSequence() { this->Reset(); }
 
   /// Reset all computations.
-  void Reset() 
-  {
-    NValues = 0; Sum = 0; SumAbs = 0; SumOfSquares = 0; 
-    Minimum = Maximum = MinimumAbs = MaximumAbs = 0; 
+  void Reset() {
+    NValues = 0;
+    Sum = 0;
+    SumAbs = 0;
+    SumOfSquares = 0;
+    Minimum = Maximum = MinimumAbs = MaximumAbs = 0;
   }
-  
+
   /// Proceed with the next number in the sequence.
-  void Proceed( const T v ) 
-  {
-    if ( ! NValues ) 
-      {
+  void Proceed(const T v) {
+    if (!NValues) {
       Minimum = Maximum = v;
-      MinimumAbs = MaximumAbs = fabs( v );
-      } 
-    else
-      {
-      if ( v < Minimum ) Minimum = v;
-      if ( v > Maximum ) Maximum = v;
-      if ( fabs( v ) < MinimumAbs ) MinimumAbs = fabs( v );
-      if ( fabs( v ) > MaximumAbs ) MaximumAbs = fabs( v );
-      }
-    ++NValues; Sum += v; SumAbs += fabs( v ); SumOfSquares += v*v; 
+      MinimumAbs = MaximumAbs = fabs(v);
+    } else {
+      if (v < Minimum) Minimum = v;
+      if (v > Maximum) Maximum = v;
+      if (fabs(v) < MinimumAbs) MinimumAbs = fabs(v);
+      if (fabs(v) > MaximumAbs) MaximumAbs = fabs(v);
+    }
+    ++NValues;
+    Sum += v;
+    SumAbs += fabs(v);
+    SumOfSquares += v * v;
   }
 
   /// Return minimum of all values.
@@ -109,28 +104,28 @@ public:
   int GetNValues() const { return NValues; }
 
   /// Return variance of all values.
-  double GetVariance( const bool unbiased = true ) const
-  { 
+  double GetVariance(const bool unbiased = true) const {
     const double mu = this->GetAverage();
-    return ( NValues * mu * mu - 2 * mu * Sum + SumOfSquares ) / ( unbiased ? (NValues-1) : NValues );
+    return (NValues * mu * mu - 2 * mu * Sum + SumOfSquares) /
+           (unbiased ? (NValues - 1) : NValues);
   }
 
   /// Return sum of all values.
-  double GetSum() const { return static_cast<double>( Sum ); }
+  double GetSum() const { return static_cast<double>(Sum); }
 
   /// Return sum of squres of all values.
-  double GetSumOfSquares() const { return static_cast<double>( SumOfSquares ); }
+  double GetSumOfSquares() const { return static_cast<double>(SumOfSquares); }
 
   /// Return average value.
-  double GetAverage() const { return static_cast<double>( Sum / NValues ); }
+  double GetAverage() const { return static_cast<double>(Sum / NValues); }
 
   /// Return average value.
-  double GetAverageAbs() const { return static_cast<double>( SumAbs / NValues ); }
+  double GetAverageAbs() const { return static_cast<double>(SumAbs / NValues); }
 
   /// Assignment operator.
-  ValueSequence<T>& operator=( const ValueSequence<T>& other );
+  ValueSequence<T> &operator=(const ValueSequence<T> &other);
 
-private:
+ private:
   /// Sum of all values.
   T Sum;
 
@@ -156,14 +151,15 @@ private:
   T MaximumAbs;
 
   /// Allow addition operator direct access.
-  template<class TT>
-  friend ValueSequence<TT> operator+( const ValueSequence<TT>& a, const ValueSequence<TT>& b );
+  template <class TT>
+  friend ValueSequence<TT> operator+(const ValueSequence<TT> &a,
+                                     const ValueSequence<TT> &b);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkValueSequence.txx"
 
-#endif // #ifndef __cmtkValueSequence_h_included_
+#endif  // #ifndef __cmtkValueSequence_h_included_

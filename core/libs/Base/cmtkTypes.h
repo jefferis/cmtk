@@ -37,13 +37,13 @@
 
 #include <Base/cmtkMathUtil.h>
 
-#include <stdlib.h>
 #include <limits.h>
+#include <stdlib.h>
 #include <cfloat>
 #include <cstddef>
 
 #ifdef HAVE_VALUES_H
-#  include <values.h>
+#include <values.h>
 #endif
 
 #ifdef _MSC_VER
@@ -57,11 +57,9 @@ typedef unsigned short ushort;
 #ifndef _HAVE_BYTE_
 typedef unsigned char byte;
 #define _HAVE_BYTE_
-#endif // #ifndef _HAVE_BYTE_
+#endif  // #ifndef _HAVE_BYTE_
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -71,8 +69,7 @@ cmtk
  * equal to the integer constants 0 through 2, since quite a bit of code
  * depends on this for array indexing.
  */
-enum 
-{
+enum {
   /// x-axis.
   AXIS_X = 0,
   /// y-axis.
@@ -82,8 +79,7 @@ enum
 };
 
 /// Class of image data.
-typedef enum 
-{
+typedef enum {
   /// Grey-level data.
   DATACLASS_GREY,
   /// (Segmented) label data.
@@ -93,14 +89,13 @@ typedef enum
 } DataClass;
 
 /// Convert string to data class identifier.
-DataClass StringToDataClass( const char *dataClassStr );
+DataClass StringToDataClass(const char *dataClassStr);
 
 /// Convert data class identifier to string.
-const char* DataClassToString( const DataClass dataClass );
+const char *DataClassToString(const DataClass dataClass);
 
 /// Scalar data type identifiers.
-typedef enum 
-{
+typedef enum {
   /// Unsigned byte data (8 bit, range 0-255).
   TYPE_BYTE = 0,
   /// Signed byte data (8 bit, range -128-127).
@@ -122,55 +117,49 @@ typedef enum
 } ScalarDataType;
 
 /// Names of scalar data types.
-extern const char* DataTypeName[];
+extern const char *DataTypeName[];
 
 #ifdef CMTK_DATA_FLOAT
-namespace Types
-{ 
+namespace Types {
 /** @memo Definition of the data exchange item type
  * All data retrievals, stores and conversions are done using this type.
  */
-typedef float DataItem; 
-}
+typedef float DataItem;
+}  // namespace Types
 const ScalarDataType TYPE_ITEM = TYPE_FLOAT;
 #define CMTK_ITEM_MAX FLT_MAX
 #define CMTK_ITEM_MIN FLT_MIN
 #define CMTK_ITEM_NAN CMTK_FLOAT_NAN
 #else
-namespace Types 
-{
-typedef double DataItem; 
+namespace Types {
+typedef double DataItem;
 }
 const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
 #define CMTK_ITEM_MAX DBL_MAX
 #define CMTK_ITEM_MIN DBL_MIN
 #define CMTK_ITEM_NAN CMTK_DOUBLE_NAN
-#endif // #ifdef CMTK_DATA_FLOAT
+#endif  // #ifdef CMTK_DATA_FLOAT
 
-namespace Types
-{
+namespace Types {
 
 /// Range of DataItem values specified as lower and upper bound.
-template<class T>
-class Range
-{
-public:
+template <class T>
+class Range {
+ public:
   /// Constructor.
-  Range( const T& lowerBound, const T& upperBound ) : m_LowerBound( lowerBound ), m_UpperBound( upperBound ) {}
+  Range(const T &lowerBound, const T &upperBound)
+      : m_LowerBound(lowerBound), m_UpperBound(upperBound) {}
 
   /// Conversion constructor.
-  template<class T2>
-  explicit Range( const Range<T2>& range ) : m_LowerBound( range.m_LowerBound ), m_UpperBound( range.m_UpperBound ) {}
+  template <class T2>
+  explicit Range(const Range<T2> &range)
+      : m_LowerBound(range.m_LowerBound), m_UpperBound(range.m_UpperBound) {}
 
   /// Compute "width" of range, i.e., upper minus lower bound.
-  T Width() const
-  {
-    return this->m_UpperBound - this->m_LowerBound;
-  }
+  T Width() const { return this->m_UpperBound - this->m_LowerBound; }
 
   /// Test whether a given value is within the range.
-  bool InRange( const T& value ) const
-  {
+  bool InRange(const T &value) const {
     return (value >= this->m_LowerBound) && (value <= this->m_UpperBound);
   }
 
@@ -184,93 +173,84 @@ public:
 /// Convenience declaration: range of DataItem values.
 typedef Range<DataItem> DataItemRange;
 
-}
+}  // namespace Types
 
 namespace Types {
-  // Type for grid indexes in images.
-  typedef long long int GridIndexType;
-}
- 
+// Type for grid indexes in images.
+typedef long long int GridIndexType;
+}  // namespace Types
+
 #ifdef CMTK_COORDINATES_FLOAT
 /** @memo Definition of the coordinate data type
  * All spatial locations, distances, etc. are stored using this type.
  */
-namespace Types 
-{ 
-typedef float Coordinate; 
+namespace Types {
+typedef float Coordinate;
 }
 const ScalarDataType TYPE_COORDINATE = TYPE_FLOAT;
 #else
 /// Define float type used for coordinates.
-namespace Types 
-{ 
-typedef double Coordinate; 
+namespace Types {
+typedef double Coordinate;
 }
 const ScalarDataType TYPE_COORDINATE = TYPE_DOUBLE;
 #endif
 
 /// Return item size for given scalar data type.
-size_t TypeItemSize ( const ScalarDataType dtype );
+size_t TypeItemSize(const ScalarDataType dtype);
 
 /// Select integer data type based on item size and sign bit.
-ScalarDataType SelectDataTypeInteger( const byte itemSize,const bool signBit );
+ScalarDataType SelectDataTypeInteger(const byte itemSize, const bool signBit);
 
 /// Return signed datatype ID corresponding to given datatype.
-ScalarDataType GetSignedDataType( const ScalarDataType dtype );
+ScalarDataType GetSignedDataType(const ScalarDataType dtype);
 
 /// Return unsigned datatype ID corresponding to given datatype.
-ScalarDataType GetUnsignedDataType( const ScalarDataType dtype );
+ScalarDataType GetUnsignedDataType(const ScalarDataType dtype);
 
-namespace
-Types
-{
+namespace Types {
 
-/// Template for traits class to combine two different real (floating point) data types.
-template<class T1,class T2>
-class Combined
-{
-};
+/// Template for traits class to combine two different real (floating point)
+/// data types.
+template <class T1, class T2>
+class Combined {};
 
 /// Combination of two single-precision floating point values.
-template<>
-class Combined<float,float>
-{
-public:
+template <>
+class Combined<float, float> {
+ public:
   /// Single-precision floating point.
   typedef float Type;
 };
 
 /// Combination of single- and double-precision floating point values.
-template<>
-class Combined<float,double>
-{
-public:
-  /// Double-precision floating point. 
- typedef double Type;
+template <>
+class Combined<float, double> {
+ public:
+  /// Double-precision floating point.
+  typedef double Type;
 };
 
 /// Combination of double- and single-precision floating point values.
-template<>
-class Combined<double,float>
-{
-public:
-  /// Double-precision floating point. 
+template <>
+class Combined<double, float> {
+ public:
+  /// Double-precision floating point.
   typedef double Type;
 };
 
 /// Combination of two double-precision floating point values.
-template<>
-class Combined<double,double>
-{
-public:
-  /// Double-precision floating point. 
+template <>
+class Combined<double, double> {
+ public:
+  /// Double-precision floating point.
   typedef double Type;
 };
 
-} // namespace Types
+}  // namespace Types
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTypes_h_included_
+#endif  // #ifndef __cmtkTypes_h_included_

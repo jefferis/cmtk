@@ -34,15 +34,12 @@
 
 #include <Pipeline/cmtkPlane.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Pipeline */
 //@{
 
-Plane::Plane()
-{
+Plane::Plane() {
   Dims[0] = Dims[1] = 0;
   Spacing[0] = Spacing[1] = 1;
   Origin[0] = Origin[1] = Origin[2] = 0;
@@ -51,39 +48,36 @@ Plane::Plane()
   DirectionX[1] = DirectionX[2] = DirectionY[0] = DirectionY[2] = 0;
 }
 
-void Plane::CopyStructure( const Plane *plane )
-{
-  this->SetDims( plane->GetDims() );
-  this->SetSpacing( plane->GetSpacing() );
-  this->SetOrigin( plane->GetOrigin() );
-  this->SetDirectionX( plane->GetDirectionX() );
-  this->SetDirectionY( plane->GetDirectionY() );
+void Plane::CopyStructure(const Plane *plane) {
+  this->SetDims(plane->GetDims());
+  this->SetSpacing(plane->GetSpacing());
+  this->SetOrigin(plane->GetOrigin());
+  this->SetDirectionX(plane->GetDirectionX());
+  this->SetDirectionY(plane->GetDirectionY());
 }
 
-void Plane::Project( Vector3D& p, const Vector3D& q ) const
-{
-  Vector3D v( q );
+void Plane::Project(Vector3D &p, const Vector3D &q) const {
+  Vector3D v(q);
   v[0] -= Origin[0];
   v[1] -= Origin[1];
   v[2] -= Origin[2];
 
-  p[0] = 
-    ( v[0] * DirectionX[0] + v[1] * DirectionX[1] + v[2] * DirectionX[2] ) /
-    ( MathUtil::Square( DirectionX[0] ) + MathUtil::Square( DirectionX[1] ) + MathUtil::Square( DirectionX[2] ) );
-  p[1] = 
-    ( v[0] * DirectionY[0] + v[1] * DirectionY[1] + v[2] * DirectionY[2] ) /
-    ( MathUtil::Square( DirectionY[0] ) + MathUtil::Square( DirectionY[1] ) + MathUtil::Square( DirectionY[2] ) );
+  p[0] = (v[0] * DirectionX[0] + v[1] * DirectionX[1] + v[2] * DirectionX[2]) /
+         (MathUtil::Square(DirectionX[0]) + MathUtil::Square(DirectionX[1]) +
+          MathUtil::Square(DirectionX[2]));
+  p[1] = (v[0] * DirectionY[0] + v[1] * DirectionY[1] + v[2] * DirectionY[2]) /
+         (MathUtil::Square(DirectionY[0]) + MathUtil::Square(DirectionY[1]) +
+          MathUtil::Square(DirectionY[2]));
   p[2] = 0;
 }
 
-void
-Plane::ProjectPixel( const Vector3D& v, unsigned int& i, unsigned int& j ) const
-{
+void Plane::ProjectPixel(const Vector3D &v, unsigned int &i,
+                         unsigned int &j) const {
   Vector3D q(v), p;
-  this->Project( p, q );
+  this->Project(p, q);
 
-  i = MathUtil::Round( p[0] / Spacing[0] );
-  j = MathUtil::Round( p[1] / Spacing[1] );
+  i = MathUtil::Round(p[0] / Spacing[0]);
+  j = MathUtil::Round(p[1] / Spacing[1]);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

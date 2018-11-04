@@ -40,80 +40,84 @@
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
-const char* InFileName = NULL;
-const char* OutFileName = NULL;
+const char *InFileName = NULL;
+const char *OutFileName = NULL;
 
-const char* OldOrientation = NULL;
-const char* NewOrientation = NULL;
+const char *OldOrientation = NULL;
+const char *NewOrientation = NULL;
 
-const char* NewSpace = NULL;
+const char *NewSpace = NULL;
 
-int
-doMain( const int argc, const char* argv[] )
-{
-  try 
-    {
+int doMain(const int argc, const char *argv[]) {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Reorientation" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert between image orientations, i.e., physically re-order pixel array and adapt stored anatomical orientation information" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "reorient [options] new-orientation infile outfile" );
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Reorientation");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "Convert between image orientations, i.e., physically re-order pixel "
+        "array and adapt stored anatomical orientation information");
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
+                      "reorient [options] new-orientation infile outfile");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( 'i', "input-orientation" ), &OldOrientation, "Override input orientation. This is a three-letter code, e.g., 'RAS', 'LPI', etc." );
-    cl.AddOption( Key( 'o', "output-orientation" ), &NewOrientation, "Override output orientation. Default is 'RAS', or the closest match supported by the output image file format" );
+    cl.AddOption(Key('i', "input-orientation"), &OldOrientation,
+                 "Override input orientation. This is a three-letter code, "
+                 "e.g., 'RAS', 'LPI', etc.");
+    cl.AddOption(Key('o', "output-orientation"), &NewOrientation,
+                 "Override output orientation. Default is 'RAS', or the "
+                 "closest match supported by the output image file format");
 
-    cl.AddOption( Key( "output-space" ), &NewSpace, "Override output coordinate space (e.g., 'RAS', 'LAS', 'LPS'). This does not affect the array order. Default is to write image in the input image space." );
-    
-    if ( ! cl.Parse( argc, argv ) ) return 1;
-       
+    cl.AddOption(Key("output-space"), &NewSpace,
+                 "Override output coordinate space (e.g., 'RAS', 'LAS', "
+                 "'LPS'). This does not affect the array order. Default is to "
+                 "write image in the input image space.");
+
+    if (!cl.Parse(argc, argv)) return 1;
+
     InFileName = cl.GetNext();
     OutFileName = cl.GetNext();
-    }
-  catch ( const cmtk::CommandLine::Exception& ex ) 
-    {
+  } catch (const cmtk::CommandLine::Exception &ex) {
     cmtk::StdErr << ex << "\n";
     return false;
-    }
-  
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read( InFileName ) );
-  if ( ! volume ) 
-    {
+  }
+
+  cmtk::UniformVolume::SmartPtr volume(cmtk::VolumeIO::Read(InFileName));
+  if (!volume) {
     cmtk::StdErr << "ERROR: could not read image " << InFileName << "\n";
-    exit( 1 );
-    }
+    exit(1);
+  }
 
-  if ( OldOrientation )
-    {
-    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION, OldOrientation );
-    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL, OldOrientation );
+  if (OldOrientation) {
+    volume->SetMetaInfo(cmtk::META_IMAGE_ORIENTATION, OldOrientation);
+    volume->SetMetaInfo(cmtk::META_IMAGE_ORIENTATION_ORIGINAL, OldOrientation);
 
-    volume->SetMetaInfo( cmtk::META_SPACE, OldOrientation );
-    volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, OldOrientation );
+    volume->SetMetaInfo(cmtk::META_SPACE, OldOrientation);
+    volume->SetMetaInfo(cmtk::META_SPACE_ORIGINAL, OldOrientation);
 
     volume->CreateDefaultIndexToPhysicalMatrix();
-    }
-  else
-    {
-    OldOrientation = volume->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str();
-    }
+  } else {
+    OldOrientation = volume->GetMetaInfo(cmtk::META_IMAGE_ORIENTATION).c_str();
+  }
 
-  if ( NewOrientation )
-    {
-    cmtk::DebugOutput( 1 ) << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
-    
-    // now reorient here in case the writer function doesn't try to write original orientation
-    volume = cmtk::UniformVolume::SmartPtr( volume->GetReoriented( NewOrientation ) );
-    // override original orientation to force output with desired output orientation
-    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL, NewOrientation );
-    }
+  if (NewOrientation) {
+    cmtk::DebugOutput(1) << "Reorienting from '" << OldOrientation << "' to '"
+                         << NewOrientation << "'\n";
 
-  if ( NewSpace )
-    {
-    volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, NewSpace );
-    }
-  
-  cmtk::VolumeIO::Write( *volume, OutFileName );
-  
+    // now reorient here in case the writer function doesn't try to write
+    // original orientation
+    volume =
+        cmtk::UniformVolume::SmartPtr(volume->GetReoriented(NewOrientation));
+    // override original orientation to force output with desired output
+    // orientation
+    volume->SetMetaInfo(cmtk::META_IMAGE_ORIENTATION_ORIGINAL, NewOrientation);
+  }
+
+  if (NewSpace) {
+    volume->SetMetaInfo(cmtk::META_SPACE_ORIGINAL, NewSpace);
+  }
+
+  cmtk::VolumeIO::Write(*volume, OutFileName);
+
   return 0;
 }
 

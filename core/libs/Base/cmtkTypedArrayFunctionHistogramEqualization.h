@@ -35,25 +35,21 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypedArrayFunction.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkHistogram.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypedArrayFunction.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Lookup class for histogram equalization.
  */
-class
-TypedArrayFunctionHistogramEqualization
-/// Inherit from base class.
-  : public TypedArrayFunction
-{
-public:
+class TypedArrayFunctionHistogramEqualization
+    /// Inherit from base class.
+    : public TypedArrayFunction {
+ public:
   /// This class.
   typedef TypedArrayFunctionHistogramEqualization Self;
 
@@ -61,12 +57,14 @@ public:
   static const size_t DefaultNumberOfHistogramBins = 1024;
 
   /// Constructor: build lookup.
-  TypedArrayFunctionHistogramEqualization( const TypedArray& variableArray, const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins );
+  TypedArrayFunctionHistogramEqualization(
+      const TypedArray &variableArray,
+      const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins);
 
   /// Map a single value from the variable array to its new value.
-  virtual Types::DataItem operator()( const Types::DataItem valueIn ) const;
+  virtual Types::DataItem operator()(const Types::DataItem valueIn) const;
 
-private:
+ private:
   /// Data histogram.
   Histogram<unsigned int>::SmartPtr m_Histogram;
 
@@ -79,6 +77,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTypedArrayFunctionHistogramEqualization_h_included_
+#endif  // #ifndef __cmtkTypedArrayFunctionHistogramEqualization_h_included_

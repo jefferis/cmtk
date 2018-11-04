@@ -32,16 +32,15 @@
 
 #include "cmtkImagePairSimilarityMeasureRMS.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairSimilarityMeasureRMS::ImagePairSimilarityMeasureRMS
-( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : ImagePairSimilarityMeasureMSD( refVolume, fltVolume, interpolation )
-{}
+ImagePairSimilarityMeasureRMS::ImagePairSimilarityMeasureRMS(
+    const UniformVolume::SmartConstPtr &refVolume,
+    const UniformVolume::SmartConstPtr &fltVolume,
+    const Interpolators::InterpolationEnum interpolation)
+    : ImagePairSimilarityMeasureMSD(refVolume, fltVolume, interpolation) {}
 
-} // namespace cmtk
+}  // namespace cmtk

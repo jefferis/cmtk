@@ -37,22 +37,20 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-TypedArray::SmartPtr
-UniformVolumeLaplaceFilter::Get() const
-{
+TypedArray::SmartPtr UniformVolumeLaplaceFilter::Get() const {
   // Apply Laplacian symmetric kernel (-1, 2, -1) to each dimension separately.
-  std::vector<Types::DataItem> kernel( 2 );
+  std::vector<Types::DataItem> kernel(2);
   kernel[0] = 2;
   kernel[1] = -1;
 
-  return DataGridFilter::GetDataKernelFiltered( kernel, kernel, kernel, false /*do not normalize - sum of kernel elements is zero*/ );
+  return DataGridFilter::GetDataKernelFiltered(
+      kernel, kernel, kernel,
+      false /*do not normalize - sum of kernel elements is zero*/);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

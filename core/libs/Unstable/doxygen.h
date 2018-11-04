@@ -31,5 +31,6 @@
 */
 
 /** \defgroup Unstable cmtkUnstable Library
- * This library provides classes that are under active development and may have erratic function and quickly varying APIs.
+ * This library provides classes that are under active development and may have
+ * erratic function and quickly varying APIs.
  */

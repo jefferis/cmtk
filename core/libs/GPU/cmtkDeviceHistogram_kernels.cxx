@@ -33,17 +33,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void
-cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins )
-{
-}
+void cmtkDeviceHistogramEntropy(float *result, const float *dataPtr,
+                                int numberOfBins) {}
 
-void
-cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
-{
-}
+void cmtkDeviceHistogramPopulate(float *histPtr, const float *dataPtr,
+                                 const float rangeFrom, const float rangeTo,
+                                 const bool logScale, const int numberOfBins,
+                                 const int numberOfSamples) {}
 
-void
-cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
-{
-}
+void cmtkDeviceHistogramPopulate(float *histPtr, const float *dataPtr,
+                                 const int *maskPtr, const float rangeFrom,
+                                 const float rangeTo, const bool logScale,
+                                 const int numberOfBins,
+                                 const int numberOfSamples) {}

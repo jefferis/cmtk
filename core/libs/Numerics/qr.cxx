@@ -67,7 +67,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "qr.h"
 
 /*************************************************************************
@@ -108,50 +107,43 @@ so that v(0:i-1) = 0, v(i) = 1, v(i+1:m-1) stored in A(i+1:m-1,i).
      Translation from FORTRAN to pseudocode (AlgoPascal)
      by Sergey Bochkanov, ALGLIB project, 2005-2007.
 *************************************************************************/
-void rmatrixqr(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau)
-{
-    ap::real_1d_array work;
-    ap::real_1d_array t;
-    int i;
-    int k;
-    int minmn;
-    ap::real_value_type tmp;
+void rmatrixqr(ap::real_2d_array &a, int m, int n, ap::real_1d_array &tau) {
+  ap::real_1d_array work;
+  ap::real_1d_array t;
+  int i;
+  int k;
+  int minmn;
+  ap::real_value_type tmp;
 
-    if( m<=0||n<=0 )
-    {
-        return;
-    }
-    minmn = ap::minint(m, n);
-    work.setbounds(0, n-1);
-    t.setbounds(1, m);
-    tau.setbounds(0, minmn-1);
-    
+  if (m <= 0 || n <= 0) {
+    return;
+  }
+  minmn = ap::minint(m, n);
+  work.setbounds(0, n - 1);
+  t.setbounds(1, m);
+  tau.setbounds(0, minmn - 1);
+
+  //
+  // Test the input arguments
+  //
+  k = minmn;
+  for (i = 0; i <= k - 1; i++) {
     //
-    // Test the input arguments
+    // Generate elementary reflector H(i) to annihilate A(i+1:m,i)
     //
-    k = minmn;
-    for(i = 0; i <= k-1; i++)
-    {
-        
-        //
-        // Generate elementary reflector H(i) to annihilate A(i+1:m,i)
-        //
-        ap::vmove(t.getvector(1, m-i), a.getcolumn(i, i, m-1));
-        generatereflection(t, m-i, tmp);
-        tau(i) = tmp;
-        ap::vmove(a.getcolumn(i, i, m-1), t.getvector(1, m-i));
-        t(1) = 1;
-        if( i<n )
-        {
-            
-            //
-            // Apply H(i) to A(i:m-1,i+1:n-1) from the left
-            //
-            applyreflectionfromtheleft(a, tau(i), t, i, m-1, i+1, n-1, work);
-        }
+    ap::vmove(t.getvector(1, m - i), a.getcolumn(i, i, m - 1));
+    generatereflection(t, m - i, tmp);
+    tau(i) = tmp;
+    ap::vmove(a.getcolumn(i, i, m - 1), t.getvector(1, m - i));
+    t(1) = 1;
+    if (i < n) {
+      //
+      // Apply H(i) to A(i:m-1,i+1:n-1) from the left
+      //
+      applyreflectionfromtheleft(a, tau(i), t, i, m - 1, i + 1, n - 1, work);
     }
+  }
 }
-
 
 /*************************************************************************
 Partial unpacking of matrix Q from the QR decomposition of a matrix A
@@ -173,67 +165,54 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixqrunpackq(const ap::real_2d_array& a,
-     int m,
-     int n,
-     const ap::real_1d_array& tau,
-     int qcolumns,
-     ap::real_2d_array& q)
-{
-    int i;
-    int j;
-    int k;
-    int minmn;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
+void rmatrixqrunpackq(const ap::real_2d_array &a, int m, int n,
+                      const ap::real_1d_array &tau, int qcolumns,
+                      ap::real_2d_array &q) {
+  int i;
+  int j;
+  int k;
+  int minmn;
+  ap::real_1d_array v;
+  ap::real_1d_array work;
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion(qcolumns<=m, "UnpackQFromQR: QColumns>M!");
+  ap::ap_error::make_assertion(qcolumns <= m, "UnpackQFromQR: QColumns>M!");
 #endif
 
-    if( m<=0||n<=0||qcolumns<=0 )
-    {
-        return;
-    }
-    
-    //
-    // init
-    //
-    minmn = ap::minint(m, n);
-    k = ap::minint(minmn, qcolumns);
-    q.setbounds(0, m-1, 0, qcolumns-1);
-    v.setbounds(1, m);
-    work.setbounds(0, qcolumns-1);
-    for(i = 0; i <= m-1; i++)
-    {
-        for(j = 0; j <= qcolumns-1; j++)
-        {
-            if( i==j )
-            {
-                q(i,j) = 1;
-            }
-            else
-            {
-                q(i,j) = 0;
-            }
-        }
-    }
-    
-    //
-    // unpack Q
-    //
-    for(i = k-1; i >= 0; i--)
-    {
-        
-        //
-        // Apply H(i)
-        //
-        ap::vmove(v.getvector(1, m-i), a.getcolumn(i, i, m-1));
-        v(1) = 1;
-        applyreflectionfromtheleft(q, tau(i), v, i, m-1, 0, qcolumns-1, work);
-    }
-}
+  if (m <= 0 || n <= 0 || qcolumns <= 0) {
+    return;
+  }
 
+  //
+  // init
+  //
+  minmn = ap::minint(m, n);
+  k = ap::minint(minmn, qcolumns);
+  q.setbounds(0, m - 1, 0, qcolumns - 1);
+  v.setbounds(1, m);
+  work.setbounds(0, qcolumns - 1);
+  for (i = 0; i <= m - 1; i++) {
+    for (j = 0; j <= qcolumns - 1; j++) {
+      if (i == j) {
+        q(i, j) = 1;
+      } else {
+        q(i, j) = 0;
+      }
+    }
+  }
+
+  //
+  // unpack Q
+  //
+  for (i = k - 1; i >= 0; i--) {
+    //
+    // Apply H(i)
+    //
+    ap::vmove(v.getvector(1, m - i), a.getcolumn(i, i, m - 1));
+    v(1) = 1;
+    applyreflectionfromtheleft(q, tau(i), v, i, m - 1, 0, qcolumns - 1, work);
+  }
+}
 
 /*************************************************************************
 Unpacking of matrix R from the QR decomposition of a matrix A
@@ -250,32 +229,23 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixqrunpackr(const ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_2d_array& r)
-{
-    int i;
-    int k;
+void rmatrixqrunpackr(const ap::real_2d_array &a, int m, int n,
+                      ap::real_2d_array &r) {
+  int i;
+  int k;
 
-    if( m<=0||n<=0 )
-    {
-        return;
-    }
-    k = ap::minint(m, n);
-    r.setbounds(0, m-1, 0, n-1);
-    for(i = 0; i <= n-1; i++)
-    {
-        r(0,i) = 0;
-    }
-    for(i = 1; i <= m-1; i++)
-    {
-        ap::vmove(&r(i, 0), &r(0, 0), ap::vlen(0,n-1));
-    }
-    for(i = 0; i <= k-1; i++)
-    {
-        ap::vmove(&r(i, i), &a(i, i), ap::vlen(i,n-1));
-    }
+  if (m <= 0 || n <= 0) {
+    return;
+  }
+  k = ap::minint(m, n);
+  r.setbounds(0, m - 1, 0, n - 1);
+  for (i = 0; i <= n - 1; i++) {
+    r(0, i) = 0;
+  }
+  for (i = 1; i <= m - 1; i++) {
+    ap::vmove(&r(i, 0), &r(0, 0), ap::vlen(0, n - 1));
+  }
+  for (i = 0; i <= k - 1; i++) {
+    ap::vmove(&r(i, i), &a(i, i), ap::vlen(i, n - 1));
+  }
 }
-
-

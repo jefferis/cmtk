@@ -37,68 +37,47 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-CompressedStream::BZip2::BZip2( const std::string& filename ) 
-  : m_BzError( 0 )
-{
-  this->m_BzFile = BZ2_bzopen( filename.c_str(), CMTK_FILE_MODE );
-  if ( !this->m_BzFile ) 
-    {
-    StdErr << "ERROR: CompressedStream::BZip2 could not open file '" << filename << "'\n";
-    throw ExitException( 1 );
-    }
+CompressedStream::BZip2::BZip2(const std::string &filename) : m_BzError(0) {
+  this->m_BzFile = BZ2_bzopen(filename.c_str(), CMTK_FILE_MODE);
+  if (!this->m_BzFile) {
+    StdErr << "ERROR: CompressedStream::BZip2 could not open file '" << filename
+           << "'\n";
+    throw ExitException(1);
+  }
 }
 
-void 
-CompressedStream::BZip2::Close()
-{
-  BZ2_bzclose( this->m_BzFile );
-}
+void CompressedStream::BZip2::Close() { BZ2_bzclose(this->m_BzFile); }
 
-void
-CompressedStream::BZip2::Rewind() 
-{
+void CompressedStream::BZip2::Rewind() {
   StdErr << "CompressedStream::BZip2::Rewind() is not implemented\n";
-  throw ExitException( 1 );
+  throw ExitException(1);
 }
 
-size_t
-CompressedStream::BZip2::Read ( void *data, size_t size, size_t count ) 
-{
-  const size_t bytesRead = BZ2_bzRead( &this->m_BzError, this->m_BzFile, data, size * count );
+size_t CompressedStream::BZip2::Read(void *data, size_t size, size_t count) {
+  const size_t bytesRead =
+      BZ2_bzRead(&this->m_BzError, this->m_BzFile, data, size * count);
 
-  if ( this->m_BzError < 0 )
-    {
+  if (this->m_BzError < 0) {
     StdErr << "BZ2_bzRead() returned error " << this->m_BzError << "\n";
-    throw( ExitException( 1 ) );
-    }
+    throw(ExitException(1));
+  }
 
   this->m_BytesRead += bytesRead;
   return bytesRead / size;
 }
 
-bool
-CompressedStream::BZip2::Get ( char &c)
-{
-  if ( this->Feof() || !this->Read( &c, sizeof(char), 1 ) )
-    return false;
+bool CompressedStream::BZip2::Get(char &c) {
+  if (this->Feof() || !this->Read(&c, sizeof(char), 1)) return false;
 
   return true;
 }
 
-int
-CompressedStream::BZip2::Tell () const 
-{
-  return this->m_BytesRead;
-}
+int CompressedStream::BZip2::Tell() const { return this->m_BytesRead; }
 
-bool
-CompressedStream::BZip2::Feof () const 
-{
+bool CompressedStream::BZip2::Feof() const {
   return this->m_BzError == BZ_STREAM_END;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

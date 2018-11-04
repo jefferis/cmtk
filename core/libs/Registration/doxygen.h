@@ -31,6 +31,6 @@
 */
 
 /** \defgroup Registration cmtkRegistration Library
- * This library provides classes related to computing and processing registrations
- * between images.
+ * This library provides classes related to computing and processing
+ * registrations between images.
  */

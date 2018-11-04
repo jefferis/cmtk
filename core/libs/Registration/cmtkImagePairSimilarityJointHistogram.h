@@ -37,29 +37,26 @@
 
 #include <Registration/cmtkImagePairSimilarityMeasure.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkFunctional.h>
 #include <Base/cmtkJointHistogram.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <algorithm>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 #ifdef _MSC_VER
-#pragma warning (disable:4521)
+#pragma warning(disable : 4521)
 #endif
 /** Base class for voxel metrics with pre-converted image data.
  */
 class ImagePairSimilarityJointHistogram :
-  /// Inherit generic image pair similarity class.
-  public ImagePairSimilarityMeasure
-{
-public:
+    /// Inherit generic image pair similarity class.
+    public ImagePairSimilarityMeasure {
+ public:
   /// This type.
   typedef ImagePairSimilarityJointHistogram Self;
 
@@ -78,69 +75,76 @@ public:
    *\param fltVolume The floating (moving, transformed) volume.
    *\param interpolation ID of the interpolator to use for the floating image.
    */
-  ImagePairSimilarityJointHistogram( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
+  ImagePairSimilarityJointHistogram(UniformVolume::SmartConstPtr &refVolume,
+                                    UniformVolume::SmartConstPtr &fltVolume,
+                                    const Interpolators::InterpolationEnum
+                                        interpolation = Interpolators::DEFAULT);
 
   /** Default constructor.
    */
-  ImagePairSimilarityJointHistogram() {};
+  ImagePairSimilarityJointHistogram(){};
 
   /** Virtual destructor.
    */
-  virtual ~ImagePairSimilarityJointHistogram() {};
+  virtual ~ImagePairSimilarityJointHistogram(){};
 
   /** Set reference volume.
-   * In addition to setting the reference volume via the base class, this function
-   * also performs pre-scaling and parameter selection using Self::PrescaleData().
-   * Afterwards the joint histogram size is re-allocated.
+   * In addition to setting the reference volume via the base class, this
+   * function also performs pre-scaling and parameter selection using
+   * Self::PrescaleData(). Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
+  virtual void SetReferenceVolume(
+      const UniformVolume::SmartConstPtr &refVolume);
 
   /** Set floating volume.
-   * In addition to setting the floating volume via the base class, this function
-   * also performs pre-scaling and parameter selection using Self::PrescaleData().
-   * Afterwards the joint histogram size is re-allocated.
+   * In addition to setting the floating volume via the base class, this
+   * function also performs pre-scaling and parameter selection using
+   * Self::PrescaleData(). Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume );
+  virtual void SetFloatingVolume(const UniformVolume::SmartConstPtr &fltVolume);
 
   /// Reset computation: clear joint histogram.
-  virtual void Reset () 
-  {
-    this->m_JointHistogram.Reset();
-  }
+  virtual void Reset() { this->m_JointHistogram.Reset(); }
 
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
-    this->m_JointHistogram.Increment( static_cast<size_t>( a ), std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, static_cast<size_t>( b ) ) ) );
+  template <class T>
+  void Increment(const T a, const T b) {
+    this->m_JointHistogram.Increment(
+        static_cast<size_t>(a),
+        std::max<size_t>(0, std::min<size_t>(this->m_NumberOfBinsY - 1,
+                                             static_cast<size_t>(b))));
   }
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
-    this->m_JointHistogram.Decrement( static_cast<size_t>( a ), std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, static_cast<size_t>( b ) ) ) );
+  template <class T>
+  void Decrement(const T a, const T b) {
+    this->m_JointHistogram.Decrement(
+        static_cast<size_t>(a),
+        std::max<size_t>(0, std::min<size_t>(this->m_NumberOfBinsY - 1,
+                                             static_cast<size_t>(b))));
   }
 
   /// Add another metric object to this one.
-  void Add ( const Self& other )
-  {
-    this->m_JointHistogram.AddJointHistogram( other.m_JointHistogram );
+  void Add(const Self &other) {
+    this->m_JointHistogram.AddJointHistogram(other.m_JointHistogram);
   }
 
   /// Add another metric object to this one.
-  void Remove ( const Self& other )
-  {
-    this->m_JointHistogram.RemoveJointHistogram( other.m_JointHistogram );
+  void Remove(const Self &other) {
+    this->m_JointHistogram.RemoveJointHistogram(other.m_JointHistogram);
   }
 
-  /// Get scaled floating value if this metric rescales (implemented in derived classes), or input value if it does not (done here as the default).
-  virtual Types::DataItem GetFloatingValueScaled( const Types::DataItem value ) const
-  {
-    return static_cast<Types::DataItem>( floor(this->m_ScaleFactorFloating*value+this->m_ScaleOffsetFloating) );
+  /// Get scaled floating value if this metric rescales (implemented in derived
+  /// classes), or input value if it does not (done here as the default).
+  virtual Types::DataItem GetFloatingValueScaled(
+      const Types::DataItem value) const {
+    return static_cast<Types::DataItem>(floor(
+        this->m_ScaleFactorFloating * value + this->m_ScaleOffsetFloating));
   }
 
-protected:
+ protected:
   /// Number of X bins (reference image)
   size_t m_NumberOfBinsX;
 
@@ -150,15 +154,19 @@ protected:
   /// The joint histogram.
   JointHistogram<unsigned int> m_JointHistogram;
 
-private:
-  /** Duplicate and pre-scale image data so that we have the histogram bin numbers readily available.
-   *\return A new volume with the same geometry as the input volume, but for DATACLASS_GREY, all pixel
-   * values will have been rescaled to represent histogram bin indexes directly.
+ private:
+  /** Duplicate and pre-scale image data so that we have the histogram bin
+   *numbers readily available. \return A new volume with the same geometry as
+   *the input volume, but for DATACLASS_GREY, all pixel values will have been
+   *rescaled to represent histogram bin indexes directly.
    */
-  UniformVolume::SmartPtr PrescaleData( const UniformVolume::SmartConstPtr& volume /*!< Input volume.*/,
-					size_t* numberOfBins /*!< Output: number of bins that the histogram should allocate for the output volume.*/,
-					Types::DataItem* scaleFactor /*!< Data scaling factor.*/,
-					Types::DataItem* scaleOffset /*!< Data scaling offset.*/ );
+  UniformVolume::SmartPtr PrescaleData(
+      const UniformVolume::SmartConstPtr &volume /*!< Input volume.*/,
+      size_t *numberOfBins /*!< Output: number of bins that the histogram should
+                              allocate for the output volume.*/
+      ,
+      Types::DataItem *scaleFactor /*!< Data scaling factor.*/,
+      Types::DataItem *scaleOffset /*!< Data scaling offset.*/);
 
   /// Store reference data rescaling offset.
   Types::DataItem m_ScaleOffsetReference;
@@ -175,6 +183,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImagePairSimilarityJointHistogram_h_included_
+#endif  // #ifndef __cmtkImagePairSimilarityJointHistogram_h_included_

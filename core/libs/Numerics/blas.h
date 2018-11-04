@@ -66,91 +66,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2);
+int vectoridxabsmax(const ap::real_1d_array &x, int i1, int i2);
 
+int columnidxabsmax(const ap::real_2d_array &x, int i1, int i2, int j);
 
-int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j);
+ap::real_value_type upperhessenberg1norm(const ap::real_2d_array &a, int i1,
+                                         int i2, int j1, int j2,
+                                         ap::real_1d_array &work);
 
+void copymatrix(const ap::real_2d_array &a, int is1, int is2, int js1, int js2,
+                ap::real_2d_array &b, int id1, int id2, int jd1, int jd2);
 
-ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
-     int i1,
-     int i2,
-     int j1,
-     int j2,
-     ap::real_1d_array& work);
+void inplacetranspose(ap::real_2d_array &a, int i1, int i2, int j1, int j2,
+                      ap::real_1d_array &work);
 
+void copyandtranspose(const ap::real_2d_array &a, int is1, int is2, int js1,
+                      int js2, ap::real_2d_array &b, int id1, int id2, int jd1,
+                      int jd2);
 
-void copymatrix(const ap::real_2d_array& a,
-     int is1,
-     int is2,
-     int js1,
-     int js2,
-     ap::real_2d_array& b,
-     int id1,
-     int id2,
-     int jd1,
-     int jd2);
-
-
-void inplacetranspose(ap::real_2d_array& a,
-     int i1,
-     int i2,
-     int j1,
-     int j2,
-     ap::real_1d_array& work);
-
-
-void copyandtranspose(const ap::real_2d_array& a,
-     int is1,
-     int is2,
-     int js1,
-     int js2,
-     ap::real_2d_array& b,
-     int id1,
-     int id2,
-     int jd1,
-     int jd2);
-
-
-void matrixvectormultiply(const ap::real_2d_array& a,
-     int i1,
-     int i2,
-     int j1,
-     int j2,
-     bool trans,
-     const ap::real_1d_array& x,
-     int ix1,
-     int ix2,
-     ap::real_value_type alpha,
-     ap::real_1d_array& y,
-     int iy1,
-     int iy2,
-     ap::real_value_type beta);
-
+void matrixvectormultiply(const ap::real_2d_array &a, int i1, int i2, int j1,
+                          int j2, bool trans, const ap::real_1d_array &x,
+                          int ix1, int ix2, ap::real_value_type alpha,
+                          ap::real_1d_array &y, int iy1, int iy2,
+                          ap::real_value_type beta);
 
 ap::real_value_type pythag2(ap::real_value_type x, ap::real_value_type y);
 
-
-void matrixmatrixmultiply(const ap::real_2d_array& a,
-     int ai1,
-     int ai2,
-     int aj1,
-     int aj2,
-     bool transa,
-     const ap::real_2d_array& b,
-     int bi1,
-     int bi2,
-     int bj1,
-     int bj2,
-     bool transb,
-     ap::real_value_type alpha,
-     ap::real_2d_array& c,
-     int ci1,
-     int ci2,
-     int cj1,
-     int cj2,
-     ap::real_value_type beta,
-     ap::real_1d_array& work);
-
+void matrixmatrixmultiply(const ap::real_2d_array &a, int ai1, int ai2, int aj1,
+                          int aj2, bool transa, const ap::real_2d_array &b,
+                          int bi1, int bi2, int bj1, int bj2, bool transb,
+                          ap::real_value_type alpha, ap::real_2d_array &c,
+                          int ci1, int ci2, int cj1, int cj2,
+                          ap::real_value_type beta, ap::real_1d_array &work);
 
 #endif

@@ -37,58 +37,44 @@
 
 #include <System/cmtkMutexLock.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /** Class for mutually exclusive access to objects.
- * This class is an adapted version of a concept by Andrei Alexandrescu of 
+ * This class is an adapted version of a concept by Andrei Alexandrescu of
  * RealNetworks Inc.
  *\see http://www.cuj.com/experts/1902/alexandr.htm?topic=experts
  */
-template<class T> 
-class LockingPtr 
-{
-public:
+template <class T>
+class LockingPtr {
+ public:
   /// Create locking pointer and lock mutex.
-  LockingPtr( T& object, MutexLock& mutexLock ) :
-    m_Object( &object ), 
-    m_MutexLock( &mutexLock )
-  { 
+  LockingPtr(T &object, MutexLock &mutexLock)
+      : m_Object(&object), m_MutexLock(&mutexLock) {
     this->m_MutexLock->Lock();
   }
 
   /// Destroy locking pointer and unlock mutex.
-  ~LockingPtr() 
-  { 
-    this->m_MutexLock->Unlock(); 
-  }
-  
+  ~LockingPtr() { this->m_MutexLock->Unlock(); }
+
   /// Dereferencing operator.
-  T& operator*() 
-  { 
-    return *this->m_Object; 
-  }
+  T &operator*() { return *this->m_Object; }
 
   /// Member access operator.
-  T* operator->() 
-  { 
-    return this->m_Object; 
-  }
-                                  
-private:
+  T *operator->() { return this->m_Object; }
+
+ private:
   /// Pointer to the accessed object.
-  T* m_Object;
+  T *m_Object;
 
   /// The mutex lock.
-  MutexLock* m_MutexLock;
+  MutexLock *m_MutexLock;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLockingPtr_h_included_
+#endif  // #ifndef __cmtkLockingPtr_h_included_

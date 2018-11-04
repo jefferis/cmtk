@@ -40,18 +40,16 @@
 
 #include <iostream>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Operator to read a list of label IDs from a C++ stream.
-std::istream& operator>>( std::istream& stream, SegmentationLabelMap& lblMap );
+std::istream &operator>>(std::istream &stream, SegmentationLabelMap &lblMap);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkSegmentationLabelIO_h_included_
+#endif  // #ifndef __cmtkSegmentationLabelIO_h_included_

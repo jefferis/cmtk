@@ -35,15 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <exception>
 #include <stdlib.h>
+#include <exception>
 #include <string>
 
 #include <System/cmtkConsole.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
@@ -54,52 +52,48 @@ cmtk
  * that encountered the fatal condition.
  */
 class Exception :
-  /// Inherit from C++ standard exception.
-  public std::exception
-{
-public:
+    /// Inherit from C++ standard exception.
+    public std::exception {
+ public:
   /** Constructor.
    *\param errorMsg An optional error message describing the condition causing
    * the exception.
    *\param fromObject An optional pointer to the object that encountered the
    * condition causing the exception.
    */
-  Exception( const std::string& errorMsg = "", const void *const fromObject = NULL ) 
-  {
+  Exception(const std::string &errorMsg = "",
+            const void *const fromObject = NULL) {
     this->m_ErrorMsg = errorMsg;
     this->m_FromObject = fromObject;
   }
-  
+
   /// Virtual destructor.
-  virtual ~Exception() throw() {};
+  virtual ~Exception() throw(){};
 
   /** Return pointer to the error message.
    */
-  const std::string& GetErrorMsg() const { return this->m_ErrorMsg; }
+  const std::string &GetErrorMsg() const { return this->m_ErrorMsg; }
 
   /** Return pointer to the object that encountered the error condition.
    */
-  const void* GetFromObject() const { return this->m_FromObject; }
+  const void *GetFromObject() const { return this->m_FromObject; }
 
   /// Overwrite inherited "what" member.
-  virtual const char* what() const throw()
-  {
-    return this->m_ErrorMsg.c_str();
-  }  
+  virtual const char *what() const throw() { return this->m_ErrorMsg.c_str(); }
 
-private:
+ private:
   /// Pointer to a string describing the condition causing the exception.
   std::string m_ErrorMsg;
 
   /// Pointer to the object that encountered the error condition.
-  const void* m_FromObject;
+  const void *m_FromObject;
 };
 
 //@}
 
 /// Output of command line exception.
-Console& operator<<( Console& console, Exception e );
+Console &operator<<(Console &console, Exception e);
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkException_h_included_
+#endif  // #ifndef __cmtkException_h_included_

@@ -35,30 +35,27 @@
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkTypedStreamOutput.h>
 #include <IO/cmtkStudy.h>
+#include <IO/cmtkTypedStreamOutput.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkWarpXform.h>
-#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkParametricPlane.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /** Class for writing various library classes to and from disk.
  */
-class ClassStreamOutput : 
-  /// Inherit basic functionality from typed stream.
-  public TypedStreamOutput
-{
-public:
+class ClassStreamOutput :
+    /// Inherit basic functionality from typed stream.
+    public TypedStreamOutput {
+ public:
   /// This class.
   typedef ClassStreamOutput Self;
 
@@ -74,46 +71,51 @@ public:
   /** Open constructor.
    *\param filename Name of the archive to open.
    */
-  ClassStreamOutput( const std::string& filename, const Superclass::Mode mode ) : TypedStreamOutput( filename, mode ) {}
+  ClassStreamOutput(const std::string &filename, const Superclass::Mode mode)
+      : TypedStreamOutput(filename, mode) {}
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    */
-  ClassStreamOutput( const std::string& dir, const std::string& archive, const Superclass::Mode mode ) : TypedStreamOutput( dir, archive, mode ) {}
+  ClassStreamOutput(const std::string &dir, const std::string &archive,
+                    const Superclass::Mode mode)
+      : TypedStreamOutput(dir, archive, mode) {}
 
   /** Write generic transformation object.
    * This function determines the virtual type of the transformation object
    * (spline or linear deformation) using a dynamic_cast. It then calls the
    * appropriate specialized output function.
    */
-  ClassStreamOutput& operator << ( const WarpXform *warpXform );
+  ClassStreamOutput &operator<<(const WarpXform *warpXform);
 
   /** Write spline transformation object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStreamOutput& operator << ( const SplineWarpXform& splineWarpXform )
-  { return (*this) << &splineWarpXform; }
-  
+  ClassStreamOutput &operator<<(const SplineWarpXform &splineWarpXform) {
+    return (*this) << &splineWarpXform;
+  }
+
   /** Write parametric plane object.
    */
-  ClassStreamOutput& operator << ( const ParametricPlane *parametricPlane );
+  ClassStreamOutput &operator<<(const ParametricPlane *parametricPlane);
 
   /** Write parametric plane object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStreamOutput& operator << ( const ParametricPlane& parametricPlane )
-  { return (*this) << &parametricPlane; }
+  ClassStreamOutput &operator<<(const ParametricPlane &parametricPlane) {
+    return (*this) << &parametricPlane;
+  }
 
-private:
+ private:
   /// Write actual warp transformation object.
-  ClassStreamOutput& PutWarp( const WarpXform* warpXform  );
+  ClassStreamOutput &PutWarp(const WarpXform *warpXform);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkClassStreamOutput_h_included_
+#endif  // #ifndef __cmtkClassStreamOutput_h_included_

@@ -32,27 +32,20 @@
 
 #include "cmtkCompressedStream.h"
 
-int
-cmtk::CompressedStream::ReaderBase::Seek( const long int offset, int whence ) 
-{
-  if ( whence == SEEK_SET )
-    this->Rewind();
-  
+int cmtk::CompressedStream::ReaderBase::Seek(const long int offset,
+                                             int whence) {
+  if (whence == SEEK_SET) this->Rewind();
+
   char buffer[Self::SeekBlockSize];
-  
-  for ( int stillToRead = offset; stillToRead > 0; ) 
-    {
-    if ( static_cast<size_t>( stillToRead ) < Self::SeekBlockSize )
-      {
-      this->Read( buffer, sizeof(char), stillToRead );
+
+  for (int stillToRead = offset; stillToRead > 0;) {
+    if (static_cast<size_t>(stillToRead) < Self::SeekBlockSize) {
+      this->Read(buffer, sizeof(char), stillToRead);
       stillToRead = 0;
-      } 
-    else
-      {
-      this->Read( buffer, sizeof(char), Self::SeekBlockSize );
+    } else {
+      this->Read(buffer, sizeof(char), Self::SeekBlockSize);
       stillToRead -= Self::SeekBlockSize;
-      }
     }
+  }
   return this->m_BytesRead;
 }
-

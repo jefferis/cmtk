@@ -35,25 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Base class for segmentation combination using local weighting.
  */
-class LabelCombinationLocalWeighting
-{
-public:
+class LabelCombinationLocalWeighting {
+ public:
   /// This class.
   typedef LabelCombinationLocalWeighting Self;
 
@@ -64,48 +61,46 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : 
-    m_TargetImage( targetImage ),
-    m_PatchRadius( 1 ),
-    m_PatchRadiusPlusOne( 2 ),
-    m_SearchRegion( UniformVolume::IndexType( 0 ), UniformVolume::IndexType( 1 ) )
-  {}
-  
+  LabelCombinationLocalWeighting(const UniformVolume::SmartConstPtr targetImage)
+      : m_TargetImage(targetImage),
+        m_PatchRadius(1),
+        m_PatchRadiusPlusOne(2),
+        m_SearchRegion(UniformVolume::IndexType(0),
+                       UniformVolume::IndexType(1)) {}
+
   /// Add an atlas image (reformatted, target-matched intensity image).
-  void AddAtlasImage( const UniformVolume::SmartConstPtr image );
+  void AddAtlasImage(const UniformVolume::SmartConstPtr image);
 
   /** Exclude global outliers.
-   * Detect atlases with abnormally low correlation between reformatted atlas and target image,
-   * then delete these atlases. Outliers are defined as NCC below Q1-1.5*(Q3-Q1), where Q1 is
-   * the 25th percentile of NCC between atlas and target over all atlases, Q3 is the 75th 
-   * percentile.
+   * Detect atlases with abnormally low correlation between reformatted atlas
+   * and target image, then delete these atlases. Outliers are defined as NCC
+   * below Q1-1.5*(Q3-Q1), where Q1 is the 25th percentile of NCC between atlas
+   * and target over all atlases, Q3 is the 75th percentile.
    */
   void ExcludeGlobalOutliers();
 
   /// Set patch radius.
-  void SetPatchRadius( const int radius )
-  {
-    this->m_PatchRadius = UniformVolume::IndexType( radius );
-    this->m_PatchRadiusPlusOne = UniformVolume::IndexType( radius+1 );
+  void SetPatchRadius(const int radius) {
+    this->m_PatchRadius = UniformVolume::IndexType(radius);
+    this->m_PatchRadiusPlusOne = UniformVolume::IndexType(radius + 1);
   }
 
   /// Set patch radius.
-  void SetSearchRadius( const int radius )
-  {
-    this->m_SearchRegion.From() = UniformVolume::IndexType( -radius );
-    this->m_SearchRegion.To() = UniformVolume::IndexType( radius+1 );
+  void SetSearchRadius(const int radius) {
+    this->m_SearchRegion.From() = UniformVolume::IndexType(-radius);
+    this->m_SearchRegion.To() = UniformVolume::IndexType(radius + 1);
   }
-  
+
   /// Get resulting combined segmentation.
   virtual TypedArray::SmartPtr GetResult() const = 0;
-  
-protected:
+
+ protected:
   /// Target image region type.
   typedef UniformVolume::RegionType TargetRegionType;
 
   /// The target image.
   UniformVolume::SmartConstPtr m_TargetImage;
-  
+
   /// Vector of target-matched atlas images.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasImages;
 
@@ -118,16 +113,15 @@ protected:
   /// Patch search region in pixels (x,y,z).
   UniformVolume::RegionType m_SearchRegion;
 
-  /** Delete atlas with given index. 
-   * Derived classes may need to overload this to make sure additional  atlas components (e.g.,
-   * distance map, label map) are also properly deleted.
+  /** Delete atlas with given index.
+   * Derived classes may need to overload this to make sure additional  atlas
+   * components (e.g., distance map, label map) are also properly deleted.
    */
-  virtual void DeleteAtlas( const size_t i )
-  {
-    this->m_AtlasImages.erase( this->m_AtlasImages.begin() + i );
+  virtual void DeleteAtlas(const size_t i) {
+    this->m_AtlasImages.erase(this->m_AtlasImages.begin() + i);
   }
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationLocalWeighting_h_included_
+#endif  // #ifndef __cmtkLabelCombinationLocalWeighting_h_included_

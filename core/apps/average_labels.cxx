@@ -32,9 +32,9 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkProgress.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -44,135 +44,136 @@
 #include <queue>
 
 #ifdef CMTK_USE_GCD
-#  include <dispatch/dispatch.h>
+#include <dispatch/dispatch.h>
 #endif
 
-typedef std::deque< std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPtr> > XVQueue;
+typedef std::deque<
+    std::pair<cmtk::Xform::SmartPtr, cmtk::UniformVolume::SmartPtr>>
+    XVQueue;
 XVQueue XformVolumeList;
 cmtk::UniformVolume::SmartPtr ReferenceImage;
 
-const char* OutputImagePath = "average_labels_output.nii";
+const char *OutputImagePath = "average_labels_output.nii";
 
-int
-doMain( const int argc, const char* argv[] )
-{
-  try
-    {
+int doMain(const int argc, const char *argv[]) {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Label image averaging" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average co-registered label images using partial volumes" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_labels [options] reference xform0 atlas0 [xform1 atlas1 ...]" );
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Label image averaging");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "Average co-registered label images using partial volumes");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_SYNTX,
+        "average_labels [options] reference xform0 atlas0 [xform1 atlas1 ...]");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
+    cl.AddOption(Key('o', "output"), &OutputImagePath, "Output image path");
 
-    cl.Parse( argc, argv );
-    
-    const char* refImagePath = cl.GetNext();
-    ReferenceImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( refImagePath ) );
-    if ( !ReferenceImage )
-      {
-      cmtk::StdErr << "ERROR: cannot read reference volume " << refImagePath << "\n";
-      throw cmtk::ExitException( 1 );
-      }    
+    cl.Parse(argc, argv);
 
-    const char* nextXform = cl.GetNext();
-    const char* nextVolume = cl.GetNext();
-    while ( nextXform && nextVolume )
-      {
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( nextXform ) );
-      if ( !xform )
-	{
-	cmtk::StdErr << "ERROR: cannot read transformation " << nextXform << "\n";
-	throw cmtk::ExitException( 1 );
-	}
+    const char *refImagePath = cl.GetNext();
+    ReferenceImage = cmtk::UniformVolume::SmartPtr(
+        cmtk::VolumeIO::ReadGridOriented(refImagePath));
+    if (!ReferenceImage) {
+      cmtk::StdErr << "ERROR: cannot read reference volume " << refImagePath
+                   << "\n";
+      throw cmtk::ExitException(1);
+    }
 
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( nextVolume ) );
-      if ( !volume )
-	{
-	cmtk::StdErr << "ERROR: cannot read volume " << nextVolume << "\n";
-	throw cmtk::ExitException( 1 );
-	}
+    const char *nextXform = cl.GetNext();
+    const char *nextVolume = cl.GetNext();
+    while (nextXform && nextVolume) {
+      cmtk::Xform::SmartPtr xform(cmtk::XformIO::Read(nextXform));
+      if (!xform) {
+        cmtk::StdErr << "ERROR: cannot read transformation " << nextXform
+                     << "\n";
+        throw cmtk::ExitException(1);
+      }
 
-      XformVolumeList.push_back( std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPtr>( xform, volume ) );
+      cmtk::UniformVolume::SmartPtr volume(
+          cmtk::VolumeIO::ReadOriented(nextVolume));
+      if (!volume) {
+        cmtk::StdErr << "ERROR: cannot read volume " << nextVolume << "\n";
+        throw cmtk::ExitException(1);
+      }
+
+      XformVolumeList.push_back(
+          std::pair<cmtk::Xform::SmartPtr, cmtk::UniformVolume::SmartPtr>(
+              xform, volume));
 
       nextXform = cl.GetNextOptional();
       nextVolume = cl.GetNextOptional();
-      }
     }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels() ) );
-  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
+  cmtk::TypedArray::SmartPtr result(cmtk::TypedArray::Create(
+      cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels()));
+  short *resultPtr = static_cast<short *>(result->GetDataPtr());
 
-  const cmtk::DataGrid::IndexType& dims = ReferenceImage->GetDims();
-  cmtk::Progress::Begin( 0, dims[2], 1, "Label image averaging" );
+  const cmtk::DataGrid::IndexType &dims = ReferenceImage->GetDims();
+  cmtk::Progress::Begin(0, dims[2], 1, "Label image averaging");
 
 #ifdef CMTK_USE_GCD
-  const cmtk::Threads::Stride stride( dims[2] );
-  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		  { for ( size_t z = stride.From( b ); z < stride.To( b ); ++z )
+  const cmtk::Threads::Stride stride(dims[2]);
+  dispatch_apply(
+      stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b) {
+        for (size_t z = stride.From(b); z < stride.To(b); ++z)
 #else
 #pragma omp parallel for
-  for ( int z = 0; z < dims[2]; ++z )
+  for (int z = 0; z < dims[2]; ++z)
 #endif
-    {
-    cmtk::Progress::SetProgress( z );
-    size_t offset = z * dims[0] * dims[1];
-    float labelWeights[256];
-    for ( int y = 0; y < dims[1]; ++y )
-      for ( int x = 0; x < dims[0]; ++x, ++offset )
-	{
-	memset( labelWeights, 0, sizeof( labelWeights ) );
-	cmtk::Vector3D v = ReferenceImage->GetGridLocation( x, y, z );
+        {
+          cmtk::Progress::SetProgress(z);
+          size_t offset = z * dims[0] * dims[1];
+          float labelWeights[256];
+          for (int y = 0; y < dims[1]; ++y)
+            for (int x = 0; x < dims[0]; ++x, ++offset) {
+              memset(labelWeights, 0, sizeof(labelWeights));
+              cmtk::Vector3D v = ReferenceImage->GetGridLocation(x, y, z);
 
-	for ( XVQueue::iterator it = XformVolumeList.begin(); it != XformVolumeList.end(); ++it )
-	  {
-	  const cmtk::Xform* xform = it->first;
-	  const cmtk::UniformVolume* volume = it->second;
+              for (XVQueue::iterator it = XformVolumeList.begin();
+                   it != XformVolumeList.end(); ++it) {
+                const cmtk::Xform *xform = it->first;
+                const cmtk::UniformVolume *volume = it->second;
 
-	  const cmtk::Vector3D vx( xform->Apply( v ) );
-	  	  
-	  cmtk::ProbeInfo probeInfo;
-	  if ( volume->ProbeNoXform( probeInfo, vx ) )
-	    for ( int corner = 0; corner < 8; ++corner )
-	      labelWeights[static_cast<byte>( probeInfo.Values[corner] )] += static_cast<float>( probeInfo.GetWeight( corner ) );
-	  }
+                const cmtk::Vector3D vx(xform->Apply(v));
 
-	short maxLabel = -1;
-	float maxLabelWeight = -1;
+                cmtk::ProbeInfo probeInfo;
+                if (volume->ProbeNoXform(probeInfo, vx))
+                  for (int corner = 0; corner < 8; ++corner)
+                    labelWeights[static_cast<byte>(probeInfo.Values[corner])] +=
+                        static_cast<float>(probeInfo.GetWeight(corner));
+              }
 
-	for ( int l = 0; l < 256; ++l )
-	  {
-	  if ( labelWeights[l] > maxLabelWeight )
-	    {
-	    maxLabelWeight = labelWeights[l];
-	    maxLabel = l;
-	    }
-	  else
-	    {
-	    if ( labelWeights[l] == maxLabelWeight )
-	      {
-	      maxLabel = -1;
-	      }
-	    }
-	  }
+              short maxLabel = -1;
+              float maxLabelWeight = -1;
 
-	resultPtr[offset] = maxLabel; // need to access array via direct ptr to work around GCD bug
-	}  
-    }
+              for (int l = 0; l < 256; ++l) {
+                if (labelWeights[l] > maxLabelWeight) {
+                  maxLabelWeight = labelWeights[l];
+                  maxLabel = l;
+                } else {
+                  if (labelWeights[l] == maxLabelWeight) {
+                    maxLabel = -1;
+                  }
+                }
+              }
+
+              resultPtr[offset] = maxLabel;  // need to access array via direct
+                                             // ptr to work around GCD bug
+            }
+        }
 #ifdef CMTK_USE_GCD
-		  });
+      });
 #endif
   cmtk::Progress::Done();
 
-  ReferenceImage->SetData( result );
+  ReferenceImage->SetData(result);
 
-  cmtk::VolumeIO::Write( *ReferenceImage, OutputImagePath );
+  cmtk::VolumeIO::Write(*ReferenceImage, OutputImagePath);
   return 0;
 }
 

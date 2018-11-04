@@ -35,29 +35,28 @@
 
 #include <cmtkconfig.h>
 
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <iostream>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /// Class for handling Siemens CSA headers in DICOM files.
-class SiemensCSAHeader : public std::map< std::string,std::vector<std::string> >
-{
-public:
+class SiemensCSAHeader
+    : public std::map<std::string, std::vector<std::string>> {
+ public:
   /// This class.
   typedef SiemensCSAHeader Self;
 
   /// Constructor from binary blob.
-  SiemensCSAHeader( const char* csaData, const size_t csaLength );
+  SiemensCSAHeader(const char *csaData, const size_t csaLength);
 };
 
 /// Write header contents to stream.
-std::ostream& operator<<( std::ostream& stream, const cmtk::SiemensCSAHeader& csaHeader );
-  
-} // namespace cmtk
+std::ostream &operator<<(std::ostream &stream,
+                         const cmtk::SiemensCSAHeader &csaHeader);
 
-#endif // #ifndef __cmtkSiemensCSAHeader_h_included_
+}  // namespace cmtk
+
+#endif  // #ifndef __cmtkSiemensCSAHeader_h_included_

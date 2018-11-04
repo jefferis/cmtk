@@ -36,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #ifndef NULL
-#  define NULL 0
+#define NULL 0
 #endif
 
 #include <algorithm>
@@ -44,21 +44,18 @@
 
 #include <System/cmtkSmartConstPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /** Smart pointer with reference counting.
  */
-template<class T>
+template <class T>
 class SmartPointer :
-  /// Inherit from smart pointer-to-const.
-  public SmartConstPointer<T>
-{
-public:
+    /// Inherit from smart pointer-to-const.
+    public SmartConstPointer<T> {
+ public:
   /// This class instance.
   typedef SmartPointer<T> Self;
 
@@ -71,72 +68,72 @@ public:
   using Superclass::ReleasePtr;
 
   /// The underlying raw pointer type.
-  typedef T* PointerType;
+  typedef T *PointerType;
 
   /// Reference to static null object.
-  static Self& Null()
-  {
+  static Self &Null() {
     static Self null;
     return null;
   }
-  
+
   /** Default constructor.
    */
   SmartPointer() {}
-  
+
   /** Construct from dumb pointer.
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
-  explicit SmartPointer( T *const object ) : SmartConstPointer<T>( object ) {}
+  explicit SmartPointer(T *const object) : SmartConstPointer<T>(object) {}
 
   /** Copy constructor template.
    */
-  template<class T2>
-  SmartPointer( const SmartPointer<T2>& ptr ) : SmartConstPointer<T>( ptr ) {}
-  
+  template <class T2>
+  SmartPointer(const SmartPointer<T2> &ptr) : SmartConstPointer<T>(ptr) {}
+
   /** Copy constructor to prevent compiler-generated copy constructor.
    */
-  SmartPointer( const Self& ptr ) : SmartConstPointer<T>( ptr ) {}
-  
+  SmartPointer(const Self &ptr) : SmartConstPointer<T>(ptr) {}
+
   /// De-referencing operator (returns non-constant object).
-  T& operator*() { return *this->m_Object.ptr; }
+  T &operator*() { return *this->m_Object.ptr; }
 
   /// De-referencing operator (returns non-constant object pointer).
-  T* operator->() { return this->m_Object.ptr; }
+  T *operator->() { return this->m_Object.ptr; }
 
   /// Explicit conversion to non-constant pointer.
-  T* GetPtr() const { return this->m_Object.ptr; }
+  T *GetPtr() const { return this->m_Object.ptr; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
    */
-  T* ReleasePtr() 
-  { 
-    T* object = this->m_Object.ptr; 
-    this->m_Object.ptr = NULL; 
-    return object; 
+  T *ReleasePtr() {
+    T *object = this->m_Object.ptr;
+    this->m_Object.ptr = NULL;
+    return object;
   }
 
-  ///Dynamic cast between smart pointer types.
-  template<class T2> 
-  static Self DynamicCastFrom( const T2& from_P )
-  {
-    return Self( dynamic_cast<typename Self::PointerType>( from_P.GetPtr() ), from_P.m_ReferenceCount );
+  /// Dynamic cast between smart pointer types.
+  template <class T2>
+  static Self DynamicCastFrom(const T2 &from_P) {
+    return Self(dynamic_cast<typename Self::PointerType>(from_P.GetPtr()),
+                from_P.m_ReferenceCount);
   }
 
-private:
+ private:
   /** Construct from dumb pointer and existing reference counter.
    * The reference counter is increased in the process.
    */
-  SmartPointer( T *const object, SafeCounter *const counter ) : Superclass( object, counter ) {}
-  
+  SmartPointer(T *const object, SafeCounter *const counter)
+      : Superclass(object, counter) {}
+
   /// Make all template instances friends for easy type casting.
-  template<class T2> friend class SmartPointer;
+  template <class T2>
+  friend class SmartPointer;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // define __cmtkSmartPtr_h_included_
+#endif  // define __cmtkSmartPtr_h_included_

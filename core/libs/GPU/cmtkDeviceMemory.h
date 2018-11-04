@@ -34,32 +34,30 @@
 #include <cmtkconfig.h>
 
 #ifdef CMTK_USE_CUDA
-#  include "cmtkDeviceMemoryCUDA.h"
+#include "cmtkDeviceMemoryCUDA.h"
 #else
-#  include "cmtkDeviceMemoryCL.h"
+#include "cmtkDeviceMemoryCL.h"
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class template for type-specific memory allocated on a GPU device through .
+/// Resource managing class template for type-specific memory allocated on a GPU
+/// device through .
 #ifdef CMTK_USE_CUDA
-template<typename T,class DeviceMemoryGPU = DeviceMemoryCUDA>
+template <typename T, class DeviceMemoryGPU = DeviceMemoryCUDA>
 #else
-template<typename T,class DeviceMemoryGPU = DeviceMemoryCL>
+template <typename T, class DeviceMemoryGPU = DeviceMemoryCL>
 #endif
 class DeviceMemory :
     /// Inherit privately from raw pointer base class.
-    private DeviceMemoryGPU
-{
-public:
+    private DeviceMemoryGPU {
+ public:
   /// This class.
-  typedef DeviceMemory<T,DeviceMemoryGPU> Self;
-  
+  typedef DeviceMemory<T, DeviceMemoryGPU> Self;
+
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
@@ -70,77 +68,64 @@ public:
   typedef DeviceMemoryGPU Superclass;
 
   /// Constructor: allocate memory on device through base class.
-  DeviceMemory( const size_t n, /*!< Number of items.*/ const size_t padToMultiple = 1 ) 
-    : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ),
-      m_NumberOfItems( n )
-  {}
+  DeviceMemory(const size_t n,
+               /*!< Number of items.*/ const size_t padToMultiple = 1)
+      : DeviceMemoryGPU(n * sizeof(T), padToMultiple * sizeof(T)),
+        m_NumberOfItems(n) {}
 
   /// Create new object and allocate memory.
   static typename Self::SmartPtr Create( const size_t nItems, /*!< Allocate (at least) this many items of type T.*/ 
 					 const size_t padToMultiple = 1 /*!< Pad number of allocated elements to next multiple of this number.*/  )
   {
-    return typename Self::SmartPtr( new Self( nItems, padToMultiple ) );
+    return typename Self::SmartPtr(new Self(nItems, padToMultiple));
   }
-  
+
   /// Create new object, allocate, and initialize memory.
   static typename Self::SmartPtr Create( const size_t nItems, /*!< Allocate (at least) this many items of type T.*/ 
 					 const T* initFrom, /*!< Initialize from this region in host memory.*/
 					 const size_t padToMultiple = 1 /*!< Pad number of allocated elements to next multiple of this number.*/  )
   {
-    Self* newObject = new Self( nItems, padToMultiple );
-    newObject->CopyToDevice( initFrom, nItems );
-    return typename Self::SmartPtr( newObject );
+    Self *newObject = new Self(nItems, padToMultiple);
+    newObject->CopyToDevice(initFrom, nItems);
+    return typename Self::SmartPtr(newObject);
   }
-  
+
   /// Get const pointer.
-  const T* Ptr() const
-  {
-    return static_cast<const T*>( this->m_PointerDevice );
-  }
+  const T *Ptr() const { return static_cast<const T *>(this->m_PointerDevice); }
 
   /// Get non-const pointer.
-  T* Ptr()
-  {
-    return static_cast<T*>( this->m_PointerDevice );
-  }
+  T *Ptr() { return static_cast<T *>(this->m_PointerDevice); }
 
   /// Copy from host to device memory.
-  void CopyToDevice( const T *const srcPtrHost, const size_t count )
-  {
-    this->Superclass::CopyToDevice( srcPtrHost, count * sizeof( T ) );
+  void CopyToDevice(const T *const srcPtrHost, const size_t count) {
+    this->Superclass::CopyToDevice(srcPtrHost, count * sizeof(T));
   }
-  
+
   /// Copy from device to host memory.
-  void CopyToHost( void *const dstPtrHost, const size_t count ) const
-  {
-    this->Superclass::CopyToHost( dstPtrHost, count * sizeof( T ) );
+  void CopyToHost(void *const dstPtrHost, const size_t count) const {
+    this->Superclass::CopyToHost(dstPtrHost, count * sizeof(T));
   }
-  
+
   /// Copy between two device memory locations.
-  void CopyOnDevice( const Self& srcPtrDevice, const size_t count )
-  {
-    this->Superclass::CopyOnDevice( srcPtrDevice, count * sizeof( T ) );
+  void CopyOnDevice(const Self &srcPtrDevice, const size_t count) {
+    this->Superclass::CopyOnDevice(srcPtrDevice, count * sizeof(T));
   }
 
   /// Clear device memory (set to all zeroes).
-  void SetToZero()
-  {
-    this->Superclass::Memset( 0, this->m_NumberOfItems * sizeof( T ) );
+  void SetToZero() {
+    this->Superclass::Memset(0, this->m_NumberOfItems * sizeof(T));
   }
 
   /// Get number of items.
-  size_t GetNumberOfItems() const
-  {
-    return this->m_NumberOfItems;
-  }
+  size_t GetNumberOfItems() const { return this->m_NumberOfItems; }
 
-private:
+ private:
   /// Number of items allocated.
   size_t m_NumberOfItems;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceMemory_h_included_
+#endif  // #ifndef __cmtkDeviceMemory_h_included_

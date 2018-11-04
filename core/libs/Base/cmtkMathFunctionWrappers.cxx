@@ -32,64 +32,32 @@
 
 #include "cmtkMathFunctionWrappers.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
-namespace
-Wrappers
-{
+namespace Wrappers {
 
-double
-Log( const double x )
-{
-  return log( x );
-}
+double Log(const double x) { return log(x); }
 
-double
-Exp( const double x )
-{
-  return exp( x );
-}
+double Exp(const double x) { return exp(x); }
 
-double
-Sqrt( const double x )
-{
-  return sqrt( x );
-}
+double Sqrt(const double x) { return sqrt(x); }
 
-double
-Abs( const double x )
-{
-  return fabs( x );
-}
+double Abs(const double x) { return fabs(x); }
 
-double
-Trunc( const double x )
-{
+double Trunc(const double x) {
 #ifdef _MSC_VER
-  return static_cast<double>( static_cast<long int>( x ) );
+  return static_cast<double>(static_cast<long int>(x));
 #else
-  return trunc( x );
+  return trunc(x);
 #endif
 }
 
-double Square( const double x )
-{
-  return x*x; 
-}
+double Square(const double x) { return x * x; }
 
-double Logit( const double x )
-{
-  return log(x / (1.0-x)); 
-}
+double Logit(const double x) { return log(x / (1.0 - x)); }
 
-double Logistic( const double x )
-{
-  return 1.0/(1.0+exp(-x));
-}
+double Logistic(const double x) { return 1.0 / (1.0 + exp(-x)); }
 
-} // namespace Wrappers
+}  // namespace Wrappers
 
-} // namespace cmtk
-
+}  // namespace cmtk

@@ -37,15 +37,13 @@
 
 #include <Registration/cmtkVoxelMatchingMetric.h>
 
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -53,10 +51,9 @@ cmtk
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricMSD instead.
  */
 class VoxelMatchingMeanSquaredDifference :
-  /// Inherit generic voxel metric with internal short data.
-  public VoxelMatchingMetricShort
-{
-public:
+    /// Inherit generic voxel metric with internal short data.
+    public VoxelMatchingMetricShort {
+ public:
   /// This type.
   typedef VoxelMatchingMeanSquaredDifference Self;
 
@@ -68,54 +65,51 @@ public:
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The floating (moving) volume.
    */
-  VoxelMatchingMeanSquaredDifference( const UniformVolume* refVolume, const UniformVolume* fltVolume );
+  VoxelMatchingMeanSquaredDifference(const UniformVolume *refVolume,
+                                     const UniformVolume *fltVolume);
 
   /** Add a pair of values to the metric.
    */
-  template<class T> void Increment( const T a, const T b )
-  {
-    if ( (a == this->DataX.padding()) || (b == this->DataY.padding()) ) return;
+  template <class T>
+  void Increment(const T a, const T b) {
+    if ((a == this->DataX.padding()) || (b == this->DataY.padding())) return;
     ++Samples;
-    Sum -= MathUtil::Square( a - b );
+    Sum -= MathUtil::Square(a - b);
   }
 
   /** Remove a pair of values from the metric.
    */
-  template<class T> void Decrement( const T a, const T b )
-  {
-    if ( (a == this->DataX.padding()) || (b == this->DataY.padding()) ) return;
+  template <class T>
+  void Decrement(const T a, const T b) {
+    if ((a == this->DataX.padding()) || (b == this->DataY.padding())) return;
     --Samples;
-    Sum += MathUtil::Square( a - b );
+    Sum += MathUtil::Square(a - b);
   }
 
   /// Reset internal variables for next computation.
-  void Reset () 
-  {
+  void Reset() {
     Sum = 0;
     Samples = 0;
   }
 
   /// Get similarity measure value.
-  Self::ReturnType Get() const 
-  {
-    return static_cast<Self::ReturnType>( Sum / Samples );
+  Self::ReturnType Get() const {
+    return static_cast<Self::ReturnType>(Sum / Samples);
   }
 
-  void AddMetric ( const Self& other )
-  {
+  void AddMetric(const Self &other) {
     Sum += other.Sum;
     Samples += other.Samples;
   }
 
-  void RemoveMetric ( const Self& other )
-  {
+  void RemoveMetric(const Self &other) {
     Sum -= other.Sum;
-    assert( Sum <= 0 );
+    assert(Sum <= 0);
     Samples -= other.Samples;
-    assert( Samples >= 0 );
+    assert(Samples >= 0);
   }
 
-private:
+ private:
   /// Sum of all value pair differences.
   double Sum;
 
@@ -125,6 +119,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkVoxelMatchingMeanSquaredDifference_h_included_
+#endif  // #ifndef __cmtkVoxelMatchingMeanSquaredDifference_h_included_

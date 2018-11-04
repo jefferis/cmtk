@@ -31,52 +31,50 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
 
 #include <Registration/cmtkHausdorffDistance.h>
 
-int
-doMain
-( const int argc, const char *argv[] )
-{
+int doMain(const int argc, const char *argv[]) {
   std::string imagePath0;
   std::string imagePath1;
 
-  try
-    {
+  try {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Hausdorff Distance." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the Hausdorff distance between two label images." );
+    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Hausdorff Distance.");
+    cl.SetProgramInfo(
+        cmtk::CommandLine::PRG_DESCR,
+        "This tool computes the Hausdorff distance between two label images.");
 
-    cl.AddParameter( &imagePath0, "Image0", "First image path." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &imagePath1, "Image1", "Second image path." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter(&imagePath0, "Image0", "First image path.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
+    cl.AddParameter(&imagePath1, "Image1", "Second image path.")
+        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
 
-    cl.Parse( argc, argv );
-    }
-  catch ( const cmtk::CommandLine::Exception& e )
-    {
+    cl.Parse(argc, argv);
+  } catch (const cmtk::CommandLine::Exception &e) {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  cmtk::UniformVolume::SmartConstPtr image0 = cmtk::VolumeIO::Read( imagePath0 );
-  if ( ! image0 || ! image0->GetData() )
-    {
+  cmtk::UniformVolume::SmartConstPtr image0 = cmtk::VolumeIO::Read(imagePath0);
+  if (!image0 || !image0->GetData()) {
     cmtk::StdErr << "ERROR: unable to read image " << imagePath0 << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  cmtk::UniformVolume::SmartConstPtr image1 = cmtk::VolumeIO::Read( imagePath1 );
-  if ( ! image1 || ! image1->GetData() )
-    {
+  cmtk::UniformVolume::SmartConstPtr image1 = cmtk::VolumeIO::Read(imagePath1);
+  if (!image1 || !image1->GetData()) {
     cmtk::StdErr << "ERROR: unable to read image " << imagePath1 << "\n";
-    throw cmtk::ExitException( 1 );
-    }
+    throw cmtk::ExitException(1);
+  }
 
-  cmtk::StdOut.printf( "%lf\n", static_cast<double>( cmtk::HausdorffDistance( image0, image1 ).GetBinary() ) );
+  cmtk::StdOut.printf(
+      "%lf\n",
+      static_cast<double>(cmtk::HausdorffDistance(image0, image1).GetBinary()));
 
   return 0;
 }

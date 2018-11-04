@@ -37,36 +37,34 @@
 
 #include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /** Utility functions for file and directory access.
  */
-namespace FileUtils
-{
+namespace FileUtils {
 /** Recursively create a new directory.
  *\return Zero if operation was successful, mkdir() error code otherwise.
  */
-int RecursiveMkDir( const std::string& filename, const int permissions = 0755 );
+int RecursiveMkDir(const std::string &filename, const int permissions = 0755);
 
 /** Recursively create all directories on a full filename's prefix.
  *\return Zero if operation was successful, mkdir() error code otherwise.
  */
-int RecursiveMkPrefixDir( const std::string& filename, const int permissions = 0755 );
+int RecursiveMkPrefixDir(const std::string &filename,
+                         const int permissions = 0755);
 
 /// Make an absolute path name from a (possibly) relative path.
-std::string GetAbsolutePath( const std::string& relPath );
+std::string GetAbsolutePath(const std::string &relPath);
 
 /// Return basename of a given path.
 std::string Basename( const std::string& path /*!< Complete path with directory and file name parts. */, const std::string& suffix = "" /*!< Optional argument: if given, this suffix is removed from the basename, if present. */ );
-}
+}  // namespace FileUtils
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFileUtil_h_included_
+#endif  // #ifndef __cmtkFileUtil_h_included_

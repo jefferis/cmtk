@@ -75,7 +75,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "blas.h"
 #include "rotations.h"
 
-
 /*************************************************************************
 Finding the eigenvalues and eigenvectors of a tridiagonal symmetric matrix
 
@@ -112,9 +111,9 @@ Output parameters:
                    and the eigenvectors matrix (from the right);
                  * 2, Z contains the eigenvectors.
                  * 3, Z contains the first row of the eigenvectors matrix.
-                If ZNeeded<3, Z is the array whose indexes range within [0..N-1, 0..N-1].
-                In that case, the eigenvectors are stored in the matrix columns.
-                If ZNeeded=3, Z is the array whose indexes range within [0..0, 0..N-1].
+                If ZNeeded<3, Z is the array whose indexes range within [0..N-1,
+0..N-1]. In that case, the eigenvectors are stored in the matrix columns. If
+ZNeeded=3, Z is the array whose indexes range within [0..0, 0..N-1].
 
 Result:
     True, if the algorithm has converged.
@@ -125,21 +124,13 @@ Result:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-bool smatrixtdevd(ap::real_1d_array& d,
-     ap::real_1d_array e,
-     int n,
-     int zneeded,
-     ap::real_2d_array& z);
-
+bool smatrixtdevd(ap::real_1d_array &d, ap::real_1d_array e, int n, int zneeded,
+                  ap::real_2d_array &z);
 
 /*************************************************************************
 Obsolete 1-based subroutine.
 *************************************************************************/
-bool tridiagonalevd(ap::real_1d_array& d,
-     ap::real_1d_array e,
-     int n,
-     int zneeded,
-     ap::real_2d_array& z);
-
+bool tridiagonalevd(ap::real_1d_array &d, ap::real_1d_array e, int n,
+                    int zneeded, ap::real_2d_array &z);
 
 #endif

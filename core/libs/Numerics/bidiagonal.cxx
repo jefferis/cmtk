@@ -67,7 +67,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
-
 #include "bidiagonal.h"
 
 /*************************************************************************
@@ -120,134 +119,109 @@ m=6, n=5 (m > n):               m=5, n=6 (m < n):
 Here vi and ui are vectors which form H(i) and G(i), and d and e -
 are the diagonal and off-diagonal elements of matrix B.
 *************************************************************************/
-void rmatrixbd(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_1d_array& tauq,
-     ap::real_1d_array& taup)
-{
-    ap::real_1d_array work;
-    ap::real_1d_array t;
-    int maxmn;
-    int i;
-//    int j;
-    ap::real_value_type ltau;
+void rmatrixbd(ap::real_2d_array &a, int m, int n, ap::real_1d_array &tauq,
+               ap::real_1d_array &taup) {
+  ap::real_1d_array work;
+  ap::real_1d_array t;
+  int maxmn;
+  int i;
+  //    int j;
+  ap::real_value_type ltau;
 
-    
+  //
+  // Prepare
+  //
+  if (n <= 0 || m <= 0) {
+    return;
+  }
+  maxmn = ap::maxint(m, n);
+  work.setbounds(0, maxmn);
+  t.setbounds(0, maxmn);
+  if (m >= n) {
+    tauq.setbounds(0, n - 1);
+    taup.setbounds(0, n - 1);
+  } else {
+    tauq.setbounds(0, m - 1);
+    taup.setbounds(0, m - 1);
+  }
+  if (m >= n) {
     //
-    // Prepare
+    // Reduce to upper bidiagonal form
     //
-    if( n<=0||m<=0 )
-    {
-        return;
-    }
-    maxmn = ap::maxint(m, n);
-    work.setbounds(0, maxmn);
-    t.setbounds(0, maxmn);
-    if( m>=n )
-    {
-        tauq.setbounds(0, n-1);
-        taup.setbounds(0, n-1);
-    }
-    else
-    {
-        tauq.setbounds(0, m-1);
-        taup.setbounds(0, m-1);
-    }
-    if( m>=n )
-    {
-        
+    for (i = 0; i <= n - 1; i++) {
+      //
+      // Generate elementary reflector H(i) to annihilate A(i+1:m-1,i)
+      //
+      ap::vmove(t.getvector(1, m - i), a.getcolumn(i, i, m - 1));
+      generatereflection(t, m - i, ltau);
+      tauq(i) = ltau;
+      ap::vmove(a.getcolumn(i, i, m - 1), t.getvector(1, m - i));
+      t(1) = 1;
+
+      //
+      // Apply H(i) to A(i:m-1,i+1:n-1) from the left
+      //
+      applyreflectionfromtheleft(a, ltau, t, i, m - 1, i + 1, n - 1, work);
+      if (i < n - 1) {
         //
-        // Reduce to upper bidiagonal form
+        // Generate elementary reflector G(i) to annihilate
+        // A(i,i+2:n-1)
         //
-        for(i = 0; i <= n-1; i++)
-        {
-            
-            //
-            // Generate elementary reflector H(i) to annihilate A(i+1:m-1,i)
-            //
-            ap::vmove(t.getvector(1, m-i), a.getcolumn(i, i, m-1));
-            generatereflection(t, m-i, ltau);
-            tauq(i) = ltau;
-            ap::vmove(a.getcolumn(i, i, m-1), t.getvector(1, m-i));
-            t(1) = 1;
-            
-            //
-            // Apply H(i) to A(i:m-1,i+1:n-1) from the left
-            //
-            applyreflectionfromtheleft(a, ltau, t, i, m-1, i+1, n-1, work);
-            if( i<n-1 )
-            {
-                
-                //
-                // Generate elementary reflector G(i) to annihilate
-                // A(i,i+2:n-1)
-                //
-                ap::vmove(&t(1), &a(i, i+1), ap::vlen(1,n-i-1));
-                generatereflection(t, n-1-i, ltau);
-                taup(i) = ltau;
-                ap::vmove(&a(i, i+1), &t(1), ap::vlen(i+1,n-1));
-                t(1) = 1;
-                
-                //
-                // Apply G(i) to A(i+1:m-1,i+1:n-1) from the right
-                //
-                applyreflectionfromtheright(a, ltau, t, i+1, m-1, i+1, n-1, work);
-            }
-            else
-            {
-                taup(i) = 0;
-            }
-        }
+        ap::vmove(&t(1), &a(i, i + 1), ap::vlen(1, n - i - 1));
+        generatereflection(t, n - 1 - i, ltau);
+        taup(i) = ltau;
+        ap::vmove(&a(i, i + 1), &t(1), ap::vlen(i + 1, n - 1));
+        t(1) = 1;
+
+        //
+        // Apply G(i) to A(i+1:m-1,i+1:n-1) from the right
+        //
+        applyreflectionfromtheright(a, ltau, t, i + 1, m - 1, i + 1, n - 1,
+                                    work);
+      } else {
+        taup(i) = 0;
+      }
     }
-    else
-    {
-        
+  } else {
+    //
+    // Reduce to lower bidiagonal form
+    //
+    for (i = 0; i <= m - 1; i++) {
+      //
+      // Generate elementary reflector G(i) to annihilate A(i,i+1:n-1)
+      //
+      ap::vmove(&t(1), &a(i, i), ap::vlen(1, n - i));
+      generatereflection(t, n - i, ltau);
+      taup(i) = ltau;
+      ap::vmove(&a(i, i), &t(1), ap::vlen(i, n - 1));
+      t(1) = 1;
+
+      //
+      // Apply G(i) to A(i+1:m-1,i:n-1) from the right
+      //
+      applyreflectionfromtheright(a, ltau, t, i + 1, m - 1, i, n - 1, work);
+      if (i < m - 1) {
         //
-        // Reduce to lower bidiagonal form
+        // Generate elementary reflector H(i) to annihilate
+        // A(i+2:m-1,i)
         //
-        for(i = 0; i <= m-1; i++)
-        {
-            
-            //
-            // Generate elementary reflector G(i) to annihilate A(i,i+1:n-1)
-            //
-            ap::vmove(&t(1), &a(i, i), ap::vlen(1,n-i));
-            generatereflection(t, n-i, ltau);
-            taup(i) = ltau;
-            ap::vmove(&a(i, i), &t(1), ap::vlen(i,n-1));
-            t(1) = 1;
-            
-            //
-            // Apply G(i) to A(i+1:m-1,i:n-1) from the right
-            //
-            applyreflectionfromtheright(a, ltau, t, i+1, m-1, i, n-1, work);
-            if( i<m-1 )
-            {
-                
-                //
-                // Generate elementary reflector H(i) to annihilate
-                // A(i+2:m-1,i)
-                //
-                ap::vmove(t.getvector(1, m-1-i), a.getcolumn(i, i+1, m-1));
-                generatereflection(t, m-1-i, ltau);
-                tauq(i) = ltau;
-                ap::vmove(a.getcolumn(i, i+1, m-1), t.getvector(1, m-1-i));
-                t(1) = 1;
-                
-                //
-                // Apply H(i) to A(i+1:m-1,i+1:n-1) from the left
-                //
-                applyreflectionfromtheleft(a, ltau, t, i+1, m-1, i+1, n-1, work);
-            }
-            else
-            {
-                tauq(i) = 0;
-            }
-        }
+        ap::vmove(t.getvector(1, m - 1 - i), a.getcolumn(i, i + 1, m - 1));
+        generatereflection(t, m - 1 - i, ltau);
+        tauq(i) = ltau;
+        ap::vmove(a.getcolumn(i, i + 1, m - 1), t.getvector(1, m - 1 - i));
+        t(1) = 1;
+
+        //
+        // Apply H(i) to A(i+1:m-1,i+1:n-1) from the left
+        //
+        applyreflectionfromtheleft(a, ltau, t, i + 1, m - 1, i + 1, n - 1,
+                                   work);
+      } else {
+        tauq(i) = 0;
+      }
     }
+  }
 }
-
 
 /*************************************************************************
 Unpacking matrix Q which reduces a matrix to bidiagonal form.
@@ -270,51 +244,40 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackq(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& tauq,
-     int qcolumns,
-     ap::real_2d_array& q)
-{
-    int i;
-    int j;
+void rmatrixbdunpackq(const ap::real_2d_array &qp, int m, int n,
+                      const ap::real_1d_array &tauq, int qcolumns,
+                      ap::real_2d_array &q) {
+  int i;
+  int j;
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion(qcolumns<=m, "RMatrixBDUnpackQ: QColumns>M!");
-    ap::ap_error::make_assertion(qcolumns>=0, "RMatrixBDUnpackQ: QColumns<0!");
+  ap::ap_error::make_assertion(qcolumns <= m, "RMatrixBDUnpackQ: QColumns>M!");
+  ap::ap_error::make_assertion(qcolumns >= 0, "RMatrixBDUnpackQ: QColumns<0!");
 #endif
 
-    if( m==0||n==0||qcolumns==0 )
-    {
-        return;
-    }
-    
-    //
-    // prepare Q
-    //
-    q.setbounds(0, m-1, 0, qcolumns-1);
-    for(i = 0; i <= m-1; i++)
-    {
-        for(j = 0; j <= qcolumns-1; j++)
-        {
-            if( i==j )
-            {
-                q(i,j) = 1;
-            }
-            else
-            {
-                q(i,j) = 0;
-            }
-        }
-    }
-    
-    //
-    // Calculate
-    //
-    rmatrixbdmultiplybyq(qp, m, n, tauq, q, m, qcolumns, false, false);
-}
+  if (m == 0 || n == 0 || qcolumns == 0) {
+    return;
+  }
 
+  //
+  // prepare Q
+  //
+  q.setbounds(0, m - 1, 0, qcolumns - 1);
+  for (i = 0; i <= m - 1; i++) {
+    for (j = 0; j <= qcolumns - 1; j++) {
+      if (i == j) {
+        q(i, j) = 1;
+      } else {
+        q(i, j) = 0;
+      }
+    }
+  }
+
+  //
+  // Calculate
+  //
+  rmatrixbdmultiplybyq(qp, m, n, tauq, q, m, qcolumns, false, false);
+}
 
 /*************************************************************************
 Multiplication by matrix Q which reduces matrix A to  bidiagonal form.
@@ -345,138 +308,112 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdmultiplybyq(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& tauq,
-     ap::real_2d_array& z,
-     int zrows,
-     int zcolumns,
-     bool fromtheright,
-     bool dotranspose)
-{
-    int i;
-    int i1;
-    int i2;
-    int istep;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
-    int mx;
+void rmatrixbdmultiplybyq(const ap::real_2d_array &qp, int m, int n,
+                          const ap::real_1d_array &tauq, ap::real_2d_array &z,
+                          int zrows, int zcolumns, bool fromtheright,
+                          bool dotranspose) {
+  int i;
+  int i1;
+  int i2;
+  int istep;
+  ap::real_1d_array v;
+  ap::real_1d_array work;
+  int mx;
 
-    if( m<=0||n<=0||zrows<=0||zcolumns<=0 )
-    {
-        return;
-    }
+  if (m <= 0 || n <= 0 || zrows <= 0 || zcolumns <= 0) {
+    return;
+  }
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion( (fromtheright&&zcolumns==m) || (!fromtheright&&zrows==m), "RMatrixBDMultiplyByQ: incorrect Z size!");
+  ap::ap_error::make_assertion(
+      (fromtheright && zcolumns == m) || (!fromtheright && zrows == m),
+      "RMatrixBDMultiplyByQ: incorrect Z size!");
 #endif
-    
-    //
-    // init
-    //
-    mx = ap::maxint(m, n);
-    mx = ap::maxint(mx, zrows);
-    mx = ap::maxint(mx, zcolumns);
-    v.setbounds(0, mx);
-    work.setbounds(0, mx);
-    if( m>=n )
-    {
-        
-        //
-        // setup
-        //
-        if( fromtheright )
-        {
-            i1 = 0;
-            i2 = n-1;
-            istep = +1;
-        }
-        else
-        {
-            i1 = n-1;
-            i2 = 0;
-            istep = -1;
-        }
-        if( dotranspose )
-        {
-            i = i1;
-            i1 = i2;
-            i2 = i;
-            istep = -istep;
-        }
-        
-        //
-        // Process
-        //
-        i = i1;
-        do
-        {
-            ap::vmove(v.getvector(1, m-i), qp.getcolumn(i, i, m-1));
-            v(1) = 1;
-            if( fromtheright )
-            {
-                applyreflectionfromtheright(z, tauq(i), v, 0, zrows-1, i, m-1, work);
-            }
-            else
-            {
-                applyreflectionfromtheleft(z, tauq(i), v, i, m-1, 0, zcolumns-1, work);
-            }
-            i = i+istep;
-        }
-        while(i!=i2+istep);
-    }
-    else
-    {
-        
-        //
-        // setup
-        //
-        if( fromtheright )
-        {
-            i1 = 0;
-            i2 = m-2;
-            istep = +1;
-        }
-        else
-        {
-            i1 = m-2;
-            i2 = 0;
-            istep = -1;
-        }
-        if( dotranspose )
-        {
-            i = i1;
-            i1 = i2;
-            i2 = i;
-            istep = -istep;
-        }
-        
-        //
-        // Process
-        //
-        if( m-1>0 )
-        {
-            i = i1;
-            do
-            {
-                ap::vmove(v.getvector(1, m-i-1), qp.getcolumn(i, i+1, m-1));
-                v(1) = 1;
-                if( fromtheright )
-                {
-                    applyreflectionfromtheright(z, tauq(i), v, 0, zrows-1, i+1, m-1, work);
-                }
-                else
-                {
-                    applyreflectionfromtheleft(z, tauq(i), v, i+1, m-1, 0, zcolumns-1, work);
-                }
-                i = i+istep;
-            }
-            while(i!=i2+istep);
-        }
-    }
-}
 
+  //
+  // init
+  //
+  mx = ap::maxint(m, n);
+  mx = ap::maxint(mx, zrows);
+  mx = ap::maxint(mx, zcolumns);
+  v.setbounds(0, mx);
+  work.setbounds(0, mx);
+  if (m >= n) {
+    //
+    // setup
+    //
+    if (fromtheright) {
+      i1 = 0;
+      i2 = n - 1;
+      istep = +1;
+    } else {
+      i1 = n - 1;
+      i2 = 0;
+      istep = -1;
+    }
+    if (dotranspose) {
+      i = i1;
+      i1 = i2;
+      i2 = i;
+      istep = -istep;
+    }
+
+    //
+    // Process
+    //
+    i = i1;
+    do {
+      ap::vmove(v.getvector(1, m - i), qp.getcolumn(i, i, m - 1));
+      v(1) = 1;
+      if (fromtheright) {
+        applyreflectionfromtheright(z, tauq(i), v, 0, zrows - 1, i, m - 1,
+                                    work);
+      } else {
+        applyreflectionfromtheleft(z, tauq(i), v, i, m - 1, 0, zcolumns - 1,
+                                   work);
+      }
+      i = i + istep;
+    } while (i != i2 + istep);
+  } else {
+    //
+    // setup
+    //
+    if (fromtheright) {
+      i1 = 0;
+      i2 = m - 2;
+      istep = +1;
+    } else {
+      i1 = m - 2;
+      i2 = 0;
+      istep = -1;
+    }
+    if (dotranspose) {
+      i = i1;
+      i1 = i2;
+      i2 = i;
+      istep = -istep;
+    }
+
+    //
+    // Process
+    //
+    if (m - 1 > 0) {
+      i = i1;
+      do {
+        ap::vmove(v.getvector(1, m - i - 1), qp.getcolumn(i, i + 1, m - 1));
+        v(1) = 1;
+        if (fromtheright) {
+          applyreflectionfromtheright(z, tauq(i), v, 0, zrows - 1, i + 1, m - 1,
+                                      work);
+        } else {
+          applyreflectionfromtheleft(z, tauq(i), v, i + 1, m - 1, 0,
+                                     zcolumns - 1, work);
+        }
+        i = i + istep;
+      } while (i != i2 + istep);
+    }
+  }
+}
 
 /*************************************************************************
 Unpacking matrix P which reduces matrix A to bidiagonal form.
@@ -499,51 +436,40 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackpt(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& taup,
-     int ptrows,
-     ap::real_2d_array& pt)
-{
-    int i;
-    int j;
+void rmatrixbdunpackpt(const ap::real_2d_array &qp, int m, int n,
+                       const ap::real_1d_array &taup, int ptrows,
+                       ap::real_2d_array &pt) {
+  int i;
+  int j;
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion(ptrows<=n, "RMatrixBDUnpackPT: PTRows>N!");
-    ap::ap_error::make_assertion(ptrows>=0, "RMatrixBDUnpackPT: PTRows<0!");
+  ap::ap_error::make_assertion(ptrows <= n, "RMatrixBDUnpackPT: PTRows>N!");
+  ap::ap_error::make_assertion(ptrows >= 0, "RMatrixBDUnpackPT: PTRows<0!");
 #endif
 
-    if( m==0||n==0||ptrows==0 )
-    {
-        return;
-    }
-    
-    //
-    // prepare PT
-    //
-    pt.setbounds(0, ptrows-1, 0, n-1);
-    for(i = 0; i <= ptrows-1; i++)
-    {
-        for(j = 0; j <= n-1; j++)
-        {
-            if( i==j )
-            {
-                pt(i,j) = 1;
-            }
-            else
-            {
-                pt(i,j) = 0;
-            }
-        }
-    }
-    
-    //
-    // Calculate
-    //
-    rmatrixbdmultiplybyp(qp, m, n, taup, pt, ptrows, n, true, true);
-}
+  if (m == 0 || n == 0 || ptrows == 0) {
+    return;
+  }
 
+  //
+  // prepare PT
+  //
+  pt.setbounds(0, ptrows - 1, 0, n - 1);
+  for (i = 0; i <= ptrows - 1; i++) {
+    for (j = 0; j <= n - 1; j++) {
+      if (i == j) {
+        pt(i, j) = 1;
+      } else {
+        pt(i, j) = 0;
+      }
+    }
+  }
+
+  //
+  // Calculate
+  //
+  rmatrixbdmultiplybyp(qp, m, n, taup, pt, ptrows, n, true, true);
+}
 
 /*************************************************************************
 Multiplication by matrix P which reduces matrix A to  bidiagonal form.
@@ -574,140 +500,114 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdmultiplybyp(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& taup,
-     ap::real_2d_array& z,
-     int zrows,
-     int zcolumns,
-     bool fromtheright,
-     bool dotranspose)
-{
-    int i;
-    ap::real_1d_array v;
-    ap::real_1d_array work;
-    int mx;
-    int i1;
-    int i2;
-    int istep;
+void rmatrixbdmultiplybyp(const ap::real_2d_array &qp, int m, int n,
+                          const ap::real_1d_array &taup, ap::real_2d_array &z,
+                          int zrows, int zcolumns, bool fromtheright,
+                          bool dotranspose) {
+  int i;
+  ap::real_1d_array v;
+  ap::real_1d_array work;
+  int mx;
+  int i1;
+  int i2;
+  int istep;
 
-    if( m<=0||n<=0||zrows<=0||zcolumns<=0 )
-    {
-        return;
-    }
+  if (m <= 0 || n <= 0 || zrows <= 0 || zcolumns <= 0) {
+    return;
+  }
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion((fromtheright&&zcolumns==n)||(!fromtheright&&zrows==n), "RMatrixBDMultiplyByP: incorrect Z size!");
+  ap::ap_error::make_assertion(
+      (fromtheright && zcolumns == n) || (!fromtheright && zrows == n),
+      "RMatrixBDMultiplyByP: incorrect Z size!");
 #endif
-    
-    //
-    // init
-    //
-    mx = ap::maxint(m, n);
-    mx = ap::maxint(mx, zrows);
-    mx = ap::maxint(mx, zcolumns);
-    v.setbounds(0, mx);
-    work.setbounds(0, mx);
-    v.setbounds(0, mx);
-    work.setbounds(0, mx);
-    if( m>=n )
-    {
-        
-        //
-        // setup
-        //
-        if( fromtheright )
-        {
-            i1 = n-2;
-            i2 = 0;
-            istep = -1;
-        }
-        else
-        {
-            i1 = 0;
-            i2 = n-2;
-            istep = +1;
-        }
-        if( !dotranspose )
-        {
-            i = i1;
-            i1 = i2;
-            i2 = i;
-            istep = -istep;
-        }
-        
-        //
-        // Process
-        //
-        if( n-1>0 )
-        {
-            i = i1;
-            do
-            {
-                ap::vmove(&v(1), &qp(i, i+1), ap::vlen(1,n-1-i));
-                v(1) = 1;
-                if( fromtheright )
-                {
-                    applyreflectionfromtheright(z, taup(i), v, 0, zrows-1, i+1, n-1, work);
-                }
-                else
-                {
-                    applyreflectionfromtheleft(z, taup(i), v, i+1, n-1, 0, zcolumns-1, work);
-                }
-                i = i+istep;
-            }
-            while(i!=i2+istep);
-        }
-    }
-    else
-    {
-        
-        //
-        // setup
-        //
-        if( fromtheright )
-        {
-            i1 = m-1;
-            i2 = 0;
-            istep = -1;
-        }
-        else
-        {
-            i1 = 0;
-            i2 = m-1;
-            istep = +1;
-        }
-        if( !dotranspose )
-        {
-            i = i1;
-            i1 = i2;
-            i2 = i;
-            istep = -istep;
-        }
-        
-        //
-        // Process
-        //
-        i = i1;
-        do
-        {
-            ap::vmove(&v(1), &qp(i, i), ap::vlen(1,n-i));
-            v(1) = 1;
-            if( fromtheright )
-            {
-                applyreflectionfromtheright(z, taup(i), v, 0, zrows-1, i, n-1, work);
-            }
-            else
-            {
-                applyreflectionfromtheleft(z, taup(i), v, i, n-1, 0, zcolumns-1, work);
-            }
-            i = i+istep;
-        }
-        while(i!=i2+istep);
-    }
-}
 
+  //
+  // init
+  //
+  mx = ap::maxint(m, n);
+  mx = ap::maxint(mx, zrows);
+  mx = ap::maxint(mx, zcolumns);
+  v.setbounds(0, mx);
+  work.setbounds(0, mx);
+  v.setbounds(0, mx);
+  work.setbounds(0, mx);
+  if (m >= n) {
+    //
+    // setup
+    //
+    if (fromtheright) {
+      i1 = n - 2;
+      i2 = 0;
+      istep = -1;
+    } else {
+      i1 = 0;
+      i2 = n - 2;
+      istep = +1;
+    }
+    if (!dotranspose) {
+      i = i1;
+      i1 = i2;
+      i2 = i;
+      istep = -istep;
+    }
+
+    //
+    // Process
+    //
+    if (n - 1 > 0) {
+      i = i1;
+      do {
+        ap::vmove(&v(1), &qp(i, i + 1), ap::vlen(1, n - 1 - i));
+        v(1) = 1;
+        if (fromtheright) {
+          applyreflectionfromtheright(z, taup(i), v, 0, zrows - 1, i + 1, n - 1,
+                                      work);
+        } else {
+          applyreflectionfromtheleft(z, taup(i), v, i + 1, n - 1, 0,
+                                     zcolumns - 1, work);
+        }
+        i = i + istep;
+      } while (i != i2 + istep);
+    }
+  } else {
+    //
+    // setup
+    //
+    if (fromtheright) {
+      i1 = m - 1;
+      i2 = 0;
+      istep = -1;
+    } else {
+      i1 = 0;
+      i2 = m - 1;
+      istep = +1;
+    }
+    if (!dotranspose) {
+      i = i1;
+      i1 = i2;
+      i2 = i;
+      istep = -istep;
+    }
+
+    //
+    // Process
+    //
+    i = i1;
+    do {
+      ap::vmove(&v(1), &qp(i, i), ap::vlen(1, n - i));
+      v(1) = 1;
+      if (fromtheright) {
+        applyreflectionfromtheright(z, taup(i), v, 0, zrows - 1, i, n - 1,
+                                    work);
+      } else {
+        applyreflectionfromtheleft(z, taup(i), v, i, n - 1, 0, zcolumns - 1,
+                                   work);
+      }
+      i = i + istep;
+    } while (i != i2 + istep);
+  }
+}
 
 /*************************************************************************
 Unpacking of the main and secondary diagonals of bidiagonal decomposition
@@ -731,42 +631,30 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackdiagonals(const ap::real_2d_array& b,
-     int m,
-     int n,
-     bool& isupper,
-     ap::real_1d_array& d,
-     ap::real_1d_array& e)
-{
-    int i;
+void rmatrixbdunpackdiagonals(const ap::real_2d_array &b, int m, int n,
+                              bool &isupper, ap::real_1d_array &d,
+                              ap::real_1d_array &e) {
+  int i;
 
-    isupper = m>=n;
-    if( m<=0||n<=0 )
-    {
-        return;
+  isupper = m >= n;
+  if (m <= 0 || n <= 0) {
+    return;
+  }
+  if (isupper) {
+    d.setbounds(0, n - 1);
+    e.setbounds(0, n - 1);
+    for (i = 0; i <= n - 2; i++) {
+      d(i) = b(i, i);
+      e(i) = b(i, i + 1);
     }
-    if( isupper )
-    {
-        d.setbounds(0, n-1);
-        e.setbounds(0, n-1);
-        for(i = 0; i <= n-2; i++)
-        {
-            d(i) = b(i,i);
-            e(i) = b(i,i+1);
-        }
-        d(n-1) = b(n-1,n-1);
+    d(n - 1) = b(n - 1, n - 1);
+  } else {
+    d.setbounds(0, m - 1);
+    e.setbounds(0, m - 1);
+    for (i = 0; i <= m - 2; i++) {
+      d(i) = b(i, i);
+      e(i) = b(i + 1, i);
     }
-    else
-    {
-        d.setbounds(0, m-1);
-        e.setbounds(0, m-1);
-        for(i = 0; i <= m-2; i++)
-        {
-            d(i) = b(i,i);
-            e(i) = b(i+1,i);
-        }
-        d(m-1) = b(m-1,m-1);
-    }
+    d(m - 1) = b(m - 1, m - 1);
+  }
 }
-
-

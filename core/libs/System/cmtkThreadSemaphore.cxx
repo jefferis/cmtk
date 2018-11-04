@@ -33,11 +33,11 @@
 #include "cmtkThreadSemaphore.h"
 
 #ifdef _MSC_VER
-#  include "cmtkThreadSemaphoreWindows.txx"
+#include "cmtkThreadSemaphoreWindows.txx"
 #elif defined(__APPLE__) || defined(__CYGWIN__)
-#  include "cmtkThreadSemaphoreAppleIsRetarded.txx"
+#include "cmtkThreadSemaphoreAppleIsRetarded.txx"
 #elif defined(CMTK_USE_PTHREADS)
-#  include "cmtkThreadSemaphorePOSIX.txx"
+#include "cmtkThreadSemaphorePOSIX.txx"
 #else
-#  include "cmtkThreadSemaphoreNone.txx"
-#endif // #ifdef CMTK_USE_PTHREADS
+#include "cmtkThreadSemaphoreNone.txx"
+#endif  // #ifdef CMTK_USE_PTHREADS

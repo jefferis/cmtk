@@ -32,38 +32,32 @@
 
 #include "cmtkSegmentationLabelIO.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-std::istream& operator>>
-( std::istream& stream, SegmentationLabelMap& lblMap )
-{
+std::istream &operator>>(std::istream &stream, SegmentationLabelMap &lblMap) {
   std::string line;
-  
-  while ( ! stream.eof() ) 
-    {
-    std::getline( stream, line );
-    if ( line.length() && (line[0] != '#') ) 
-      { // skip blank and comments
+
+  while (!stream.eof()) {
+    std::getline(stream, line);
+    if (line.length() && (line[0] != '#')) {  // skip blank and comments
       int id;
       std::string name, rs, gs, bs, as;
-      
-      std::istringstream inStr( line );
+
+      std::istringstream inStr(line);
       inStr >> id >> name >> rs >> gs >> bs >> as;
-      
-      lblMap[id].SetName( name.c_str() );
-      lblMap[id].SetRGB( atoi( rs.c_str() ), atoi( gs.c_str() ), atoi( bs.c_str() ) );
-      }
+
+      lblMap[id].SetName(name.c_str());
+      lblMap[id].SetRGB(atoi(rs.c_str()), atoi(gs.c_str()), atoi(bs.c_str()));
     }
-  
+  }
+
   return stream;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

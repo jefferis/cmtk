@@ -32,17 +32,13 @@
 
 #include "cmtkLandmarkPair.h"
 
-std::ostream& 
-operator<<( std::ostream& stream, const cmtk::LandmarkPair& pair )
-{
-  stream << pair.m_Location << "\t" << pair.m_TargetLocation << "\t" << pair.m_Name << std::endl;
+std::ostream &operator<<(std::ostream &stream, const cmtk::LandmarkPair &pair) {
+  stream << pair.m_Location << "\t" << pair.m_TargetLocation << "\t"
+         << pair.m_Name << std::endl;
   return stream;
 }
 
-std::istream& 
-operator>>( std::istream& stream, cmtk::LandmarkPair& pair )
-{
+std::istream &operator>>(std::istream &stream, cmtk::LandmarkPair &pair) {
   stream >> pair.m_Location >> pair.m_TargetLocation >> pair.m_Name;
   return stream;
 }
-

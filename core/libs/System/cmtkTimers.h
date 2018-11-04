@@ -36,45 +36,42 @@
 #include <cmtkconfig.h>
 
 #ifdef HAVE_SYS_TIME_H
-#  include <sys/time.h>
+#include <sys/time.h>
 #endif
 
 #ifdef HAVE_SYS_TIMES_H
-#  include <sys/times.h>
+#include <sys/times.h>
 #endif
 
 #ifdef HAVE_UNISTD_H
-#  include <unistd.h>
+#include <unistd.h>
 #endif
 
-#include <iostream>
 #include <ctime>
+#include <iostream>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /** Namespace that contains functions and variables for CPU time measurements.
  */
-namespace Timers 
-{
-  /// Get CPU time for the current process.
-  extern double GetTimeProcess();
+namespace Timers {
+/// Get CPU time for the current process.
+extern double GetTimeProcess();
 
-  /// Get CPU walltime for the current process.
-  extern double GetWalltime();
+/// Get CPU walltime for the current process.
+extern double GetWalltime();
 
-  /** Get CPU time for the current thread.
-   *\todo We need to find an equivalent implementation of this under Windows.
-   */
-  extern double GetTimeThread();
+/** Get CPU time for the current thread.
+ *\todo We need to find an equivalent implementation of this under Windows.
+ */
+extern double GetTimeThread();
 }  // namespace Timers
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkTimers_h_included_
+#endif  // #ifndef __cmtkTimers_h_included_

@@ -35,12 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkThreads.h>
 #include <System/cmtkThreadParameters.h>
+#include <System/cmtkThreads.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
@@ -49,69 +47,64 @@ cmtk
  * This array initializes the non-template type specific fields of the thread
  * parameter structure.
  */
-template<class TClass,class TParam = ThreadParameters<TClass> >
-class ThreadParameterArray
-{
-public:
+template <class TClass, class TParam = ThreadParameters<TClass>>
+class ThreadParameterArray {
+ public:
   /** Constructor.
    * Allocate array and initialize generic fields.
    */
-  ThreadParameterArray
-  ( TClass *const thisObject, const size_t numberOfThreads )
-  {
+  ThreadParameterArray(TClass *const thisObject, const size_t numberOfThreads) {
     this->m_NumberOfThreads = numberOfThreads;
-    this->m_Ptr = Memory::ArrayC::Allocate<TParam>( numberOfThreads );
-    for ( size_t i = 0; i < numberOfThreads; ++i )
-      {
+    this->m_Ptr = Memory::ArrayC::Allocate<TParam>(numberOfThreads);
+    for (size_t i = 0; i < numberOfThreads; ++i) {
       this->m_Ptr[i].thisObject = thisObject;
       this->m_Ptr[i].ThisThreadIndex = i;
       this->m_Ptr[i].NumberOfThreads = numberOfThreads;
       this->m_Ptr[i].m_ThreadID = 0;
-      }
+    }
   }
 
   /// Destructor.
-  ~ThreadParameterArray()
-  {
-    Memory::ArrayC::Delete( this->m_Ptr );
-  }
+  ~ThreadParameterArray() { Memory::ArrayC::Delete(this->m_Ptr); }
 
   /// Constant access operator.
-  const TParam& operator[]( const size_t i ) const { return this->m_Ptr[i]; }
+  const TParam &operator[](const size_t i) const { return this->m_Ptr[i]; }
 
   /// Access operator.
-  TParam& operator[]( const size_t i ) { return this->m_Ptr[i]; }
+  TParam &operator[](const size_t i) { return this->m_Ptr[i]; }
 
   /// Return pointer to array.
-  TParam* GetPtr() { return this->m_Ptr; }
+  TParam *GetPtr() { return this->m_Ptr; }
 
   /// Return constant pointer to array.
-  const TParam* GetPtr() const { return this->m_Ptr; }
+  const TParam *GetPtr() const { return this->m_Ptr; }
 
   /// Return number of threads.
   size_t GetNumberOfThreads() const { return this->m_NumberOfThreads; }
 
   /// Run thread function in parallel.
-  void RunInParallel( ThreadFunction threadCall )
-  {
-    Threads::RunThreads( threadCall, this->GetNumberOfThreads(), this->GetPtr(), sizeof( TParam ) );
+  void RunInParallel(ThreadFunction threadCall) {
+    Threads::RunThreads(threadCall, this->GetNumberOfThreads(), this->GetPtr(),
+                        sizeof(TParam));
   }
 
   /// Run thread functions using a static FIFO scheduler.
-  void RunInParallelFIFO(ThreadFunction threadCall, const size_t numberOfThreadsTotal, const size_t firstThreadIdx = 0 );
-    
-private:
+  void RunInParallelFIFO(ThreadFunction threadCall,
+                         const size_t numberOfThreadsTotal,
+                         const size_t firstThreadIdx = 0);
+
+ private:
   /// Store number of threads and entries in parameter array.
   size_t m_NumberOfThreads;
-  
+
   /// Pointer to parameter block array.
-  TParam* m_Ptr;
+  TParam *m_Ptr;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkThreadParameterArray.txx"
 
-#endif // #ifndef __cmtkThreadParameterArray_h_included_
+#endif  // #ifndef __cmtkThreadParameterArray_h_included_

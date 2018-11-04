@@ -35,20 +35,15 @@
 
 #include <cmtkconfig.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
-namespace 
-Interpolators
-{
+namespace Interpolators {
 
 /// NearestNeighbor interpolator.
-class NearestNeighbor
-{
-public:
+class NearestNeighbor {
+ public:
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = 1;
 
@@ -56,26 +51,25 @@ public:
   static const bool SuitableForLabels = true;
 
   /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x )
-  {
-    switch (weight)
-      {
-      case 0: 
-	return (x<=0.5) ? 1 : 0;
+  static Types::Coordinate GetWeight(const int weight,
+                                     const Types::Coordinate x) {
+    switch (weight) {
+      case 0:
+        return (x <= 0.5) ? 1 : 0;
       case 1:
-	return (x>0.5) ? 1 : 0;
+        return (x > 0.5) ? 1 : 0;
       default:
 #ifdef DEBUG
-	std::cerr << "weight=" << weight << " shouldn't happen!" << std::endl;
-	exit( 1 );
+        std::cerr << "weight=" << weight << " shouldn't happen!" << std::endl;
+        exit(1);
 #endif
-	break;
-      }
+        break;
+    }
     return 0;
   }
 };
 
-} // namespace Interpolators
-} // namespace cmtk
+}  // namespace Interpolators
+}  // namespace cmtk
 
 #endif

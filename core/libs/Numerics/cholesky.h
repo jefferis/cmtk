@@ -104,6 +104,6 @@ Result:
      Courant Institute, Argonne National Lab, and Rice University
      February 29, 1992
 *************************************************************************/
-bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper);
+bool spdmatrixcholesky(ap::real_2d_array &a, int n, bool isupper);
 
 #endif

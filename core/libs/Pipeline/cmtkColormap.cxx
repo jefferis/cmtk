@@ -35,28 +35,23 @@
 #include <math.h>
 
 #ifdef HAVE_IEEEFP_H
-#  include <ieeefp.h>
+#include <ieeefp.h>
 #endif
 
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkSegmentationLabel.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <algorithm>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Pipeline */
 //@{
 
-const char *Colormap::StandardColormaps[] = 
-{
-  "Gray", "Red", "Green", "Blue", "Rainbow", "Labels", NULL
-};
+const char *Colormap::StandardColormaps[] = {
+    "Gray", "Red", "Green", "Blue", "Rainbow", "Labels", NULL};
 
-Colormap::Colormap()
-{
+Colormap::Colormap() {
   TableEntries = 256;
   Gamma = 0;
   DataRange[0] = 0;
@@ -70,360 +65,355 @@ Colormap::Colormap()
   Reverse = false;
   this->InvDataRangeWidth = 4095;
 
-  CreateSystemLabelColorMap( this->LabelColorMap );
+  CreateSystemLabelColorMap(this->LabelColorMap);
 
-  this->SetStandardColormap( PALETTE_GRAY );
+  this->SetStandardColormap(PALETTE_GRAY);
 }
 
-void 
-Colormap::SetFromStudy( const Study* study )
-{
-  if ( ! study ) return;
+void Colormap::SetFromStudy(const Study *study) {
+  if (!study) return;
 
   // if there is a user-defined map, use that.
-  if ( study->GetHaveUserColorMap() ) 
-    {
+  if (study->GetHaveUserColorMap()) {
     LabelColorMap = study->GetUserLabelMap();
-    }
-  
+  }
+
   // copy all other settings anyway, just in case.
-  this->SetStandardColormap( study->GetStandardColormap() );
-  this->SetReverse( study->GetReverseColormap() );
-  this->SetDataRange( study->GetBlack(), study->GetWhite() );
-  this->SetGamma( study->GetGamma() );
+  this->SetStandardColormap(study->GetStandardColormap());
+  this->SetReverse(study->GetReverseColormap());
+  this->SetDataRange(study->GetBlack(), study->GetWhite());
+  this->SetGamma(study->GetGamma());
 }
 
-void
-Colormap::SetStandardColormap( const int index )
-{
+void Colormap::SetStandardColormap(const int index) {
   HaveUserMap = false;
-  SetGamma( 0 );
-  switch ( index ) 
-    {
-    case PALETTE_GRAY : 
-      SetHueRange( 0, 0 );
-      SetSaturationRange( 0, 0 );
-      SetValueRange( 0, 1 );
+  SetGamma(0);
+  switch (index) {
+    case PALETTE_GRAY:
+      SetHueRange(0, 0);
+      SetSaturationRange(0, 0);
+      SetValueRange(0, 1);
       break;
-    case PALETTE_RED : 
-      SetHueRange( 0, 0 );
-      SetSaturationRange( 1, 1 );
-      SetValueRange( 0, 1 );
+    case PALETTE_RED:
+      SetHueRange(0, 0);
+      SetSaturationRange(1, 1);
+      SetValueRange(0, 1);
       break;
-    case PALETTE_GREEN : 
-      SetHueRange( 0.33, 0.33 );
-      SetSaturationRange( 1, 1 );
-      SetValueRange( 0, 1 );
+    case PALETTE_GREEN:
+      SetHueRange(0.33, 0.33);
+      SetSaturationRange(1, 1);
+      SetValueRange(0, 1);
       break;
-    case PALETTE_BLUE : 
-      SetHueRange( 0.66, 0.66 );
-      SetSaturationRange( 1, 1 );
-      SetValueRange( 0, 1 );
+    case PALETTE_BLUE:
+      SetHueRange(0.66, 0.66);
+      SetSaturationRange(1, 1);
+      SetValueRange(0, 1);
       break;
-    case PALETTE_RAINBOW : 
-      SetHueRange( 0.66, 0 );
-      SetSaturationRange( 1, 1 );
-      SetValueRange( 1, 1 );
+    case PALETTE_RAINBOW:
+      SetHueRange(0.66, 0);
+      SetSaturationRange(1, 1);
+      SetValueRange(1, 1);
       break;
     case PALETTE_LABELS:
     default:
       HaveUserMap = true;
       // nothing to do for user map; hopefully, there is one ;)
       break;
-    }
+  }
 }
 
-void
-Colormap::Apply( void *const outPtr, const TypedArray* inPtr, const bool generateAlpha )
-{
-  if ( ( outPtr == NULL ) || (inPtr == NULL) ) return;
+void Colormap::Apply(void *const outPtr, const TypedArray *inPtr,
+                     const bool generateAlpha) {
+  if ((outPtr == NULL) || (inPtr == NULL)) return;
 
-  if ( (LookupTable.empty()) || (!TableEntries) ) 
-    {
-    memset( outPtr, 0, 3 * inPtr->GetDataSize() );
+  if ((LookupTable.empty()) || (!TableEntries)) {
+    memset(outPtr, 0, 3 * inPtr->GetDataSize());
     return;
-    }
-  
+  }
+
   int size = inPtr->GetDataSize();
-  if ( generateAlpha ) 
-    {
-    switch ( inPtr->GetType() ) 
-      {
+  if (generateAlpha) {
+    switch (inPtr->GetType()) {
       case TYPE_BYTE:
-	ApplyPrimitive<unsigned char>( (RGBA*) outPtr, (unsigned char*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned char*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<unsigned char>(
+            (RGBA *)outPtr, (unsigned char *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(),
+            *((unsigned char *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_CHAR:
-	ApplyPrimitive<char>( (RGBA*) outPtr, (char*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((char*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<char>((RGBA *)outPtr, (char *)inPtr->GetDataPtr(), size,
+                             inPtr->GetPaddingFlag(),
+                             *((char *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_SHORT:
-	ApplyPrimitive<short>( (RGBA*) outPtr, (short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((short*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<short>((RGBA *)outPtr, (short *)inPtr->GetDataPtr(),
+                              size, inPtr->GetPaddingFlag(),
+                              *((short *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_USHORT:
-	ApplyPrimitive<unsigned short>( (RGBA*) outPtr, (unsigned short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned short*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<unsigned short>(
+            (RGBA *)outPtr, (unsigned short *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(),
+            *((unsigned short *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_INT:
-	ApplyPrimitive<int>( (RGBA*) outPtr, (int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((int*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<int>((RGBA *)outPtr, (int *)inPtr->GetDataPtr(), size,
+                            inPtr->GetPaddingFlag(),
+                            *((int *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_UINT:
-	ApplyPrimitive<unsigned int>( (RGBA*) outPtr, (unsigned int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned int*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<unsigned int>(
+            (RGBA *)outPtr, (unsigned int *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(), *((unsigned int *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_FLOAT:
-	ApplyPrimitive<float>( (RGBA*) outPtr, (float*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((float*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<float>((RGBA *)outPtr, (float *)inPtr->GetDataPtr(),
+                              size, inPtr->GetPaddingFlag(),
+                              *((float *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_DOUBLE:
-	ApplyPrimitive<double>( (RGBA*) outPtr, (double*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((double*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<double>((RGBA *)outPtr, (double *)inPtr->GetDataPtr(),
+                               size, inPtr->GetPaddingFlag(),
+                               *((double *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_NONE:
-	break;
-      }
+        break;
     }
-  else
-    {
-    switch ( inPtr->GetType() ) 
-      {
+  } else {
+    switch (inPtr->GetType()) {
       case TYPE_BYTE:
-	ApplyPrimitive<unsigned char>( (RGB*) outPtr, (unsigned char*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned char*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<unsigned char>(
+            (RGB *)outPtr, (unsigned char *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(),
+            *((unsigned char *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_CHAR:
-	ApplyPrimitive<char>( (RGB*) outPtr, (char*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((char*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<char>((RGB *)outPtr, (char *)inPtr->GetDataPtr(), size,
+                             inPtr->GetPaddingFlag(),
+                             *((char *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_SHORT:
-	ApplyPrimitive<short>( (RGB*) outPtr, (short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((short*)inPtr->GetPaddingPtr()) );
-	break;
-      case TYPE_USHORT: 
-	ApplyPrimitive<unsigned short>( (RGB*) outPtr, (unsigned short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned short*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<short>((RGB *)outPtr, (short *)inPtr->GetDataPtr(), size,
+                              inPtr->GetPaddingFlag(),
+                              *((short *)inPtr->GetPaddingPtr()));
+        break;
+      case TYPE_USHORT:
+        ApplyPrimitive<unsigned short>(
+            (RGB *)outPtr, (unsigned short *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(),
+            *((unsigned short *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_INT:
-	ApplyPrimitive<int>( (RGB*) outPtr, (int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((int*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<int>((RGB *)outPtr, (int *)inPtr->GetDataPtr(), size,
+                            inPtr->GetPaddingFlag(),
+                            *((int *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_UINT:
-	ApplyPrimitive<unsigned int>( (RGB*) outPtr, (unsigned int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned int*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<unsigned int>(
+            (RGB *)outPtr, (unsigned int *)inPtr->GetDataPtr(), size,
+            inPtr->GetPaddingFlag(), *((unsigned int *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_FLOAT:
-	ApplyPrimitive<float>( (RGB*) outPtr, (float*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((float*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<float>((RGB *)outPtr, (float *)inPtr->GetDataPtr(), size,
+                              inPtr->GetPaddingFlag(),
+                              *((float *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_DOUBLE:
-	ApplyPrimitive<double>( (RGB*) outPtr, (double*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((double*)inPtr->GetPaddingPtr()) );
-	break;
+        ApplyPrimitive<double>((RGB *)outPtr, (double *)inPtr->GetDataPtr(),
+                               size, inPtr->GetPaddingFlag(),
+                               *((double *)inPtr->GetPaddingPtr()));
+        break;
       case TYPE_NONE:
-	break;
-      }
+        break;
     }
+  }
 }
 
-template<class T>
-void Colormap::ApplyPrimitive
-( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const
-{
-  if ( Reverse ) 
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
+template <class T>
+void Colormap::ApplyPrimitive(RGB *const outPtr, const T *inPtr,
+                              const unsigned int count, const bool paddingFlag,
+                              const T paddingData) const {
+  if (Reverse) {
+    for (unsigned int index = 0; index < count; ++index) {
       T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
-      
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[LookupTable.size()-1];
-      else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[0];
-      else
-	outPtr[index] = LookupTable[ LookupTable.size() - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
-      }
-    } 
-  else
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
-      T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
+      if ((paddingFlag && (data == paddingData)) || !finite(data)) data = 0;
 
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[0];
-      else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[LookupTable.size()-1];
+      if (data <= DataRange[0])
+        outPtr[index] = LookupTable[LookupTable.size() - 1];
+      else if (data >= DataRange[1])
+        outPtr[index] = LookupTable[0];
       else
-	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
-      }
+        outPtr[index] =
+            LookupTable[LookupTable.size() - 1 -
+                        (int)((data - DataRange[0]) * InvDataRangeWidth)];
     }
+  } else {
+    for (unsigned int index = 0; index < count; ++index) {
+      T data = inPtr[index];
+      if ((paddingFlag && (data == paddingData)) || !finite(data)) data = 0;
+
+      if (data <= DataRange[0])
+        outPtr[index] = LookupTable[0];
+      else if (data >= DataRange[1])
+        outPtr[index] = LookupTable[LookupTable.size() - 1];
+      else
+        outPtr[index] =
+            LookupTable[(int)((data - DataRange[0]) * InvDataRangeWidth)];
+    }
+  }
 }
 
-template<class T>
-void Colormap::ApplyPrimitive
-( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const
-{
-  if ( Reverse ) 
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
+template <class T>
+void Colormap::ApplyPrimitive(RGBA *const outPtr, const T *inPtr,
+                              const unsigned int count, const bool paddingFlag,
+                              const T paddingData) const {
+  if (Reverse) {
+    for (unsigned int index = 0; index < count; ++index) {
       T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
-      
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[LookupTable.size()-1];
-      else if ( inPtr[index] >= DataRange[1] ) 
-	outPtr[index] = LookupTable[0];
+      if ((paddingFlag && (data == paddingData)) || !finite(data)) data = 0;
+
+      if (data <= DataRange[0])
+        outPtr[index] = LookupTable[LookupTable.size() - 1];
+      else if (inPtr[index] >= DataRange[1])
+        outPtr[index] = LookupTable[0];
       else
-	outPtr[index] = LookupTable[ LookupTable.size() - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
+        outPtr[index] =
+            LookupTable[LookupTable.size() - 1 -
+                        (int)((data - DataRange[0]) * InvDataRangeWidth)];
       outPtr[index].Alpha = 255;
-      }
-    } 
-  else
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
-      T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
-
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[0];
-      else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[LookupTable.size()-1];
-      else
-	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
-      
-      outPtr[index].Alpha = 255;
-      }
     }
+  } else {
+    for (unsigned int index = 0; index < count; ++index) {
+      T data = inPtr[index];
+      if ((paddingFlag && (data == paddingData)) || !finite(data)) data = 0;
+
+      if (data <= DataRange[0])
+        outPtr[index] = LookupTable[0];
+      else if (data >= DataRange[1])
+        outPtr[index] = LookupTable[LookupTable.size() - 1];
+      else
+        outPtr[index] =
+            LookupTable[(int)((data - DataRange[0]) * InvDataRangeWidth)];
+
+      outPtr[index].Alpha = 255;
+    }
+  }
 }
 
-void Colormap::Execute ()
-{
-  if ( HaveUserMap ) 
-    {
+void Colormap::Execute() {
+  if (HaveUserMap) {
     // if user map exists, set table entry count to number of table entries.
     SegmentationLabelMap::const_iterator it = LabelColorMap.begin();
     int rangeFrom = it->first, rangeTo = it->first;
-    while ( it != LabelColorMap.end() ) 
-      {
-      rangeFrom = std::min( rangeFrom, it->first );
-      rangeTo = std::max( rangeTo, it->first );
+    while (it != LabelColorMap.end()) {
+      rangeFrom = std::min(rangeFrom, it->first);
+      rangeTo = std::max(rangeTo, it->first);
       ++it;
-      }
+    }
 
     TableEntries = (rangeTo - rangeFrom + 1);
     DataRange[0] = rangeFrom;
     DataRange[1] = rangeTo;
-    } 
-  else
-    {
+  } else {
     TableEntries = 256;
-    }
-  
-  LookupTable.resize( TableEntries );
-  
-  if ( DataRange[0] != DataRange[1] )
-    InvDataRangeWidth = (1.0 * (TableEntries - 1)) / (DataRange[1] - DataRange[0]);
+  }
+
+  LookupTable.resize(TableEntries);
+
+  if (DataRange[0] != DataRange[1])
+    InvDataRangeWidth =
+        (1.0 * (TableEntries - 1)) / (DataRange[1] - DataRange[0]);
   else
     InvDataRangeWidth = 0;
-  
-  if ( HaveUserMap ) 
-    {
+
+  if (HaveUserMap) {
     // if user map exists, build table.
-    for ( size_t index = 0; index < LookupTable.size(); ++index ) 
-      {
-      SegmentationLabelMap::const_iterator it = LabelColorMap.find( index );
-      if ( it != LabelColorMap.end() ) 
-	{
-	const byte* rgb = it->second.GetRGB();
-	LookupTable[index].R = rgb[0];
-	LookupTable[index].G = rgb[1];
-	LookupTable[index].B = rgb[2];
-	} 
-      else
-	{
-	LookupTable[index].R = LookupTable[index].G = LookupTable[index].B = 0;
-	}
-      }
-    } 
-  else 
-    {
-    // if no user-defined map, create map from HSV ramps.
-    Types::DataItem H = HueRange[0];
-    const Types::DataItem Hstep = (HueRange[1] - HueRange[0]) / (LookupTable.size() - 1);
-    
-    Types::DataItem S = SaturationRange[0];
-    const Types::DataItem Sstep = (SaturationRange[1] - SaturationRange[0]) / (LookupTable.size() - 1);
-    
-    Types::DataItem V = ValueRange[0];
-    const Types::DataItem Vstep = (ValueRange[1] - ValueRange[0]) / (LookupTable.size() - 1);
-    
-    if ( Gamma > 0 ) 
-      {
-      for ( size_t index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
-	{
-	if ( V > 0 ) 
-	  {
-	  Types::DataItem Vgamma = exp( log(V) * (1/Gamma) );
-	  HSV2RGB( LookupTable[index], H, S, Vgamma );
-	  } 
-	else
-	  {
-	  HSV2RGB( LookupTable[index], H, S, V );
-	  }
-	}
-      } 
-    else
-      {
-      for ( size_t index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
-	{
-	HSV2RGB( LookupTable[index], H, S, V );
-	}
+    for (size_t index = 0; index < LookupTable.size(); ++index) {
+      SegmentationLabelMap::const_iterator it = LabelColorMap.find(index);
+      if (it != LabelColorMap.end()) {
+        const byte *rgb = it->second.GetRGB();
+        LookupTable[index].R = rgb[0];
+        LookupTable[index].G = rgb[1];
+        LookupTable[index].B = rgb[2];
+      } else {
+        LookupTable[index].R = LookupTable[index].G = LookupTable[index].B = 0;
       }
     }
+  } else {
+    // if no user-defined map, create map from HSV ramps.
+    Types::DataItem H = HueRange[0];
+    const Types::DataItem Hstep =
+        (HueRange[1] - HueRange[0]) / (LookupTable.size() - 1);
+
+    Types::DataItem S = SaturationRange[0];
+    const Types::DataItem Sstep =
+        (SaturationRange[1] - SaturationRange[0]) / (LookupTable.size() - 1);
+
+    Types::DataItem V = ValueRange[0];
+    const Types::DataItem Vstep =
+        (ValueRange[1] - ValueRange[0]) / (LookupTable.size() - 1);
+
+    if (Gamma > 0) {
+      for (size_t index = 0; index < LookupTable.size();
+           ++index, H += Hstep, S += Sstep, V += Vstep) {
+        if (V > 0) {
+          Types::DataItem Vgamma = exp(log(V) * (1 / Gamma));
+          HSV2RGB(LookupTable[index], H, S, Vgamma);
+        } else {
+          HSV2RGB(LookupTable[index], H, S, V);
+        }
+      }
+    } else {
+      for (size_t index = 0; index < LookupTable.size();
+           ++index, H += Hstep, S += Sstep, V += Vstep) {
+        HSV2RGB(LookupTable[index], H, S, V);
+      }
+    }
+  }
 }
 
-void Colormap::HSV2RGB( RGB& rgb, Types::DataItem H, Types::DataItem S, Types::DataItem V )
-{
+void Colormap::HSV2RGB(RGB &rgb, Types::DataItem H, Types::DataItem S,
+                       Types::DataItem V) {
   const Types::DataItem max = 1.0;
   const Types::DataItem third = 1.0 / 3.0;
 
   Types::DataItem R, G, B;
   // compute rgb assuming S = 1.0;
-  if (H <= third) 
-    { // red -> green
-    G = 3 * std::max<Types::DataItem>( H, 0 );
+  if (H <= third) {  // red -> green
+    G = 3 * std::max<Types::DataItem>(H, 0);
     R = 1.0 - G;
     B = 0.0;
-    } 
-  else
-    if (H >= third && H <= 2.0*third) 
-      { // green -> blue
-      B = 3 * (H - third);
-      G = 1.0 - B;
-      R = 0.0;
-      } 
-    else
-      { // blue -> red
-      R = 3 * (H - 2.0 / 3);
-      B = 1.0 - R;
-      G = 0.0;
-      }
-  
+  } else if (H >= third && H <= 2.0 * third) {  // green -> blue
+    B = 3 * (H - third);
+    G = 1.0 - B;
+    R = 0.0;
+  } else {  // blue -> red
+    R = 3 * (H - 2.0 / 3);
+    B = 1.0 - R;
+    G = 0.0;
+  }
+
   // add Saturation to the equation.
   S = S / max;
-  
+
   (R *= S) += (1.0 - S);
   (G *= S) += (1.0 - S);
   (B *= S) += (1.0 - S);
-  
-  // Use value to get actual RGB 
+
+  // Use value to get actual RGB
   // normalize RGB first then apply value
   V = 3 * V / (R + G + B);
   R *= V;
   G *= V;
   B *= V;
-  
+
   if (R > max) R = max;
   if (G > max) G = max;
   if (B > max) B = max;
 
-  rgb.R = static_cast<unsigned char>( floor(255 * R) );
-  rgb.G = static_cast<unsigned char>( floor(255 * G) );
-  rgb.B = static_cast<unsigned char>( floor(255 * B) );
+  rgb.R = static_cast<unsigned char>(floor(255 * R));
+  rgb.G = static_cast<unsigned char>(floor(255 * G));
+  rgb.B = static_cast<unsigned char>(floor(255 * B));
 }
 
-} // namespace cmtk
+}  // namespace cmtk

@@ -32,43 +32,34 @@
 
 #include "cmtkLandmarkList.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-LandmarkList::Iterator
-LandmarkList::FindByName( const std::string& name )
-{
+LandmarkList::Iterator LandmarkList::FindByName(const std::string &name) {
   Self::Iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->m_Name == name ) 
-      {
+  while (it != this->end()) {
+    if (it->m_Name == name) {
       return it;
-      }
-    ++it;
     }
-  
+    ++it;
+  }
+
   return it;
 }
 
-LandmarkList::ConstIterator
-LandmarkList::FindByName( const std::string& name ) const
-{
+LandmarkList::ConstIterator LandmarkList::FindByName(
+    const std::string &name) const {
   Self::ConstIterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    if ( it->m_Name == name ) 
-      {
+  while (it != this->end()) {
+    if (it->m_Name == name) {
       return it;
-      }
-    ++it;
     }
-  
+    ++it;
+  }
+
   return it;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

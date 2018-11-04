@@ -35,25 +35,21 @@
 
 #include <cmtkconfig.h>
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <vector>
+#include <stdlib.h>
 #include <algorithm>
+#include <vector>
 
-#include <System/cmtkThreadSystemTypes.h>
 #include <System/cmtkThreadParameters.h>
+#include <System/cmtkThreadSystemTypes.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 /** Thread-related utility functions and global configuration variables.
  */
-namespace 
-Threads 
-{
+namespace Threads {
 
 /// Check environment variables that control thread creation.
 void CheckEnvironment();
@@ -65,7 +61,7 @@ bool Available();
 extern int GetNumberOfThreads();
 
 /** Set the number of threads to run in parallel.
- * If the given parameter is less than or equal to zero, the number of 
+ * If the given parameter is less than or equal to zero, the number of
  * threads is set to equal the number of currently available CPUs. This also
  * applies when this function is called without any parameter.
  *\param numberOfThreads Number of parallel threads to run. This is a
@@ -78,10 +74,11 @@ extern int GetNumberOfThreads();
  * can be created by a process on the current operating system.
  *\return The actual number of threads that the library was set to.
  */
-extern int SetNumberOfThreads( const int numberOfThreads, const bool force = false );
+extern int SetNumberOfThreads(const int numberOfThreads,
+                              const bool force = false);
 
 /// Helper function for setting number of threads from command line.
-extern void SetNumberOfThreads( const long int numberOfThreads );
+extern void SetNumberOfThreads(const long int numberOfThreads);
 
 /// Return number of threads allowed per process on this system.
 extern int GetMaxThreads();
@@ -101,7 +98,8 @@ extern int NumberOfThreads;
  *\param parameterSize Size in bytes of each thread parameter block in the
  * array pointed to by the previous parameter.
  */
-void RunThreads( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize );
+void RunThreads(ThreadFunction threadCall, const unsigned numberOfThreads,
+                void *const parameters, const size_t parameterSize);
 
 /** Generic thread scheduling function.
  * This function created a given number of parallel threads with
@@ -115,44 +113,37 @@ void RunThreads( ThreadFunction threadCall, const unsigned numberOfThreads, void
  * threads. This is a template type parameter, so arbitrary parameter blocks
  * can be used.
  */
-template<class T> void RunThreads( ThreadFunction threadCall, const unsigned numberOfThreads, T *const parameters )
-{
-  Threads::RunThreads( threadCall, numberOfThreads, parameters, sizeof( T ) );
+template <class T>
+void RunThreads(ThreadFunction threadCall, const unsigned numberOfThreads,
+                T *const parameters) {
+  Threads::RunThreads(threadCall, numberOfThreads, parameters, sizeof(T));
 }
 
 /** Compute stride for threaded loops.
- * This class computes stride and loop start and ends for threaded loops, based on
- * a trade-off between number of CPUs in the system and total loop iterations.
+ * This class computes stride and loop start and ends for threaded loops, based
+ * on a trade-off between number of CPUs in the system and total loop
+ * iterations.
  */
-class Stride
-{
-public:
+class Stride {
+ public:
   /// Constructor: compute stride based on 2 blocks per available CPU.
-  Stride( const size_t totalIterations )
-    : m_TotalIterations( totalIterations )
-  {
-    this->m_Stride = this->m_TotalIterations / (2 * cmtk::Threads::GetNumberOfProcessors() );
-    this->m_Blocks = ((this->m_TotalIterations-1) / this->m_Stride) + 1;
+  Stride(const size_t totalIterations) : m_TotalIterations(totalIterations) {
+    this->m_Stride =
+        this->m_TotalIterations / (2 * cmtk::Threads::GetNumberOfProcessors());
+    this->m_Blocks = ((this->m_TotalIterations - 1) / this->m_Stride) + 1;
   }
 
   /// Return number of blocks.
-  size_t NBlocks() const
-  {
-    return this->m_Blocks;
-  }
+  size_t NBlocks() const { return this->m_Blocks; }
 
   /// Loop "from" for a given block.
-  size_t From( const size_t blockIdx ) const
-  {
-    return blockIdx * this->m_Stride;
+  size_t From(const size_t blockIdx) const { return blockIdx * this->m_Stride; }
+
+  size_t To(const size_t blockIdx) const {
+    return std::min((1 + blockIdx) * this->m_Stride, this->m_TotalIterations);
   }
 
-  size_t To( const size_t blockIdx ) const
-  {
-    return std::min( (1+blockIdx) * this->m_Stride, this->m_TotalIterations );
-  }
-
-private:
+ private:
   /// Total number of loop iterations.
   size_t m_TotalIterations;
 
@@ -163,10 +154,10 @@ private:
   size_t m_Stride;
 };
 
-} // namespace Threads
+}  // namespace Threads
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkThreads_h_included_
+#endif  // #ifndef __cmtkThreads_h_included_

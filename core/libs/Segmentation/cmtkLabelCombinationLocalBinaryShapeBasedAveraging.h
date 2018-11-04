@@ -37,20 +37,18 @@
 
 #include <Segmentation/cmtkLabelCombinationLocalWeighting.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Segmentation */
 //@{
 
-/** Combination of binary segmentations by locally-weighted shape-based averaging.
- *\attention All labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
+/** Combination of binary segmentations by locally-weighted shape-based
+ *averaging. \attention All labels maps are treated as binary maps, i.e., all
+ *labels not equal to zero are considered equal.
  */
 class LabelCombinationLocalBinaryShapeBasedAveraging
-  : public LabelCombinationLocalWeighting
-{
-public:
+    : public LabelCombinationLocalWeighting {
+ public:
   /// This class.
   typedef LabelCombinationLocalBinaryShapeBasedAveraging Self;
 
@@ -64,23 +62,28 @@ public:
   typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalBinaryShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ), m_DetectLocalOutliers( false ) {}
+  LabelCombinationLocalBinaryShapeBasedAveraging(
+      const UniformVolume::SmartConstPtr targetImage)
+      : Superclass(targetImage), m_DetectLocalOutliers(false) {}
 
-  /// Set flag to detect local outliers at each pixel in the co-registered distance maps.
-  void SetDetectLocalOutliers( const bool detectOutliers = true )
-  {
+  /// Set flag to detect local outliers at each pixel in the co-registered
+  /// distance maps.
+  void SetDetectLocalOutliers(const bool detectOutliers = true) {
     this->m_DetectLocalOutliers = detectOutliers;
   }
-  
-  /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
-  void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
+
+  /// Add an atlas (pair of reformatted, target-matched intensity image and
+  /// label map).
+  void AddAtlas(const UniformVolume::SmartConstPtr image,
+                const UniformVolume::SmartConstPtr atlas);
 
   /// Get resulting combined segmentation.
-  virtual TypedArray::SmartPtr GetResult() const;  
+  virtual TypedArray::SmartPtr GetResult() const;
 
-private:
+ private:
   /// Compute result for a region.
-  void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
+  void ComputeResultForRegion(const Self::TargetRegionType &region,
+                              TypedArray &result) const;
 
   /// Signed distance maps for the atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasDMaps;
@@ -88,17 +91,17 @@ private:
   /// Flag for outlier detection.
   bool m_DetectLocalOutliers;
 
-protected:
-  /** Delete atlas with given index. 
+ protected:
+  /** Delete atlas with given index.
    * Call inherited member, then delete distance map.
    */
-  virtual void DeleteAtlas( const size_t i )
-  {
-    this->Superclass::DeleteAtlas( i );
-    this->m_AtlasDMaps.erase( this->m_AtlasDMaps.begin() + i );
+  virtual void DeleteAtlas(const size_t i) {
+    this->Superclass::DeleteAtlas(i);
+    this->m_AtlasDMaps.erase(this->m_AtlasDMaps.begin() + i);
   }
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationLocalBinaryShapeBasedAveraging_h_included_
+#endif  // #ifndef
+        // __cmtkLabelCombinationLocalBinaryShapeBasedAveraging_h_included_

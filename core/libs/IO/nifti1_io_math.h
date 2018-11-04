@@ -6,14 +6,14 @@
 #ifndef _NIFTI_IO_HEADER_
 #define _NIFTI_IO_HEADER_
 
+#include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
 
 /*=================*/
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 /*=================*/
@@ -46,48 +46,49 @@ extern "C" {
       Modified and added many routines for I/O.
 */
 
-#undef  ASSIF                                 /* assign v to *p, if possible */
-#define ASSIF(p,v) if( (p)!=NULL ) *(p) = (v)
+#undef ASSIF /* assign v to *p, if possible */
+#define ASSIF(p, v) \
+  if ((p) != NULL) *(p) = (v)
 
 /********************** Some sample data structures **************************/
 
-typedef struct {                   /** 4x4 matrix struct **/
-  double m[4][4] ;
-} mat44 ;
+typedef struct { /** 4x4 matrix struct **/
+  double m[4][4];
+} mat44;
 
-typedef struct {                   /** 3x3 matrix struct **/
-  double m[3][3] ;
-} mat33 ;
-
+typedef struct { /** 3x3 matrix struct **/
+  double m[3][3];
+} mat33;
 
 /*****************************************************************************/
 /*--------------- Prototypes of functions defined in this file --------------*/
 
-mat44 nifti_mat44_inverse( mat44 R ) ;
+mat44 nifti_mat44_inverse(mat44 R);
 
-mat33 nifti_mat33_inverse( mat33 R ) ;
-mat33 nifti_mat33_polar  ( mat33 A ) ;
-double nifti_mat33_rownorm( mat33 A ) ;
-double nifti_mat33_colnorm( mat33 A ) ;
-double nifti_mat33_determ ( mat33 R ) ;
-mat33 nifti_mat33_mul    ( mat33 A , mat33 B ) ;
+mat33 nifti_mat33_inverse(mat33 R);
+mat33 nifti_mat33_polar(mat33 A);
+double nifti_mat33_rownorm(mat33 A);
+double nifti_mat33_colnorm(mat33 A);
+double nifti_mat33_determ(mat33 R);
+mat33 nifti_mat33_mul(mat33 A, mat33 B);
 
-void nifti_mat44_to_quatern( mat44 R ,
-                             float *qb, float *qc, float *qd,
-                             float *qx, float *qy, float *qz,
-                             float *dx, float *dy, float *dz, float *qfac ) ;
+void nifti_mat44_to_quatern(mat44 R, float *qb, float *qc, float *qd, float *qx,
+                            float *qy, float *qz, float *dx, float *dy,
+                            float *dz, float *qfac);
 
-mat44 nifti_quatern_to_mat44( const float qb, const float qc, const float qd,
-                              const float qx, const float qy, const float qz,
-                              const float dx, const float dy, const float dz, const float qfac );
+mat44 nifti_quatern_to_mat44(const float qb, const float qc, const float qd,
+                             const float qx, const float qy, const float qz,
+                             const float dx, const float dy, const float dz,
+                             const float qfac);
 
-mat44 nifti_make_orthog_mat44( const double r11, const double r12, const double r13 ,
-                               const double r21, const double r22, const double r23 ,
-                               const double r31, const double r32, const double r33  ) ;
-
+mat44 nifti_make_orthog_mat44(const double r11, const double r12,
+                              const double r13, const double r21,
+                              const double r22, const double r23,
+                              const double r31, const double r32,
+                              const double r33);
 
 /*=================*/
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 /*=================*/

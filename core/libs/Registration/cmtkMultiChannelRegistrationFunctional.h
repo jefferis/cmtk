@@ -39,26 +39,24 @@
 
 #include <System/cmtkSmartPtr.h>
 
+#include <Base/cmtkLinearInterpolator.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumeInterpolator.h>
-#include <Base/cmtkLinearInterpolator.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for multi-channel registration functionals. */
-template<class TInterpolator = UniformVolumeInterpolator<Interpolators::Linear> >
+template <class TInterpolator =
+              UniformVolumeInterpolator<Interpolators::Linear>>
 class MultiChannelRegistrationFunctional :
-  /** Inherit non-template implementation and interface. */
-  public MultiChannelRegistrationFunctionalBase
-{
-public:
+    /** Inherit non-template implementation and interface. */
+    public MultiChannelRegistrationFunctionalBase {
+ public:
   /** This class. */
   typedef MultiChannelRegistrationFunctional<TInterpolator> Self;
 
@@ -69,17 +67,17 @@ public:
   typedef MultiChannelRegistrationFunctionalBase Superclass;
 
   /** Add floating channel. */
-  virtual void AddFloatingChannel( UniformVolume::SmartPtr& channel );
+  virtual void AddFloatingChannel(UniformVolume::SmartPtr &channel);
 
-protected:
+ protected:
   /// Interpolators for the floating image channels.
   std::vector<typename TInterpolator::SmartPtr> m_FloatingInterpolators;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkMultiChannelRegistrationFunctional.txx"
 
-#endif // #ifndef __cmtkMultiChannelRegistrationFunctional_h_included_
+#endif  // #ifndef __cmtkMultiChannelRegistrationFunctional_h_included_

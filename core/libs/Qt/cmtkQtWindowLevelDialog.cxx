@@ -34,35 +34,31 @@
 
 #include <Qt/cmtkQtIcons.h>
 
-#include <qlayout.h>
 #include <qboxlayout.h>
+#include <qlayout.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Qt */
 //@{
 
-QtWindowLevelDialog::QtWindowLevelDialog
-( QWidget* parent, bool modal, Qt::WFlags f )
-  : QDialog( parent, f )
-{
-  this->setModal( modal );
-  this->setWindowIcon( QtIcons::WindowIcon() );
-  this->setWindowTitle( "Window/Level Control" );
+QtWindowLevelDialog::QtWindowLevelDialog(QWidget *parent, bool modal,
+                                         Qt::WindowFlags f)
+    : QDialog(parent, f) {
+  this->setModal(modal);
+  this->setWindowIcon(QtIcons::WindowIcon());
+  this->setWindowTitle("Window/Level Control");
 
-  QBoxLayout* layout = new QVBoxLayout( this );
+  QBoxLayout *layout = new QVBoxLayout(this);
 
-  Controls = new QtWindowLevelControls( this );
-  QObject::connect( Controls, SIGNAL( colormap( Study::SmartPtr& ) ), SIGNAL( colormapChanged( Study::SmartPtr& ) ) );
-  layout->addWidget( Controls );
+  Controls = new QtWindowLevelControls(this);
+  QObject::connect(Controls, SIGNAL(colormap(Study::SmartPtr &)),
+                   SIGNAL(colormapChanged(Study::SmartPtr &)));
+  layout->addWidget(Controls);
 }
 
-void
-QtWindowLevelDialog::slotSetStudy( Study::SmartPtr& study )
-{
-  Controls->slotSetStudy( study );
+void QtWindowLevelDialog::slotSetStudy(Study::SmartPtr &study) {
+  Controls->slotSetStudy(study);
 }
 
-} // namespace cmtk
+}  // namespace cmtk

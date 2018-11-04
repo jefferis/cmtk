@@ -40,24 +40,25 @@
 
 #include <Base/cmtkAffineXform.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Write affine transformation object.
-ClassStreamOutput& operator << ( ClassStreamOutput& stream, const AffineXform& affineXform );
+ClassStreamOutput &operator<<(ClassStreamOutput &stream,
+                              const AffineXform &affineXform);
 
 /// Read affine transformation.
-ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineXform::SmartPtr& affineXform );
+ClassStreamInput &operator>>(ClassStreamInput &stream,
+                             AffineXform::SmartPtr &affineXform);
 
 /// Read affine transformation.
-ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineXform& affineXform );
+ClassStreamInput &operator>>(ClassStreamInput &stream,
+                             AffineXform &affineXform);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkClassStreamAffineXform_h_included_
+#endif  // #ifndef __cmtkClassStreamAffineXform_h_included_

@@ -33,20 +33,16 @@
 #include <Base/cmtkHistogram.h>
 #include <Unstable/cmtkTypedArrayNoiseEstimatorBrummer.h>
 
-namespace 
-cmtk
-{
+namespace cmtk {
 
 /** Estimate noise level in data stored in a TypedArray.
  * Estimate Rician noise variance using Chang's maximum likelihood method.
  *\author Mike Hasak
  */
-class
-TypedArrayNoiseEstimatorMaximumLikelihood :
+class TypedArrayNoiseEstimatorMaximumLikelihood :
     /// Inherit basic fields and helper functions
-    protected TypedArrayNoiseEstimatorBrummer
-{
-public:
+    protected TypedArrayNoiseEstimatorBrummer {
+ public:
   /// This class.
   typedef TypedArrayNoiseEstimatorMaximumLikelihood Self;
 
@@ -54,7 +50,8 @@ public:
   typedef TypedArrayNoiseEstimatorBrummer Superclass;
 
   /// Constructor.
-  TypedArrayNoiseEstimatorMaximumLikelihood( const TypedArray* data, const size_t histogramBins = 255 );
+  TypedArrayNoiseEstimatorMaximumLikelihood(const TypedArray *data,
+                                            const size_t histogramBins = 255);
 };
 
-} // namespace cmtk
+}  // namespace cmtk

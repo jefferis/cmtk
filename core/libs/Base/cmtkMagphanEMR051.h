@@ -36,17 +36,15 @@
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-/// Description of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI Phantom).
-class MagphanEMR051
-{
-public:
+/// Description of the Magphan EMR051 structural imaging phantom (a.k.a. ADNI
+/// Phantom).
+class MagphanEMR051 {
+ public:
   /// This class.
   typedef MagphanEMR051 Self;
 
@@ -54,8 +52,7 @@ public:
   static const unsigned int NumberOfSpheres = 165;
 
   /// Enumeration type for sphere colors.
-  typedef enum
-  {
+  typedef enum {
     /// No color.
     SPHERE_COLOR_NONE,
     /// Green sphere.
@@ -67,66 +64,66 @@ public:
     /// Orange sphere.
     SPHERE_COLOR_ORANGE
   } SphereColorType;
-  
+
   /// Data structure for phantom sphere location table.
-  typedef struct __SphereEntryType
-  {
+  typedef struct __SphereEntryType {
     /// Sphere name (this has been "arbitrarily" assigned for CMTK).
-    const char* m_Name;
+    const char *m_Name;
 
     /// Sphere diameter in milimeters.
     Types::Coordinate m_Diameter;
-    
-    /// Sphere center location in "RAS" coordinate. Phantom center is the coordinate space origin.
+
+    /// Sphere center location in "RAS" coordinate. Phantom center is the
+    /// coordinate space origin.
     Types::Coordinate m_CenterLocation[3];
-    
+
     /// Grams of Copper Sulfate Penta Hydrate per liter
     double m_GramsPerLiterCSPH;
-    
+
     /** Estimated imaging T1.
-     * For the 3.0cm spheres, this value is given in the phantom manual. For the remaining
-     * spheres, we derive it from an exponential fit as T1=exp(-1.83364*CSPH+7.18582).
+     * For the 3.0cm spheres, this value is given in the phantom manual. For the
+     * remaining spheres, we derive it from an exponential fit as
+     * T1=exp(-1.83364*CSPH+7.18582).
      *
-     * We store only integer values because no fractional values are given in the phantom manual.
+     * We store only integer values because no fractional values are given in
+     * the phantom manual.
      */
     int m_EstimatedT1;
-    
+
     /// Sphere color.
     SphereColorType m_Color;
   } SphereEntryType;
-  
+
   /** Table of phantom sphere locations and properties.
-   * Measurements were derived manually from the following document: http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf
-   * They can, therefore, be used without reference to ADNI publications.
+   * Measurements were derived manually from the following document:
+   * http://www.phantomlab.com/library/pdf/magphan_adni_manual.pdf They can,
+   * therefore, be used without reference to ADNI publications.
    */
   static const Self::SphereEntryType SphereTable[Self::NumberOfSpheres];
 
   /// Convenience access function - get sphere radius.
-  static Types::Coordinate SphereRadius( const size_t i )
-  {
+  static Types::Coordinate SphereRadius(const size_t i) {
     return 0.5 * Self::SphereTable[i].m_Diameter;
   }
 
   /// Convenience access function - get sphere radius.
-  static const char* SphereName( const size_t i )
-  {
+  static const char *SphereName(const size_t i) {
     return Self::SphereTable[i].m_Name;
   }
 
   /// Convenience access function - get sphere center as 3D vector.
-  static FixedVector<3,Types::Coordinate> SphereCenter( const size_t i )
-  {
-    return FixedVector<3,Types::Coordinate>::FromPointer( Self::SphereTable[i].m_CenterLocation );
+  static FixedVector<3, Types::Coordinate> SphereCenter(const size_t i) {
+    return FixedVector<3, Types::Coordinate>::FromPointer(
+        Self::SphereTable[i].m_CenterLocation);
   }
 
   /// Create a simulated T1-weighted image of the phantom spheres.
-  static UniformVolume::SmartPtr GetPhantomImage( const Types::Coordinate resolution = 1.0 /*!< Pixel size of the output image; number of pixels is determined by this and the FOV needed to cover the entire phantom. */, 
-						  const bool labels = false /*!< If this is set, each sphere is drawn with its intensity equal to the index in the marker table; otherwise, estimated T1 is used. */ );
-  
+  static UniformVolume::SmartPtr GetPhantomImage(const Types::Coordinate resolution = 1.0 /*!< Pixel size of the output image; number of pixels is determined by this and the FOV needed to cover the entire phantom. */, const bool labels =
+                                                                                                                                                                                                                              false /*!< If this is set, each sphere is drawn with its intensity equal to the index in the marker table; otherwise, estimated T1 is used. */);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkMagphanEMR051_h_included_
+#endif  // #ifndef __cmtkMagphanEMR051_h_included_

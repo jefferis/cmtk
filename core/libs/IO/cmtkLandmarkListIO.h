@@ -40,9 +40,10 @@
 #include <iostream>
 
 /// Landmark list output operator
-std::ostream& operator<<( std::ostream& stream, const cmtk::LandmarkList& lmList );
+std::ostream &operator<<(std::ostream &stream,
+                         const cmtk::LandmarkList &lmList);
 
 /// Landmark list input operator.
-std::istream& operator>>( std::istream& stream, cmtk::LandmarkList& lmList );
+std::istream &operator>>(std::istream &stream, cmtk::LandmarkList &lmList);
 
-#endif // #ifndef __cmtkLandmarkListIO_h_included_
+#endif  // #ifndef __cmtkLandmarkListIO_h_included_

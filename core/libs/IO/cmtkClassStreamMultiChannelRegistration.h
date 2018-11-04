@@ -39,29 +39,39 @@
 #include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 #include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
 
-namespace 
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
-/** Write file names and transformations from affine multi-channel registration functional. */
-template<class TMetricFunctionalType>
-ClassStreamOutput& operator << ( ClassStreamOutput& stream, const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+/** Write file names and transformations from affine multi-channel registration
+ * functional. */
+template <class TMetricFunctionalType>
+ClassStreamOutput &operator<<(
+    ClassStreamOutput &stream,
+    const AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>
+        &functional);
 
-/** Read file names and transformations from archive to multi-channel affine registration functional. */
-template<class TMetricFunctionalType>
-ClassStreamInput& operator >> ( ClassStreamInput& stream, AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+/** Read file names and transformations from archive to multi-channel affine
+ * registration functional. */
+template <class TMetricFunctionalType>
+ClassStreamInput &operator>>(
+    ClassStreamInput &stream,
+    AffineMultiChannelRegistrationFunctional<TMetricFunctionalType>
+        &functional);
 
-/** Write file names and transformations from spline warp multi-channel registration functional. */
-template<class TMetricFunctionalType>
-ClassStreamOutput& operator << ( ClassStreamOutput& stream, const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>& functional );
+/** Write file names and transformations from spline warp multi-channel
+ * registration functional. */
+template <class TMetricFunctionalType>
+ClassStreamOutput &operator<<(
+    ClassStreamOutput &stream,
+    const SplineWarpMultiChannelRegistrationFunctional<TMetricFunctionalType>
+        &functional);
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkClassStreamMultiChannelRegistration.txx"
 
-#endif // #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_
+#endif  // #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_

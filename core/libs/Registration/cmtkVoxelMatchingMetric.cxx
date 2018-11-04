@@ -34,32 +34,31 @@
 
 #include <Base/cmtkJointHistogram.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
-template<class T,ScalarDataType DT,Interpolators::InterpolationEnum I>
-VoxelMatchingMetric<T,DT,I>::VoxelMatchingMetric
-( const UniformVolume* refVolume, const UniformVolume* fltVolume, const bool initData )
-{
-  this->DataX.PrecomputeIncrements( refVolume );
-  this->DataY.PrecomputeIncrements( fltVolume );
+template <class T, ScalarDataType DT, Interpolators::InterpolationEnum I>
+VoxelMatchingMetric<T, DT, I>::VoxelMatchingMetric(
+    const UniformVolume *refVolume, const UniformVolume *fltVolume,
+    const bool initData) {
+  this->DataX.PrecomputeIncrements(refVolume);
+  this->DataY.PrecomputeIncrements(fltVolume);
 
-  if ( initData ) 
-    {
-    this->DataX.Init( refVolume );
-    this->DataY.Init( fltVolume );
-    }
+  if (initData) {
+    this->DataX.Init(refVolume);
+    this->DataY.Init(fltVolume);
+  }
 }
 
 // instantiate necessary templates.
-template class VoxelMatchingMetric<short,TYPE_SHORT,Interpolators::LINEAR>;
-template class VoxelMatchingMetric<byte,TYPE_BYTE,Interpolators::LINEAR>;
+template class VoxelMatchingMetric<short, TYPE_SHORT, Interpolators::LINEAR>;
+template class VoxelMatchingMetric<byte, TYPE_BYTE, Interpolators::LINEAR>;
 
-template class VoxelMatchingMetric<short,TYPE_SHORT,Interpolators::NEAREST_NEIGHBOR>;
-template class VoxelMatchingMetric<byte,TYPE_BYTE,Interpolators::NEAREST_NEIGHBOR>;
+template class VoxelMatchingMetric<short, TYPE_SHORT,
+                                   Interpolators::NEAREST_NEIGHBOR>;
+template class VoxelMatchingMetric<byte, TYPE_BYTE,
+                                   Interpolators::NEAREST_NEIGHBOR>;
 
-} // namespace cmtk
+}  // namespace cmtk

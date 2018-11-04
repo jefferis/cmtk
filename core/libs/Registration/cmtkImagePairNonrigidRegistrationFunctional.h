@@ -38,21 +38,19 @@
 #include <Registration/cmtkImagePairRegistrationFunctional.h>
 #include <Registration/cmtkImagePairSimilarityMeasure.h>
 
-#include <System/cmtkThreads.h>
 #include <System/cmtkThreadPool.h>
+#include <System/cmtkThreads.h>
 
-#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkJointHistogram.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 #ifdef HAVE_IEEEFP_H
-#  include <ieeefp.h>
+#include <ieeefp.h>
 #endif
 
 #include <math.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -61,11 +59,10 @@ cmtk
  * This class holds all members that are not related to the effective metric
  * and therefore need not be present in the derived template class.
  */
-class ImagePairNonrigidRegistrationFunctional : 
-  /// Inherit basic image pair registration functional class.
-  public ImagePairRegistrationFunctional 
-{
-public:
+class ImagePairNonrigidRegistrationFunctional :
+    /// Inherit basic image pair registration functional class.
+    public ImagePairRegistrationFunctional {
+ public:
   /// This class.
   typedef ImagePairNonrigidRegistrationFunctional Self;
 
@@ -76,14 +73,14 @@ public:
   typedef ImagePairRegistrationFunctional Superclass;
 
   /// Virtual destructor.
-  virtual ~ImagePairNonrigidRegistrationFunctional ();
+  virtual ~ImagePairNonrigidRegistrationFunctional();
 
   /** Set active and passive warp parameters adaptively.
    * If this flag is set, the functional will adaptively determine active and
-   * passive parameters of the warp transformation prior to gradient 
+   * passive parameters of the warp transformation prior to gradient
    * computation.
    */
-  cmtkGetSetMacroDefault(bool,AdaptiveFixParameters,true);
+  cmtkGetSetMacroDefault(bool, AdaptiveFixParameters, true);
 
   /** Set threshold factor for selecting passive warp parameters adaptively.
    * If the flag AdaptiveFixParameters is set, this value determines the
@@ -92,7 +89,7 @@ public:
    * below this factor times sum of min and max region entropy. The default
    * value is 0.5.
    */
-  cmtkGetSetMacro(double,AdaptiveFixThreshFactor);
+  cmtkGetSetMacro(double, AdaptiveFixThreshFactor);
 
   /** Active coordinate directions.
    */
@@ -101,13 +98,13 @@ public:
   /** Weight of the Jacobian constraint relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed.
    */
-  cmtkGetSetMacroDefault(double,JacobianConstraintWeight,0);
+  cmtkGetSetMacroDefault(double, JacobianConstraintWeight, 0);
 
   /** Weight of the grid energy relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed. If
    * equal to one, only the grid energy will be computed.
    */
-  cmtkGetSetMacroDefault(double,GridEnergyWeight,0);
+  cmtkGetSetMacroDefault(double, GridEnergyWeight, 0);
 
   /** Set Warp transformation.
    * This virtual function will be overridden by the derived classes that add
@@ -115,51 +112,50 @@ public:
    * common access point to update the warp transformation after construction
    * of the functional.
    */
-  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warp ) = 0;
+  virtual void SetWarpXform(SplineWarpXform::SmartPtr &warp) = 0;
 
   /// Set inverse transformation.
-  void SetInverseTransformation( SplineWarpXform::SmartPtr& inverseTransformation ) 
-  {
+  void SetInverseTransformation(
+      SplineWarpXform::SmartPtr &inverseTransformation) {
     this->m_InverseTransformation = inverseTransformation;
   }
 
   /// Set inverse consistency weight
-  void SetInverseConsistencyWeight( const double inverseConsistencyWeight ) 
-  {
+  void SetInverseConsistencyWeight(const double inverseConsistencyWeight) {
     this->m_InverseConsistencyWeight = inverseConsistencyWeight;
   }
 
   /// Get parameter stepping in milimeters.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
-  {
-    return this->m_Warp->GetParamStep( idx, this->m_FloatingSize, mmStep );
+  virtual Types::Coordinate GetParamStep(
+      const size_t idx, const Types::Coordinate mmStep = 1) const {
+    return this->m_Warp->GetParamStep(idx, this->m_FloatingSize, mmStep);
   }
 
   /// Return the transformation's parameter vector dimension.
-  virtual size_t ParamVectorDim() const 
-  {
+  virtual size_t ParamVectorDim() const {
     return this->m_Warp->ParamVectorDim();
   }
 
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const 
-  {
+  virtual size_t VariableParamVectorDim() const {
     return this->m_Warp->VariableParamVectorDim();
   }
 
   /// Return parameter vector.
-  virtual void GetParamVector ( CoordinateVector& v ) 
-  {
-    this->m_Warp->GetParamVector( v );
+  virtual void GetParamVector(CoordinateVector &v) {
+    this->m_Warp->GetParamVector(v);
   }
 
   /// Constructor function.
-  static ImagePairNonrigidRegistrationFunctional* Create
-  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
-  
-protected:
+  static ImagePairNonrigidRegistrationFunctional *Create(
+      const int metric, UniformVolume::SmartPtr &refVolume,
+      UniformVolume::SmartPtr &fltVolume,
+      const Interpolators::InterpolationEnum interpolation);
+
+ protected:
   /// Constructor.
-  ImagePairNonrigidRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating );
+  ImagePairNonrigidRegistrationFunctional(UniformVolume::SmartPtr &reference,
+                                          UniformVolume::SmartPtr &floating);
 
   /// Array of warp transformation objects for the parallel threads.
   std::vector<SplineWarpXform::SmartPtr> m_ThreadWarp;
@@ -182,7 +178,7 @@ protected:
 
   /// Shortcut variables for x, y, z dimension of the reference image.
   DataGrid::IndexType::ValueType m_DimsX, m_DimsY, m_DimsZ;
-  
+
   /// Shorcut variables for x and y dimensions of the floating image.
   DataGrid::IndexType::ValueType m_FltDimsX, m_FltDimsY;
 
@@ -196,41 +192,40 @@ protected:
   double m_InverseConsistencyWeight;
 
   /// Return weighted combination of voxel similarity and grid energy.
-  Self::ReturnType WeightedTotal( const Self::ReturnType metric, const SplineWarpXform& warp ) const 
-  {
+  Self::ReturnType WeightedTotal(const Self::ReturnType metric,
+                                 const SplineWarpXform &warp) const {
     double result = metric;
-    if ( this->m_JacobianConstraintWeight > 0 ) 
-      {
+    if (this->m_JacobianConstraintWeight > 0) {
       result -= this->m_JacobianConstraintWeight * warp.GetJacobianConstraint();
-      } 
-    
-    if ( this->m_GridEnergyWeight > 0 ) 
-      {
-      result -= this->m_GridEnergyWeight * warp.GetGridEnergy();
-      }
-    
-    if ( !finite( result ) ) 
-      return -FLT_MAX;
-    
-    if ( this->m_LandmarkPairs ) 
-      {
-      result -= this->m_LandmarkErrorWeight * warp.GetLandmarksMSD( *(this->m_LandmarkPairs) );
-      }
+    }
 
-    if ( this->m_InverseTransformation ) 
-      {
-      result -= this->m_InverseConsistencyWeight * warp.GetInverseConsistencyError( this->m_InverseTransformation, this->m_ReferenceGrid );
-      }
-    
-    return static_cast<Self::ReturnType>( result );
+    if (this->m_GridEnergyWeight > 0) {
+      result -= this->m_GridEnergyWeight * warp.GetGridEnergy();
+    }
+
+    if (!finite(result)) return -FLT_MAX;
+
+    if (this->m_LandmarkPairs) {
+      result -= this->m_LandmarkErrorWeight *
+                warp.GetLandmarksMSD(*(this->m_LandmarkPairs));
+    }
+
+    if (this->m_InverseTransformation) {
+      result -= this->m_InverseConsistencyWeight *
+                warp.GetInverseConsistencyError(this->m_InverseTransformation,
+                                                this->m_ReferenceGrid);
+    }
+
+    return static_cast<Self::ReturnType>(result);
   }
-  
+
   /// Return weighted combination of similarity and grid energy derivatives.
-  void WeightedDerivative( double& lower, double& upper, SplineWarpXform& warp, const int param, const Types::Coordinate step ) const;
+  void WeightedDerivative(double &lower, double &upper, SplineWarpXform &warp,
+                          const int param, const Types::Coordinate step) const;
 
   /** Regularize the deformation.
    */
-  cmtkGetSetMacroDefault(bool,Regularize,false);
+  cmtkGetSetMacroDefault(bool, Regularize, false);
 
   /// Dimension of warp parameter vector
   size_t Dim;
@@ -243,7 +238,7 @@ protected:
   std::vector<Types::Coordinate> m_StepScaleVector;
 
   /** Volume of influence table.
-   * This array holds the precomputed volumes of influence for all 
+   * This array holds the precomputed volumes of influence for all
    * transformation parameters. Six successive numbers per parameter define the
    * voxel range with respect to the reference colume grid that is affected by
    * the respective parameter.
@@ -259,6 +254,6 @@ protected:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // __cmtkImagePairNonrigidRegistrationFunctional_h_included_
+#endif  // __cmtkImagePairNonrigidRegistrationFunctional_h_included_

@@ -38,19 +38,16 @@
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkMatrix3x3.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-/** Fit affine transformation to series of concatenated, possibly numerically inverted, transformations.
+/** Fit affine transformation to series of concatenated, possibly numerically
+ * inverted, transformations.
  */
-class FitAffineToXformList
-  : protected FitToXformListBase
-{
-public:
+class FitAffineToXformList : protected FitToXformListBase {
+ public:
   /// This class.
   typedef FitAffineToXformList Self;
 
@@ -64,22 +61,36 @@ public:
 
   /// Fit affine transformation.
   AffineXform::SmartPtr Fit( const bool fitRigid = false /*!< If this flag is set, a rigid transformation is fitted, otherwise a full affine transformation */ );
-  
-private:
-  /** Compute rotation, scale, and shear matrix by pseudinverse using previously computed centroid translation.
-   * We are using simple pseudoinverse rather than procrustes because we do not care whether
-   * the result is rigid (det = 1). In fact, if the underlying transformation is not
-   * rigid but full affine, then that is exactly what we want the output to be.
+
+ private:
+  /** Compute rotation, scale, and shear matrix by pseudinverse using previously
+   * computed centroid translation. We are using simple pseudoinverse rather
+   * than procrustes because we do not care whether the result is rigid (det =
+   * 1). In fact, if the underlying transformation is not rigid but full affine,
+   * then that is exactly what we want the output to be.
    */
-  Matrix3x3<Types::Coordinate> GetMatrixAffinePseudoinverse( const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
-							     const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
-  
-  /** Compute rotation matrix by SVD using previously computed centroid translation.
+  Matrix3x3<Types::Coordinate>
+  GetMatrixAffinePseudoinverse(const cmtk::FixedVector<3,
+                                                       cmtk::Types::Coordinate>
+                                   &cFrom /*!< Centroid in "from" space
+                                             previously computed by GetCentroids
+                                             member function.*/
+                               ,
+                               const cmtk::
+                                   FixedVector<3,
+                                               cmtk::Types::Coordinate> &cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/);
+
+  /** Compute rotation matrix by SVD using previously computed centroid
+   * translation.
    */
-  Matrix3x3<Types::Coordinate> GetMatrixRigidSVD( const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
-						  const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
+  Matrix3x3<Types::Coordinate>
+  GetMatrixRigidSVD(const cmtk::FixedVector<3, cmtk::Types::Coordinate>
+                        &cFrom /*!< Centroid in "from" space previously computed
+                                  by GetCentroids member function.*/
+                    ,
+                    const cmtk::FixedVector<3, cmtk::Types::Coordinate> &cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/);
 };
 
-} // namespace
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkFitAffineToXformList_h_included_
+#endif  // #ifndef __cmtkFitAffineToXformList_h_included_

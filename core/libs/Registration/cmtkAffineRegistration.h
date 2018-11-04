@@ -37,34 +37,31 @@
 
 #include <Registration/cmtkVoxelRegistration.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
 
 /** Class for affine multi-resolution voxel registration.
  */
-class AffineRegistration : 
-  /// Inherit general voxel registration interface and functionality.
-  public VoxelRegistration 
-{
-protected:
+class AffineRegistration :
+    /// Inherit general voxel registration interface and functionality.
+    public VoxelRegistration {
+ protected:
   /** Flag for initial alignment of volume centers.
    */
-  cmtkGetSetMacroDefault(bool,InitialAlignCenters,true);
-  
+  cmtkGetSetMacroDefault(bool, InitialAlignCenters, true);
+
   /// Flag whether to adjust floating image histogram to match reference image.
-  cmtkGetSetMacro(bool,MatchFltToRefHistogram);
+  cmtkGetSetMacro(bool, MatchFltToRefHistogram);
 
   /// If set, this flag prevent automatic switching of model and reference.
-  cmtkGetSetMacro(bool,NoSwitch);
+  cmtkGetSetMacro(bool, NoSwitch);
 
   /** Numbers of degrees of freedom.
    * This list contains the numbers of degrees of freedom for every resolution
@@ -85,18 +82,20 @@ protected:
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *\return Overriding functions should return a value other than 
+   *\return Overriding functions should return a value other than
    * CALLBACK_OK if the registration is to be interrupted.
    */
-  virtual CallbackResult InitRegistration ();
+  virtual CallbackResult InitRegistration();
 
   /** Enter a resolution level.
    * This function mainly determines the next effective number of degrees of
    * freedom of the optimization. It sets the transformation object accordingly
-   * and writes a comment to the "Callback" object. Afterwards, the inherited 
+   * and writes a comment to the "Callback" object. Afterwards, the inherited
    * EnterResolution() function is called.
    */
-  virtual void EnterResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total );
+  virtual void EnterResolution(CoordinateVector::SmartPtr &v,
+                               Functional::SmartPtr &f, const int level,
+                               const int total);
 
   /** Finish resolution level.
    * This function determines whether there are any remaining numbers in the
@@ -105,36 +104,36 @@ protected:
    * With no number left, 1 is returned indicating that the current level has
    * been completed.
    */
-  virtual int DoneResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total );
+  virtual int DoneResolution(CoordinateVector::SmartPtr &v,
+                             Functional::SmartPtr &f, const int level,
+                             const int total);
 
-public:
-  /** Default constructor. 
+ public:
+  /** Default constructor.
    */
-  AffineRegistration ();
+  AffineRegistration();
 
   /** Destructor.
    */
-  virtual ~AffineRegistration ();
+  virtual ~AffineRegistration();
 
   /// Return final transformation.
   AffineXform::SmartPtr GetTransformation() const;
-  
+
   /// Get reformatted floating image.
-  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
+  const UniformVolume::SmartPtr GetReformattedFloatingImage(
+      Interpolators::InterpolationEnum interpolator =
+          Interpolators::LINEAR) const;
 
   /// Add a number to the general list of numbers of DOFs.
-  void AddNumberDOFs( const int numberDOFs ) 
-  {
-    NumberDOFs.push_back( numberDOFs );
-  }
-  
+  void AddNumberDOFs(const int numberDOFs) { NumberDOFs.push_back(numberDOFs); }
+
   /// Add a number to the list of numbers of DOFs for the last level.
-  void AddNumberDOFsFinal( const int numberDOFs ) 
-  {
-    NumberDOFsFinal.push_back( numberDOFs );
+  void AddNumberDOFsFinal(const int numberDOFs) {
+    NumberDOFsFinal.push_back(numberDOFs);
   }
 
-private:
+ private:
   /// Convenience definition.
   typedef VoxelRegistration Superclass;
 
@@ -144,6 +143,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // __cmtkAffineRegistration_h_included_
+#endif  // __cmtkAffineRegistration_h_included_

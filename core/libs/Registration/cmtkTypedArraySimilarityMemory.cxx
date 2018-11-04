@@ -31,108 +31,107 @@
 */
 #include "cmtkTypedArraySimilarityMemory.h"
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
-const Types::DataItemRange
-TypedArraySimilarityMemory::GetRangeX
-( const TypedArray* array, const size_t numBins )
-{
-  if ( ! this->ValidX )
-    this->NumberBinsX = numBins;
+const Types::DataItemRange TypedArraySimilarityMemory::GetRangeX(
+    const TypedArray *array, const size_t numBins) {
+  if (!this->ValidX) this->NumberBinsX = numBins;
 
-  if ( ! this->ValidX || this->RepeatCheck ) 
-    {
+  if (!this->ValidX || this->RepeatCheck) {
     const Types::DataItemRange range = array->GetRange();
-    if ( ! this->ValidX ) 
-      {
+    if (!this->ValidX) {
       this->RangeX.m_LowerBound = range.m_LowerBound;
       this->RangeX.m_UpperBound = range.m_UpperBound;
       this->ValidX = true;
-      } 
-    else
-      if ( (range.m_LowerBound < this->RangeX.m_LowerBound) || (range.m_UpperBound > this->RangeX.m_UpperBound ) ) 
-	{
-	Types::DataItem binDelta = (this->RangeX.m_UpperBound - this->RangeX.m_LowerBound) / (this->NumberBinsX - 1);
-	
-	if ( range.m_LowerBound < this->RangeX.m_LowerBound ) 
-	  {
-	  const size_t addBins = 1 + static_cast<size_t>( (this->RangeX.m_LowerBound - range.m_LowerBound) / binDelta);
-	  this->RangeX.m_LowerBound -= ( binDelta * addBins );
-	  this->NumberBinsY += addBins;
-	  }
-	
-	if ( range.m_UpperBound > this->RangeX.m_UpperBound ) 
-	  {
-	  const size_t addBins = 1 + static_cast<size_t>( (range.m_UpperBound - this->RangeX.m_UpperBound) / binDelta);
-	  this->RangeX.m_UpperBound += ( binDelta * addBins );
-	  this->NumberBinsY += addBins;
-	  }
-	}
+    } else if ((range.m_LowerBound < this->RangeX.m_LowerBound) ||
+               (range.m_UpperBound > this->RangeX.m_UpperBound)) {
+      Types::DataItem binDelta =
+          (this->RangeX.m_UpperBound - this->RangeX.m_LowerBound) /
+          (this->NumberBinsX - 1);
+
+      if (range.m_LowerBound < this->RangeX.m_LowerBound) {
+        const size_t addBins =
+            1 +
+            static_cast<size_t>(
+                (this->RangeX.m_LowerBound - range.m_LowerBound) / binDelta);
+        this->RangeX.m_LowerBound -= (binDelta * addBins);
+        this->NumberBinsY += addBins;
+      }
+
+      if (range.m_UpperBound > this->RangeX.m_UpperBound) {
+        const size_t addBins =
+            1 +
+            static_cast<size_t>(
+                (range.m_UpperBound - this->RangeX.m_UpperBound) / binDelta);
+        this->RangeX.m_UpperBound += (binDelta * addBins);
+        this->NumberBinsY += addBins;
+      }
     }
-  
+  }
+
   return this->RangeX;
 }
 
-const Types::DataItemRange
-TypedArraySimilarityMemory::GetRangeY
-( const TypedArray* array, const size_t numBins )
-{
-  if ( ! this->ValidY )
-    this->NumberBinsY = numBins;
+const Types::DataItemRange TypedArraySimilarityMemory::GetRangeY(
+    const TypedArray *array, const size_t numBins) {
+  if (!this->ValidY) this->NumberBinsY = numBins;
 
-  if ( ! this->ValidY || this->RepeatCheck ) 
-    {
+  if (!this->ValidY || this->RepeatCheck) {
     const Types::DataItemRange range = array->GetRange();
-    if ( ! this->ValidY ) 
-      {
+    if (!this->ValidY) {
       this->RangeY.m_LowerBound = range.m_LowerBound;
       this->RangeY.m_UpperBound = range.m_UpperBound;
       this->ValidY = true;
-      } 
-    else
-      if ( (range.m_LowerBound < this->RangeY.m_LowerBound) || (range.m_UpperBound > this->RangeY.m_UpperBound ) ) 
-	{
-	Types::DataItem binDelta = (this->RangeY.m_UpperBound - this->RangeY.m_LowerBound) / (this->NumberBinsY - 1);
-	
-	if ( range.m_LowerBound < this->RangeY.m_LowerBound ) 
-	  {
-	  const size_t addBins = 1 + static_cast<size_t>( (this->RangeY.m_LowerBound - range.m_LowerBound) / binDelta);
-	  this->RangeY.m_LowerBound -= ( binDelta * addBins );
-	  this->NumberBinsY += addBins;
-	  }
-	
-	if ( range.m_UpperBound > this->RangeY.m_UpperBound ) 
-	  {
-	  const size_t addBins = 1 + static_cast<size_t>( (range.m_UpperBound - this->RangeY.m_UpperBound) / binDelta);
-	  this->RangeY.m_UpperBound += ( binDelta * addBins );
-	  this->NumberBinsY += addBins;
-	  }
-	}
+    } else if ((range.m_LowerBound < this->RangeY.m_LowerBound) ||
+               (range.m_UpperBound > this->RangeY.m_UpperBound)) {
+      Types::DataItem binDelta =
+          (this->RangeY.m_UpperBound - this->RangeY.m_LowerBound) /
+          (this->NumberBinsY - 1);
+
+      if (range.m_LowerBound < this->RangeY.m_LowerBound) {
+        const size_t addBins =
+            1 +
+            static_cast<size_t>(
+                (this->RangeY.m_LowerBound - range.m_LowerBound) / binDelta);
+        this->RangeY.m_LowerBound -= (binDelta * addBins);
+        this->NumberBinsY += addBins;
+      }
+
+      if (range.m_UpperBound > this->RangeY.m_UpperBound) {
+        const size_t addBins =
+            1 +
+            static_cast<size_t>(
+                (range.m_UpperBound - this->RangeY.m_UpperBound) / binDelta);
+        this->RangeY.m_UpperBound += (binDelta * addBins);
+        this->NumberBinsY += addBins;
+      }
     }
-  
+  }
+
   return this->RangeY;
 }
 
 JointHistogram<unsigned int>::SmartPtr
-TypedArraySimilarityMemory::CreateHistogram
-( const TypedArray* array0, const TypedArray* array1 )
-{
+TypedArraySimilarityMemory::CreateHistogram(const TypedArray *array0,
+                                            const TypedArray *array1) {
   const unsigned int dataSize = array0->GetDataSize();
-  const size_t numBins = std::max<unsigned>( std::min<unsigned>( static_cast<unsigned>( sqrt( (float)dataSize ) ), this->MaxNumBins ), this->MinNumBins );
-  
-  Types::DataItemRange rangeX = this->GetRangeX( array0, numBins );
-  Types::DataItemRange rangeY = this->GetRangeY( array1, numBins );
+  const size_t numBins = std::max<unsigned>(
+      std::min<unsigned>(static_cast<unsigned>(sqrt((float)dataSize)),
+                         this->MaxNumBins),
+      this->MinNumBins);
 
-  JointHistogram<unsigned int>::SmartPtr histogram( new JointHistogram<unsigned int>( this->NumberBinsX, this->NumberBinsY ) );
-  
-  histogram->SetRangeX( rangeX );
-  histogram->SetRangeY( rangeY );
+  Types::DataItemRange rangeX = this->GetRangeX(array0, numBins);
+  Types::DataItemRange rangeY = this->GetRangeY(array1, numBins);
+
+  JointHistogram<unsigned int>::SmartPtr histogram(
+      new JointHistogram<unsigned int>(this->NumberBinsX, this->NumberBinsY));
+
+  histogram->SetRangeX(rangeX);
+  histogram->SetRangeY(rangeY);
 
   return histogram;
 }
 
-} // namespace
+}  // namespace cmtk

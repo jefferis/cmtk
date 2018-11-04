@@ -37,24 +37,24 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
 /** Solve linear least-squares problem.
- * This class solves a least-squares problem of the form Ax=y for x, where A is a n-by-m design matrix, y is an n-dimensional measurement vector, 
- * and x is the m-dimensional parameter vector.
+ * This class solves a least-squares problem of the form Ax=y for x, where A is
+ * a n-by-m design matrix, y is an n-dimensional measurement vector, and x is
+ * the m-dimensional parameter vector.
  *
- * Solution of the least-squares problem is implemented via Singular Value Decomposition of the design matrix. Multiple problems using the same
- * design matrix but different measurement vectors can be solved without repeating the SVD.
+ * Solution of the least-squares problem is implemented via Singular Value
+ * Decomposition of the design matrix. Multiple problems using the same design
+ * matrix but different measurement vectors can be solved without repeating the
+ * SVD.
  */
-template<class TScalar>
-class LeastSquares
-{
-public:
+template <class TScalar>
+class LeastSquares {
+ public:
   /// This class.
   typedef LeastSquares<TScalar> Self;
 
@@ -62,25 +62,29 @@ public:
   typedef TScalar ScalarType;
 
   /// Constructor.
-  LeastSquares( const Matrix2D<typename Self::ScalarType>& designMatrix )
-    : m_MatrixU( designMatrix ),
-      m_MatrixV( designMatrix.NumberOfColumns(), designMatrix.NumberOfColumns() ),
-      m_VectorW( designMatrix.NumberOfColumns() )
-  {
-    MathUtil::SVD( this->m_MatrixU, this->m_VectorW, this->m_MatrixV );
+  LeastSquares(const Matrix2D<typename Self::ScalarType> &designMatrix)
+      : m_MatrixU(designMatrix),
+        m_MatrixV(designMatrix.NumberOfColumns(),
+                  designMatrix.NumberOfColumns()),
+        m_VectorW(designMatrix.NumberOfColumns()) {
+    MathUtil::SVD(this->m_MatrixU, this->m_VectorW, this->m_MatrixV);
   }
 
   /** Compute parameter vector for a given measurement data vector.
    *\return Parameter vector that minimizes the least squares fitting error.
    */
-  std::vector<typename Self::ScalarType> Solve( const std::vector<typename Self::ScalarType>& measurements /*!< The n-dimensional measurement data vector.*/ ) const
-  {
-    std::vector<typename Self::ScalarType> parameters( this->m_MatrixU.NumberOfRows() );
-    MathUtil::SVDLinearRegression( this->m_MatrixU, this->m_VectorW, this->m_MatrixV, measurements, parameters );
+  std::vector<typename Self::ScalarType> Solve(
+      const std::vector<typename Self::ScalarType>
+          &measurements /*!< The n-dimensional measurement data vector.*/)
+      const {
+    std::vector<typename Self::ScalarType> parameters(
+        this->m_MatrixU.NumberOfRows());
+    MathUtil::SVDLinearRegression(this->m_MatrixU, this->m_VectorW,
+                                  this->m_MatrixV, measurements, parameters);
     return parameters;
   }
-  
-private:
+
+ private:
   /// Matrix U returned from singular value decomposition.
   Matrix2D<typename Self::ScalarType> m_MatrixU;
 
@@ -93,6 +97,6 @@ private:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkLeastSquares_h_included_
+#endif  // #ifndef __cmtkLeastSquares_h_included_

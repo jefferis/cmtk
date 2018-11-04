@@ -96,26 +96,21 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-bool smatrixevd(ap::real_2d_array a,
-     int n,
-     int zneeded,
-     bool isupper,
-     ap::real_1d_array& d,
-     ap::real_2d_array& z)
-{
-    bool result;
-    ap::real_1d_array tau;
-    ap::real_1d_array e;
+bool smatrixevd(ap::real_2d_array a, int n, int zneeded, bool isupper,
+                ap::real_1d_array &d, ap::real_2d_array &z) {
+  bool result;
+  ap::real_1d_array tau;
+  ap::real_1d_array e;
 
 #ifndef NO_AP_ASSERT
-    ap::ap_error::make_assertion(zneeded==0||zneeded==1, "SMatrixEVD: incorrect ZNeeded");
+  ap::ap_error::make_assertion(zneeded == 0 || zneeded == 1,
+                               "SMatrixEVD: incorrect ZNeeded");
 #endif
 
-    smatrixtd(a, n, isupper, tau, d, e);
-    if( zneeded==1 )
-    {
-        smatrixtdunpackq(a, n, isupper, tau, z);
-    }
-    result = smatrixtdevd(d, e, n, zneeded, z);
-    return result;
+  smatrixtd(a, n, isupper, tau, d, e);
+  if (zneeded == 1) {
+    smatrixtdunpackq(a, n, isupper, tau, z);
+  }
+  result = smatrixtdevd(d, e, n, zneeded, z);
+  return result;
 }

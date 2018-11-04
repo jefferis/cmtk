@@ -37,8 +37,8 @@
 
 #include <IO/cmtkImageFileDICOM.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <Base/cmtkUniformVolume.h>
 
@@ -46,29 +46,26 @@
 
 #include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup IO */
 //@{
 
 /// Class handling a stack of DICOM image files.
-class ImageStackDICOM : public std::vector<ImageFileDICOM::SmartConstPtr> 
-{
-public:
+class ImageStackDICOM : public std::vector<ImageFileDICOM::SmartConstPtr> {
+ public:
   /// This class.
   typedef ImageStackDICOM Self;
-  
+
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Smart pointer to const object of this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Enum type to select DICOM information to be embedded into output images as "description".
-  typedef enum
-  {
+  /// Enum type to select DICOM information to be embedded into output images as
+  /// "description".
+  typedef enum {
     /// No embedding.
     EMBED_NONE = 0,
     /// Embed StudyID plus Date.
@@ -83,25 +80,31 @@ public:
   ImageStackDICOM( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ) {}
 
   /// Add new DICOM image file to this stack.
-  void AddImageFile( ImageFileDICOM::SmartConstPtr& image );
+  void AddImageFile(ImageFileDICOM::SmartConstPtr &image);
 
   /// Match new image file against this volume stack.
   bool Match ( const ImageFileDICOM& newImage /*!< New image - test whether this belongs with the ones already in this stack.*/, 
 	       const Types::Coordinate numericalTolerance = 0, /*!< Numerical comparison tolerance; values with absolute difference less than this threshold are considered equal. */
 	       const bool disableCheckOrientation = false /*!< Flag for disabling the checking of image orientation vectors.*/,
 	       const bool ignoreAcquisitionNumber = false /*!< When this flag is set, the AcquisitionNumber DICOM tag is ignore for matching images*/ ) const;
-  
+
   /// Write XML sidecar file.
-  void WriteXML( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */,
-		 const bool includeIdentifiers = false /*!< If this is set, protected "identifiers" such as device serial numbers will also be included in the XML output.*/ ) const;
+  void WriteXML(
+      const std::string &name /*!< Sidecar XML file name. */, const cmtk::UniformVolume &volume /*!< Previously written image volume - provides information about coordinate system etc. */, const bool includeIdentifiers = false /*!< If this is set, protected "identifiers" such as device serial numbers will also be included in the XML output.*/)
+      const;
 
   /// Write to image file.
-  cmtk::UniformVolume::SmartConstPtr WriteImage ( const std::string& name /*!< File name and path for new image.*/, const Self::EmbedInfoEnum embedInfo /*!< Flag for selecting information embedded into image description.*/  ) const;
+  cmtk::UniformVolume::SmartConstPtr WriteImage(const std::string &
+                                                    name /*!< File name and path
+                                                            for new image.*/
+                                                ,
+                                                const Self::EmbedInfoEnum embedInfo /*!< Flag for selecting information embedded into image description.*/)
+      const;
 
   /// Print stack information.
   void print() const;
 
-private:
+ private:
   /// Stored floating point tolerance.
   Types::Coordinate m_Tolerance;
 
@@ -109,11 +112,11 @@ private:
   std::vector<double> AssembleSliceTimes() const;
 
   /// Generate custom whitespaces for XML output.
-  static const char *WhitespaceWriteMiniXML( mxml_node_t*, int where);
+  static const char *WhitespaceWriteMiniXML(mxml_node_t *, int where);
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageStackDICOM_h_included_
+#endif  // #ifndef __cmtkImageStackDICOM_h_included_

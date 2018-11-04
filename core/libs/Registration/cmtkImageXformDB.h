@@ -35,9 +35,7 @@
 
 #include <IO/cmtkSQLite.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Registration */
 //@{
@@ -56,25 +54,22 @@ cmtk
  * space ID, which is the unique image ID of the first image that was added to
  * this space.
  *
- * The "xforms" table stores the file system path and properties for each coordinate
- * transformation:
- * \code
- *   CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, level INTEGER, spacefrom INTEGER, spaceto INTEGER);
- * \endcode
- * Each transformation is assigned a table-unique ID.
- * The field "invertible" is a flag that is set if the transformation has an explicit
- * inverse (i.e., if it is affine). All transformations can be inverted nuerically, but
- * we usually prefer explicit inverses for speed and accuracy.
- * The field "level" gives the refinement level of the transformation: a transformation
- * computed from two images with no initialization has level 0. A transformation computed
- * with initialization from an existing transformation has a level of that transformation 
- * plus one.
+ * The "xforms" table stores the file system path and properties for each
+ * coordinate transformation: \code CREATE TABLE xforms(id INTEGER PRIMARY KEY,
+ * path TEXT, invertible INTEGER, level INTEGER, spacefrom INTEGER, spaceto
+ * INTEGER); \endcode Each transformation is assigned a table-unique ID. The
+ * field "invertible" is a flag that is set if the transformation has an
+ * explicit inverse (i.e., if it is affine). All transformations can be inverted
+ * nuerically, but we usually prefer explicit inverses for speed and accuracy.
+ * The field "level" gives the refinement level of the transformation: a
+ * transformation computed from two images with no initialization has level 0. A
+ * transformation computed with initialization from an existing transformation
+ * has a level of that transformation plus one.
  */
 class ImageXformDB
-/// Inherit from SQLite wrapper class.
-  : public SQLite
-{
-public:
+    /// Inherit from SQLite wrapper class.
+    : public SQLite {
+ public:
   /// This class.
   typedef ImageXformDB Self;
 
@@ -82,32 +77,42 @@ public:
   typedef SQLite Superclass;
 
   /// Constructor: open ImageXformDB database.
-  ImageXformDB( const std::string& dbPath /*!< Path to the database file. */,
-		const bool readOnly = false /*!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
+  ImageXformDB(
+      const std::string &dbPath /*!< Path to the database file. */, const bool
+                                                                        readOnly =
+                                                                            false /*!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 
-  /** Add an image to a coordinate space, each identified by its file system path.
-   * If the given image already exists in the database, no change is made.
-   *\warning If the given image already exists in the database, no change is made even
-   *  if a new space is assigned to it with this call. The reason for this behaviour is
-   *  that if we assign the new space, it is unclear what to do with other images that potentially 
-   *  live in the old image space, especially if that space was defined by the reassigned image
-   *  in the first place.
+  /** Add an image to a coordinate space, each identified by its file system
+   *path. If the given image already exists in the database, no change is made.
+   *\warning If the given image already exists in the database, no change is
+   *made even if a new space is assigned to it with this call. The reason for
+   *this behaviour is that if we assign the new space, it is unclear what to do
+   *with other images that potentially live in the old image space, especially
+   *if that space was defined by the reassigned image in the first place.
    */
-  void AddImage( const std::string& imagePath /*!< File system path of the new image*/,
-		 const std::string& spacePath = "" /*!< File system path of an existing image that lives in the same space*/ );
-  
+  void AddImage(
+      const std::string &imagePath /*!< File system path of the new image*/, const std::string
+                                                                                 &spacePath =
+                                                                                     "" /*!< File system path of an existing image that lives in the same space*/);
+
   /** Add a transformation between two images.
-   *\return True if the operation was successful, false otherwise. Failure may be due to source and target image being in the same
-   * space to begin with.
+   *\return True if the operation was successful, false otherwise. Failure may
+   *be due to source and target image being in the same space to begin with.
    */
-  bool AddImagePairXform( const std::string& xformPath /*!< File system path of the tranformation */,
-			  const bool invertible /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */,
-			  const std::string& imagePathSrc /*!< File system path of the source image */,
-			  const std::string& imagePathTrg /*!< File system path of the target image */ );
-  
+  bool AddImagePairXform(
+      const std::string
+          &xformPath /*!< File system path of the tranformation */,
+      const bool invertible /**<! Flag: does the transformation have an explicit
+                               inverse (i.e., is it affine)? */
+      ,
+      const std::string
+          &imagePathSrc /*!< File system path of the source image */,
+      const std::string
+          &imagePathTrg /*!< File system path of the target image */);
+
   /** Add a refined transformation based on an existing transformation.
-   *\return True if the operation was successful, false otherwise. Failure may be due to absence of the specified original
-   *  transformation in the database.
+   *\return True if the operation was successful, false otherwise. Failure may
+   *be due to absence of the specified original transformation in the database.
    */
   bool AddRefinedXform( const std::string& xformPath /*!< File system path of the new tranformation */,
 			const bool invertible /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */,
@@ -115,22 +120,23 @@ public:
 			const bool initInverse = false /** Flag whether the new transformation is based on the inverse of the initial transformation, i.e., from and to space need to be switched. */ );
 
   /// Find space that image lives in and return its key.
-  Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath ) const;
+  Self::PrimaryKeyType FindImageSpaceID(const std::string &imagePath) const;
 
   /// Get a list of all images in the same space.
-  const std::vector<std::string> GetSpaceImageList( const Self::PrimaryKeyType& spaceKey, const bool sortById = false );
+  const std::vector<std::string> GetSpaceImageList(
+      const Self::PrimaryKeyType &spaceKey, const bool sortById = false);
 
   /** Find transformation between two images.
    * Only one transformation is returned, even if more than one transformation
    * connects the two spaces.
    *
-   * Forward non-invertible (i.e., nonrigid) transformations are preferred, 
+   * Forward non-invertible (i.e., nonrigid) transformations are preferred,
    * followed by forward explicitly invertible (i.e., affine) transformations,
-   * then inverses of nonrigid transformations. and finally inverses of affine 
-   * transformations.   
+   * then inverses of nonrigid transformations. and finally inverses of affine
+   * transformations.
    *
-   *\return True if transformation exists. If false, the two given images may still be connected via a chain of
-   * multiple, concatenated transformations.
+   *\return True if transformation exists. If false, the two given images may
+   *still be connected via a chain of multiple, concatenated transformations.
    */
   bool FindXform( const std::string& imagePathSrc /*!< File system path of the source image */,
 		  const std::string& imagePathTrg /*!< File system path of the target image */,
@@ -141,23 +147,29 @@ public:
    * Only forward transformations are returned. To find inverse transformations,
    * call this function with source and target images reversed.
    *
-   *\return List of transformations that map from source to target. Non-invertible 
-   * (i.e., nonrigid) transformations are listed first, followed by explicitly invertible 
-   * (i.e., affine) transformations.mations.
+   *\return List of transformations that map from source to target.
+   *Non-invertible (i.e., nonrigid) transformations are listed first, followed
+   *by explicitly invertible (i.e., affine) transformations.mations.
    */
-  const std::vector<std::string> FindAllXforms( const std::string& imagePathSrc /*!< File system path of the source image */,
-						const std::string& imagePathTrg /*!< File system path of the target image */ ) const;
+  const std::vector<std::string> FindAllXforms(
+      const std::string
+          &imagePathSrc /*!< File system path of the source image */,
+      const std::string
+          &imagePathTrg /*!< File system path of the target image */) const;
 
   /** Get the refinement level of a transformation in the database.
-   *\return The level of the given transformation: 0 for an original transformation,
-   * positive for refined transformation, or -1 is transformation is not in the
-   * database.
+   *\return The level of the given transformation: 0 for an original
+   *transformation, positive for refined transformation, or -1 is transformation
+   *is not in the database.
    */
-  int FindXformLevel( const std::string& xformPath /*!< Path of the transformation to find and inspect.*/ ) const;
+  int FindXformLevel(
+      const std::string
+          &xformPath /*!< Path of the transformation to find and inspect.*/)
+      const;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkImageXformDB_h_included_
+#endif  // #ifndef __cmtkImageXformDB_h_included_

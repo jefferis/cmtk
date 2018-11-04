@@ -37,34 +37,32 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumeInterpolatorBase.h>
 #include <Base/cmtkVector3D.h>
-#include <Base/cmtkUniformVolume.h>
 
-#include <System/cmtkSmartPtr.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkSmartPtr.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 /** Class template for kernel-based volume interpolators.
  *
- * This class is templated over the interpolation function, e.g., linear, cubic, or sinc.
+ * This class is templated over the interpolation function, e.g., linear, cubic,
+ *or sinc.
  *
  *\see LinearInterpolator
  *\see CubicInterpolator
  *\see SincInterpolator
  *\see NearestNeighborInterpolator
  */
-template<class TInterpolationFunction>
+template <class TInterpolationFunction>
 class UniformVolumeInterpolator :
-  /// Inherit interface from base class.
-  public UniformVolumeInterpolatorBase
-{
-public:
+    /// Inherit interface from base class.
+    public UniformVolumeInterpolatorBase {
+ public:
   /// This class type.
   typedef UniformVolumeInterpolator<TInterpolationFunction> Self;
 
@@ -75,13 +73,12 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolator( const UniformVolume& volume )
-    : UniformVolumeInterpolatorBase( volume )
-  {
-    if ( !TInterpolationFunction::SuitableForLabels && (volume.GetData()->GetDataClass() == DATACLASS_LABEL ) )
-      {
+  UniformVolumeInterpolator(const UniformVolume &volume)
+      : UniformVolumeInterpolatorBase(volume) {
+    if (!TInterpolationFunction::SuitableForLabels &&
+        (volume.GetData()->GetDataClass() == DATACLASS_LABEL)) {
       StdErr << "WARNING: using an unsuitable interpolator on label data\n";
-      }
+    }
   }
 
   /** Get data at location.
@@ -93,16 +90,17 @@ public:
    * m_Volume at v, and it should return false if v is outside the range
    * where a value can be interpolated (i.e., outside the volume boundaries).
    */
-  virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const;
+  virtual bool GetDataAt(const Vector3D &v, Types::DataItem &value) const;
 
-  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const;
+  virtual Types::DataItem GetDataDirect(
+      const Types::GridIndexType *imageGridPoint,
+      const Types::Coordinate *insidePixel) const;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #include "cmtkUniformVolumeInterpolator.txx"
 
-#endif // #ifndef __cmtkUniformVolumeInterpolator_h_included_
-
+#endif  // #ifndef __cmtkUniformVolumeInterpolator_h_included_

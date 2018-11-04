@@ -35,21 +35,19 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkJointHistogramBase.h>
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkTypedArray.h>
-#include <Base/cmtkMathUtil.h>
-#include <Base/cmtkTypes.h>
 #include <Base/cmtkHistogram.h>
+#include <Base/cmtkJointHistogramBase.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <System/cmtkSmartPtr.h>
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
@@ -58,12 +56,11 @@ cmtk
  *\param T Template parameter: the type of the histogram bins. Can be integral,
  * or float in case of fractional bins.
  */
-template<class T>
-class JointHistogram : 
-  /// Inherit from non-templated base class.
-  public JointHistogramBase 
-{
-protected:
+template <class T>
+class JointHistogram :
+    /// Inherit from non-templated base class.
+    public JointHistogramBase {
+ protected:
   /// Number of reference data bins.
   size_t NumBinsX;
 
@@ -87,8 +84,8 @@ protected:
 
   /// Total number of bins, ie., NumBinsX*NumBinsY.
   size_t m_TotalNumberOfBins;
-  
-public:
+
+ public:
   /// This class.
   typedef JointHistogram<T> Self;
 
@@ -97,149 +94,135 @@ public:
 
   /** Default constructor.
    */
-  JointHistogram () 
-  {
-    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
+  JointHistogram() {
+    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0;
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
   }
 
   /** Constructor.
    */
-  JointHistogram( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
-  {
-    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
+  JointHistogram(const size_t numBinsX, const size_t numBinsY,
+                 const bool reset = true) {
+    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0;
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
-    this->Resize( numBinsX, numBinsY, reset );
+    this->Resize(numBinsX, numBinsY, reset);
   }
 
   /** Make an identical copy of this object.
    *\return The newly created copy of this object.
    */
-  Self* Clone () const 
-  {
-    return new Self( *this );
-  }
+  Self *Clone() const { return new Self(*this); }
 
   /// Resize and allocate histogram bins.
-  void Resize( const size_t numberOfBinsX, const size_t numberOfBinsY, const bool reset = true )
-  {
+  void Resize(const size_t numberOfBinsX, const size_t numberOfBinsY,
+              const bool reset = true) {
     this->NumBinsX = numberOfBinsX;
     this->NumBinsY = numberOfBinsY;
     this->m_TotalNumberOfBins = this->NumBinsX * this->NumBinsY;
 
-    this->JointBins.resize( this->m_TotalNumberOfBins );
-    
-    if ( reset ) 
-      this->Reset();
+    this->JointBins.resize(this->m_TotalNumberOfBins);
+
+    if (reset) this->Reset();
   }
 
   /// Return number of histogram bins in X direction.
-  size_t GetNumBinsX() const 
-  { 
-    return this->NumBinsX;
-  }
+  size_t GetNumBinsX() const { return this->NumBinsX; }
 
   /// Return number of histogram bins in Y direction.
-  size_t GetNumBinsY() const
-  { 
-    return this->NumBinsY;
-  }
+  size_t GetNumBinsY() const { return this->NumBinsY; }
 
   /** Set value range of the X distribution.
    */
-  void SetRangeX( const Types::DataItemRange& range ) 
-  {
+  void SetRangeX(const Types::DataItemRange &range) {
     this->BinOffsetX = range.m_LowerBound;
-    this->BinWidthX = range.Width() / ( this->NumBinsX - 1 );
+    this->BinWidthX = range.Width() / (this->NumBinsX - 1);
   }
 
   /** Set value range of the Y distribution.
    */
-  void SetRangeY( const Types::DataItemRange& range ) 
-  {
+  void SetRangeY(const Types::DataItemRange &range) {
     this->BinOffsetY = range.m_LowerBound;
-    this->BinWidthY = range.Width() / ( this->NumBinsY - 1 );
-  }
-  
-  /** Set value range of the X distribution where upper and lower bound are centered in first and last histogram bins.
-   */
-  void SetRangeCenteredX( const Types::DataItemRange& range ) 
-  {
-    this->BinWidthX = range.Width() / (this->NumBinsX - 1);
-    this->BinOffsetX = - this->BinWidthX / 2;
+    this->BinWidthY = range.Width() / (this->NumBinsY - 1);
   }
 
-  /** Set value range of the Y distribution where upper and lower bound are centered in first and last histogram bins.
+  /** Set value range of the X distribution where upper and lower bound are
+   * centered in first and last histogram bins.
    */
-  void SetRangeCenteredY( const Types::DataItemRange& range ) 
-  {
-    this->BinWidthY = range.Width() / (this->NumBinsY - 1);
-    this->BinOffsetY = - this->BinWidthY / 2;
+  void SetRangeCenteredX(const Types::DataItemRange &range) {
+    this->BinWidthX = range.Width() / (this->NumBinsX - 1);
+    this->BinOffsetX = -this->BinWidthX / 2;
   }
-  
+
+  /** Set value range of the Y distribution where upper and lower bound are
+   * centered in first and last histogram bins.
+   */
+  void SetRangeCenteredY(const Types::DataItemRange &range) {
+    this->BinWidthY = range.Width() / (this->NumBinsY - 1);
+    this->BinOffsetY = -this->BinWidthY / 2;
+  }
+
   /** Get value range of the X distribution.
    */
-  const Types::DataItemRange GetRangeX() const 
-  {
-    return Types::DataItemRange( this->BinOffsetX, this->BinOffsetX + this->BinWidthX * ( this->NumBinsX - 1) );
+  const Types::DataItemRange GetRangeX() const {
+    return Types::DataItemRange(
+        this->BinOffsetX,
+        this->BinOffsetX + this->BinWidthX * (this->NumBinsX - 1));
   }
-  
+
   /** Get value range of the Y distribution.
    */
-  const Types::DataItemRange GetRangeY() const 
-  {
-    return Types::DataItemRange( this->BinOffsetY, this->BinOffsetY + this->BinWidthY * ( this->NumBinsY - 1) );
+  const Types::DataItemRange GetRangeY() const {
+    return Types::DataItemRange(
+        this->BinOffsetY,
+        this->BinOffsetY + this->BinWidthY * (this->NumBinsY - 1));
   }
-  
+
   /** Reset computation.
    * This function has to be called before any other computation made with an
    * object of this class. All bin counters are reset to zero, therefore
    * Reset() must also be called before any new computation performed using an
    * already previously used object.
    */
-  void Reset () 
-  {
-    std::fill( this->JointBins.begin(), this->JointBins.end(), static_cast<T>( 0 ) );
+  void Reset() {
+    std::fill(this->JointBins.begin(), this->JointBins.end(),
+              static_cast<T>(0));
   }
-  
+
   /** Return bin corresponding to a certain value of the X distribution.
    *\param value A value from the X distribution.
    *\return The index of the X bin corresponding to the given value.
    */
-  size_t ValueToBinX ( const Types::DataItem value ) const 
-  {
-    const size_t binIndex = static_cast<size_t>( (value - BinOffsetX) / BinWidthX );
-    return std::max<size_t>( 0, std::min<size_t>( NumBinsX-1, binIndex ) );
+  size_t ValueToBinX(const Types::DataItem value) const {
+    const size_t binIndex =
+        static_cast<size_t>((value - BinOffsetX) / BinWidthX);
+    return std::max<size_t>(0, std::min<size_t>(NumBinsX - 1, binIndex));
   }
-  
+
   /** Return bin corresponding to a certain value of the Y distribution.
    *\param value A value from the Y distribution.
    *\return The index of the Y bin corresponding to the given value.
    */
-  size_t ValueToBinY ( const Types::DataItem value ) const 
-  {
-    const size_t binIndex = static_cast<int>( (value - BinOffsetY) / BinWidthY );
-    return std::max<size_t>( 0, std::min<size_t>( NumBinsY-1, binIndex ) );
+  size_t ValueToBinY(const Types::DataItem value) const {
+    const size_t binIndex = static_cast<int>((value - BinOffsetY) / BinWidthY);
+    return std::max<size_t>(0, std::min<size_t>(NumBinsY - 1, binIndex));
   }
 
   /** Return center of values represented by a certain X distribution bin.
    *\param bin Index of a bin from the X distribution.
    *\return Average of upper and lower margin values of the given bin.
    */
-  Types::DataItem BinToValueX ( const size_t bin ) const 
-  {
-    return BinOffsetX + (bin+0.5) * BinWidthX;
+  Types::DataItem BinToValueX(const size_t bin) const {
+    return BinOffsetX + (bin + 0.5) * BinWidthX;
   }
 
   /** Return center of values represented by a certain Y distribution bin.
    *\param bin Index of a bin from the Y distribution.
    *\return Average of upper and lower margin values of the given bin.
    */
-  Types::DataItem BinToValueY ( const size_t bin ) const 
-  {
-    return BinOffsetY + (bin+0.5) * BinWidthY;
+  Types::DataItem BinToValueY(const size_t bin) const {
+    return BinOffsetY + (bin + 0.5) * BinWidthY;
   }
 
   /** Return projection of 2D distribution to X.
@@ -249,15 +232,14 @@ public:
    *\return Projection of 2D histogram onto X distribution. This is the sum
    * of all bins in Y direction for the given index in X direction.
    */
-  T ProjectToX ( const size_t indexX ) const 
-  {
+  T ProjectToX(const size_t indexX) const {
     T project = 0;
-    for ( size_t j=0; j < NumBinsY; ++j )
+    for (size_t j = 0; j < NumBinsY; ++j)
       project += this->JointBins[indexX + j * NumBinsX];
-    
+
     return project;
   }
-  
+
   /** Return projection of 2D distribution to Y.
    * This function can be used to reconstruct the marginal distribution Y from
    * the 2D histogram without explicitly stored 1D distributions.
@@ -265,59 +247,53 @@ public:
    *\return Projection of 2D histogram onto X distribution. This is the sum
    * of all bins in X direction for the given index in X direction.
    */
-  T ProjectToY ( const size_t indexY ) const 
-  {
+  T ProjectToY(const size_t indexY) const {
     T project = 0;
     size_t offset = indexY * NumBinsX;
-    for ( size_t i = 0; i < NumBinsX; ++i )
+    for (size_t i = 0; i < NumBinsX; ++i)
       project += this->JointBins[i + offset];
-    
+
     return project;
   }
 
   /// Get marginal X distribution as 1D histogram.
-  Histogram<T>* GetMarginalX() const;
+  Histogram<T> *GetMarginalX() const;
 
   /// Get marginal Y distribution as 1D histogram.
-  Histogram<T>* GetMarginalY() const;
+  Histogram<T> *GetMarginalY() const;
 
   /** Return a bin value.
    */
-  T GetBin( const size_t indexX, const size_t indexY ) const 
-  {
-    return this->JointBins[ indexX + NumBinsX * indexY ];
+  T GetBin(const size_t indexX, const size_t indexY) const {
+    return this->JointBins[indexX + NumBinsX * indexY];
   }
-  
+
   /** Return total number of samples stored in the histogram.
    */
-  T SampleCount () const 
-  {
+  T SampleCount() const {
     T sampleCount = 0;
-    
-    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
-      {
+
+    for (size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx) {
       sampleCount += this->JointBins[idx];
-      }
-    
+    }
+
     return sampleCount;
   }
 
   /** Return maximum number of samples stored in any bin.
    */
-  T GetMaximumBinValue () const 
-  {
+  T GetMaximumBinValue() const {
     T maximum = 0;
-    
+
     size_t idx = 0;
-    for ( size_t i=0; i<NumBinsY; ++i ) 
-      {
-      for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-	maximum = std::max( maximum, this->JointBins[idx] );
-      }
-    
+    for (size_t i = 0; i < NumBinsY; ++i) {
+      for (size_t j = 0; j < NumBinsX; ++j, ++idx)
+        maximum = std::max(maximum, this->JointBins[idx]);
+    }
+
     return maximum;
   }
-  
+
   /** Compute marginal entropies.
    * From the bin counts, the marginal entropies of both, reference and
    * model data are estimated.
@@ -326,24 +302,23 @@ public:
    *\param HY Upon return, this reference holds the estimated marginal entropy
    * of the Y random variable, i.e. the model image.
    */
-  void GetMarginalEntropies ( double& HX, double& HY ) const;
+  void GetMarginalEntropies(double &HX, double &HY) const;
 
   /** Compute joint entropy.
-   * From the joint bins, an estimate to the joint entropy of both, 
+   * From the joint bins, an estimate to the joint entropy of both,
    * reference and model image is computed.
    *\return The estimated joint entropy.
    */
   double GetJointEntropy() const;
-  
+
   /** Increment the value of a histogram bin by 1.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
    *\param sampleX Index of histogram field in x-direction.
    *\param sampleY Index of histogram field in y-direction.
    */
-  void Increment ( const size_t sampleX, const size_t sampleY ) 
-  {
-    ++this->JointBins[sampleX+sampleY*NumBinsX];
+  void Increment(const size_t sampleX, const size_t sampleY) {
+    ++this->JointBins[sampleX + sampleY * NumBinsX];
   }
 
   /** Increment the value of a histogram bin by an arbitrary value.
@@ -353,10 +328,8 @@ public:
    *\param sampleY Index of histogram field in y-direction.
    *\param weight Value to increment the given histogram bin by.
    */
-  void Increment 
-  ( const size_t sampleX, const size_t sampleY, const T weight ) 
-  {
-    this->JointBins[ sampleX + sampleY * NumBinsX ] += weight;
+  void Increment(const size_t sampleX, const size_t sampleY, const T weight) {
+    this->JointBins[sampleX + sampleY * NumBinsX] += weight;
   }
 
   /** Decrement the value of a histogram bin by 1.
@@ -367,17 +340,15 @@ public:
    *\param sampleX Index of histogram field in x-direction.
    *\param sampleY Index of histogram field in y-direction.
    */
-  void Decrement ( const size_t sampleX, const size_t sampleY ) 
-  {
-    --this->JointBins[sampleX+sampleY*NumBinsX];
+  void Decrement(const size_t sampleX, const size_t sampleY) {
+    --this->JointBins[sampleX + sampleY * NumBinsX];
   }
-  
-  void Decrement
-  ( const size_t sampleX, const size_t sampleY, const Types::DataItem weight ) 
-  {
-    this->JointBins[ sampleX + sampleY * NumBinsX ] -= static_cast<T>( weight );
+
+  void Decrement(const size_t sampleX, const size_t sampleY,
+                 const Types::DataItem weight) {
+    this->JointBins[sampleX + sampleY * NumBinsX] -= static_cast<T>(weight);
   }
-  
+
   /** Add values from another histogram.
    * Adding is done by corresponding bins. The caller has to make sure that
    * both histograms actually have the same number and arrangement of bins.
@@ -387,12 +358,11 @@ public:
    *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
    */
-  void AddJointHistogram ( const Self& other ) 
-  {
-    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
+  void AddJointHistogram(const Self &other) {
+    for (size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx)
       this->JointBins[idx] += other.JointBins[idx];
   }
-  
+
   /** Add values from another 1D histogram in X-direction.
    * Adding is done by corresponding bins. The caller has to make sure that
    * both histograms actually have the same number and arrangement of bins.
@@ -402,17 +372,17 @@ public:
    * this object's bins.
    *\param sampleY Index of the histogram row to which the 1D histogram is to
    * be added.
-   *\param weight Multiplicative weight factor with which the other histogram is added to this one.
+   *\param weight Multiplicative weight factor with which the other histogram is
+   *added to this one.
    */
-  void AddHistogramRow( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
-  {
+  void AddHistogramRow(const Histogram<T> &other, const size_t sampleY,
+                       const float weight = 1) {
     size_t idx = this->NumBinsX * sampleY;
-    for ( size_t i = 0; i<NumBinsX; ++i, ++idx )
-      {
-      this->JointBins[idx] += static_cast<T>( weight * other[i] );
-      }
+    for (size_t i = 0; i < NumBinsX; ++i, ++idx) {
+      this->JointBins[idx] += static_cast<T>(weight * other[i]);
+    }
   }
-  
+
   /** Add values from another 1D histogram in Y-direction.
    * Adding is done by corresponding bins. The caller has to make sure that
    * both histograms actually have the same number and arrangement of bins.
@@ -422,113 +392,102 @@ public:
    * to be added.
    *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
-   *\param weight Multiplicative weight factor with which the other histogram is added to this one.
+   *\param weight Multiplicative weight factor with which the other histogram is
+   *added to this one.
    */
-  void AddHistogramColumn( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
-  {
+  void AddHistogramColumn(const size_t sampleX, const Histogram<T> &other,
+                          const float weight = 1) {
     size_t idx = sampleX;
-    for ( size_t j = 0; j<NumBinsY; ++j, idx += NumBinsX )
-      this->JointBins[idx] += static_cast<T>( weight * other[j] );
+    for (size_t j = 0; j < NumBinsY; ++j, idx += NumBinsX)
+      this->JointBins[idx] += static_cast<T>(weight * other[j]);
   }
-  
+
   /** Subtract bin values from another histogram.
-   * Subtraction is done by corresponding bins. The caller has to make sure 
-   * that both histograms actually have the same number and arrangement of 
+   * Subtraction is done by corresponding bins. The caller has to make sure
+   * that both histograms actually have the same number and arrangement of
    * bins. It is also a good idea to ensure that the data ranges of these bins
    * are the same in both objects. Both can be guaranteed if one histogram was
    * created from the other by a call to Clone() for example.
    *\param other A pointer to the other histogram. Its bin values are
    * subtracted this object's bins.
    */
-  void RemoveJointHistogram ( const Self& other ) 
-  {
-    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
-      {
+  void RemoveJointHistogram(const Self &other) {
+    for (size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx) {
       this->JointBins[idx] -= other.JointBins[idx];
-      }
+    }
   }
-  
+
   /** Normalize histogram values over X dimension.
    *\param normalizeTo All histogram bins in every row of the histogram are
-   * scaled by a common factor so that their sum matches the value of this 
+   * scaled by a common factor so that their sum matches the value of this
    * parameter.
    */
-  void NormalizeOverX( const double normalizeTo = 1.0 ) 
-  {
-    for ( size_t j = 0; j < NumBinsY; ++j ) 
-      {
-      const T project = this->ProjectToY( j );
-      if ( project > 0 )
-	{
-	const double factor = normalizeTo / project;
-	for ( size_t i = 0; i < NumBinsX; ++i )
-	  this->JointBins[ i + NumBinsX * j ] = static_cast<T>( this->JointBins[ i + NumBinsX * j ] * factor );
-	}
+  void NormalizeOverX(const double normalizeTo = 1.0) {
+    for (size_t j = 0; j < NumBinsY; ++j) {
+      const T project = this->ProjectToY(j);
+      if (project > 0) {
+        const double factor = normalizeTo / project;
+        for (size_t i = 0; i < NumBinsX; ++i)
+          this->JointBins[i + NumBinsX * j] =
+              static_cast<T>(this->JointBins[i + NumBinsX * j] * factor);
       }
+    }
   }
-  
+
   /** Normalize histogram values over Y dimension.
    *\param normalizeTo All histogram bins in every column of the histogram are
-   * scaled by a common factor so that their sum matches the value of this 
+   * scaled by a common factor so that their sum matches the value of this
    * parameter.
    */
-  void NormalizeOverY( const double normalizeTo = 1.0 ) 
-  {
-    for ( size_t i = 0; i < NumBinsX; ++i ) 
-      {
-      const T project = this->ProjectToX( i );
-      if ( project > 0 ) 
-	{
-	const double factor = normalizeTo / project;
-	for ( size_t j = 0; j < NumBinsY; ++j )
-	  this->JointBins[ i + NumBinsX * j ] = static_cast<T>( this->JointBins[ i + NumBinsX * j ] * factor );
-	}
+  void NormalizeOverY(const double normalizeTo = 1.0) {
+    for (size_t i = 0; i < NumBinsX; ++i) {
+      const T project = this->ProjectToX(i);
+      if (project > 0) {
+        const double factor = normalizeTo / project;
+        for (size_t j = 0; j < NumBinsY; ++j)
+          this->JointBins[i + NumBinsX * j] =
+              static_cast<T>(this->JointBins[i + NumBinsX * j] * factor);
       }
+    }
   }
-  
+
   /* Return the index of the bin with the maximum value for one row.
    *\param j Index of the row.
    *\return The index of the bin with the maximum value in row j.
    */
-  size_t GetMaximumBinIndexOverX( const size_t j ) const 
-  {
+  size_t GetMaximumBinIndexOverX(const size_t j) const {
     size_t offset = j * NumBinsX;
-    
+
     size_t maxIndex = 0;
-    T maxValue = this->JointBins[ offset ];
-    
-    for ( size_t i = 1; i < NumBinsX; ++i ) 
-      {
+    T maxValue = this->JointBins[offset];
+
+    for (size_t i = 1; i < NumBinsX; ++i) {
       offset++;
-      if ( this->JointBins[ offset ] > maxValue ) 
-	{
-	maxValue = this->JointBins[ offset ];
-	maxIndex = i;
-	}
+      if (this->JointBins[offset] > maxValue) {
+        maxValue = this->JointBins[offset];
+        maxIndex = i;
       }
+    }
     return maxIndex;
   }
-  
+
   /* Return the index of the bin with the maximum value for one column.
    *\param j Index of the column.
    *\return The index of the bin with the maximum value in column j.
    */
-  size_t GetMaximumBinIndexOverY( const size_t i ) const 
-  {
+  size_t GetMaximumBinIndexOverY(const size_t i) const {
     size_t offset = i;
-    
+
     size_t maxIndex = 0;
-    T maxValue = this->JointBins[ offset ];
-    
-    for ( size_t j = 1; j < NumBinsY; ++j ) 
-      {
+    T maxValue = this->JointBins[offset];
+
+    for (size_t j = 1; j < NumBinsY; ++j) {
       offset += NumBinsX;
-      if ( this->JointBins[ offset ] > maxValue ) 
-	{
-	maxValue = this->JointBins[ offset ];
-	maxIndex = j;
-	}
+      if (this->JointBins[offset] > maxValue) {
+        maxValue = this->JointBins[offset];
+        maxIndex = j;
       }
+    }
     return maxIndex;
   }
 
@@ -538,16 +497,15 @@ public:
    * 1999] is computed. If this flag is false, the original formula of Viola
    * [IEEE Trans Med Imaging 1997] and Maes is used instead.
    */
-  double GetMutualInformation( const bool normalized = false ) const 
-  {
+  double GetMutualInformation(const bool normalized = false) const {
     double hX, hY, hXY;
-    this->GetMarginalEntropies( hX, hY );
+    this->GetMarginalEntropies(hX, hY);
     hXY = this->GetJointEntropy();
-    if ( hXY > 0 )
-      if ( normalized ) 
-	return (hX + hY) / hXY;
+    if (hXY > 0)
+      if (normalized)
+        return (hX + hY) / hXY;
       else
-	return (hX + hY) - hXY;
+        return (hX + hY) - hXY;
     else
       return 0;
   }
@@ -555,6 +513,6 @@ public:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkJointHistogram_h_included_
+#endif  // #ifndef __cmtkJointHistogram_h_included_

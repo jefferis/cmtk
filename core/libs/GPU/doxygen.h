@@ -31,6 +31,6 @@
 */
 
 /** \defgroup GPU cmtkGPU library
- * This library provides classes related to computations on GPU hardware via the CUDA
- * and potentially OpenCL programming paradigms.
+ * This library provides classes related to computations on GPU hardware via the
+ * CUDA and potentially OpenCL programming paradigms.
  */

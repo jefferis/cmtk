@@ -34,18 +34,16 @@
 
 #include <cmtkconfig.h>
 
-#include <qwidget.h>
-#include <qslider.h>
 #include <qlabel.h>
-#include <qlineedit.h>
-#include <qvalidator.h>
 #include <qlayout.h>
+#include <qlineedit.h>
+#include <qslider.h>
+#include <qvalidator.h>
+#include <qwidget.h>
 
 #include <QGridLayout>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Qt */
 //@{
@@ -53,14 +51,13 @@ cmtk
 /** Widget that combines a slider with a numerical entry field and labels.
  */
 class QtSliderEntry :
-  /// We use a vertical group box as the base class.
-  public QWidget
-{
-  Q_OBJECT // we use slots and signals.
+    /// We use a vertical group box as the base class.
+    public QWidget {
+  Q_OBJECT  // we use slots and signals.
 
-public:
-  /// Constructor.
-  QtSliderEntry( QWidget* parent );
+      public :
+      /// Constructor.
+      QtSliderEntry(QWidget *parent);
 
   /// Get value.
   double GetValue() const;
@@ -71,68 +68,67 @@ public:
   /// Get maximum value.
   double GetMaxValue() const;
 
-signals:
+ signals:
   /// Emitted when value changes.
-  void valueChanged( double value );
+  void valueChanged(double value);
 
-public slots:
+ public slots:
   /// Set title label.
-  void slotSetTitle( const QString& title );
+  void slotSetTitle(const QString &title);
 
   /// Set min/max labels.
-  void slotSetMinMaxLabels( const QString& minLabel, const QString& maxLabel );
+  void slotSetMinMaxLabels(const QString &minLabel, const QString &maxLabel);
 
   /// Set value range.
-  void slotSetRange( double rangeFrom, double rangeTo );
+  void slotSetRange(double rangeFrom, double rangeTo);
 
   /// Set number of digits.
-  void slotSetPrecision( int precision );
+  void slotSetPrecision(int precision);
 
   /// Set value.
-  void slotSetValue( const double value );
+  void slotSetValue(const double value);
 
   /// Set to center position.
   void slotCenter();
 
-private slots:
+ private slots:
   /// Called when "Return" is pressed in the line edit field.
   void slotEditReturnPressed();
 
   /// Called when line edit value changes.
-  void slotSliderValueChanged( int value );
+  void slotSliderValueChanged(int value);
 
-private:
+ private:
   /// Number of decimal digits.
   uint Precision;
 
   /// Factor to convert between integer and true float representation.
   uint PrecisionFactor;
-  
+
   /// Layout for children.
-  QGridLayout* Layout;
+  QGridLayout *Layout;
 
   /// The slider object.
-  QSlider* Slider;
-  
+  QSlider *Slider;
+
   /// The entry field.
-  QLineEdit* Edit;
+  QLineEdit *Edit;
 
   /// The entry validator object.
-  QDoubleValidator* Validator;
+  QDoubleValidator *Validator;
 
   /// The label for the widget title.
-  QLabel* TitleLabel;
+  QLabel *TitleLabel;
 
   /// The label for the slider's minimum value.
-  QLabel* MinLabel;
+  QLabel *MinLabel;
 
   /// The label for the slider's maximum value.
-  QLabel* MaxLabel;
-
+  QLabel *MaxLabel;
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkQtSliderEntry_h_included_
+#endif  // #ifndef __cmtkQtSliderEntry_h_included_

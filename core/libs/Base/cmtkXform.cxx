@@ -32,90 +32,73 @@
 
 #include "cmtkXform.h"
 
-#include <Base/cmtkVolume.h>
 #include <Base/cmtkLandmarkPairList.h>
+#include <Base/cmtkVolume.h>
 
 #include <math.h>
 #include <stdio.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup Base */
 //@{
 
-void
-Xform::AllocateParameterVector
-( const size_t numberOfParameters )
-{
+void Xform::AllocateParameterVector(const size_t numberOfParameters) {
   this->m_NumberOfParameters = numberOfParameters;
-  if ( this->m_NumberOfParameters )
-    {
-    this->m_ParameterVector = CoordinateVector::SmartPtr( new CoordinateVector( this->m_NumberOfParameters ) );
+  if (this->m_NumberOfParameters) {
+    this->m_ParameterVector = CoordinateVector::SmartPtr(
+        new CoordinateVector(this->m_NumberOfParameters));
     this->m_Parameters = this->m_ParameterVector->Elements;
-    }
-  else
-    {
+  } else {
     this->m_ParameterVector = CoordinateVector::SmartPtr::Null();
     this->m_Parameters = NULL;
-    }
+  }
 }
 
-void
-Xform::SetParamVector ( CoordinateVector& v ) 
-{
-  if ( this->m_ParameterVector ) 
-    {
+void Xform::SetParamVector(CoordinateVector &v) {
+  if (this->m_ParameterVector) {
     *this->m_ParameterVector = v;
-    } 
-  else
-    {
-    this->m_ParameterVector = CoordinateVector::SmartPtr( new CoordinateVector( v ) );
-    }
+  } else {
+    this->m_ParameterVector =
+        CoordinateVector::SmartPtr(new CoordinateVector(v));
+  }
   this->m_Parameters = this->m_ParameterVector->Elements;
 }
 
-void
-Xform::SetParamVector ( const CoordinateVector& v ) 
-{
-  if ( this->m_ParameterVector ) 
-    {
+void Xform::SetParamVector(const CoordinateVector &v) {
+  if (this->m_ParameterVector) {
     *this->m_ParameterVector = v;
-    } 
-  else
-    {
-    this->m_ParameterVector = CoordinateVector::SmartPtr( new CoordinateVector( v ) );
-    }
+  } else {
+    this->m_ParameterVector =
+        CoordinateVector::SmartPtr(new CoordinateVector(v));
+  }
   this->m_Parameters = this->m_ParameterVector->Elements;
 }
 
-CoordinateVector& 
-Xform::GetParamVector
-( CoordinateVector& v, const size_t targetOffset ) const 
-{
-  v.AdjustDimension( std::max<int>( v.Dim, targetOffset + this->ParamVectorDim() ) );
-  v.CopyToOffset( *this->m_ParameterVector, targetOffset, this->ParamVectorDim() );
+CoordinateVector &Xform::GetParamVector(CoordinateVector &v,
+                                        const size_t targetOffset) const {
+  v.AdjustDimension(
+      std::max<int>(v.Dim, targetOffset + this->ParamVectorDim()));
+  v.CopyToOffset(*this->m_ParameterVector, targetOffset,
+                 this->ParamVectorDim());
   return v;
 }
 
-Types::Coordinate
-Xform::GetLandmarksMSD( const LandmarkPairList& ll ) const
-{
+Types::Coordinate Xform::GetLandmarksMSD(const LandmarkPairList &ll) const {
   Types::Coordinate msd = 0;
 
   const size_t numberOfLandmarks = ll.size();
-  if ( numberOfLandmarks )
-    {
-    for ( LandmarkPairList::const_iterator it = ll.begin(); it != ll.end(); ++it )
-      {
-      msd += ( this->Apply( it->m_Location ) - it->m_TargetLocation ).SumOfSquares();
-      }
-    
-    msd /= numberOfLandmarks;
+  if (numberOfLandmarks) {
+    for (LandmarkPairList::const_iterator it = ll.begin(); it != ll.end();
+         ++it) {
+      msd +=
+          (this->Apply(it->m_Location) - it->m_TargetLocation).SumOfSquares();
     }
+
+    msd /= numberOfLandmarks;
+  }
 
   return msd;
 }
 
-} // namespace cmtk
+}  // namespace cmtk

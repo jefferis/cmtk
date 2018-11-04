@@ -34,28 +34,26 @@
 #include <cmtkconfig.h>
 
 #ifdef CMTK_USE_CUDA
-#  include "cmtkDeviceArrayCUDA.h"
+#include "cmtkDeviceArrayCUDA.h"
 #else
-#  include "cmtkDeviceArrayCL.h"
+#include "cmtkDeviceArrayCL.h"
 #endif
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class template for type-specific memory allocated on a GPU device through .
-template<class DeviceArrayGPU>
+/// Resource managing class template for type-specific memory allocated on a GPU
+/// device through .
+template <class DeviceArrayGPU>
 class DeviceArrayTemplate :
     /// Inherit from GPU-specific pointer base class.
-    public DeviceArrayGPU
-{
-public:
+    public DeviceArrayGPU {
+ public:
   /// This class.
   typedef DeviceArrayTemplate<DeviceArrayGPU> Self;
-  
+
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
@@ -66,23 +64,23 @@ public:
   typedef DeviceArrayGPU Superclass;
 
   /// Constructor: allocate memory on device through base class.
-  DeviceArrayTemplate(  const FixedVector<3,int>& dims3 ) 
-    : DeviceArrayGPU( dims3 )
-  {}
+  DeviceArrayTemplate(const FixedVector<3, int> &dims3)
+      : DeviceArrayGPU(dims3) {}
 
   /// Create new object and allocate memory.
-  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /*!< Array dimensions */ )
-  {
-    return typename Self::SmartPtr( new Self( dims3 ) );
+  static typename Self::SmartPtr Create(
+      const FixedVector<3, int> &dims3 /*!< Array dimensions */) {
+    return typename Self::SmartPtr(new Self(dims3));
   }
-  
+
   /// Create new object, allocate, and initialize memory.
-  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3, /*!< Array dimensions */
-					 const float* initFrom /*!< Initialize from this region in host memory.*/ )
-  {
-    Self* newObject = new Self( dims3 );
-    newObject->CopyToDevice( initFrom );
-    return typename Self::SmartPtr( newObject );
+  static typename Self::SmartPtr Create(
+      const FixedVector<3, int> &dims3, /*!< Array dimensions */
+      const float
+          *initFrom /*!< Initialize from this region in host memory.*/) {
+    Self *newObject = new Self(dims3);
+    newObject->CopyToDevice(initFrom);
+    return typename Self::SmartPtr(newObject);
   }
 };
 
@@ -94,6 +92,6 @@ typedef DeviceArrayTemplate<DeviceArrayCL> DeviceArray;
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceArray_h_included_
+#endif  // #ifndef __cmtkDeviceArray_h_included_

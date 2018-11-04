@@ -37,9 +37,7 @@
 
 #include <signal.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
@@ -48,10 +46,8 @@ cmtk
  * termination signals and prints a stack trace.
  *\author http://www.linuxjournal.com/article/6391
  */
-class
-StackBacktrace
-{
-public:
+class StackBacktrace {
+ public:
   /// This class.
   typedef StackBacktrace Self;
 
@@ -59,10 +55,7 @@ public:
   StackBacktrace();
 
   /// Set exit code used after catching SEGFAULT or other signals.
-  static void SetExitCode( const int code = 1 )
-  {
-    Self::ExitCode = code;
-  }
+  static void SetExitCode(const int code = 1) { Self::ExitCode = code; }
 
   /** Exit code.
    * This defaults to "1" but can be set to "0" for CTest testing.
@@ -73,8 +66,7 @@ public:
   static void PrintBacktrace( const int levels = 0 /*!< Maximum number of levels to display (default: 0 = no limit). */ );
 
   /// Get static stack backtrace object instance.
-  static Self& Static()
-  {
+  static Self &Static() {
     static Self instance;
     return instance;
   }
@@ -82,13 +74,14 @@ public:
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
 #ifndef _MSC_VER
 /// Signal handler.
-extern "C" void cmtkStackBacktraceSignalHandler( int sig, siginfo_t *info, void *secret );
+extern "C" void cmtkStackBacktraceSignalHandler(int sig, siginfo_t *info,
+                                                void *secret);
 #else
-extern "C" void cmtkStackBacktraceSignalHandler( int sig );
+extern "C" void cmtkStackBacktraceSignalHandler(int sig);
 #endif
 
-#endif // #ifndef __cmtkStackBacktrace_h_included_
+#endif  // #ifndef __cmtkStackBacktrace_h_included_

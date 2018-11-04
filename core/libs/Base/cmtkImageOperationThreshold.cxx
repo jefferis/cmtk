@@ -30,29 +30,25 @@
 
 #include "cmtkImageOperationThreshold.h"
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationThreshold::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
 
-  if ( this->m_Binarize )
-    {
-    volumeData->Binarize( this->m_Threshold );
-    }
-  else
-    {
+  if (this->m_Binarize) {
+    volumeData->Binarize(this->m_Threshold);
+  } else {
     cmtk::Types::DataItemRange range = volumeData->GetRange();
-    
-    if ( this->m_Above )
+
+    if (this->m_Above)
       range.m_UpperBound = this->m_Threshold;
     else
       range.m_LowerBound = this->m_Threshold;
-    
-    if ( this->m_ToPadding )
-      volumeData->ThresholdToPadding( range );
+
+    if (this->m_ToPadding)
+      volumeData->ThresholdToPadding(range);
     else
-      volumeData->Threshold( range );
-    }
-  
+      volumeData->Threshold(range);
+  }
+
   return volume;
 }

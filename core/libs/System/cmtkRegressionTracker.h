@@ -37,17 +37,14 @@
 
 #include <stdio.h>
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup System */
 //@{
 
 /// Class for generating and following regression tracks.
-class RegressionTracker
-{
-public:
+class RegressionTracker {
+ public:
   /// This class.
   typedef RegressionTracker Self;
 
@@ -58,38 +55,37 @@ public:
   virtual ~RegressionTracker();
 
   /// Instantiate and return static instance.
-  static Self& Static()
-  {
+  static Self &Static() {
     static Self tracker;
     return tracker;
   }
 
-  /// Advance tracker: compute checksum and either write to baseline file or compare against existing file.
-  template<class T> void Advance( const T* data, const size_t nBytes )
-  {
-    this->CompareChecksum( reinterpret_cast<const unsigned char*>( data ), nBytes );
+  /// Advance tracker: compute checksum and either write to baseline file or
+  /// compare against existing file.
+  template <class T>
+  void Advance(const T *data, const size_t nBytes) {
+    this->CompareChecksum(reinterpret_cast<const unsigned char *>(data),
+                          nBytes);
   }
 
-private:
+ private:
   /// Regression trace file.
-  FILE* m_File;
+  FILE *m_File;
 
   /// Flag for writing.
   bool m_WriteFlag;
 
   /// Compare using checksum
-  void CompareChecksum( const unsigned char *const data, size_t nBytes );
+  void CompareChecksum(const unsigned char *const data, size_t nBytes);
 
-protected:
-  /// Member fuction that is called when divergence from previous trace is detected.
-  virtual void Trap()
-  {
-    StdErr << "Detected regression divergence.\n";
-  }
+ protected:
+  /// Member fuction that is called when divergence from previous trace is
+  /// detected.
+  virtual void Trap() { StdErr << "Detected regression divergence.\n"; }
 };
 
 //@}
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkRegressionTracker_h_included_
+#endif  // #ifndef __cmtkRegressionTracker_h_included_

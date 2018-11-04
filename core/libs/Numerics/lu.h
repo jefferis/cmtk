@@ -119,9 +119,7 @@ As we can see, the unit diagonal isn't stored.
      Courant Institute, Argonne National Lab, and Rice University
      June 30, 1992
 *************************************************************************/
-void rmatrixlu(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::integer_1d_array& pivots);
+void rmatrixlu(ap::real_2d_array &a, int m, int n,
+               ap::integer_1d_array &pivots);
 
 #endif

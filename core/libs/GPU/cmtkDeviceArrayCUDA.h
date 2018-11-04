@@ -40,63 +40,58 @@
 /// Forward declaration.
 struct cudaArray;
 
-namespace
-cmtk
-{
+namespace cmtk {
 
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class for raw memory allocated on a GPU device through CUDA.
+/// Resource managing class for raw memory allocated on a GPU device through
+/// CUDA.
 class DeviceArrayCUDA
     /// Make sure this is never copied.
-  : private CannotBeCopied
-{
-public:
+    : private CannotBeCopied {
+ public:
   /// This class.
   typedef DeviceArrayCUDA Self;
 
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
-  
+
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Device array pointer.
-  typedef struct cudaArray* DeviceArrayPointer;
-  
+  typedef struct cudaArray *DeviceArrayPointer;
+
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
-  
+
   /// Constructor: allocate array through CUDA.
-  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
+  DeviceArrayCUDA(const FixedVector<3, int> &dims3);
 
   /// Destructor: free array through CUDA.
   virtual ~DeviceArrayCUDA();
 
   /// Copy host linear memory to device.
-  void CopyToDevice( const float* data );
+  void CopyToDevice(const float *data);
 
   /// Copy from linear device memory to device array.
-  void CopyOnDeviceToArray( const float* data );
+  void CopyOnDeviceToArray(const float *data);
 
   /// Copy from device array to linear device memory.
-  void CopyOnDeviceToLinear( float* data );
+  void CopyOnDeviceToLinear(float *data);
 
   /// Get device array pointer.
-  DeviceArrayPointer GetArrayOnDevice()
-  {
-    return this->m_DeviceArrayPtr;
-  }
+  DeviceArrayPointer GetArrayOnDevice() { return this->m_DeviceArrayPtr; }
 
-private:
+ private:
   /// Array dimensions.
-  FixedVector<3,int> m_Dims;
+  FixedVector<3, int> m_Dims;
 
   /// Opaque pointer to array on device.
   DeviceArrayPointer m_DeviceArrayPtr;
 };
 
-} // namespace cmtk
+}  // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceArrayCUDA_h_included_
+#endif  // #ifndef __cmtkDeviceArrayCUDA_h_included_

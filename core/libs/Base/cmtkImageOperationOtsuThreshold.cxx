@@ -34,17 +34,19 @@
 
 #include <System/cmtkDebugOutput.h>
 
-cmtk::UniformVolume::SmartPtr
-cmtk::ImageOperationOtsuThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume )
-{
-  cmtk::TypedArray& volumeData = *(volume->GetData());
+cmtk::UniformVolume::SmartPtr cmtk::ImageOperationOtsuThreshold::Apply(
+    cmtk::UniformVolume::SmartPtr &volume) {
+  cmtk::TypedArray &volumeData = *(volume->GetData());
 
-  const Types::DataItem threshold = HistogramOtsuThreshold< Histogram<unsigned int> >( *(volumeData.GetHistogram( this->m_NumberOfBins )) ).Get();
+  const Types::DataItem threshold =
+      HistogramOtsuThreshold<Histogram<unsigned int>>(
+          *(volumeData.GetHistogram(this->m_NumberOfBins)))
+          .Get();
 
-  DebugOutput( 5 ) << "INFO: Otsu binarization threshold = " << threshold << "\n";
+  DebugOutput(5) << "INFO: Otsu binarization threshold = " << threshold << "\n";
 
-  volumeData.Binarize( threshold );
-  volumeData.SetDataClass( DATACLASS_LABEL );
+  volumeData.Binarize(threshold);
+  volumeData.SetDataClass(DATACLASS_LABEL);
 
   return volume;
 }
