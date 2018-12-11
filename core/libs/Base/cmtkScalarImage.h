@@ -35,39 +35,42 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMacros.h>
-#include <Base/cmtkMatrix3x3.h>
-#include <Base/cmtkRegion.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkRegion.h>
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkMatrix3x3.h>
 
 #include <cassert>
 #include <vector>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Two-dimensional image with scalar pixel values.
  */
-class ScalarImage {
+class ScalarImage
+{
   /// Number of image frames for multi-frame images.
-  cmtkGetSetMacro(int, NumberOfFrames);
+  cmtkGetSetMacro(int,NumberOfFrames);
 
   /// Pixel data.
-  cmtkGetSetMacro(TypedArray::SmartPtr, PixelData);
+  cmtkGetSetMacro(TypedArray::SmartPtr,PixelData);
 
   /// Pixel spacing.
-  cmtkGetSetMacro2Array(Types::Coordinate, PixelSize);
+  cmtkGetSetMacro2Array(Types::Coordinate,PixelSize);
 
   /// Frame-to-frame spacing.
-  cmtkGetSetMacro(Types::Coordinate, FrameToFrameSpacing);
+  cmtkGetSetMacro(Types::Coordinate,FrameToFrameSpacing);
 
- public:
+public:
   /// This class.
   typedef ScalarImage Self;
 
@@ -78,46 +81,52 @@ class ScalarImage {
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Region type.
-  typedef Region<2, int> RegionType;
+  typedef Region<2,int> RegionType;
 
   /// Pixel index type.
   typedef RegionType::IndexType IndexType;
 
   /// Space vector type.
-  typedef FixedVector<3, Types::Coordinate> SpaceVectorType;
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
   /// Default constructor creates empty image.
   ScalarImage();
 
   /// Constructor with separate x and y dimensions.
-  ScalarImage(const int dimsx, const int dimsy, const int numberOfFrames = 1);
+  ScalarImage( const int dimsx, const int dimsy, const int numberOfFrames = 1 );
 
   /** Get ROI as sub-image.
    *\param source The source image to copy an ROI from.
    *\param roiFrom The (x,y) pixel of the original image that will make up the
    * top left (0,0) pixel of this image.
    *\param roiTo The (x,y) pixel of the original image that will make up the
-   * bottom right (dimx-1,dimy-1) pixel of this image.
-   *\note Note that the ROI given by roiFrom and roiTo is an inclusive
+   * bottom right (dimx-1,dimy-1) pixel of this image. 
+   *\note Note that the ROI given by roiFrom and roiTo is an inclusive 
    * boundary, i.e., the indexed row and column will still be part of the
    * cropped image. The cropped image dimension is therefore
    * (1+roiTo[0]-roiFrom[0],1+roiTo[0]-roiFrom[0]).
    */
-  ScalarImage(const ScalarImage &source);
+  ScalarImage( const ScalarImage& source );
 
   /// Virtual destructor.
   virtual ~ScalarImage() {}
 
   /// Set dimensions.
-  virtual void SetDims(const Self::IndexType &dims) { this->m_Dims = dims; }
+  virtual void SetDims( const Self::IndexType& dims )
+  {
+    this->m_Dims = dims;
+  }
 
   /// Get dimensions.
-  const Self::IndexType GetDims() const { return this->m_Dims; }
+  const Self::IndexType GetDims() const
+  {
+    return this->m_Dims;
+  }
 
   /// Create pixel data array with given data type.
-  void CreatePixelData(const ScalarDataType dtype) {
-    this->m_PixelData = TypedArray::SmartPtr(TypedArray::Create(
-        dtype, this->m_Dims[0] * this->m_Dims[1] * this->m_NumberOfFrames));
+  void CreatePixelData( const ScalarDataType dtype ) 
+  {
+    this->m_PixelData = TypedArray::SmartPtr( TypedArray::Create( dtype, this->m_Dims[0] * this->m_Dims[1] * this->m_NumberOfFrames ) );
   }
 
   /** Origin of image in world coordinates.
@@ -125,33 +134,39 @@ class ScalarImage {
   Self::SpaceVectorType m_ImageOrigin;
 
   /// Set image origin.
-  void SetImageOrigin(const Self::SpaceVectorType &imageOrigin) {
+  void SetImageOrigin( const Self::SpaceVectorType& imageOrigin ) 
+  {
     this->m_ImageOrigin = imageOrigin;
   }
 
   /// Get image origin of given frame (default: 0).
-  Self::SpaceVectorType GetImageOrigin(const int frame = 0) const;
+  Self::SpaceVectorType GetImageOrigin( const int frame = 0 ) const;
 
   /** Direction of image rows relative to ImageOrigin.
    */
-  cmtkGetSetMacro(Self::SpaceVectorType, ImageDirectionX);
+  cmtkGetSetMacro(Self::SpaceVectorType,ImageDirectionX);
 
   /** Direction of image columns relative to ImageOrigin.
    */
-  cmtkGetSetMacro(Self::SpaceVectorType, ImageDirectionY);
+  cmtkGetSetMacro(Self::SpaceVectorType,ImageDirectionY);
 
   /** Image position from coordinate origin along axial direction.
    * This field is only meaningful if this 2D image is part of a 3D image.
    */
-  cmtkGetSetMacro(Types::Coordinate, ImageSlicePosition);
+  cmtkGetSetMacro(Types::Coordinate,ImageSlicePosition);
 
   /// Get number of pixels.
-  int GetNumberOfPixels() const { return this->m_Dims[0] * this->m_Dims[1]; }
+  int GetNumberOfPixels() const 
+  { 
+    return this->m_Dims[0] * this->m_Dims[1];
+  }
 
   /// Get pixel at 2-D index.
-  Types::DataItem GetPixelAt(const int i, const int j) const {
+  Types::DataItem GetPixelAt( const int i, const int j ) const 
+  {
     Types::DataItem value;
-    if (this->m_PixelData->Get(value, i + this->m_Dims[0] * j)) return value;
+    if ( this->m_PixelData->Get( value, i + this->m_Dims[0] * j ) ) 
+      return value;
     return 0;
   }
 
@@ -159,43 +174,42 @@ class ScalarImage {
    *\return True if value is valid; false if at least one of the four neighbor
    * pixels was invalid or outside the image.
    */
-  bool GetPixelAt(Types::DataItem &value, const Types::Coordinate i,
-                  const Types::Coordinate j) const;
+  bool GetPixelAt( Types::DataItem& value, const Types::Coordinate i, const Types::Coordinate j ) const;
 
   /// Set pixel at 2-D index.
-  void SetPixelAt(const int i, const int j, const Types::DataItem data) {
-    this->m_PixelData->Set(data, i + this->m_Dims[0] * j);
+  void SetPixelAt( const int i, const int j, const Types::DataItem data ) 
+  {
+    this->m_PixelData->Set( data, i + this->m_Dims[0] * j );
   }
 
   /// Mirror image horizontally and/or vertically.
-  void Mirror(const bool horizontal, const bool vertical);
+  void Mirror( const bool horizontal, const bool vertical );
 
   /// Adjust aspect ratio.
-  void AdjustAspect(const bool interpolate = false);
+  void AdjustAspect( const bool interpolate = false );
 
   /// Adjust aspect ratio.
-  void AdjustToIsotropic(const Types::Coordinate pixelSize,
-                         const bool interpolate = false);
+  void AdjustToIsotropic( const Types::Coordinate pixelSize, const bool interpolate = false );
 
   /** Project 3D coordinate onto image plane.
    *\param v Original coordinate.
    *\param i Index of projected pixel in x direction.
    *\param j Index of projected pixel in y direction.
    */
-  void ProjectPixel(const Self::SpaceVectorType &v, int &i, int &j) const;
-
+  void ProjectPixel( const Self::SpaceVectorType& v, int& i, int& j ) const;
+  
   /// Print object information.
   virtual void Print() const;
 
- private:
+private:
   /// Image dimensions
   Self::IndexType m_Dims;
 
   /// Adjust aspect ratio by stretching in Y-direction.
-  void AdjustAspectY(const bool interpolate = false);
+  void AdjustAspectY( const bool interpolate = false );
 
   /// Adjust aspect ratio by stretching in X-direction.
-  void AdjustAspectX(const bool interpolate = false);
+  void AdjustAspectX( const bool interpolate = false );
 };
 
 //@{
@@ -216,6 +230,6 @@ class ScalarImage {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkScalarImage_h_included_
+#endif // #ifndef __cmtkScalarImage_h_included_

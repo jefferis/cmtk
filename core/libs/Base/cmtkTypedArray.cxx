@@ -30,161 +30,172 @@
 //
 */
 
-#include <Base/cmtkTemplateArray.h>
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTemplateArray.h>
 
 #include <math.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void TypedArray ::RescaleToRange(const Types::DataItemRange &toRange) {
+void
+TypedArray
+::RescaleToRange( const Types::DataItemRange& toRange )
+{
   const Types::DataItemRange fromRange = this->GetRange();
-
+  
   const Types::DataItem scale = toRange.Width() / fromRange.Width();
-  const Types::DataItem offset =
-      toRange.m_LowerBound - (fromRange.m_LowerBound * scale);
+  const Types::DataItem offset = toRange.m_LowerBound - (fromRange.m_LowerBound * scale);
 
-  this->Rescale(scale, offset);
+  this->Rescale( scale, offset );
 }
 
-void TypedArray ::BlockSwap(const size_t fromOffset, const size_t toOffset,
-                            const size_t blockLength) {
+void
+TypedArray
+::BlockSwap
+( const size_t fromOffset, const size_t toOffset, const size_t blockLength )
+{
   char buffer[2048];
 
   size_t itemSize = this->GetItemSize();
-  char *dataPtr = static_cast<char *>(this->GetDataPtr());
+  char *dataPtr = static_cast<char*>( this->GetDataPtr() );
 
   size_t bytesToGo = itemSize * blockLength;
   char *fromPtr = dataPtr + itemSize * fromOffset;
   char *toPtr = dataPtr + itemSize * toOffset;
 
-  while (bytesToGo > sizeof(buffer)) {
-    memcpy(buffer, toPtr, sizeof(buffer));
-    memcpy(toPtr, fromPtr, sizeof(buffer));
-    memcpy(fromPtr, buffer, sizeof(buffer));
+  while ( bytesToGo > sizeof( buffer ) ) 
+    {
+    memcpy( buffer, toPtr, sizeof( buffer ) );
+    memcpy( toPtr, fromPtr, sizeof( buffer ) );
+    memcpy( fromPtr, buffer, sizeof( buffer ) );
+    
+    fromPtr += sizeof( buffer );
+    toPtr += sizeof( buffer );
+    bytesToGo -= sizeof( buffer );
+    }
 
-    fromPtr += sizeof(buffer);
-    toPtr += sizeof(buffer);
-    bytesToGo -= sizeof(buffer);
-  }
-
-  if (bytesToGo) {
-    memcpy(buffer, toPtr, bytesToGo);
-    memcpy(toPtr, fromPtr, bytesToGo);
-    memcpy(fromPtr, buffer, bytesToGo);
-  }
+  if ( bytesToGo ) 
+    {
+    memcpy( buffer, toPtr, bytesToGo );
+    memcpy( toPtr, fromPtr, bytesToGo );
+    memcpy( fromPtr, buffer, bytesToGo );
+    }
 }
 
-void TypedArray ::BlockReverse(const size_t fromOffset,
-                               const size_t blockLength) {
+void
+TypedArray
+::BlockReverse
+( const size_t fromOffset, const size_t blockLength )
+{
   // we get into trouble here for item sizes > 128 bits.
   char buffer[16];
 
   size_t itemSize = this->GetItemSize();
-  char *dataPtr = static_cast<char *>(this->GetDataPtr());
+  char *dataPtr = static_cast<char*>( this->GetDataPtr() );
 
   char *fromPtr = dataPtr + fromOffset * itemSize;
-  char *toPtr = fromPtr + (blockLength - 1) * itemSize;
+  char *toPtr = fromPtr + (blockLength-1) * itemSize;
 
-  for (size_t itemsToGo = blockLength / 2; itemsToGo; --itemsToGo) {
-    memcpy(buffer, toPtr, itemSize);
-    memcpy(toPtr, fromPtr, itemSize);
-    memcpy(fromPtr, buffer, itemSize);
-
+  for ( size_t itemsToGo = blockLength / 2; itemsToGo; --itemsToGo ) 
+    {
+    memcpy( buffer, toPtr, itemSize );
+    memcpy( toPtr, fromPtr, itemSize );
+    memcpy( fromPtr, buffer, itemSize );
+    
     fromPtr += itemSize;
     toPtr -= itemSize;
-  }
+    }
 }
 
-TypedArray::SmartPtr TypedArray ::Create(
-    const ScalarDataType dtype, void *const data, const size_t size,
-    const bool paddingFlag, const void *paddingData,
-    const Memory::DeallocatorFunctionPointer deallocator) {
-  switch (dtype) {
-    case TYPE_BYTE:
-      return Self::SmartPtr(
-          new ByteArray(data, size, paddingFlag, paddingData, deallocator));
+TypedArray::SmartPtr
+TypedArray
+::Create
+( const ScalarDataType dtype, void *const data, const size_t size, const bool paddingFlag, const void* paddingData, const Memory::DeallocatorFunctionPointer deallocator )
+{
+  switch (dtype) 
+    {
+    case TYPE_BYTE: 
+      return Self::SmartPtr( new ByteArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_CHAR:
-      return Self::SmartPtr(
-          new CharArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_CHAR: 
+      return Self::SmartPtr( new CharArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_SHORT:
-      return Self::SmartPtr(
-          new ShortArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_SHORT: 
+      return Self::SmartPtr( new ShortArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_USHORT:
-      return Self::SmartPtr(
-          new UShortArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_USHORT: 
+      return Self::SmartPtr( new UShortArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_INT:
-      return Self::SmartPtr(
-          new IntArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_INT: 
+      return Self::SmartPtr( new IntArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_UINT:
-      return Self::SmartPtr(
-          new UIntArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_UINT: 
+      return Self::SmartPtr( new UIntArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_FLOAT:
-      return Self::SmartPtr(
-          new FloatArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_FLOAT: 
+      return Self::SmartPtr( new FloatArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
-    case TYPE_DOUBLE:
-      return Self::SmartPtr(
-          new DoubleArray(data, size, paddingFlag, paddingData, deallocator));
+    case TYPE_DOUBLE: 
+      return Self::SmartPtr( new DoubleArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     default:
       break;
-  }
-
-  fprintf(stderr, "TypedArray::Create - Data type %d unknown.", dtype);
+    }
+  
+  fprintf(stderr,"TypedArray::Create - Data type %d unknown.",dtype);
   return Self::SmartPtr();
 }
 
-TypedArray::SmartPtr TypedArray ::Create(const ScalarDataType dtype,
-                                         const size_t size) {
-  switch (dtype) {
-    case TYPE_BYTE:
-      return Self::SmartPtr(new ByteArray(size));
+TypedArray::SmartPtr
+TypedArray
+::Create( const ScalarDataType dtype, const size_t size )
+{
+  switch ( dtype ) 
+    {
+    case TYPE_BYTE:   
+      return Self::SmartPtr( new ByteArray( size ) );
       break;
-    case TYPE_CHAR:
-      return Self::SmartPtr(new CharArray(size));
+    case TYPE_CHAR:   
+      return Self::SmartPtr( new CharArray( size ) );
       break;
-    case TYPE_SHORT:
-      return Self::SmartPtr(new ShortArray(size));
+    case TYPE_SHORT:  
+      return Self::SmartPtr( new ShortArray( size ) );
       break;
-    case TYPE_USHORT:
-      return Self::SmartPtr(new UShortArray(size));
+    case TYPE_USHORT:  
+      return Self::SmartPtr( new UShortArray( size ) );
       break;
-    case TYPE_INT:
-      return Self::SmartPtr(new IntArray(size));
+    case TYPE_INT:    
+      return Self::SmartPtr( new IntArray( size ) );
       break;
-    case TYPE_UINT:
-      return Self::SmartPtr(new UIntArray(size));
+    case TYPE_UINT:    
+      return Self::SmartPtr( new UIntArray( size ) );
       break;
-    case TYPE_FLOAT:
-      return Self::SmartPtr(new FloatArray(size));
+    case TYPE_FLOAT:  
+      return Self::SmartPtr( new FloatArray( size ) );
       break;
     case TYPE_DOUBLE:
-      return Self::SmartPtr(new DoubleArray(size));
+      return Self::SmartPtr( new DoubleArray( size ) );
       break;
     default:
       break;
-  }
+    }
 
-  fprintf(stderr, "TypedArray::Create - Data type %d unknown.", dtype);
+  fprintf( stderr, "TypedArray::Create - Data type %d unknown.", dtype );
   return Self::SmartPtr();
 }
 
-void TypedArray ::PruneHistogram(const bool pruneHi, const bool pruneLo,
-                                 const size_t numberOfBinsTarget,
-                                 const size_t numberOfBinsInternal) {
-  Histogram<unsigned int>::SmartPtr originalHistogram(
-      this->GetHistogram(numberOfBinsInternal));
-
+void 
+TypedArray
+::PruneHistogram
+( const bool pruneHi, const bool pruneLo, const size_t numberOfBinsTarget, const size_t numberOfBinsInternal )
+{
+  Histogram<unsigned int>::SmartPtr originalHistogram( this->GetHistogram( numberOfBinsInternal ) );
+  
   const size_t oneBinFraction = this->GetDataSize() / numberOfBinsTarget;
 
   const Types::DataItemRange range = this->GetRange();
@@ -192,31 +203,35 @@ void TypedArray ::PruneHistogram(const bool pruneHi, const bool pruneLo,
   Types::DataItem min = range.m_LowerBound;
   Types::DataItem max = range.m_UpperBound;
 
-  if (pruneHi) {
+  if ( pruneHi )
+    {
     size_t accumulatedNumberOfSamples = 0;
-    for (size_t binIdx = numberOfBinsInternal - 1; binIdx > 0; --binIdx) {
+    for ( size_t binIdx = numberOfBinsInternal-1; binIdx > 0; --binIdx )
+      {
       accumulatedNumberOfSamples += (*originalHistogram)[binIdx];
-      if (accumulatedNumberOfSamples > oneBinFraction) {
-        max =
-            range.m_LowerBound + range.Width() / numberOfBinsInternal * binIdx;
-        break;
+      if ( accumulatedNumberOfSamples > oneBinFraction )
+	{
+	max = range.m_LowerBound + range.Width()/numberOfBinsInternal*binIdx;
+	break;
+	}
       }
     }
-  }
 
-  if (pruneLo) {
+  if ( pruneLo )
+    {
     size_t accumulatedNumberOfSamples = 0;
-    for (size_t binIdx = 0; binIdx < numberOfBinsInternal; ++binIdx) {
+    for ( size_t binIdx = 0; binIdx < numberOfBinsInternal; ++binIdx )
+      {
       accumulatedNumberOfSamples += (*originalHistogram)[binIdx];
-      if (accumulatedNumberOfSamples > oneBinFraction) {
-        min =
-            range.m_LowerBound + range.Width() / numberOfBinsInternal * binIdx;
-        break;
+      if ( accumulatedNumberOfSamples > oneBinFraction )
+	{
+	min = range.m_LowerBound + range.Width()/numberOfBinsInternal*binIdx;
+	break;
+	}
       }
     }
-  }
-
-  this->Threshold(Types::DataItemRange(min, max));
+  
+  this->Threshold( Types::DataItemRange( min, max ) );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

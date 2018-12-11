@@ -36,19 +36,24 @@
 #include <cmtkconfig.h>
 
 #ifdef HAVE_IEEEFP_H
-#include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
-namespace Interpolators {
+namespace 
+Interpolators
+{
 
 /// Sinc interpolator with Hamming window.
-template <int NRadius = 5>
-class HammingSinc {
- public:
+template<int NRadius=5>
+class HammingSinc
+{
+public:
   /// This class.
   typedef HammingSinc<NRadius> Self;
 
@@ -59,26 +64,25 @@ class HammingSinc {
   static const bool SuitableForLabels = false;
 
   /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight(const int i, const Types::Coordinate x) {
+  static Types::Coordinate GetWeight( const int i, const Types::Coordinate x )
+  {
     const Types::Coordinate piDiff = M_PI * (x - i);
-    const Types::Coordinate result =
-        0.54 + 0.46 * cos(piDiff * Self::InternalFactor) * sin(piDiff) / piDiff;
-    return finite(result) ? result : 1;
+    const Types::Coordinate result = 0.54 + 0.46 * cos( piDiff * Self::InternalFactor ) * sin( piDiff ) / piDiff;
+    return finite( result ) ? result : 1;
   }
 
- private:
+private:
   /// Internal factor.
   static const Types::Coordinate InternalFactor;
 };
 
-template <int NRadius>
-const Types::Coordinate HammingSinc<NRadius>::InternalFactor =
-    1.0 / HammingSinc<NRadius>::RegionSizeLeftRight;
+template<int NRadius> const Types::Coordinate HammingSinc<NRadius>::InternalFactor = 1.0 / HammingSinc<NRadius>::RegionSizeLeftRight;
 
 /// Sinc interpolator with Cosine window.
-template <int NRadius = 5>
-class CosineSinc {
- public:
+template<int NRadius=5>
+class CosineSinc
+{
+public:
   /// This class.
   typedef CosineSinc<NRadius> Self;
 
@@ -89,26 +93,24 @@ class CosineSinc {
   static const int RegionSizeLeftRight = NRadius;
 
   /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight(const int i, const Types::Coordinate x) {
+  static Types::Coordinate GetWeight( const int i, const Types::Coordinate x )
+  {
     const Types::Coordinate piDiff = M_PI * (x - i);
-    const Types::Coordinate result =
-        cos(piDiff * Self::InternalFactor) * sin(piDiff) / piDiff;
-    return finite(result) ? result : 1;
+    const Types::Coordinate result = cos( piDiff * Self::InternalFactor ) * sin( piDiff ) / piDiff;
+    return finite( result ) ? result : 1;
   }
 
- private:
+private:
   /// Internal factor.
   static const Types::Coordinate InternalFactor;
 };
 
-template <int NRadius>
-const Types::Coordinate CosineSinc<NRadius>::InternalFactor =
-    1.0 / (2 * CosineSinc<NRadius>::RegionSizeLeftRight);
+template<int NRadius> const Types::Coordinate CosineSinc<NRadius>::InternalFactor = 1.0 / (2*CosineSinc<NRadius>::RegionSizeLeftRight);
 
-}  // namespace Interpolators
+} // namespace Interpolators
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #endif

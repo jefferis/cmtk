@@ -35,18 +35,21 @@
 
 #include <cmtkconfig.h>
 
-#include <queue>
 #include <string>
+#include <queue>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Generic class for progress indication.
  */
-class Progress {
- public:
+class Progress 
+{
+public:
   /// Status code returned by SetPercentDone() method.
   typedef enum {
     /// Everything okay; continue as usual.
@@ -57,74 +60,74 @@ class Progress {
     TIMEOUT,
     /// Something went wrong.
     FAILED
-  } ResultEnum;
+  } ResultEnum;  
 
   /// This class.
   typedef Progress Self;
 
   /// Constructor.
-  Progress() { Self::SetProgressInstance(this); }
+  Progress()
+  {
+    Self::SetProgressInstance( this );
+  }
 
   /// Virtual (dummy) destructor.
-  virtual ~Progress(){};
-
+  virtual ~Progress() {};
+  
   /// Set total number of steps to complete.
-  static void Begin(const double start, const double end,
-                    const double increment,
-                    const std::string &taskName = std::string(""));
+  static void Begin( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
 
   /// Set number of tasks completed.
-  static ResultEnum SetProgress(const double progress);
+  static ResultEnum SetProgress( const double progress );
 
   /// Done with progress indicator.
   static void Done();
 
   /// Set number of tasks completed.
   virtual ResultEnum UpdateProgress() = 0;
-
+  
   /// Set number of tasks completed.
-  void SetProgressCurrent(const double progress);
-
+  void SetProgressCurrent( const double progress );
+  
   /// Set progress handler instance.
-  static void SetProgressInstance(Self *const progressInstance) {
+  static void SetProgressInstance( Self *const progressInstance ) 
+  {
     Self::ProgressInstance = progressInstance;
   }
-
- protected:
+  
+protected:
   /// Check if we're at the top level of the task hierarchy.
-  bool IsTopLevel() const { return m_RangeStack.size() == 1; }
+  bool IsTopLevel() const
+  {
+    return m_RangeStack.size() == 1;
+  }
 
-  /// Return the name of the current task (at the lowest level of nested
-  /// ranges).
+  /// Return the name of the current task (at the lowest level of nested ranges).
   const std::string GetCurrentTaskName() const;
 
   /// Compute current completion fraction from range stack.
   double GetFractionComplete() const;
 
   /// Set total number of steps to complete.
-  virtual void BeginVirtual(const double start, const double end,
-                            const double increment,
-                            const std::string &taskName = std::string(""));
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
 
   /** Clean up progress output.
    * This member function can be overriden by derived classes.
    */
   virtual void DoneVirtual();
 
- private:
+private:
   /// Instance of a derived class that handles GUI interaction etc.
-  static Self *ProgressInstance;
+  static Self* ProgressInstance;
 
   /// Class to current progress range, which can be nested.
-  class Range {
-   public:
+  class Range
+  {
+  public:
     /// Constructor.
-    Range(const double start, const double end, const double increment,
-          const std::string &taskName = std::string(""))
-        : m_Start(start),
-          m_End(end),
-          m_Increment(increment),
-          m_TaskName(taskName) {
+    Range( const double start, const double end, const double increment, const std::string& taskName = std::string("") )
+      : m_Start( start ), m_End( end ), m_Increment( increment ), m_TaskName( taskName )
+    {
       this->m_Current = this->m_Start;
     }
 
@@ -156,6 +159,6 @@ class Progress {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkProgress_h_included_
+#endif // #ifndef __cmtkProgress_h_included_

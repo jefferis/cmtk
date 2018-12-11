@@ -38,65 +38,77 @@
 
 #include <stdlib.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
-ProgressConsole::ProgressConsole(const std::string &programName)
-    : m_ProgramName(programName), m_TimeAtStart(0.0) {
-  this->m_InsideSlicer3 = (getenv("Slicer3_HOME") != NULL);
-
-  if (this->m_InsideSlicer3) {
+ProgressConsole::ProgressConsole( const std::string& programName )
+  : m_ProgramName( programName ),
+    m_TimeAtStart( 0.0 )
+{
+  this->m_InsideSlicer3 = ( getenv( "Slicer3_HOME" ) != NULL );
+    
+  if ( this->m_InsideSlicer3 )
+    {
     std::cout << "<filter-start>\n"
-              << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-              << "<filter-comment> \"" << this->m_ProgramName
-              << "\" </filter-comment>\n"
-              << "</filter-start>\n";
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-comment> \"" << this->m_ProgramName << "\" </filter-comment>\n"
+	      << "</filter-start>\n";
     std::cout.flush();
-  }
+    }
 }
 
-ProgressConsole::~ProgressConsole() {
-  if (this->m_InsideSlicer3) {
+ProgressConsole::~ProgressConsole()
+{
+  if ( this->m_InsideSlicer3 )
+    {
     std::cout << "<filter-end>\n"
-              << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-              << "<filter-time>"
-              << Timers::GetTimeProcess() - this->m_TimeAtStart
-              << "</filter-time>\n"
-              << "</filter-end>\n";
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
+	      << "</filter-end>\n";
     std::cout.flush();
-  }
+    }
 }
 
-Progress::ResultEnum ProgressConsole::UpdateProgress() {
+Progress::ResultEnum
+ProgressConsole::UpdateProgress()
+{
   const double fraction = this->GetFractionComplete();
 
-  if (this->m_InsideSlicer3) {
+  if ( this->m_InsideSlicer3 )
+    {
     std::cout << "<filter-progress>" << fraction << "</filter-progress>\n";
     std::cout.flush();
-  } else {
-    const std::string &currentTaskName = this->GetCurrentTaskName();
-    if (currentTaskName.length()) {
-      DebugOutput(2).GetStream().printf("%s: %d %%\r", currentTaskName.c_str(),
-                                        static_cast<int>(100.0 * fraction));
-    } else {
-      DebugOutput(2).GetStream().printf("%d %%\r",
-                                        static_cast<int>(100.0 * fraction));
     }
-  }
+  else
+    {
+    const std::string& currentTaskName = this->GetCurrentTaskName();
+    if ( currentTaskName.length() )
+      {
+      DebugOutput( 2 ).GetStream().printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+      }
+    else
+      {
+      DebugOutput( 2 ).GetStream().printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
+      }
+    }
 
   return Self::OK;
 }
 
-void ProgressConsole::BeginVirtual(const double start, const double end,
-                                   const double increment,
-                                   const std::string &taskName) {
-  this->Superclass::BeginVirtual(start, end, increment, taskName);
+void
+ProgressConsole:: BeginVirtual
+( const double start, const double end, const double increment, const std::string& taskName )
+{
+  this->Superclass::BeginVirtual( start, end, increment, taskName );
 
-  if (this->IsTopLevel()) {
+  if ( this->IsTopLevel() )
+    {
     this->m_TimeAtStart = Timers::GetTimeProcess();
-  }
+    }
 }
 
-}  // namespace cmtk
+} // namespace cmtk

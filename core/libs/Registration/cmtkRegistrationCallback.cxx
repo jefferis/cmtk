@@ -34,10 +34,12 @@
 
 #include <System/cmtkConsole.h>
 
-#include <signal.h>
 #include <cstdarg>
+#include <signal.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -45,50 +47,60 @@ namespace cmtk {
 /// Flag that is set upon SIGINT signal.
 static bool InterruptSignalReceived;
 
-RegistrationCallback::RegistrationCallback() {
+RegistrationCallback::RegistrationCallback() 
+{ 
 #ifndef DEBUG
   InterruptSignalReceived = false;
 #ifndef _MSC_VER
-  signal(SIGINT, cmtkRegistrationCallbackDispatchSIGINT);
+  signal( SIGINT, cmtkRegistrationCallbackDispatchSIGINT );
 #endif
 #endif
 }
 
-RegistrationCallback::~RegistrationCallback() {
+RegistrationCallback::~RegistrationCallback() 
+{ 
 #ifndef DEBUG
-#ifdef HAVE_SIGRELSE
-  sigrelse(SIGINT);
-#endif
+#  ifdef HAVE_SIGRELSE
+  sigrelse( SIGINT );
+#  endif
 #endif
 }
 
-CallbackResult RegistrationCallback::ExecuteWithData(const CoordinateVector &,
-                                                     const double) {
+CallbackResult 
+RegistrationCallback::ExecuteWithData
+( const CoordinateVector&, const double )
+{
   return InterruptSignalReceived ? CALLBACK_INTERRUPT : CALLBACK_OK;
 }
 
-CallbackResult RegistrationCallback::Execute() {
+CallbackResult
+RegistrationCallback::Execute ()
+{
   return InterruptSignalReceived ? CALLBACK_INTERRUPT : CALLBACK_OK;
 }
 
-void RegistrationCallback::Comment(const char *) { return; }
+void
+RegistrationCallback::Comment ( const char* )
+{
+  return;
+}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-void cmtkRegistrationCallbackDispatchSIGINT(int sig) {
-  if (cmtk::InterruptSignalReceived) {
-    cmtk::StdErr.printf("Received repeated INT signal... exiting.\n");
-    exit(3);
-  }
+void
+cmtkRegistrationCallbackDispatchSIGINT( int sig )
+{
+  if ( cmtk::InterruptSignalReceived )
+    {
+    cmtk::StdErr.printf( "Received repeated INT signal... exiting.\n" );
+    exit( 3 );
+    }
 
 #ifndef DEBUG
   cmtk::InterruptSignalReceived = true;
 #ifndef _MSC_VER
-  signal(sig, cmtkRegistrationCallbackDispatchSIGINT);
+  signal( sig, cmtkRegistrationCallbackDispatchSIGINT );
 #endif
 #endif
-  cmtk::StdErr.printf(
-      "Received INT (%d) signal... preparing exit. Press "
-      "Ctrl-C again to abort immediately.\n",
-      sig);
+  cmtk::StdErr.printf( "Received INT (%d) signal... preparing exit. Press Ctrl-C again to abort immediately.\n", sig );
 }

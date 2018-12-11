@@ -34,65 +34,72 @@
 
 #include "cmtkVolume.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-bool Volume::GetTrilinear(ProbeInfo &probeInfo, const Types::GridIndexType X,
-                          const Types::GridIndexType Y,
-                          const Types::GridIndexType Z,
-                          const Vector3D &Location,
-                          const Types::Coordinate *from,
-                          const Types::Coordinate *to) const {
-  const TypedArray *data = this->GetData();
+bool
+Volume::GetTrilinear
+( ProbeInfo& probeInfo, const Types::GridIndexType X, const Types::GridIndexType Y, const Types::GridIndexType Z,
+  const Vector3D& Location, const Types::Coordinate* from, 
+  const Types::Coordinate* to ) const
+{
+  const TypedArray* data = this->GetData();
 
-  Types::GridIndexType offset = X + this->m_Dims[0] * (Y + this->m_Dims[1] * Z);
+  Types::GridIndexType offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
 
-  bool data_present = data->Get(probeInfo.Values[0], offset);
-
-  if (X < this->m_Dims[0] - 1) {
-    data_present &= data->Get(probeInfo.Values[1], offset + nextI);
-
-    if (Y < this->m_Dims[1] - 1) {
-      data_present &= data->Get(probeInfo.Values[3], offset + nextIJ);
-
-      if (Z < this->m_Dims[2] - 1)
-        data_present &= data->Get(probeInfo.Values[7], offset + nextIJK);
+  bool data_present = data->Get( probeInfo.Values[0], offset );
+  
+  if ( X<this->m_Dims[0]-1 ) 
+    {
+    data_present &= data->Get( probeInfo.Values[1], offset+nextI );
+    
+    if ( Y<this->m_Dims[1]-1 ) 
+      {
+      data_present &= data->Get( probeInfo.Values[3], offset+nextIJ );
+      
+      if ( Z<this->m_Dims[2]-1 )
+	data_present &= data->Get( probeInfo.Values[7], offset+nextIJK );
+      }
+    if ( Z<this->m_Dims[2]-1 )
+      data_present &= data->Get( probeInfo.Values[5], offset+nextIK );
     }
-    if (Z < this->m_Dims[2] - 1)
-      data_present &= data->Get(probeInfo.Values[5], offset + nextIK);
-  }
-
-  if (Y < this->m_Dims[1] - 1) {
-    data_present &= data->Get(probeInfo.Values[2], offset + nextJ);
-
-    if (Z < this->m_Dims[2] - 1)
-      data_present &= data->Get(probeInfo.Values[6], offset + nextJK);
-  }
-
-  if (Z < this->m_Dims[2] - 1)
-    data_present &= data->Get(probeInfo.Values[4], offset + nextK);
-
-  if (data_present) {
-    for (int i = 0; i < 3; ++i) {
-      probeInfo.Deltas[i] = 1.0 / (to[i] - from[i]);
-
-      probeInfo.Offsets[i] =
-          1 - (probeInfo.Offsets[3 + i] =
-                   probeInfo.Deltas[i] * (Location[i] - from[i]));
+  
+  if ( Y<this->m_Dims[1]-1 ) 
+    {
+    data_present &= data->Get( probeInfo.Values[2], offset+nextJ );
+    
+    if ( Z<this->m_Dims[2]-1 )
+      data_present &= data->Get( probeInfo.Values[6], offset+nextJK );
     }
-
+  
+  if ( Z<this->m_Dims[2]-1 )
+    data_present &= data->Get( probeInfo.Values[4], offset+nextK );
+  
+  if (data_present)
+    {
+    for ( int i=0; i<3; ++i ) 
+      {
+      probeInfo.Deltas[i] = 1.0/(to[i]-from[i]);
+      
+      probeInfo.Offsets[i] = 1- (probeInfo.Offsets[3+i] = probeInfo.Deltas[i]*(Location[i]-from[i]) );
+      }
+    
     probeInfo.Location = Location;
-
+    
     return true;
-  }
-
+    }
+  
   return false;
 }
 
-Vector3D Volume::GetCenter() const {
+Vector3D
+Volume::GetCenter () const 
+{
   return this->m_Offset + 0.5 * this->m_Size;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

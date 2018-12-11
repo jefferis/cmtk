@@ -31,51 +31,54 @@
 #ifndef __cmtkImageOperationFlip_h_included_
 #define __cmtkImageOperationFlip_h_included_
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: flip.
 class ImageOperationFlip
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+  /// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
-  ImageOperationFlip(const int normalAxis) : m_NormalAxis(normalAxis) {}
+  ImageOperationFlip( const int normalAxis ) : m_NormalAxis( normalAxis ) {}
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    volume->ApplyMirrorPlane(this->m_NormalAxis);
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->ApplyMirrorPlane( this->m_NormalAxis );
     return volume;
   }
 
   /// Create x flip object.
-  static void NewX() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationFlip(cmtk::AXIS_X)));
+  static void NewX()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_X ) ) );
   }
 
   /// Create y flip object.
-  static void NewY() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationFlip(cmtk::AXIS_Y)));
+  static void NewY()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_Y ) ) );
   }
 
   /// Create y flip object.
-  static void NewZ() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationFlip(cmtk::AXIS_Z)));
+  static void NewZ()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_Z ) ) );
   }
 
- private:
+private:
   /// The normal axis of the flip.
   int m_NormalAxis;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationFlip_h_included_
+#endif // #ifndef __cmtkImageOperationFlip_h_included_

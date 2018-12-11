@@ -1,7 +1,6 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -35,44 +34,46 @@
 
 #include <cmtkconfig.h>
 
-#include <QtWidgets/QDialog>
+#include <qdialog.h>
 
 #include <Qt/cmtkQtWindowLevelControls.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
 /// Dialog with WIndow/Level and Colormap controls.
 class QtWindowLevelDialog :
-    /// Inherit from Qt dialog.
-    public QDialog {
+  /// Inherit from Qt dialog.
+  public QDialog
+{
   Q_OBJECT
 
- public:
+public:
   /// Constructor.
-  QtWindowLevelDialog(QWidget *parent = 0, bool modal = false,
-                      Qt::WindowFlags f = 0);
+  QtWindowLevelDialog( QWidget* parent = 0, bool modal = FALSE, Qt::WFlags f = 0 );
 
   /// Virtual destructor.
   virtual ~QtWindowLevelDialog() {}
 
- public slots:
+public slots:
   /// Set study object.
-  void slotSetStudy(Study::SmartPtr &study);
+  void slotSetStudy( Study::SmartPtr& study );
 
- signals:
+signals:
   /// This signal is emitted when the colormap of the study has changed.
-  void colormapChanged(Study::SmartPtr &);
+  void colormapChanged( Study::SmartPtr& );
 
- private:
+private:
   /// The Window/Level user interface component.
-  QtWindowLevelControls *Controls;
+  QtWindowLevelControls* Controls;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQtWindowLevelDialog_h_included_
+#endif // #ifndef __cmtkQtWindowLevelDialog_h_included_

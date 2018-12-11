@@ -36,65 +36,77 @@
 
 #include <System/cmtkExitException.h>
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-AnatomicalOrientation::PermutationMatrix::PermutationMatrix(
-    const FixedVector<3, Types::GridIndexType> &sourceDims,
-    const std::string &curOrientation, const char newOrientation[3]) {
-  // Build a permutation matrix and store it in compressed form
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
-      if (newOrientation[i] == curOrientation[j]) {
-        this->m_Axes[i] = j;
+AnatomicalOrientation::PermutationMatrix::PermutationMatrix
+( const FixedVector<3,Types::GridIndexType>& sourceDims, const std::string& curOrientation, const char newOrientation[3] ) 
+{
+  // Build a permutation matrix and store it in compressed form 
+  for ( int i = 0; i < 3; i++ )
+    {
+    for ( int j = 0; j < 3; j++ )
+      {
+      if ( newOrientation[i] == curOrientation[j] )
+        {
+        this->m_Axes[i] = j; 
         this->m_Multipliers[i] = 1;
         this->m_Offsets[i] = 0;
         break;
-      } else if (AnatomicalOrientation::OnSameAxis(newOrientation[i],
-                                                   curOrientation[j])) {
-        this->m_Axes[i] = j;
+        }
+      else if ( AnatomicalOrientation::OnSameAxis( newOrientation[i], curOrientation[j] ) )
+        {
+        this->m_Axes[i] = j; 
         this->m_Multipliers[i] = -1;
         this->m_Offsets[i] = sourceDims[j] - 1;
         break;
+        }
       }
     }
-  }
 
-  this->m_NewDims = this->GetPermutedArray(sourceDims);
-}
-
-AffineXform::MatrixType AnatomicalOrientation::PermutationMatrix::GetMatrix()
-    const {
-  AffineXform::MatrixType permutation = AffineXform::MatrixType::Identity();
-
-  for (int j = 0; j < 3; ++j) {
-    for (int i = 0; i < 3; ++i) {
-      if (i == this->m_Axes[j])
-        permutation[i][j] = this->m_Multipliers[j];
-      else
-        permutation[i][j] = 0;
-    }
-
-    permutation[3][j] = this->m_Offsets[j];
-  }
-
-  try {
-    return permutation.GetInverse();
-  } catch (const AffineXform::MatrixType::SingularMatrixException &) {
-    StdErr << "ERROR: orientation permutation matrix connot be inverted.\n";
-    throw ExitException(1);
-  }
+  this->m_NewDims = this->GetPermutedArray( sourceDims );
 }
 
 AffineXform::MatrixType
-AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix(
-    const AffineXform::MatrixType &inMatrix) const {
+AnatomicalOrientation::PermutationMatrix::GetMatrix() const
+{
+  AffineXform::MatrixType permutation = AffineXform::MatrixType::Identity();
+
+  for ( int j = 0; j < 3; ++j )
+    {
+    for ( int i = 0; i < 3; ++i )
+      {
+      if ( i == this->m_Axes[j] )
+	permutation[i][j] = this->m_Multipliers[j];
+      else
+	permutation[i][j] = 0;
+      }
+
+    permutation[3][j] = this->m_Offsets[j];
+    }
+
+  try
+    {
+    return permutation.GetInverse();
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
+    {
+    StdErr << "ERROR: orientation permutation matrix connot be inverted.\n";
+    throw ExitException( 1 );
+    }
+}
+
+AffineXform::MatrixType
+AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const
+{
   return this->GetMatrix() * inMatrix;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

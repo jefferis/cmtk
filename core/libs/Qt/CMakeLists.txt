@@ -45,7 +45,7 @@ SET(cmtkQt_SRCS
 )
 
 SET(cmtkQt_MOC_SRCS
-#  cmtkQGraphicsPixmapItemEvents.h
+  cmtkQGraphicsPixmapItemEvents.h
   cmtkQtImageOperators.h
   cmtkQtRenderImageRGB.h
   cmtkQtScrollRenderView.h
@@ -59,12 +59,13 @@ SET(cmtkQt_MOC_SRCS
 #-------------------------------
 # Generate Moc Files
 #-------------------------------
-QT5_WRAP_CPP(cmtkQt_SRCS ${cmtkQt_MOC_SRCS} )
+IF(QT_WRAP_CPP)
+  QT_WRAP_CPP(cmtkQt cmtkQt_SRCS ${cmtkQt_MOC_SRCS} )
+ENDIF(QT_WRAP_CPP)
 
 ADD_LIBRARY(cmtkQt ${cmtkQt_SRCS})
 
-TARGET_INCLUDE_DIRECTORIES(cmtkQt PUBLIC ${Qt5Widgets_INCLUDES})
-TARGET_LINK_LIBRARIES(cmtkQt cmtkPipeline cmtkIO cmtkBase cmtkSystem cmtkNumerics ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES})
+TARGET_LINK_LIBRARIES(cmtkQt cmtkPipeline cmtkIO cmtkBase cmtkSystem cmtkNumerics ${QT_LIBRARIES})
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkQt PROPERTIES ${CMTK_LIBRARY_PROPERTIES})

@@ -37,20 +37,23 @@
 
 #include <cmtkconfig.h>
 
+#include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
+#include <System/cmtkSmartPtr.h>
+#include <Registration/cmtkReformatVolume.h>
 #include <Base/cmtkInterpolator.h>
 #include <Base/cmtkTypes.h>
-#include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
-#include <Registration/cmtkReformatVolume.h>
-#include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Class for output of groupwise registration results.
-class GroupwiseRegistrationOutput {
- public:
+class GroupwiseRegistrationOutput
+{
+public:
   /// Functional base class.
   typedef GroupwiseRegistrationFunctionalBase FunctionalType;
 
@@ -58,48 +61,45 @@ class GroupwiseRegistrationOutput {
   typedef FunctionalType::SmartPtr FunctionalPointer;
 
   /// Constructors: link to functional.
-  GroupwiseRegistrationOutput(
-      FunctionalPointer &functional = FunctionalPointer::Null())
-      : m_ExistingTemplatePath(false), m_OutputRootDirectory(NULL) {
+  GroupwiseRegistrationOutput( FunctionalPointer& functional = FunctionalPointer::Null() ) :
+    m_ExistingTemplatePath( false ),
+    m_OutputRootDirectory( NULL )
+  {
     this->m_Functional = functional;
   }
 
   /// Set flag for existing template path.
-  void SetExistingTemplatePath(const bool flag) {
+  void SetExistingTemplatePath( const bool flag )
+  {
     this->m_ExistingTemplatePath = flag;
   }
 
   /// Set functional with implicit dynamic cast.
-  template <class TFunctional>
-  void SetFunctional(SmartPointer<TFunctional> &functional) {
-    this->m_Functional = FunctionalType::SmartPtr::DynamicCastFrom(functional);
+  template<class TFunctional>
+  void SetFunctional( SmartPointer<TFunctional>& functional )
+  {
+    this->m_Functional = FunctionalType::SmartPtr::DynamicCastFrom( functional );
   }
 
   /// Set root directory for all output files.
-  void SetOutputRootDirectory(const char *rootDir) {
+  void SetOutputRootDirectory( const char* rootDir )
+  {
     this->m_OutputRootDirectory = rootDir;
   }
 
   /// Write template specifications and transformations to a single file.
-  bool WriteGroupwiseArchive(const char *path) const;
-
+  bool WriteGroupwiseArchive( const char* path ) const;  
+  
   /// Write each transformations to a different typedstream archive.
-  bool WriteXformsSeparateArchives(const std::string &path,
-                                   const std::string &templatePath);
-
+  bool WriteXformsSeparateArchives( const std::string& path, const std::string& templatePath );
+  
   /// Reformat and write average image.
-  bool WriteAverageImage(
-      const char *path /*<! Path of output image.*/,
-      const cmtk::Interpolators::InterpolationEnum interp =
-          cmtk::Interpolators::LINEAR /*!< Selection of interpolation method
-                                         (via igsReformatVolume).*/
-      ,
-      const cmtk::ScalarDataType pixelType =
-          cmtk::TYPE_FLOAT /*!< Scalar data type for the average image. */,
-      const bool useTemplateData =
-          false /*!< If true, template image data is included in averaging.*/);
-
- private:
+  bool WriteAverageImage( const char* path /*<! Path of output image.*/,
+			  const cmtk::Interpolators::InterpolationEnum interp = cmtk::Interpolators::LINEAR /*!< Selection of interpolation method (via igsReformatVolume).*/,
+			  const cmtk::ScalarDataType pixelType = cmtk::TYPE_FLOAT /*!< Scalar data type for the average image. */,
+			  const bool useTemplateData = false /*!< If true, template image data is included in averaging.*/ );
+  
+private:
   /// Pointer to functional.
   FunctionalPointer m_Functional;
 
@@ -107,11 +107,11 @@ class GroupwiseRegistrationOutput {
   bool m_ExistingTemplatePath;
 
   /// Output root directory.
-  const char *m_OutputRootDirectory;
+  const char* m_OutputRootDirectory;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkGroupwiseRegistrationOutput_h_included_
+#endif // #ifndef __cmtkGroupwiseRegistrationOutput_h_included_

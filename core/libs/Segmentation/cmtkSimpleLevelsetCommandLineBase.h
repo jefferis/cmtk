@@ -39,15 +39,18 @@
 
 #include <System/cmtkCommandLine.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Command line interface base class for simple levelset segmentation.
  */
-class SimpleLevelsetCommandLineBase {
- public:
+class SimpleLevelsetCommandLineBase
+{
+public:
   /// This class.
   typedef SimpleLevelsetCommandLineBase Self;
 
@@ -55,12 +58,15 @@ class SimpleLevelsetCommandLineBase {
   SimpleLevelsetCommandLineBase();
 
   /// Initialize from command line arguments.
-  int Init(const int argc, const char *argv[]);
+  int Init( const int argc, const char* argv[] );
 
   /// Reference to command line object.
-  CommandLine &GetCommandLine() { return this->m_CommandLine; }
+  CommandLine& GetCommandLine()
+  {
+    return this->m_CommandLine;
+  }
 
- protected:
+protected:
   /// Initial sphere scale factor.
   Types::Coordinate m_ScaleInitialSphere;
 
@@ -70,20 +76,18 @@ class SimpleLevelsetCommandLineBase {
   /// Levelset evolution time constant.
   Types::Coordinate m_TimeDelta;
 
-  /// Levelset threshold: the levelset function is truncated to plus/minus this
-  /// value at each iteration.
+  /// Levelset threshold: the levelset function is truncated to plus/minus this value at each iteration.
   Types::Coordinate m_LevelsetThreshold;
-
+  
   /// Number of levelset evolution iterations.
   int m_NumberOfIterations;
-
-  /// Flag to force given number of iterations even when premature (discrete)
-  /// convergence is detected.
+  
+  /// Flag to force given number of iterations even when premature (discrete) convergence is detected.
   bool m_ForceIterations;
 
   /// Binarize levelset before output.
   bool m_Binarize;
-
+  
   /// Input image path.
   std::string m_InFile;
 
@@ -92,18 +96,17 @@ class SimpleLevelsetCommandLineBase {
 
   /// The input image volume.
   UniformVolume::SmartConstPtr m_Volume;
-
+  
 #ifdef CMTK_USE_SQLITE
-  /// Update this image/transformation database with the newly created levelset
-  /// image.
-  const char *m_UpdateDB;
-#endif
+  /// Update this image/transformation database with the newly created levelset image.
+  const char* m_UpdateDB;
+#endif  
 
- private:
+private:
   /// The command line parser object.
   cmtk::CommandLine m_CommandLine;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSimpleLevelsetCommandLineBase_h_included_
+#endif // #ifndef __cmtkSimpleLevelsetCommandLineBase_h_included_

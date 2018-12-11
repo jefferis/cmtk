@@ -42,28 +42,30 @@
 /** \addtogroup System */
 //@{
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** Progress indicator with console output.
  * This class displays the programm progress on the console, using cmtk::StdErr.
  * If this process is being run from inside Slicer3, output is based on Slicer's
  * XML-type progress reporting instead, and this is written to std::cout.
  *
- *\see
- *http://www.slicer.org/slicerWiki/index.php/Slicer3:Execution_Model_Documentation#Showing_Progress_in_an_Application
+ *\see http://www.slicer.org/slicerWiki/index.php/Slicer3:Execution_Model_Documentation#Showing_Progress_in_an_Application
  */
 class ProgressConsole :
-    /// Inherit generic progress indicator interface.
-    public Progress {
- public:
+  /// Inherit generic progress indicator interface.
+  public Progress
+{
+public:
   /// This class.
   typedef ProgressConsole Self;
 
   /// Superclass.
   typedef Progress Superclass;
-
+  
   /// Default constructor: connect to progress indicator.
-  ProgressConsole(const std::string &programName = std::string(""));
+  ProgressConsole( const std::string& programName = std::string("") );
 
   /// Destructor: finish things up.
   virtual ~ProgressConsole();
@@ -71,13 +73,11 @@ class ProgressConsole :
   /// Output progress to console.
   virtual ResultEnum UpdateProgress();
 
- protected:
+protected:
   /// Begin a new level of progress reporting.
-  virtual void BeginVirtual(const double start, const double end,
-                            const double increment,
-                            const std::string &taskName);
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName );
 
- private:
+private:
   /// Name of this program.
   std::string m_ProgramName;
 
@@ -88,8 +88,8 @@ class ProgressConsole :
   bool m_InsideSlicer3;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
 //@}
 
-#endif  // #ifndef __cmtkProgressConsole_h_included_
+#endif // #ifndef __cmtkProgressConsole_h_included_

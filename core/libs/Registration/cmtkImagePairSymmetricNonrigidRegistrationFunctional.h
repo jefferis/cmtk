@@ -36,19 +36,22 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkFunctional.h>
-#include <Base/cmtkInterpolator.h>
 #include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkInterpolator.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Symmtric-consistent elastic registration functional.
 class ImagePairSymmetricNonrigidRegistrationFunctional :
-    /** Inherit from generic functional. */
-    public Functional {
- public:
+  /** Inherit from generic functional. */
+  public Functional
+{
+public:
   /// This class.
   typedef ImagePairSymmetricNonrigidRegistrationFunctional Self;
 
@@ -59,34 +62,30 @@ class ImagePairSymmetricNonrigidRegistrationFunctional :
   typedef Functional Superclass;
 
   /// Set inverse consistency weight.
-  virtual void SetInverseConsistencyWeight(const Self::ReturnType) = 0;
+  virtual void SetInverseConsistencyWeight( const Self::ReturnType ) = 0;
+  
+  /// Set adaptive parameter fixing flag.
+  virtual void SetAdaptiveFixParameters( const bool ) = 0;
 
   /// Set adaptive parameter fixing flag.
-  virtual void SetAdaptiveFixParameters(const bool) = 0;
-
-  /// Set adaptive parameter fixing flag.
-  virtual void SetAdaptiveFixThreshFactor(const Self::ReturnType) = 0;
+  virtual void SetAdaptiveFixThreshFactor( const Self::ReturnType ) = 0;
 
   /// Set Jacobian constraint weight.
-  virtual void SetJacobianConstraintWeight(const Self::ReturnType) = 0;
-
+  virtual void SetJacobianConstraintWeight( const Self::ReturnType ) = 0;
+  
   /// Set smoothness constraint weight.
-  virtual void SetGridEnergyWeight(const Self::ReturnType) = 0;
+  virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform(SplineWarpXform::SmartPtr &warpFwd,
-                            SplineWarpXform::SmartPtr &warpBwd) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) = 0;
 
   /// Constructor function.
-  static ImagePairSymmetricNonrigidRegistrationFunctional *Create(
-      const int metric, UniformVolume::SmartPtr &refVolume,
-      UniformVolume::SmartPtr &fltVolume,
-      const Interpolators::InterpolationEnum interpolation);
+  static ImagePairSymmetricNonrigidRegistrationFunctional* Create
+  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef
-        // __cmtkImagePairSymmetricNonrigidRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkImagePairSymmetricNonrigidRegistrationFunctional_h_included_

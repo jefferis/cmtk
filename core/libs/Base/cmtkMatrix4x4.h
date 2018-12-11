@@ -36,27 +36,31 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkFixedSquareMatrix.h>
+#include <Base/cmtkTypes.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMatrix3x3.h>
-#include <Base/cmtkTypes.h>
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Homogeneous 4x4 transformation matrix.
-template <class T = Types::Coordinate>
-class Matrix4x4 : public FixedSquareMatrix<4, T> {
- public:
+template<class T=Types::Coordinate>
+class Matrix4x4 :
+    public FixedSquareMatrix<4,T>
+{
+public:
   /// This type instance.
   typedef Matrix4x4<T> Self;
 
   /// Base class..
-  typedef FixedSquareMatrix<4, T> Superclass;
+  typedef FixedSquareMatrix<4,T> Superclass;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -65,50 +69,45 @@ class Matrix4x4 : public FixedSquareMatrix<4, T> {
   Matrix4x4() {}
 
   /// Copy-from-baseclass constructor.
-  Matrix4x4(const Superclass &other) : Superclass(other) {}
+  Matrix4x4( const Superclass& other ) : Superclass( other ) {}
 
   /// Top left submatrix copy constructor.
-  Matrix4x4(const Matrix3x3<T> &other);
+  Matrix4x4( const Matrix3x3<T>& other );
 
   /** Array constructor.
    * If a NULL parameter is given, an uninitialized matrix is generated. This
    * is intended behaviour.
    */
-  Matrix4x4(const T *const values) : Superclass(values) {}
+  Matrix4x4( const T *const values ) : Superclass( values ) {}
 
   /// 2D array constructor.
-  template <class T2>
-  Matrix4x4(const T2 (&matrix)[4][4]) : Superclass(matrix) {}
+  template<class T2> Matrix4x4( const T2 (&matrix)[4][4] ) : Superclass( matrix ) {}
 
   /// Compose from canonical parameters.
-  Self &Compose(const Types::Coordinate params[15],
-                const bool logScaleFactors = false);
-
+  Self& Compose( const Types::Coordinate params[15], const bool logScaleFactors = false );
+  
   /// Decompose into affine parameters.
-  bool Decompose(Types::Coordinate params[15],
-                 const Types::Coordinate *center = NULL,
-                 const bool logScaleFactors = false) const;
+  bool Decompose( Types::Coordinate params[15], const Types::Coordinate *center = NULL, const bool logScaleFactors = false ) const;
 
   /// Get top-left 3x3 submatrix.
   const Matrix3x3<T> GetTopLeft3x3() const;
 
   /** Change reference coordinate system.
    */
-  Self &ChangeCoordinateSystem(const FixedVector<3, T> &newX,
-                               const FixedVector<3, T> &newY);
+  Self& ChangeCoordinateSystem( const FixedVector<3,T>& newX, const  FixedVector<3,T>& newY );
 
   /// Return rotation around x axis.
-  static Self RotateX(const T angle);
-
+  static Self RotateX( const T angle );
+  
   /// Return rotation around y axis.
-  static Self RotateY(const T angle);
-
+  static Self RotateY( const T angle );
+  
   /// Return rotation around z axis.
-  static Self RotateZ(const T angle);
+  static Self RotateZ( const T angle );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMatrix4x4_h_included_
+#endif // #ifndef __cmtkMatrix4x4_h_included_

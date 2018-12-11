@@ -37,27 +37,30 @@
 
 #include <Registration/cmtkVoxelMatchingMetric.h>
 
-#include <Base/cmtkMathUtil.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkMathUtil.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 #ifdef _MSC_VER
-#pragma warning(disable : 4521)
+#pragma warning (disable:4521)
 #endif
 /** Normalized Cross Correlation Metric.
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNCC instead.
  */
 class VoxelMatchingCrossCorrelation :
-    /// Inherit generic voxel metric with internal short data.
-    public VoxelMatchingMetricShort {
- public:
+  /// Inherit generic voxel metric with internal short data.
+  public VoxelMatchingMetricShort
+{
+public:
   /// This type.
   typedef VoxelMatchingCrossCorrelation Self;
 
@@ -66,60 +69,57 @@ class VoxelMatchingCrossCorrelation :
 
   /** Default constructor.
    */
-  VoxelMatchingCrossCorrelation()
-      : SumX(0.0),
-        SumY(0.0),
-        SumXY(0.0),
-        SumSqX(0.0),
-        SumSqY(0.0),
-        Samples(0) {}
+  VoxelMatchingCrossCorrelation() : SumX( 0.0 ), SumY( 0.0 ), SumXY( 0.0 ), SumSqX( 0.0 ), SumSqY( 0.0 ), Samples( 0 ) {}
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The floating (transformed) volume.
    */
-  VoxelMatchingCrossCorrelation(const UniformVolume *refVolume,
-                                const UniformVolume *fltVolume);
+  VoxelMatchingCrossCorrelation ( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 
   /** Add a pair of values to the metric.
    */
-  template <class T>
-  void Increment(const T a, const T b) {
-    if ((a != DataX.padding()) && (b != DataY.padding())) {
+  template<class T> void Increment( const T a, const T b )
+  {
+    if ( (a != DataX.padding()) && (b != DataY.padding()) ) 
+      {
       ++Samples;
       SumX += a;
       SumY += b;
       SumSqX += a * a;
       SumSqY += b * b;
       SumXY += a * b;
-    }
+      }
   }
 
   /** Remove a pair of values from the metric.
    */
-  template <class T>
-  void Decrement(const T a, const T b) {
-    if ((a != DataX.padding()) && (b != DataY.padding())) {
+  template<class T> void Decrement( const T a, const T b )
+  {
+    if ( (a != DataX.padding()) && (b != DataY.padding()) ) 
+      {
       --Samples;
       SumX -= a;
       SumY -= b;
       SumSqX -= a * a;
       SumSqY -= b * b;
       SumXY -= a * b;
-    }
+      }
   }
-
+  
   /// Start with a new computation.
-  void Reset() {
+  void Reset () 
+  {
     SumX = SumY = SumSqX = SumSqY = SumXY = 0;
     Samples = 0;
   }
-
+  
   /// Compute cross correlation.
   Self::ReturnType Get() const;
 
-  void AddMetric(const Self &other) {
+  void AddMetric ( const Self& other )
+  {
     SumX += other.SumX;
     SumY += other.SumY;
     SumXY += other.SumXY;
@@ -128,8 +128,9 @@ class VoxelMatchingCrossCorrelation :
     Samples += other.Samples;
   }
 
-  void RemoveMetric(const Self &other) {
-    assert(Samples >= other.Samples);
+  void RemoveMetric ( const Self& other )
+  {
+    assert( Samples >= other.Samples );
     SumX -= other.SumX;
     SumY -= other.SumY;
     SumXY -= other.SumXY;
@@ -138,7 +139,7 @@ class VoxelMatchingCrossCorrelation :
     Samples -= other.Samples;
   }
 
- private:
+private:
   /// Sum over all samples in X distribution.
   double SumX;
 
@@ -160,6 +161,6 @@ class VoxelMatchingCrossCorrelation :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVoxelMatchingCrossCorrelation_h_included_
+#endif // #ifndef __cmtkVoxelMatchingCrossCorrelation_h_included_

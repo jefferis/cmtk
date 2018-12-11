@@ -32,120 +32,135 @@
 
 #include "cmtkDeformationField.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void DeformationField::InitControlPoints(const AffineXform *affineXform) {
+void
+DeformationField::InitControlPoints( const AffineXform* affineXform )
+{
   this->m_ParameterVector->Clear();
-
-  if (affineXform) {
+  
+  if ( affineXform ) 
+    {
     Types::Coordinate *ofs = this->m_Parameters;
 
     Self::SpaceVectorType p;
     p[2] = this->m_Offset[2];
-    for (int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->m_Spacing[2]) {
+    for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->m_Spacing[2] ) 
+      {
       p[1] = this->m_Offset[1];
-      for (int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->m_Spacing[1]) {
-        p[0] = this->m_Offset[0];
-        for (int x = 0; x < this->m_Dims[0];
-             ++x, p[0] += this->m_Spacing[0], ofs += 3) {
-          const Self::SpaceVectorType q(affineXform->Apply(p) - p);
+      for ( int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->m_Spacing[1] ) 
+	{
+	p[0] = this->m_Offset[0];
+	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->m_Spacing[0], ofs+=3 ) 
+	  {
+	  const Self::SpaceVectorType q( affineXform->Apply( p ) - p );
 
-          ofs[0] = q[0];
-          ofs[1] = q[1];
-          ofs[2] = q[2];
-        }
-      }
-    }
-
+	  ofs[0] = q[0];
+	  ofs[1] = q[1];
+	  ofs[2] = q[2];
+	  }
+	}
+      }	
+    
     this->m_InverseAffineScaling = affineXform->GetScales();
     this->m_GlobalScaling = affineXform->GetGlobalScaling();
-  } else {
-    this->m_InverseAffineScaling[0] = this->m_InverseAffineScaling[1] =
-        this->m_InverseAffineScaling[2] = this->m_GlobalScaling = 1.0;
-  }
+    } 
+  else
+    {
+    this->m_InverseAffineScaling[0] = this->m_InverseAffineScaling[1] = this->m_InverseAffineScaling[2] = this->m_GlobalScaling = 1.0;
+    }
 }
 
-DeformationField::SpaceVectorType DeformationField ::GetTransformedGrid(
-    const int idxX, const int idxY, const int idxZ) const {
-  const Types::Coordinate *coeff =
-      this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
+DeformationField::SpaceVectorType
+DeformationField
+::GetTransformedGrid 
+( const int idxX, const int idxY, const int idxZ ) const
+{
+  const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
-  return (this->GetOriginalControlPointPosition(idxX, idxY, idxZ) +
-          Self::SpaceVectorType::FromPointer(coeff));
+  return (this->GetOriginalControlPointPosition( idxX, idxY, idxZ ) + Self::SpaceVectorType::FromPointer( coeff ));
 }
 
-void DeformationField::GetTransformedGridRow(Self::SpaceVectorType *const vIn,
-                                             const int numPoints,
-                                             const int idxX, const int idxY,
-                                             const int idxZ) const {
+void 
+DeformationField::GetTransformedGridRow
+( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
+  const
+{
   Self::SpaceVectorType *v = vIn;
-  const Types::Coordinate *coeff =
-      this->m_Parameters + 3 * (idxX + nextJ * (idxY + nextK * idxZ));
+  const Types::Coordinate* coeff = this->m_Parameters + 3 * (idxX + nextJ * (idxY + nextK * idxZ ));
 
   const Types::Coordinate Y = this->m_Offset[1] + this->m_Spacing[1] * idxY;
   const Types::Coordinate Z = this->m_Offset[2] + this->m_Spacing[2] * idxZ;
 
-  for (int n = 0; n < numPoints; ++n, ++v, coeff += 3) {
+  for ( int n = 0; n < numPoints; ++n, ++v, coeff += 3 )
+    {
     v[n][0] = this->m_Offset[0] + this->m_Spacing[0] * idxX + coeff[0];
     v[n][1] = Y + coeff[1];
     v[n][2] = Z + coeff[2];
-  }
+    }
 }
 
-DeformationField::SpaceVectorType DeformationField::Apply(
-    const Self::SpaceVectorType &v) const {
-  Self::SpaceVectorType vTransformed(v);
+DeformationField::SpaceVectorType
+DeformationField::Apply
+( const Self::SpaceVectorType& v ) const
+{
+  Self::SpaceVectorType vTransformed( v );
   Types::Coordinate r[3], f[3];
   int grid[3];
-
+  
   // Do some precomputations.
-  for (int dim = 0; dim < 3; ++dim) {
+  for ( int dim = 0; dim<3; ++dim ) 
+    {
     // This is the (real-valued) index of the control point grid cell the
     // given location is in.
-    r[dim] = this->m_InverseSpacing[dim] * (v[dim] - this->m_Offset[dim]);
+    r[dim] = this->m_InverseSpacing[dim] * ( v[dim] - this->m_Offset[dim] );
     // This is the actual cell index.
-    grid[dim] = std::min(static_cast<int>(r[dim]), this->m_Dims[dim] - 2);
+    grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-2 );
     // And here's the relative position within the cell.
     f[dim] = r[dim] - grid[dim];
-  }
-
+    }
+  
   // Create a pointer to the front-lower-left corner of the c.p.g. cell.
-  Types::Coordinate *coeff =
-      this->m_Parameters +
-      3 * (grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]));
-
-  for (int dim = 0; dim < 3; ++dim) {
+  Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
+  
+  for ( int dim = 0; dim<3; ++dim ) 
+    {
     Types::Coordinate mm = 0;
     Types::Coordinate *coeff_mm = coeff;
-
+    
     // Loop over 4 c.p.g. planes in z-direction.
-    for (int m = 0; m < 2; ++m) {
+    for ( int m = 0; m < 2; ++m ) 
+      {
       Types::Coordinate ll = 0;
       Types::Coordinate *coeff_ll = coeff_mm;
-
+      
       // Loop over 4 c.p.g. planes in y-direction.
-      for (int l = 0; l < 2; ++l) {
-        Types::Coordinate kk = 0;
-        Types::Coordinate *coeff_kk = coeff_ll;
-
-        // Loop over 4 c.p.g. planes in x-direction.
-        for (int k = 0; k < 2; ++k, coeff_kk += 3) {
-          kk += (k ? f[0] : 1 - f[0]) * (*coeff_kk);
-        }
-        ll += (l ? f[1] : 1 - f[1]) * kk;
-        coeff_ll += nextJ;
-      }
-      mm += (m ? f[2] : 1 - f[2]) * ll;
+      for ( int l = 0; l < 2; ++l ) 
+	{
+	Types::Coordinate kk = 0;
+	Types::Coordinate *coeff_kk = coeff_ll;
+	
+	// Loop over 4 c.p.g. planes in x-direction.
+	for ( int k = 0; k < 2; ++k, coeff_kk+=3 ) 
+	  {
+	  kk += ( k ? f[0] : 1-f[0] ) * (*coeff_kk);
+	  }
+	ll += ( l ? f[1] : 1-f[1] ) * kk;
+	coeff_ll += nextJ;
+	}	
+      mm +=  ( m ? f[2] : 1-f[2] ) * ll;
       coeff_mm += nextK;
-    }
+      }
     vTransformed[dim] += mm;
     ++coeff;
-  }
+    }
 
   return vTransformed;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

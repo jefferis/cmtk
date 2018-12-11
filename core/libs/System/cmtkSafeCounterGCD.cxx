@@ -32,26 +32,26 @@
 
 #include "cmtkSafeCounterGCD.h"
 
-unsigned int cmtk::SafeCounterGCD::Get() const {
+unsigned int
+cmtk::SafeCounterGCD::Get() const
+{ 
   __block unsigned int result;
-  dispatch_sync(this->m_Queue, ^{
-    result = this->m_Counter;
-  });
+  dispatch_sync( this->m_Queue, ^{ result = this->m_Counter; } );
   return result;
 }
 
-unsigned int cmtk::SafeCounterGCD::Increment() {
+unsigned int
+cmtk::SafeCounterGCD::Increment()
+{ 
   __block unsigned int result;
-  dispatch_sync(this->m_Queue, ^{
-    result = ++(this->m_Counter);
-  });
+  dispatch_sync( this->m_Queue, ^{ result = ++(this->m_Counter); } );
   return result;
 }
 
-unsigned int cmtk::SafeCounterGCD::Decrement() {
+unsigned int
+cmtk::SafeCounterGCD::Decrement()
+{ 
   __block unsigned int result;
-  dispatch_sync(this->m_Queue, ^{
-    result = --(this->m_Counter);
-  });
+  dispatch_sync( this->m_Queue, ^{ result = --(this->m_Counter); } );
   return result;
 }

@@ -35,14 +35,17 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Base class for handling anatomical image orientation.
-class AnatomicalOrientationBase {
- public:
+class AnatomicalOrientationBase
+{
+public:
   /// This class.
   typedef AnatomicalOrientationBase Self;
 
@@ -56,32 +59,30 @@ class AnatomicalOrientationBase {
   static const char *const SPACE_ITK;
 
   /** Get closest orientation from a list.
-   * This function is used to determine which orientation to bring an image into
-   * so it can be written to a file format with limited orientation support
-   * (e.g., Analyze).
+   * This function is used to determine which orientation to bring an image into so it can be written to a file
+   * format with limited orientation support (e.g., Analyze).
    */
-  static const char *GetClosestOrientation(
-      const char *desiredOrientation,
-      const char *const availableOrientations[]);
+  static const char* GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] );
 
-  /** Return true if the direction corresponding to the
+  /** Return true if the direction corresponding to the 
    * character 'from' is on the same axis as that corresponding
    * to 'to'.
    *\param from Either L, R, A, P, I, or S
-   *\param to Either L, R, A, P, I, or S
+   *\param to Either L, R, A, P, I, or S 
    */
-  static bool OnSameAxis(const char from, const char to);
+  static bool OnSameAxis( const char from, const char to );
 
- protected:
+protected:
   /// Get inverse of axis orientation.
-  static char OppositeDirection(const char direction) {
+  static char OppositeDirection( const char direction )
+  {
     const char table[27] = "PbcdefghSjkRmnoAqLItuvwxyz";
-    return table[direction - 'A'];
+    return table[direction-'A'];    
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkAnatomicalOrientationBase_h_included_
+#endif // #ifndef __cmtkAnatomicalOrientationBase_h_included_

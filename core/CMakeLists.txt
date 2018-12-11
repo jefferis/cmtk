@@ -562,14 +562,15 @@ ADD_SUBDIRECTORY(Utilities)
 
 OPTION(CMTK_USE_QT "Use Qt (GUI applications need this)" OFF)
 IF(CMTK_USE_QT)
-  FIND_PACKAGE(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-  IF (Qt5_FOUND)
-    MESSAGE("Qt5 Found OK (${qt_version_str})")
-    INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDES})
-    ADD_DEFINITIONS(${Qt5Widgets_DEFINITIONS})
-  ELSE(Qt5_FOUND)
-    MESSAGE(FATAL_ERROR "No Qt5")
-  ENDIF(Qt5_FOUND)
+  SET (QT_MT_REQUIRED true)
+  SET (QT_MIN_VERSION "4.3.0")
+  FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+  IF (QT_FOUND)
+    MESSAGE("Qt4 Found OK (${qt_version_str})")
+    INCLUDE(${QT_USE_FILE})
+  ELSE(QT_FOUND)
+    MESSAGE(FATAL_ERROR "No Qt4")
+  ENDIF(QT_FOUND)
 ENDIF(CMTK_USE_QT)
 
 #-----------------------------------------------------------------------------
@@ -580,9 +581,9 @@ IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
 
-IF(CMTK_USE_QT AND Qt5_FOUND)
+IF(CMTK_USE_QT AND QT_FOUND)
   OPTION(BUILD_GUI "Build GUI applications" ON)
-ENDIF(CMTK_USE_QT AND Qt5_FOUND)
+ENDIF(CMTK_USE_QT AND QT_FOUND)
 
 #-----------------------------------------------------------------------------
 # Add an option to use FFTW library

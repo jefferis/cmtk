@@ -35,91 +35,104 @@
 
 #include <System/cmtkConsole.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
-void CommandLine::PrintMan(const char *argv0) const {
+void
+CommandLine::PrintMan
+( const char* argv0 ) const
+{
   // determine program file name
-  const char *cmd = strrchr(argv0, '/');
-  if (cmd) {
+  const char* cmd = strrchr( argv0, '/' );
+  if ( cmd )
+    {
     ++cmd;
-  } else {
+    }
+  else
+    {
     cmd = argv0;
-  }
+    }
 
-  ProgramPropertiesMapType::const_iterator ppit =
-      this->m_ProgramInfo.find(PRG_VERSN);
-  StdOut << ".TH " << cmd << " \"1\" \"" << __DATE__ << "\" \"CMTK "
-         << ppit->second << "\" \"The Computational Morphometry Toolkit\"\n";
+  ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_VERSN);
+  StdOut << ".TH " << cmd << " \"1\" \"" << __DATE__ << "\" \"CMTK " << ppit->second << "\" \"The Computational Morphometry Toolkit\"\n";
 
   ppit = this->m_ProgramInfo.find(PRG_TITLE);
-  if (ppit != this->m_ProgramInfo.end()) {
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
     StdOut << ".SH NAME\n" << cmd << " \\- " << ppit->second << "\n";
-  }
+    }
 
   ppit = this->m_ProgramInfo.find(PRG_SYNTX);
-  if (ppit != this->m_ProgramInfo.end()) {
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
     StdOut << ".SH SYNOPSIS\n";
     StdOut << ppit->second << "\n";
-  } else {
-    if (this->m_NonOptionParameterList.size() ||
-        this->m_NonOptionParameterVectorList.size()) {
-      StdOut << ".SH SYNOPSIS\n\\fB" << cmd << "\\fR ";
-
-      for (NonOptionParameterListType::const_iterator it =
-               this->m_NonOptionParameterList.begin();
-           it != this->m_NonOptionParameterList.end(); ++it) {
-        StdOut << (*it)->m_Name << " ";
-      }
-      for (NonOptionParameterVectorListType::const_iterator it =
-               this->m_NonOptionParameterVectorList.begin();
-           it != this->m_NonOptionParameterVectorList.end(); ++it) {
-        StdOut << (*it)->m_Name << " ";
-      }
-      StdOut << "\n";
     }
-  }
+  else
+    {
+    if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
+      {
+      StdOut << ".SH SYNOPSIS\n\\fB" << cmd << "\\fR ";
+      
+      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	StdOut << (*it)->m_Name << " ";
+	}
+      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
+	{
+	StdOut << (*it)->m_Name << " ";
+	}
+      StdOut << "\n";
+      }
+    }
 
   ppit = this->m_ProgramInfo.find(PRG_DESCR);
-  if (ppit != this->m_ProgramInfo.end()) {
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
     StdOut << ".SH DESCRIPTION\n";
     StdOut << ppit->second << "\n";
-  }
-
+    }
+  
   StdOut << ".SH OPTIONS\n";
 
-  for (KeyActionGroupListType::const_iterator grp =
-           this->m_KeyActionGroupList.begin();
-       grp != this->m_KeyActionGroupList.end(); ++grp) {
-    if (!(*grp)->m_KeyActionList.empty()) {
+  for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
+    {
+    if ( ! (*grp)->m_KeyActionList.empty() )
+      {
       StdOut << ".SS " << (*grp)->m_Description << "\n";
 
-      const KeyActionListType &kal = (*grp)->m_KeyActionList;
-      for (KeyActionListType::const_iterator it = kal.begin(); it != kal.end();
-           ++it) {
-        (*it)->PrintManWithPrefix();
+      const KeyActionListType& kal = (*grp)->m_KeyActionList;
+      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	{
+	(*it)->PrintManWithPrefix();
+	}
       }
     }
-  }
 
   ppit = this->m_ProgramInfo.find(PRG_CNTRB);
-  if (ppit != this->m_ProgramInfo.end()) {
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
     StdOut << ".SH AUTHORS\n" << ppit->second << "\n";
-  }
+    }
 
   ppit = this->m_ProgramInfo.find(PRG_LCNSE);
-  if (ppit != this->m_ProgramInfo.end()) {
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
     StdOut << ".SH LICENSE\n" << ppit->second << "\n";
-  }
+    }
 
   StdOut << ".SH BUGS\nReport bugs at http://nitrc.org/projects/cmtk/\n";
 
   ppit = this->m_ProgramInfo.find(PRG_ACKNL);
-  if (ppit != this->m_ProgramInfo.end()) {
-    StdOut << ".SH ACKNOWLEDGMENTS\n" << ppit->second << "\n";
-  }
+  if ( ppit != this->m_ProgramInfo.end() )
+    {
+    StdOut << ".SH ACKNOWLEDGMENTS\n"
+	   << ppit->second << "\n";
+    }
 }
 
-}  // namespace cmtk
+} // namespace cmtk

@@ -37,22 +37,25 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
-#include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkFunctional.h>
 #include <Base/cmtkUniformVolumeInterpolatorBase.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for voxel metrics with pre-converted image data.
  */
-class ImagePairSimilarityMeasure {
- public:
+class ImagePairSimilarityMeasure
+{
+public:
   /// This type.
   typedef ImagePairSimilarityMeasure Self;
 
@@ -64,92 +67,91 @@ class ImagePairSimilarityMeasure {
 
   /** Constructor.
    */
-  ImagePairSimilarityMeasure(
-      const UniformVolume::SmartConstPtr &refVolume /*!< The reference image.*/,
-      const UniformVolume::SmartConstPtr &fltVolume /*!< The floating image.*/,
-      const Interpolators::InterpolationEnum interpolation =
-          Interpolators::DEFAULT /*!< User-selected interpolation kernel*/);
+  ImagePairSimilarityMeasure( const UniformVolume::SmartConstPtr& refVolume /*!< The reference image.*/,
+			      const UniformVolume::SmartConstPtr& fltVolume /*!< The floating image.*/,
+			      const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT /*!< User-selected interpolation kernel*/ );
 
   /** Default constructor.
    */
-  ImagePairSimilarityMeasure(
-      const Interpolators::InterpolationEnum interpolation =
-          Interpolators::DEFAULT /*!< User-selected interpolation kernel*/)
-      : m_InterpolationMethod(interpolation){};
+  ImagePairSimilarityMeasure( const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT /*!< User-selected interpolation kernel*/ ) : m_InterpolationMethod( interpolation ) {};
 
   /// Virtual destructor.
-  virtual ~ImagePairSimilarityMeasure(){};
+  virtual ~ImagePairSimilarityMeasure() {};
 
   /// Set reference volume.
-  virtual void SetReferenceVolume(
-      const UniformVolume::SmartConstPtr &refVolume);
+  virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
 
   /** Set floating volume.
    * When the floating volume is set, a new interpolator object is also created.
    */
-  virtual void SetFloatingVolume(const UniformVolume::SmartConstPtr &fltVolume);
+  virtual void SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume );
 
   /// Reset metric computation.
   virtual void Reset() {}
 
   /// Get a value from the X distribution (reference image).
-  Types::DataItem GetSampleX(const Types::GridIndexType index) const {
+  Types::DataItem GetSampleX ( const Types::GridIndexType index ) const
+  { 
     Types::DataItem data;
-    this->m_ReferenceData->Get(data, index);
+    this->m_ReferenceData->Get( data, index );
     return data;
   }
 
   /// Get a value from the X distribution (reference image).
-  bool GetSampleX(Types::DataItem &sample, const size_t index) const {
-    return this->m_ReferenceData->Get(sample, index);
+  bool GetSampleX ( Types::DataItem& sample, const size_t index ) const
+  { 
+    return this->m_ReferenceData->Get( sample, index );
   }
-
+  
   /// Get number of samples in the X data (reference image pixels).
-  size_t GetNumberOfSamplesX() const {
+  size_t GetNumberOfSamplesX() const
+  {
     return this->m_ReferenceData->GetDataSize();
   }
 
   /// Get value range of X data (reference data).
-  const Types::DataItemRange GetDataRangeX() const {
+  const Types::DataItemRange GetDataRangeX() const
+  {
     return this->m_ReferenceData->GetRange();
   }
-
+  
   /// Interpolate a value from the Y distribution (floating image).
-  Types::DataItem GetSampleY(const Types::GridIndexType *index,
-                             const Types::Coordinate *frac) const {
-    return this->m_FloatingImageInterpolator->GetDataDirect(index, frac);
+  Types::DataItem GetSampleY( const Types::GridIndexType* index, const Types::Coordinate* frac ) const
+  {
+    return this->m_FloatingImageInterpolator->GetDataDirect( index, frac );
   }
 
   /// Get number of samples in the Y data (floating image pixels).
-  size_t GetNumberOfSamplesY() const {
+  size_t GetNumberOfSamplesY() const
+  {
     return this->m_FloatingData->GetDataSize();
   }
-
+  
   /// Get value range of Y data (floating data).
-  const Types::DataItemRange GetDataRangeY() const {
+  const Types::DataItemRange GetDataRangeY() const
+  {
     return this->m_FloatingData->GetRange();
   }
-
-  /// Get scaled floating value if this metric rescales (implemented in derived
-  /// classes), or input value if it does not (done here as the default).
-  virtual Types::DataItem GetFloatingValueScaled(
-      const Types::DataItem value) const {
+  
+  /// Get scaled floating value if this metric rescales (implemented in derived classes), or input value if it does not (done here as the default).
+  virtual Types::DataItem GetFloatingValueScaled( const Types::DataItem value ) const
+  {
     return value;
   }
 
   /// Get the value of the metric.
   virtual Self::ReturnType Get() const = 0;
 
- private:
+private:
   /// Smart pointer to reference volume.
   UniformVolume::SmartConstPtr m_ReferenceVolume;
-
+  
   /// Smart pointer to reference image data.
   TypedArray::SmartConstPtr m_ReferenceData;
-
+  
   /// Smart pointer to floating volume.
   UniformVolume::SmartConstPtr m_FloatingVolume;
-
+  
   /// Smart pointer to floating image data.
   TypedArray::SmartConstPtr m_FloatingData;
 
@@ -157,12 +159,11 @@ class ImagePairSimilarityMeasure {
   Interpolators::InterpolationEnum m_InterpolationMethod;
 
   /// Floating image interpolator.
-  cmtk::UniformVolumeInterpolatorBase::SmartConstPtr
-      m_FloatingImageInterpolator;
+  cmtk::UniformVolumeInterpolatorBase::SmartConstPtr m_FloatingImageInterpolator;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImagePairSimilarityMeasure_h_included_
+#endif // #ifndef __cmtkImagePairSimilarityMeasure_h_included_

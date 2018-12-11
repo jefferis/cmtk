@@ -33,69 +33,81 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkStackBacktrace.h>
-namespace cmtk {
-static StackBacktrace StackBacktraceInstance;
-}
+namespace cmtk { static StackBacktrace StackBacktraceInstance; }
 
-#include <Qt/cmtkQtProgress.h>
 #include <Qt/cmtkQtTriplanarViewer.h>
+#include <Qt/cmtkQtProgress.h>
 
-#include <IO/cmtkStudy.h>
 #include <System/cmtkCommandLine.h>
+#include <IO/cmtkStudy.h>
 
 #include <qapplication.h>
+#include <QPlastiqueStyle>
 
 #include <string.h>
 #include <list>
 #include <string>
 
-int doMain(int argc, char *argv[]) {
-  QApplication app(argc, argv);
+int
+doMain( int argc, char* argv[] )
+{
+  QApplication app( argc, argv );
+  app.setStyle( new QPlastiqueStyle );
 
-  cmtk::QtTriplanarViewer *viewer = new cmtk::QtTriplanarViewer;
-  if (viewer) {
-    cmtk::QtProgress progressInstance(viewer);
-    progressInstance.SetProgressWidgetMode(cmtk::QtProgress::PROGRESS_DIALOG);
-    cmtk::Progress::SetProgressInstance(&progressInstance);
-
-    if ((argc > 1)) {
-      if (!strcmp(argv[1], "--exec")) {
-        viewer->hide();
-        return viewer->ExecuteBatchMode(argc - 2, argv + 2);
-      } else if (!strcmp(argv[1], "--xml")) {
-        exit(1);
+  cmtk::QtTriplanarViewer* viewer = new cmtk::QtTriplanarViewer;
+  if ( viewer ) 
+    {
+    cmtk::QtProgress progressInstance( viewer );
+    progressInstance.SetProgressWidgetMode( cmtk::QtProgress::PROGRESS_DIALOG );
+    cmtk::Progress::SetProgressInstance( &progressInstance );
+    
+    if ( (argc > 1) )
+      {
+      if ( !strcmp( argv[1], "--exec" ) )
+	{
+	viewer->hide();
+	return viewer->ExecuteBatchMode( argc-2, argv+2 );
+	}
+      else
+	if ( !strcmp( argv[1], "--xml" ) )
+	  {
+	  exit(1);
+	  }
       }
-    }
 
-    for (int i = 1; i < argc; ++i) {
-      viewer->slotAddStudy(argv[i]);
-    }
+    for ( int i = 1; i < argc; ++i ) 
+      {
+      viewer->slotAddStudy( argv[i] );
+      }
     viewer->show();
-
+    
     return app.exec();
-  }
-
+    }
+  
   return 0;
 }
 
-int main(const int argc, char *argv[]) {
+int
+main( const int argc, char* argv[] )
+{
 #ifdef _MSC_VER
-  _set_output_format(_TWO_DIGIT_EXPONENT);
+   _set_output_format( _TWO_DIGIT_EXPONENT );
 #endif
 
-  cmtk::Threads::CheckEnvironment();  // need this to check for
-                                      // "CMTK_NUM_THREADS" and constrain OpenMP
-                                      // accordingly
+  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
 
 #ifdef CMTK_BUILD_STACKTRACE
   cmtk::StackBacktrace::Static();
 #endif
 
   int exitCode = 0;
-  try {
-    exitCode = doMain(argc, argv);
-  } catch (const cmtk::ExitException &ex) {
+  try
+    {
+    exitCode = doMain( argc, argv );
+    }
+  catch ( const cmtk::ExitException& ex )
+    {
     exitCode = ex.ExitCode();
-  }
+    }
   return exitCode;
 }

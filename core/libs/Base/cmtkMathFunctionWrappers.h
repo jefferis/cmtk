@@ -37,7 +37,9 @@
 
 #include <math.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** Wrappers for math.h functions.
  * These are necessary because on some platforms (e.g., Solaris), the
@@ -45,34 +47,36 @@ namespace cmtk {
  * to address this, we wrap these functions.
  */
 
-namespace Wrappers {
+namespace
+Wrappers
+{
 
 /// Log function.
-double Log(const double x);
+double Log( const double x );
 
 /// Exponential function.
-double Exp(const double x);
+double Exp( const double x );
 
 /// Square root function.
-double Sqrt(const double x);
+double Sqrt( const double x );
 
 /// Abs function.
-double Abs(const double x);
+double Abs( const double x );
 
 /// Trunc function.
-double Trunc(const double x);
+double Trunc( const double x );
 
 /// Square function.
-double Square(const double x);
+double Square( const double x );
 
 /// Logit function.
-double Logit(const double x);
+double Logit( const double x );
 
 /// Logistic function.
-double Logistic(const double x);
+double Logistic( const double x );
 
-}  // namespace Wrappers
+} // namespace Wrappers
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMathFunctionWrappers_h_included_
+#endif // #ifndef __cmtkMathFunctionWrappers_h_included_

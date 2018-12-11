@@ -35,19 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkAffineXform.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkVector3D.h>
+#include <Base/cmtkAffineXform.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Status code returned by Execute() methods.
-typedef enum {
+typedef enum 
+{
   /// Everything okay; continue as usual.
   CALLBACK_OK = 0,
   /// User requests interrupt of operation.
@@ -58,26 +61,26 @@ typedef enum {
   CALLBACK_FAILED = 3
 } CallbackResult;
 
-/** Generic callback class.
+/** Generic callback class. 
  * Callbacks define user specific actions during optimization, i.e. update of
  * progress indicators, protocoling, etc. This particular class is a "dummy"
- * callback, providing a common interface but taking no actions on any
+ * callback, providing a common interface but taking no actions on any 
  * member function calls.
  */
-class RegistrationCallback {
- public:
+class RegistrationCallback 
+{
+public:
   /// SMart pointer.
   typedef SmartPointer<RegistrationCallback> SmartPtr;
 
   /// Interface: Execute callback action
-  virtual CallbackResult ExecuteWithData(const CoordinateVector &v,
-                                         const double metric);
+  virtual CallbackResult ExecuteWithData( const CoordinateVector& v, const double metric );
 
   /// Execute callback action without interim result.
   virtual CallbackResult Execute();
 
   /// Notify callback of an annotation.
-  virtual void Comment(const char *comment = NULL);
+  virtual void Comment ( const char* comment = NULL );
 
   /// Default constructor.
   RegistrationCallback();
@@ -88,9 +91,9 @@ class RegistrationCallback {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 /// Handler function for SIGINT interrupt signal.
-extern "C" void cmtkRegistrationCallbackDispatchSIGINT(int sig);
+extern "C" void cmtkRegistrationCallbackDispatchSIGINT( int sig );
 
-#endif  // #ifndef __cmtkRegistrationCallback_h_included_
+#endif // #ifndef __cmtkRegistrationCallback_h_included_

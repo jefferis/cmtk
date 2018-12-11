@@ -30,4 +30,8 @@
 
 #include "cmtkDataGridLocalCorrelation.h"
 
-void cmtk::DataGridLocalCorrelation::ComputeResult() {}
+void
+cmtk::DataGridLocalCorrelation::ComputeResult()
+{
+  
+}

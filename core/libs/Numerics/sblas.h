@@ -71,14 +71,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-void symmetricmatrixvectormultiply(const ap::real_2d_array &a, bool isupper,
-                                   int i1, int i2, const ap::real_1d_array &x,
-                                   ap::real_value_type alpha,
-                                   ap::real_1d_array &y);
+void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
+     bool isupper,
+     int i1,
+     int i2,
+     const ap::real_1d_array& x,
+     ap::real_value_type alpha,
+     ap::real_1d_array& y);
 
-void symmetricrank2update(ap::real_2d_array &a, bool isupper, int i1, int i2,
-                          const ap::real_1d_array &x,
-                          const ap::real_1d_array &y, ap::real_1d_array &t,
-                          ap::real_value_type alpha);
+
+void symmetricrank2update(ap::real_2d_array& a,
+     bool isupper,
+     int i1,
+     int i2,
+     const ap::real_1d_array& x,
+     const ap::real_1d_array& y,
+     ap::real_1d_array& t,
+     ap::real_value_type alpha);
+
 
 #endif

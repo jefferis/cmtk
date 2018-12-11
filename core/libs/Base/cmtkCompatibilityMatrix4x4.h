@@ -38,34 +38,36 @@
 #include <Base/cmtkMatrix4x4.h>
 #include <Base/cmtkVector.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Compatibility class for homogeneous 4x4 transformation matrix.
- * The sole purpose of this class is to take a parameter vector describing the
- *degrees of freedom of a cmtk::Matrix4x4 object constructed prior to CMTK
- *release 2.4. Older releases of CMTK generated matrices in which scale and
- *shear cooefficients were not fully independent, making it impossible to
- *recover the exact parameters from the matrix. \see
- *https://www.nitrc.org/tracker/index.php?func=detail&aid=7179&group_id=212&atid=877
+ * The sole purpose of this class is to take a parameter vector describing the degrees of freedom of a 
+ * cmtk::Matrix4x4 object constructed prior to CMTK release 2.4. Older releases of CMTK generated matrices
+ * in which scale and shear cooefficients were not fully independent, making it impossible to recover the
+ * exact parameters from the matrix.
+ *\see https://www.nitrc.org/tracker/index.php?func=detail&aid=7179&group_id=212&atid=877
  */
-template <class T = Types::Coordinate>
-class CompatibilityMatrix4x4 : public Matrix4x4<T> {
- public:
+template<class T=Types::Coordinate>
+class CompatibilityMatrix4x4 :
+    public Matrix4x4<T>
+{
+public:
   /// This class.
   typedef CompatibilityMatrix4x4<T> Self;
 
   /// Parent class..
   typedef Matrix4x4<T> Superclass;
 
-  /// Constructor: create matrix from parameter vector as it would have been
-  /// done prior to CMTK 2.4.
-  CompatibilityMatrix4x4(const CoordinateVector &dofs,
-                         const bool logScaleFactors = false);
+  /// Constructor: create matrix from parameter vector as it would have been done prior to CMTK 2.4.
+  CompatibilityMatrix4x4( const CoordinateVector& dofs, const bool logScaleFactors = false );
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkCompatibilityMatrix4x4_h_included_
+
+#endif // #ifndef __cmtkCompatibilityMatrix4x4_h_included_

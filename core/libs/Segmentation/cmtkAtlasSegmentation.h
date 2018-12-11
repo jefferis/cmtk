@@ -32,54 +32,64 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkSplineWarpXform.h>
-#include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Class for integrated atlas-based segmentation.
- * This class encapsulates the following stages of atlas-based image
- * segmentation: 1) linear image-to-atlas registration, 2) non-linear
+ * This class encapsulates the following stages of atlas-based image segmentation: 1) linear image-to-atlas registration, 2) non-linear
  * image-to-atlas registration, 3) label map reformatting.
  */
-class AtlasSegmentation {
- public:
+class AtlasSegmentation
+{
+public:
   /// Constructor: compute registrations.
-  AtlasSegmentation(UniformVolume::SmartPtr &targetImage,
-                    UniformVolume::SmartPtr &atlasImage,
-                    UniformVolume::SmartPtr &atlasLabels);
+  AtlasSegmentation( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels );
 
   /// Get affine transformation.
-  AffineXform::SmartPtr &GetAffineXform() {
-    if (!this->m_AffineXform) this->RegisterAffine();
+  AffineXform::SmartPtr& GetAffineXform()
+  {
+    if ( ! this->m_AffineXform )
+      this->RegisterAffine();
     return this->m_AffineXform;
   }
-
+  
   /// Get nonrigid transformation.
-  WarpXform::SmartPtr GetWarpXform() {
-    if (!this->m_WarpXform) this->RegisterSpline();
+  WarpXform::SmartPtr GetWarpXform()
+  {
+    if ( ! this->m_WarpXform )
+      this->RegisterSpline();
     return this->m_WarpXform;
   }
-
+  
   /// Get nonrigid spline transformation.
-  SplineWarpXform::SmartPtr GetSplineWarpXform() {
-    return SplineWarpXform::SmartPtr::DynamicCastFrom(this->GetWarpXform());
+  SplineWarpXform::SmartPtr GetSplineWarpXform()
+  {
+    return SplineWarpXform::SmartPtr::DynamicCastFrom( this->GetWarpXform() );
   }
-
+  
   /// Get reformatted label map.
-  UniformVolume::SmartPtr &GetLabelMap() {
-    if (!this->m_LabelMap) this->ReformatLabels();
+  UniformVolume::SmartPtr& GetLabelMap()
+  {
+    if ( ! this->m_LabelMap )
+      this->ReformatLabels();
     return this->m_LabelMap;
   }
 
   /// Set fast flag.
-  void SetFast(const bool fast) { this->m_Fast = fast; }
+  void SetFast( const bool fast )
+  {
+    this->m_Fast = fast;
+  }
 
- private:
+private:
   /// Flag for "fast" computation.
   bool m_Fast;
 
@@ -94,7 +104,7 @@ class AtlasSegmentation {
 
   /// Affine registration transformation.
   AffineXform::SmartPtr m_AffineXform;
-
+  
   /// Compute affine registration.
   void RegisterAffine();
 
@@ -113,4 +123,4 @@ class AtlasSegmentation {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk

@@ -34,21 +34,23 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkImageTemplate.h>
-#include <Base/cmtkMatrix3x3.h>
 #include <Base/cmtkWarpXform.h>
+#include <Base/cmtkMatrix3x3.h>
 #include <Base/cmtkXformList.h>
+#include <Base/cmtkImageTemplate.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-/** Fit affine transformation to nonrigid (B-spline or deformation field)
- * transformation.
+/** Fit affine transformation to nonrigid (B-spline or deformation field) transformation.
  */
-class FitToXformListBase {
- public:
+class FitToXformListBase
+{
+public:
   /// This class.
   typedef FitToXformListBase Self;
 
@@ -56,16 +58,15 @@ class FitToXformListBase {
   FitToXformListBase( const UniformVolume& sampleGrid /*!< Discrete pixel grid where the fitted transformation is sampled and residuals are minimized.*/,
 		      const XformList& xformList /*!< List of concatenated transformation that the affine transformation is fitted to.*/,
 		      const bool absolute = true /*!< Flag fitting absolute transformation vs. relative deformation field */ );
-
- protected:
+  
+protected:
   /// Sampled transformation field.
   ImageTemplate<Xform::SpaceVectorType> m_XformField;
-
-  /// Bit flags to mark pixels where the transformation is valid or not (e.g.,
-  /// due to failed numerical inversion).
+  
+  /// Bit flags to mark pixels where the transformation is valid or not (e.g., due to failed numerical inversion).
   std::vector<bool> m_XformValidAt;
 };
 
-}  // namespace cmtk
+} // namespace
 
-#endif  // #ifndef __cmtkFitToXformListBase_h_included_
+#endif // #ifndef __cmtkFitToXformListBase_h_included_

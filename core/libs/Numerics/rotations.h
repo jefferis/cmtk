@@ -96,10 +96,16 @@ Output parameters:
 
 Utility subroutine.
 *************************************************************************/
-void applyrotationsfromtheleft(bool isforward, int m1, int m2, int n1, int n2,
-                               const ap::real_1d_array &c,
-                               const ap::real_1d_array &s, ap::real_2d_array &a,
-                               ap::real_1d_array &work);
+void applyrotationsfromtheleft(bool isforward,
+     int m1,
+     int m2,
+     int n1,
+     int n2,
+     const ap::real_1d_array& c,
+     const ap::real_1d_array& s,
+     ap::real_2d_array& a,
+     ap::real_1d_array& work);
+
 
 /*************************************************************************
 Application of a sequence of  elementary rotations to a matrix
@@ -126,10 +132,16 @@ Output parameters:
 
 Utility subroutine.
 *************************************************************************/
-void applyrotationsfromtheright(bool isforward, int m1, int m2, int n1, int n2,
-                                const ap::real_1d_array &c,
-                                const ap::real_1d_array &s,
-                                ap::real_2d_array &a, ap::real_1d_array &work);
+void applyrotationsfromtheright(bool isforward,
+     int m1,
+     int m2,
+     int n1,
+     int n2,
+     const ap::real_1d_array& c,
+     const ap::real_1d_array& s,
+     ap::real_2d_array& a,
+     ap::real_1d_array& work);
+
 
 /*************************************************************************
 The subroutine generates the elementary rotation, so that:
@@ -139,8 +151,7 @@ The subroutine generates the elementary rotation, so that:
 
 CS**2 + SN**2 = 1
 *************************************************************************/
-void generaterotation(ap::real_value_type f, ap::real_value_type g,
-                      ap::real_value_type &cs, ap::real_value_type &sn,
-                      ap::real_value_type &r);
+void generaterotation(ap::real_value_type f, ap::real_value_type g, ap::real_value_type& cs, ap::real_value_type& sn, ap::real_value_type& r);
+
 
 #endif

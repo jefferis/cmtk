@@ -32,31 +32,39 @@
 
 #include "cmtkDirectionSet.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void DirectionSet::NormalizeMaxNorm(const double value) {
+void 
+DirectionSet::NormalizeMaxNorm( const double value )
+{
   // For Each Direction
-  for (size_t index = 0; index < this->GetNumberOfDirections(); index++) {
+  for( size_t index = 0; index < this->GetNumberOfDirections(); index++ )
+    {
     CoordinateVector::SmartPtr direction = (*this)[index];
     (*direction) *= value / direction->MaxNorm();
-  }
+    }
 }
 
-void DirectionSet::NormalizeEuclidNorm(const double value) {
+void 
+DirectionSet::NormalizeEuclidNorm(const double value)
+{
   // For Each Direction
-  for (size_t index = 0; index < this->GetNumberOfDirections(); index++) {
+  for( size_t index = 0; index < this->GetNumberOfDirections(); index++)
+    {
     CoordinateVector::SmartPtr direction = (*this)[index];
-
+    
     // Find Euclidean Norm
     Types::Coordinate euclid = direction->EuclidNorm();
-
+    
     // Divide Every Component by the Euclidean Norm
     // and multiply by normalization value..
     *direction *= value / euclid;
-  }
+    }
 }
 
-}  // namespace cmtk
+} // namespace cmtk

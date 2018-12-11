@@ -35,55 +35,59 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkTypes.h>
 #include <Base/cmtkDataTypeTraits.h>
 #include <Base/cmtkInterpolator.h>
-#include <Base/cmtkTypedArray.h>
-#include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <algorithm>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for voxel metrics with pre-converted image data.
  */
-template <class T, ScalarDataType DT>
-class VoxelMatchingMetric_Type {
- public:
+template<class T,ScalarDataType DT>
+class VoxelMatchingMetric_Type
+{
+public:
   /// This class.
-  typedef VoxelMatchingMetric_Type<T, DT> Self;
+  typedef VoxelMatchingMetric_Type<T,DT> Self;
 
   /// This is the type used internally for storing pre-processed image data.
   typedef T Exchange;
-
+  
   /// Structure for handling the two images compared.
-  class ImageData {
-   private:
+  class ImageData 
+  {
+  private:
     /// Padding data used in this instance.
     T Padding;
 
-   public:
+  public:
     /// This function returns the constant actually used for padding data.
     T padding() const { return this->Padding; }
-
+    
     /// Precomputed reference voxel data bin indices.
-    T *Data;
-
+    T* Data;
+    
     /// Reference-counting wrapper for Data.
     TypedArray::SmartPtr DataArray;
 
     /// Bin offset.
     Types::DataItem BinOffset;
-
+    
     /// Bin width.
     Types::DataItem BinWidth;
-
+    
     /// Value range.
     Types::DataItemRange m_ValueRange;
-
+    
     /// Number of pixels per dimension in the original image.
     DataGrid::IndexType ImageDims;
 
@@ -91,79 +95,76 @@ class VoxelMatchingMetric_Type {
     size_t NumberOfSamples;
 
     /// Get value range of distribution as stored herein.
-    const Types::DataItemRange GetValueRange() const {
+    const Types::DataItemRange GetValueRange() const
+    {
       return this->m_ValueRange;
     }
 
     /// Convert value to bin.
-    byte ValueToIndex(const Types::DataItem value) {
-      return static_cast<byte>(
-          (std::min(std::max(value, this->m_ValueRange.m_LowerBound),
-                    this->m_ValueRange.m_UpperBound) -
-           this->BinOffset) /
-          BinWidth);
+    byte ValueToIndex( const Types::DataItem value )
+    {
+      return static_cast<byte>( (std::min( std::max( value, this->m_ValueRange.m_LowerBound ), this->m_ValueRange.m_UpperBound )- this->BinOffset) / BinWidth );
     }
-
+    
     /// Default constructor.
-    ImageData()
-        : Padding(DataTypeTraits<T>::ChoosePaddingValue()),
-          Data(NULL),
-          DataArray(NULL),
-          BinOffset(0),
-          BinWidth(0),
-          m_ValueRange(0, 0),
-          NumberOfSamples(0) {
+    ImageData() : 
+      Padding( DataTypeTraits<T>::ChoosePaddingValue() ), 
+      Data( NULL ), 
+      DataArray( NULL ), 
+      BinOffset( 0 ),
+      BinWidth( 0 ),
+      m_ValueRange( 0, 0 ),
+      NumberOfSamples( 0 )
+    {
       nextJ = nextK = nextIJ = nextJK = nextIK = nextIJK = 0;
     }
 
     /// Allocate internal data array and create wrapper for reference counting.
-    void AllocDataArray(const TypedArray *templateArray);
+    void AllocDataArray( const TypedArray* templateArray );
 
     /** Initialize internal storage for one volume.
      * The volume's data is converted into an array of byte values that
-     * directly represent the bin to sort the respective sample into. In
+     * directly represent the bin to sort the respective sample into. In 
      * addition, the number of bins is determined and the bins array allocated.
      *\param volume The original volume data.
      *\param defNumBins The desired number of bins. If this parameter is
      * zero, a suitable number is automatically determined.
      *\param bounds User-specified bounds for data values. All values
-     * outside this range will be set to the upper or lower limit and sorted
-     *into the first or last histogram bin, respectively. \return The number of
-     *bins required to hold the data. Note that there will be an extra bin
-     *allocated to hold non-existing data values.
+     * outside this range will be set to the upper or lower limit and sorted into the
+     * first or last histogram bin, respectively.
+     *\return The number of bins required to hold the data. Note that there 
+     * will be an extra bin allocated to hold non-existing data values.
      */
-    size_t Init(const UniformVolume *volume, const size_t defNumBins,
-                const Types::DataItemRange &bounds =
-                    Types::DataItemRange(-HUGE_VAL, HUGE_VAL));
-
+    size_t Init( const UniformVolume* volume, const size_t defNumBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
+    
     /** Initialize internal storage for one (reference of model) volume.
-     * The volume's data is converted into an array of byte values that
-     * directly represent the bin to sort the respective sample into. In
+     * The volume's data is converted into an array of byte values that 
+     * directly represent the bin to sort the respective sample into. In 
      * addition, the number of bins is determined and the bins array allocated.
-     * This function can distinguish between different kinds of data
+     * This function can distinguish between different kinds of data 
      * (grey-level, binary, and labels) and handle these accordingly.
      *\param volume The original volume data.
      */
-    void Init(const UniformVolume *volume);
-
+    void Init( const UniformVolume* volume );
+    
     /// Precompute grid increments.
-    void PrecomputeIncrements(const UniformVolume *volume);
+    void PrecomputeIncrements( const UniformVolume* volume );
 
     /// Offset of next voxel row.
     unsigned int nextJ;
-
+    
     /// Offset for next row and column.
     unsigned int nextIJ;
-
+    
     /// Offset for next plane.
     unsigned int nextK;
-
+    
     /// Offset for next plane and column.
     unsigned int nextIK;
-
+    
     /// Offset for next plane and row.
     unsigned int nextJK;
-
+    
     /// Offset for next plane, row, and column.
     unsigned int nextIJK;
   };
@@ -175,24 +176,27 @@ class VoxelMatchingMetric_Type {
   ImageData DataY;
 
   /// Set data for the X distribution (reference image).
-  void SetDataX(const UniformVolume *volume) {
-    DataX.PrecomputeIncrements(volume);
+  void SetDataX( const UniformVolume* volume )
+  { 
+    DataX.PrecomputeIncrements( volume ); 
   }
 
   /// Set data for the Y distribution (floating image).
-  void SetDataY(const UniformVolume *volume) {
-    DataY.PrecomputeIncrements(volume);
+  void SetDataY( const UniformVolume* volume ) 
+  { 
+    DataY.PrecomputeIncrements( volume );
   }
 
   /// Set data for the X and Y distribution (both images).
-  void SetDataXY(const UniformVolume *volumeX, const UniformVolume *volumeY) {
-    DataX.PrecomputeIncrements(volumeX);
-    DataY.PrecomputeIncrements(volumeY);
+  void SetDataXY( const UniformVolume* volumeX, const UniformVolume* volumeY ) 
+  {
+    DataX.PrecomputeIncrements( volumeX );
+    DataY.PrecomputeIncrements( volumeY );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVoxelMatchingMetric_Type_h_included_
+#endif // #ifndef __cmtkVoxelMatchingMetric_Type_h_included_

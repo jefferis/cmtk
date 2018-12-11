@@ -35,12 +35,12 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
 
-#include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include <Base/cmtkDeformationField.h>
-#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkDeformationField.h>
 
 std::string inXformPath;
 std::string outXformPath;
@@ -48,80 +48,76 @@ std::string outXformPath;
 float Fractional = -1;
 bool DeformationOnly = false;
 
-int doMain(const int argc, const char *argv[]) {
-  try {
+int
+doMain ( const int argc, const char* argv[] ) 
+{
+  try
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Convert nonrigd transformations.");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
-                      "This tool converts nonrigid B-spline free-format "
-                      "deformation coordinate transformations between "
-                      "different representations (e.g., absolute vs. relative "
-                      "vectors). Also creates fractional transformations.");
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert nonrigd transformations." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts nonrigid B-spline free-format deformation coordinate transformations between different representations (e.g., absolute vs. relative vectors). Also creates fractional transformations." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption(Key('f', "fractional"), &Fractional,
-                 "Write fractional deformation. Range: 0=affine to 1=full "
-                 "nonrigid; Default: 1");
-    cl.AddSwitch(Key('d', "deformation-only"), &DeformationOnly, true,
-                 "Write only deformation part of transformation (minus global "
-                 "affine component)");
+    cl.AddOption( Key( 'f', "fractional" ), &Fractional, "Write fractional deformation. Range: 0=affine to 1=full nonrigid; Default: 1" );
+    cl.AddSwitch( Key( 'd', "deformation-only" ), &DeformationOnly, true, "Write only deformation part of transformation (minus global affine component)" );
 
-    cl.AddParameter(&inXformPath, "InputPath", "Input transformation path")
-        ->SetProperties(cmtk::CommandLine::PROPS_XFORM);
-    cl.AddParameter(&outXformPath, "OutputPath", "Output transformation path")
-        ->SetProperties(cmtk::CommandLine::PROPS_XFORM |
-                        cmtk::CommandLine::PROPS_OUTPUT);
+    cl.AddParameter( &inXformPath, "InputPath", "Input transformation path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
+    cl.AddParameter( &outXformPath, "OutputPath", "Output transformation path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.Parse(argc, argv);
-  } catch (const cmtk::CommandLine::Exception &e) {
+    cl.Parse( argc, argv );
+    }
+  catch ( const cmtk::CommandLine::Exception& e )
+    {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
+  
+  cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( inXformPath ) );
 
-  cmtk::Xform::SmartPtr xform(cmtk::XformIO::Read(inXformPath));
+  cmtk::SplineWarpXform::SmartPtr splineWarpXform = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( xform );
+  if ( splineWarpXform )
+    {
+    cmtk::AffineXform::SmartPtr initialAffine = splineWarpXform->GetInitialAffineXform();
 
-  cmtk::SplineWarpXform::SmartPtr splineWarpXform =
-      cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom(xform);
-  if (splineWarpXform) {
-    cmtk::AffineXform::SmartPtr initialAffine =
-        splineWarpXform->GetInitialAffineXform();
-
-    try {
+    try
+      {
       splineWarpXform->ReplaceInitialAffine();
-    } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
-      cmtk::StdErr << "ERROR: singular matrix encountered in call to "
-                      "cmtk::WarpXform::ReplaceInitialAffine()\n";
-      throw cmtk::ExitException(1);
-    }
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
+      throw cmtk::ExitException( 1 );
+      }
+    
+    if ( (Fractional >= 0) && (Fractional <= 1) )
+      {
+      const size_t numberOfControlPoints = splineWarpXform->GetNumberOfControlPoints();
+      for ( size_t idx = 0; idx < numberOfControlPoints; ++idx )
+	{
+	cmtk::Vector3D v0 = splineWarpXform->GetOriginalControlPointPositionByOffset( idx );
+	cmtk::Vector3D v1 = splineWarpXform->GetShiftedControlPointPositionByOffset( idx );
 
-    if ((Fractional >= 0) && (Fractional <= 1)) {
-      const size_t numberOfControlPoints =
-          splineWarpXform->GetNumberOfControlPoints();
-      for (size_t idx = 0; idx < numberOfControlPoints; ++idx) {
-        cmtk::Vector3D v0 =
-            splineWarpXform->GetOriginalControlPointPositionByOffset(idx);
-        cmtk::Vector3D v1 =
-            splineWarpXform->GetShiftedControlPointPositionByOffset(idx);
+	((v1 -= v0) *= Fractional) += v0;
 
-        ((v1 -= v0) *= Fractional) += v0;
-
-        splineWarpXform->SetShiftedControlPointPositionByOffset(v1, idx);
+	splineWarpXform->SetShiftedControlPointPositionByOffset( v1, idx );
+	}
+      }
+    
+    if ( ! DeformationOnly )
+      {
+      try
+	{
+	splineWarpXform->ReplaceInitialAffine( initialAffine );
+	}
+      catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+	{
+	cmtk::StdErr << "ERROR: singular matrix encountered in call to cmtk::WarpXform::ReplaceInitialAffine()\n";
+	throw cmtk::ExitException( 1 );
+	}
       }
     }
-
-    if (!DeformationOnly) {
-      try {
-        splineWarpXform->ReplaceInitialAffine(initialAffine);
-      } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
-        cmtk::StdErr << "ERROR: singular matrix encountered in call to "
-                        "cmtk::WarpXform::ReplaceInitialAffine()\n";
-        throw cmtk::ExitException(1);
-      }
-    }
-  }
-
-  cmtk::XformIO::Write(xform, outXformPath);
+  
+  cmtk::XformIO::Write( xform, outXformPath );
   return 0;
 }
 

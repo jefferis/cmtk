@@ -35,50 +35,51 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkImageOperation.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: set padding flag and value.
 class ImageOperationSetDataClass
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor.
-  ImageOperationSetDataClass(const DataClass dataClass)
-      : m_DataClass(dataClass) {}
-
+  ImageOperationSetDataClass( const DataClass dataClass ) : m_DataClass( dataClass ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    volume->GetData()->SetDataClass(this->m_DataClass);
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->GetData()->SetDataClass( this->m_DataClass );
     return volume;
   }
-
+  
   /// Create new operation to set class to labels.
-  static void NewLabels() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationSetDataClass(DATACLASS_LABEL)));
+  static void NewLabels()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetDataClass( DATACLASS_LABEL ) ) );
   }
 
   /// Create new operation to set class to grey values.
-  static void NewGrey() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationSetDataClass(DATACLASS_GREY)));
+  static void NewGrey()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetDataClass( DATACLASS_GREY ) ) );
   }
 
- private:
-  /// Set flag: if this is set, padding is activated, otherwise it is
-  /// deactivated (and m_DataClassValue is ignored).
+private:
+  /// Set flag: if this is set, padding is activated, otherwise it is deactivated (and m_DataClassValue is ignored).
   DataClass m_DataClass;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationSetDataClass_h_included_
+#endif // #ifndef __cmtkImageOperationSetDataClass_h_included_

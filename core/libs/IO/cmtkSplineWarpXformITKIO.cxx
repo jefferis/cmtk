@@ -30,30 +30,33 @@
 
 #include "cmtkSplineWarpXformITKIO.h"
 
-#include <Base/cmtkTransformChangeToSpaceAffine.h>
 #include <IO/cmtkAffineXformITKIO.h>
+#include <Base/cmtkTransformChangeToSpaceAffine.h>
 
 #include <fstream>
 #include <string>
 #include <typeinfo>
 
-void cmtk::SplineWarpXformITKIO ::Write(const std::string &filename,
-                                        const SplineWarpXform &xform,
-                                        const UniformVolume &refVolume,
-                                        const UniformVolume &fltVolume) {
-  std::ofstream stream(filename.c_str());
-  if (stream.good()) {
+void
+cmtk::SplineWarpXformITKIO
+::Write( const std::string& filename, const SplineWarpXform& xform, const UniformVolume& refVolume, const UniformVolume& fltVolume )
+{
+  std::ofstream stream( filename.c_str() );
+  if ( stream.good() )
+    {
     // write header
     stream << "#Insight Transform File V1.0\n"
-           << "# Transform 0\n";
-
-    // write ID depending on whether CMTK is using single or double precision
-    // floats for coordinates
-    if (typeid(Types::Coordinate) == typeid(double)) {
+	   << "# Transform 0\n";
+    
+    // write ID depending on whether CMTK is using single or double precision floats for coordinates
+    if ( typeid( Types::Coordinate ) == typeid( double ) )
+      {
       stream << "Transform: BSplineDeformableTransform_double_3_3\n";
-    } else {
+      }
+    else
+      {
       stream << "Transform: BSplineDeformableTransform_float_3_3\n";
-    }
+      }
 
     // write parameters
     stream << "Parameters:";
@@ -61,39 +64,39 @@ void cmtk::SplineWarpXformITKIO ::Write(const std::string &filename,
     Vector3D v, vx;
     const AffineXform::SmartPtr bulkXform = xform.GetInitialAffineXform();
 
-    for (size_t cp = 0; cp < xform.GetNumberOfControlPoints(); ++cp) {
-      v = xform.GetOriginalControlPointPositionByOffset(cp);
-      if (bulkXform) v = bulkXform->Apply(v);
-      vx = xform.GetShiftedControlPointPositionByOffset(cp);
+    for ( size_t cp = 0; cp < xform.GetNumberOfControlPoints(); ++cp )
+      {
+      v = xform.GetOriginalControlPointPositionByOffset( cp );
+      if ( bulkXform )
+	v = bulkXform->Apply( v );
+      vx = xform.GetShiftedControlPointPositionByOffset( cp );
 
       vx -= v;
-      stream << " " << -vx[0] << " " << -vx[1] << " "
-             << vx[2];  // convert from RAS to LPS by writing -x,-y,+z
-    }
+      stream << " " << -vx[0] << " " << -vx[1] << " " << vx[2]; // convert from RAS to LPS by writing -x,-y,+z
+      }
     stream << "\n";
 
-    // Origin of the control point grid must be transformed into physical
-    // coordinates of the reference image
-    Vector3D origin(xform.m_Offset * refVolume.GetImageToPhysicalMatrix());
-
+    // Origin of the control point grid must be transformed into physical coordinates of the reference image
+    Vector3D origin( xform.m_Offset * refVolume.GetImageToPhysicalMatrix() );
+    
     // Fixed parameters:
     // * Grid Size
     // * Grid Origin
     // * Grid Spacing
     // * Grid Direction
-    stream << "FixedParameters: " << xform.m_Dims[0] << " " << xform.m_Dims[1]
-           << " " << xform.m_Dims[2] << " " << origin[0] << " " << origin[1]
-           << " " << origin[2] << " " << xform.m_Spacing[0] << " "
-           << xform.m_Spacing[1] << " " << xform.m_Spacing[2] << " "
-           << "1 0 0 0 1 0 0 0 1\n";
+    stream << "FixedParameters: "
+	   << xform.m_Dims[0] << " " << xform.m_Dims[1] << " " << xform.m_Dims[2] << " "
+	   << origin[0] << " " << origin[1] << " " << origin[2] << " "
+	   << xform.m_Spacing[0] << " " << xform.m_Spacing[1] << " " << xform.m_Spacing[2] << " "
+	   << "1 0 0 0 1 0 0 0 1\n";
 
-    if (bulkXform) {
-      TransformChangeToSpaceAffine toNative(
-          *(bulkXform), refVolume, fltVolume,
-          AnatomicalOrientationBase::SPACE_ITK);
-      AffineXformITKIO::Write(stream, toNative.GetTransformation(), 1 /*idx*/);
-    }
+    if ( bulkXform )
+      {
+      TransformChangeToSpaceAffine toNative( *(bulkXform), refVolume, fltVolume, AnatomicalOrientationBase::SPACE_ITK );
+      AffineXformITKIO::Write( stream, toNative.GetTransformation(), 1 /*idx*/ );
+      }
 
     stream.close();
-  }
+    }
 }
+

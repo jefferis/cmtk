@@ -35,18 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypes.h>
 #include <System/cmtkExitException.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
-namespace Interpolators {
+namespace 
+Interpolators
+{
 
 /// Cubic interpolator.
-class Cubic {
- public:
+class Cubic
+{
+public:
   /// Size of the interpolation region in grid points to the left and right.
   static const int RegionSizeLeftRight = 2;
 
@@ -54,32 +58,33 @@ class Cubic {
   static const bool SuitableForLabels = false;
 
   /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight(const int weight,
-                                     const Types::Coordinate x) {
+  static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x )
+  {
     const Types::Coordinate xsquare = x * x;
     const Types::Coordinate xcube = xsquare * x;
-    switch (weight) {
+    switch (weight)
+      {
       case -1:
-        return -0.5 * xcube + xsquare - 0.5 * x;
+	return -0.5 * xcube + xsquare - 0.5 * x;
       case 0:
-        return 1.5 * xcube - 2.5 * xsquare + 1;
+	return 1.5 * xcube - 2.5 * xsquare + 1;
       case 1:
-        return -1.5 * xcube + 2 * xsquare + 0.5 * x;
+	return -1.5 * xcube + 2 * xsquare + 0.5 * x;
       case 2:
-        return 0.5 * xcube - 0.5 * xsquare;
+	return 0.5 * xcube - 0.5 * xsquare;
       default:
-        break;
-    }
+	break;
+      }
 
     StdErr << "weight=" << weight << " shouldn't happen!\n";
-    throw ExitException(1);
+    throw ExitException( 1 );
   }
 };
 
-}  // namespace Interpolators
+} // namespace Interpolators
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #endif

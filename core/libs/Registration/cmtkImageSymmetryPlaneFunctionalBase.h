@@ -39,7 +39,9 @@
 #include <Base/cmtkParametricPlane.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -49,9 +51,10 @@ namespace cmtk {
  * symmetry plane is computed.
  */
 class ImageSymmetryPlaneFunctionalBase :
-    /// Inherit functional interface.
-    public Functional {
- public:
+  /// Inherit functional interface.
+  public Functional 
+{
+public:
   /// This class.
   typedef ImageSymmetryPlaneFunctionalBase Self;
 
@@ -62,26 +65,27 @@ class ImageSymmetryPlaneFunctionalBase :
   typedef Functional Superclass;
 
   /// Constructor.
-  ImageSymmetryPlaneFunctionalBase(UniformVolume::SmartConstPtr &volume);
+  ImageSymmetryPlaneFunctionalBase( UniformVolume::SmartConstPtr& volume );
 
   /// Constructor with value range limits.
-  ImageSymmetryPlaneFunctionalBase(UniformVolume::SmartConstPtr &volume,
-                                   const Types::DataItemRange &valueRange);
+  ImageSymmetryPlaneFunctionalBase( UniformVolume::SmartConstPtr& volume, const Types::DataItemRange& valueRange );
 
   /// Destructor.
   virtual ~ImageSymmetryPlaneFunctionalBase() {}
 
   /// Get parameter vector.
-  virtual void GetParamVector(CoordinateVector &v) {
-    this->m_ParametricPlane.GetParameters(v);
+  virtual void GetParamVector ( CoordinateVector& v )  
+  {
+    this->m_ParametricPlane.GetParameters( v );
   }
 
   /// Compute functional value.
   virtual Self::ReturnType Evaluate() = 0;
 
   /// Compute functional value.
-  virtual Self::ReturnType EvaluateAt(CoordinateVector &v) {
-    this->m_ParametricPlane.SetParameters(v);
+  virtual Self::ReturnType EvaluateAt( CoordinateVector& v ) 
+  {
+    this->m_ParametricPlane.SetParameters( v );
     return this->Evaluate();
   }
 
@@ -92,30 +96,30 @@ class ImageSymmetryPlaneFunctionalBase :
   virtual size_t VariableParamVectorDim() const { return 3; }
 
   /// Return the parameter stepping for 1 mm optimization steps.
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const;
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;
 
   /// Set fix offset flag.
-  void SetFixOffset(const bool fixOffset) { this->m_FixOffset = fixOffset; }
+  void SetFixOffset( const bool fixOffset )
+  {
+    this->m_FixOffset = fixOffset;
+  }
 
- protected:
+protected:
   /// Volume image.
   UniformVolume::SmartConstPtr m_Volume;
 
   /// The symmetry plane.
   ParametricPlane m_ParametricPlane;
 
-  /// Flag for fixing offset parameter: resulting plane will go through volume
-  /// center of mass.
+  /// Flag for fixing offset parameter: resulting plane will go through volume center of mass.
   bool m_FixOffset;
-
+  
   /// Apply thresholding to volume data.
-  static UniformVolume::SmartPtr ApplyThresholds(
-      const UniformVolume &volume, const Types::DataItemRange &valueRange);
+  static UniformVolume::SmartPtr ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageSymmetryPlaneFunctionalBase_h_included_
+#endif // #ifndef __cmtkImageSymmetryPlaneFunctionalBase_h_included_

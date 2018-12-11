@@ -74,6 +74,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "rotations.h"
 
+
 /*************************************************************************
 Singular value decomposition of a bidiagonal matrix (extended algorithm)
 
@@ -152,9 +153,16 @@ History:
      Courant Institute, Argonne National Lab, and Rice University
      October 31, 1999.
 *************************************************************************/
-bool rmatrixbdsvd(ap::real_1d_array &d, ap::real_1d_array e, int n,
-                  bool isupper, bool isfractionalaccuracyrequired,
-                  ap::real_2d_array &u, int nru, ap::real_2d_array &c, int ncc,
-                  ap::real_2d_array &vt, int ncvt);
+bool rmatrixbdsvd(ap::real_1d_array& d,
+     ap::real_1d_array e,
+     int n,
+     bool isupper,
+     bool isfractionalaccuracyrequired,
+     ap::real_2d_array& u,
+     int nru,
+     ap::real_2d_array& c,
+     int ncc,
+     ap::real_2d_array& vt,
+     int ncvt);
 
 #endif

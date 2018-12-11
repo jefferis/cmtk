@@ -73,7 +73,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-namespace alglib {
+namespace
+alglib
+{
 
 /*************************************************************************
 Gamma function
@@ -96,6 +98,7 @@ Original copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
 ap::real_value_type gamma(ap::real_value_type x);
+
 
 /*************************************************************************
 Natural logarithm of gamma function
@@ -129,8 +132,8 @@ Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
-ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type &sgngam);
+ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam);
 
-}  // namespace alglib
+} // namespace alglib
 
 #endif

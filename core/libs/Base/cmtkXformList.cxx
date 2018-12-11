@@ -32,110 +32,138 @@
 
 #include "cmtkXformList.h"
 
-void cmtk::XformList::Add(const Xform::SmartConstPtr &xform, const bool inverse,
-                          const Types::Coordinate globalScale) {
-  this->push_back(XformListEntry::SmartConstPtr(
-      new XformListEntry(xform, inverse, globalScale)));
+void
+cmtk::XformList::Add
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
+{
+  this->push_back( XformListEntry::SmartConstPtr( new XformListEntry( xform, inverse, globalScale ) ) );
 }
 
-void cmtk::XformList::AddToFront(const Xform::SmartConstPtr &xform,
-                                 const bool inverse,
-                                 const Types::Coordinate globalScale) {
-  this->push_front(XformListEntry::SmartConstPtr(
-      new XformListEntry(xform, inverse, globalScale)));
+void
+cmtk::XformList::AddToFront
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
+{
+  this->push_front( XformListEntry::SmartConstPtr( new XformListEntry( xform, inverse, globalScale ) ) );
 }
 
-bool cmtk::XformList::ApplyInPlace(Xform::SpaceVectorType &v) const {
-  for (const_iterator it = this->begin(); it != this->end(); ++it) {
-    if ((*it)->Inverse) {
+bool
+cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
+{
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    if ( (*it)->Inverse ) 
+      {
       // is this an affine transformation that has an inverse?
-      if ((*it)->InverseAffineXform) {
-        // apply inverse
-        v = (*it)->InverseAffineXform->Apply(v);
-      } else {
-        // not affine: use approximate inverse
-        if (!(*it)->m_Xform->ApplyInverse(v, v, this->m_Epsilon)) return false;
-      }
-    } else {
+      if ( (*it)->InverseAffineXform ) 
+	{
+	// apply inverse
+	v = (*it)->InverseAffineXform->Apply( v );
+	}
+      else
+	{
+	// not affine: use approximate inverse
+	if ( ! (*it)->m_Xform->ApplyInverse( v, v, this->m_Epsilon ) )
+	  return false;
+	} 
+      } 
+    else
+      {
       // are we outside xform domain? then return failure.
-      if (!(*it)->m_Xform->InDomain(v)) return false;
-      v = (*it)->m_Xform->Apply(v);
+      if ( !(*it)->m_Xform->InDomain( v ) ) return false;
+      v = (*it)->m_Xform->Apply( v );
+      }
     }
-  }
   return true;
 }
 
-bool cmtk::XformList::GetJacobian(const Xform::SpaceVectorType &v,
-                                  Types::DataItem &jacobian,
-                                  const bool correctGlobalScale) const {
-  Xform::SpaceVectorType vv(v);
+bool
+cmtk::XformList::GetJacobian
+( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale ) const
+{
+  Xform::SpaceVectorType vv( v );
 
-  jacobian = static_cast<Types::DataItem>(1.0);
-  for (const_iterator it = this->begin(); it != this->end(); ++it) {
-    if ((*it)->Inverse) {
-      if (correctGlobalScale)
-        jacobian *= static_cast<Types::DataItem>((*it)->GlobalScale);
+  jacobian = static_cast<Types::DataItem>( 1.0 );
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    if ( (*it)->Inverse ) 
+      {
+      if ( correctGlobalScale )
+	jacobian *= static_cast<Types::DataItem>( (*it)->GlobalScale );
 
       // is this an affine transformation that has an inverse?
-      if ((*it)->InverseAffineXform) {
-        // apply inverse
-        vv = (*it)->InverseAffineXform->Apply(vv);
-      } else {
-        // not affine: use approximate inverse
-        if (!(*it)->m_Xform->ApplyInverse(vv, vv, this->m_Epsilon))
-          return false;
-      }
+      if ( (*it)->InverseAffineXform ) 
+	{
+	// apply inverse
+	vv = (*it)->InverseAffineXform->Apply( vv );
+	}
+      else
+	{
+	// not affine: use approximate inverse
+	if ( ! (*it)->m_Xform->ApplyInverse( vv, vv, this->m_Epsilon ) )
+	  return false;
+	}
 
       // compute Jacobian at destination and invert
-      jacobian /= static_cast<Types::DataItem>(
-          (*it)->m_Xform->GetJacobianDeterminant(vv));
-    } else {
+      jacobian /= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );
+      } 
+    else 
+      {
       // are we outside xform domain? then return failure.
-      if (!(*it)->m_Xform->InDomain(v)) return false;
+      if ( !(*it)->m_Xform->InDomain( v ) ) return false;
 
-      jacobian *= static_cast<Types::DataItem>(
-          (*it)->m_Xform->GetJacobianDeterminant(vv));
-      if (correctGlobalScale)
-        jacobian /= static_cast<Types::DataItem>((*it)->GlobalScale);
-      vv = (*it)->m_Xform->Apply(vv);
+      jacobian *= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );
+      if ( correctGlobalScale )
+	jacobian /= static_cast<Types::DataItem>( (*it)->GlobalScale );
+      vv = (*it)->m_Xform->Apply( vv );
+      }
     }
-  }
   return true;
 }
 
-bool cmtk::XformList::AllAffine() const {
-  for (const_iterator it = this->begin(); it != this->end(); ++it) {
-    if (!(*it)->IsAffine()) return false;
-  }
+bool
+cmtk::XformList::AllAffine() const
+{
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    if ( !(*it)->IsAffine() )
+      return false;
+    }
   return true;
 }
 
-cmtk::XformList cmtk::XformList::MakeAllAffine() const {
+cmtk::XformList
+cmtk::XformList::MakeAllAffine() const
+{
   cmtk::XformList allAffine;
 
-  for (const_iterator it = this->begin(); it != this->end(); ++it) {
-    allAffine.push_back((*it)->CopyAsAffine());
-  }
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    allAffine.push_back( (*it)->CopyAsAffine() );
+    }
 
   return allAffine;
 }
 
-std::string cmtk::XformList::GetFixedImagePath() const {
-  const XformListEntry &first = **(this->begin());
+std::string
+cmtk::XformList::GetFixedImagePath() const
+{
+  const XformListEntry& first = **(this->begin());
 
   // if transformation is inverse, get original "moving" path instead.
-  if (first.Inverse)
-    return first.m_Xform->GetMetaInfo(META_XFORM_MOVING_IMAGE_PATH, "");
+  if ( first.Inverse )
+    return first.m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" );
   else
-    return first.m_Xform->GetMetaInfo(META_XFORM_FIXED_IMAGE_PATH, "");
+    return first.m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" );
 }
 
-std::string cmtk::XformList::GetMovingImagePath() const {
-  const XformListEntry &last = **(this->rbegin());
-
+std::string
+cmtk::XformList::GetMovingImagePath() const
+{
+  const XformListEntry& last = **(this->rbegin());
+  
   // if transformation is inverse, get original "fixed" path instead.
-  if (last.Inverse)
-    return last.m_Xform->GetMetaInfo(META_XFORM_FIXED_IMAGE_PATH, "");
+  if ( last.Inverse )
+    return last.m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" );
   else
-    return last.m_Xform->GetMetaInfo(META_XFORM_MOVING_IMAGE_PATH, "");
+    return last.m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" );
 }

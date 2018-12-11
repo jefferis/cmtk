@@ -32,9 +32,9 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
 
@@ -47,7 +47,7 @@
 #include <vector>
 
 #ifdef CMTK_USE_GCD
-#include <dispatch/dispatch.h>
+#  include <dispatch/dispatch.h>
 #endif
 
 const char *OutputFileName = "sba.nii";
@@ -61,88 +61,77 @@ float PaddingValue = 0;
 
 bool ExcludeLocalOutliers = false;
 
-void AddVolumeFile(
-    const char *fileName,
-    std::vector<cmtk::UniformVolume::SmartConstPtr> &volumeVector) {
-  cmtk::DebugOutput(1) << "Opening image " << fileName << ".\n";
-
-  cmtk::UniformVolume::SmartPtr nextVolume(
-      cmtk::VolumeIO::ReadOriented(fileName));
-
-  if (PaddingFlag) {
-    nextVolume->GetData()->SetPaddingValue(PaddingValue);
-  }
-
-  if (nextVolume->GetData()->GetType() != cmtk::TYPE_USHORT) {
+void
+AddVolumeFile
+( const char* fileName, std::vector<cmtk::UniformVolume::SmartConstPtr>& volumeVector )
+{
+  cmtk::DebugOutput( 1 ) << "Opening image " << fileName << ".\n";
+  
+  cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( fileName ) );
+  
+  if ( PaddingFlag )
+    {
+    nextVolume->GetData()->SetPaddingValue( PaddingValue );
+    }
+  
+  if ( nextVolume->GetData()->GetType() != cmtk::TYPE_USHORT )
+    {
     cmtk::StdErr << "WARNING: converting data to 'unsigned short'\n";
-
-    nextVolume->SetData(cmtk::TypedArray::SmartPtr(
-        nextVolume->GetData()->Convert(cmtk::TYPE_USHORT)));
-  }
-  volumeVector.push_back(nextVolume);
+    
+    nextVolume->SetData( cmtk::TypedArray::SmartPtr( nextVolume->GetData()->Convert( cmtk::TYPE_USHORT ) ) );
+    }
+  volumeVector.push_back( nextVolume );
 }
 
-int doMain(const int argc, const char *argv[]) {
-  try {
+int
+doMain ( const int argc, const char* argv[] ) 
+{
+  try 
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Shape-based Averaging of label images");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
-                      "Average segmentations (label fields) using the "
-                      "Euclidean Distance Transform. All input images must be "
-                      "in the same space. EDT is computed in this space also. "
-                      "See http://dx.doi.org/10.1109/TIP.2006.884936 for "
-                      "details of the underlying algorithm.");
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Shape-based Averaging of label images" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average segmentations (label fields) using the Euclidean Distance Transform. All input images must be in the same space. EDT is computed in this space also. "
+		       "See http://dx.doi.org/10.1109/TIP.2006.884936 for details of the underlying algorithm." );
 
-    cl.AddParameterVector(&InputFileVector, "InputImageVector",
-                          "Input image file names.");
+    cl.AddParameterVector( &InputFileVector, "InputImageVector", "Input image file names." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.BeginGroup("Input", "Input Options");
-    cl.AddOption(Key('n', "num-labels"), &NumberOfLabels,
-                 "Number of labels. It is assumed that only values [0..num] "
-                 "occur in the images");
-    cl.AddOption(Key('p', "padding"), &PaddingValue,
-                 "Padding value in input image", &PaddingFlag);
+    cl.BeginGroup( "Input", "Input Options" );
+    cl.AddOption( Key( 'n', "num-labels" ), &NumberOfLabels, "Number of labels. It is assumed that only values [0..num] occur in the images" );
+    cl.AddOption( Key( 'p', "padding" ), &PaddingValue, "Padding value in input image", &PaddingFlag );
     cl.EndGroup();
 
-    cl.BeginGroup("Combination", "Label Combination Options");
-    cl.AddSwitch(Key('x', "exclude-outliers"), &ExcludeLocalOutliers, true,
-                 "Exclude local outliers in the shape-based averaging "
-                 "algorithm. Outliers at each pixel are defined as those input "
-                 "images for which the distance from "
-                 "the nearest pixel with the current label exceeds thresholds "
-                 "computed from the set of distances over all inputs.");
+    cl.BeginGroup( "Combination", "Label Combination Options" );
+    cl.AddSwitch( Key( 'x', "exclude-outliers" ), &ExcludeLocalOutliers, true, "Exclude local outliers in the shape-based averaging algorithm. Outliers at each pixel are defined as those input images for which the distance from "
+		  "the nearest pixel with the current label exceeds thresholds computed from the set of distances over all inputs." );
     cl.EndGroup();
 
-    cl.BeginGroup("Output", "Output Options");
-    cl.AddOption(Key('o', "output"), &OutputFileName,
-                 "File name for output segmentation file.");
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "output" ), &OutputFileName, "File name for output segmentation file." );
     cl.EndGroup();
 
-    cl.Parse(argc, argv);
-  } catch (const cmtk::CommandLine::Exception &e) {
+    cl.Parse( argc, argv );
+    }
+  catch ( const cmtk::CommandLine::Exception& e )
+    {
     cmtk::StdErr << e;
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
 
   std::vector<cmtk::UniformVolume::SmartConstPtr> volumeVector;
-  for (std::vector<std::string>::const_iterator it = InputFileVector.begin();
-       it != InputFileVector.end(); ++it) {
-    AddVolumeFile(it->c_str(), volumeVector);
-  }
+  for ( std::vector<std::string>::const_iterator it = InputFileVector.begin(); it != InputFileVector.end(); ++it ) 
+    {
+    AddVolumeFile( it->c_str(), volumeVector );
+    }
 
   const double timeBaseline = cmtk::Timers::GetTimeProcess();
 
-  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr(
-      cmtk::LabelCombinationShapeBasedAveraging(volumeVector, NumberOfLabels)
-          .GetResult(ExcludeLocalOutliers));
-  cmtk::DebugOutput(1).GetStream().printf(
-      "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline);
-
+  cmtk::TypedArray::SmartPtr avgArray = cmtk::TypedArray::SmartPtr( cmtk::LabelCombinationShapeBasedAveraging( volumeVector, NumberOfLabels ).GetResult( ExcludeLocalOutliers ) );
+  cmtk::DebugOutput( 1 ).GetStream().printf( "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
+  
   cmtk::UniformVolume::SmartPtr volume = volumeVector[0]->CloneGrid();
-  volume->SetData(avgArray);
-  cmtk::VolumeIO::Write(*volume, OutputFileName);
+  volume->SetData( avgArray );
+  cmtk::VolumeIO::Write( *volume, OutputFileName );
 
   return 0;
 }

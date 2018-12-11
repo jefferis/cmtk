@@ -39,30 +39,33 @@
 
 #include <Registration/cmtkRegistrationCallback.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Callback object with protocol functionality.
-class ProtocolCallback : public RegistrationCallback {
- public:
+class ProtocolCallback : 
+  public RegistrationCallback 
+{
+public:
   /// Open protocol stream if filename is given.
-  ProtocolCallback(const std::string &filename = "", const bool debug = false);
+  ProtocolCallback ( const std::string& filename = "", const bool debug = false );
 
-  /** Destructor.
+  /** Destructor. 
    * Closes protocol stream.
    */
-  virtual ~ProtocolCallback();
+  virtual ~ProtocolCallback ();
 
   /// Execute callback action.
-  virtual CallbackResult ExecuteWithData(const CoordinateVector &v,
-                                         const double metric);
+  virtual CallbackResult ExecuteWithData ( const CoordinateVector& v, const double metric );
 
   /// Write comment to protocol file.
-  virtual void Comment(const char *comment = NULL);
+  virtual void Comment ( const char* comment = NULL );
 
- private:
+private:
   /// Protocol stream.
   FILE *fp;
 
@@ -75,6 +78,6 @@ class ProtocolCallback : public RegistrationCallback {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkProtocolCallback_h_included_
+#endif // #ifndef __cmtkProtocolCallback_h_included_

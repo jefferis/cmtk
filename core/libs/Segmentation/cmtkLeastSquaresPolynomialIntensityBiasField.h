@@ -33,21 +33,24 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGrid.h>
-#include <Base/cmtkPolynomial.h>  // because this class may throw PolynomialHelper::DegreeUnsupported exception
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkDataGrid.h>
+#include <Base/cmtkPolynomial.h> // because this class may throw PolynomialHelper::DegreeUnsupported exception
 
 #include <System/cmtkException.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Least-squares fit of a polynomial intensity bias field.
  */
-class LeastSquaresPolynomialIntensityBiasField {
- public:
+class LeastSquaresPolynomialIntensityBiasField
+{
+public:
   /// This class.
   typedef LeastSquaresPolynomialIntensityBiasField Self;
 
@@ -61,30 +64,35 @@ class LeastSquaresPolynomialIntensityBiasField {
   class EmptyMaskException : public Exception {};
 
   /// Constructor.
-  LeastSquaresPolynomialIntensityBiasField(
-      const UniformVolume
-          &image /*!< Image for which bias field is estimated.*/,
-      const std::vector<bool>
-          &mask /*!< Mask vector - one bool per image pixel. Only pixels with
-                   "true" mask entry will be considered for bias estimation.*/
-      ,
-      const int degree /*!< Polynomial degree of the estimated bias field.*/);
+  LeastSquaresPolynomialIntensityBiasField( const UniformVolume& image /*!< Image for which bias field is estimated.*/, 
+					    const std::vector<bool>& mask /*!< Mask vector - one bool per image pixel. Only pixels with "true" mask entry will be considered for bias estimation.*/, 
+					    const int degree /*!< Polynomial degree of the estimated bias field.*/ );
 
   /// Get estimated bias field data.
-  TypedArray::SmartPtr GetBiasData() { return this->m_BiasData; }
+  TypedArray::SmartPtr GetBiasData()
+  {
+    return this->m_BiasData;
+  }
 
   /// Get estimated bias field data.
-  TypedArray::SmartConstPtr GetBiasData() const { return this->m_BiasData; }
+  TypedArray::SmartConstPtr GetBiasData() const
+  {
+    return this->m_BiasData;
+  }
 
   /// Get estimated bias field-corrected data.
-  TypedArray::SmartPtr GetCorrectedData() { return this->m_CorrectedData; }
-
-  /// Get estimated bias field-corrected data.
-  TypedArray::SmartConstPtr GetCorrectedData() const {
+  TypedArray::SmartPtr GetCorrectedData()
+  {
     return this->m_CorrectedData;
   }
 
- private:
+  /// Get estimated bias field-corrected data.
+  TypedArray::SmartConstPtr GetCorrectedData() const
+  {
+    return this->m_CorrectedData;
+  }
+
+private:
   /// The estimated bias field data.
   TypedArray::SmartPtr m_BiasData;
 
@@ -94,6 +102,7 @@ class LeastSquaresPolynomialIntensityBiasField {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLeastSquaresPolynomialIntensityBiasField_h_included_
+#endif // #ifndef __cmtkLeastSquaresPolynomialIntensityBiasField_h_included_
+

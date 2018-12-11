@@ -32,53 +32,63 @@
 
 #include "cmtkLandmarkPairList.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void LandmarkPairList::AddLandmarkLists(const LandmarkList &sourceList,
-                                        const LandmarkList &targetList) {
+void
+LandmarkPairList::AddLandmarkLists
+( const LandmarkList& sourceList, const LandmarkList& targetList )
+{
   LandmarkList::ConstIterator it = sourceList.begin();
-  while (it != sourceList.end()) {
-    const LandmarkList::ConstIterator targetLM =
-        targetList.FindByName(it->m_Name);
-    if (targetLM != targetList.end()) {
-      this->push_back(LandmarkPair(*it, targetLM->m_Location));
-    }
+  while ( it != sourceList.end() ) 
+    {
+    const LandmarkList::ConstIterator targetLM = targetList.FindByName( it->m_Name );
+    if ( targetLM != targetList.end() ) 
+      {
+      this->push_back( LandmarkPair( *it, targetLM->m_Location ) );
+      }
     ++it;
-  }
+    }
 }
 
-LandmarkPairList::ConstIterator LandmarkPairList::FindByName(
-    const std::string &name) const {
-  for (const_iterator it = this->begin(); it != this->end(); ++it) {
-    if (it->m_Name == name) {
+LandmarkPairList::ConstIterator
+LandmarkPairList::FindByName( const std::string& name ) const
+{
+  for ( const_iterator it = this->begin(); it != this->end(); ++it )
+    {
+    if ( it->m_Name == name )
+      {
       return it;
+      }
     }
-  }
-
+  
   return this->end();
 }
 
-LandmarkPairList::Iterator LandmarkPairList::FindByName(
-    const std::string &name) {
-  for (Self::Iterator it = this->begin(); it != this->end(); ++it) {
-    if (it->m_Name == name) {
+LandmarkPairList::Iterator
+LandmarkPairList::FindByName( const std::string& name )
+{
+  for ( Self::Iterator it = this->begin(); it != this->end(); ++it )
+    {
+    if ( it->m_Name == name )
+      {
       return it;
+      }
     }
-  }
-
+  
   return this->end();
 }
 
-std::ostream &operator<<(std::ostream &stream,
-                         const LandmarkPairList &pairList) {
-  for (LandmarkPairList::ConstIterator it = pairList.begin();
-       it != pairList.end(); ++it)
-    stream << it->m_Location << "\t" << it->m_TargetLocation << "\t"
-           << it->m_Name << std::endl;
+std::ostream& 
+operator<<( std::ostream& stream, const LandmarkPairList& pairList )
+{
+  for ( LandmarkPairList::ConstIterator it = pairList.begin(); it != pairList.end(); ++it )
+    stream << it->m_Location << "\t" << it->m_TargetLocation << "\t" << it->m_Name << std::endl;
   return stream;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

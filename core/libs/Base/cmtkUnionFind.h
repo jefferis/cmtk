@@ -33,18 +33,21 @@
 
 #include <cmtkconfig.h>
 
-#include <list>
 #include <set>
+#include <list>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Class template for (relatively) efficient union-find algorithm.
-template <class T>
-class UnionFind {
- public:
+template<class T>
+class UnionFind
+{
+public:
   /// Internal set type.
   typedef std::set<T> SetType;
 
@@ -55,42 +58,53 @@ class UnionFind {
   typedef typename ListType::iterator FindResultType;
 
   /// Find operation.
-  FindResultType Find(const T &key) {
-    for (FindResultType it = this->m_List.begin(); it != this->m_List.end();
-         ++it) {
-      if (it->find(key) != it->end()) return it;
-    }
+  FindResultType Find( const T& key )
+  {
+    for ( FindResultType it = this->m_List.begin(); it != this->m_List.end(); ++it )
+      {
+      if ( it->find( key ) != it->end() )
+	return it;
+      }
     return this->End();
   }
 
   /// Find representative key.
-  const T FindKey(const T &key) { return *(this->Find(key)->begin()); }
+  const T FindKey( const T& key )
+  {
+    return *(this->Find( key )->begin());
+  }
 
   /// End-of-list iterator.
-  FindResultType End() { return this->m_List.end(); }
+  FindResultType End()
+  {
+    return this->m_List.end();
+  }
 
   /// Union operation.
-  void Union(const FindResultType &s1, const FindResultType &s2) {
-    if (s1 != s2) {
-      s1->insert(s2->begin(), s2->end());
-      this->m_List.erase(s2);
-    }
+  void Union( const FindResultType& s1, const FindResultType& s2 )
+  {
+    if ( s1 != s2 )
+      {
+      s1->insert( s2->begin(), s2->end() );
+      this->m_List.erase( s2 );
+      }
   }
 
   /// Insert a new key by itself.
-  void Insert(const T &key) {
+  void Insert( const T& key )
+  {
     SetType newSet;
-    newSet.insert(key);
-    this->m_List.push_back(newSet);
+    newSet.insert( key );
+    this->m_List.push_back( newSet );
   }
-
- private:
+  
+private:
   /// The list of sets.
   ListType m_List;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkUnionFind_h_included_
+#endif // #ifndef __cmtkUnionFind_h_included_

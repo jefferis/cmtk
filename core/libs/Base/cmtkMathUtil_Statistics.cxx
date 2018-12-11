@@ -36,25 +36,33 @@
 #include <System/cmtkConsole.h>
 #include "Numerics/ibetaf.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-double MathUtil::TStatFromCorrelation(const double r, const size_t df) {
-  return r * sqrt(df / (1 - r * r));
+double
+MathUtil::TStatFromCorrelation
+( const double r, const size_t df )
+{
+  return r * sqrt( df / (1-r*r) ); 
 }
 
-double MathUtil::ProbabilityFromTStat(const double t, const size_t df) {
+double 
+MathUtil::ProbabilityFromTStat
+( const double t, const size_t df )
+{
   double stat;
-  if (df == 0.0)
+  if ( df == 0.0 )
     stat = 0.0;
-  else if (t == 0.0)
+  else if ( t == 0.0 )
     stat = 1.0;
   else
-    stat = df / (df + t * t);
+    stat = df/(df+t*t);
 
-  return alglib::incompletebeta(0.5 * df, 0.5, stat);
+  return alglib::incompletebeta( 0.5*df, 0.5, stat );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

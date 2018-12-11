@@ -35,44 +35,45 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: thresholding
 class ImageOperationPruneHistogram
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor.
-  ImageOperationPruneHistogram(const long int numberOfBins,
-                               const bool high = false, const bool low = false)
-      : m_NumberOfBins(numberOfBins), m_High(high), m_Low(low) {}
-
+  ImageOperationPruneHistogram( const long int numberOfBins, const bool high = false, const bool low = false ) 
+    : m_NumberOfBins( numberOfBins ), m_High( high ), m_Low( low ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
-
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create an upper plus lower thresholding operation.
-  static void New(const long int nBins) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationPruneHistogram(nBins, true, true)));
+  static void New( const long int nBins )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationPruneHistogram( nBins, true, true ) ) );
   }
-
+  
   /// Create an upper thresholding operation.
-  static void NewHigh(const long int nBins) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationPruneHistogram(nBins, true, false)));
+  static void NewHigh( const long int nBins )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationPruneHistogram( nBins, true, false ) ) );
   }
-
+  
   /// Create a lower thresholding operation.
-  static void NewLow(const long int nBins) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationPruneHistogram(nBins, false, true)));
+  static void NewLow( const long int nBins )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationPruneHistogram( nBins, false, true ) ) );
   }
-
- private:
+  
+private:
   /// PruneHistogram.
   long int m_NumberOfBins;
 
@@ -85,6 +86,6 @@ class ImageOperationPruneHistogram
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationPruneHistogram_h_included_
+#endif // #ifndef __cmtkImageOperationPruneHistogram_h_included_

@@ -33,28 +33,39 @@
 #include "cmtkMemory.h"
 
 #ifdef HAVE_MALLOC_H
-#include <malloc.h>
+#  include <malloc.h>
 #endif
 
+#include <stdio.h> // thanks to Hans Johnson for pointing this out
 #include <limits.h>
-#include <stdio.h>  // thanks to Hans Johnson for pointing this out
 
-namespace cmtk {
+namespace
+cmtk
+{
 
-namespace Memory {
+namespace
+Memory
+{
 
-size_t GetNextPowerOfTwo(size_t k) {
-  // http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two
+size_t
+GetNextPowerOfTwo( size_t k )
+{
 
-  if (k == 0) return 1;
+// http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
 
+  if (k == 0)
+    return 1;
+  
   k--;
-  for (size_t i = 1; i < sizeof(size_t) * CHAR_BIT; i <<= 1) k = k | k >> i;
+  for (size_t i=1; i<sizeof(size_t)*CHAR_BIT; i<<=1)
+    k = k | k >> i;
 
-  return k + 1;
+  return k+1;
 }
 
-size_t Used() {
+size_t
+Used () 
+{
 #ifdef HAVE_MALLINFO
   struct mallinfo stats = mallinfo();
   return stats.uordblks + stats.usmblks;
@@ -63,22 +74,26 @@ size_t Used() {
 #endif
 }
 
-void Info(const char *msg) {
+void
+Info ( const char *msg ) 
+{
   const int used = Used();
-  if (msg)
-    printf("%d bytes in use %s\n", used, msg);
+  if (msg )
+    printf("%d bytes in use %s\n",used,msg);
   else
-    printf("%d bytes in use.\n", used);
+    printf("%d bytes in use.\n",used);
 }
 
-void Diff(const size_t before, const char *msg) {
-  const int diff = Used() - before;
-  if (diff < 0)
-    printf("%s freed %d bytes.\n", msg, -diff);
+void
+Diff ( const size_t before, const char *msg ) 
+{
+  const int diff = Used()-before;
+  if (diff<0)
+    printf("%s freed %d bytes.\n",msg,-diff);
   else
-    printf("%s allocated %d bytes.\n", msg, diff);
+    printf("%s allocated %d bytes.\n",msg,diff);
 }
 
-}  // namespace Memory
+} // namespace Memory
 
-}  // namespace cmtk
+} // namespace cmtk

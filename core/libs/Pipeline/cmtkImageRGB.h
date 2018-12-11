@@ -35,13 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <Pipeline/cmtkImage.h>
 #include <Pipeline/cmtkPlane.h>
+#include <Pipeline/cmtkImage.h>
 #include <Pipeline/cmtkRGB.h>
 
 #include <Base/cmtkTypes.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -56,19 +58,23 @@ typedef enum {
 
 /** Class to represent ready-to-display RGB image data.
  */
-class ImageRGB :
-    /// Inherit geometry from Plane.
-    public Plane {
- public:
+class ImageRGB : 
+  /// Inherit geometry from Plane.
+  public Plane 
+{
+public:
   /// Construct new class instance.
-  static ImageRGB *New();
+  static ImageRGB* New();
 
   /** Get pointer to RGB data.
    * This function checks whether a data array of the appropriate size exists.
    * If not, the old array is freed and a new one with the correct size is
    * created.
    */
-  const byte *GetDataPtr() const { return this->Data; }
+  const byte *GetDataPtr() const
+  { 
+    return this->Data; 
+  }
 
   /** Get pointer to RGB data.
    * This function checks whether a data array of the appropriate size exists.
@@ -77,52 +83,52 @@ class ImageRGB :
    *\param forceAlloc If this flag is true, then a data array of
    * appropriate size is allocated if it had not been done before.
    */
-  byte *GetDataPtr(const bool forceAlloc);
+  byte *GetDataPtr( const bool forceAlloc );
 
   /** Return RGBA pixel data.
    * If this is actually an RGB image only, the alpha component of the returned
    * pixel will be set to 255 (opaque).
    */
-  void GetPixel(RGBA &rgb, const int index);
+  void GetPixel( RGBA& rgb, const int index );
 
   /** Set RGBA pixel data.
    * If this is actually an RGB image only, the target pixel's alpha value will
    * be set to 255 (opaque).
    */
-  void SetPixel(const int index, const RGBA &rgb);
+  void SetPixel( const int index, const RGBA& rgb );
 
   /** Return RGB pixel data.
    * If this is actually an RGBA image, the requested pixel's alpha component
    * will be ignored.
    */
-  void GetPixel(RGB &rgb, const int index);
+  void GetPixel( RGB& rgb, const int index );
 
   /** Set RGB pixel data.
    * If this is actually an RGBA image, the target pixel's alpha value will be
    * set to 255 (opaque).
    */
-  void SetPixel(const int index, const RGB &rgb);
+  void SetPixel( const int index, const RGB& rgb );
 
   /** Set alpha channel flag.
    * This function is used to toggle the image between RGB and RGB+Alpha modes.
    */
-  void SetAlphaChannel(const ImageAlphaToggle alphaChannel,
-                       const bool convertData = false);
+  void SetAlphaChannel( const ImageAlphaToggle alphaChannel,
+			const bool convertData = false );
 
   /** Return current image mode.
    */
   ImageAlphaToggle GetAlphaChannel() const { return AlphaChannel; }
 
- protected:
+protected:
   /// Default costructor.
   ImageRGB();
-
+  
   /** Destructor.
    * Free image data array if one has been allocated.
    */
   ~ImageRGB();
 
- private:
+private:
   /** Pointer to the RGB image data.
    * Every pixel is stored as three subsequent values R, G, B, and possibly
    * Alpha. These are all in the range 0 (black) to 255 (maximum intensity).
@@ -148,6 +154,6 @@ class ImageRGB :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageRGB_h_included_
+#endif // #ifndef __cmtkImageRGB_h_included_

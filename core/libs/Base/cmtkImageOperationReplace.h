@@ -38,19 +38,22 @@
 #include <Base/cmtkImageOperation.h>
 
 #ifdef HAVE_IEEEFP_H
-#include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: replace image pixel values.
 class ImageOperationReplace
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperationReplace Self;
 
@@ -58,7 +61,8 @@ class ImageOperationReplace
   typedef ImageOperation Superclass;
 
   /// Operation mode.
-  typedef enum {
+  typedef enum
+  {
     /// Replace padded pixels.
     REPLACE_PADDING,
     /// Replace Inf and NaN pixels.
@@ -66,47 +70,51 @@ class ImageOperationReplace
   } Mode;
 
   /// Constructor.
-  ImageOperationReplace(
-      const Self::Mode mode /*!< Operation mode.*/,
-      const Types::DataItem value /*!< Replacement data value.*/)
-      : m_Mode(mode), m_ReplacementValue(value) {}
+  ImageOperationReplace( const Self::Mode mode /*!< Operation mode.*/, const Types::DataItem value /*!< Replacement data value.*/ )
+    : m_Mode( mode ),
+      m_ReplacementValue( value )
+  {}
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    TypedArray &volumeData = *(volume->GetData());
-    switch (this->m_Mode) {
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    TypedArray& volumeData = *(volume->GetData());
+    switch ( this->m_Mode ) 
+      {
       case Self::REPLACE_PADDING:
-        volumeData.ReplacePaddingData(this->m_ReplacementValue);
-        break;
+	volumeData.ReplacePaddingData( this->m_ReplacementValue );
+	break;
       case Self::REPLACE_INF_NAN:
 #pragma omp parallel for
-        for (int i = 0; i < static_cast<int>(volumeData.GetDataSize()); ++i) {
-          cmtk::Types::DataItem value = 0;
-          if (volumeData.Get(value, i)) {
-            if (!finite(value)) {
-              volumeData.Set(this->m_ReplacementValue, i);
-            }
-          }
-        }
-        break;
-    }
+	for ( int i = 0; i < static_cast<int>( volumeData.GetDataSize() ); ++i )
+	  {
+	  cmtk::Types::DataItem value = 0;
+	  if ( volumeData.Get( value, i ) )
+	    {
+	    if ( !finite( value ) )
+	      {
+	      volumeData.Set( this->m_ReplacementValue, i );
+	      }
+	    }
+	  }
+	break;
+      }
     return volume;
   }
-
+  
   /// Create new operation to replace padded pixels.
-  static void NewReplacePadding(const double value /*!< Replacement value. */) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new Self(Self::REPLACE_PADDING, value)));
+  static void NewReplacePadding( const double value /*!< Replacement value. */ )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( Self::REPLACE_PADDING, value ) ) );
   }
 
   /// Create new operation to replace pixels with Inf or NaN values.
-  static void NewReplaceInfNaN(const double value /*!< Replacement value. */) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new Self(Self::REPLACE_INF_NAN, value)));
+  static void NewReplaceInfNaN( const double value /*!< Replacement value. */ )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( Self::REPLACE_INF_NAN, value ) ) );
   }
-
- private:
+  
+private:
   /// Operation mode.
   Self::Mode m_Mode;
 
@@ -116,6 +124,6 @@ class ImageOperationReplace
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationReplace_h_included_
+#endif // #ifndef __cmtkImageOperationReplace_h_included_

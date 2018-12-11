@@ -32,14 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkImageSymmetryPlaneCommandLine.h>
 #include <Registration/cmtkImageSymmetryPlaneCommandLineBase.h>
+#include <Registration/cmtkImageSymmetryPlaneCommandLine.h>
 #include <Registration/cmtkImageSymmetryPlaneFunctional.h>
 
-int doMain(const int argc, const char *argv[]) {
-  return cmtk::ImageSymmetryPlaneCommandLine<
-             cmtk::ImageSymmetryPlaneFunctional>()
-      .Run(argc, argv);
+int
+doMain ( const int argc, const char* argv[] ) 
+{
+  return cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctional>().Run( argc, argv );
 }
 
 #include "cmtkSafeMain"

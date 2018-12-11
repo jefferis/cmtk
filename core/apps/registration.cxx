@@ -32,33 +32,39 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkExitException.h>
+#include <System/cmtkTimers.h>
 #include <System/cmtkMemory.h>
 #include <System/cmtkProgressConsole.h>
-#include <System/cmtkTimers.h>
+#include <System/cmtkExitException.h>
 
 #include <Registration/cmtkAffineRegistrationCommandLine.h>
 
 #include <stdio.h>
 #include <string.h>
 
-int doMain(const int argc, const char *argv[]) {
+int
+doMain
+( const int argc, const char *argv[] )
+{
 #ifdef DEBUG
   int entry_mem = cmtk::Memory::Used();
 #endif
 
-  try {
-    cmtk::AffineRegistrationCommandLine Registration(argc, argv);
+  try 
+    {
+    cmtk::AffineRegistrationCommandLine Registration( argc, argv );
 
     // set up console progress reporting
-    cmtk::ProgressConsole progressInstance("AffineImageRegistration");
+    cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
     Registration.Register();
-  } catch (const cmtk::VoxelRegistration::ConstructorFailed &) {
+    }
+  catch ( const cmtk::VoxelRegistration::ConstructorFailed& ) 
+    {
     return 1;
-  }
+    }
 
 #ifdef DEBUG
-  cmtk::Memory::Diff(entry_mem, "AffineRegistration");
+  cmtk::Memory::Diff(entry_mem,"AffineRegistration");
 #endif
   return 0;
 }

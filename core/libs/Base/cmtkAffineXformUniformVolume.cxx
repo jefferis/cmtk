@@ -32,35 +32,26 @@
 
 #include "cmtkAffineXformUniformVolume.h"
 
-cmtk::AffineXformUniformVolume::AffineXformUniformVolume(
-    const UniformVolume &volume, const AffineXform &xform)
-    : m_VolumeAxesX(volume.m_Dims[0]),
-      m_VolumeAxesY(volume.m_Dims[1]),
-      m_VolumeAxesZ(volume.m_Dims[2]) {
+cmtk::AffineXformUniformVolume::AffineXformUniformVolume( const UniformVolume& volume, const AffineXform& xform )
+  : m_VolumeAxesX( volume.m_Dims[0] ),
+    m_VolumeAxesY( volume.m_Dims[1] ),
+    m_VolumeAxesZ( volume.m_Dims[2] )
+{
   // define volume corners
-  const UniformVolume::CoordinateVectorType V = xform.Apply(
-      FixedVectorStaticInitializer<3, Types::Coordinate>::Init(0, 0, 0));
-  const UniformVolume::CoordinateVectorType dX =
-      xform.Apply(
-          FixedVectorStaticInitializer<3, Types::Coordinate>::Init(1, 0, 0)) -
-      V;
-  const UniformVolume::CoordinateVectorType dY =
-      xform.Apply(
-          FixedVectorStaticInitializer<3, Types::Coordinate>::Init(0, 1, 0)) -
-      V;
-  const UniformVolume::CoordinateVectorType dZ =
-      xform.Apply(
-          FixedVectorStaticInitializer<3, Types::Coordinate>::Init(0, 0, 1)) -
-      V;
-
+  const UniformVolume::CoordinateVectorType V =  xform.Apply( FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,0) );
+  const UniformVolume::CoordinateVectorType dX = xform.Apply( FixedVectorStaticInitializer<3,Types::Coordinate>::Init(1,0,0) ) - V;
+  const UniformVolume::CoordinateVectorType dY = xform.Apply( FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,1,0) ) - V;
+  const UniformVolume::CoordinateVectorType dZ = xform.Apply( FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,1) ) - V;
+  
   const Types::Coordinate deltaX = volume.m_Delta[0];
   const Types::Coordinate deltaY = volume.m_Delta[1];
   const Types::Coordinate deltaZ = volume.m_Delta[2];
 
-  for (size_t idx = 0; idx < static_cast<size_t>(volume.m_Dims[0]); ++idx)
-    this->m_VolumeAxesX[idx] = deltaX * idx * dX;
-  for (size_t idx = 0; idx < static_cast<size_t>(volume.m_Dims[1]); ++idx)
-    this->m_VolumeAxesY[idx] = deltaY * idx * dY;
-  for (size_t idx = 0; idx < static_cast<size_t>(volume.m_Dims[2]); ++idx)
-    (this->m_VolumeAxesZ[idx] = deltaZ * idx * dZ) += V;
+  for ( size_t idx = 0; idx < static_cast<size_t>( volume.m_Dims[0] ); ++idx )
+    this->m_VolumeAxesX[idx] = deltaX*idx*dX;
+  for ( size_t idx = 0; idx < static_cast<size_t>( volume.m_Dims[1] ); ++idx )
+    this->m_VolumeAxesY[idx] = deltaY*idx*dY;
+  for ( size_t idx = 0; idx < static_cast<size_t>( volume.m_Dims[2] ); ++idx )
+    (this->m_VolumeAxesZ[idx] = deltaZ*idx*dZ) += V;
 }
+

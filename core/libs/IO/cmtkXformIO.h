@@ -37,47 +37,48 @@
 
 #include <Base/cmtkXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** Utility class for one-stop transformation import.
- * When reading a transformation file using the Read() function, the file and
- * transformation type are automatically detected based on each file format's
- * "magic number".
+ * When reading a transformation file using the Read() function, the file and transformation type
+ * are automatically detected based on each file format's "magic number".
  *
- * When writing a transformation using the Write() function, the path or file
- * name suffix determines the output file format. Supported formats are: ITK
- * Transformation file (".txt"; ".tfm"), Nrrd deformation fields (".nrrd";
- * ".nhdr"), and legacy TypedStream (all other suffixes).
+ * When writing a transformation using the Write() function, the path or file name suffix determines
+ * the output file format. Supported formats are: ITK Transformation file (".txt"; ".tfm"), Nrrd deformation
+ * fields (".nrrd"; ".nhdr"), and legacy TypedStream (all other suffixes).
  */
-class XformIO {
- public:
+class XformIO 
+{
+public:
   /// This class.
   typedef XformIO Self;
 
   /// Read transformation from filesystem.
-  static Xform::SmartPtr Read(const std::string &path);
+  static Xform::SmartPtr Read( const std::string& path );
 
   /// Write transformation to filesystem.
-  static void Write(const Xform *xform, const std::string &path);
+  static void Write( const Xform* xform, const std::string& path );
 
- protected:
+protected:
 #ifdef CMTK_BUILD_NRRD
   /// Read deformation field from Nrrd image file.
-  static Xform::SmartPtr ReadNrrd(const std::string &path);
+  static Xform::SmartPtr ReadNrrd( const std::string& path );
 
   /// Write transformation to filesystem.
-  static void WriteNrrd(const Xform *xform, const std::string &path);
-#endif  // #ifdef CMTK_BUILD_NRRD
+  static void WriteNrrd( const Xform* xform, const std::string& path );
+#endif // #ifdef CMTK_BUILD_NRRD
 
   /// Write transformation to filesystem.
-  static void WriteNIFTI(const Xform *xform, const std::string &path);
+  static void WriteNIFTI( const Xform* xform, const std::string& path );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkXformIO_h_included__
+#endif // #ifndef __cmtkXformIO_h_included__

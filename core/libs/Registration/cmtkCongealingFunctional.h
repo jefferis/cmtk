@@ -40,13 +40,15 @@
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkThreads.h>
 
-#include <Base/cmtkHistogram.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkXform.h>
+#include <Base/cmtkHistogram.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -57,15 +59,16 @@ namespace cmtk {
  *
  *\section ref References
  *
- * [1] L . Zoellei, E. Learned-Miller, E. Grimson, W.M. Wells III: "Efficient
+ * [1] L . Zoellei, E. Learned-Miller, E. Grimson, W.M. Wells III: "Efficient 
  *     Population Registration of 3D Data", ICCV 2005, Computer Vision for
  *     Biomedical Image Applications; Beijing, China
  */
-template <class TXform>
-class CongealingFunctional :
-    /** Inherit from template congealing base class. */
-    public GroupwiseRegistrationFunctionalXformTemplate<TXform> {
- public:
+template<class TXform>
+class CongealingFunctional : 
+  /** Inherit from template congealing base class. */
+  public GroupwiseRegistrationFunctionalXformTemplate<TXform>
+{
+public:
   /// Type of parent class.
   typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Superclass;
 
@@ -94,21 +97,18 @@ class CongealingFunctional :
   virtual ~CongealingFunctional();
 
   /// Set number of histogram bins.
-  virtual void SetNumberOfHistogramBins(const size_t numberOfHistogramBins);
+  virtual void SetNumberOfHistogramBins( const size_t numberOfHistogramBins );
 
   /** Set template grid.
    */
-  virtual void SetTemplateGrid(
-      UniformVolume::SmartPtr
-          &templateGrid /*!< The template grid that defines size and resolution
-                           for the implicit registration template. */
-      ,
-      const int downsample = 1 /*!< Grid downsampling factor */, const bool useTemplateData = false /*!< Flag to use template pixel data, not just grid, in registration */);
-
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid /*!< The template grid that defines size and resolution for the implicit registration template. */, 
+				const int downsample = 1 /*!< Grid downsampling factor */, 
+				const bool useTemplateData = false /*!< Flag to use template pixel data, not just grid, in registration */ );
+  
   /// Evaluate functional with currently set parameters.
   virtual typename Self::ReturnType Evaluate();
-
- protected:
+  
+protected:
   /// Standard deviation over all images by pixel.
   std::vector<byte> m_StandardDeviationByPixel;
 
@@ -128,7 +128,7 @@ class CongealingFunctional :
    * uncertainty in a histogram. Element [0] of each such array is the central
    * element.
    */
-  std::vector<HistogramBinType *> m_HistogramKernel;
+  std::vector<HistogramBinType*> m_HistogramKernel;
 
   /** Radius of histogram sample kernel.
    * Each element here is the number of elements in the corresponding
@@ -143,48 +143,38 @@ class CongealingFunctional :
   /// Update probabilistic sample table..
   virtual bool Wiggle();
 
- private:
+private:
   /// Thread parameters with no further data.
   typedef ThreadParameters<Self> ThreadParametersType;
 
   /// Thread function to update standard dedviations by pixel.
-  static void UpdateStandardDeviationByPixelThreadFunc(void *const args,
-                                                       const size_t taskIdx,
-                                                       const size_t taskCnt,
-                                                       const size_t,
-                                                       const size_t);
-
+  static void UpdateStandardDeviationByPixelThreadFunc( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
+  
   /// Thread parameter for entropy evaluation.
-  class EvaluateThreadParameters :
-      /// Inherit from generic thread parameter class.
-      public ThreadParametersType {
-   public:
+  class EvaluateThreadParameters : 
+    /// Inherit from generic thread parameter class.
+    public ThreadParametersType
+  {
+  public:
     /// Upon return from the thread function, this holds the partial entropy.
     double m_Entropy;
 
     /** Upon return from the thread function, this holds the number of
-     * pixels with full image count, i.e., pixels that are within all
-     * target images.
-     */
+      * pixels with full image count, i.e., pixels that are within all
+      * target images.
+      */
     unsigned int m_Count;
   };
-
+  
   /// Evaluate functional with currently set parameters.
-  static void EvaluateThread(void *const args, const size_t taskIdx,
-                             const size_t taskCnt, const size_t threadIdx,
-                             const size_t threadCnt);
+  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 
-  /// Evaluate functional with currently set parameters with probabilistic
-  /// sampling.
-  static void EvaluateProbabilisticThread(void *const args,
-                                          const size_t taskIdx,
-                                          const size_t taskCnt,
-                                          const size_t threadIdx,
-                                          const size_t threadCnt);
+  /// Evaluate functional with currently set parameters with probabilistic sampling.
+  static void EvaluateProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkCongealingFunctional_h_included_
+#endif // #ifndef __cmtkCongealingFunctional_h_included_

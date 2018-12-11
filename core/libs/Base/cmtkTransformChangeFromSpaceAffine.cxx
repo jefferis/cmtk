@@ -32,34 +32,32 @@
 
 #include "cmtkTransformChangeFromSpaceAffine.h"
 
-cmtk::TransformChangeFromSpaceAffine ::TransformChangeFromSpaceAffine(
-    const AffineXform &xform, const UniformVolume &reference,
-    const UniformVolume &floating, const char *forceSpace) {
-  // adapt transformation to Slicer's image coordinate systems as defined in the
-  // Nrrd files we probably read
-  UniformVolume::SmartPtr refVolumeOriginalSpace(reference.CloneGrid());
-  UniformVolume::SmartPtr fltVolumeOriginalSpace(floating.CloneGrid());
-
-  // first bring volumes back into their native coordinate space, or forced
-  // space if one was provided.
-  if (forceSpace) {
-    refVolumeOriginalSpace->ChangeCoordinateSpace(forceSpace);
-    fltVolumeOriginalSpace->ChangeCoordinateSpace(forceSpace);
-  } else {
-    refVolumeOriginalSpace->ChangeCoordinateSpace(
-        reference.GetMetaInfo(META_SPACE_ORIGINAL));
-    fltVolumeOriginalSpace->ChangeCoordinateSpace(
-        floating.GetMetaInfo(META_SPACE_ORIGINAL));
-  }
-
+cmtk::TransformChangeFromSpaceAffine
+::TransformChangeFromSpaceAffine
+( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating, const char* forceSpace )
+{
+  // adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
+  UniformVolume::SmartPtr refVolumeOriginalSpace( reference.CloneGrid() );
+  UniformVolume::SmartPtr fltVolumeOriginalSpace( floating.CloneGrid() );
+  
+  // first bring volumes back into their native coordinate space, or forced space if one was provided.
+  if ( forceSpace )
+    {
+    refVolumeOriginalSpace->ChangeCoordinateSpace( forceSpace );
+    fltVolumeOriginalSpace->ChangeCoordinateSpace( forceSpace );
+    }
+  else
+    {
+    refVolumeOriginalSpace->ChangeCoordinateSpace( reference.GetMetaInfo( META_SPACE_ORIGINAL ) );
+    fltVolumeOriginalSpace->ChangeCoordinateSpace( floating.GetMetaInfo( META_SPACE_ORIGINAL ) );
+    }
+  
   // now determine image-to-physical transformations and concatenate these.
-  AffineXform::MatrixType concatMatrix =
-      refVolumeOriginalSpace->GetImageToPhysicalMatrix();
-  AffineXform::MatrixType fltMatrix =
-      fltVolumeOriginalSpace->GetImageToPhysicalMatrix();
-
+  AffineXform::MatrixType concatMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
+  AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix ();
+  
   (concatMatrix *= xform.Matrix) *= fltMatrix.GetInverse();
-
+  
   // create output transformation and write
-  this->m_NewXform.SetMatrix(concatMatrix);
+  this->m_NewXform.SetMatrix( concatMatrix );
 }

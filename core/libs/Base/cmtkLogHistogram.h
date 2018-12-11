@@ -39,18 +39,21 @@
 #include <System/cmtkSmartPtr.h>
 #include <math.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Histogram of log intensities.
  */
-template <class T>
-class LogHistogram :
-    /// Inherit from non-log histogram..
-    public Histogram<T> {
- public:
+template<class T>
+class LogHistogram : 
+  /// Inherit from non-log histogram..
+  public Histogram<T> 
+{
+public:
   /// This class.
   typedef LogHistogram<T> Self;
 
@@ -62,8 +65,7 @@ class LogHistogram :
 
   /** Constructor.
    */
-  LogHistogram(const size_t numBins = 0)
-      : Superclass(numBins), m_LogNumBins(log(static_cast<double>(numBins))) {}
+  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ), m_LogNumBins( log( static_cast<double>( numBins ) ) ) {}
 
   /** Destructor.
    * All bin arrays and the precomputed data bin index arrays are
@@ -72,69 +74,69 @@ class LogHistogram :
   virtual ~LogHistogram() {}
 
   /// Resize and allocate histogram bins.
-  virtual void Resize(const size_t numberOfBins, const bool reset = true) {
-    this->Superclass::Resize(numberOfBins, reset);
-    this->m_LogNumBins = log(static_cast<double>(numberOfBins));
+  virtual void Resize( const size_t numberOfBins, const bool reset = true )
+  {
+    this->Superclass::Resize( numberOfBins, reset );
+    this->m_LogNumBins = log( static_cast<double>( numberOfBins ) );
   }
 
   /// Make an identical copy of this object.
-  typename Self::SmartPtr Clone() const {
-    return typename Self::SmartPtr(this->CloneVirtual());
+  typename Self::SmartPtr Clone () const
+  {
+    return typename Self::SmartPtr( this->CloneVirtual() );
   }
 
   /** Return bin corresponding to a certain value of the distribution.
    *\param value A value from the distribution.
    *\return The index of the bin corresponding to the given value.
    */
-  virtual size_t ValueToBin(const Types::DataItem value) const {
-    return static_cast<size_t>(this->ValueToBinFractional(value));
+  virtual size_t ValueToBin ( const Types::DataItem value ) const 
+  {
+    return static_cast<size_t>( this->ValueToBinFractional( value ) );
   }
 
   /** Return fractional bin corresponding to a value of the distribution.
    *\param value A value from the distribution.
-   *\return The index of the fractional bin index corresponding to the given
-   * value. This value is an integer if and only if the given value is
+   *\return The index of the fractional bin index corresponding to the given 
+   * value. This value is an integer if and only if the given value is 
    * identical to the lower bound of a bin.
    */
-  virtual Types::DataItem ValueToBinFractional(
-      const Types::DataItem value) const {
-    const Types::DataItem binIndex =
-        this->Superclass::ValueToBinFractional(value);
-    return (this->GetNumberOfBins() - 1) *
-           std::max<Types::DataItem>(
-               0.0, std::min<Types::DataItem>(
-                        1.0, log(1 + binIndex) / this->m_LogNumBins));
+  virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
+  {
+    const Types::DataItem binIndex = this->Superclass::ValueToBinFractional( value );
+    return (this->GetNumberOfBins()-1) * std::max<Types::DataItem>( 0.0, std::min<Types::DataItem>( 1.0, log( 1+binIndex ) / this->m_LogNumBins ) );
   }
-
+  
   /** Get value range of a given bin.
    */
-  virtual const Types::DataItemRange GetRangeBin(const size_t bin) const {
-    return Types::DataItemRange(this->BinToValue(bin),
-                                this->BinToValue(bin + 1));
+  virtual const Types::DataItemRange GetRangeBin( const size_t bin ) const 
+  {
+    return Types::DataItemRange( this->BinToValue( bin ), this->BinToValue( bin+1 ) );
   }
-
+  
   /** Return center of values represented by a certain bin.
    *\param bin Index of a bin from the distribution.
    *\return Average of upper and lower margin values of the given bin.
    */
-  virtual Types::DataItem BinToValue(const size_t bin) const {
-    return this->Superclass::BinToValue(static_cast<size_t>(
-        exp(static_cast<Types::DataItem>(bin) / (this->GetNumberOfBins() - 1) *
-            this->m_LogNumBins) -
-        1));
+  virtual Types::DataItem BinToValue ( const size_t bin ) const 
+  {
+    return this->Superclass::BinToValue( static_cast<size_t>( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumberOfBins()-1) * this->m_LogNumBins ) - 1 ) );
   }
 
- protected:
+protected:
   /// Make an identical copy of this object including derived class objects
-  virtual Self *CloneVirtual() const { return new Self(*this); }
+  virtual Self* CloneVirtual() const
+  {
+    return new Self( *this );
+  }
 
- private:
+private:
   /// Pre-computed log of number of bins.
   double m_LogNumBins;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLogHistogram_h_included_
+#endif // #ifndef __cmtkLogHistogram_h_included_

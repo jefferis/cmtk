@@ -35,32 +35,35 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGridMorphologicalOperators.h>
 #include <Base/cmtkImageOperation.h>
+#include <Base/cmtkDataGridMorphologicalOperators.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Image operation: create connected components map.
 class ImageOperationConnectedComponents
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    cmtk::DataGridMorphologicalOperators ops(volume);
-    volume->SetData(ops.GetBinaryConnectedComponents());
-    volume->SetData(ops.GetRegionsRenumberedBySize());
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    cmtk::DataGridMorphologicalOperators ops( volume );
+    volume->SetData( ops.GetBinaryConnectedComponents() );
+    volume->SetData( ops.GetRegionsRenumberedBySize() );
     return volume;
   }
-
+  
   /// Create new connected components operation.
-  static void New() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConnectedComponents()));
+  static void New()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConnectedComponents() ) );
   }
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationConnectedComponents_h_included_
+#endif // #ifndef __cmtkImageOperationConnectedComponents_h_included_

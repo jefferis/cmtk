@@ -68,6 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "reflections.h"
 
+
 /*************************************************************************
 LQ decomposition of a rectangular matrix of size MxN
 
@@ -102,7 +103,8 @@ v(i) = 1, v(i+1:n-1) stored in A(i,i+1:n-1).
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixlq(ap::real_2d_array &a, int m, int n, ap::real_1d_array &tau);
+void rmatrixlq(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau);
+
 
 /*************************************************************************
 Partial unpacking of matrix Q from the LQ decomposition of a matrix A
@@ -124,8 +126,12 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixlqunpackq(const ap::real_2d_array &a, int m, int n,
-                      const ap::real_1d_array &tau, int qrows,
-                      ap::real_2d_array &q);
+void rmatrixlqunpackq(const ap::real_2d_array& a,
+     int m,
+     int n,
+     const ap::real_1d_array& tau,
+     int qrows,
+     ap::real_2d_array& q);
+
 
 #endif

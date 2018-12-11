@@ -32,110 +32,148 @@
 
 #include <Pipeline/cmtkImage.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
-Image::Image() : Data(NULL) { DataType = TYPE_NONE; }
+Image::Image () :
+  Data( NULL )
+{
+  DataType = TYPE_NONE;
+}
 
-TypedArray::SmartPtr Image::GetData() {
-  if (!Data) {
-    if (DataType == TYPE_NONE)
-      return TypedArray::SmartPtr(NULL);
-    else {
-      Data =
-          TypedArray::SmartPtr(TypedArray::Create(DataType, Dims[0] * Dims[1]));
+TypedArray::SmartPtr
+Image::GetData()
+{
+  if ( ! Data ) 
+    {
+    if ( DataType == TYPE_NONE )
+      return TypedArray::SmartPtr( NULL );
+    else
+      {
+      Data = TypedArray::SmartPtr( TypedArray::Create( DataType, Dims[0] * Dims[1] ) );
       this->UpdateModifiedTime();
-    }
-  } else {
-    if ((Data->GetType() != DataType) ||
-        (Data->GetDataSize() != (Dims[0] * Dims[1]))) {
-      Data = TypedArray::SmartPtr(NULL);
+      }
+    } 
+  else
+    {
+    if ( ( Data->GetType() != DataType ) || ( Data->GetDataSize() != (Dims[0] * Dims[1]) ) ) 
+      {
+      Data = TypedArray::SmartPtr( NULL );
       this->UpdateModifiedTime();
       return this->GetData();
+      } 
     }
-  }
   return Data;
 }
 
-void Image::SetData(TypedArray::SmartPtr &data) {
+void
+Image::SetData( TypedArray::SmartPtr& data )
+{
   Data = data;
-  if (Data) DataType = Data->GetType();
+  if ( Data ) 
+    DataType = Data->GetType();
   this->UpdateModifiedTime();
 }
 
-void Image::SetFromScalarImage(const ScalarImage &scalarImage) {
-  this->SetDims(scalarImage.GetDims()[0], scalarImage.GetDims()[1]);
+void
+Image::SetFromScalarImage
+( const ScalarImage& scalarImage )
+{
+  this->SetDims( scalarImage.GetDims()[0], scalarImage.GetDims()[1] );
   TypedArray::SmartPtr pixelData = scalarImage.GetPixelData();
-  if (pixelData) pixelData = TypedArray::SmartPtr(pixelData->Clone());
-  this->SetData(pixelData);
-  this->SetSpacing(scalarImage.GetPixelSize());
-  this->SetOrigin(scalarImage.GetImageOrigin().begin());
-  this->SetDirectionX(scalarImage.GetImageDirectionX().begin());
-  this->SetDirectionY(scalarImage.GetImageDirectionY().begin());
+  if ( pixelData )
+    pixelData = TypedArray::SmartPtr( pixelData->Clone() );
+  this->SetData( pixelData );
+  this->SetSpacing( scalarImage.GetPixelSize() );
+  this->SetOrigin( scalarImage.GetImageOrigin().begin() );
+  this->SetDirectionX( scalarImage.GetImageDirectionX().begin() );
+  this->SetDirectionY( scalarImage.GetImageDirectionY().begin() );
   this->UpdateModifiedTime();
 }
 
-double Image::GetDataAt(const int x, const int y, const double def) {
+double
+Image::GetDataAt( const int x, const int y, const double def )
+{
+  const TypedArray* data = this->GetData();
+
+  Types::DataItem result;
+  if ( data->Get( result, x+Dims[0]*y ) ) 
+    {
+    return result;
+    } 
+  else
+    {
+    return def;
+    }
+}
+
+double
+Image::GetDataAt( const int index, const double def )
+{
   const TypedArray *data = this->GetData();
 
   Types::DataItem result;
-  if (data->Get(result, x + Dims[0] * y)) {
+  if ( data->Get( result, index ) ) 
+    {
     return result;
-  } else {
+    } 
+  else
+    {
     return def;
-  }
+    }
 }
 
-double Image::GetDataAt(const int index, const double def) {
+void
+Image::SetDataAt( const int x, const int y, const double value )
+{
+  this->GetData()->Set( value, x+Dims[0]*y );
+}
+
+void
+Image::SetDataAt( const int index, const double value )
+{
+  this->GetData()->Set( value, index );
+}
+
+double
+Image::GetDataAt( const double x, const double y, const double def )
+{
   const TypedArray *data = this->GetData();
 
-  Types::DataItem result;
-  if (data->Get(result, index)) {
-    return result;
-  } else {
+  const unsigned int idxX = static_cast<int>( x / Spacing[0] );
+  const unsigned int idxY = static_cast<int>( y / Spacing[1] );
+
+  if ( (idxX > Dims[0]-2) || (idxY > Dims[1]-2) )
     return def;
-  }
-}
-
-void Image::SetDataAt(const int x, const int y, const double value) {
-  this->GetData()->Set(value, x + Dims[0] * y);
-}
-
-void Image::SetDataAt(const int index, const double value) {
-  this->GetData()->Set(value, index);
-}
-
-double Image::GetDataAt(const double x, const double y, const double def) {
-  const TypedArray *data = this->GetData();
-
-  const unsigned int idxX = static_cast<int>(x / Spacing[0]);
-  const unsigned int idxY = static_cast<int>(y / Spacing[1]);
-
-  if ((idxX > Dims[0] - 2) || (idxY > Dims[1] - 2)) return def;
 
   int offset = idxX + Dims[0] * idxY;
-
+  
   Types::DataItem result[4];
-  if (!data->Get(result[0], offset)) {
+  if ( ! data->Get( result[0], offset ) ) 
+    {
     return def;
-  }
-  if (!data->Get(result[1], offset + 1)) {
+    }
+  if ( ! data->Get( result[1], offset + 1 ) ) 
+    {
     return def;
-  }
-  if (!data->Get(result[2], offset + Dims[0])) {
+    }
+  if ( ! data->Get( result[2], offset + Dims[0] ) ) 
+    {
     return def;
-  }
-  if (!data->Get(result[3], offset + Dims[0] + 1)) {
+    }
+  if ( ! data->Get( result[3], offset + Dims[0] + 1 ) ) 
+    {
     return def;
-  }
+    }
+  
+  const double relX = ( x - idxX * Spacing[0] ) / Spacing[0];
+  const double relY = ( y - idxY * Spacing[1] ) / Spacing[1];
 
-  const double relX = (x - idxX * Spacing[0]) / Spacing[0];
-  const double relY = (y - idxY * Spacing[1]) / Spacing[1];
-
-  return (1 - relY) * ((1 - relX) * result[0] + (relX)*result[1]) +
-         (relY) * ((1 - relX) * result[2] + (relX)*result[3]);
+  return (1-relY) * ( (1-relX) * result[0] + (relX) * result[1] ) + (relY) * ( (1-relX) * result[2] + (relX) * result[3] );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

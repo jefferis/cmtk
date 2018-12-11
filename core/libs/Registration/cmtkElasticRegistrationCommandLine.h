@@ -37,19 +37,21 @@
 
 #include <Registration/cmtkElasticRegistration.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 /** Class for command line controlled  voxel registration.
  *\author T. Rohlfing
- *\version $Revision$ $Date: 2013-09-12 15:48:47 -0700 (Thu, 12 Sep 2013)
- *$
+ *\version $Revision$ $Date$
  */
-class ElasticRegistrationCommandLine :
-    /// Inherit generic elastic registration.
-    public ElasticRegistration {
- public:
+class ElasticRegistrationCommandLine : 
+  /// Inherit generic elastic registration.
+  public ElasticRegistration 
+{
+public:
   /// This class.
   typedef ElasticRegistrationCommandLine Self;
 
@@ -65,16 +67,16 @@ class ElasticRegistrationCommandLine :
    *\param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
    */
-  ElasticRegistrationCommandLine(const int argc, const char *argv[]);
+  ElasticRegistrationCommandLine ( const int argc, const char *argv[] );
 
   /// Destructor.
-  ~ElasticRegistrationCommandLine();
+  ~ElasticRegistrationCommandLine ();
 
   /** Perform registration.
    */
-  virtual CallbackResult Register();
+  virtual CallbackResult Register ();
 
- protected:
+protected:
   /** Initialize registration.
    * So far, this function has no effect other than calling the equivalent
    * inherited function.
@@ -83,23 +85,20 @@ class ElasticRegistrationCommandLine :
 
   /** Output registration result.
    */
-  virtual void OutputResult(const CoordinateVector *v,
-                            const CallbackResult irq = CALLBACK_OK);
-
+  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
+  
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
    * written.
    */
-  virtual void EnterResolution(CoordinateVector::SmartPtr &,
-                               Functional::SmartPtr &, const int, const int);
+  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
   /** Leave resolution level.
    * The transformation found so far is written to a file if desired.
    */
-  virtual int DoneResolution(CoordinateVector::SmartPtr &,
-                             Functional::SmartPtr &, const int, const int);
+  virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
- private:
+private:
   /** Name of input studylist.
    * This is defined by the --inlist command line parameter (not currently
    * supported).
@@ -120,7 +119,7 @@ class ElasticRegistrationCommandLine :
    * This is given as the second non-option command line paramter.
    */
   std::string Study2;
-
+  
 #ifdef CMTK_USE_SQLITE
   /// Database to update after registration completes.
   std::string m_UpdateDB;
@@ -144,7 +143,7 @@ class ElasticRegistrationCommandLine :
   bool m_OutputIntermediate;
 
   /// Write deformation to studylist archive.
-  void OutputWarp(const std::string &) const;
+  void OutputWarp ( const std::string& ) const;
 
   /// Name of output transformation file in ITK format.
   std::string m_OutputPathITK;
@@ -152,22 +151,24 @@ class ElasticRegistrationCommandLine :
   /// Path for reformatted floating image.
   std::string m_ReformattedImagePath;
 
- public:
+public:
   /// Static pointer to this object.
-  static Self *StaticThis;
+  static Self* StaticThis;
 
   /// Counter for intermediate result files.
   int IntermediateResultIndex;
 
   /// Write intermediate deformation file.
-  void OutputIntermediate(const bool incrementCount = true);
+  void OutputIntermediate( const bool incrementCount = true );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 /// Signal handler that writes intermediate result during a level.
-extern "C" void cmtkElasticRegistrationCommandLineDispatchSIGUSR1(int sig);
+extern "C" void cmtkElasticRegistrationCommandLineDispatchSIGUSR1( int sig );
 
-#endif  // #ifndef __cmtkElasticRegistrationCommandLine_h_included_
+
+
+#endif // #ifndef __cmtkElasticRegistrationCommandLine_h_included_

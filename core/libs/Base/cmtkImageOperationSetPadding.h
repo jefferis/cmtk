@@ -37,47 +37,51 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: set padding flag and value.
 class ImageOperationSetPadding
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor.
-  ImageOperationSetPadding(const bool flag, const double value = 0)
-      : m_PaddingFlag(flag), m_PaddingValue(value) {}
-
+  ImageOperationSetPadding( const bool flag, const double value = 0 ) : m_PaddingFlag( flag ), m_PaddingValue( value ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    if (this->m_PaddingFlag) {
-      volume->GetData()->SetPaddingValue(this->m_PaddingValue);
-    } else {
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    if ( this->m_PaddingFlag )
+      {
+      volume->GetData()->SetPaddingValue( this->m_PaddingValue );
+      }
+    else
+      {
       volume->GetData()->ClearPaddingFlag();
-    }
+      }
 
     return volume;
   }
-
+  
   /// Create new operation to set padding value.
-  static void New(const double value) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationSetPadding(true, value)));
+  static void New( const double value )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetPadding( true, value ) ) );
   }
 
   /// Create new operation to reset padding flag.
-  static void NewUnset() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationSetPadding(false)));
+  static void NewUnset()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationSetPadding( false ) ) );
   }
 
- private:
-  /// Set flag: if this is set, padding is activated, otherwise it is
-  /// deactivated (and m_PaddingValue is ignored).
+private:
+  /// Set flag: if this is set, padding is activated, otherwise it is deactivated (and m_PaddingValue is ignored).
   bool m_PaddingFlag;
 
   /// Padding value.
@@ -86,6 +90,6 @@ class ImageOperationSetPadding
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationSetPadding_h_included_
+#endif // #ifndef __cmtkImageOperationSetPadding_h_included_

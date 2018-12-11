@@ -34,14 +34,17 @@
 
 #include <System/cmtkExitException.h>
 
-#include <Segmentation/cmtkSimpleLevelset.h>
 #include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
+#include <Segmentation/cmtkSimpleLevelset.h>
 
-int doMain(const int argc, const char *argv[]) {
+int
+doMain( const int argc, const char* argv[] )
+{
   cmtk::SimpleLevelsetCommandLine<cmtk::SimpleLevelset> levelset;
 
-  const int init = levelset.Init(argc, argv);
-  if (init) return init;
+  const int init = levelset.Init( argc, argv );
+  if ( init )
+    return init;
 
   levelset.Execute();
   return 0;

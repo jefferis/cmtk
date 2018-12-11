@@ -33,32 +33,35 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Base class to prevent copying of derived classes.
  * This class can be inherited by derived classes and will thus prevent
- * the compiler from generating default copy constructor and assignment
+ * the compiler from generating default copy constructor and assignment 
  * operator (see Effective C++, 3rd ed.)
  */
-class CannotBeCopied {
- protected:
+class CannotBeCopied 
+{
+protected:
   /// Default constructor.
-  CannotBeCopied(){};
+  CannotBeCopied() {};
 
   /// Default destructor.
-  ~CannotBeCopied(){};
+  ~CannotBeCopied() {};
 
- private:
+private:
   /// Undefined copy constructor.
-  CannotBeCopied(const CannotBeCopied &);
+  CannotBeCopied( const CannotBeCopied& );
 
   /// Undefined assignment operator.
-  CannotBeCopied &operator=(const CannotBeCopied &);
+  CannotBeCopied& operator=( const CannotBeCopied& );
 };
 
-}  // namespace cmtk
+}
 
-#endif  // #ifndef __cmtkCannotBeCopied_h_included_
+#endif // #ifndef __cmtkCannotBeCopied_h_included_

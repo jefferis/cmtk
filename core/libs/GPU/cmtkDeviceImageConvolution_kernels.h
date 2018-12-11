@@ -33,30 +33,27 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
 
 /** Convolution of a 3D image (CUDA array) with a separable 3D kernel.
- *\warning Even though the convolution result is ultimately stored out-of-place
- *in the given target memory, the input array's content is destroyed in the
- *process.
+ *\warning Even though the convolution result is ultimately stored out-of-place in the
+ * given target memory, the input array's content is destroyed in the process.
  */
-void DeviceImageConvolution(float *dest, const int *dims3, void *array,
-                            const int kernelLengthX, const float *kernelX,
-                            const int kernelLengthY, const float *kernelY,
-                            const int kernelLengthZ, const float *kernelZ);
+void
+DeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
 
 /** In-place convolution of a 3D image (CUDA array) with a separable 3D kernel.
  */
-void DeviceImageConvolutionInPlace(
-    const int *dims3, void *array, const int kernelLengthX,
-    const float *kernelX, const int kernelLengthY, const float *kernelY,
-    const int kernelLengthZ, const float *kernelZ);
+void
+DeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkDeviceImageConvolution_kernels_h_included_
+#endif // #ifndef __cmtkDeviceImageConvolution_kernels_h_included_

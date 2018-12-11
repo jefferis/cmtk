@@ -37,45 +37,48 @@
 
 #include <Pipeline/cmtkObject.h>
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
 /** Base class for all reference counted and linked objects.
  */
-class PipelineObject :
-    /// Inherit reference-counting object.
-    public Object {
- protected:
+class PipelineObject : 
+  /// Inherit reference-counting object.
+  public Object 
+{
+protected:
   /** This object's owner.
-   * The owner is the object queried for updates first when this object is
+   * The owner is the object queried for updates first when this object is 
    * asked to update itself.
    */
   PipelineObject *Owner;
-
- public:
+  
+public:
   //  void SetOwner( PipelineObject *const owner ) { Owner = owner; }
-  const PipelineObject *GetOwner() const { return Owner; }
+  const PipelineObject* GetOwner() const { return Owner; }
 
   /** Register another object as this objects owner.
    * The reference counter of this object is also incremented.
-   *\param owner The object to be registered as the owner of this object.
+   *\param owner The object to be registered as the owner of this object. 
    * If this parameter is not given, the current owner is left untouched. In
    * this case, only the reference counter is modified.
    *\return The new value of the reference counter.
    *\see ReferenceCount
    */
-  int Register(PipelineObject *const owner = NULL);
+  int Register( PipelineObject *const owner = NULL );
 
   /** Unregister one owner object.
    * This function decrements this object's reference counter. If the updated
    * reference count is zero, this object is destroyed.
    */
-  void Unregister(PipelineObject *const owner = NULL);
+  void Unregister( PipelineObject *const owner = NULL );
 
   /** Check for update.
    * This function first checks whether since its last execution its owner
@@ -90,15 +93,15 @@ class PipelineObject :
    *\see CheckInputForUpdate
    *\see ExecuteIfNecessary
    */
-  virtual long Update();
+  virtual long Update ();
 
   /** Execute the current object.
    * Derived classes need to override this function in order to make the
    * respective instance up-to-date.
    */
-  virtual void Execute() { this->UpdateExecuteTime(); }
+  virtual void Execute () { this->UpdateExecuteTime(); }
 
- protected:
+protected:
   /** Default constructor.
    * Set the reference counter to zero initially.
    */
@@ -108,12 +111,13 @@ class PipelineObject :
    * This is defined virtual so that derived classes are enabled to provide
    * their own virtual destructor functions.
    */
-  virtual ~PipelineObject(){};
+  virtual ~PipelineObject() {};
 
   /// Set time of last execution to current time.
-  void UpdateExecuteTime() {
-    ExecuteTime = this->GetCurrentTime();
-    ExecutePending = 0;
+  void UpdateExecuteTime() 
+  { 
+    ExecuteTime = this->GetCurrentTime(); 
+    ExecutePending = 0; 
   }
 
   /** Compare input for update.
@@ -122,16 +126,16 @@ class PipelineObject :
    * is compared to the current object's modification time. The later of both
    * times is then set as the current object's modification time.
    */
-  virtual int CheckInputForUpdate(PipelineObject *const object);
+  virtual int CheckInputForUpdate( PipelineObject *const object );
 
   /** Execute an update if object was modified after last execution.
    *\return The new time of last execution.
    */
   virtual long ExecuteIfNecessary();
 
- private:
+private:
   /** Last execution time.
-   * This is the time of the latest execution of this objects Execute()
+   * This is the time of the latest execution of this objects Execute() 
    * function, ie. the time when this objects state or output was last
    * updated according to the input parameters.
    */
@@ -148,6 +152,6 @@ class PipelineObject :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkPipelineObject_h_included_
+#endif // #ifndef __cmtkPipelineObject_h_included_

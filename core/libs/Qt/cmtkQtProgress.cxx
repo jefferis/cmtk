@@ -34,65 +34,81 @@
 #include <qapplication.h>
 #include <qprogressbar.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
-QtProgress::QtProgress(QWidget *const parentWindow) {
+QtProgress::QtProgress
+( QWidget *const parentWindow ) 
+{
   ParentWindow = parentWindow;
   ProgressBar = NULL;
   ProgressDialog = NULL;
   this->m_ProgressWidgetMode = PROGRESS_DIALOG;
 }
 
-void QtProgress ::BeginVirtual(const double start, const double end,
-                               const double increment,
-                               const std::string &taskName) {
-  this->Superclass::BeginVirtual(start, end, increment, taskName);
+void
+QtProgress
+::BeginVirtual( const double start, const double end, const double increment, const std::string& taskName )
+{
+  this->Superclass::BeginVirtual( start, end, increment, taskName );
 
-  if (this->IsTopLevel()) {
-    if (ProgressBar) {
-      ProgressBar->setRange(0, 100);
+  if ( this->IsTopLevel() )
+    {
+    if ( ProgressBar ) 
+      {
+      ProgressBar->setRange( 0, 100 );
       ProgressBar->show();
+      }
+    
+    if ( ! ProgressDialog )
+      ProgressDialog = new QProgressDialog( taskName.c_str(), "Cancel", 0, 100, ParentWindow, Qt::Dialog );
+    
+    ProgressDialog->setWindowModality(Qt::WindowModal);
+    ProgressDialog->setModal( true );
+    ProgressDialog->setMinimumDuration( 100 );
+    ProgressDialog->show();
+    ProgressDialog->setRange( 0, 100 );
+    
+    qApp->processEvents();
     }
 
-    if (!ProgressDialog)
-      ProgressDialog = new QProgressDialog(taskName.c_str(), "Cancel", 0, 100,
-                                           ParentWindow, Qt::Dialog);
-
-    ProgressDialog->setWindowModality(Qt::WindowModal);
-    ProgressDialog->setModal(true);
-    ProgressDialog->setMinimumDuration(100);
-    ProgressDialog->show();
-    ProgressDialog->setRange(0, 100);
-
-    qApp->processEvents();
-  }
-
-  Progress::SetProgressInstance(this);
+  Progress::SetProgressInstance( this );
 }
 
-Progress::ResultEnum QtProgress::UpdateProgress() {
-  const int percent = static_cast<int>(100 * this->GetFractionComplete());
-  if (ProgressBar) ProgressBar->setValue(percent);
-  if (ProgressDialog) ProgressDialog->setValue(percent);
+Progress::ResultEnum
+QtProgress::UpdateProgress()
+{
+  const int percent = static_cast<int>( 100 * this->GetFractionComplete() );
+  if ( ProgressBar )
+    ProgressBar->setValue( percent );
+  if ( ProgressDialog )
+    ProgressDialog->setValue( percent );
 
   qApp->processEvents();
 
   Progress::ResultEnum result = Progress::OK;
-  if (ProgressDialog)
-    if (ProgressDialog->wasCanceled()) result = Progress::INTERRUPT;
+  if ( ProgressDialog )
+    if ( ProgressDialog->wasCanceled() )
+      result = Progress::INTERRUPT;
 
   return result;
 }
 
-void QtProgress::DoneVirtual() {
-  if (this->IsTopLevel()) {
-    if (ProgressBar) ProgressBar->reset();
-
-    if (ProgressDialog) ProgressDialog->hide();
-  }
+void
+QtProgress::DoneVirtual()
+{
+  if ( this->IsTopLevel() )
+    {
+    if ( ProgressBar )
+      ProgressBar->reset();
+    
+    if ( ProgressDialog )
+      ProgressDialog->hide();
+    }
 }
 
-}  // namespace cmtk
+} // namespace cmtk

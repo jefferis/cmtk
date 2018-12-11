@@ -33,41 +33,54 @@
 #include <stdlib.h>
 
 cmtk::RegressionTracker::RegressionTracker()
-    : m_File(NULL), m_WriteFlag(false) {
-  const char *env = getenv("CMTK_RTRACKER");
-  if (env) {
-    this->m_File = fopen(env, "r");
-    if (this->m_File)
+  : m_File( NULL ),
+    m_WriteFlag( false )
+{
+  const char *env = getenv( "CMTK_RTRACKER" );
+  if ( env )
+    {
+    this->m_File = fopen( env, "r" );
+    if ( this->m_File )
       this->m_WriteFlag = false;
-    else {
-      this->m_File = fopen(env, "w");
+    else
+      {
+      this->m_File = fopen( env, "w" );
       this->m_WriteFlag = true;
+      }
     }
-  }
 }
 
-cmtk::RegressionTracker::~RegressionTracker() {
-  if (this->m_File) {
-    fclose(this->m_File);
-  }
+cmtk::RegressionTracker::~RegressionTracker()
+{
+  if ( this->m_File )
+    {
+    fclose( this->m_File );
+    }
 }
 
-void cmtk::RegressionTracker::CompareChecksum(const unsigned char *const data,
-                                              size_t nBytes) {
+void
+cmtk::RegressionTracker::CompareChecksum( const unsigned char *const data, size_t nBytes )
+{
   unsigned int checksum = 0;
-  for (size_t n = 0; n < nBytes; ++n) {
+  for ( size_t n = 0; n < nBytes; ++n )
+    {
     checksum = ((checksum & 255) << 24) | (checksum >> 8);
     checksum ^= data[n];
-  }
-
-  if (this->m_WriteFlag) {
-    fprintf(this->m_File, "%u\n", checksum);
-  } else {
+    }
+  
+  if ( this->m_WriteFlag )
+    {
+    fprintf( this->m_File, "%u\n", checksum );
+    }
+  else
+    {
     unsigned int baseline;
-    if (1 != fscanf(this->m_File, "%20u", &baseline)) {
+    if ( 1 != fscanf( this->m_File, "%20u", &baseline ) )
+      {
+      this->Trap();
+      }
+    
+    if ( checksum != baseline )
       this->Trap();
     }
-
-    if (checksum != baseline) this->Trap();
-  }
 }

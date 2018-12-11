@@ -41,19 +41,22 @@
 
 #include <deque>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 /// A transformation list.
 class XformList :
-    /// Inherit STL list.
-    public std::deque<XformListEntry::SmartConstPtr> {
- private:
+  /// Inherit STL list.
+  public std::deque< XformListEntry::SmartConstPtr > 
+{
+private:
   /// Error threshold for inverse approximation.
   Types::Coordinate m_Epsilon;
-
- public:
+  
+public:
   /// This class.
   typedef XformList Self;
 
@@ -64,29 +67,25 @@ class XformList :
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  XformList(const Types::Coordinate epsilon = 0.0) : m_Epsilon(epsilon){};
-
+  XformList( const Types::Coordinate epsilon = 0.0 ) : m_Epsilon( epsilon ) {};
+  
   /// Set epsilon.
-  void SetEpsilon(const Types::Coordinate epsilon) {
+  void SetEpsilon( const Types::Coordinate epsilon ) 
+  {
     this->m_Epsilon = epsilon;
   }
-
-  /// Add a transformation the the end of the list, i.e., to be applied after
-  /// the current list of transformations
-  void Add(const Xform::SmartConstPtr &xform, const bool inverse = false,
-           const Types::Coordinate globalScale = 1.0);
-
-  /// Add a transformation the the end of the list, i.e., to be applied before
-  /// the current list of transformations
-  void AddToFront(const Xform::SmartConstPtr &xform, const bool inverse = false,
-                  const Types::Coordinate globalScale = 1.0);
-
+  
+  /// Add a transformation the the end of the list, i.e., to be applied after the current list of transformations
+  void Add( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  
+  /// Add a transformation the the end of the list, i.e., to be applied before the current list of transformations
+  void AddToFront( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  
   /// Apply a sequence of (inverse) transformations.
-  bool ApplyInPlace(Xform::SpaceVectorType &v) const;
-
+  bool ApplyInPlace( Xform::SpaceVectorType& v ) const;
+  
   /// Get the Jacobian determinant of a sequence of transformations.
-  bool GetJacobian(const Xform::SpaceVectorType &v, Types::DataItem &jacobian,
-                   const bool correctGlobalScale = true) const;
+  bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true ) const;
 
   /// Is this transformation list all affine?
   bool AllAffine() const;
@@ -95,20 +94,20 @@ class XformList :
   Self MakeAllAffine() const;
 
   /** Get fixed image path, if available.
-   * Not every transformation file format stores the fixed image path, in which
-   * case an empty string is returned here.
+   * Not every transformation file format stores the fixed image path, in which case
+   * an empty string is returned here.
    */
   std::string GetFixedImagePath() const;
 
   /** Get moving image path, if available.
-   * Not every transformation file format stores the moving image path, in which
-   * case an empty string is returned here.
+   * Not every transformation file format stores the moving image path, in which case
+   * an empty string is returned here.
    */
   std::string GetMovingImagePath() const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkXformList_h_included_
+#endif // #ifndef __cmtkXformList_h_included_

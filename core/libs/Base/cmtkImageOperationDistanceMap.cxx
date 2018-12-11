@@ -30,21 +30,27 @@
 
 #include "cmtkImageOperationDistanceMap.h"
 
-cmtk::UniformVolume::SmartPtr cmtk::ImageOperationDistanceMap ::Apply(
-    cmtk::UniformVolume::SmartPtr &volume) {
-  if (this->m_SignedDistance) {
-    UniformVolume::SmartPtr iMap =
-        DistanceMapType(*volume, DistanceMap::INSIDE).Get();
-    UniformVolume::SmartPtr oMap = DistanceMapType(*volume).Get();
-
+cmtk::UniformVolume::SmartPtr  
+cmtk::ImageOperationDistanceMap
+::Apply( cmtk::UniformVolume::SmartPtr& volume )
+{
+  if ( this->m_SignedDistance )
+    {
+    UniformVolume::SmartPtr iMap = DistanceMapType( *volume, DistanceMap::INSIDE ).Get();
+    UniformVolume::SmartPtr oMap = DistanceMapType( *volume ).Get();
+    
     const size_t nPixels = volume->GetNumberOfPixels();
 #pragma omp parallel for
-    for (int n = 0; n < static_cast<int>(nPixels); ++n) {
-      Types::DataItem iValue = iMap->GetDataAt(n);
-      if (iValue > 0) oMap->SetDataAt(-iValue, n);
-    }
+    for ( int n = 0; n < static_cast<int>( nPixels ); ++n )
+      {
+      Types::DataItem iValue = iMap->GetDataAt( n );
+      if ( iValue > 0 )
+	oMap->SetDataAt( -iValue, n );
+      }
     return oMap;
-  } else {
-    return DistanceMapType(*volume).Get();
-  }
+    }
+  else
+    {
+    return DistanceMapType( *volume ).Get();
+    }
 }

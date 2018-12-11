@@ -34,59 +34,44 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkMatrix3x3.h>
 #include <Base/cmtkWarpXform.h>
+#include <Base/cmtkMatrix3x3.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-/** Fit affine transformation to nonrigid (B-spline or deformation field)
- * transformation.
+/** Fit affine transformation to nonrigid (B-spline or deformation field) transformation.
  */
-class FitAffineToWarpXform {
- public:
+class FitAffineToWarpXform
+{
+public:
   /// This class.
   typedef FitAffineToWarpXform Self;
 
   /// Constructor.
-  FitAffineToWarpXform(WarpXform::SmartConstPtr warp);
+  FitAffineToWarpXform( WarpXform::SmartConstPtr warp );
 
   /// Fit affine transformation.
   AffineXform::SmartPtr Fit();
-
- private:
+  
+private:
   /// Input nonrigid warp transformation.
   WarpXform::SmartConstPtr m_WarpXform;
 
-  /** Compute rotation, scale, and shear matrix using previously computed
-   * translation. We are using simple pseudoinverse rather than procrustes
-   * because we do not care whether the result is rigid (det = 1). In fact, if
-   * the underlying transformation is not rigid but full affine, then that is
-   * exactly what we want the output to be.
+  /** Compute rotation, scale, and shear matrix using previously computed translation.
+   * We are using simple pseudoinverse rather than procrustes because we do not care whether
+   * the result is rigid (det = 1). In fact, if the underlying transformation is not
+   * rigid but full affine, then that is exactly what we want the output to be.
    */
-  static Matrix3x3<Types::Coordinate> GetMatrix(const WarpXform &
-                                                    warpXform /*!< Reference to
-                                                                 current warp
-                                                                 transformation.*/
-                                                ,
-                                                const cmtk::FixedVector<
-                                                    3, cmtk::Types::Coordinate>
-                                                    &cFrom /*!< Centroid in
-                                                              "from" space
-                                                              previously
-                                                              computed by
-                                                              GetCentroids
-                                                              member function.*/
-                                                ,
-                                                const cmtk::
-                                                    FixedVector<
-                                                        3,
-                                                        cmtk::Types::
-                                                            Coordinate> &cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/);
+  static Matrix3x3<Types::Coordinate> GetMatrix( const WarpXform& warpXform /*!< Reference to current warp transformation.*/, 
+						 const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cFrom /*!< Centroid in "from" space previously computed by GetCentroids member function.*/,
+						 const cmtk::FixedVector<3,cmtk::Types::Coordinate>& cTo /*!< Centroid in "to" space previously computed by GetCentroids member function.*/ );
 };
 
-}  // namespace cmtk
+} // namespace
 
-#endif  // #ifndef __cmtkFitAffineToWarpXform_h_included_
+#endif // #ifndef __cmtkFitAffineToWarpXform_h_included_

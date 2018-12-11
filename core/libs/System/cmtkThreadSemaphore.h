@@ -38,59 +38,61 @@
 #include <System/cmtkCannotBeCopied.h>
 
 #if defined(CMTK_USE_PTHREADS)
-#if defined(__APPLE__) || defined(__CYGWIN__)
-#include <pthread.h>
-#else
-#include <semaphore.h>
-#endif
+#  if defined(__APPLE__) || defined(__CYGWIN__)
+#    include <pthread.h>
+#  else
+#    include <semaphore.h>
+#  endif
 #elif defined(_MSC_VER)
-#include <Windows.h>
+#  include <Windows.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Semaphore for thread synchronization.
- * Because apparently Apple engineers are incapable of implementing an interface
- * for unnamed semaphores as provided by <semaphore.h>, we are building the
- * semaphore ourselves on the Mac OS platform using a mutex and a condition
- * variable.
+ * Because apparently Apple engineers are incapable of implementing an interface for unnamed
+ * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves on the
+ * Mac OS platform using a mutex and a condition variable.
  */
 class ThreadSemaphore :
-    /// Make class uncopyable via inheritance.
-    private CannotBeCopied {
- public:
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
+{
+public:
   /// Initialize semaphore.
-  ThreadSemaphore(const unsigned int initial = 0);
+  ThreadSemaphore( const unsigned int initial = 0 );
 
   /// Destroy semaphore object.
   ~ThreadSemaphore();
 
   /// Post semaphore.
-  void Post(const unsigned int increment = 1);
-
+  void Post( const unsigned int increment = 1 );
+  
   /// Wait for semaphore.
   void Wait();
 
 #if defined(CMTK_USE_PTHREADS)
-#if defined(__APPLE__) || defined(__CYGWIN__)
- private:
+#  if defined(__APPLE__) || defined(__CYGWIN__)
+private:
   /// Counter (Apple only).
   long int m_Counter;
 
   /// Counter mutex lock (Apple only).
   pthread_mutex_t m_Mutex;
-
+  
   /// Condition variable (Apple only).
   pthread_cond_t m_Condition;
-#else  // POSIX
+#  else // POSIX
   /// Opaque system semaphore object (POSIX only).
   sem_t m_Semaphore;
-#endif
+#  endif
 #elif defined(_MSC_VER)
- private:
+private:
   /// Opaque system semaphore object (Windows native only).
   HANDLE m_Semaphore;
 #endif
@@ -98,6 +100,6 @@ class ThreadSemaphore :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkThreadSemaphore_h_included_
+#endif // #ifndef __cmtkThreadSemaphore_h_included_

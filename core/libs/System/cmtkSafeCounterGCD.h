@@ -37,42 +37,49 @@
 
 #include <dispatch/dispatch.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Thread-safe counter using Grand Central Dispatch FIFO queue.
  */
-class SafeCounterGCD {
- public:
+class SafeCounterGCD
+{
+public:
   /// Constructor.
-  SafeCounterGCD(const unsigned int counter = 0)
-      : m_Counter(counter),
-        m_Queue(dispatch_queue_create("SafeCounterGCD", NULL)) {}
+  SafeCounterGCD( const unsigned int counter = 0 ) : 
+    m_Counter( counter ), 
+    m_Queue( dispatch_queue_create( "SafeCounterGCD", NULL) ) 
+  {}
 
   /// Destructor.
-  ~SafeCounterGCD() { dispatch_release(this->m_Queue); }
-
+  ~SafeCounterGCD()
+  {
+    dispatch_release( this->m_Queue );
+  }
+  
   /// Retrieve counter value.
   unsigned int Get() const;
 
   /// Increment and return new counter value.
   unsigned int Increment();
-
+  
   /// Decrement and return new counter value.
   unsigned int Decrement();
-
- private:
+  
+private:
   /// The actual counter.
   unsigned int m_Counter;
-
+  
   /// GCD for thread-safe exclusive access to counter.
   mutable dispatch_queue_t m_Queue;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSafeCounterGCD_h_included_
+#endif // #ifndef __cmtkSafeCounterGCD_h_included_

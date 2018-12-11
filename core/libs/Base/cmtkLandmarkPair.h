@@ -39,16 +39,19 @@
 
 #include <iostream>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Matched landmark (landmark with source and target location).
 class LandmarkPair :
-    /// Inherit single landmark.
-    public Landmark {
- public:
+  /// Inherit single landmark.
+  public Landmark
+{
+public:
   /// This class.
   typedef LandmarkPair Self;
 
@@ -59,27 +62,29 @@ class LandmarkPair :
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  LandmarkPair(
-      const Landmark &landmark,
-      const Self::SpaceVectorType &target, const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */)
-      : Landmark(landmark),
-        m_TargetLocation(target),
-        m_Residual(residual),
-        m_Precise(precise) {}
+  LandmarkPair( const Landmark& landmark, const Self::SpaceVectorType& target,
+		const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, 
+		const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */ )
+    : Landmark( landmark ),
+      m_TargetLocation( target ),
+      m_Residual( residual ),
+      m_Precise( precise )
+  {}
 
   /// Constructor.
-  LandmarkPair(
-      const std::string &name, const Self::SpaceVectorType &source,
-      const Self::SpaceVectorType &target, const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */)
-      : Landmark(name, source),
-        m_TargetLocation(target),
-        m_Residual(residual),
-        m_Precise(precise) {}
+  LandmarkPair( const std::string& name, const Self::SpaceVectorType& source, const Self::SpaceVectorType& target,
+    		const Types::Coordinate residual = -1 /*!< Landmark matching residual (e.g., wqith respect to linear fit) */, 
+		const bool precise = true /*!< Flag whether this landmark is "precise" enough for use in registration etc. */ )
+    : Landmark( name, source ),
+      m_TargetLocation( target ),
+      m_Residual( residual ),
+      m_Precise( precise )
+  {}
 
   /// Get same pair with source and target swapped.
-  Self GetSwapSourceTarget() const {
-    return Self(this->m_Name, this->m_TargetLocation, this->m_Location,
-                this->m_Residual, this->m_Precise);
+  Self GetSwapSourceTarget() const
+  {
+    return Self( this->m_Name, this->m_TargetLocation, this->m_Location, this->m_Residual, this->m_Precise );
   }
 
   /// Coordinates of this landmark.
@@ -88,19 +93,18 @@ class LandmarkPair :
   /// Fitting residual (negative if unknown).
   Types::Coordinate m_Residual;
 
-  /// Precision flag. Only landmarks with this flag set should be used for
-  /// registration.
+  /// Precision flag. Only landmarks with this flag set should be used for registration.
   bool m_Precise;
 };
 
 /// Stream output operator.
-std::ostream &operator<<(std::ostream &stream, const LandmarkPair &pair);
+std::ostream& operator<<( std::ostream& stream, const LandmarkPair& pair );
 
 /// Stream input operator.
-std::istream &operator>>(std::istream &stream, LandmarkPair &pair);
+std::istream& operator>>( std::istream& stream, LandmarkPair& pair );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLandmarkPair_h_included_
+#endif // #ifndef __cmtkLandmarkPair_h_included_

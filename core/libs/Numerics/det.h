@@ -68,6 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "lu.h"
 
+
 /*************************************************************************
 Determinant calculation of the matrix given by its LU decomposition.
 
@@ -84,8 +85,10 @@ Result: matrix determinant.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-ap::real_value_type rmatrixludet(const ap::real_2d_array &a,
-                                 const ap::integer_1d_array &pivots, int n);
+ap::real_value_type rmatrixludet(const ap::real_2d_array& a,
+     const ap::integer_1d_array& pivots,
+     int n);
+
 
 /*************************************************************************
 Calculation of the determinant of a general matrix

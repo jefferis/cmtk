@@ -38,7 +38,9 @@
 #include <Base/cmtkFunctional.h>
 #include <System/cmtkCannotBeCopied.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -46,8 +48,9 @@ namespace cmtk {
 /// Base class for all optimizers and meta optimizers.
 class OptimizerBase :
     /// Inherit to prevent object copying.
-    private CannotBeCopied {
- public:
+    private CannotBeCopied
+{
+public:
   /// This class.
   typedef OptimizerBase Self;
 
@@ -58,27 +61,31 @@ class OptimizerBase :
   typedef Functional::ParameterType ParameterType;
 
   /// Default constructor.
-  OptimizerBase() : m_FinalValue(0.0){};
-
+  OptimizerBase() : m_FinalValue( 0.0 ) {};
+  
   /// Virtual destructor.
   virtual ~OptimizerBase() {}
 
   /// Get final functional value.
-  Self::ReturnType GetFinalValue() const { return this->m_FinalValue; }
+  Self::ReturnType GetFinalValue() const
+  {
+    return this->m_FinalValue;
+  }
 
- protected:
+protected:
   /// Set final functional value.
-  void SetFinalValue(const Self::ReturnType finalValue) {
+  void SetFinalValue( const Self::ReturnType finalValue )
+  {
     this->m_FinalValue = finalValue;
   }
 
- private:
+private:
   /// Final functional value.
   Self::ReturnType m_FinalValue;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef __cmtkOptimizerBase_h_included_
+#endif // #ifdef __cmtkOptimizerBase_h_included_

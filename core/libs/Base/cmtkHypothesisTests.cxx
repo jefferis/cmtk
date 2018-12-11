@@ -32,354 +32,409 @@
 
 #include "cmtkHypothesisTests.h"
 
-#include <Base/cmtkMathUtil.h>
 #include <Base/cmtkVector3D.h>
+#include <Base/cmtkMathUtil.h>
 #include <System/cmtkConsole.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-TypedArray::SmartPtr HypothesisTests::GetUnpairedTwoTailedTTest(
-    std::vector<TypedArray::SmartPtr> &dataX,
-    std::vector<TypedArray::SmartPtr> &dataY, TypedArray::SmartPtr *tstatData,
-    TypedArray::SmartPtr *avgXData, TypedArray::SmartPtr *avgYData,
-    const TypedArray *mask) {
+TypedArray::SmartPtr
+HypothesisTests::GetUnpairedTwoTailedTTest
+( std::vector<TypedArray::SmartPtr>& dataX, 
+  std::vector<TypedArray::SmartPtr>& dataY,
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
+  TypedArray::SmartPtr* avgYData, const TypedArray* mask )
+{
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray::SmartPtr probData = TypedArray::Create(TYPE_FLOAT, length);
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
-  if (tstatData) *tstatData = TypedArray::Create(TYPE_FLOAT, length);
-
-  if (avgXData) *avgXData = TypedArray::Create(TYPE_FLOAT, length);
-
-  if (avgYData) *avgYData = TypedArray::Create(TYPE_FLOAT, length);
-
+  if ( tstatData )
+    *tstatData = TypedArray::Create( TYPE_FLOAT, length );
+  
+  if ( avgXData )
+    *avgXData = TypedArray::Create( TYPE_FLOAT, length );
+  
+  if ( avgYData )
+    *avgYData = TypedArray::Create( TYPE_FLOAT, length );
+  
   const unsigned int dataXsize = dataX.size();
-  std::vector<Types::DataItem> valuesX(dataXsize);
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  std::vector<Types::DataItem> valuesY(dataYsize);
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0, avgY = 0;
-  for (unsigned int idx = 0; idx < length; ++idx) {
+  for ( unsigned int idx = 0; idx < length; ++idx ) {
+
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
       unsigned int actualSizeX = 0;
-      for (unsigned int i = 0; i < dataXsize; ++i)
-        if (dataX[i]->Get(valuesX[actualSizeX], idx)) ++actualSizeX;
-
+      for ( unsigned int i = 0; i < dataXsize; ++i )
+	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
+     
       unsigned int actualSizeY = 0;
-      for (unsigned int i = 0; i < dataYsize; ++i)
-        if (dataY[i]->Get(valuesY[actualSizeY], idx)) ++actualSizeY;
-
-      if (actualSizeX && actualSizeY) {
-        prob =
-            MathUtil::TTest<Types::DataItem>(valuesX, valuesY, t, avgX, avgY);
-
-        if ((prob < 0) || (prob > 1)) {
-          fprintf(stderr, "t = %f\tp = %f\n", t, prob);
-        }
-        prob = 1.0 - prob;  // convert probability to significance
-      } else {
-        t = prob = 0;
-      }
-
-      if (tstatData) (*tstatData)->Set(t, idx);
-      if (avgXData) (*avgXData)->Set(avgX, idx);
-      if (avgYData) (*avgYData)->Set(avgY, idx);
-
-      if (avgX > avgY)
-        probData->Set(prob, idx);
+      for ( unsigned int i = 0; i < dataYsize; ++i )
+	if ( dataY[i]->Get( valuesY[actualSizeY], idx ) ) ++actualSizeY;
+      
+      if ( actualSizeX && actualSizeY )
+	{
+	prob = MathUtil::TTest<Types::DataItem>( valuesX, valuesY, t, avgX, avgY );
+	
+	if ( (prob < 0) || (prob>1) )
+	  {
+	  fprintf( stderr, "t = %f\tp = %f\n", t, prob );
+	  }
+	prob = 1.0 - prob; // convert probability to significance
+	}
       else
-        probData->Set(-prob, idx);
-    } else {
-      probData->SetPaddingAt(idx);
-      if (tstatData) (*tstatData)->SetPaddingAt(idx);
-      if (avgXData) (*avgXData)->SetPaddingAt(idx);
-      if (avgYData) (*avgYData)->SetPaddingAt(idx);
-    }
+	{
+	t = prob = 0;
+	}
+     
+      if ( tstatData ) (*tstatData)->Set( t, idx );
+      if ( avgXData ) (*avgXData)->Set( avgX, idx );
+      if ( avgYData ) (*avgYData)->Set( avgY, idx );
+      
+      if ( avgX > avgY )
+	probData->Set(  prob, idx );
+      else
+	probData->Set( -prob, idx );
+      } 
+    else 
+      {
+      probData->SetPaddingAt( idx );
+      if ( tstatData ) (*tstatData)->SetPaddingAt( idx );
+      if ( avgXData ) (*avgXData)->SetPaddingAt( idx );
+      if ( avgYData ) (*avgYData)->SetPaddingAt( idx );
+      }
   }
-
+  
   return probData;
 }
 
-TypedArray::SmartPtr HypothesisTests::GetPairedTwoTailedTTest(
-    std::vector<TypedArray::SmartPtr> &dataX,
-    std::vector<TypedArray::SmartPtr> &dataY, TypedArray::SmartPtr *tstatData,
-    TypedArray::SmartPtr *avgXData, TypedArray::SmartPtr *avgYData,
-    const TypedArray *mask) {
-  if (dataX.size() != dataY.size()) {
-    throw(
-        Exception("Cannot perform paired t-test if numbers of X and Y "
-                  "samples isn't equal"));
-  }
-
+TypedArray::SmartPtr
+HypothesisTests::GetPairedTwoTailedTTest
+( std::vector<TypedArray::SmartPtr>& dataX, 
+  std::vector<TypedArray::SmartPtr>& dataY,
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
+  TypedArray::SmartPtr* avgYData, const TypedArray* mask )
+{
+  if ( dataX.size() != dataY.size() )
+    {
+    throw( Exception( "Cannot perform paired t-test if numbers of X and Y samples isn't equal" ) );
+    }
+      
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray::SmartPtr probData = TypedArray::Create(TYPE_FLOAT, length);
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
-  if (tstatData) *tstatData = TypedArray::Create(TYPE_FLOAT, length);
-
-  if (avgXData) *avgXData = TypedArray::Create(TYPE_FLOAT, length);
-
-  if (avgYData) *avgYData = TypedArray::Create(TYPE_FLOAT, length);
-
+  if ( tstatData )
+    *tstatData = TypedArray::Create( TYPE_FLOAT, length );
+  
+  if ( avgXData )
+    *avgXData = TypedArray::Create( TYPE_FLOAT, length );
+  
+  if ( avgYData )
+    *avgYData = TypedArray::Create( TYPE_FLOAT, length );
+  
   const unsigned int dataXsize = dataX.size();
-  std::vector<Types::DataItem> valuesX(dataXsize);
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  std::vector<Types::DataItem> valuesY(dataYsize);
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0, avgY = 0;
-  for (unsigned int idx = 0; idx < length; ++idx) {
+  for ( unsigned int idx = 0; idx < length; ++idx ) {
+
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
-      valuesX.resize(dataXsize);
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
-      for (unsigned int i = 0; i < dataXsize; ++i)
-        if (dataX[i]->Get(valuesX[actualSizeX], idx)) ++actualSizeX;
-
-      valuesY.resize(dataYsize);
+      for ( unsigned int i = 0; i < dataXsize; ++i )
+	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
+      
+      valuesY.resize( dataYsize );
       unsigned int actualSizeY = 0;
-      for (unsigned int i = 0; i < dataYsize; ++i)
-        if (dataY[i]->Get(valuesY[actualSizeY], idx)) ++actualSizeY;
+      for ( unsigned int i = 0; i < dataYsize; ++i )
+	if ( dataY[i]->Get( valuesY[actualSizeY], idx ) ) ++actualSizeY;
+      
+      if ( actualSizeX == actualSizeY )
+	{
+	valuesX.resize( actualSizeX );
+	valuesY.resize( actualSizeY );
 
-      if (actualSizeX == actualSizeY) {
-        valuesX.resize(actualSizeX);
-        valuesY.resize(actualSizeY);
-
-        prob = MathUtil::PairedTTest<Types::DataItem>(valuesX, valuesY, t, avgX,
-                                                      avgY);
-
-        if ((prob < 0) || (prob > 1)) {
-          fprintf(stderr, "t = %f\tp = %f\n", t, prob);
-        }
-        prob = 1.0 - prob;  // convert probability to significance
-      } else {
-        t = prob = 0;
-      }
-
-      if (tstatData) (*tstatData)->Set(t, idx);
-      if (avgXData) (*avgXData)->Set(avgX, idx);
-      if (avgYData) (*avgYData)->Set(avgY, idx);
-
-      if (avgX > avgY)
-        probData->Set(prob, idx);
+	prob = MathUtil::PairedTTest<Types::DataItem>( valuesX, valuesY, t, avgX, avgY );
+	
+	if ( (prob < 0) || (prob>1) )
+	  {
+	  fprintf( stderr, "t = %f\tp = %f\n", t, prob );
+	  }
+	prob = 1.0 - prob; // convert probability to significance
+	}
       else
-        probData->Set(-prob, idx);
-    } else {
-      probData->SetPaddingAt(idx);
-      if (tstatData) (*tstatData)->SetPaddingAt(idx);
-      if (avgXData) (*avgXData)->SetPaddingAt(idx);
-      if (avgYData) (*avgYData)->SetPaddingAt(idx);
-    }
+	{
+	t = prob = 0;
+	}
+      
+      if ( tstatData ) (*tstatData)->Set( t, idx );
+      if ( avgXData ) (*avgXData)->Set( avgX, idx );
+      if ( avgYData ) (*avgYData)->Set( avgY, idx );
+      
+      if ( avgX > avgY )
+	probData->Set(  prob, idx );
+      else
+	probData->Set( -prob, idx );
+      } 
+    else 
+      {
+      probData->SetPaddingAt( idx );
+      if ( tstatData ) (*tstatData)->SetPaddingAt( idx );
+      if ( avgXData ) (*avgXData)->SetPaddingAt( idx );
+      if ( avgYData ) (*avgYData)->SetPaddingAt( idx );
+      }
   }
-
+  
   return probData;
 }
 
-TypedArray::SmartPtr HypothesisTests::GetPairedCorrelation(
-    std::vector<TypedArray::SmartPtr> &dataX,
-    std::vector<TypedArray::SmartPtr> &dataY, TypedArray::SmartPtr *pData,
-    const TypedArray *mask) {
-  if (dataX.size() != dataY.size()) {
-    throw(
-        Exception("Cannot perform paired correlation if numbers of X and Y "
-                  "samples isn't equal"));
-  }
-
+TypedArray::SmartPtr 
+HypothesisTests::GetPairedCorrelation
+( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray::SmartPtr* pData, const TypedArray* mask )
+{
+  if ( dataX.size() != dataY.size() )
+    {
+    throw( Exception( "Cannot perform paired correlation if numbers of X and Y samples isn't equal" ) );
+    }
+  
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray::SmartPtr correlationData = TypedArray::Create(TYPE_FLOAT, length);
-  if (pData) *pData = TypedArray::Create(TYPE_FLOAT, length);
+  TypedArray::SmartPtr correlationData = TypedArray::Create( TYPE_FLOAT, length );
+  if ( pData )
+    *pData = TypedArray::Create( TYPE_FLOAT, length );
 
   const unsigned int dataXsize = dataX.size();
-  std::vector<Types::DataItem> valuesX(dataXsize);
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  std::vector<Types::DataItem> valuesY(dataYsize);
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
-  for (unsigned int idx = 0; idx < length; ++idx) {
-    correlationData->SetPaddingAt(idx);
-    if (pData) (*pData)->SetPaddingAt(idx);
+  for ( unsigned int idx = 0; idx < length; ++idx ) 
+    {
+    correlationData->SetPaddingAt( idx );
+    if ( pData )
+      (*pData)->SetPaddingAt( idx );
 
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
-      valuesX.resize(dataXsize);
-      valuesY.resize(dataXsize);
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesX.resize( dataXsize );
+      valuesY.resize( dataXsize );
 
       unsigned int actualSize = 0;
-      for (unsigned int i = 0; i < dataXsize; ++i)
-        if (dataX[i]->Get(valuesX[actualSize], idx) &&
-            dataY[i]->Get(valuesY[actualSize], idx))
-          ++actualSize;
+      for ( unsigned int i = 0; i < dataXsize; ++i )
+	if ( dataX[i]->Get( valuesX[actualSize], idx ) && dataY[i]->Get( valuesY[actualSize], idx ) )
+	  ++actualSize;
+      
+      if ( actualSize )
+	{
+	valuesX.resize( actualSize );
+	valuesY.resize( actualSize );
 
-      if (actualSize) {
-        valuesX.resize(actualSize);
-        valuesY.resize(actualSize);
-
-        Types::DataItem corr =
-            MathUtil::Correlation<Types::DataItem>(valuesX, valuesY);
-        correlationData->Set(corr, idx);
-        if (pData)
-          (*pData)->Set(
-              MathUtil::ProbabilityFromTStat(
-                  MathUtil::TStatFromCorrelation(corr, actualSize - 2),
-                  actualSize - 2),
-              idx);
+	Types::DataItem corr = MathUtil::Correlation<Types::DataItem>( valuesX, valuesY );
+	correlationData->Set(  corr, idx );
+	if ( pData ) 
+	  (*pData)->Set( MathUtil::ProbabilityFromTStat( MathUtil::TStatFromCorrelation( corr, actualSize-2 ), actualSize-2 ), idx );
+	}
       }
     }
-  }
-
+  
   return correlationData;
 }
 
-TypedArray::SmartPtr HypothesisTests::GetOneSampleTTest(
-    std::vector<TypedArray::SmartPtr> &dataX, TypedArray::SmartPtr *tstatData,
-    TypedArray::SmartPtr *avgXData, const TypedArray *mask) {
+TypedArray::SmartPtr
+HypothesisTests::GetOneSampleTTest
+( std::vector<TypedArray::SmartPtr>& dataX, 
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
+  const TypedArray* mask )
+{
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray::SmartPtr probData = TypedArray::Create(TYPE_FLOAT, length);
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
-  if (tstatData) *tstatData = TypedArray::Create(TYPE_FLOAT, length);
-
-  if (avgXData) *avgXData = TypedArray::Create(TYPE_FLOAT, length);
+  if ( tstatData )
+    *tstatData = TypedArray::Create( TYPE_FLOAT, length );
+  
+  if ( avgXData )
+    *avgXData = TypedArray::Create( TYPE_FLOAT, length );
 
   const unsigned int dataXsize = dataX.size();
-  std::vector<Types::DataItem> valuesX(dataXsize);
+  std::vector<Types::DataItem> valuesX( dataXsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0;
-  for (unsigned int idx = 0; idx < length; ++idx) {
+  for ( unsigned int idx = 0; idx < length; ++idx ) {
+
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
-      valuesX.resize(dataXsize);
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
-      for (unsigned int i = 0; i < dataXsize; ++i)
-        if (dataX[i]->Get(valuesX[actualSizeX], idx)) ++actualSizeX;
+      for ( unsigned int i = 0; i < dataXsize; ++i )
+	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) 
+	  ++actualSizeX;
+      
+      if ( actualSizeX )
+	{
+	valuesX.resize( actualSizeX );
+	prob = MathUtil::TTest<Types::DataItem>( valuesX, t, avgX );
 
-      if (actualSizeX) {
-        valuesX.resize(actualSizeX);
-        prob = MathUtil::TTest<Types::DataItem>(valuesX, t, avgX);
-
-        if ((prob < 0) || (prob > 1)) {
-          fprintf(stderr, "t = %f\tp = %f\n", t, prob);
-        }
-        prob = 1.0 - prob;  // convert probability to significance
-      } else {
-        t = prob = 0;
-      }
-
-      if (tstatData) (*tstatData)->Set(t, idx);
-      if (avgXData) (*avgXData)->Set(avgX, idx);
-
-      if (avgX > 0)
-        probData->Set(-prob, idx);
+	if ( (prob < 0) || (prob>1) )
+	  {
+	  fprintf( stderr, "t = %f\tp = %f\n", t, prob );
+	  }
+	prob = 1.0 - prob; // convert probability to significance
+	}
       else
-        probData->Set(+prob, idx);
+	{
+	t = prob = 0;
+	}
+      
+      if ( tstatData ) (*tstatData)->Set( t, idx );
+      if ( avgXData ) (*avgXData)->Set( avgX, idx );
+      
+      if ( avgX > 0 )
+	probData->Set(  -prob, idx );
+      else
+	probData->Set( +prob, idx );
     } else {
-      probData->SetPaddingAt(idx);
-      if (tstatData) (*tstatData)->SetPaddingAt(idx);
-      if (avgXData) (*avgXData)->SetPaddingAt(idx);
+      probData->SetPaddingAt( idx );
+      if ( tstatData ) (*tstatData)->SetPaddingAt( idx );
+      if ( avgXData ) (*avgXData)->SetPaddingAt( idx );
     }
   }
-
+  
   return probData;
 }
 
-TypedArray::SmartPtr HypothesisTests::GetZScores(
-    std::vector<TypedArray::SmartPtr> &dataX,
-    std::vector<TypedArray::SmartPtr> &dataY, const TypedArray *mask) {
+TypedArray::SmartPtr
+HypothesisTests::GetZScores
+( std::vector<TypedArray::SmartPtr>& dataX,
+  std::vector<TypedArray::SmartPtr>& dataY,
+  const TypedArray* mask )
+{
   const size_t length = dataX[0]->GetDataSize();
 
-  TypedArray::SmartPtr outData = TypedArray::Create(TYPE_FLOAT, length);
-
+  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
+  
   const unsigned int dataXsize = dataX.size();
-  std::vector<Types::DataItem> valuesX(dataXsize);
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  std::vector<Types::DataItem> valuesY(dataYsize);
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem avgX, avgY, varX;
 
-  for (size_t idx = 0; idx < length; ++idx) {
+  for ( size_t idx = 0; idx < length; ++idx ) {
+
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
-      valuesX.resize(dataXsize);
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
-      for (unsigned int i = 0; i < dataXsize; ++i)
-        if (dataX[i]->Get(valuesX[actualSizeX], idx)) ++actualSizeX;
-
-      valuesY.resize(dataYsize);
+      for ( unsigned int i = 0; i < dataXsize; ++i )
+	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
+      
+      valuesY.resize( dataYsize );
       unsigned int actualSizeY = 0;
-      for (unsigned int i = 0; i < dataYsize; ++i)
-        if (dataY[i]->Get(valuesY[actualSizeY], idx)) ++actualSizeY;
+      for ( unsigned int i = 0; i < dataYsize; ++i )
+	if ( dataY[i]->Get( valuesY[actualSizeY], idx ) ) ++actualSizeY;
 
-      if (actualSizeX && actualSizeY) {
-        valuesX.resize(actualSizeX);
-        avgX = MathUtil::Mean<Types::DataItem>(valuesX);
-        valuesY.resize(actualSizeY);
-        avgY = MathUtil::Mean<Types::DataItem>(valuesY);
+      if ( actualSizeX && actualSizeY )
+	{
+	valuesX.resize( actualSizeX );
+	avgX = MathUtil::Mean<Types::DataItem>( valuesX );
+	valuesY.resize( actualSizeY );
+	avgY = MathUtil::Mean<Types::DataItem>( valuesY );
+	
+        varX = MathUtil::Variance<Types::DataItem>( valuesX, avgX );
 
-        varX = MathUtil::Variance<Types::DataItem>(valuesX, avgX);
-
-        outData->Set((avgY - avgX) / sqrt(varX), idx);
-      } else {
-        outData->SetPaddingAt(idx);
+	outData->Set( (avgY - avgX) / sqrt( varX ), idx );
+	}
+      else
+	{
+	outData->SetPaddingAt( idx );
+	}
       }
-    } else {
-      outData->SetPaddingAt(idx);
-    }
+    else
+      {
+      outData->SetPaddingAt( idx );
+      }
   }
-
+  
   return outData;
 }
 
-TypedArray::SmartPtr HypothesisTests::GetGeneticCovariance(
-    std::vector<TypedArray::SmartPtr> &dataMZ,
-    std::vector<TypedArray::SmartPtr> &dataDZ, const TypedArray *mask) {
+TypedArray::SmartPtr
+HypothesisTests::GetGeneticCovariance
+( std::vector<TypedArray::SmartPtr>& dataMZ, 
+  std::vector<TypedArray::SmartPtr>& dataDZ,
+  const TypedArray* mask )
+{
   const size_t length = dataMZ[0]->GetDataSize();
 
-  TypedArray::SmartPtr outData = TypedArray::Create(TYPE_FLOAT, length);
-
+  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
+  
   const unsigned int dataMZsize = dataMZ.size();
-  std::vector<Types::DataItem> valuesMZ(dataMZsize);
+  std::vector<Types::DataItem> valuesMZ( dataMZsize );
   const unsigned int dataDZsize = dataDZ.size();
-  std::vector<Types::DataItem> valuesDZ(dataDZsize);
+  std::vector<Types::DataItem> valuesDZ( dataDZsize );
 
   Types::DataItem avgMZ, avgDZ, varMZ, varDZ;
 
-  for (size_t idx = 0; idx < length; ++idx) {
+  for ( size_t idx = 0; idx < length; ++idx ) {
+
     Types::DataItem maskValue;
-    if (!mask || (mask->Get(maskValue, idx) && (maskValue != 0))) {
-      valuesMZ.resize(dataMZsize);
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesMZ.resize( dataMZsize );
       unsigned int actualSizeMZ = 0;
-      for (unsigned int i = 0; i < dataMZsize; ++i)
-        if (dataMZ[i]->Get(valuesMZ[actualSizeMZ], idx)) ++actualSizeMZ;
-
-      valuesDZ.resize(dataDZsize);
+      for ( unsigned int i = 0; i < dataMZsize; ++i )
+	if ( dataMZ[i]->Get( valuesMZ[actualSizeMZ], idx ) ) ++actualSizeMZ;
+      
+      valuesDZ.resize( dataDZsize );
       unsigned int actualSizeDZ = 0;
-      for (unsigned int i = 0; i < dataDZsize; ++i)
-        if (dataDZ[i]->Get(valuesDZ[actualSizeDZ], idx)) ++actualSizeDZ;
+      for ( unsigned int i = 0; i < dataDZsize; ++i )
+	if ( dataDZ[i]->Get( valuesDZ[actualSizeDZ], idx ) ) ++actualSizeDZ;
 
-      if (actualSizeMZ && actualSizeDZ) {
-        valuesMZ.resize(actualSizeMZ);
-        avgMZ = MathUtil::Mean<Types::DataItem>(valuesMZ);
-        varMZ = MathUtil::Variance<Types::DataItem>(valuesMZ, avgMZ);
+      if ( actualSizeMZ && actualSizeDZ )
+	{
+	valuesMZ.resize( actualSizeMZ );
+	avgMZ = MathUtil::Mean<Types::DataItem>( valuesMZ );
+	varMZ = MathUtil::Variance<Types::DataItem>( valuesMZ, avgMZ );
 
-        valuesDZ.resize(actualSizeDZ);
-        avgDZ = MathUtil::Mean<Types::DataItem>(valuesDZ);
-        varDZ = MathUtil::Variance<Types::DataItem>(valuesDZ, avgDZ);
+	valuesDZ.resize( actualSizeDZ );
+	avgDZ = MathUtil::Mean<Types::DataItem>( valuesDZ );
+	varDZ = MathUtil::Variance<Types::DataItem>( valuesDZ, avgDZ );
 
-        outData->Set(varMZ / avgMZ - varDZ / avgDZ, idx);
-      } else {
-        outData->SetPaddingAt(idx);
+	outData->Set( varMZ / avgMZ - varDZ / avgDZ, idx );
+	}
+      else
+	{
+	outData->SetPaddingAt( idx );
+	}
       }
-    } else {
-      outData->SetPaddingAt(idx);
-    }
+    else
+      {
+      outData->SetPaddingAt( idx );
+      }
   }
-
+  
   return outData;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

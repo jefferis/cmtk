@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gammaf.h"
 #include "normaldistr.h"
 
+
 /*************************************************************************
 Incomplete gamma integral
 
@@ -74,8 +75,8 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1985, 1987, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type incompletegamma(ap::real_value_type a,
-                                    ap::real_value_type x);
+ap::real_value_type incompletegamma(ap::real_value_type a, ap::real_value_type x);
+
 
 /*************************************************************************
 Complemented incomplete gamma integral
@@ -110,7 +111,7 @@ arithmetic   domain   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1985, 1987, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type incompletegammac(ap::real_value_type a,
-                                     ap::real_value_type x);
+ap::real_value_type incompletegammac(ap::real_value_type a, ap::real_value_type x);
+
 
 #endif

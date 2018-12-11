@@ -38,34 +38,35 @@
 #include <Registration/cmtkMultiChannelRegistrationFunctional.h>
 
 #include <Base/cmtkHashMapSTL.h>
-#include <Base/cmtkLinearInterpolator.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
 
 #include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
-/** Base class for multi-channel registration functionals using the Histogram
- * metric. */
-template <class TDataType = float,
-          class TInterpolator =
-              cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>,
-          class THashKeyType = unsigned int, char NBitsPerChannel = 6>
+/** Base class for multi-channel registration functionals using the Histogram metric. */
+template<class TDataType = float, 
+	 class TInterpolator = cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>,
+	 class THashKeyType = unsigned int, 
+	 char NBitsPerChannel=6>
 class MultiChannelHistogramRegistrationFunctional :
-    /** Inherit functional interface. */
-    public MultiChannelRegistrationFunctional<TInterpolator> {
- public:
+  /** Inherit functional interface. */
+  public MultiChannelRegistrationFunctional<TInterpolator>
+{
+public:
   /** Number of bits per channel in the histogram bin index type. */
   static const char m_HistogramBitsPerChannel = NBitsPerChannel;
 
   /** This class. */
-  typedef MultiChannelHistogramRegistrationFunctional<TDataType, THashKeyType>
-      Self;
+  typedef MultiChannelHistogramRegistrationFunctional<TDataType,THashKeyType> Self;
 
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
@@ -80,38 +81,37 @@ class MultiChannelHistogramRegistrationFunctional :
   typedef THashKeyType HashKeyType;
 
   /// Default constructor.
-  MultiChannelHistogramRegistrationFunctional() : m_HashKeyShiftRef(0) {}
+  MultiChannelHistogramRegistrationFunctional() : m_HashKeyShiftRef( 0 ) {}
 
   /** Add reference channel. */
-  virtual void AddReferenceChannel(UniformVolume::SmartPtr &channel);
+  virtual void AddReferenceChannel( UniformVolume::SmartPtr& channel );
 
   /** Add floating channel. */
-  virtual void AddFloatingChannel(UniformVolume::SmartPtr &channel);
+  virtual void AddFloatingChannel( UniformVolume::SmartPtr& channel );
 
   /** Reset channels, clear all images. */
   virtual void ClearAllChannels();
 
- protected:
+protected:
   /** Local class for data needed to compute similarity metric. */
-  class MetricData {
-   private:
+  class MetricData
+  {
+  private:
     /** Typedef of parent class. */
-    typedef MultiChannelHistogramRegistrationFunctional<
-        TDataType, TInterpolator, THashKeyType, NBitsPerChannel>
-        Parent;
+    typedef MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel> Parent;
 
     /** Parent object. */
-    Parent *m_Parent;
+    Parent* m_Parent;
 
-   public:
+  public:
     /** This class type. */
     typedef MetricData Self;
 
     /// Default constructor.
-    MetricData() : m_Parent(NULL), m_TotalNumberOfSamples(0) {}
+    MetricData() : m_Parent( NULL ), m_TotalNumberOfSamples( 0 ) {}
 
     /** Initialize metric object and local storage. */
-    void Init(Parent *const parent);
+    void Init( Parent *const parent );
 
     /** Hash table type. */
     typedef HashMapSTL<HashKeyType, int> HashTableType;
@@ -129,32 +129,31 @@ class MultiChannelHistogramRegistrationFunctional :
     size_t m_TotalNumberOfSamples;
 
     /** Assignment operator. */
-    Self &operator=(const Self &source);
+    Self& operator=( const Self& source );
 
     /** In-place addition operator. */
-    Self &operator+=(const Self &other);
+    Self& operator+=( const Self& other );
 
     /** In-place subtraction operator. */
-    Self &operator-=(const Self &other);
+    Self& operator-=( const Self& other );
 
     /** In-place single sample addition operator. */
-    void operator+=(const std::vector<Types::DataItem> &values);
+    void operator+=( const std::vector<Types::DataItem>& values );
 
     /** In-place single sample subtraction operator. */
-    void operator-=(const std::vector<Types::DataItem> &values);
+    void operator-=( const std::vector<Types::DataItem>& values );
   };
 
   /// Global data structure for metric computation.
   MetricData m_MetricData;
 
   /** Continue metric computation. */
-  virtual void ContinueMetric(MetricData &metricData, const size_t rindex,
-                              const Vector3D &fvector);
+  virtual void ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
 
   /** Get metric value. */
-  virtual Functional::ReturnType GetMetric(const MetricData &metricData) const;
+  virtual Functional::ReturnType GetMetric( const MetricData& metricData ) const;
 
- private:
+private:
   /** Scale factors for reference values to histogram "bins". */
   std::vector<TDataType> m_HashKeyScaleRef;
 
@@ -167,16 +166,15 @@ class MultiChannelHistogramRegistrationFunctional :
   /** Offsets for reference values to histogram "bins". */
   std::vector<TDataType> m_HashKeyOffsFlt;
 
-  /** Bit shift count to combine floating and reference hash keys into joint
-   * keys. */
+  /** Bit shift count to combine floating and reference hash keys into joint keys. */
   size_t m_HashKeyShiftRef;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkMultiChannelHistogramRegistrationFunctional.txx"
 #include "cmtkMultiChannelHistogramRegistrationFunctionalMetricData.txx"
 
-#endif  // #ifndef __cmtkMultiChannelHistogramRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkMultiChannelHistogramRegistrationFunctional_h_included_

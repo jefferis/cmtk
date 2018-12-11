@@ -43,17 +43,19 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 /** Distance map on a uniform grid.
- *\author This class is based on code originally written by Calvin R. Maurer,
- *Jr.
+ *\author This class is based on code originally written by Calvin R. Maurer, Jr.
  */
-template <class TDistanceDataType>
-class UniformDistanceMap : public DistanceMap {
- public:
+template<class TDistanceDataType>
+class UniformDistanceMap : public DistanceMap
+{
+public:
   /** This class. */
   typedef UniformDistanceMap<TDistanceDataType> Self;
 
@@ -75,58 +77,48 @@ class UniformDistanceMap : public DistanceMap {
    *\param value Feature value
    *\param window Window radius around feature value.
    */
-  UniformDistanceMap(const UniformVolume &volume,
-                     const byte flags = Self::DEFAULT,
-                     const Types::DataItem value = 0,
-                     const Types::DataItem window = 0);
+  UniformDistanceMap( const UniformVolume& volume, const byte flags = Self::DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
 
   // Get the computed distance map.
-  UniformVolume::SmartPtr Get() { return this->m_DistanceMap; }
+  UniformVolume::SmartPtr Get()
+  {
+    return this->m_DistanceMap;
+  }
 
- private:
+private:
   /// Compute distance map.
-  void BuildDistanceMap(const UniformVolume &volume, const byte flags,
-                        const Types::DataItem value = 0,
-                        const Types::DataItem window = 0);
-
+  void BuildDistanceMap( const UniformVolume& volume, const byte flags, const Types::DataItem value=0, const Types::DataItem window = 0 );
+  
   /// Compute 3-D Euclidean Distance Transformation.
-  void ComputeEDT(DistanceDataType *const distance);
+  void ComputeEDT( DistanceDataType *const distance );
 
   /// Compute 2-D Euclidean Distance Transformation for one image plane.
-  void ComputeEDT2D(DistanceDataType *const plane,
-                    std::vector<DistanceDataType> &gTemp,
-                    std::vector<DistanceDataType> &hTemp);
+  void ComputeEDT2D( DistanceDataType *const plane, std::vector<DistanceDataType>& gTemp, std::vector<DistanceDataType>& hTemp );
 
   /// Compute 1-D Voronoi Euclidean Distance Transform.
-  bool VoronoiEDT(DistanceDataType *const lpY, const int nSize,
-                  const DistanceDataType delta,
-                  std::vector<DistanceDataType> &gTemp,
-                  std::vector<DistanceDataType> &hTemp);
+  bool VoronoiEDT( DistanceDataType *const lpY, const int nSize, const DistanceDataType delta, std::vector<DistanceDataType>& gTemp, std::vector<DistanceDataType>& hTemp );
 
   /// Internal: pointer to row storage.
-  std::vector<std::vector<DistanceDataType>> m_G;
+  std::vector< std::vector<DistanceDataType> > m_G;
 
   /// Internal: pointer to row storage.
-  std::vector<std::vector<DistanceDataType>> m_H;
+  std::vector< std::vector<DistanceDataType> > m_H;
 
   /** Thread parameters. */
   class ThreadParametersEDT :
-      /** Inherit from standard parameters. */
-      public ThreadParameters<Self> {
-   public:
+    /** Inherit from standard parameters. */
+    public ThreadParameters<Self>
+  {
+  public:
     /** Distance map pointer. */
-    DistanceDataType *m_Distance;
+    DistanceDataType* m_Distance;
   };
-
+  
   /** Thread function for first phase (xy) of EDT computation. */
-  static void ComputeEDTThreadPhase1(void *const args, const size_t taskIdx,
-                                     const size_t taskCnt,
-                                     const size_t threadIdx, const size_t);
+  static void ComputeEDTThreadPhase1( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Thread function for second phase (z) of EDT computation. */
-  static void ComputeEDTThreadPhase2(void *const args, const size_t taskIdx,
-                                     const size_t taskCnt,
-                                     const size_t threadIdx, const size_t);
+  static void ComputeEDTThreadPhase2( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /// The computed distance map.
   UniformVolume::SmartPtr m_DistanceMap;
@@ -134,6 +126,6 @@ class UniformDistanceMap : public DistanceMap {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkDistanceMap_h_included_
+#endif // #ifndef __cmtkDistanceMap_h_included_

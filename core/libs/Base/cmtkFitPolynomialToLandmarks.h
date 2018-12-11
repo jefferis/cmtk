@@ -33,45 +33,46 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkPolynomialXform.h>
 #include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkMatrix3x3.h>
-#include <Base/cmtkPolynomialXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Fit polynomial transformation to a set of landmark pairs.
- * The fitting algorithm uses SVD and works incrementally. That is, lower
- * polynomial degrees are fitted first, followed by higher ones.
+ * The fitting algorithm uses SVD and works incrementally. That is, lower polynomial degrees are fitted first, followed by higher ones.
  */
-class FitPolynomialToLandmarks {
- public:
+class FitPolynomialToLandmarks
+{
+public:
   /// This class.
   typedef FitPolynomialToLandmarks Self;
 
   /// Constructor.
-  FitPolynomialToLandmarks(
-      const LandmarkPairList
-          &landmarkPairs /*!< Landmark pairs to fit transformation to */,
-      const byte degree /*!< Degree of the fitted polynomial */);
+  FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs /*!< Landmark pairs to fit transformation to */, const byte degree /*!< Degree of the fitted polynomial */ );
 
   /// Return the affine transformation.
-  PolynomialXform::SmartPtr GetPolynomialXform() {
+  PolynomialXform::SmartPtr GetPolynomialXform()
+  {
     return this->m_PolynomialXform;
   }
-
+  
   /// Return the constant affine transformation.
-  PolynomialXform::SmartConstPtr GetPolynomialXform() const {
+  PolynomialXform::SmartConstPtr GetPolynomialXform() const
+  {
     return this->m_PolynomialXform;
   }
-
- private:
+  
+private:
   /// The fitted transformation.
   PolynomialXform::SmartPtr m_PolynomialXform;
 };
 
-}  // namespace cmtk
+} // namespace
 
-#endif  // #ifndef __cmtkFitPolynomialToLandmarks_h_included_
+#endif // #ifndef __cmtkFitPolynomialToLandmarks_h_included_

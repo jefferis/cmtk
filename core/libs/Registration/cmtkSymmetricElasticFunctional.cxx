@@ -34,103 +34,94 @@
 
 #include <Registration/cmtkSymmetricElasticFunctional.h>
 
-#include <Registration/cmtkVoxelMatchingCorrRatio.h>
-#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
-#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
 #include <Registration/cmtkVoxelMatchingMutInf.h>
 #include <Registration/cmtkVoxelMatchingNormMutInf.h>
+#include <Registration/cmtkVoxelMatchingCorrRatio.h>
+#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
+#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
 
-#include <Base/cmtkInterpolator.h>
 #include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkInterpolator.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-template <class VM>
-void SymmetricElasticFunctional_Template<VM>::SetWarpXform(
-    SplineWarpXform::SmartPtr &warpFwd, SplineWarpXform::SmartPtr &warpBwd) {
-  this->FwdFunctional.SetWarpXform(warpFwd);
-  this->FwdFunctional.SetInverseTransformation(warpBwd);
-
-  this->BwdFunctional.SetWarpXform(warpBwd);
-  this->BwdFunctional.SetInverseTransformation(warpFwd);
+template<class VM>
+void
+SymmetricElasticFunctional_Template<VM>::SetWarpXform
+( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) 
+{
+  this->FwdFunctional.SetWarpXform( warpFwd );
+  this->FwdFunctional.SetInverseTransformation( warpBwd );
+  
+  this->BwdFunctional.SetWarpXform( warpBwd );
+  this->BwdFunctional.SetInverseTransformation( warpFwd );
 }
 
-template <class VM>
+template<class VM>
 typename SymmetricElasticFunctional_Template<VM>::ReturnType
-SymmetricElasticFunctional_Template<VM>::EvaluateWithGradient(
-    CoordinateVector &v, CoordinateVector &g, const Types::Coordinate step) {
-  CoordinateVector vFwd(this->FwdFunctional.ParamVectorDim(), v.Elements,
-                        false /*freeElements*/);
-  CoordinateVector gFwd(this->FwdFunctional.ParamVectorDim(), g.Elements,
-                        false /*freeElements*/);
+SymmetricElasticFunctional_Template<VM>
+::EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
+{
+  CoordinateVector vFwd( this->FwdFunctional.ParamVectorDim(), v.Elements, false /*freeElements*/ );
+  CoordinateVector gFwd( this->FwdFunctional.ParamVectorDim(), g.Elements, false /*freeElements*/ );
 
-  CoordinateVector vBwd(this->BwdFunctional.ParamVectorDim(),
-                        v.Elements + this->FwdFunctional.ParamVectorDim(),
-                        false /*freeElements*/);
-  CoordinateVector gBwd(this->BwdFunctional.ParamVectorDim(),
-                        g.Elements + this->FwdFunctional.ParamVectorDim(),
-                        false /*freeElements*/);
+  CoordinateVector vBwd( this->BwdFunctional.ParamVectorDim(), v.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
+  CoordinateVector gBwd( this->BwdFunctional.ParamVectorDim(), g.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
 
-  return this->FwdFunctional.EvaluateWithGradient(vFwd, gFwd, step) +
-         this->BwdFunctional.EvaluateWithGradient(vBwd, gBwd, step);
+  return this->FwdFunctional.EvaluateWithGradient( vFwd, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vBwd, gBwd, step );
 }
 
-SymmetricElasticFunctional *CreateSymmetricElasticFunctional(
-    const int metric, UniformVolume::SmartPtr &refVolume,
-    UniformVolume::SmartPtr &fltVolume) {
-  switch (fltVolume->GetData()->GetDataClass()) {
-    case DATACLASS_UNKNOWN:
-    case DATACLASS_GREY:
-      switch (metric) {
-        case 0:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingNormMutInf_Trilinear>(refVolume, fltVolume);
-        case 1:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingMutInf_Trilinear>(refVolume, fltVolume);
-        case 2:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingCorrRatio_Trilinear>(refVolume, fltVolume);
-        case 3:
-          return NULL;  // masked NMI retired
-        case 4:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingMeanSquaredDifference>(refVolume, fltVolume);
-        case 5:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingCrossCorrelation>(refVolume, fltVolume);
-        default:
-          return NULL;
-      }
+SymmetricElasticFunctional* 
+CreateSymmetricElasticFunctional( const int metric, UniformVolume::SmartPtr& refVolume,  UniformVolume::SmartPtr& fltVolume )
+{
+  switch ( fltVolume->GetData()->GetDataClass() ) 
+    {
+    case DATACLASS_UNKNOWN :
+    case DATACLASS_GREY :
+      switch ( metric ) 
+	{
+	case 0:
+	  return new SymmetricElasticFunctional_Template< VoxelMatchingNormMutInf_Trilinear>( refVolume, fltVolume );
+	case 1:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume );
+	case 2:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume );
+	case 3:
+	  return NULL; // masked NMI retired
+	case 4:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
+	case 5:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
+	default:
+	  return NULL;
+	}
     case DATACLASS_LABEL:
-      switch (metric) {
-        case 0:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingNormMutInf_NearestNeighbor>(refVolume, fltVolume);
-        case 1:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingMutInf_NearestNeighbor>(refVolume, fltVolume);
-        case 2:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingCorrRatio_NearestNeighbor>(refVolume, fltVolume);
-        case 3:
-          return NULL;  // masked NMI retired
-        case 4:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingMeanSquaredDifference>(refVolume, fltVolume);
-        case 5:
-          return new SymmetricElasticFunctional_Template<
-              VoxelMatchingCrossCorrelation>(refVolume, fltVolume);
-        default:
-          return NULL;
-      }
-  }
-
+      switch ( metric ) 
+	{
+	case 0:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor>( refVolume, fltVolume );
+	case 1:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
+	case 2:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume );
+	case 3:
+	  return NULL; // masked NMI retired
+	case 4:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
+	case 5:
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
+	default:
+	  return NULL;
+	}
+    }
+  
   return NULL;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

@@ -38,7 +38,9 @@
 #include <limits.h>
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
@@ -46,25 +48,24 @@ namespace cmtk {
 /** Name of the shell variable defining the directory translation.
  * This variable can be set to contain a list of substitution rules. Every
  * rule has the form "search=replace", where all appearances of "search" are
- * to be replaced by "replace" in all filesystem paths.
+ * to be replaced by "replace" in all filesystem paths. 
  *
- * Several of these rules may be concatenated by ",". An example is
- *"/cdrom=j:,/home=k:". This results in all paths relative to "/cdrom" being
- *relative to "j:" after substituion. The same holds for "k:" and "/home". This
- *example could be used to read data on a PC mounting Unix filesystems to
- *network drives.
+ * Several of these rules may be concatenated by ",". An example is "/cdrom=j:,/home=k:". This 
+ * results in all paths relative to "/cdrom" being relative to "j:" after
+ * substituion. The same holds for "k:" and "/home". This example could be
+ * used to read data on a PC mounting Unix filesystems to network drives.
  *
  * Conversely, the Unix box would define "j:=/cdrom,k:=/home" in order to be
  * able to read data written by this PC.
  *\see MountPoints
  */
-const char *const CMTK_MOUNTPOINTSVAR = "CMTK_MOUNTPOINTS";
+const char* const CMTK_MOUNTPOINTSVAR = "CMTK_MOUNTPOINTS";
 
 /** Legacy environment variable.
  * This is what CMTK_MOUNTPOINTS used to be called in an earlier life. We
  * continue to check for it so we don't break older scripts.
  */
-const char *const IGS_MOUNTPOINTSVAR = "IGS_MOUNTPOINTS";
+const char* const IGS_MOUNTPOINTSVAR = "IGS_MOUNTPOINTS";
 
 /** Directory translation.
  * This class implements a translation for file system paths. This is used to
@@ -74,26 +75,28 @@ const char *const IGS_MOUNTPOINTSVAR = "IGS_MOUNTPOINTS";
  * machines with different CD mount points. It is also useful for exchanging
  * files containing paths between Unix and Windows systems.
  */
-class MountPoints {
- public:
+class MountPoints 
+{
+public:
   /** Perform directory substitutions.
    *\param path The original path before substitions.
    *\return A pointer to a static buffer holding the path after all substitions
-   * have been done. The buffer is guaranteed to remain unchanged until and
+   * have been done. The buffer is guaranteed to remain unchanged until and 
    * only until the next time Translate() is called.
-   *\todo There is really no reason why we parse the environment variable every
-   *time a substitution is (potentially) performed. Instead, it should be parsed
-   *once and then simply re-applied. \see CMTK_MOUNTPOINTSVAR
+   *\todo There is really no reason why we parse the environment variable every time a
+   * substitution is (potentially) performed. Instead, it should be parsed once and then
+   * simply re-applied.
+   *\see CMTK_MOUNTPOINTSVAR
    */
-  static std::string Translate(const std::string &path);
+  static std::string Translate ( const std::string& path );
 
- private:
+private:
   /// Static buffer holding paths after pattern substitution.
   static char Buffer[PATH_MAX];
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMountPoints_h_included_
+#endif // #ifndef __cmtkMountPoints_h_included_

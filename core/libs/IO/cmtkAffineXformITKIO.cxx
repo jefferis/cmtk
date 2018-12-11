@@ -34,84 +34,102 @@
 #include <string>
 #include <typeinfo>
 
-void cmtk::AffineXformITKIO ::Write(const std::string &filename,
-                                    const AffineXform &affineXform) {
-  std::ofstream stream(filename.c_str());
-  if (stream.good()) {
+void
+cmtk::AffineXformITKIO
+::Write( const std::string& filename, const AffineXform& affineXform )
+{
+  std::ofstream stream( filename.c_str() );
+  if ( stream.good() )
+    {
     // write header
     stream << "#Insight Transform File V1.0\n";
-    Self::Write(stream, affineXform, 0);
+    Self::Write( stream, affineXform, 0 );
     stream.close();
-  }
+    }
 }
 
-void cmtk::AffineXformITKIO ::Write(std::ofstream &stream,
-                                    const AffineXform &affineXform,
-                                    const size_t idx) {
+void
+cmtk::AffineXformITKIO
+::Write( std::ofstream& stream, const AffineXform& affineXform, const size_t idx )
+{
   stream << "# Transform " << idx << "\n";
-
-  // write ID depending on whether CMTK is using single or double precision
-  // floats for coordinates
-  if (typeid(Types::Coordinate) == typeid(double)) {
+  
+  // write ID depending on whether CMTK is using single or double precision floats for coordinates
+  if ( typeid( Types::Coordinate ) == typeid( double ) )
+    {
     stream << "Transform: AffineTransform_double_3_3\n";
-  } else {
+    }
+  else
+    {
     stream << "Transform: AffineTransform_float_3_3\n";
-  }
-
+    }
+  
   // write parameters, 3x3 transformation matrix first
   stream << "Parameters: ";
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
+  for ( int i = 0; i < 3; ++i )
+    {
+    for ( int j = 0; j < 3; ++j )
+      {
       stream << affineXform.Matrix[j][i] << " ";
+      }
     }
-  }
-
+  
   // write translations
-  for (int i = 0; i < 3; ++i) {
+  for ( int i = 0; i < 3; ++i )
+    {
     stream << affineXform.Matrix[3][i] << " ";
-  }
-
+    }
+  
   // finish up with (all-zero) fixed parameters
   stream << "\n"
-         << "FixedParameters: 0 0 0\n";
+	 << "FixedParameters: 0 0 0\n";
 }
 
-cmtk::AffineXform::SmartPtr cmtk::AffineXformITKIO ::Read(
-    const std::string &filename) {
-  std::ifstream stream(filename.c_str());
-  if (stream.good()) {
+cmtk::AffineXform::SmartPtr
+cmtk::AffineXformITKIO
+::Read( const std::string& filename )
+{
+  std::ifstream stream( filename.c_str() );
+  if ( stream.good() )
+    {
     std::string line;
-    std::getline(stream, line);
-    if (line != "#Insight Transform File V1.0")
-      return AffineXform::SmartPtr(NULL);
+    std::getline( stream, line );
+    if ( line != "#Insight Transform File V1.0" )
+      return AffineXform::SmartPtr( NULL );
 
-    std::getline(stream, line);
-    if (line != "# Transform 0") return AffineXform::SmartPtr(NULL);
+    std::getline( stream, line );
+    if ( line != "# Transform 0" )
+      return AffineXform::SmartPtr( NULL );
 
-    std::getline(stream, line);
-    if (line == "Transform: AffineTransform_double_3_3" ||
-        line == "Transform: AffineTransform_float_3_3") {
-      std::getline(stream, line, ' ');
-      Types::Coordinate matrix[4][4] = {
-          {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
-
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          stream >> matrix[j][i];
-        }
-      }
-      for (int i = 0; i < 3; ++i) {
-        stream >> matrix[3][i];
-      }
-      try {
-        AffineXform::SmartPtr xform(new AffineXform(matrix));
-        xform->SetMetaInfo(META_SPACE, AnatomicalOrientationBase::SPACE_ITK);
-        return xform;
-      } catch (const AffineXform::MatrixType::SingularMatrixException &) {
-        StdErr << "ERROR: singular matrix in cmtk::AffineXformITKIO::Read()\n";
+    std::getline( stream, line );
+    if ( line == "Transform: AffineTransform_double_3_3" || line == "Transform: AffineTransform_float_3_3" )
+      {
+      std::getline( stream, line, ' ' );
+      Types::Coordinate matrix[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,1} };
+      
+      for ( int i = 0; i < 3; ++i )
+	{
+	for ( int j = 0; j < 3; ++j )
+	  {
+	  stream >> matrix[j][i];
+	  }
+	}
+      for ( int i = 0; i < 3; ++i )
+	{
+	stream >> matrix[3][i];
+	}
+      try
+	{	
+	AffineXform::SmartPtr xform( new AffineXform( matrix ) );
+	xform->SetMetaInfo( META_SPACE, AnatomicalOrientationBase::SPACE_ITK );
+	return xform;
+	}
+      catch ( const AffineXform::MatrixType::SingularMatrixException& )
+	{
+	StdErr << "ERROR: singular matrix in cmtk::AffineXformITKIO::Read()\n";
+	}
       }
     }
-  }
-
-  return AffineXform::SmartPtr(NULL);
+  
+  return AffineXform::SmartPtr( NULL );
 }

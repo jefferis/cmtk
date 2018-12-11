@@ -34,94 +34,126 @@
 
 #include <zlib.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
-CompressedStream::Zlib::Zlib(const std::string &filename) {
-  this->m_GzFile = gzopen(filename.c_str(), CMTK_FILE_MODE);
-  if (!this->m_GzFile) {
+CompressedStream::Zlib::Zlib( const std::string& filename )
+{
+  this->m_GzFile = gzopen( filename.c_str(), CMTK_FILE_MODE );
+  if ( !this->m_GzFile ) 
+    {
     throw 0;
-  }
+    }
 }
 
-void CompressedStream::Zlib::Close() { gzclose(this->m_GzFile); }
+void 
+CompressedStream::Zlib::Close()
+{
+  gzclose( this->m_GzFile );
+}
 
-void CompressedStream::Zlib::Rewind() {
-  gzrewind(this->m_GzFile);
+void
+CompressedStream::Zlib::Rewind ()
+{
+  gzrewind( this->m_GzFile );
   this->CompressedStream::ReaderBase::Rewind();
 }
 
-int CompressedStream::Zlib::Seek(const long int offset, int whence) {
-  return gzseek(this->m_GzFile, offset, whence);
+int
+CompressedStream::Zlib::Seek ( const long int offset, int whence ) 
+{
+  return gzseek( this->m_GzFile, offset, whence );
 }
 
-size_t CompressedStream::Zlib::Read(void *data, size_t size, size_t count) {
-  // See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
-  // Thanks to Yaroslav Halchenko <debian@onerussian.com> for pointing this out.
+size_t
+CompressedStream::Zlib::Read ( void *data, size_t size, size_t count ) 
+{
+// See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
+// Thanks to Yaroslav Halchenko <debian@onerussian.com> for pointing this out.
 
-#define BIG (((unsigned)(-1) >> 2) + 1)
+#define BIG (((unsigned)(-1)>>2)+1)
 
   size_t result = 0;
 
   size_t total = size * count;
-  while (total) {
+  while ( total ) 
+    {
     unsigned n = (total > BIG) ? BIG : (unsigned)total;
-    int got = gzread(this->m_GzFile, data, n);
-
-    if (got < 0) return got;
+    int got = gzread( this->m_GzFile, data, n );
+    
+    if (got < 0)
+      return got;
 
     result += got;
     total -= got;
-    data = reinterpret_cast<char *>(data) + got;
-
-    if (got < (int)n) break;
-  }
-
+    data = reinterpret_cast<char*>( data ) + got;
+    
+    if (got < (int)n)
+      break;
+    }
+  
   this->m_BytesRead += result;
-  return result / size;
+  return result / size;  
 
 #undef BIG
 }
 
-size_t CompressedStream::Zlib::StaticSafeWrite(gzFile file, const void *data,
-                                               size_t size) {
-#define BIG (((unsigned)(-1) >> 2) + 1)
+size_t
+CompressedStream::Zlib::StaticSafeWrite ( gzFile file, const void *data, size_t size ) 
+{
+
+#define BIG (((unsigned)(-1)>>2)+1)
 
   size_t result = 0;
 
-  while (size) {
+  while ( size ) 
+    {
     unsigned n = (size > BIG) ? BIG : (unsigned)size;
-    int written = gzwrite(file, data, n);
-
-    if (written < 0) return written;
+    int written = gzwrite( file, data, n );
+    
+    if (written < 0)
+      return written;
 
     result += written;
     size -= written;
-    data = reinterpret_cast<const char *>(data) + written;
-
-    if (written < (int)n) break;
-  }
-
+    data = reinterpret_cast<const char*>( data ) + written;
+    
+    if (written < (int)n)
+      break;
+    }
+  
   return result;
 }
 
-bool CompressedStream::Zlib::Get(char &c) {
-  const int data = gzgetc(this->m_GzFile);
-  if (data != EOF) {
-    c = (char)data;
+
+bool
+CompressedStream::Zlib::Get ( char &c)
+{
+  const int data = gzgetc( this->m_GzFile );
+  if ( data != EOF ) 
+    {
+    c=(char) data;
     ++this->m_BytesRead;
     return true;
-  }
+    }
 
   return false;
 }
 
-int CompressedStream::Zlib::Tell() const { return gztell(this->m_GzFile); }
-
-bool CompressedStream::Zlib::Feof() const {
-  return (gzeof(this->m_GzFile) != 0);
+int
+CompressedStream::Zlib::Tell () const 
+{
+  return gztell( this->m_GzFile );
 }
 
-}  // namespace cmtk
+bool
+CompressedStream::Zlib::Feof () const 
+{
+  return (gzeof( this->m_GzFile ) != 0);
+}
+
+} // namespace cmtk

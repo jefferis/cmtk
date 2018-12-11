@@ -37,19 +37,22 @@
 
 #include <Base/cmtkDataTypeTraits.h>
 
-#include <System/cmtkSmartConstPtr.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
 #include <algorithm>
 #include <iostream>
 
-namespace cmtk {
+namespace
+cmtk
+{
 /// Class for fixed-size n-dimensional array.
-template <size_t NDIM, typename T = int>
-class FixedArray {
- public:
+template<size_t NDIM,typename T=int>
+class FixedArray
+{
+public:
   /// This class.
-  typedef FixedArray<NDIM, T> Self;
+  typedef FixedArray<NDIM,T> Self;
 
   /// Type of the stored values.
   typedef T ValueType;
@@ -64,86 +67,117 @@ class FixedArray {
   size_t Size() const { return NDIM; }
 
   /// Zero operator.
-  static const Self Zero() {
+  static const Self Zero()
+  {
     Self v;
-    std::fill(v.begin(), v.end(), DataTypeTraits<T>::Zero());
+    std::fill( v.begin(), v.end(), DataTypeTraits<T>::Zero() );
     return v;
   }
 
-  /** Default constructor.
-   * note for improved efficiency, this does NOT initialize the data array.
-   */
+  /** Default constructor. 
+    * note for improved efficiency, this does NOT initialize the data array.
+    */
   FixedArray() {}
 
   /// Initialization constructor.
-  explicit FixedArray(const T &initValue) {
-    std::fill(this->begin(), this->end(), initValue);
+  explicit FixedArray( const T& initValue )
+  {
+    std::fill( this->begin(), this->end(), initValue );
   }
 
   /// Type conversion constructor template.
-  template <class T2>
-  FixedArray(const FixedArray<NDIM, T2> &rhs) {
-    for (size_t i = 0; i < NDIM; ++i) this->m_Data[i] = static_cast<T>(rhs[i]);
+  template<class T2>
+  FixedArray( const FixedArray<NDIM,T2>& rhs )
+  {
+    for ( size_t i = 0; i < NDIM; ++i )
+      this->m_Data[i] = static_cast<T>( rhs[i] );
   }
 
   /// Make array from const pointer.
-  template <class T2>
-  static Self FromPointer(const T2 *const ptr) {
+  template<class T2> static Self FromPointer( const T2 *const ptr ) 
+  { 
     Self v;
-    for (size_t i = 0; i < NDIM; ++i) v[i] = ptr[i];
+    for ( size_t i = 0; i < NDIM; ++i )
+      v[i] = ptr[i];
 
     return v;
   }
 
   /// Get element reference.
-  T &operator[](const size_t i) { return this->m_Data[i]; }
+  T& operator[]( const size_t i )
+  {
+    return this->m_Data[i];
+  }
 
   /// Get const element reference.
-  const T &operator[](const size_t i) const { return this->m_Data[i]; }
+  const T& operator[]( const size_t i ) const
+  {
+    return this->m_Data[i];
+  }
 
   /// Equality operator.
-  bool operator==(const Self &rhs) const {
-    for (size_t i = 0; i < NDIM; ++i)
-      if (this->m_Data[i] != rhs.m_Data[i]) return false;
+  bool operator==( const Self& rhs ) const
+  {
+    for ( size_t i = 0; i<NDIM; ++i )
+      if ( this->m_Data[i] != rhs.m_Data[i] )
+	return false;
     return true;
   }
 
   /// Inequality operator.
-  bool operator!=(const Self &rhs) const { return !this->operator==(rhs); }
+  bool operator!=( const Self& rhs ) const
+  {
+    return !this->operator==( rhs );
+  }
 
   /// Pointer to first array element.
-  T *begin() { return this->m_Data; }
+  T* begin()
+  {
+    return this->m_Data;
+  }
 
   /// Pointer behind last array element.
-  T *end() { return this->m_Data + NDIM; }
+  T* end()
+  {
+    return this->m_Data+NDIM;
+  }
 
   /// Pointer to first array element.
-  const T *begin() const { return this->m_Data; }
+  const T* begin() const
+  {
+    return this->m_Data;
+  }
 
   /// Pointer behind last array element.
-  const T *end() const { return this->m_Data + NDIM; }
+  const T* end() const
+  {
+    return this->m_Data+NDIM;
+  }
 
- protected:
+protected:
   /// The actual index array.
   T m_Data[NDIM];
 };
 
 /// Stream output operator.
-template <size_t NDIM, typename T>
-std::ostream &operator<<(std::ostream &stream,
-                         const FixedArray<NDIM, T> &index) {
-  for (size_t i = 0; i < NDIM; ++i) stream << index[i] << " ";
+template<size_t NDIM,typename T>
+std::ostream& operator<<( std::ostream& stream, const FixedArray<NDIM,T>& index )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    stream << index[i] << " ";
 
   return stream;
 }
 
 /// Stream input operator.
-template <size_t NDIM, typename T>
-std::istream &operator>>(std::istream &stream, FixedArray<NDIM, T> &index) {
-  for (size_t i = 0; i < NDIM; ++i) stream >> index[i];
+template<size_t NDIM,typename T>
+std::istream& operator>>( std::istream& stream, FixedArray<NDIM,T>& index )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    stream >> index[i];
   return stream;
 }
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkFixedArray_h_included_
+#endif // #ifndef __cmtkFixedArray_h_included_

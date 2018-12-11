@@ -33,25 +33,29 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGridFilter.h>
 #include <Base/cmtkImageOperation.h>
+#include <Base/cmtkDataGridFilter.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: region filtering.
 class ImageOperationRegionFilter
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperationRegionFilter Self;
 
   /// Types of filters supported by this class.
-  typedef enum {
-    MEDIAN,
+  typedef enum
+  {
+    MEDIAN, 
     MEAN,
     FAST_MEAN,
     VARIANCE,
@@ -62,72 +66,64 @@ class ImageOperationRegionFilter
   } OperatorEnum;
 
   /// Constructor:
-  ImageOperationRegionFilter(const Self::OperatorEnum op, const int radiusX,
-                             const int radiusY, const int radiusZ)
-      : m_Operator(op),
-        m_RadiusX(radiusX),
-        m_RadiusY(radiusY),
-        m_RadiusZ(radiusZ) {}
-
+  ImageOperationRegionFilter( const Self::OperatorEnum op, const int radiusX, const int radiusY, const int radiusZ ) 
+    : m_Operator( op ), m_RadiusX( radiusX ), m_RadiusY( radiusY ), m_RadiusZ( radiusZ ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
-
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create a new region median filter operation.
-  static void NewMedian(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::MEDIAN, arg);
+  static void NewMedian( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::MEDIAN, arg );
   }
-
+  
   /// Create a new region mean filter operation.
-  static void NewMean(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::MEAN, arg);
+  static void NewMean( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::MEAN, arg );
   }
-
+  
   /// Create a new fast region mean filter operation.
-  static void NewFastMean(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::FAST_MEAN, arg);
+  static void NewFastMean( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::FAST_MEAN, arg );
   }
-
+  
   /// Create a new region variance filter operation.
-  static void NewVariance(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::VARIANCE, arg);
+  static void NewVariance( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::VARIANCE, arg );
   }
-
+  
   /// Create a new fast region variance filter operation.
-  static void NewFastVariance(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::FAST_VARIANCE, arg);
+  static void NewFastVariance( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::FAST_VARIANCE, arg );
   }
-
+  
   /// Create a new region third moment filter operation.
-  static void NewThirdMoment(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::THIRD_MOMENT, arg);
+  static void NewThirdMoment( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::THIRD_MOMENT, arg );
   }
-
+  
   /// Create a new region standard deviation filter operation.
-  static void NewStandardDeviation(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::STANDARD_DEVIATION, arg);
+  static void NewStandardDeviation( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::STANDARD_DEVIATION, arg );
   }
-
+  
   /// Create a new region smoothness filter operation.
-  static void NewSmoothness(
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */) {
-    Self::NewGeneric(Self::SMOOTHNESS, arg);
+  static void NewSmoothness( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::SMOOTHNESS, arg );
   }
-
- private:
+  
+private:
   /// Parse region size argument and create new filter object.
-  static void NewGeneric(
-      const Self::OperatorEnum
-          op /*!< The operation to perform by the new object.*/,
-      const char *arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */);
-
+  static void NewGeneric( const Self::OperatorEnum op /*!< The operation to perform by the new object.*/, const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ );
+  
   /// The operator this object will apply to its input.
   Self::OperatorEnum m_Operator;
 
@@ -143,6 +139,6 @@ class ImageOperationRegionFilter
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationRegionFilter_h_included_
+#endif // #ifndef __cmtkImageOperationRegionFilter_h_included_

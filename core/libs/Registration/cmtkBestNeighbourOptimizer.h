@@ -37,7 +37,9 @@
 
 #include <Registration/cmtkOptimizer.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -46,15 +48,16 @@ namespace cmtk {
  * This class implements a search technique introduced by Studholme et al.
  * By modifying each parameter of the search space by a certain step up- and
  * downwards, all "neighbours" of the current parameter vector are visited. For
- * each of these, the target function (functional) is evaluated. The search
+ * each of these, the target function (functional) is evaluated. The search 
  * then continues from the parameter vector producing the maximum value. If no
- * further improvement is possible, the step size is decreased by a given
+ * further improvement is possible, the step size is decreased by a given 
  * factor until it reaches a lower bound.
  */
-class BestNeighbourOptimizer :
-    /// Inherit generic optimizer features.
-    public Optimizer {
- public:
+class BestNeighbourOptimizer : 
+  /// Inherit generic optimizer features.
+  public Optimizer 
+{
+public:
   /// This class.
   typedef BestNeighbourOptimizer Self;
 
@@ -62,21 +65,20 @@ class BestNeighbourOptimizer :
   typedef Optimizer Superclass;
 
   /** Constructor.
-   * Hand functional and callback to parent class and initialize local
+   * Hand functional and callback to parent class and initialize local 
    * variables.
    *\param stepFactor Factor by which the search step size is decreased.
    */
-  BestNeighbourOptimizer(const Self::ParameterType stepFactor = 0.5) {
-    StepFactor = stepFactor;
+  BestNeighbourOptimizer ( const Self::ParameterType stepFactor = 0.5 )
+  { 
+    StepFactor = stepFactor; 
   };
-
+ 
   /** Perform the optimization.
    */
-  virtual CallbackResult Optimize(CoordinateVector &,
-                                  const Self::ParameterType = 1,
-                                  const Self::ParameterType = 0);
+  virtual CallbackResult Optimize( CoordinateVector&, const Self::ParameterType = 1, const Self::ParameterType = 0 );
 
- private:
+private:
   /** Search step factor.
    * This variable determines the factor by which to decrease the search step
    * size if no further improvement is possible at a certain resolution.
@@ -88,6 +90,6 @@ class BestNeighbourOptimizer :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkBestNeighbourOptimizer_h_included_
+#endif // #ifndef __cmtkBestNeighbourOptimizer_h_included_

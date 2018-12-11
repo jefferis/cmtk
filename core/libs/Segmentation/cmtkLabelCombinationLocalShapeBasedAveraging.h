@@ -37,7 +37,9 @@
 
 #include <Segmentation/cmtkLabelCombinationLocalVoting.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
@@ -45,8 +47,9 @@ namespace cmtk {
 /** Segmentation combination by locally-weighted shape-based averaging.
  */
 class LabelCombinationLocalShapeBasedAveraging
-    : public LabelCombinationLocalVoting {
- public:
+  : public LabelCombinationLocalVoting
+{
+public:
   /// This class.
   typedef LabelCombinationLocalShapeBasedAveraging Self;
 
@@ -60,42 +63,35 @@ class LabelCombinationLocalShapeBasedAveraging
   typedef LabelCombinationLocalVoting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalShapeBasedAveraging(
-      const UniformVolume::SmartConstPtr targetImage)
-      : Superclass(targetImage),
-        m_MaxLabelValue(0),
-        m_DetectLocalOutliers(false) {}
+  LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ), m_MaxLabelValue( 0 ), m_DetectLocalOutliers( false ) {}
 
-  /// Set flag to detect local outliers at each pixel in the co-registered
-  /// distance maps.
-  void SetDetectLocalOutliers(const bool detectOutliers = true) {
+  /// Set flag to detect local outliers at each pixel in the co-registered distance maps.
+  void SetDetectLocalOutliers( const bool detectOutliers = true )
+  {
     this->m_DetectLocalOutliers = detectOutliers;
   }
-
+  
   /// Get resulting combined segmentation.
-  virtual TypedArray::SmartPtr GetResult() const;
+  virtual TypedArray::SmartPtr GetResult() const;  
 
- private:
+private:
   /** Maximum label value.
-   * If this is zero, then the class will determine the largest value that is
-   * present in the input label maps.
+   * If this is zero, then the class will determine the largest value that is present in the input label maps.
    */
   int m_MaxLabelValue;
-
+  
   /// Flag for outlier detection.
   bool m_DetectLocalOutliers;
 
   /// Compute result for a region.
-  void ComputeResultForRegion(
-      TypedArray &result /*!< Evolving result label map */,
-      std::vector<float> &resultDistance /*!< Evolving result distance map */,
-      const int label /*!< Current label */,
-      const Self::TargetRegionType &region /*!< Image region to work on */,
-      std::vector<UniformVolume::SmartConstPtr>
-          dmaps /*!< Vector of distance maps per atlas for the current label */)
-      const;
+  void ComputeResultForRegion( TypedArray& result /*!< Evolving result label map */, 
+			       std::vector<float>& resultDistance /*!< Evolving result distance map */, 
+			       const int label /*!< Current label */,
+			       const Self::TargetRegionType& region /*!< Image region to work on */, 
+			       std::vector<UniformVolume::SmartConstPtr> dmaps /*!< Vector of distance maps per atlas for the current label */ ) const;
+  
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
+#endif // #ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_

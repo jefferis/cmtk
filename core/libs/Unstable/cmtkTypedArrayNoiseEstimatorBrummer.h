@@ -30,20 +30,24 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkHistogram.h>
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+#include <Base/cmtkHistogram.h>
 
-namespace cmtk {
+namespace 
+cmtk
+{
 
 /** Estimate noise level in data stored in a TypedArray.
  * Estimate Rician noise variance using Brummer's method.
  *\author Mike Hasak
  */
-class TypedArrayNoiseEstimatorBrummer :
-    /// Inherit interface from naive estimator class.
-    protected TypedArrayNoiseEstimatorNaiveGaussian {
- public:
+class
+TypedArrayNoiseEstimatorBrummer :
+  /// Inherit interface from naive estimator class.
+  protected TypedArrayNoiseEstimatorNaiveGaussian
+{
+public:
   /// This class.
   typedef TypedArrayNoiseEstimatorBrummer Self;
 
@@ -51,39 +55,31 @@ class TypedArrayNoiseEstimatorBrummer :
   typedef TypedArrayNoiseEstimatorNaiveGaussian Superclass;
 
   /// Constructor.
-  TypedArrayNoiseEstimatorBrummer(const TypedArray *data,
-                                  const size_t histogramBins = 255);
-
- protected:
+  TypedArrayNoiseEstimatorBrummer( const TypedArray* data, const size_t histogramBins = 255 );
+  
+protected:
   /// Default constructor; should not be invoked by user code.
   TypedArrayNoiseEstimatorBrummer() {}
 
   /** Compute bias in an ML noise estimate.
-   *  Eq. 26 from Sijbers et al, 2007
+   *  Eq. 26 from Sijbers et al, 2007 
    */
-  static double SijbersBiasHat(
-      const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat,
-      const int numBinsToUse);
+  static double SijbersBiasHat ( const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat, const int numBinsToUse );
 
   /** Compute the log-likelihood for the ML noise estimate.
-   *  Eq. 26 from Sijbers et al, 2007
+   *  Eq. 26 from Sijbers et al, 2007 
    */
-  static double SijbersLogLikelihood(
-      const Histogram<unsigned int>::SmartPtr histogram, const double sigma,
-      const int numBinsToUse);
+  static double SijbersLogLikelihood ( const Histogram<unsigned int>::SmartPtr histogram, const double sigma, const int numBinsToUse );
 
   /** Compute variance of an ML noise estimate.
-   *  Eq. 21 from Sijbers et al, 2007
+   *  Eq. 21 from Sijbers et al, 2007 
    */
-  static double SijbersVarHat(const Histogram<unsigned int>::SmartPtr histogram,
-                              const double sigmaHat, const int numBinsToUse);
+  static double SijbersVarHat ( const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat, const int numBinsToUse );
 
   /** Figure out how many bins to use in ML noise estimate.
    *  Section 2.3.1 from Sijbers et al, 2007
    */
-  static double EstimateNumBinsToUse(
-      const TypedArray *data, const Histogram<unsigned int>::SmartPtr histogram,
-      const double sigmaHat);
+  static double EstimateNumBinsToUse ( const TypedArray* data, const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat );
 };
 
-}  // namespace cmtk
+} // namespace cmtk

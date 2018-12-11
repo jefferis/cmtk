@@ -35,26 +35,26 @@
 
 #include <Base/cmtkSplineWarpXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** Template specialization for groupwise nonrigid registration functionals.
  * This class is the specialization of the generic transformation-dependent
- * functional class template, specialized for nonrigid (B-spline FFD)
- * transformations.
+ * functional class template, specialized for nonrigid (B-spline FFD) transformations.
  *
  * As such, this class provides functionality such as: initialization of
- * FFDs from affine transformations, grid refinement, and deformation
- * constraints.
+ * FFDs from affine transformations, grid refinement, and deformation constraints.
  */
-template <>
-class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
-    /** Inherit from generic groupwise functional. */
-    public GroupwiseRegistrationFunctionalXformTemplateBase<SplineWarpXform> {
- public:
+template<>
+class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> : 
+  /** Inherit from generic groupwise functional. */
+  public GroupwiseRegistrationFunctionalXformTemplateBase<SplineWarpXform>
+{
+public:
   /// Type of this class.
-  typedef GroupwiseRegistrationFunctionalXformTemplateBase<SplineWarpXform>
-      Superclass;
-
+  typedef GroupwiseRegistrationFunctionalXformTemplateBase<SplineWarpXform> Superclass;
+  
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> Self;
 
@@ -65,68 +65,65 @@ class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
   GroupwiseRegistrationFunctionalXformTemplate();
 
   /// Destructor.
-  virtual ~GroupwiseRegistrationFunctionalXformTemplate(){};
+  virtual ~GroupwiseRegistrationFunctionalXformTemplate() {};
 
   /// Initialize nonrigid from affine transformations.
-  virtual void
-  InitializeXformsFromAffine(const Types::Coordinate
-                                 gridSpacing /*!< Control point grid spacing in
-                                                real-world units*/
-                             ,
-                             std::vector<AffineXform::SmartPtr> initialAffineXformsVector /*!< Vector of initial affine coordinate transformations*/, const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/);
-
+  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing /*!< Control point grid spacing in real-world units*/,
+					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector /*!< Vector of initial affine coordinate transformations*/,
+					   const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/ );
+  
   /** Initialize spline warp transformations.
    */
   virtual void InitializeXforms( const Types::Coordinate gridSpacing /*!< Control point grid spacing in real-world units*/,
 				 const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/ )
   {
-    this->InitializeXformsFromAffine(
-        gridSpacing, this->m_InitialAffineXformsVector, exactSpacing);
+    this->InitializeXformsFromAffine( gridSpacing, this->m_InitialAffineXformsVector, exactSpacing );
   }
-
+  
   /// Refine transformation control point grids.
   virtual void RefineTransformationGrids();
 
-  /// Set flag for exclusion of affine components in unbiased groupwise
-  /// deformation.
-  void SetForceZeroSumNoAffine(const bool noaffine = true) {
+  /// Set flag for exclusion of affine components in unbiased groupwise deformation.
+  void SetForceZeroSumNoAffine( const bool noaffine = true )
+  {
     this->m_ForceZeroSumNoAffine = noaffine;
   }
 
   /// Set partial gradient mode.
-  void SetPartialGradientMode(const bool partialGradientMode = false,
-                              const float partialGradientThreshold = 0.0) {
+  void SetPartialGradientMode( const bool partialGradientMode = false, const float partialGradientThreshold = 0.0 )
+  {
     this->m_PartialGradientMode = partialGradientMode;
     this->m_PartialGradientThreshold = partialGradientThreshold;
   }
 
   /// Set deactivate uninformative control points mode.
-  void SetDeactivateUninformativeMode(const bool dum = true) {
+  void SetDeactivateUninformativeMode( const bool dum = true )
+  {
     this->m_DeactivateUninformativeMode = dum;
   }
 
   /** Set range of currently active transformations.
    * Call inherited function, then update local step size array.
    */
-  virtual void SetActiveXformsFromTo(const size_t from, const size_t to) {
-    this->Superclass::SetActiveXformsFromTo(from, to);
+  virtual void SetActiveXformsFromTo( const size_t from, const size_t to )
+  {
+    this->Superclass::SetActiveXformsFromTo( from, to );
     this->UpdateParamStepArray();
   }
 
   /// Call inherited function and allocate local storage.
-  virtual void SetTemplateGrid(UniformVolume::SmartPtr &templateGrid,
-                               const int downsample = 1,
-                               const bool useTemplateData = false);
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1, const bool useTemplateData = false );
 
   /// Set mask for explicitly disabling control points.
-  virtual void SetDisableControlPointsMask(UniformVolume::SmartConstPtr mask) {
+  virtual void SetDisableControlPointsMask( UniformVolume::SmartConstPtr mask )
+  {
     this->m_DisableControlPointsMask = mask;
   }
-
- protected:
+  
+protected:
   /// Maximum number of pixels in any VOI.
   size_t m_MaximumNumberOfPixelsVOI;
-
+  
   /// Maximum number of pixels per line in any VOI.
   size_t m_MaximumNumberOfPixelsPerLineVOI;
 
@@ -135,7 +132,7 @@ class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
 
   /// Update deactivated control points.
   virtual void UpdateActiveControlPoints();
-
+  
   /** Interpolate given moving image to template.
    * This function overrides the interpolation function provided by the base
    * class. It makes use of the fact that affine transformations preserve
@@ -146,26 +143,25 @@ class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage(const size_t idx, byte *const destination);
+  virtual void InterpolateImage( const size_t idx, byte* const destination );
 
   /** Enforce gradient to be zero-sum over all images.
-   * This function essentially calls the inherited function of the same name.
-   * However, if this->m_ForceZeroSumNoAffine is true, then the initial affine
-   * transformations of each warp are eliminated from the gradient prior to
-   * calling the inherited function, and they are re-applied afterwards. This
-   * way, the unbiased property of the transformation set is made invariant
-   * under the affine transformation components.
+   * This function essentially calls the inherited function of the same name. However,
+   * if this->m_ForceZeroSumNoAffine is true, then the initial affine transformations
+   * of each warp are eliminated from the gradient prior to calling the inherited
+   * function, and they are re-applied afterwards. This way, the unbiased property of
+   * the transformation set is made invariant under the affine transformation components.
    */
-  virtual void ForceZeroSumGradient(CoordinateVector &g) const;
+  virtual void ForceZeroSumGradient( CoordinateVector& g ) const;
 
   /** "Wiggle" functional a little, i.e., by updating probabilistic sampling.
-   *\return True if the functional actually changed slightly, false if no
-   *"wiggle" has actually taken place. This signals the optimizer whether it's
-   *worth trying the current stage again (true) or not (false).
+   *\return True if the functional actually changed slightly, false if no "wiggle"
+   * has actually taken place. This signals the optimizer whether it's worth trying
+   * the current stage again (true) or not (false).
    */
   bool Wiggle();
 
- protected:
+protected:
   /// Flag for correction of affine components in unbiased warp.
   bool m_ForceZeroSumNoAffine;
 
@@ -184,8 +180,7 @@ class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
    */
   bool m_PartialGradientMode;
 
-  /// Mask volume for explicitly disabling control points affecting mask
-  /// foreground.
+  /// Mask volume for explicitly disabling control points affecting mask foreground.
   UniformVolume::SmartConstPtr m_DisableControlPointsMask;
 
   /// Initial affine transformations.
@@ -215,45 +210,33 @@ class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> :
   /// Number of deactivated control points.
   size_t m_NumberOfActiveControlPoints;
 
-  /// Update local information by control point - to be implemented by derived
-  /// classes if needed.
+  /// Update local information by control point - to be implemented by derived classes if needed.
   virtual void UpdateInformationByControlPoint() {}
 
- private:
+private:
   /// Thread function parameters for image interpolation.
-  class InterpolateImageThreadParameters :
-      /// Inherit from generic thread parameters.
-      public ThreadParameters<Self> {
-   public:
+  class InterpolateImageThreadParameters : 
+    /// Inherit from generic thread parameters.
+    public ThreadParameters<Self>
+  {
+  public:
     /// Index of the image to be interpolated.
     size_t m_Idx;
 
     /// Pointer to storage that will hold the reformatted pixel data.
-    byte *m_Destination;
+    byte* m_Destination;
   };
 
   /// Image interpolation thread function.
-  static void InterpolateImageThread(void *args, const size_t taskIdx,
-                                     const size_t taskCnt, const size_t,
-                                     const size_t);
+  static void InterpolateImageThread( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
-  friend ClassStreamOutput &operator<<(
-      ClassStreamOutput &stream,
-      const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
-          &func);
-  friend ClassStreamInput &operator>>(
-      ClassStreamInput &stream,
-      GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> &func);
+  friend ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
+  friend ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
 };
 
-ClassStreamOutput &operator<<(
-    ClassStreamOutput &stream,
-    const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> &func);
-ClassStreamInput &operator>>(
-    ClassStreamInput &stream,
-    GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> &func);
+ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
+ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef
-        // __cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp_h_included_
+#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp_h_included_

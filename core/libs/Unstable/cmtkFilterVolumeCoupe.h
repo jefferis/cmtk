@@ -35,43 +35,45 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkUnits.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Class for filtering volume images.
-class FilterVolumeCoupe {
- public:
+class FilterVolumeCoupe
+{
+public:
   /** Apply Coupe denoising filter.
    *\param volume Input 3D image.
    *\param beta Smoothing adjustment parameter
-   *\param windowRadius Distance from center voxel to outer edge of window
-   *\return A newly allocated TypedArray object that can be used, for
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray::SmartPtr CoupeFilter(const UniformVolume *volume,
-                                          const int windowRadius,
-                                          const float beta = 0.5);
+  static TypedArray::SmartPtr CoupeFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius,
+    const float beta = 0.5 );
 
- private:
+private:
   /** Return the mean value of a vector of Types::DataItems.
-   *\param items Block of Types::DataItems.
+   *\param items Block of Types::DataItems. 
    */
-  static Types::DataItem Mean(TypedArray::SmartPtr items, const int numItems);
+  static Types::DataItem Mean( TypedArray::SmartPtr items, const int numItems );
 
   /** Return the variance of a vector of Types::DataItems.
    *\param items Block of Types::DataItems.
    *\param mean The (pre-computed) mean value of the items vector.
    */
-  static Types::DataItem Variance(TypedArray::SmartPtr items,
-                                  const int numItems,
-                                  const Types::DataItem mean);
+  static Types::DataItem Variance( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean );
 
   /** Fill an array with the neighborhood centered around a given voxel.
    * Note that this routine will only include existing
@@ -84,11 +86,9 @@ class FilterVolumeCoupe {
    *\param y Y-coordinate of block center.
    *\param z Z-coordinate of block center.
    */
-  static void GetNeighborhood(TypedArray::SmartPtr neighborhood,
-                              const int radius, const TypedArray *data,
-                              const int *dims, const int x, const int y,
-                              const int z);
-
+  static void GetNeighborhood( TypedArray::SmartPtr neighborhood, const int radius, const TypedArray* data, 
+			       const int* dims, const int x, const int y, const int z );
+  
   /** Fill a CoupeBlock with the block centered around a given voxel.
    * Note that this routine will only include existing
    * voxels.  So asking for a block near the edge
@@ -100,26 +100,24 @@ class FilterVolumeCoupe {
    *\param y Y-coordinate of block center.
    *\param z Z-coordinate of block center.
    */
-  static void GetCoupeBlock(TypedArray::SmartPtr block, const TypedArray *data,
-                            const int *dims, const int x, const int y,
-                            const int z);
+  static void GetCoupeBlock( TypedArray::SmartPtr block, const TypedArray* data, const int* dims, const int x, const int y, const int z );
 
   /** Compute the NL-weighting factor between two blocks.
    *\param smoothingParam Smoothing parameter for the weighting function
    *\param centerBlock The block to be restored using NL-means
    *\param outerBlock A block to contribute to the restoration of centerBlock
    */
-  static double ComputeCoupeWeight(const Types::DataItem smoothingParam,
-                                   TypedArray::SmartPtr centerBlock,
-                                   TypedArray::SmartPtr outerBlock);
+  static double ComputeCoupeWeight
+  ( const Types::DataItem smoothingParam,
+    TypedArray::SmartPtr centerBlock, 
+    TypedArray::SmartPtr outerBlock );
 
   /** Add two blocks, in-place on the first block.
    *\param v1 First vector addend, becomes the sum
    *\param v2 Second vector addend
    *\param blockSize Size of the block.
    */
-  static void BlockAddInPlace(TypedArray::SmartPtr v1, TypedArray::SmartPtr v2,
-                              const int blockSize);
+  static void BlockAddInPlace( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
   /** Subtract two blocks.
    *\param diff Block to contain the difference between v1 and v2
@@ -127,8 +125,7 @@ class FilterVolumeCoupe {
    *\param v2 Second block subtrahend
    *\param blockSize Size of the block.
    */
-  static void BlockSubtract(TypedArray::SmartPtr diff, TypedArray::SmartPtr v1,
-                            TypedArray::SmartPtr v2, const int blockSize);
+  static void BlockSubtract( TypedArray::SmartPtr diff, TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
   /** Return the product of the input vector multiplied by a constant float.
    *\param prod An block to store the product
@@ -136,16 +133,12 @@ class FilterVolumeCoupe {
    *\param mult The constant to multiply by
    *\param blockSize Size of the block.
    */
-  static void BlockConstMult(TypedArray::SmartPtr prod,
-                             TypedArray::SmartPtr items,
-                             const Types::DataItem mult, const int blockSize);
-
+  static void BlockConstMult( TypedArray::SmartPtr prod, TypedArray::SmartPtr items, const Types::DataItem mult, const int blockSize );
+  
   /** Return the squared Euclidean distance between two blocks.
    */
-  static double BlockSquaredDistance(TypedArray::SmartPtr centerBlock,
-                                     TypedArray::SmartPtr outerBlock,
-                                     const int blockSize);
-
+  static double BlockSquaredDistance( TypedArray::SmartPtr centerBlock, TypedArray::SmartPtr outerBlock, const int blockSize );
+ 
   /** Process a window for NL-means accumulation.
    *\param NL Block in which to put the NL computation
    *\param blockLocations UNDOCUMENTED
@@ -155,25 +148,26 @@ class FilterVolumeCoupe {
    *\param x X-coordinate of volume center.
    *\param y Y-coordinate of volume center.
    *\param z Z-coordinate of volume center.
-   *\param windowRadius Distance from center voxel to outer edge of window
+   *\param windowRadius Distance from center voxel to outer edge of window 
    *\param beta Smoothing adjustment parameter
    *\param localMeansMap Mean intensity values at each block
    *\param localVariancesMap Variance of the intensities of the center block
    *\param centerBlock The block to be restored using NL-means
    */
-  static void ComputeNLWithinWindow(TypedArray::SmartPtr NL,
-                                    const TypedArray *blockLocations,
-                                    const TypedArray *data, const int *dims,
-                                    const Types::DataItem smoothingParam,
-                                    const int x, const int y, const int z,
-                                    const int windowRadius, const float beta,
-                                    const TypedArray *localMeansMap,
-                                    const TypedArray *localVariancesMap,
-                                    TypedArray::SmartPtr centerBlock);
+   static void ComputeNLWithinWindow
+  ( TypedArray::SmartPtr NL,
+    const TypedArray* blockLocations,
+    const TypedArray* data, const int* dims, const Types::DataItem smoothingParam,
+    const int x, const int y, const int z, 
+    const int windowRadius, 
+    const float beta, 
+    const TypedArray* localMeansMap, 
+    const TypedArray* localVariancesMap, 
+    TypedArray::SmartPtr centerBlock );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkFilterVolumeCoupe_h_included_
+#endif // #ifndef __cmtkFilterVolumeCoupe_h_included_

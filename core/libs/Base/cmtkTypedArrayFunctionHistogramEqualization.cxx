@@ -32,26 +32,25 @@
 
 #include "cmtkTypedArrayFunctionHistogramEqualization.h"
 
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 
-cmtk::TypedArrayFunctionHistogramEqualization ::
-    TypedArrayFunctionHistogramEqualization(
-        const TypedArray &variableArray, const size_t numberOfHistogramBins) {
-  this->m_Histogram = Histogram<unsigned int>::SmartPtr(
-      variableArray.GetHistogram(numberOfHistogramBins));
-  (*this->m_Histogram)[0] = 0;  // this effectively stretches the distribution
+cmtk::TypedArrayFunctionHistogramEqualization
+::TypedArrayFunctionHistogramEqualization
+( const TypedArray& variableArray, const size_t numberOfHistogramBins )
+{  
+  this->m_Histogram = Histogram<unsigned int>::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
+  (*this->m_Histogram)[0] = 0; // this effectively stretches the distribution
   this->m_Histogram->ConvertToCumulative();
 
   const Types::DataItemRange range = variableArray.GetRange();
   this->m_MinValue = range.m_LowerBound;
-  this->m_ScaleFactor =
-      1.0 * range.Width() / (*this->m_Histogram)[numberOfHistogramBins - 1];
+  this->m_ScaleFactor = 1.0 * range.Width() / (*this->m_Histogram)[numberOfHistogramBins-1];
 }
 
-cmtk::Types::DataItem cmtk::TypedArrayFunctionHistogramEqualization ::
-operator()(const cmtk::Types::DataItem valueIn) const {
-  return this->m_MinValue +
-         this->m_ScaleFactor *
-             (*this->m_Histogram)[this->m_Histogram->ValueToBin(valueIn)];
+cmtk::Types::DataItem 
+cmtk::TypedArrayFunctionHistogramEqualization
+::operator()( const cmtk::Types::DataItem valueIn ) const
+{
+  return this->m_MinValue + this->m_ScaleFactor * (*this->m_Histogram)[ this->m_Histogram->ValueToBin( valueIn ) ];
 }

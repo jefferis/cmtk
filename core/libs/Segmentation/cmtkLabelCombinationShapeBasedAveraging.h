@@ -37,23 +37,25 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-#include <System/cmtkSmartConstPtr.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Label image combination by Shape Based Averaging.
- *\see T. Rohlfing and C. R. Maurer, Jr., "Shape-based averaging," IEEE
- *Transactions on Image Processing, vol. 16, no. 1, pp. 153-161, 2007.
- *http://dx.doi.org/10.1109/TIP.2006.884936
+ *\see T. Rohlfing and C. R. Maurer, Jr., "Shape-based averaging," IEEE Transactions on Image Processing, vol. 16, no. 1, pp. 153-161, 2007. http://dx.doi.org/10.1109/TIP.2006.884936
  */
-class LabelCombinationShapeBasedAveraging {
- public:
+class
+LabelCombinationShapeBasedAveraging
+{
+public:
   /// This class.
   typedef LabelCombinationShapeBasedAveraging Self;
 
@@ -70,24 +72,18 @@ class LabelCombinationShapeBasedAveraging {
   typedef float DistanceMapRealType;
 
   /// Constructor: compute label combination.
-  LabelCombinationShapeBasedAveraging(const std::vector<
-                                          UniformVolume::SmartConstPtr>
-                                          &labelImages /*!< Input label images.
-                                                        */
-                                      ,
-                                      const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */);
+  LabelCombinationShapeBasedAveraging( const std::vector<UniformVolume::SmartConstPtr>& labelImages /*!< Input label images. */, 
+				       const Self::LabelIndexType numberOfLabels = 0 /*!< Number of labels. If zero, the highest label index is determined from the data */ );
 
   /// Get result.
-  TypedArray::SmartPtr GetResult(
-      const bool detectOutliers =
-          false /*!< Flag for local outlier detection.*/) const;
+  TypedArray::SmartPtr GetResult( const bool detectOutliers = false /*!< Flag for local outlier detection.*/ ) const;
 
- protected:
+protected:
   /// Number of labels.
   Self::LabelIndexType m_NumberOfLabels;
 
   /// Vector of label images.
-  const std::vector<UniformVolume::SmartConstPtr> &m_LabelImages;
+  const std::vector<UniformVolume::SmartConstPtr>& m_LabelImages;
 
   /// Number of pixels per image.
   size_t m_NumberOfPixels;
@@ -95,22 +91,17 @@ class LabelCombinationShapeBasedAveraging {
   /// Flags for which labels actually exist in the data.
   std::vector<bool> m_LabelFlags;
 
- private:
+private:
   /// Handle one label and include outliers.
-  void ProcessLabelIncludeOutliers(
-      const Self::LabelIndexType label /*!< Current label */,
-      std::vector<Self::DistanceMapRealType>
-          &labelDistanceMap /*!< Distance map array for the current label */)
-      const;
+  void ProcessLabelIncludeOutliers( const Self::LabelIndexType label /*!< Current label */,
+				    std::vector<Self::DistanceMapRealType>& labelDistanceMap /*!< Distance map array for the current label */ ) const;
 
   /// Handle one label and exclude outliers.
-  void ProcessLabelExcludeOutliers(
-      const Self::LabelIndexType label /*!< Current label */,
-      std::vector<Self::DistanceMapRealType>
-          &labelDistanceMap /*!< Distance map array for the current label */)
-      const;
+  void ProcessLabelExcludeOutliers( const Self::LabelIndexType label /*!< Current label */,
+				    std::vector<Self::DistanceMapRealType>& labelDistanceMap /*!< Distance map array for the current label */ ) const;
+
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLabelCombinationShapeBasedAveraging_h_included_
+#endif // #ifndef __cmtkLabelCombinationShapeBasedAveraging_h_included_

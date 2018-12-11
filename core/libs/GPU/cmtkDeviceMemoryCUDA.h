@@ -39,17 +39,19 @@
 
 #include <new>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class for raw memory allocated on a GPU device through
-/// CUDA.
+/// Resource managing class for raw memory allocated on a GPU device through CUDA.
 class DeviceMemoryCUDA
     /// Make sure this is never copied.
-    : private CannotBeCopied {
- public:
+  : private CannotBeCopied
+{
+public:
   /// This class.
   typedef DeviceMemoryCUDA Self;
 
@@ -61,42 +63,43 @@ class DeviceMemoryCUDA
 
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
-
+  
   /// Constructor: allocate memory through CUDA.
-  DeviceMemoryCUDA(
-      const size_t nBytes /*!< Number of bytes to allocate */,
-      const size_t padToMultiple =
-          1 /*!< Pad to allocate nearest multiple of this many bytes. */);
+  DeviceMemoryCUDA( const size_t nBytes /*!< Number of bytes to allocate */, const size_t padToMultiple = 1 /*!< Pad to allocate nearest multiple of this many bytes. */ );
 
   /// Destructor: free memory through CUDA.
   virtual ~DeviceMemoryCUDA();
 
   /// Get number of bytes allocated on device.
-  size_t GetNumberOfBytesAllocated() { return this->m_NumberOfBytesAllocated; }
-
- protected:
-  /// Create new object and allocate memory.
-  Self::SmartPtr Alloc(const size_t nBytes, const size_t padToMultiple = 1) {
-    return Self::SmartPtr(new Self(nBytes, padToMultiple));
+  size_t GetNumberOfBytesAllocated()
+  {
+    return this->m_NumberOfBytesAllocated;
   }
 
+protected:
+  /// Create new object and allocate memory.
+  Self::SmartPtr Alloc( const size_t nBytes, const size_t padToMultiple = 1 )
+  {
+    return Self::SmartPtr( new Self( nBytes, padToMultiple ) );
+  }
+  
   /// Copy from host to device memory.
-  void CopyToDevice(const void *const srcPtrHost, const size_t nBytes);
-
+  void CopyToDevice( const void *const srcPtrHost, const size_t nBytes );
+  
   /// Copy from device to host memory.
-  void CopyToHost(void *const dstPtrHost, const size_t nBytes) const;
-
+  void CopyToHost( void *const dstPtrHost, const size_t nBytes ) const;
+  
   /// Copy between two device memory locations.
-  void CopyOnDevice(const Self &srcPtrDevice, const size_t nBytes);
-
+  void CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes );
+  
   /// Copy between two device memory locations.
-  void Memset(const int value, const size_t nBytes);
-
+  void Memset( const int value, const size_t nBytes );
+  
   /** Raw pointer to allocated device memory.
    * Note that this is a device memory space pointer, which is not valid in
    * host memory and can, therefore, not be dereferenced in host code.
    */
-  void *m_PointerDevice;
+  void* m_PointerDevice;
 
   /// Total number of bytes allocated on device.
   size_t m_NumberOfBytesAllocated;
@@ -104,6 +107,6 @@ class DeviceMemoryCUDA
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkDeviceMemoryCUDA_h_included_
+#endif // #ifndef __cmtkDeviceMemoryCUDA_h_included_

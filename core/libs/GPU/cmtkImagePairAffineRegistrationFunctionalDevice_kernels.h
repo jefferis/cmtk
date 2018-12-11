@@ -34,18 +34,18 @@
 /** \addtogroup GPU */
 //@{
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Evaluate Mean Squared Difference for symmetry plane computation on GPU.
-float ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD(
-    const int *fixedDims3 /*!< Fixed volume dimensions */,
-    void *fixedArray /*!< Device array with fixed volume data */,
-    const int *movingDims3 /*!< Movingvolume dimensions */,
-    void *movingArray /*!< Device array with moving volume data */, const float matrix[4][4] /*!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */);
+float 
+ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD( const int* fixedDims3 /*!< Fixed volume dimensions */, void* fixedArray /*!< Device array with fixed volume data */, 
+							const int* movingDims3 /*!< Movingvolume dimensions */, void* movingArray /*!< Device array with moving volume data */, 
+							const float matrix[4][4] /*!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */ );
 
-}  // namespace cmtk
+} // namespace cmtk
 
 //@}
 
-#endif  // #ifndef
-        // __cmtkImagePairAffineRegistrationFunctionalDevice_kernels_h_included_
+#endif // #ifndef __cmtkImagePairAffineRegistrationFunctionalDevice_kernels_h_included_

@@ -30,82 +30,74 @@
 
 #include "cmtkFitPolynomialToLandmarks.h"
 
-cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks(
-    const LandmarkPairList &landmarkPairs, const byte degree) {
+cmtk::FitPolynomialToLandmarks::FitPolynomialToLandmarks( const LandmarkPairList& landmarkPairs, const byte degree )
+{
   // first, get the centroids in "from" and "to" space
-  PolynomialXform::SpaceVectorType cFrom(0.0);
-  PolynomialXform::SpaceVectorType cTo(0.0);
-
+  PolynomialXform::SpaceVectorType cFrom( 0.0 );
+  PolynomialXform::SpaceVectorType cTo( 0.0 );
+  
   size_t nLandmarks = 0;
-  for (LandmarkPairList::const_iterator it = landmarkPairs.begin();
-       it != landmarkPairs.end(); ++it) {
+  for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it )
+    {
     cFrom += it->m_Location;
     cTo += it->m_TargetLocation;
     ++nLandmarks;
-  }
-
+    }
+  
   cFrom /= nLandmarks;
   cTo /= nLandmarks;
-
+  
   // put everything together
-  this->m_PolynomialXform =
-      PolynomialXform::SmartPtr(new PolynomialXform(degree));
-  this->m_PolynomialXform->SetCenter(cFrom);
+  this->m_PolynomialXform = PolynomialXform::SmartPtr( new PolynomialXform( degree ) );
+  this->m_PolynomialXform->SetCenter( cFrom );
 
   // Fit incrementally - start with lower degrees.
-  // For degree = 0 we actually get relative translation of the centers of mass
-  // of the landmarks in the two spaces
-  for (byte fitDegree = 0; fitDegree <= degree; ++fitDegree) {
+  // For degree = 0 we actually get relative translation of the centers of mass of the landmarks in the two spaces
+  for ( byte fitDegree = 0; fitDegree <= degree; ++fitDegree )
+    {
     // what is the first parameter at the current degree?
-    const size_t firstParameter =
-        PolynomialHelper::GetNumberOfMonomials(fitDegree - 1);
+    const size_t firstParameter = PolynomialHelper::GetNumberOfMonomials( fitDegree-1 );
 
     // how many parameters in addition to prior degree?
-    const size_t nParameters =
-        PolynomialHelper::GetNumberOfMonomials(fitDegree) - firstParameter;
-
+    const size_t nParameters = PolynomialHelper::GetNumberOfMonomials( fitDegree ) - firstParameter;
+    
     // set up matrix for SVD-based linear regression
-    Matrix2D<double> U(nLandmarks, nParameters);
-
-    std::vector<PolynomialXform::SpaceVectorType> residuals(nLandmarks);
+    Matrix2D<double> U( nLandmarks, nParameters ); 
+    
+    std::vector<PolynomialXform::SpaceVectorType> residuals( nLandmarks );
     size_t lmIdx = 0;
-    for (LandmarkPairList::const_iterator it = landmarkPairs.begin();
-         it != landmarkPairs.end(); ++it, ++lmIdx) {
+    for ( LandmarkPairList::const_iterator it = landmarkPairs.begin(); it != landmarkPairs.end(); ++it, ++lmIdx )
+      {
       // current residual for this landmark
-      residuals[lmIdx] =
-          it->m_TargetLocation - this->m_PolynomialXform->Apply(it->m_Location);
-
+      residuals[lmIdx] = it->m_TargetLocation - this->m_PolynomialXform->Apply( it->m_Location );
+      
       // monomials for this landmark and each of the currently fitted parameters
-      for (size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx) {
-        U[lmIdx][paramIdx] = this->m_PolynomialXform->GetMonomialAt(
-            firstParameter + paramIdx, it->m_Location);
+      for ( size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx )
+	{
+	U[lmIdx][paramIdx] = this->m_PolynomialXform->GetMonomialAt( firstParameter+paramIdx, it->m_Location );
+	}
       }
-    }
 
     // do SVD of the monomial matrix
-    Matrix2D<double> V(nParameters, nParameters);
-    std::vector<double> W(nParameters);
-    MathUtil::SVD(U, W, V);
-
-    // for each dimension separately, use the SVD to get parameters that
-    // minimize the residuals (keeping in mind that poly xform is additive,
-    // i.e., adding monomials makes an additive contribution to existing
-    // transformation)
+    Matrix2D<double> V( nParameters, nParameters );
+    std::vector<double> W( nParameters );
+    MathUtil::SVD( U, W, V );
+    
+    // for each dimension separately, use the SVD to get parameters that minimize the residuals (keeping in mind that poly xform is additive, i.e., adding monomials makes an additive contribution to existing transformation)
     std::vector<double> params;
-    for (int dim = 0; dim < 3; ++dim) {
+    for ( int dim = 0; dim < 3; ++dim )
+      {
       // first, extract residuals for current spatial dimension, dim
-      std::vector<double> dimResidual(nLandmarks);
-      for (size_t lmIdx = 0; lmIdx < nLandmarks; ++lmIdx)
-        dimResidual[lmIdx] = residuals[lmIdx][dim];
+      std::vector<double> dimResidual( nLandmarks );
+      for ( size_t lmIdx = 0; lmIdx < nLandmarks; ++lmIdx )
+	dimResidual[lmIdx] = residuals[lmIdx][dim];
 
-      // now apply the previously computed SVD to get coefficients for the
-      // additional monomials at this level
-      MathUtil::SVDLinearRegression(U, W, V, dimResidual, params);
-      for (size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx) {
-        this->m_PolynomialXform
-            ->m_Parameters[3 * (firstParameter + paramIdx) + dim] =
-            params[paramIdx];
+      // now apply the previously computed SVD to get coefficients for the additional monomials at this level
+      MathUtil::SVDLinearRegression( U, W, V, dimResidual, params );
+      for ( size_t paramIdx = 0; paramIdx < nParameters; ++paramIdx )
+	{
+	this->m_PolynomialXform->m_Parameters[3*(firstParameter+paramIdx) + dim] = params[paramIdx];
+	}
       }
     }
-  }
 }

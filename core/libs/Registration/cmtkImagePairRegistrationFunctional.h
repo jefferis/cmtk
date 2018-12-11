@@ -35,13 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
-#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkTypes.h>
-#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkFunctional.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkException.h>
 #include <System/cmtkLockingPtr.h>
@@ -50,7 +50,9 @@
 
 #include <cassert>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -61,16 +63,18 @@ namespace cmtk {
  * any template parameters introduced later in the inheritance hierarchy. It
  * should therefore help avoiding unnecessary code duplication.
  */
-class ImagePairRegistrationFunctional : public Functional,
-                                        private CannotBeCopied {
- public:
+class ImagePairRegistrationFunctional :
+    public Functional, 
+    private CannotBeCopied
+{
+public:
   /// This class.
   typedef ImagePairRegistrationFunctional Self;
 
   /// Superclass.
   typedef Functional Superclass;
 
- protected:
+protected:
   /// Pointer to the reference grid.
   UniformVolume::SmartConstPtr m_ReferenceGrid;
 
@@ -87,23 +91,23 @@ class ImagePairRegistrationFunctional : public Functional,
   DataGrid::RegionType m_ReferenceCropRegion;
 
   /// Optional list of matched landmarks.
-  cmtkGetSetMacro(LandmarkPairList::SmartConstPtr, LandmarkPairs);
+  cmtkGetSetMacro(LandmarkPairList::SmartConstPtr,LandmarkPairs);
 
   /// Weight for the landmark registration error relative to image similarity.
-  cmtkGetSetMacro(Self::ReturnType, LandmarkErrorWeight);
+  cmtkGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
 
- public:
+public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
    *\param reference The reference (i.e. static) volume.
    *\param floating The floating (i.e. transformed) volume.
    */
-  ImagePairRegistrationFunctional(UniformVolume::SmartConstPtr &reference,
-                                  UniformVolume::SmartConstPtr &floating)
-      : m_ForceOutsideFlag(false), m_ForceOutsideValueRescaled(0.0) {
-    this->InitFloating(floating);
-    this->InitReference(reference);
+  ImagePairRegistrationFunctional( UniformVolume::SmartConstPtr& reference, UniformVolume::SmartConstPtr& floating )
+    : m_ForceOutsideFlag( false ), m_ForceOutsideValueRescaled( 0.0 )
+  {
+    this->InitFloating( floating );
+    this->InitReference( reference );
     this->m_LandmarkErrorWeight = 0;
   }
 
@@ -112,14 +116,14 @@ class ImagePairRegistrationFunctional : public Functional,
   virtual ~ImagePairRegistrationFunctional() {}
 
   /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside(const bool flag = true,
-                               const Types::DataItem value = 0) {
+  virtual void SetForceOutside
+  ( const bool flag = true, const Types::DataItem value = 0 )
+  {
     this->m_ForceOutsideFlag = flag;
-    this->m_ForceOutsideValueRescaled =
-        this->m_Metric->GetFloatingValueScaled(value);
+    this->m_ForceOutsideValueRescaled = this->m_Metric->GetFloatingValueScaled( value );
   }
 
- protected:
+protected:
   /// The metric (similarity measure) object.
   ImagePairSimilarityMeasure::SmartPtr m_Metric;
 
@@ -134,7 +138,7 @@ class ImagePairRegistrationFunctional : public Functional,
 
   /// Coordinates of the floating image's cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegionCoordinates;
-
+ 
   /// Fractional index starting coordinate of the floating's cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegionFractIndex;
 
@@ -154,23 +158,20 @@ class ImagePairRegistrationFunctional : public Functional,
   Types::DataItem m_ForceOutsideValueRescaled;
 
   /** Find rectilinear area in original reference grid.
-   *\return The smallest region of reference grid voxels that contains the given
-   *coordinate range.
+   *\return The smallest region of reference grid voxels that contains the given coordinate range.
    */
-  const DataGrid::RegionType GetReferenceGridRange(
-      const UniformVolume::CoordinateRegionType
-          &region /*!< Coordinate region.*/) const;
+  const DataGrid::RegionType GetReferenceGridRange ( const UniformVolume::CoordinateRegionType& region /*!< Coordinate region.*/ ) const;
 
- private:
+private:
   /// Initialize internal data structures for floating image.
-  void InitFloating(UniformVolume::SmartConstPtr &floating);
+  void InitFloating( UniformVolume::SmartConstPtr& floating );
 
   /// Initialize internal data structures for reference image.
-  void InitReference(UniformVolume::SmartConstPtr &reference);
+  void InitReference( UniformVolume::SmartConstPtr& reference );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // __cmtkImagePairRegistrationFunctional_h_included_
+#endif // __cmtkImagePairRegistrationFunctional_h_included_

@@ -67,12 +67,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
+
 #include "lu.h"
 
 static const int lunb = 8;
 
-void rmatrixlu2(ap::real_2d_array &a, int m, int n,
-                ap::integer_1d_array &pivots);
+void rmatrixlu2(ap::real_2d_array& a,
+     int m,
+     int n,
+     ap::integer_1d_array& pivots);
 
 /*************************************************************************
 LU decomposition of a general matrix of size MxN
@@ -121,122 +124,144 @@ As we can see, the unit diagonal isn't stored.
      Courant Institute, Argonne National Lab, and Rice University
      June 30, 1992
 *************************************************************************/
-void rmatrixlu(ap::real_2d_array &a, int m, int n,
-               ap::integer_1d_array &pivots) {
-  ap::real_2d_array b;
-  ap::real_1d_array t;
-  ap::integer_1d_array bp;
-  int minmn;
-  int i;
-  int ip;
-  int j;
-  int j1;
-  int j2;
-  int cb;
-  int nb;
-  ap::real_value_type v;
+void rmatrixlu(ap::real_2d_array& a,
+     int m,
+     int n,
+     ap::integer_1d_array& pivots)
+{
+    ap::real_2d_array b;
+    ap::real_1d_array t;
+    ap::integer_1d_array bp;
+    int minmn;
+    int i;
+    int ip;
+    int j;
+    int j1;
+    int j2;
+    int cb;
+    int nb;
+    ap::real_value_type v;
 
 #ifndef NO_AP_ASSERT
-  ap::ap_error::make_assertion(lunb >= 1, "RMatrixLU internal error");
+    ap::ap_error::make_assertion(lunb>=1, "RMatrixLU internal error");
 #endif
 
-  nb = lunb;
-
-  //
-  // Decide what to use - blocked or unblocked code
-  //
-  if (n <= 1 || ap::minint(m, n) <= nb || nb == 1) {
+    nb = lunb;
+    
     //
-    // Unblocked code
+    // Decide what to use - blocked or unblocked code
     //
-    rmatrixlu2(a, m, n, pivots);
-  } else {
-    //
-    // Blocked code.
-    // First, prepare temporary matrix and indices
-    //
-    b.setbounds(0, m - 1, 0, nb - 1);
-    t.setbounds(0, n - 1);
-    pivots.setbounds(0, ap::minint(m, n) - 1);
-    minmn = ap::minint(m, n);
-    j1 = 0;
-    j2 = ap::minint(minmn, nb) - 1;
-
-    //
-    // Main cycle
-    //
-    while (j1 < minmn) {
-      cb = j2 - j1 + 1;
-
-      //
-      // LU factorization of diagonal and subdiagonal blocks:
-      // 1. Copy columns J1..J2 of A to B
-      // 2. LU(B)
-      // 3. Copy result back to A
-      // 4. Copy pivots, apply pivots
-      //
-      for (i = j1; i <= m - 1; i++) {
-        ap::vmove(&b(i - j1, 0), &a(i, j1), ap::vlen(0, cb - 1));
-      }
-      rmatrixlu2(b, m - j1, cb, bp);
-      for (i = j1; i <= m - 1; i++) {
-        ap::vmove(&a(i, j1), &b(i - j1, 0), ap::vlen(j1, j2));
-      }
-      for (i = 0; i <= cb - 1; i++) {
-        ip = bp(i);
-        pivots(j1 + i) = j1 + ip;
-        if (bp(i) != i) {
-          if (j1 != 0) {
-            //
-            // Interchange columns 0:J1-1
-            //
-            ap::vmove(&t(0), &a(j1 + i, 0), ap::vlen(0, j1 - 1));
-            ap::vmove(&a(j1 + i, 0), &a(j1 + ip, 0), ap::vlen(0, j1 - 1));
-            ap::vmove(&a(j1 + ip, 0), &t(0), ap::vlen(0, j1 - 1));
-          }
-          if (j2 < n - 1) {
-            //
-            // Interchange the rest of the matrix, if needed
-            //
-            ap::vmove(&t(j2 + 1), &a(j1 + i, j2 + 1), ap::vlen(j2 + 1, n - 1));
-            ap::vmove(&a(j1 + i, j2 + 1), &a(j1 + ip, j2 + 1),
-                      ap::vlen(j2 + 1, n - 1));
-            ap::vmove(&a(j1 + ip, j2 + 1), &t(j2 + 1), ap::vlen(j2 + 1, n - 1));
-          }
-        }
-      }
-
-      //
-      // Compute block row of U
-      //
-      if (j2 < n - 1) {
-        for (i = j1 + 1; i <= j2; i++) {
-          for (j = j1; j <= i - 1; j++) {
-            v = a(i, j);
-            ap::vsub(&a(i, j2 + 1), &a(j, j2 + 1), ap::vlen(j2 + 1, n - 1), v);
-          }
-        }
-      }
-
-      //
-      // Update trailing submatrix
-      //
-      if (j2 < n - 1) {
-        for (i = j2 + 1; i <= m - 1; i++) {
-          for (j = j1; j <= j2; j++) {
-            v = a(i, j);
-            ap::vsub(&a(i, j2 + 1), &a(j, j2 + 1), ap::vlen(j2 + 1, n - 1), v);
-          }
-        }
-      }
-
-      //
-      // Next step
-      //
-      j1 = j2 + 1;
-      j2 = ap::minint(minmn, j1 + nb) - 1;
+    if( n<=1||ap::minint(m, n)<=nb||nb==1 )
+    {
+        
+        //
+        // Unblocked code
+        //
+        rmatrixlu2(a, m, n, pivots);
     }
-  }
+    else
+    {
+        
+        //
+        // Blocked code.
+        // First, prepare temporary matrix and indices
+        //
+        b.setbounds(0, m-1, 0, nb-1);
+        t.setbounds(0, n-1);
+        pivots.setbounds(0, ap::minint(m, n)-1);
+        minmn = ap::minint(m, n);
+        j1 = 0;
+        j2 = ap::minint(minmn, nb)-1;
+        
+        //
+        // Main cycle
+        //
+        while(j1<minmn)
+        {
+            cb = j2-j1+1;
+            
+            //
+            // LU factorization of diagonal and subdiagonal blocks:
+            // 1. Copy columns J1..J2 of A to B
+            // 2. LU(B)
+            // 3. Copy result back to A
+            // 4. Copy pivots, apply pivots
+            //
+            for(i = j1; i <= m-1; i++)
+            {
+                ap::vmove(&b(i-j1, 0), &a(i, j1), ap::vlen(0,cb-1));
+            }
+            rmatrixlu2(b, m-j1, cb, bp);
+            for(i = j1; i <= m-1; i++)
+            {
+                ap::vmove(&a(i, j1), &b(i-j1, 0), ap::vlen(j1,j2));
+            }
+            for(i = 0; i <= cb-1; i++)
+            {
+                ip = bp(i);
+                pivots(j1+i) = j1+ip;
+                if( bp(i)!=i )
+                {
+                    if( j1!=0 )
+                    {
+                        
+                        //
+                        // Interchange columns 0:J1-1
+                        //
+                        ap::vmove(&t(0), &a(j1+i, 0), ap::vlen(0,j1-1));
+                        ap::vmove(&a(j1+i, 0), &a(j1+ip, 0), ap::vlen(0,j1-1));
+                        ap::vmove(&a(j1+ip, 0), &t(0), ap::vlen(0,j1-1));
+                    }
+                    if( j2<n-1 )
+                    {
+                        
+                        //
+                        // Interchange the rest of the matrix, if needed
+                        //
+                        ap::vmove(&t(j2+1), &a(j1+i, j2+1), ap::vlen(j2+1,n-1));
+                        ap::vmove(&a(j1+i, j2+1), &a(j1+ip, j2+1), ap::vlen(j2+1,n-1));
+                        ap::vmove(&a(j1+ip, j2+1), &t(j2+1), ap::vlen(j2+1,n-1));
+                    }
+                }
+            }
+            
+            //
+            // Compute block row of U
+            //
+            if( j2<n-1 )
+            {
+                for(i = j1+1; i <= j2; i++)
+                {
+                    for(j = j1; j <= i-1; j++)
+                    {
+                        v = a(i,j);
+                        ap::vsub(&a(i, j2+1), &a(j, j2+1), ap::vlen(j2+1,n-1), v);
+                    }
+                }
+            }
+            
+            //
+            // Update trailing submatrix
+            //
+            if( j2<n-1 )
+            {
+                for(i = j2+1; i <= m-1; i++)
+                {
+                    for(j = j1; j <= j2; j++)
+                    {
+                        v = a(i,j);
+                        ap::vsub(&a(i, j2+1), &a(j, j2+1), ap::vlen(j2+1,n-1), v);
+                    }
+                }
+            }
+            
+            //
+            // Next step
+            //
+            j1 = j2+1;
+            j2 = ap::minint(minmn, j1+nb)-1;
+        }
+    }
 }
 
 /*************************************************************************
@@ -247,68 +272,84 @@ Level 2 BLAS version of RMatrixLU
      Courant Institute, Argonne National Lab, and Rice University
      June 30, 1992
 *************************************************************************/
-void rmatrixlu2(ap::real_2d_array &a, int m, int n,
-                ap::integer_1d_array &pivots) {
-  int i;
-  int j;
-  int jp;
-  ap::real_1d_array t1;
-  ap::real_value_type s;
+void rmatrixlu2(ap::real_2d_array& a,
+     int m,
+     int n,
+     ap::integer_1d_array& pivots)
+{
+    int i;
+    int j;
+    int jp;
+    ap::real_1d_array t1;
+    ap::real_value_type s;
 
-  pivots.setbounds(0, ap::minint(m - 1, n - 1));
-  t1.setbounds(0, ap::maxint(m - 1, n - 1));
+    pivots.setbounds(0, ap::minint(m-1, n-1));
+    t1.setbounds(0, ap::maxint(m-1, n-1));
 
 #ifndef NO_AP_ASSERT
-  ap::ap_error::make_assertion(
-      m >= 0 && n >= 0,
-      "Error in LUDecomposition: incorrect function arguments");
+    ap::ap_error::make_assertion(m>=0&&n>=0, "Error in LUDecomposition: incorrect function arguments");
 #endif
-
-  //
-  // Quick return if possible
-  //
-  if (m == 0 || n == 0) {
-    return;
-  }
-  for (j = 0; j <= ap::minint(m - 1, n - 1); j++) {
+    
     //
-    // Find pivot and test for singularity.
+    // Quick return if possible
     //
-    jp = j;
-    for (i = j + 1; i <= m - 1; i++) {
-      if (fabs(a(i, j)) > fabs(a(jp, j))) {
-        jp = i;
-      }
+    if( m==0||n==0 )
+    {
+        return;
     }
-    pivots(j) = jp;
-    if (a(jp, j) != 0) {
-      //
-      // Apply the interchange to rows
-      //
-      if (jp != j) {
-        ap::vmove(&t1(0), &a(j, 0), ap::vlen(0, n - 1));
-        ap::vmove(&a(j, 0), &a(jp, 0), ap::vlen(0, n - 1));
-        ap::vmove(&a(jp, 0), &t1(0), ap::vlen(0, n - 1));
-      }
-
-      //
-      // Compute elements J+1:M of J-th column.
-      //
-      if (j < m) {
-        jp = j + 1;
-        s = 1 / a(j, j);
-        ap::vmul(a.getcolumn(j, jp, m - 1), s);
-      }
+    for(j = 0; j <= ap::minint(m-1, n-1); j++)
+    {
+        
+        //
+        // Find pivot and test for singularity.
+        //
+        jp = j;
+        for(i = j+1; i <= m-1; i++)
+        {
+            if( fabs(a(i,j))>fabs(a(jp,j)) )
+            {
+                jp = i;
+            }
+        }
+        pivots(j) = jp;
+        if( a(jp,j)!=0 )
+        {
+            
+            //
+            //Apply the interchange to rows
+            //
+            if( jp!=j )
+            {
+                ap::vmove(&t1(0), &a(j, 0), ap::vlen(0,n-1));
+                ap::vmove(&a(j, 0), &a(jp, 0), ap::vlen(0,n-1));
+                ap::vmove(&a(jp, 0), &t1(0), ap::vlen(0,n-1));
+            }
+            
+            //
+            //Compute elements J+1:M of J-th column.
+            //
+            if( j<m )
+            {
+                jp = j+1;
+                s = 1/a(j,j);
+                ap::vmul(a.getcolumn(j, jp, m-1), s);
+            }
+        }
+        if( j<ap::minint(m, n)-1 )
+        {
+            
+            //
+            //Update trailing submatrix.
+            //
+            jp = j+1;
+            for(i = j+1; i <= m-1; i++)
+            {
+                s = a(i,j);
+                ap::vsub(&a(i, jp), &a(j, jp), ap::vlen(jp,n-1), s);
+            }
+        }
     }
-    if (j < ap::minint(m, n) - 1) {
-      //
-      // Update trailing submatrix.
-      //
-      jp = j + 1;
-      for (i = j + 1; i <= m - 1; i++) {
-        s = a(i, j);
-        ap::vsub(&a(i, jp), &a(j, jp), ap::vlen(jp, n - 1), s);
-      }
-    }
-  }
 }
+
+
+

@@ -50,7 +50,9 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Recon */
 //@{
@@ -58,11 +60,12 @@ namespace cmtk {
 /** Class for volume reconstruction using inverse interpolation.
  *\author Torsten Rohlfing
  */
-template <class TInterpolator>
+template<class TInterpolator> 
 class InverseInterpolationVolumeReconstruction :
-    /// Inherit from non-templated base class.
-    public InverseInterpolationVolumeReconstructionBase {
- public:
+  /// Inherit from non-templated base class.
+  public InverseInterpolationVolumeReconstructionBase
+{
+public:
   /// This class.
   typedef InverseInterpolationVolumeReconstruction<TInterpolator> Self;
 
@@ -70,77 +73,70 @@ class InverseInterpolationVolumeReconstruction :
   typedef InverseInterpolationVolumeReconstructionBase Superclass;
 
   /** Constructor for interleaved image motion correction.
-   * Take original image. Set interleaved image count and stacking axis.
-   *Construct separate 3D image stacks for interleaved passes. Allocate
-   *corrected image. \param originalImage Smart pointer to the original image
-   *with motion artifacts. \param numberOfPasses The number of interleaved
-   *passes, i.e., the number of pass images that comprise the final image.
+   * Take original image. Set interleaved image count and stacking axis. Construct separate 3D image stacks for interleaved passes. Allocate corrected image.
+   *\param originalImage Smart pointer to the original image with motion artifacts.
+   *\param numberOfPasses The number of interleaved passes, i.e., the number of pass images that comprise the final image.
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
    */
-  InverseInterpolationVolumeReconstruction(
-      const UniformVolume *originalImage,
-      const Types::GridIndexType numberOfPasses, const int interleaveAxis)
-      : InverseInterpolationVolumeReconstructionBase(
-            originalImage, numberOfPasses, interleaveAxis) {
-    this->m_FunctionAndGradient = new typename Self::FunctionAndGradient(this);
+  InverseInterpolationVolumeReconstruction( const UniformVolume* originalImage, const Types::GridIndexType numberOfPasses, const int interleaveAxis )
+    : InverseInterpolationVolumeReconstructionBase( originalImage, numberOfPasses, interleaveAxis )
+  { 
+    this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
   }
 
-  /** Constructor for general volume reconstruction from multiple acquired
-   * images.
+  /** Constructor for general volume reconstruction from multiple acquired images.
    */
-  InverseInterpolationVolumeReconstruction(
-      const UniformVolume *reconstructionGrid,
-      std::vector<UniformVolume::SmartPtr> &images)
-      : InverseInterpolationVolumeReconstructionBase(reconstructionGrid,
-                                                     images) {
-    this->m_FunctionAndGradient = new typename Self::FunctionAndGradient(this);
+  InverseInterpolationVolumeReconstruction( const UniformVolume* reconstructionGrid, std::vector<UniformVolume::SmartPtr>& images )
+    : InverseInterpolationVolumeReconstructionBase( reconstructionGrid, images )
+  { 
+    this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
   }
-
+  
   /// Destructor: delete function evaluator object.
-  virtual ~InverseInterpolationVolumeReconstruction() {
+  virtual ~InverseInterpolationVolumeReconstruction()
+  {
     delete this->m_FunctionAndGradient;
   }
 
- private:
+private:
   /// Interpolates subimages from the existing corrected image.
-  void Interpolation(const ap::real_1d_array &reconstructedPixelArray);
-
+  void Interpolation( const ap::real_1d_array& reconstructedPixelArray );
+  
   /// Compute gradient of approximation error w.r.t. corrected image pixels.
-  void ComputeErrorGradientImage(ap::real_1d_array &g);
+  void ComputeErrorGradientImage( ap::real_1d_array& g );
 
-  /// Get pass image region that contains all pixels dependent on currently
-  /// considered corrected image pixel.
-  void GetPassImageDependentPixelRegion(
-      Types::GridIndexType *region, const UniformVolume *correctedImage,
-      const Types::GridIndexType *currentCorrectedGridPoint,
-      const UniformVolume *passImage,
-      const AffineXform *transformationToPassImage,
-      const DataGrid::IndexType &passImageDims);
+  /// Get pass image region that contains all pixels dependent on currently considered corrected image pixel.
+  void GetPassImageDependentPixelRegion
+  ( Types::GridIndexType* region, const UniformVolume* correctedImage, const Types::GridIndexType* currentCorrectedGridPoint, 
+    const UniformVolume* passImage, const AffineXform* transformationToPassImage, const DataGrid::IndexType& passImageDims );
 
   /// Glue class for function and gradient evaluation.
-  class FunctionAndGradient :
-      /// Inherit from virtual base class.
-      public ap::FunctionAndGradient {
-   public:
+  class FunctionAndGradient : 
+    /// Inherit from virtual base class.
+    public ap::FunctionAndGradient
+  {
+  public:
     /// Function class type.
-    typedef InverseInterpolationVolumeReconstruction<TInterpolator>
-        FunctionType;
+    typedef InverseInterpolationVolumeReconstruction<TInterpolator> FunctionType;
 
     /// Constructor.
-    FunctionAndGradient(FunctionType *function) { this->m_Function = function; }
-
-    /// Evaluate function and gradient.
-    virtual void Evaluate(const ap::real_1d_array &x, ap::real_value_type &f,
-                          ap::real_1d_array &g);
-
-    /// Get notified when L-BFGS-B goes into next iteration.
-    virtual void NextIteration(const int iteration) {
-      Progress::SetProgress(iteration);
+    FunctionAndGradient( FunctionType* function )
+    {
+      this->m_Function = function;
     }
 
-   private:
+    /// Evaluate function and gradient.
+    virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g );
+
+    /// Get notified when L-BFGS-B goes into next iteration.
+    virtual void NextIteration( const int iteration )
+    {
+      Progress::SetProgress( iteration );
+    }
+
+  private:
     /// Pointer to actual function class.
-    FunctionType *m_Function;
+    FunctionType* m_Function;
   };
 
   /// Give function and gradient evaluator private access.
@@ -149,8 +145,9 @@ class InverseInterpolationVolumeReconstruction :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkInverseInterpolationVolumeReconstruction.txx"
 
-#endif  // #ifndef __cmtkInverseInterpolationVolumeReconstruction_h_included_
+#endif // #ifndef __cmtkInverseInterpolationVolumeReconstruction_h_included_
+

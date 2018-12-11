@@ -32,8 +32,8 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
@@ -44,11 +44,11 @@
 #include <Base/cmtkUnits.h>
 
 #ifdef CMTK_BUILD_UNSTABLE
-#include <Unstable/cmtkFilterVolumeCoupe.h>
+#  include <Unstable/cmtkFilterVolumeCoupe.h>
 #endif
 
 #ifdef CMTK_USE_SQLITE
-#include <Registration/cmtkImageXformDB.h>
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 #include <string.h>
@@ -60,10 +60,9 @@ bool Rohlfing = false;
 #ifdef CMTK_BUILD_UNSTABLE
 bool Coupe = false;
 cmtk::Types::Coordinate CoupeBeta = 1;
-// float CoupeBlockRadius = 0;  commented out while testing, this is defined in
-// cmtk::FilterVolume.h
+//float CoupeBlockRadius = 0;  commented out while testing, this is defined in cmtk::FilterVolume.h
 cmtk::Types::Coordinate CoupeWindowRadius = 5;
-#endif  // #ifdef CMTK_BUILD_UNSTABLE
+#endif // #ifdef CMTK_BUILD_UNSTABLE
 
 bool Gaussian = false;
 float GaussianWidth = 0.0;
@@ -84,173 +83,173 @@ std::list<std::string> ImageNameList;
 std::string updateDB;
 #endif
 
-int doMain(const int argc, const char *argv[]) {
-  cmtk::ProgressConsole progressIndicator("Image Filtering");
-  try {
+int 
+doMain( const int argc, const char* argv[] )
+{
+  cmtk::ProgressConsole progressIndicator( "Image Filtering" );
+  try 
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE, "Filter a volume image");
-    cl.SetProgramInfo(
-        cmtk::CommandLine::PRG_DESCR,
-        "This tool applies spatial filtering operators, including "
-        "cnotent-sensitive opersators, based on selective Gaussian kernels.");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
-                      "filter [options] input output\n"
-                      "filter [options] [-s,--studholme] input output average "
-                      "subject img0 [img1...]\n"
-                      "filter [options] [-R,--rohlfing] input output subject");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_CATEG, "CMTK.Filtering");
-
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Filter a volume image" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool applies spatial filtering operators, including cnotent-sensitive opersators, based on selective Gaussian kernels." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "filter [options] input output\n"
+		       "filter [options] [-s,--studholme] input output average subject img0 [img1...]\n"
+		       "filter [options] [-R,--rohlfing] input output subject" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Filtering" );
+    
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption(Key('g', "gaussian"), &GaussianWidth,
-                 "Gaussian filter width (sigma)", &Gaussian);
-    cl.AddOption(Key('r', "radius"), &Radius,
-                 "Filter radius (truncated outside)");
-    cl.AddOption(Key('m', "mask"), &MaskFileName, "Binary mask file name");
+    cl.AddOption( Key( 'g', "gaussian" ), &GaussianWidth, "Gaussian filter width (sigma)", &Gaussian );
+    cl.AddOption( Key( 'r', "radius" ), &Radius, "Filter radius (truncated outside)" );
+    cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Binary mask file name" );
 
-    cl.AddSwitch(Key('s', "studholme"), &Studholme, true,
-                 "Use Studholme's consistent filtering");
-    cl.AddOption(Key('b', "bin-width"), &IntensityBinWidth,
-                 "Intensity bin width for consistent filtering");
+    cl.AddSwitch( Key( 's', "studholme" ), &Studholme, true, "Use Studholme's consistent filtering" );
+    cl.AddOption( Key( 'b', "bin-width" ), &IntensityBinWidth, "Intensity bin width for consistent filtering" );
 
 #ifdef CMTK_BUILD_UNSTABLE
-    cl.AddSwitch(Key('C', "coupe"), &Coupe, true,
-                 "Use Coupe's blockwise nonlocal means denoising filter");
+    cl.AddSwitch( Key( 'C', "coupe" ), &Coupe, true, "Use Coupe's blockwise nonlocal means denoising filter" );
 #endif
-    cl.AddSwitch(Key('R', "rohlfing"), &Rohlfing, true,
-                 "Use Rohlfing's single-image consistent filtering");
-    cl.AddOption(Key('G', "intensity-gaussian"), &IntensityGaussianSigma,
-                 "Intensity gaussian sigma for consistent filtering");
+    cl.AddSwitch( Key( 'R', "rohlfing" ), &Rohlfing, true, "Use Rohlfing's single-image consistent filtering" );
+    cl.AddOption( Key( 'G', "intensity-gaussian" ), &IntensityGaussianSigma, "Intensity gaussian sigma for consistent filtering" );
 
 #ifdef CMTK_USE_SQLITE
-    cl.BeginGroup("Database", "Image/Transformation Database");
-    cl.AddOption(Key("db"), &updateDB,
-                 "Path to image/transformation database that should be updated "
-                 "with the newly created image.");
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
     cl.EndGroup();
 #endif
 
-    cl.Parse(argc, argv);
+    cl.Parse( argc, argv );
 
     InputFileName = cl.GetNext();
     OutputFileName = cl.GetNext();
-
-    if (Studholme) {
+    
+    if ( Studholme ) 
+      {
       AverageFileName = cl.GetNext();
       SubjectFileName = cl.GetNext();
-
-      const char *next = cl.GetNext();
-      while (next) {
-        ImageNameList.push_back(next);
-        next = cl.GetNextOptional();
+      
+      const char* next = cl.GetNext();
+      while ( next ) 
+	{
+	ImageNameList.push_back( next );
+	next = cl.GetNextOptional();
+	}
       }
-    } else {
-      if (Rohlfing) {
-        SubjectFileName = cl.GetNext();
+    else
+      {
+      if ( Rohlfing ) 
+	{
+	SubjectFileName = cl.GetNext();
+	}
       }
     }
-  } catch (const cmtk::CommandLine::Exception &e) {
+  catch ( const cmtk::CommandLine::Exception& e ) 
+    {
     cmtk::StdErr << e;
-    throw cmtk::ExitException(1);
-  }
-
-  cmtk::UniformVolume::SmartPtr volume(
-      cmtk::VolumeIO::ReadOriented(InputFileName));
-  if (!volume || !volume->GetData()) {
+    throw cmtk::ExitException( 1 );
+    }
+  
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFileName ) );
+  if ( !volume || !volume->GetData() )
+    {
     cmtk::StdErr << "ERROR: Could not read volume " << InputFileName << "\n";
-    throw cmtk::ExitException(1);
-  }
-
-  cmtk::TypedArray::SmartPtr maskData(NULL);
-  if (!MaskFileName.empty()) {
-    cmtk::UniformVolume::SmartPtr maskVolume(
-        cmtk::VolumeIO::ReadOriented(MaskFileName));
-    if (maskVolume)
+    throw cmtk::ExitException( 1 );
+    }
+  
+  cmtk::TypedArray::SmartPtr maskData( NULL );
+  if ( !MaskFileName.empty() ) 
+    {
+    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
+    if ( maskVolume )
       maskData = maskVolume->GetData();
-    else {
-      cmtk::StdErr << "ERROR: Could not read mask file " << MaskFileName
-                   << "\n";
-      throw cmtk::ExitException(1);
+    else
+      {
+      cmtk::StdErr << "ERROR: Could not read mask file " << MaskFileName << "\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
-  }
-
-  if (Studholme) {
-    cmtk::UniformVolume::SmartPtr average(
-        cmtk::VolumeIO::ReadOriented(AverageFileName));
-    if (!average || !average->GetData()) {
-      cmtk::StdErr << "ERROR: Could not read average anatomical file "
-                   << AverageFileName << "\n";
-      throw cmtk::ExitException(1);
-    }
-
-    cmtk::UniformVolume::SmartPtr subject(
-        cmtk::VolumeIO::ReadOriented(SubjectFileName));
-    if (!subject || !subject->GetData()) {
-      cmtk::StdErr << "ERROR: Could not read subject anatomical file "
-                   << SubjectFileName << "\n";
-      throw cmtk::ExitException(1);
-    }
+  
+  if ( Studholme ) 
+    {
+    cmtk::UniformVolume::SmartPtr average( cmtk::VolumeIO::ReadOriented( AverageFileName ) );
+    if ( ! average || ! average->GetData() ) 
+      {
+      cmtk::StdErr	<< "ERROR: Could not read average anatomical file " << AverageFileName << "\n";
+      throw cmtk::ExitException( 1 );
+      }
+    
+    cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName ) );
+    if ( ! subject || ! subject->GetData() ) 
+      {
+      cmtk::StdErr	<< "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
+      throw cmtk::ExitException( 1 );
+      }
 
     std::list<cmtk::TypedArray::SmartPtr> imageList;
-    for (std::list<std::string>::const_iterator it = ImageNameList.begin();
-         it != ImageNameList.end(); ++it) {
-      cmtk::UniformVolume::SmartPtr next(cmtk::VolumeIO::ReadOriented(*it));
-      if (!next || !next->GetData()) {
-        cmtk::StdErr << "ERROR: Could not read subject anatomical file " << *it
-                     << "\n";
-        throw cmtk::ExitException(1);
+    for ( std::list<std::string>::const_iterator it = ImageNameList.begin(); it != ImageNameList.end(); ++it ) 
+      {
+      cmtk::UniformVolume::SmartPtr next( cmtk::VolumeIO::ReadOriented( *it ) );
+      if ( ! next || ! next->GetData() ) 
+	{
+	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << *it << "\n";
+	throw cmtk::ExitException( 1 );
+	}
+      imageList.push_back( next->GetData() );
       }
-      imageList.push_back(next->GetData());
-    }
+    
+    cmtk::TypedArray::SmartPtr filtered
+      ( cmtk::FilterVolume::StudholmeFilter( volume,  subject->GetData(), average->GetData(), maskData, imageList, IntensityBinWidth, cmtk::Units::GaussianSigma( GaussianWidth ), Radius ) );
+    volume->SetData( filtered );
+    } 
+  else
+    {
+    if ( Rohlfing ) 
+      {
+      cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName ) );
+      if ( ! subject || ! subject->GetData() ) 
+	{
+	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
+	throw cmtk::ExitException( 1 );
+	}
 
-    cmtk::TypedArray::SmartPtr filtered(cmtk::FilterVolume::StudholmeFilter(
-        volume, subject->GetData(), average->GetData(), maskData, imageList,
-        IntensityBinWidth, cmtk::Units::GaussianSigma(GaussianWidth), Radius));
-    volume->SetData(filtered);
-  } else {
-    if (Rohlfing) {
-      cmtk::UniformVolume::SmartPtr subject(
-          cmtk::VolumeIO::ReadOriented(SubjectFileName));
-      if (!subject || !subject->GetData()) {
-        cmtk::StdErr << "ERROR: Could not read subject anatomical file "
-                     << SubjectFileName << "\n";
-        throw cmtk::ExitException(1);
+      cmtk::TypedArray::SmartPtr filtered
+	( cmtk::FilterVolume::RohlfingFilter( volume,  subject->GetData(), maskData, cmtk::Units::GaussianSigma( IntensityGaussianSigma ), cmtk::Units::GaussianSigma( GaussianWidth ), Radius ) );
+      volume->SetData( filtered );
       }
-
-      cmtk::TypedArray::SmartPtr filtered(cmtk::FilterVolume::RohlfingFilter(
-          volume, subject->GetData(), maskData,
-          cmtk::Units::GaussianSigma(IntensityGaussianSigma),
-          cmtk::Units::GaussianSigma(GaussianWidth), Radius));
-      volume->SetData(filtered);
-    } else {
-      if (Gaussian) {
-        cmtk::TypedArray::SmartPtr filtered(cmtk::FilterVolume::GaussianFilter(
-            volume, cmtk::Units::GaussianSigma(GaussianWidth), Radius,
-            maskData));
-        volume->SetData(filtered);
-      } else {
-#ifdef CMTK_BUILD_UNSTABLE
-        if (Coupe) {
-          cmtk::TypedArray::SmartPtr filtered(
-              cmtk::FilterVolumeCoupe::CoupeFilter(
-                  volume, static_cast<int>(CoupeWindowRadius), CoupeBeta));
-          volume->SetData(filtered);
+    else
+      {
+      if ( Gaussian ) 
+        {
+        cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::GaussianFilter( volume, cmtk::Units::GaussianSigma( GaussianWidth ), Radius, maskData ) );
+        volume->SetData( filtered );
         }
-#endif  // #ifdef CMTK_BUILD_UNSTABLE
-      }
+      else 
+        {
+#ifdef CMTK_BUILD_UNSTABLE
+        if ( Coupe ) 
+          {
+          cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolumeCoupe::CoupeFilter( volume, static_cast<int>( CoupeWindowRadius ), CoupeBeta ) );
+          volume->SetData( filtered );
+          }
+#endif // #ifdef CMTK_BUILD_UNSTABLE
+        }
+      }      
     }
-  }
-
-  cmtk::VolumeIO::Write(*volume, OutputFileName);
+  
+  cmtk::VolumeIO::Write( *volume, OutputFileName );
 
 #ifdef CMTK_USE_SQLITE
-  if (!updateDB.empty()) {
-    try {
-      cmtk::ImageXformDB db(updateDB);
-      db.AddImage(OutputFileName, InputFileName);
-    } catch (const cmtk::SQLite::Exception &ex) {
-      cmtk::StdErr << "ERROR: " << ex.what() << "\n";
+  if ( !updateDB.empty() )
+    {
+    try
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddImage( OutputFileName, InputFileName  );
+      }
+    catch ( const cmtk::SQLite::Exception& ex )
+      {
+      cmtk::StdErr << "ERROR: " << ex.what() << "\n";      
+      }
     }
-  }
 #endif
 
   return 0;

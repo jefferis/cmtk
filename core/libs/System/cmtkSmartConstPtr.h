@@ -36,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #ifndef NULL
-#define NULL 0
+#  define NULL 0
 #endif
 
 #include <algorithm>
@@ -44,181 +44,199 @@
 
 #include <System/cmtkSafeCounter.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Smart pointer with reference counting.
  */
-template <class T>
-class SmartConstPointer {
- public:
+template<class T>
+class SmartConstPointer
+{
+public:
   /// This class instance.
   typedef SmartConstPointer<T> Self;
 
   /// The underlying raw pointer type.
-  typedef const T *PointerType;
+  typedef const T* PointerType;
 
   /// Reference to static null object.
-  static Self &Null() {
+  static Self& Null()
+  {
     static Self null;
     return null;
   }
-
+  
   /// Get current reference counter value: use with caution!
-  unsigned int GetReferenceCount() const {
-    return this->m_ReferenceCount->Get();
+  unsigned int GetReferenceCount() const 
+  { 
+    return this->m_ReferenceCount->Get(); 
   }
 
   /** Default constructor.
    * This needs to be separate because the constructor that takes a dumb pointer
    * must be explicit, but the default constructor should not be.
    */
-  SmartConstPointer() : m_ReferenceCount(new SafeCounter(1)) {
+  SmartConstPointer() 
+    : m_ReferenceCount( new SafeCounter( 1 ) )
+  { 
     this->m_Object.ptrConst = NULL;
   }
-
+  
   /** Construct from dumb pointer.
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
-  explicit SmartConstPointer(T *const object)
-      : m_ReferenceCount(new SafeCounter(1)) {
+  explicit SmartConstPointer( T *const object ) 
+    : m_ReferenceCount( new SafeCounter( 1 ) )
+  { 
     this->m_Object.ptrConst = object;
   }
 
   /** Copy constructor template.
    * Increment reference counter in the process.
    */
-  template <class T2>
-  SmartConstPointer(const SmartConstPointer<T2> &ptr)
-      : m_ReferenceCount(ptr.m_ReferenceCount) {
+  template<class T2>
+  SmartConstPointer( const SmartConstPointer<T2>& ptr ) 
+    : m_ReferenceCount( ptr.m_ReferenceCount )
+  {
     this->m_Object.ptrConst = ptr.m_Object.ptrConst;
     this->m_ReferenceCount->Increment();
   }
-
+  
   /** Copy constructor to prevent compiler-generated copy constructor.
    * Increment reference counter in the process.
    */
-  SmartConstPointer(const Self &ptr) : m_ReferenceCount(ptr.m_ReferenceCount) {
+  SmartConstPointer( const Self& ptr ) 
+    : m_ReferenceCount( ptr.m_ReferenceCount )
+  {
     this->m_Object.ptrConst = ptr.m_Object.ptrConst;
     this->m_ReferenceCount->Increment();
   }
-
+  
   /// Destruct: decrease reference pointer and free dumb pointer if necessary.
-  ~SmartConstPointer() {
-    assert(this->m_ReferenceCount !=
-           NULL);  // we may have m_Object=NULL, but
-                   // m_ReferenceCount should never be!
-    if (!this->m_ReferenceCount->Decrement()) {
+  ~SmartConstPointer() 
+  {
+    assert( this->m_ReferenceCount != NULL ); // we may have m_Object=NULL, but m_ReferenceCount should never be!
+    if ( ! this->m_ReferenceCount->Decrement() ) 
+      {
       delete this->m_ReferenceCount;
 #ifdef DEBUG
       this->m_ReferenceCount = NULL;
 #endif
-      if (this->m_Object.ptrConst) {
-        delete this->m_Object.ptrConst;
+      if ( this->m_Object.ptrConst ) 
+	{
+	delete this->m_Object.ptrConst;
 #ifdef DEBUG
-        this->m_Object.ptrConst = NULL;
+	this->m_Object.ptrConst = NULL;
 #endif
+	}
       }
-    }
   }
 
   /// Get dumb pointer.
-  const T *GetPtr() const { return this->m_Object.ptrConst; }
+  const T* GetPtr() const { return this->m_Object.ptrConst; }
 
   /// De-referencing operator (returns constant object).
-  const T &operator*() const { return *this->m_Object.ptrConst; }
+  const T& operator*() const { return *this->m_Object.ptrConst; }
 
   /// De-referencing operator (returns constant object pointer).
-  const T *operator->() const { return this->m_Object.ptrConst; }
+  const T* operator->() const { return this->m_Object.ptrConst; }
 
   /// Implicit conversion to constant pointer.
-  operator const T *() const { return m_Object.ptrConst; }
-
+  operator const T*() const { return m_Object.ptrConst; }
+  
   /// Explicit conversion to constant pointer.
-  const T *GetConstPtr() const { return this->m_Object.ptrConst; }
+  const T* GetConstPtr() const { return this->m_Object.ptrConst; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
    */
-  const T *ReleasePtr() {
-    const T *object = this->m_Object.ptrConst;
-    this->m_Object.ptrConst = NULL;
-    return object;
+  const T* ReleasePtr() 
+  { 
+    const T* object = this->m_Object.ptrConst; 
+    this->m_Object.ptrConst = NULL; 
+    return object; 
   }
 
   /** Assignment operator.
    * This is implemented using the std::swap function.
-   *\warning The "other" parameter HAS TO USE CALL BY VALUE for this function to
-   *work, because we are not creating an explicit copy of the original object
-   *before calling Swap() (see Effective C++, 3rd, Item 11, p.56). \warning Open
-   *question: given that we pass the parameter by value, not reference, does
-   *  this really prevent the definition of a compiler-generated assignment
-   *(which passes parameter by reference)?
+   *\warning The "other" parameter HAS TO USE CALL BY VALUE for this function to work,
+   *  because we are not creating an explicit copy of the original object before 
+   *  calling Swap() (see Effective C++, 3rd, Item 11, p.56).
+   *\warning Open question: given that we pass the parameter by value, not reference, does
+   *  this really prevent the definition of a compiler-generated assignment (which passes
+   *  parameter by reference)?
    */
-  const Self &operator=(const Self other) const {
+  const Self& operator= ( const Self other ) const
+  {
     using std::swap;
-    swap(this->m_ReferenceCount, other.m_ReferenceCount);
-    swap(this->m_Object.ptrConst, other.m_Object.ptrConst);
+    swap( this->m_ReferenceCount, other.m_ReferenceCount );
+    swap( this->m_Object.ptrConst, other.m_Object.ptrConst );
 
     return *this;
   }
 
   /** Equality operator using pointer.
    */
-  bool operator==(const Self &other) const {
+  bool operator== ( const Self& other ) const 
+  {
     return (this->m_Object.ptrConst == other.m_Object.ptrConst);
   }
-
+  
   /** Inequality operator.
    */
-  bool operator!=(const Self &other) const {
+  bool operator!= ( const Self& other ) const 
+  {
     return (this->m_Object.ptrConst != other.m_Object.ptrConst);
   }
-
+  
   /** "Smaller than" operator (necessay for storing objects in std::map).
    */
-  bool operator<(const Self &other) const {
-    return (this->m_Object.ptrConst < other.m_Object.ptrConst);
+  bool operator< ( const Self& other ) const 
+  {
+    return ( this->m_Object.ptrConst < other.m_Object.ptrConst );
+  }
+  
+  ///Dynamic cast between smart pointer types.
+  template<class T2> 
+  static Self DynamicCastFrom( const T2& from_P )
+  {
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.GetConstPtr() ), from_P.m_ReferenceCount );
   }
 
-  /// Dynamic cast between smart pointer types.
-  template <class T2>
-  static Self DynamicCastFrom(const T2 &from_P) {
-    return Self(dynamic_cast<typename Self::PointerType>(from_P.GetConstPtr()),
-                from_P.m_ReferenceCount);
-  }
-
- protected:
+protected:
   /// Pointer to detached reference counter for this object.
-  mutable SafeCounter *m_ReferenceCount;
-
+  mutable SafeCounter* m_ReferenceCount;
+  
   /// Union for const and non-const pointer for reference-counted object.
-  mutable union {
+  mutable union
+  {
     /// Pointer to const.
-    const T *ptrConst;
+    const T* ptrConst;
     /// Pointer to non-const.
-    T *ptr;
+    T* ptr;
   } m_Object;
-
+  
   /** Construct from dumb pointer and existing reference counter.
    * The reference counter is increased in the process.
    */
-  SmartConstPointer(const T *const object, SafeCounter *const counter) {
+  SmartConstPointer( const T *const object, SafeCounter *const counter ) 
+  {
     this->m_Object.ptrConst = object;
     this->m_ReferenceCount = counter;
     this->m_ReferenceCount->Increment();
   }
-
+  
   /// Make all template instances friends for easy type casting.
-  template <class T2>
-  friend class SmartConstPointer;
+  template<class T2> friend class SmartConstPointer;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // define __cmtkSmartConstPtr_h_included_
+#endif // define __cmtkSmartConstPtr_h_included_

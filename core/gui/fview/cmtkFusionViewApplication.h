@@ -43,55 +43,55 @@
 #include <ui_fviewMainWindow.h>
 
 #include <QtGui/QApplication>
-#include <QtGui/QGraphicsLineItem>
+#include <QtGui/QMainWindow>
+#include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QMainWindow>
+#include <QtGui/QGraphicsLineItem>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Application class for fusion viewer.
-class FusionViewApplication : public QApplication {
+class FusionViewApplication : public QApplication
+{
   Q_OBJECT
 
- public:
+public:
   /// This class.
   typedef FusionViewApplication Self;
 
   /// Constructor.
-  FusionViewApplication(int &argc, char *argv[]);
+  FusionViewApplication( int& argc, char* argv[] );
 
- private slots:
+private slots:
   /// Update displayed fixed image slice.
-  void setFixedSlice(int slice);
+  void setFixedSlice( int slice );
 
   /// Update moving image transparency.
-  void setTransparency(int slice);
+  void setTransparency( int slice );
 
   /// Update flag for displaying linked cursors.
-  void setLinkedCursorFlag(bool flag);
+  void setLinkedCursorFlag( bool flag );
 
   /// Update zoom factor from UI.
-  void changeZoom(QAction *action /*!< Action to set new zoom factor. */);
+  void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
   /// Change fixed image color map.
-  void changeFixedColor(QAction *);
+  void changeFixedColor( QAction* );
 
   /// Change moving image color map.
-  void changeMovingColor(QAction *);
+  void changeMovingColor( QAction* );
 
   /// Update interpolator from UI.
-  void changeInterpolator(
-      QAction *action /*!< Action to set new interpolator. */);
+  void changeInterpolator( QAction* action /*!< Action to set new interpolator. */ );
 
   /// Update transformation model selection from UI.
-  void changeXform(
-      QAction *action /*!< Action to set new transformation model. */);
+  void changeXform( QAction* action /*!< Action to set new transformation model. */ );
 
   /// Update slice direction from UI.
-  void changeSliceDirection(
-      QAction *action /*!< Action to set new slice direction. */);
+  void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
 
   /// Fixed image black/white has changed.
   void fixedBlackWhiteChanged();
@@ -100,28 +100,25 @@ class FusionViewApplication : public QApplication {
   void movingBlackWhiteChanged();
 
   /// Update slice direction from integer.
-  void changeSliceDirection(const int sliceAxis);
+  void changeSliceDirection( const int sliceAxis );
 
   /// Mouse button pressed in one of the graphics views.
-  void mousePressed(QGraphicsSceneMouseEvent *event);
+  void mousePressed( QGraphicsSceneMouseEvent* event );
 
- private:
+private:
   /// Application main window.
-  QMainWindow *m_MainWindow;
+  QMainWindow* m_MainWindow;
 
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
 
   /// Class to bundle fixed and moving image objects.
-  class Data {
-   public:
+  class Data
+  {
+  public:
     /// Default constructor.
-    Data()
-        : m_DataRange(0, 0),
-          m_ColorMapIndex(0),
-          m_View(NULL),
-          m_Scene(NULL),
-          m_PixmapItem(NULL) {
+    Data() : m_DataRange( 0, 0 ), m_ColorMapIndex( 0 ), m_View( NULL ), m_Scene( NULL ), m_PixmapItem( NULL ) 
+    {
       m_CursorLines[0] = m_CursorLines[1] = NULL;
     }
 
@@ -143,18 +140,17 @@ class FusionViewApplication : public QApplication {
     /// QImage for the current slice.
     QImage m_Image;
 
-    /// The graphics view (this is a link to the view created from the main
-    /// window uic).
-    QGraphicsView *m_View;
+    /// The graphics view (this is a link to the view created from the main window uic).
+    QGraphicsView* m_View;
 
     /// The graphics scene for this volume.
-    QGraphicsScene *m_Scene;
+    QGraphicsScene* m_Scene;
 
     /// The pixmap graphics item with mouse events.
-    QGraphicsPixmapItemEvents *m_PixmapItem;
+    QGraphicsPixmapItemEvents* m_PixmapItem;
 
     /// The line items for the cross cursor.
-    QGraphicsLineItem *m_CursorLines[2];
+    QGraphicsLineItem* m_CursorLines[2];
   };
 
   /// The fixed volume data.
@@ -164,9 +160,7 @@ class FusionViewApplication : public QApplication {
   Self::Data m_Moving;
 
   /// Initialize the view data for the given volume (fixed or moving).
-  void InitViewData(Self::Data &data,
-                    /*!< Bundled data for given volume.*/ QGraphicsView *
-                        view /*!< The view we want to attach this volume to.*/);
+  void InitViewData( Self::Data& data, /*!< Bundled data for given volume.*/ QGraphicsView* view /*!< The view we want to attach this volume to.*/ );
 
   /// The list of concatenated transformations.
   XformList m_XformList;
@@ -178,7 +172,7 @@ class FusionViewApplication : public QApplication {
   XformList m_XformListAllAffine;
 
   /** Selection of transformation model.
-   * 0: apply no transformation, 1: apply only affine transformation components,
+   * 0: apply no transformation, 1: apply only affine transformation components, 
    * 2: apply complete nonrigid transformation.
    */
   int m_XformModel;
@@ -199,7 +193,7 @@ class FusionViewApplication : public QApplication {
   float m_ZoomFactor;
 
   /// Scale factors for non-square pixels.
-  FixedVector<3, float> m_ScalePixels;
+  FixedVector<3,float> m_ScalePixels;
 
   /// Moving image transparency.
   float m_Transparency;
@@ -208,7 +202,7 @@ class FusionViewApplication : public QApplication {
   float m_CursorDisplayed;
 
   /// Linked cursor position in 3D.
-  FixedVector<3, float> m_CursorPosition;
+  FixedVector<3,float> m_CursorPosition;
 
   /// Update displayed fixed image slice.
   void UpdateFixedImage();
@@ -220,29 +214,29 @@ class FusionViewApplication : public QApplication {
   void UpdateMovingImage();
 
   /// Make a color table based on the color map index.
-  void MakeColorTable(Self::Data &data);
+  void MakeColorTable( Self::Data& data );
 
   /// Make a QImage from slice data and color table.
-  void MakeImage(QImage &image, const UniformVolume &slice,
-                 const QVector<QRgb> &colorTable, const float blackLevel,
-                 const float whiteLevel);
+  void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 
   /// Update graphics view using a given image.
-  void UpdateView(Self::Data &data, QImage &image);
+  void UpdateView( Self::Data& data, QImage& image );
 
   /// Get 3D coordinate axis corresponding to 2D x axis.
-  int GetAxis2DX() const {
-    static const int idxXtable[3] = {1, 0, 0};
+  int GetAxis2DX() const
+  {
+    static const int idxXtable[3] = { 1, 0, 0 };
     return idxXtable[this->m_SliceAxis];
   }
-
+  
   /// Get 3D coordinate axis corresponding to 2D y axis.
-  int GetAxis2DY() const {
-    static const int idxYtable[3] = {2, 2, 1};
+  int GetAxis2DY() const
+  {
+    static const int idxYtable[3] = { 2, 2, 1 };
     return idxYtable[this->m_SliceAxis];
   }
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkFusionViewApplication_h_included_
+#endif // #ifndef __cmtkFusionViewApplication_h_included_

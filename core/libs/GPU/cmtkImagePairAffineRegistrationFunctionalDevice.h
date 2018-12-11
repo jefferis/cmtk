@@ -39,16 +39,19 @@
 
 #include <GPU/cmtkDeviceUniformVolumeArray.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
 
 /** Functional for affine registration of two images on the GPU.
  */
-class ImagePairAffineRegistrationFunctionalDevice
-    : public ImagePairRegistrationFunctional {
- public:
+class ImagePairAffineRegistrationFunctionalDevice :
+    public ImagePairRegistrationFunctional    
+{
+public:
   /// This class.
   typedef ImagePairAffineRegistrationFunctionalDevice Self;
 
@@ -59,9 +62,7 @@ class ImagePairAffineRegistrationFunctionalDevice
   typedef ImagePairRegistrationFunctional Superclass;
 
   /// Constructor.
-  ImagePairAffineRegistrationFunctionalDevice(
-      UniformVolume::SmartConstPtr &fixedVolume,
-      UniformVolume::SmartConstPtr &movingVolume);
+  ImagePairAffineRegistrationFunctionalDevice( UniformVolume::SmartConstPtr& fixedVolume, UniformVolume::SmartConstPtr& movingVolume );
 
   /// Destructor.
   virtual ~ImagePairAffineRegistrationFunctionalDevice() {}
@@ -69,7 +70,7 @@ class ImagePairAffineRegistrationFunctionalDevice
   /// Compute functional value.
   virtual Self::ReturnType Evaluate();
 
- private:
+private:
   /// Fixed volume on compute device.
   DeviceUniformVolumeArray::SmartPtr m_FixedVolumeOnDevice;
 
@@ -79,6 +80,6 @@ class ImagePairAffineRegistrationFunctionalDevice
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImagePairAffineRegistrationFunctionalDevice_h_included_
+#endif // #ifndef __cmtkImagePairAffineRegistrationFunctionalDevice_h_included_

@@ -36,71 +36,92 @@
 
 #include <Base/cmtkMathUtil.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-template <class T>
-void JointHistogram<T>::GetMarginalEntropies(double &HX, double &HY) const {
+template<class T> void 
+JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY ) 
+  const 
+{
   const T sampleCount = this->SampleCount();
 
-  if (sampleCount > 0) {
+  if ( sampleCount > 0 )
+    {
     HX = HY = 0;
-    for (size_t i = 0; i < NumBinsX; ++i) {
-      const double project = this->ProjectToX(i);
-      if (project) {
-        const double pX = project / sampleCount;
-        HX -= pX * log(pX);
+    for ( size_t i=0; i<NumBinsX; ++i ) 
+      {
+      const double project = this->ProjectToX( i );
+      if ( project ) 
+	{
+	const double pX = project / sampleCount;
+	HX -= pX * log(pX);
+	}
+      }
+  
+    for ( size_t j=0; j<NumBinsY; ++j ) 
+      {
+      const double project = this->ProjectToY( j );
+      if ( project ) 
+	{
+	const double pY = project / sampleCount;
+	HY -= pY * log(pY);
+	}
       }
     }
-
-    for (size_t j = 0; j < NumBinsY; ++j) {
-      const double project = this->ProjectToY(j);
-      if (project) {
-        const double pY = project / sampleCount;
-        HY -= pY * log(pY);
-      }
-    }
-  } else {
+  else
+    {
     HX = HY = 0.0;
-  }
+    }
 }
 
-template <class T>
-double JointHistogram<T>::GetJointEntropy() const {
+template<class T> double
+JointHistogram<T>::GetJointEntropy() const 
+{
   double HXY = 0;
-
+  
   const T sampleCount = this->SampleCount();
-  if (sampleCount > 0) {
-    for (size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx) {
-      if (JointBins[idx]) {
-        const double pXY = ((double)JointBins[idx]) / sampleCount;
-        HXY -= pXY * log(pXY);
+  if ( sampleCount > 0 )
+    {
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
+      {
+      if ( JointBins[idx] ) 
+	{
+	const double pXY = ((double)JointBins[idx]) / sampleCount;
+	HXY -= pXY * log(pXY);
+	}
       }
     }
-  }
 
   return HXY;
 }
 
-template <class T>
-Histogram<T> *JointHistogram<T>::GetMarginalX() const {
-  Histogram<T> *marg = new Histogram<T>(NumBinsX);
-
-  marg->SetRange(this->GetRangeX());
-  for (size_t i = 0; i < NumBinsX; ++i) (*marg)[i] = this->ProjectToX(i);
-
+template<class T> 
+Histogram<T>* 
+JointHistogram<T>::GetMarginalX() const 
+{
+  Histogram<T>* marg = new Histogram<T>( NumBinsX );
+  
+  marg->SetRange( this->GetRangeX() );
+  for ( size_t i = 0; i < NumBinsX; ++i )
+    (*marg)[i] = this->ProjectToX( i );
+  
   return marg;
 }
 
-template <class T>
-Histogram<T> *JointHistogram<T>::GetMarginalY() const {
-  Histogram<T> *marg = new Histogram<T>(NumBinsY);
-
-  marg->SetRange(this->GetRangeY());
-  for (size_t i = 0; i < NumBinsY; ++i) (*marg)[i] = this->ProjectToY(i);
-
+template<class T> 
+Histogram<T>* 
+JointHistogram<T>::GetMarginalY() const 
+{
+  Histogram<T>* marg = new Histogram<T>( NumBinsY );
+  
+  marg->SetRange( this->GetRangeY() );
+  for ( size_t i = 0; i < NumBinsY; ++i )
+    (*marg)[i] = this->ProjectToY( i );
+  
   return marg;
 }
 
@@ -110,4 +131,4 @@ template class JointHistogram<long long int>;
 template class JointHistogram<float>;
 template class JointHistogram<double>;
 
-}  // namespace cmtk
+} // namespace cmtk

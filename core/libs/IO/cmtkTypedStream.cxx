@@ -32,32 +32,35 @@
 
 #include "cmtkTypedStream.h"
 
-#include <System/cmtkConsole.h>
 #include <System/cmtkFileUtils.h>
+#include <System/cmtkConsole.h>
 
-#include <limits.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <cstdarg>
+#include <limits.h>
 
 #ifdef HAVE_MALLOC_H
-#include <malloc.h>
+#  include <malloc.h>
 #endif
 
 #ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
+#  include <sys/time.h>
 #endif
 
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
+#  include <sys/stat.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-TypedStream::TypedStream() {
+TypedStream::TypedStream()
+{
   File = NULL;
   GzFile = NULL;
 
@@ -67,93 +70,117 @@ TypedStream::TypedStream() {
   this->m_Status = Self::ERROR_NONE;
   this->m_DebugFlag = Self::DEBUG_OFF;
 
-  memset(this->Buffer, 0, sizeof(this->Buffer));
+  memset( this->Buffer, 0, sizeof( this->Buffer ) );
   this->BufferKey = this->BufferValue = NULL;
 
   SplitPosition = NULL;
 }
 
-int TypedStream ::StringCmp(const char *s1, const char *s2) {
-  for (; *s1 && *s2; s1++, s2++) {
-    if (*s1 == ' ' || *s1 == '\t' || *s1 == '\n' || *s2 == ' ' || *s2 == '\t' ||
-        *s2 == '\n') {
+int
+TypedStream
+::StringCmp( const char *s1, const char *s2 )
+{
+  for (; *s1 && *s2; s1++, s2++) 
+    {
+    if (*s1 == ' ' || *s1 == '\t' || *s1 == '\n' || *s2 == ' ' || *s2 == '\t' || *s2 == '\n') 
+      {
       break;
-    }
-    if (*s1 == *s2) continue;
-    if (*s1 >= 'a' && *s1 <= 'z') {
-      if (*s1 - ('a' - 'A') == *s2) continue;
-    }
-    if (*s2 >= 'a' && *s2 <= 'z') {
-      if (*s2 - ('a' - 'A') == *s1) continue;
-    }
+      }
+    if (*s1 == *s2)
+      continue;
+    if (*s1 >= 'a' && *s1 <= 'z') 
+      {
+      if (*s1 - ('a'-'A') == *s2)
+	continue;
+      }
+    if (*s2 >= 'a' && *s2 <= 'z') 
+      {
+      if (*s2 - ('a'-'A') == *s1)
+	continue;
+      }
     return 1;
-  }
-
-  if ((*s1 == ' ' || *s1 == '\0' || *s1 == '\t' || *s1 == '\n') &&
-      (*s2 == ' ' || *s2 == '\0' || *s2 == '\t' || *s2 == '\n')) {
+    }
+  
+  if ((*s1 == ' ' || *s1 == '\0' || *s1 == '\t' || *s1 == '\n') && (*s2 == ' ' || *s2 == '\0' || *s2 == '\t' || *s2 == '\n')) 
+    {
     return 0;
-  }
-
+    }
+  
   return 1;
 }
 
-char *TypedStream ::StringSplit(char *s1) const {
-  if (s1) SplitPosition = s1 - 1;
-  if (SplitPosition == NULL) return NULL;
-
+char*
+TypedStream
+::StringSplit( char * s1 ) const
+{
+  if (s1)
+    SplitPosition = s1-1;
+  if (SplitPosition == NULL)
+    return NULL;
+  
   /* skip over leading white space */
-  for (SplitPosition++; *SplitPosition == '\0' || *SplitPosition == ' ' ||
-                        *SplitPosition == '\t' || *SplitPosition == '\n';
-       SplitPosition++)
-    if (*SplitPosition == '\0') return NULL;
-
+  for ( SplitPosition++; *SplitPosition == '\0' || *SplitPosition == ' ' || 
+	  *SplitPosition == '\t' || *SplitPosition == '\n'; SplitPosition++ )
+    if ( *SplitPosition == '\0' )
+      return NULL;
+  
   s1 = SplitPosition;
-
+  
   /* find token's end */
-  if (*SplitPosition == '\"') {
+  if ( *SplitPosition == '\"' ) 
+    {
     /* skip over the special string token */
-    for (SplitPosition++;
-         *SplitPosition && *SplitPosition != '\n' && *SplitPosition != '\t';
-         SplitPosition++) {
-      if (*SplitPosition == '\\' && *(SplitPosition + 1)) {
-        SplitPosition++;
-        continue;
+    for ( SplitPosition++; *SplitPosition && *SplitPosition != '\n' && *SplitPosition != '\t'; SplitPosition++) 
+      {
+      if ( *SplitPosition == '\\' && *(SplitPosition+1) ) 
+	{
+	SplitPosition++;
+	continue;
+	}
+      if ( *SplitPosition == '\"' ) 
+	{
+	SplitPosition++;
+	break;
+	}
       }
-      if (*SplitPosition == '\"') {
-        SplitPosition++;
-        break;
-      }
-    }
-  } else {
+    } 
+  else
+    {
     /* skip over a numeric value */
-    for (; *SplitPosition; SplitPosition++) {
-      if (*SplitPosition == ' ' || *SplitPosition == '\t' ||
-          *SplitPosition == '\n')
-        break;
+    for ( ; *SplitPosition; SplitPosition++ ) 
+      {
+      if ( *SplitPosition == ' ' || *SplitPosition == '\t' || *SplitPosition == '\n')
+	break;
+      }
     }
-  }
-
-  if (*SplitPosition) {
+  
+  if ( *SplitPosition ) 
+    {
     *SplitPosition = '\0';
-  } else {
+    } 
+  else
+    {
     SplitPosition = NULL;
-  }
-
+    }
+  
   return s1;
 }
 
-void TypedStream ::DebugOutput(const char *format, ...) {
-  if (this->m_DebugFlag != Self::DEBUG_ON) return;
+void
+TypedStream
+::DebugOutput( const char* format, ... )
+{
+  if ( this->m_DebugFlag != Self::DEBUG_ON ) return;
 
   static char buffer[1024];
 
   va_list args;
   va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
+  vsnprintf( buffer, sizeof( buffer ), format, args );
   va_end(args);
 
-  fputs(buffer, stderr);
-  fputs("\n", stderr);
+  fputs( buffer, stderr );
+  fputs( "\n", stderr );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

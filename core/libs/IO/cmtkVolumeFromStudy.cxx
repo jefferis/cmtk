@@ -33,115 +33,126 @@
 #include "cmtkVolumeFromStudy.h"
 
 #include <System/cmtkCompressedStream.h>
-#include <System/cmtkConsole.h>
-#include <System/cmtkDebugOutput.h>
-#include <System/cmtkMountPoints.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkMountPoints.h>
 
-#include <IO/cmtkDICOM.h>
-#include <IO/cmtkVolumeFromFile.h>
 #include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkVolumeFromFile.h>
+#include <IO/cmtkDICOM.h>
 
+#include <Base/cmtkVolume.h>
 #include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkVolume.h>
 
-#include <limits.h>
 #include <string.h>
+#include <limits.h>
 
 #ifdef DEBUG
-#include <stdio.h>
+#  include <stdio.h>
 #endif
 
 #include <memory>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-const UniformVolume::SmartPtr VolumeFromStudy::Read(
-    const Study *study, const Types::Coordinate tolerance) {
-  if (!study) return UniformVolume::SmartPtr(NULL);
+const UniformVolume::SmartPtr
+VolumeFromStudy::Read
+( const Study* study, const Types::Coordinate tolerance )
+{
+  if ( !study ) 
+    return UniformVolume::SmartPtr( NULL );
 
-  const StudyImageSet *studyImageSet =
-      dynamic_cast<const StudyImageSet *>(study);
-  if (studyImageSet) {
-    UniformVolume::SmartPtr volume =
-        VolumeFromStudy(tolerance).AssembleVolume(studyImageSet);
-    if (!volume)
-      StdErr << "ERROR: volume assembly failed in directory "
-             << studyImageSet->GetImageDirectory() << "\n";
+  const StudyImageSet* studyImageSet = dynamic_cast<const StudyImageSet*>( study );
+  if ( studyImageSet ) 
+    {
+    UniformVolume::SmartPtr volume = VolumeFromStudy( tolerance ).AssembleVolume( studyImageSet );
+    if ( ! volume )
+      StdErr << "ERROR: volume assembly failed in directory " << studyImageSet->GetImageDirectory() << "\n";
     return volume;
-  } else
-    return VolumeIO::Read(study->GetFileSystemPath());
+    } 
+  else
+    return VolumeIO::Read( study->GetFileSystemPath() );
 }
 
-const UniformVolume::SmartPtr VolumeFromStudy::AssembleVolume(
-    const StudyImageSet *study) {
-  UniformVolume::SmartPtr Result(NULL);
-  const std::string imageDir =
-      MountPoints::Translate(study->GetImageDirectory());
+const UniformVolume::SmartPtr
+VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
+{
+  UniformVolume::SmartPtr Result( NULL );
+  const std::string imageDir = MountPoints::Translate( study->GetImageDirectory() );
 
-  try {
-    DebugOutput(2) << "Reading images from path " << imageDir << "\n";
-
-    Progress::Begin(0, study->size(), 1, "Volume image assembly");
-
+  try
+    {
+    DebugOutput( 2 ) << "Reading images from path " << imageDir << "\n";
+    
+    Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
+    
     unsigned int nextPlane = 0;
     StudyImageSet::const_iterator it = study->begin();
-    while (it != study->end()) {
-      DebugOutput(2) << "\r" << *it;
-
+    while ( it != study->end() ) 
+      {      
+      DebugOutput( 2 ) << "\r" << *it;
+      
       char fullpath[PATH_MAX];
-      snprintf(fullpath, sizeof(fullpath), "%s%c%s", imageDir.c_str(),
-               (int)CMTK_PATH_SEPARATOR, it->c_str());
-
-      ScalarImage::SmartPtr image =
-          ScalarImage::SmartPtr(DICOM::Read(fullpath));
+      snprintf( fullpath, sizeof( fullpath ), "%s%c%s", imageDir.c_str(), (int)CMTK_PATH_SEPARATOR, it->c_str() );
+      
+      ScalarImage::SmartPtr image = ScalarImage::SmartPtr( DICOM::Read( fullpath ) );
 
       // TODO: when returning NULL here, we also should tell
       // VolumeFromSlices that we give up, so it can free its
       // temporary storage.
-      if (!image) return UniformVolume::SmartPtr(NULL);
+      if ( !image ) 
+	return UniformVolume::SmartPtr( NULL );
 
-      if (!nextPlane) {
-        // special treatment for first image in sequence.
-        if (study->GetMultiFile())
-          InitSequence(image, study->size());
-        else
-          InitSequence(image, study->m_Dims[AXIS_Z]);
-      }
-
-      const char *error = FillPlane(nextPlane, image);
-
-      Progress::SetProgress(nextPlane);
-
-      if (error) {
-        StdErr.printf("ERROR: %s: %s\n", fullpath, error);
-        return UniformVolume::SmartPtr(NULL);
-      }
-
+      if ( ! nextPlane ) 
+	{
+	// special treatment for first image in sequence.
+	if ( study->GetMultiFile() )
+	  InitSequence( image, study->size() );
+	else
+	  InitSequence( image, study->m_Dims[AXIS_Z] );
+	}
+      
+      const char *error = FillPlane( nextPlane, image );
+      
+      Progress::SetProgress( nextPlane );
+      
+      if ( error ) 
+	{
+	StdErr.printf( "ERROR: %s: %s\n", fullpath, error );
+	return UniformVolume::SmartPtr( NULL );
+	}
+      
       ++it;
-    }
+      }
     Progress::Done();
-
+    
     Result = this->FinishVolume();
 
-    // If seomthing went wrong constructing the volume, return the NULL pointer
-    // that we just got
-    if (!Result) return Result;
-
+    // If seomthing went wrong constructing the volume, return the NULL pointer that we just got
+    if ( ! Result )
+      return Result;
+    
     TypedArray::SmartPtr data = Result->GetData();
-    if (data) {
-      if (study->GetPadding() && !data->GetPaddingFlag()) {
-        data->SetPaddingValue(study->GetPaddingValue());
+    if ( data ) 
+      {
+      if ( study->GetPadding() && ! data->GetPaddingFlag() ) 
+	{
+	data->SetPaddingValue( study->GetPaddingValue() );
+	}
       }
     }
-  } catch (...) {
-  }
+  catch (...) 
+    {
+    }
 
   return Result;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

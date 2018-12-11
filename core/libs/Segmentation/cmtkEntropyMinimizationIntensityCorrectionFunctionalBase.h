@@ -39,21 +39,25 @@
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkThreads.h>
 
+#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkHistogram.h>
 #include <Base/cmtkLogHistogram.h>
 #include <Base/cmtkTemplateArray.h>
-#include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 /// Base class for entropy-minimzation MR bias correction functional.
-class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
- public:
+class EntropyMinimizationIntensityCorrectionFunctionalBase
+  : public Functional
+{
+public:
   /// This class type.
   typedef EntropyMinimizationIntensityCorrectionFunctionalBase Self;
 
@@ -64,12 +68,13 @@ class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
   typedef Functional Superclass;
 
   /// Constructor.
-  EntropyMinimizationIntensityCorrectionFunctionalBase()
-      : m_InputImageRange(0.0),
-        m_NumberOfPixels(0),
-        m_SamplingDensity(1.0),
-        m_NumberOfHistogramBins(256),
-        m_UseLogIntensities(false) {}
+  EntropyMinimizationIntensityCorrectionFunctionalBase() 
+    : m_InputImageRange( 0.0 ),
+      m_NumberOfPixels( 0 ),
+      m_SamplingDensity( 1.0 ),
+      m_NumberOfHistogramBins( 256 ),
+      m_UseLogIntensities( false )
+  {}
 
   /// Virtual destructor.
   virtual ~EntropyMinimizationIntensityCorrectionFunctionalBase() {}
@@ -78,91 +83,97 @@ class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
   virtual size_t GetNumberOfMonomialsAdd() const = 0;
 
   /// Get number of multiplicative monomials.
-  virtual size_t GetNumberOfMonomialsMul() const = 0;
+  virtual size_t GetNumberOfMonomialsMul() const = 0; 
 
   /// Set input image.
-  virtual void SetInputImage(UniformVolume::SmartConstPtr &inputImage);
+  virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
   /// Set foreground mask.
-  virtual void SetForegroundMask(const UniformVolume &foregroundMask);
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
 
   /// Set sampling density.
-  virtual void SetSamplingDensity(const float samplingDensity) {
+  virtual void SetSamplingDensity( const float samplingDensity )
+  {
     this->m_SamplingDensity = samplingDensity;
   }
 
   /// Set number of histogram bins.
-  virtual void SetNumberOfHistogramBins(const size_t numberOfHistogramBins) {
+  virtual void SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
+  {
     this->m_NumberOfHistogramBins = numberOfHistogramBins;
   }
 
   /** Set flag for use of log intensities for entropy estimation.
-   * Using log intensities compensates for the entropy increase otherwise caused
-   * by spreading distributions of values in brightened areas. This can help
-   * make bias field estimation more robust, potentially without any masking.
+   * Using log intensities compensates for the entropy increase otherwise caused by
+   * spreading distributions of values in brightened areas. This can help make
+   * bias field estimation more robust, potentially without any masking.
    */
-  void SetUseLogIntensities(const bool flag) {
+  void SetUseLogIntensities( const bool flag )
+  {
     this->m_UseLogIntensities = flag;
   }
 
   /// Get corrected output image.
-  virtual UniformVolume::SmartPtr &GetOutputImage(const bool update = false) {
-    if (update) this->UpdateOutputImage(false /*foregroundOnly*/);
-
+  virtual UniformVolume::SmartPtr& GetOutputImage( const bool update = false )
+  {
+    if ( update )
+      this->UpdateOutputImage( false /*foregroundOnly*/);
+    
     return this->m_OutputImage;
   }
 
   /// Update and return corrected output image.
-  virtual UniformVolume::SmartPtr &GetOutputImage(
-      CoordinateVector &v, const bool foregroundOnly = false);
-
+  virtual UniformVolume::SmartPtr& GetOutputImage( CoordinateVector& v, const bool foregroundOnly = false );
+  
   /// Get additive bias field.
-  virtual UniformVolume::SmartPtr GetBiasFieldAdd(
-      const bool updateCompleteImage = false) {
-    if (updateCompleteImage) this->UpdateBiasFieldAdd(false /*foregroundOnly*/);
+  virtual UniformVolume::SmartPtr GetBiasFieldAdd( const bool updateCompleteImage = false )
+  {
+    if ( updateCompleteImage )
+      this->UpdateBiasFieldAdd( false /*foregroundOnly*/ );
 
-    UniformVolume::SmartPtr biasField(this->m_OutputImage->CloneGrid());
-    biasField->SetData(this->m_BiasFieldAdd);
+    UniformVolume::SmartPtr biasField( this->m_OutputImage->CloneGrid() );
+    biasField->SetData( this->m_BiasFieldAdd );
     return biasField;
   }
 
   /// Set additive bias field.
-  virtual void SetBiasFieldAdd(const UniformVolume &biasFieldAdd) {
-    biasFieldAdd.GetData()->BlockCopy(*(this->m_BiasFieldAdd), 0, 0,
-                                      this->m_BiasFieldAdd->GetDataSize());
+  virtual void SetBiasFieldAdd( const UniformVolume& biasFieldAdd )
+  {
+    biasFieldAdd.GetData()->BlockCopy( *(this->m_BiasFieldAdd), 0, 0, this->m_BiasFieldAdd->GetDataSize() );
   }
 
   /// Get multiplicative bias field.
-  virtual UniformVolume::SmartPtr GetBiasFieldMul(
-      const bool updateCompleteImage = false) {
-    if (updateCompleteImage) this->UpdateBiasFieldMul(false /*foregroundOnly*/);
+  virtual UniformVolume::SmartPtr GetBiasFieldMul( const bool updateCompleteImage = false )
+  {
+    if ( updateCompleteImage )
+      this->UpdateBiasFieldMul( false /*foregroundOnly*/ );
 
-    UniformVolume::SmartPtr biasField(this->m_OutputImage->CloneGrid());
-    biasField->SetData(this->m_BiasFieldMul);
+    UniformVolume::SmartPtr biasField( this->m_OutputImage->CloneGrid() );
+    biasField->SetData( this->m_BiasFieldMul );
     return biasField;
   }
 
   /// Set multiplicative bias field.
-  virtual void SetBiasFieldMul(const UniformVolume &biasFieldMul) {
-    biasFieldMul.GetData()->BlockCopy(*(this->m_BiasFieldMul), 0, 0,
-                                      this->m_BiasFieldMul->GetDataSize());
+  virtual void SetBiasFieldMul( const UniformVolume& biasFieldMul )
+  {
+    biasFieldMul.GetData()->BlockCopy( *(this->m_BiasFieldMul), 0, 0, this->m_BiasFieldMul->GetDataSize() );
   }
 
   /// Evaluate functional.
-  virtual Self::ReturnType Evaluate() {
-    return static_cast<Self::ReturnType>(
-        -this->m_OutputImage->GetData()->GetEntropy(*this->m_EntropyHistogram));
+  virtual Self::ReturnType Evaluate()
+  {
+    return static_cast<Self::ReturnType>( -this->m_OutputImage->GetData()->GetEntropy( *this->m_EntropyHistogram ) );
   }
 
   /// Evaluate functional for given parameter vector.
-  virtual Self::ReturnType EvaluateAt(CoordinateVector &v);
+  virtual Self::ReturnType EvaluateAt( CoordinateVector& v );
 
 #ifdef CMTK_BUILD_DEMO
   /// Evaluate functional for given parameter vector.
-  virtual void SnapshotAt(CoordinateVector &v);
+  virtual void SnapshotAt( CoordinateVector& v );
 #endif
 
- protected:
+protected:
   /// Original input image.
   UniformVolume::SmartConstPtr m_InputImage;
 
@@ -188,10 +199,9 @@ class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
   virtual void UpdateCorrectionFactors() = 0;
 
   /** Update output image estimate based on current bias field parameters.
-   *\param foregroundOnly If this flag is set and an image foreground mask is
-   *set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
-  virtual void UpdateOutputImage(const bool foregroundOnly = true);
+  virtual void UpdateOutputImage( const bool foregroundOnly = true );
 
   /// Additive bias field.
   FloatArray::SmartPtr m_BiasFieldAdd;
@@ -200,27 +210,24 @@ class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
   FloatArray::SmartPtr m_BiasFieldMul;
 
   /** Jointly update both bias images.
-   *\param foregroundOnly If this flag is set and an image foreground mask is
-   *set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
-  virtual void UpdateBiasFields(const bool foregroundOnly = true) = 0;
+  virtual void UpdateBiasFields( const bool foregroundOnly = true ) = 0;
 
   /** Update additive bias image.
-   *\param foregroundOnly If this flag is set and an image foreground mask is
-   *set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
-  virtual void UpdateBiasFieldAdd(const bool foregroundOnly = true) = 0;
+  virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true ) = 0;
 
   /** Update additive bias image.
-   *\param foregroundOnly If this flag is set and an image foreground mask is
-   *set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
-  virtual void UpdateBiasFieldMul(const bool foregroundOnly = true) = 0;
+  virtual void UpdateBiasFieldMul( const bool foregroundOnly = true ) = 0;
 
   /// Number of input image pixels.
   size_t m_NumberOfPixels;
 
- protected:
+protected:  
   /** Sampling density.
    * This defines the fraction of foreground pixels that are considered in
    * the computation.
@@ -233,23 +240,23 @@ class EntropyMinimizationIntensityCorrectionFunctionalBase : public Functional {
   /// Flag for using log-intensities for entropy estimation.
   bool m_UseLogIntensities;
 
- private:
+private:  
   /// Class for output image update thread parameters.
-  class UpdateOutputImageThreadParameters : public ThreadParameters<Self> {
-   public:
+  class UpdateOutputImageThreadParameters :
+    public ThreadParameters<Self>
+  {
+  public:
     /// Flag as given to UpdateOutputImage().
     bool m_ForegroundOnly;
   };
 
   /// Thread function: update output image.
-  static void UpdateOutputImageThreadFunc(void *args, const size_t taskIdx,
-                                          const size_t taskCnt, const size_t,
-                                          const size_t);
+  static void UpdateOutputImageThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef
-        // __cmtkEntropyMinimizationIntensityCorrectionFunctionalBase_h_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalBase_h_included_
+

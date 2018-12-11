@@ -34,81 +34,92 @@
 
 #include <stdlib.h>
 
-cmtk::SQLite::SQLite(const std::string &dbPath, const bool readOnly)
-    : m_Good(false), m_DebugMode(false) {
-  if (readOnly) {
-    this->m_Good =
-        (sqlite3_open_v2(dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY,
-                         NULL /*zVFS*/) == SQLITE_OK);
-  } else {
-    this->m_Good = (sqlite3_open_v2(dbPath.c_str(), &this->m_DB,
-                                    SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-                                    NULL /*zVFS*/) == SQLITE_OK);
-  }
+cmtk::SQLite::SQLite
+( const std::string& dbPath, const bool readOnly )
+  : m_Good( false ),
+    m_DebugMode( false )
+{
+  if ( readOnly )
+    {
+    this->m_Good = (sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) == SQLITE_OK);
+    }
+  else
+    {
+    this->m_Good = (sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) == SQLITE_OK);
+    }
 }
 
-cmtk::SQLite::~SQLite() {
-  if (this->m_Good) sqlite3_close(this->m_DB);
+cmtk::SQLite::~SQLite()
+{
+  if ( this->m_Good )
+    sqlite3_close( this->m_DB );
 }
 
-void cmtk::SQLite::Exec(const std::string &sql) {
-  if (!this->Good())
-    throw Self::Exception(
-        "Attempting operation on invalid SQLite database object");
+void
+cmtk::SQLite::Exec( const std::string& sql )
+{
+  if ( ! this->Good() )
+    throw Self::Exception( "Attempting operation on invalid SQLite database object" );
 
-  if (this->m_DebugMode) {
+  if ( this->m_DebugMode )
+    {
     StdErr << sql << "\n";
-  }
+    }
 
-  char *err = NULL;
-  if (sqlite3_exec(this->m_DB, sql.c_str(), NULL, NULL, &err) != SQLITE_OK) {
+  char* err = NULL;
+  if ( sqlite3_exec( this->m_DB, sql.c_str(), NULL, NULL, &err ) != SQLITE_OK )
+    {
     StdErr << "Exec " << sql << "\nSQL error: " << err << "\n";
-    sqlite3_free(err);
-  }
+    sqlite3_free( err );
+    }
 }
 
 /// Callback for SQLite: add rows to results table.
-extern "C" int cmtkSQLiteQueryCallback(void *pTable, int ncols, char **rowdata,
-                                       char **) {
-  cmtk::SQLite::TableType *table =
-      static_cast<cmtk::SQLite::TableType *>(pTable);
+extern "C" 
+int
+cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** )
+{
+  cmtk::SQLite::TableType* table = static_cast<cmtk::SQLite::TableType*>( pTable );
 
-  std::vector<std::string> tableRow(ncols);
-  for (int col = 0; col < ncols; ++col) {
-    if (rowdata[col])
-      tableRow[col] = std::string(rowdata[col]);
+  std::vector< std::string > tableRow( ncols );
+  for ( int col = 0; col < ncols; ++col )
+    {
+    if ( rowdata[col] )
+      tableRow[col] = std::string( rowdata[col] );
     else
-      tableRow[col] = std::string("NULL");
-  }
-  table->push_back(tableRow);
+      tableRow[col] = std::string( "NULL" );
+    }
+  table->push_back( tableRow );
 
   return 0;
 }
 
-void cmtk::SQLite::Query(const std::string &sql,
-                         cmtk::SQLite::TableType &table) const {
-  if (!this->Good())
-    throw Self::Exception(
-        "Attempting operation on invalid SQLite database object");
+void
+cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
+{
+  if ( ! this->Good() )
+    throw Self::Exception( "Attempting operation on invalid SQLite database object" );
 
-  if (this->m_DebugMode) {
+  if ( this->m_DebugMode )
+    {
     StdErr << sql << "\n";
-  }
+    }
 
-  table.resize(0);
+  table.resize( 0 );
 
-  char *err = NULL;
-  if (sqlite3_exec(this->m_DB, sql.c_str(), cmtkSQLiteQueryCallback, &table,
-                   &err) != SQLITE_OK) {
+  char* err = NULL;
+  if ( sqlite3_exec( this->m_DB, sql.c_str(), cmtkSQLiteQueryCallback, &table, &err ) != SQLITE_OK )
+    {
     StdErr << "Query " << sql << "\nSQL error: " << err << "\n";
-    sqlite3_free(err);
-  }
+    sqlite3_free( err );
+    }
 }
 
-bool cmtk::SQLite::TableExists(const std::string &tableName) const {
+bool
+cmtk::SQLite::TableExists( const std::string& tableName ) const
+{
   Self::TableType table;
-  this->Query("SELECT name FROM SQLite_Master WHERE name='" + tableName + "'",
-              table);
+  this->Query( "SELECT name FROM SQLite_Master WHERE name='"+tableName+"'", table );
 
   return table.size() && table[0].size() && (table[0][0] == tableName);
 }

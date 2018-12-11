@@ -38,24 +38,27 @@
 #include <Registration/cmtkOptimizerBase.h>
 #include <Registration/cmtkRegistrationCallback.h>
 
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkMacros.h>
+#include <Base/cmtkFunctional.h>
 #include <Base/cmtkVector.h>
 
 #include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Abstract optimizer.
-class Optimizer :
-    /// Inherit from optimizer base class.
-    public OptimizerBase {
- public:
+class Optimizer : 
+  /// Inherit from optimizer base class.
+  public OptimizerBase
+{
+public:
   /// This class.
   typedef Optimizer Self;
 
@@ -72,100 +75,106 @@ class Optimizer :
    * set to "true" so that after each optimization step the functional is
    * queried for updated steppings.
    */
-  cmtkGetSetMacro(bool, UpdateStepScaleVector);
+  cmtkGetSetMacro(bool,UpdateStepScaleVector);
 
   /** External callback object.
    * This object is called during the optimization, reporting optimization
    * progress to the user and checking for user interrupts.
    */
-  cmtkGetSetMacro(RegistrationCallback::SmartPtr, Callback);
+  cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
 
   /** Optimization functional.
    */
-  cmtkGetSetMacro(Functional::SmartPtr, Functional);
+  cmtkGetSetMacro(Functional::SmartPtr,Functional);
 
   /// Set DeltaF threshold.
-  virtual void SetDeltaFThreshold(const Self::ReturnType value) {
+  virtual void SetDeltaFThreshold( const Self::ReturnType value )
+  {
     this->m_DeltaFThreshold = value;
   }
 
   /// Execute callback if one was set.
-  virtual CallbackResult CallbackExecuteWithData(
-      const CoordinateVector &v, const Self::ReturnType metric) {
-    if (m_Callback) return m_Callback->ExecuteWithData(v, metric);
+  virtual CallbackResult CallbackExecuteWithData( const CoordinateVector &v, const Self::ReturnType metric ) 
+  {
+    if ( m_Callback )
+      return m_Callback->ExecuteWithData( v, metric );
     return CALLBACK_OK;
   }
 
   /// Execute callback if one was set.
-  virtual CallbackResult CallbackExecute() {
-    if (m_Callback) m_Callback->Execute();
+  virtual CallbackResult CallbackExecute()
+  {
+    if ( m_Callback ) 
+      m_Callback->Execute();
     return CALLBACK_OK;
   }
 
   /// Notify callback of an annotation if one exists.
-  virtual void CallbackComment(const char *comment = NULL) {
-    if (m_Callback) m_Callback->Comment(comment);
+  virtual void CallbackComment ( const char* comment = NULL ) 
+  {
+    if ( m_Callback ) 
+      m_Callback->Comment( comment );
   }
 
   /// Return dimension of search space.
-  virtual unsigned int GetSearchSpaceDimension() const {
+  virtual unsigned int GetSearchSpaceDimension() const 
+  {
     return this->m_Functional->VariableParamVectorDim();
   }
 
   /// Return parameter stepping.
-  virtual Self::ParameterType GetParamStep(
-      unsigned int idx, const Self::ParameterType mmStep = 1.0) const {
-    return this->m_Functional->GetParamStep(idx, mmStep);
+  virtual Self::ParameterType GetParamStep( unsigned int idx, const Self::ParameterType mmStep = 1.0 ) const 
+  {
+    return this->m_Functional->GetParamStep( idx, mmStep );
   }
 
   /// Return functional value.
-  virtual Self::ReturnType Evaluate(CoordinateVector &v) {
-    return this->m_Functional->EvaluateAt(v);
+  virtual Self::ReturnType Evaluate ( CoordinateVector& v ) 
+  {
+    return this->m_Functional->EvaluateAt( v );
   }
 
   /// Evaluate functional and also return its gradient.
-  virtual Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &directionVector,
-      const Self::ParameterType step = 1) {
-    return this->m_Functional->EvaluateWithGradient(v, directionVector, step);
+  virtual Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& directionVector, const Self::ParameterType step = 1 ) 
+  {
+    return this->m_Functional->EvaluateWithGradient( v, directionVector, step );
   }
 
   /// Default constructor.
   Optimizer()
-      : m_Callback(NULL),
-        m_Functional(NULL),
-        m_LastOptimizeChangedParameters(false),
-        m_DeltaFThreshold(0.0) {
+    : m_Callback( NULL ),
+      m_Functional( NULL ),
+      m_LastOptimizeChangedParameters( false ),
+      m_DeltaFThreshold( 0.0 )
+  {
     this->m_UpdateStepScaleVector = false;
   }
 
   /// Virtual destructor.
-  virtual ~Optimizer() {}
+  virtual ~Optimizer () {}
 
   /// Interface: Optimize functional.
-  virtual CallbackResult Optimize(CoordinateVector &,
-                                  const Self::ParameterType = 1,
-                                  const Self::ParameterType = 0) = 0;
+  virtual CallbackResult Optimize( CoordinateVector&, const Self::ParameterType = 1, const Self::ParameterType = 0 ) = 0;
 
   /// Get flag to check whether previous call to Optimize() changed parameters.
-  bool GetLastOptimizeChangedParameters() const {
+  bool GetLastOptimizeChangedParameters() const
+  {
     return this->m_LastOptimizeChangedParameters;
   }
 
- protected:
-  /// Flag whether the last call to Optimize() made any changes to functional
-  /// parameters.
+protected:
+  /// Flag whether the last call to Optimize() made any changes to functional parameters.
   bool m_LastOptimizeChangedParameters;
 
   /** Threshold for termination based on change of target function.
-   * Optimization should terminate if the relative change of the target function
-   * in one step falls below this threshold.
+   * Optimization should terminate if the relative change of the target function in one step
+   * falls below this threshold.
    */
   Self::ReturnType m_DeltaFThreshold;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef __cmtkOptimizer_h_included_
+#endif // #ifdef __cmtkOptimizer_h_included_

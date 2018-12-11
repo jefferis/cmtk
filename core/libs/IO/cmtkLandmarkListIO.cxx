@@ -34,21 +34,25 @@
 
 #include <IO/cmtkLandmarkIO.h>
 
-std::ostream &operator<<(std::ostream &stream,
-                         const cmtk::LandmarkList &lmList) {
-  for (cmtk::LandmarkList::const_iterator it = lmList.begin();
-       it != lmList.end(); ++it) {
+std::ostream& operator<<( std::ostream& stream, const cmtk::LandmarkList& lmList )
+{
+  for ( cmtk::LandmarkList::const_iterator it = lmList.begin(); it != lmList.end(); ++it )
+    {
     stream << *it;
-  }
+    }
   return stream;
 }
 
 /// Landmark input operator.
-std::istream &operator>>(std::istream &stream, cmtk::LandmarkList &lmList) {
+std::istream& operator>>( std::istream& stream, cmtk::LandmarkList& lmList )
+{
   cmtk::Landmark lm;
-  while (!stream.eof()) {
+  while ( !stream.eof() )
+    {
     stream >> lm;
-    if (!stream.fail()) lmList.push_back(lm);
-  }
+    if ( ! stream.fail() )
+      lmList.push_back( lm );
+    }
   return stream;
 }
+

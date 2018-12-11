@@ -33,52 +33,34 @@
 #include "cmtkUniformVolume.h"
 
 const cmtk::UniformVolume::CoordinateVectorType
-cmtk::UniformVolume ::GetGradientAt(const Types::GridIndexType i,
-                                    const Types::GridIndexType j,
-                                    const Types::GridIndexType k) {
+cmtk::UniformVolume
+::GetGradientAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k )
+{
   Self::CoordinateVectorType g;
-  g[0] = (this->GetDataAt(i + 1, j, k) - this->GetDataAt(i - 1, j, k)) /
-         (2 * this->m_Delta[0]);
-  g[1] = (this->GetDataAt(i, j + 1, k) - this->GetDataAt(i, j - 1, k)) /
-         (2 * this->m_Delta[1]);
-  g[2] = (this->GetDataAt(i, j, k + 1) - this->GetDataAt(i, j, k - 1)) /
-         (2 * this->m_Delta[2]);
+  g[0] = (this->GetDataAt( i+1, j, k ) - this->GetDataAt( i-1, j, k )) / (2*this->m_Delta[0]);
+  g[1] = (this->GetDataAt( i, j+1, k ) - this->GetDataAt( i, j-1, k )) / (2*this->m_Delta[1]);
+  g[2] = (this->GetDataAt( i, j, k+1 ) - this->GetDataAt( i, j, k-1 )) / (2*this->m_Delta[2]);
   return g;
 }
 
-cmtk::Matrix3x3<cmtk::Types::DataItem> cmtk::UniformVolume ::GetHessianAt(
-    const Types::GridIndexType i, const Types::GridIndexType j,
-    const Types::GridIndexType k) {
+cmtk::Matrix3x3<cmtk::Types::DataItem>
+cmtk::UniformVolume
+::GetHessianAt( const Types::GridIndexType i, const Types::GridIndexType j, const Types::GridIndexType k )
+{
   cmtk::Matrix3x3<Types::DataItem> H;
-  // implementation following central differences formulas from
-  // http://www.technion.ac.il/docs/sas/ormp/chap5/sect28.htm
+// implementation following central differences formulas from http://www.technion.ac.il/docs/sas/ormp/chap5/sect28.htm
 
-  const Types::DataItem central = 30 * this->GetDataAt(i, j, k);
-  H[0][0] = (-this->GetDataAt(i + 2, j, k) + 16 * this->GetDataAt(i + 1, j, k) -
-             central + 16 * this->GetDataAt(i - 1, j, k) -
-             this->GetDataAt(i - 2, j, k)) /
-            (12 * this->m_Delta[0] * this->m_Delta[0]);
-  H[1][1] = (-this->GetDataAt(i, j + 2, k) + 16 * this->GetDataAt(i, j + 1, k) -
-             central + 16 * this->GetDataAt(i, j - 1, k) -
-             this->GetDataAt(i, j - 2, k)) /
-            (12 * this->m_Delta[1] * this->m_Delta[1]);
-  H[2][2] = (-this->GetDataAt(i, j, k + 2) + 16 * this->GetDataAt(i, j, k + 1) -
-             central + 16 * this->GetDataAt(i, j, k - 1) -
-             this->GetDataAt(i, j, k - 2)) /
-            (12 * this->m_Delta[2] * this->m_Delta[2]);
-
-  H[0][1] = H[1][0] =
-      (this->GetDataAt(i + 1, j + 1, k) - this->GetDataAt(i + 1, j - 1, k) -
-       this->GetDataAt(i - 1, j + 1, k) + this->GetDataAt(i - 1, j - 1, k)) /
-      (4 * this->m_Delta[0] * this->m_Delta[1]);
-  H[0][2] = H[2][0] =
-      (this->GetDataAt(i + 1, j, k + 1) - this->GetDataAt(i + 1, j, k - 1) -
-       this->GetDataAt(i - 1, j, k + 1) + this->GetDataAt(i - 1, j, k - 1)) /
-      (4 * this->m_Delta[0] * this->m_Delta[2]);
-  H[1][2] = H[2][1] =
-      (this->GetDataAt(i, j + 1, k + 1) - this->GetDataAt(i, j + 1, k - 1) -
-       this->GetDataAt(i, j - 1, k + 1) + this->GetDataAt(i, j - 1, k - 1)) /
-      (4 * this->m_Delta[1] * this->m_Delta[2]);
+  const Types::DataItem central = 30 * this->GetDataAt( i, j, k );
+  H[0][0] = (-this->GetDataAt( i+2, j, k ) + 16 * this->GetDataAt( i+1, j, k ) - central + 16 * this->GetDataAt( i-1, j, k ) - this->GetDataAt( i-2, j, k ))
+    / ( 12 * this->m_Delta[0] * this->m_Delta[0] );
+  H[1][1] = (-this->GetDataAt( i, j+2, k ) + 16 * this->GetDataAt( i, j+1, k ) - central + 16 * this->GetDataAt( i, j-1, k ) - this->GetDataAt( i, j-2, k ))
+    / ( 12 * this->m_Delta[1] * this->m_Delta[1] );
+  H[2][2] = (-this->GetDataAt( i, j, k+2 ) + 16 * this->GetDataAt( i, j, k+1 ) - central + 16 * this->GetDataAt( i, j, k-1 ) - this->GetDataAt( i, j, k-2 ))
+    / ( 12 * this->m_Delta[2] * this->m_Delta[2] );
+  
+  H[0][1] = H[1][0] = (this->GetDataAt( i+1, j+1, k ) - this->GetDataAt( i+1, j-1, k ) - this->GetDataAt( i-1, j+1, k ) + this->GetDataAt( i-1, j-1, k )) / ( 4 * this->m_Delta[0] * this->m_Delta[1] );
+  H[0][2] = H[2][0] = (this->GetDataAt( i+1, j, k+1 ) - this->GetDataAt( i+1, j, k-1 ) - this->GetDataAt( i-1, j, k+1 ) + this->GetDataAt( i-1, j, k-1 )) / ( 4 * this->m_Delta[0] * this->m_Delta[2] );
+  H[1][2] = H[2][1] = (this->GetDataAt( i, j+1, k+1 ) - this->GetDataAt( i, j+1, k-1 ) - this->GetDataAt( i, j-1, k+1 ) + this->GetDataAt( i, j-1, k-1 )) / ( 4 * this->m_Delta[1] * this->m_Delta[2] );
 
   return H;
 }

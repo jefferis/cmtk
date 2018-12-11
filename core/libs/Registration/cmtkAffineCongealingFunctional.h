@@ -39,7 +39,9 @@
 
 #include <Base/cmtkAffineXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -50,7 +52,7 @@ namespace cmtk {
  *
  *\section refs References
  *
- * [1] L . Zöllei, E. Learned-Miller, E. Grimson, W.M. Wells III: "Efficient
+ * [1] L . Zöllei, E. Learned-Miller, E. Grimson, W.M. Wells III: "Efficient 
  *     Population Registration of 3D Data", ICCV 2005, Computer Vision for
  *     Biomedical Image Applications; Beijing, China
  */
@@ -58,6 +60,6 @@ typedef CongealingFunctional<AffineXform> AffineCongealingFunctional;
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkAffineCongealingFunctional_h_included_
+#endif // #ifndef __cmtkAffineCongealingFunctional_h_included_

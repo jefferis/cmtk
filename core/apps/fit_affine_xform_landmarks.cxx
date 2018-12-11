@@ -32,109 +32,99 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
-#include <System/cmtkExitException.h>
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkAffineXform.h>
+#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkFitAffineToLandmarks.h>
 #include <Base/cmtkFitRigidToLandmarks.h>
-#include <Base/cmtkLandmarkPairList.h>
 
 #include <IO/cmtkLandmarkListIO.h>
 #include <IO/cmtkXformIO.h>
 
 #include <fstream>
 
-int doMain(const int argc, const char *argv[]) {
+int
+doMain ( const int argc, const char *argv[] ) 
+{
   std::string lmSourcePath;
   std::string lmTargetPath;
   std::string outputPath;
 
   bool rigid = false;
 
-  try {
+  try
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Fit Affine Transformation to Landmarks");
-    cl.SetProgramInfo(
-        cmtk::CommandLine::PRG_DESCR,
-        "Fit a linear affine transformation to a set of matched landmarks.");
-
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fit Affine Transformation to Landmarks" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a linear affine transformation to a set of matched landmarks." );
+    
     typedef cmtk::CommandLine::Key Key;
-    cl.AddParameter(&lmSourcePath, "SourcePath",
-                    "Path to file with source-space landmarks.");
-    cl.AddParameter(&lmTargetPath, "TargetPath",
-                    "Path to file with target-space landmarks.");
+    cl.AddParameter( &lmSourcePath, "SourcePath", "Path to file with source-space landmarks." );
+    cl.AddParameter( &lmTargetPath, "TargetPath", "Path to file with target-space landmarks." );
 
-    cl.AddSwitch(Key("rigid"), &rigid, true,
-                 "Fit only a rigid, 6 degree-of-freedom transformation rather "
-                 "than full affine. This requires fewer landmarks and makes "
-                 "less trict assumptions about their location "
-                 "(i.e., three non-collinear landmarks are sufficient to "
-                 "obtain a rigid transformation.");
-
-    cl.AddParameter(&outputPath, "OutputXform",
-                    "Path for output fitted affine transformation.")
-        ->SetProperties(cmtk::CommandLine::PROPS_XFORM |
-                        cmtk::CommandLine::PROPS_OUTPUT);
-
-    cl.Parse(argc, argv);
-  } catch (const cmtk::CommandLine::Exception &e) {
+    cl.AddSwitch( Key( "rigid" ), &rigid, true, "Fit only a rigid, 6 degree-of-freedom transformation rather than full affine. This requires fewer landmarks and makes less trict assumptions about their location "
+		  "(i.e., three non-collinear landmarks are sufficient to obtain a rigid transformation." );
+    
+    cl.AddParameter( &outputPath, "OutputXform", "Path for output fitted affine transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    
+    cl.Parse( argc, argv );
+    }
+  catch ( const cmtk::CommandLine::Exception& e )
+    {
     cmtk::StdErr << e;
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
 
-  std::ifstream lmSourceStream(lmSourcePath.c_str());
-  if (!lmSourceStream.good()) {
-    cmtk::StdErr << "ERROR: could not open source landmark file "
-                 << lmSourcePath << "\n";
-    throw cmtk::ExitException(1);
-  }
+  std::ifstream lmSourceStream( lmSourcePath.c_str() );
+  if ( !lmSourceStream.good() )
+    {
+    cmtk::StdErr << "ERROR: could not open source landmark file " << lmSourcePath << "\n";
+    throw cmtk::ExitException( 1 );
+    }
 
   cmtk::LandmarkList sourceLandmarks;
   lmSourceStream >> sourceLandmarks;
 
-  cmtk::DebugOutput(5) << "Read " << sourceLandmarks.size()
-                       << " source landmarks\n";
+  cmtk::DebugOutput( 5 ) << "Read " << sourceLandmarks.size() << " source landmarks\n";
 
-  std::ifstream lmTargetStream(lmTargetPath.c_str());
-  if (!lmTargetStream.good()) {
-    cmtk::StdErr << "ERROR: could not open target landmark file "
-                 << lmTargetPath << "\n";
-    throw cmtk::ExitException(1);
-  }
+  std::ifstream lmTargetStream( lmTargetPath.c_str() );
+  if ( !lmTargetStream.good() )
+    {
+    cmtk::StdErr << "ERROR: could not open target landmark file " << lmTargetPath << "\n";
+    throw cmtk::ExitException( 1 );
+    }
 
   cmtk::LandmarkList targetLandmarks;
   lmTargetStream >> targetLandmarks;
 
-  cmtk::DebugOutput(5) << "Read " << targetLandmarks.size()
-                       << " target landmarks\n";
+  cmtk::DebugOutput( 5 ) << "Read " << targetLandmarks.size() << " target landmarks\n";
 
-  cmtk::LandmarkPairList landmarkPairs(sourceLandmarks, targetLandmarks);
-  cmtk::DebugOutput(5) << "Matched " << landmarkPairs.size()
-                       << " landmark pairs\n";
+  cmtk::LandmarkPairList landmarkPairs( sourceLandmarks, targetLandmarks );
+  cmtk::DebugOutput( 5 ) << "Matched " << landmarkPairs.size() << " landmark pairs\n";
 
   cmtk::AffineXform::SmartConstPtr xform;
-  try {
-    xform = cmtk::AffineXform::SmartConstPtr(
-        rigid ? cmtk::FitRigidToLandmarks(landmarkPairs).GetRigidXform()
-              : cmtk::FitAffineToLandmarks(landmarkPairs).GetAffineXform());
-  } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
-    cmtk::StdErr << "ERROR: singular matrix encountered in "
-                    "cmtk::FitRigidToLandmarks or cmtk::FitAffineToLandmarks\n";
-    throw cmtk::ExitException(1);
-  }
+  try 
+    {
+    xform = cmtk::AffineXform::SmartConstPtr( rigid ? cmtk::FitRigidToLandmarks( landmarkPairs ).GetRigidXform() : cmtk::FitAffineToLandmarks( landmarkPairs ).GetAffineXform() );
+    }
+  catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::FitRigidToLandmarks or cmtk::FitAffineToLandmarks\n";
+    throw cmtk::ExitException( 1 );
+    }      
 
-  cmtk::XformIO::Write(xform, outputPath);
+  cmtk::XformIO::Write( xform, outputPath );
 
-  if (cmtk::DebugOutput::GetGlobalLevel() >= 5) {
-    cmtk::DebugOutput(5) << "INFO: RMS fitting residual = "
-                         << sqrt(xform->GetLandmarksMSD(landmarkPairs)) << "\n";
-  }
-
+  if ( cmtk::DebugOutput::GetGlobalLevel() >= 5 )
+    {
+    cmtk::DebugOutput( 5 ) << "INFO: RMS fitting residual = " << sqrt( xform->GetLandmarksMSD( landmarkPairs ) ) << "\n";
+    }
+  
   return 0;
 }
 

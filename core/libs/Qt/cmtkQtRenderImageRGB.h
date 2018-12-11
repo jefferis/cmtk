@@ -37,11 +37,11 @@
 
 #include <Pipeline/cmtkRenderer.h>
 
-#include <QtCore/qobject.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpixmap.h>
-#include <QtWidgets/qwidget.h>
+#include <qobject.h>
+#include <qwidget.h>
+#include <qimage.h>
+#include <qpixmap.h>
+#include <qpaintdevice.h>
 
 #include <Base/cmtkMacros.h>
 #include <Base/cmtkTypes.h>
@@ -49,7 +49,9 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
@@ -57,20 +59,21 @@ namespace cmtk {
 /** Class to render RGB images in Qt.
  */
 class QtRenderImageRGB :
-    /// Inherit from QImage for Qt display features.
-    public QWidget,
-    /// Inherit from Renderer pipeline object.
-    public Renderer {
+  /// Inherit from QImage for Qt display features.
+  public QWidget,
+  /// Inherit from Renderer pipeline object.
+  public Renderer
+{
   Q_OBJECT
 
   /// Zoom factor.
-  igsClassParameter(unsigned int, ZoomFactorPercent);
+  igsClassParameter(unsigned int,ZoomFactorPercent);
 
   /// Flip image in x-direction.
-  igsClassParameter(bool, FlipX);
+  igsClassParameter(bool,FlipX);
 
   /// Flip image in y-direction.
-  igsClassParameter(bool, FlipY);
+  igsClassParameter(bool,FlipY);
 
   /// Aspect mode constants.
   typedef enum {
@@ -85,20 +88,20 @@ class QtRenderImageRGB :
   } AspectMode;
 
   /// Flip image in y-direction.
-  igsClassParameter(AspectMode, ImageAspectMode);
+  igsClassParameter(AspectMode,ImageAspectMode);
 
   /// Crosshair mode.
-  igsClassParameter(bool, CrosshairMode);
+  igsClassParameter(bool,CrosshairMode);
 
   /// Crosshair position.
-  igsClassParameter2Array(unsigned int, CrosshairPosition);
+  igsClassParameter2Array(unsigned int,CrosshairPosition);
 
   /// Crosshair colors.
-  igsClassParameter2Array(QColor, CrosshairColors);
+  igsClassParameter2Array(QColor,CrosshairColors);
 
- public:
+public:
   /// Constructor.
-  QtRenderImageRGB(QWidget *const parent = 0, Qt::WindowFlags f = 0);
+  QtRenderImageRGB( QWidget *const parent = 0, Qt::WFlags f = 0 );
 
   /// Destructor.
   virtual ~QtRenderImageRGB();
@@ -110,42 +113,42 @@ class QtRenderImageRGB :
   QPixmap GetPixmap();
 
   /// Render to given paint device.
-  void RenderTo(QPaintDevice *pd);
+  void RenderTo( QPaintDevice *pd );
 
   /// Render this image.
-  virtual void Render() {
+  virtual void Render()
+  {
     this->Renderer::Render();
     this->update();
   }
 
- signals:
+signals:
   /// This signal is emitted when a mouse button is pressed on the widget.
-  void signalMousePressed(Qt::MouseButton button, int x, int y);
+  void signalMousePressed( Qt::MouseButton button, int x, int y );
 
   /// This signal is emitted when a mouse button is pressed on the widget.
-  void signalMouse3D(Qt::MouseButton button, const Vector3D &v);
+  void signalMouse3D( Qt::MouseButton button, const Vector3D& v );
 
- protected:
+protected:
   /// Repaint widget.
-  virtual void paintEvent(QPaintEvent *const);
+  virtual void paintEvent( QPaintEvent *const );
 
   /// React to mouse clicks (generate a signal).
-  virtual void mousePressEvent(QMouseEvent *e);
+  virtual void mousePressEvent( QMouseEvent *e );
 
   /// React to mouse dragging (generate a signal).
-  virtual void mouseMoveEvent(QMouseEvent *e);
+  virtual void mouseMoveEvent( QMouseEvent *e );
 
- private:
+private:
   /// Intermediate QImage object for painting.
   QImage Image;
 
   /// Draw crosshair.
-  void DrawCrosshair(QPainter &painter, const unsigned int width,
-                     const unsigned int height) const;
+  void DrawCrosshair( QPainter &painter, const unsigned int width, const unsigned int height ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQtRenderImageRGB_h_included_
+#endif // #ifndef __cmtkQtRenderImageRGB_h_included_

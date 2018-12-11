@@ -1,7 +1,6 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -35,22 +34,25 @@
 
 #include <cmtkconfig.h>
 
-#include <QtGui/QPixmap>
+#include <qpixmap.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
 /// Collection of general-purpose icons for Qt applications.
-class QtIcons {
- public:
+class QtIcons 
+{
+public:
   /// Generic IGL window icon.
   static QPixmap WindowIcon();
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQtIcons_h_included_
+#endif // #ifndef __cmtkQtIcons_h_included_

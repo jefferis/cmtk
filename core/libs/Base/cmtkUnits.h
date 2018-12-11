@@ -35,66 +35,86 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-/// Classes for type-safe values with physical units, and automatic conversions
-/// between them.
-namespace Units {
+/// Classes for type-safe values with physical units, and automatic conversions between them.
+namespace
+Units
+{
 
 /// Base class for a value with a physical unit.
-class UnitBase {
- public:
+class UnitBase
+{
+public:
   /// Constructor.
-  explicit UnitBase(const double value) : m_Value(value){};
+  explicit UnitBase( const double value ) : m_Value( value ) {};
 
   /// Get value.
-  double Value() const { return this->m_Value; }
+  double Value() const
+  {
+    return this->m_Value;
+  }
 
   /// Constant: pi.
-  static double Pi() { return 3.14159265358979323846; }
-
- private:
+  static double Pi()
+  {
+    return 3.14159265358979323846;
+  }
+  
+private:
   /// Actual value.
   double m_Value;
 };
 
 /// Template for arithmetic on units (treated as a vector space)
-template <class T>
-class Arithmetic {
- public:
+template<class T>
+class Arithmetic
+{
+public:
   /// Left-hand scalar multiplication.
-  friend const T operator*(const double lhs, const T &rhs) {
-    return T(lhs * rhs.Value());
+  friend const T operator*( const double lhs, const T& rhs )
+  {
+    return T( lhs * rhs.Value() );
   }
 
   /// Right-hand scalar multiplication.
-  friend const T operator*(const T &lhs, const double rhs) {
-    return T(lhs.Value() * rhs);
+  friend const T operator*( const T& lhs, const double rhs )
+  {
+    return T( lhs.Value() * rhs );
   }
 
   /// Right-hand scalar division.
-  friend const T operator/(const T &lhs, const double rhs) {
-    return T(lhs.Value() / rhs);
+  friend const T operator/( const T& lhs, const double rhs )
+  {
+    return T( lhs.Value() / rhs );
   }
 
   /// Addition.
-  friend const T operator+(const T &lhs, const T &rhs) {
-    return T(lhs.Value() + rhs.Value());
+  friend const T operator+( const T& lhs, const T& rhs )
+  {
+    return T( lhs.Value() + rhs.Value() );
   }
 
   /// Subtraction.
-  friend const T operator-(const T &lhs, const T &rhs) {
-    return T(lhs.Value() - rhs.Value());
+  friend const T operator-( const T& lhs, const T& rhs )
+  {
+    return T( lhs.Value() - rhs.Value() );
   }
 
   /// Negation.
-  friend const T operator-(const T &rhs) { return T(-rhs.Value()); }
+  friend const T operator-( const T& rhs )
+  {
+    return T( -rhs.Value() );
+  }
 
   /// Less-than operator
-  friend bool operator<(const T &lhs, const T &rhs) {
+  friend bool operator<( const T& lhs, const T& rhs )
+  {
     return lhs.Value() < rhs.Value();
   }
 };
@@ -103,62 +123,66 @@ class Arithmetic {
 class Radians;
 
 /// Angle of rotation in degrees.
-class Degrees : public UnitBase, public Arithmetic<Degrees> {
- public:
+class Degrees :
+    public UnitBase, public Arithmetic<Degrees>
+{
+public:
   /// Constructor.
-  explicit Degrees(const double value = 0) : UnitBase(value){};
+  explicit Degrees( const double value = 0 ) : UnitBase( value ) {};
 
   /// Conversion constructor.
-  inline Degrees(const Radians &radians);
+  inline Degrees( const Radians& radians );
 };
 
 /// Angle of rotation in radians.
-class Radians : public UnitBase, public Arithmetic<Radians> {
- public:
+class Radians :
+    public UnitBase, public Arithmetic<Radians>
+{
+public:
   /// Constructor.
-  explicit Radians(const double value = 0) : UnitBase(value){};
+  explicit Radians( const double value = 0 ) : UnitBase( value ) {};
 
   /// Conversion constructor.
-  inline Radians(const Degrees &degrees);
+  inline Radians( const Degrees& degrees );
 };
 
-inline Degrees::Degrees(const Radians &radians)
-    : UnitBase(radians.Value() / (UnitBase::Pi() / 180)) {}
-inline Radians::Radians(const Degrees &degrees)
-    : UnitBase(degrees.Value() * (UnitBase::Pi() / 180)) {}
+inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / (UnitBase::Pi() / 180) ) {}
+inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * (UnitBase::Pi() / 180) ) {}
 
 /// Forward declaration.
 class GaussianFWHM;
 
 /// Parameter "\sigma" of Gaussian kernel
-class GaussianSigma : public UnitBase, public Arithmetic<GaussianSigma> {
- public:
+class GaussianSigma :
+    public UnitBase, public Arithmetic<GaussianSigma>
+{
+public:
   /// Constructor.
-  explicit GaussianSigma(const double value = 0) : UnitBase(value){};
+  explicit GaussianSigma( const double value = 0 ) : UnitBase( value ) {};
 
   /// Conversion constructor.
-  inline GaussianSigma(const GaussianFWHM &radians);
+  inline GaussianSigma( const GaussianFWHM& radians );
 };
 
 /// Full width at half maximum of Gaussian kernel.
-class GaussianFWHM : public UnitBase, public Arithmetic<GaussianFWHM> {
- public:
+class GaussianFWHM :
+    public UnitBase, public Arithmetic<GaussianFWHM>
+{
+public:
   /// Constructor.
-  explicit GaussianFWHM(const double value = 0) : UnitBase(value){};
+  explicit GaussianFWHM( const double value = 0 ) : UnitBase( value ) {};
 
   /// Conversion constructor.
-  inline GaussianFWHM(const GaussianSigma &degrees);
+  inline GaussianFWHM( const GaussianSigma& degrees );
 };
 
-inline GaussianSigma::GaussianSigma(const GaussianFWHM &fwhm)
-    : UnitBase(fwhm.Value() / 2.354820045) {}
-inline GaussianFWHM::GaussianFWHM(const GaussianSigma &sigma)
-    : UnitBase(sigma.Value() * 2.354820045) {}
+inline GaussianSigma::GaussianSigma( const GaussianFWHM& fwhm ) : UnitBase( fwhm.Value() / 2.354820045 ) {}
+inline GaussianFWHM::GaussianFWHM( const GaussianSigma& sigma ) : UnitBase( sigma.Value() * 2.354820045 ) {}
 
-}  // namespace Units
+}
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #define __cmtkUnits_h_included_
+#endif // #define __cmtkUnits_h_included_

@@ -35,28 +35,32 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkAnatomicalOrientation.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
 #include <IO/cmtkFileFormat.h>
 #include <IO/cmtkTypedStream.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** Class for input/output of 3-D image data.
  * This class is an easy-to-use wrapper around all low-level image readers and
- * writers.
+ * writers. 
  *
- * An image can be read, for example from a Nifti/Analyze file pair, simply as
- * follows: \code cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read(
- * "image.hdr" ) ); \endcode
+ * An image can be read, for example from a Nifti/Analyze file pair, simply as follows:
+ * \code
+ *  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read( "image.hdr" ) );
+ * \endcode
  *
- * Note that we typically want images to be oriented consistently, so the
- * preferred reader call would be: \code cmtk::UniformVolume::SmartPtr volume(
- * cmtk::VolumeIO::ReadOriented( "image.hdr" ); \endcode
+ * Note that we typically want images to be oriented consistently, so the preferred reader call would be:
+ * \code
+ *  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( "image.hdr" );
+ * \endcode
  *
  * Similarly, we can write an image simply by calling
  * \code
@@ -67,89 +71,93 @@ namespace cmtk {
  * \see VolumeIO::Write
  * for more details.
  */
-class VolumeIO {
- public:
+class VolumeIO 
+{
+public:
   /// This class.
   typedef VolumeIO Self;
 
   /// Read volume data from filesystem.
-  static UniformVolume::SmartPtr Read(const std::string &path);
+  static UniformVolume::SmartPtr Read( const std::string& path );
 
   /// Read grid only from filesystem.
-  static UniformVolume::SmartPtr ReadGrid(const std::string &path);
+  static UniformVolume::SmartPtr ReadGrid( const std::string& path );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented(const std::string &path,
-                                                  const char *orientation);
+  static UniformVolume::SmartPtr ReadGridOriented( const std::string& path, const char* orientation );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented(const std::string &path) {
-    return Self::ReadGridOriented(path,
-                                  AnatomicalOrientation::ORIENTATION_STANDARD);
+  static UniformVolume::SmartPtr ReadGridOriented( const std::string& path )
+  {
+    return Self::ReadGridOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }
 
-  /** Read image from filesystem and reorient to align anatomy with coordinate
-   *axes. \param path Filesystem path of the image to read. \param orientation
-   *Three-character orientation code. The image will be brought into the
-   *orientation specified by this string. Default is "RAS", i.e., the returned
-   *image will be oriented so that the positive x axis is aligned with the
-   *anatomical L/R (left/right) direction, the y axis is aligned with the P/A
-   *(posterior/anterior) direction, and the y axis is aligned with the I/S
-   *(inferior/superior) direction.
+  /** Read image from filesystem and reorient to align anatomy with coordinate axes.
+   *\param path Filesystem path of the image to read.
+   *\param orientation Three-character orientation code. The image will be brought into the orientation
+   * specified by this string. Default is "RAS", i.e., the returned image will be oriented so that the
+   * positive x axis is aligned with the anatomical L/R (left/right) direction, the y axis is aligned 
+   * with the P/A (posterior/anterior) direction, and the y axis is aligned with the I/S (inferior/superior) 
+   * direction.
    */
-  static UniformVolume::SmartPtr ReadOriented(const std::string &path,
-                                              const char *orientation);
+  static UniformVolume::SmartPtr ReadOriented( const std::string& path, const char* orientation );
 
-  /** Read image from filesystem and reorient to align anatomy with coordinate
-   *axes of standard coordinate system ("RAS"). \param path Filesystem path of
-   *the image to read.
+  /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
+   *\param path Filesystem path of the image to read.
    */
-  static UniformVolume::SmartPtr ReadOriented(const std::string &path) {
-    return Self::ReadOriented(path,
-                              AnatomicalOrientation::ORIENTATION_STANDARD);
+  static UniformVolume::SmartPtr ReadOriented( const std::string& path )
+  {
+    return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }
 
   /** Write volume data to filesystem.
    *\param volume Image object that is written to disk.
    *\param format Selector for output file format.
    *\param path Filesystem path of the image to write.
-   */
-  static void Write(const UniformVolume &volume, const FileFormatID format,
-                    const std::string &path);
+   */   
+  static void Write( const UniformVolume& volume, const FileFormatID format, const std::string& path );
 
   /** Write volume data to filesystem with automatic format parsing.
-   * The output file format is determined automatically from the output name
-   *suffix. \note Note that using ".hdr" will write a deprecated Analyze 7.5
-   *hdr/img format pair with private extensions and questionable assumptions
-   *regarding the anatomical orientation of the image. To write a NIFTI hdr/img
-   *pair that avoids these problems, use the filename suffix ".img" (or write a
-   *single-file NIFTI using the ".nii" suffix). \param volume Image object that
-   *is written to disk. \param pathAndFormat Filesystem path of the image to
-   *write.
+   * The output file format is determined automatically from the output name suffix.
+   * \note Note that using ".hdr" will write a deprecated Analyze 7.5 hdr/img format pair
+   *  with private extensions and questionable assumptions regarding the anatomical
+   *  orientation of the image. To write a NIFTI hdr/img pair that avoids these problems,
+   *  use the filename suffix ".img" (or write a single-file NIFTI using the ".nii" suffix).
+   *\param volume Image object that is written to disk.
+   *\param pathAndFormat Filesystem path of the image to write.
    */
-  static void Write(const UniformVolume &volume,
-                    const std::string &pathAndFormat);
+  static void Write( const UniformVolume& volume, const std::string& pathAndFormat );
 
   /// Set flag for writing compressed images.
-  static void SetWriteCompressedOn() { Self::WriteCompressedOn = true; }
+  static void SetWriteCompressedOn()
+  {
+    Self::WriteCompressedOn = true;
+  }
 
   /// Clear flag for writing compressed images.
-  static void SetWriteCompressedOff() { Self::WriteCompressedOn = false; }
+  static void SetWriteCompressedOff()
+  {
+    Self::WriteCompressedOn = false;
+  }
 
   /// Get flag for writing compressed images.
-  static bool GetWriteCompressed() { return Self::WriteCompressedOn; }
+  static bool GetWriteCompressed()
+  {
+    return Self::WriteCompressedOn;
+  }
 
- private:
+private:
   /// Global setting: write compressed images.
   static bool WriteCompressedOn;
 
   /** Initializer class.
-   * An object of this class is automatically instantiated when a program is
-   * run. Its constructor takes care of initializing VolumeIO, e.g., by
-   * evaluating the IGS_WRITE_UNCOMPRESSED environment variable.
+   * An object of this class is automatically instantiated when a program is run.
+   * Its constructor takes care of initializing VolumeIO, e.g., by evaluating the
+   * IGS_WRITE_UNCOMPRESSED environment variable.
    */
-  class Initializer {
-   private:
+  class Initializer
+  {
+  private:
     /// Default constructor: initialize VolumeIO settings.
     Initializer();
 
@@ -160,6 +168,6 @@ class VolumeIO {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVolumeIO_h_included_
+#endif // #ifndef __cmtkVolumeIO_h_included_

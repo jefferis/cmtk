@@ -37,23 +37,26 @@
 
 #include <Registration/cmtkImagePairSimilarityMeasureMSD.h>
 
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 #ifdef _MSC_VER
-#pragma warning(disable : 4521)
+#pragma warning (disable:4521)
 #endif
 /** Mean squared difference metric.
  */
 class ImagePairSimilarityMeasureRMS :
-    /// Inherit MSD similarity measure.
-    public ImagePairSimilarityMeasureMSD {
- public:
+  /// Inherit MSD similarity measure.
+  public ImagePairSimilarityMeasureMSD
+{
+public:
   /// This type.
   typedef ImagePairSimilarityMeasureRMS Self;
 
@@ -67,26 +70,23 @@ class ImagePairSimilarityMeasureRMS :
    * For reference and model volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The floating (moving) volume.
-   *\param interpolation ID of the interpolation algorithm to use for the
-   *floating image.
+   *\param interpolation ID of the interpolation algorithm to use for the floating image.
    */
-  ImagePairSimilarityMeasureRMS(const UniformVolume::SmartConstPtr &refVolume,
-                                const UniformVolume::SmartConstPtr &fltVolume,
-                                const Interpolators::InterpolationEnum
-                                    interpolation = Interpolators::DEFAULT);
+  ImagePairSimilarityMeasureRMS( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /** Virtual destructor.
    */
-  virtual ~ImagePairSimilarityMeasureRMS(){};
+  virtual ~ImagePairSimilarityMeasureRMS() {};
 
   /// Get the value of the metric.
-  virtual Self::ReturnType Get() const {
-    return -sqrt(-this->Superclass::Get());
+  virtual Self::ReturnType Get() const 
+  {
+    return -sqrt( -this->Superclass::Get() );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImagePairSimilarityMeasureRMS_h_included_
+#endif // #ifndef __cmtkImagePairSimilarityMeasureRMS_h_included_

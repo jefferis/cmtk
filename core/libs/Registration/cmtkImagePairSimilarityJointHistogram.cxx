@@ -32,109 +32,116 @@
 
 #include <Registration/cmtkImagePairSimilarityJointHistogram.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram(
-    UniformVolume::SmartConstPtr &refVolume,
-    UniformVolume::SmartConstPtr &fltVolume,
-    const Interpolators::InterpolationEnum interpolation)
-    : ImagePairSimilarityMeasure(interpolation) {
-  Superclass::SetReferenceVolume(Self::PrescaleData(
-      refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference,
-      &this->m_ScaleOffsetReference));
-  Superclass::SetFloatingVolume(Self::PrescaleData(
-      fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating,
-      &this->m_ScaleOffsetFloating));
-  this->m_JointHistogram.Resize(this->m_NumberOfBinsX, this->m_NumberOfBinsY);
+ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
+( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+  : ImagePairSimilarityMeasure( interpolation )
+{
+  Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) ); 
+  Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
-void ImagePairSimilarityJointHistogram::SetReferenceVolume(
-    const UniformVolume::SmartConstPtr &refVolume) {
-  Superclass::SetReferenceVolume(Self::PrescaleData(
-      refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference,
-      &this->m_ScaleOffsetReference));
-  this->m_JointHistogram.Resize(this->m_NumberOfBinsX, this->m_NumberOfBinsY);
+void
+ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume )
+{
+  Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) );
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
-void ImagePairSimilarityJointHistogram::SetFloatingVolume(
-    const UniformVolume::SmartConstPtr &fltVolume) {
-  Superclass::SetFloatingVolume(Self::PrescaleData(
-      fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating,
-      &this->m_ScaleOffsetFloating));
-  this->m_JointHistogram.Resize(this->m_NumberOfBinsX, this->m_NumberOfBinsY);
+void
+ImagePairSimilarityJointHistogram::SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume )
+{
+  Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
-UniformVolume::SmartPtr ImagePairSimilarityJointHistogram::PrescaleData(
-    const UniformVolume::SmartConstPtr &volume, size_t *numberOfBins,
-    Types::DataItem *scaleFactor, Types::DataItem *scaleOffset) {
-  UniformVolume::SmartPtr newVolume(volume->CloneGrid());
-  newVolume->CreateDataArray(TYPE_ITEM);
+UniformVolume::SmartPtr
+ImagePairSimilarityJointHistogram::PrescaleData
+( const UniformVolume::SmartConstPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
+{
+  UniformVolume::SmartPtr newVolume( volume->CloneGrid() );
+  newVolume->CreateDataArray( TYPE_ITEM );
   const size_t numberOfPixels = volume->GetNumberOfPixels();
-
+    
   Types::DataItem value = 0;
   Types::DataItem minValue = FLT_MAX;
   Types::DataItem maxValue = -FLT_MAX;
 
-  const DataGrid::IndexType &cropFrom = volume->CropRegion().From();
-  const DataGrid::IndexType &cropTo = volume->CropRegion().To();
+  const DataGrid::IndexType& cropFrom = volume->CropRegion().From();
+  const DataGrid::IndexType& cropTo = volume->CropRegion().To();
   const DataGrid::IndexType increments = volume->GetCropRegionIncrements();
 
   int offset = increments[0];
-  for (int z = cropFrom[2]; z < cropTo[2]; ++z, offset += increments[2]) {
-    for (int y = cropFrom[1]; y < cropTo[1]; ++y, offset += increments[1]) {
-      for (int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset) {
-        if (volume->GetDataAt(value, offset)) {
-          if (value > maxValue) maxValue = value;
-          if (value < minValue) minValue = value;
-        }
+  for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += increments[2] ) 
+    {
+    for ( int y = cropFrom[1]; y < cropTo[1]; ++y, offset += increments[1] ) 
+      {
+      for ( int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset ) 
+	{
+	if ( volume->GetDataAt( value, offset ) ) 
+	  {
+	  if ( value > maxValue ) maxValue = value;
+	  if ( value < minValue ) minValue = value;
+	  }
+	}
       }
     }
-  }
-
-  switch (volume->GetData()->GetDataClass()) {
-    case DATACLASS_LABEL: {
-      *numberOfBins = 1 + static_cast<unsigned int>(maxValue - minValue);
-      if (*numberOfBins > 254) {
-        StdErr
-            << "Fatal error: Cannot handle more than 254 different labels.\n";
-        exit(1);
+  
+  switch ( volume->GetData()->GetDataClass() ) 
+    {
+    case DATACLASS_LABEL: 
+    {
+    *numberOfBins = 1 + static_cast<unsigned int>(maxValue-minValue);
+    if ( *numberOfBins > 254 ) 
+      {
+      StdErr << "Fatal error: Cannot handle more than 254 different labels.\n";
+      exit( 1 );
       }
 
-      *scaleOffset = -minValue;
-      *scaleFactor = 1.0;
+    *scaleOffset = -minValue;
+    *scaleFactor = 1.0;
 
-      for (size_t idx = 0; idx < numberOfPixels; ++idx) {
-        if (volume->GetDataAt(value, idx))
-          newVolume->SetDataAt(
-              static_cast<Types::DataItem>(value + *scaleOffset), idx);
-        else
-          newVolume->GetData()->SetPaddingAt(idx);
+    for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
+      {
+      if ( volume->GetDataAt( value, idx ) )
+	newVolume->SetDataAt( static_cast<Types::DataItem>( value + *scaleOffset ), idx );
+      else
+	newVolume->GetData()->SetPaddingAt( idx );
       }
-    } break;
-    default:  // Handle everything else as grey-level data.
-    case DATACLASS_GREY: {
-      *numberOfBins = JointHistogramBase::CalcNumBins(volume);
+    }
+    break;
+    default: // Handle everything else as grey-level data.
+    case DATACLASS_GREY: 
+    {
+    *numberOfBins = JointHistogramBase::CalcNumBins( volume );
+    
+    *scaleFactor = (*numberOfBins-1) / ( maxValue - minValue );
+    *scaleOffset = -minValue * *scaleFactor;
 
-      *scaleFactor = (*numberOfBins - 1) / (maxValue - minValue);
-      *scaleOffset = -minValue * *scaleFactor;
-
-      for (size_t idx = 0; idx < numberOfPixels; ++idx) {
-        if (volume->GetDataAt(value, idx)) {
-          value = std::max(std::min(value, maxValue), minValue);
-          newVolume->SetDataAt(static_cast<Types::DataItem>(
-                                   floor(*scaleFactor * value + *scaleOffset)),
-                               idx);
-        } else {
-          newVolume->GetData()->SetPaddingAt(idx);
-        }
+    for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
+      {
+      if ( volume->GetDataAt( value, idx ) ) 
+	{
+	value = std::max( std::min( value, maxValue ), minValue );
+	newVolume->SetDataAt( static_cast<Types::DataItem>( floor(*scaleFactor*value+*scaleOffset) ), idx );
+	} 
+      else 
+	{
+	newVolume->GetData()->SetPaddingAt( idx );
+	}
       }
-    } break;
-  }
+    }
+    break;
+    } 
 
   return newVolume;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

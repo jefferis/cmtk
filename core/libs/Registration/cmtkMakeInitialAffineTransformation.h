@@ -35,26 +35,29 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkAffineXform.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAffineXform.h>
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-/** Class for generating initial affine coordinate transformations between two
- * images
+/** Class for generating initial affine coordinate transformations between two images
  */
-class MakeInitialAffineTransformation {
- public:
+class MakeInitialAffineTransformation
+{
+public:
   /// This class.
   typedef MakeInitialAffineTransformation Self;
 
   /// Enum that defines all initialization modes supported by this class.
-  typedef enum {
+  typedef enum
+  {
     /// No initialization. Usually means use identity transformation.
     NONE = 0,
     /// Align centers of fields of view.
@@ -63,54 +66,45 @@ class MakeInitialAffineTransformation {
     COM = 2,
     /// Align using principal axes.
     PAX = 3,
-    /// Align using physical coordinates, ie., image origins and direction
-    /// vectors.
+    /// Align using physical coordinates, ie., image origins and direction vectors.
     PHYS = 4
   } Mode;
 
   /// Return a name for each initialization mode.
-  static const std::string GetModeName(const Self::Mode mode);
+  static const std::string GetModeName( const Self::Mode mode );
 
-  /// Create an initial affine transformation for two images based on a selected
-  /// mode.
-  static AffineXform *Create(
-      const UniformVolume &referenceImage /*!< The reference (fixed) image*/,
-      const UniformVolume &floatingImage /*!< The floating (moving) image*/,
-      const Self::Mode mode /*!< Selected initialization method.*/);
+  /// Create an initial affine transformation for two images based on a selected mode.
+  static AffineXform* Create( const UniformVolume& referenceImage /*!< The reference (fixed) image*/,
+			      const UniformVolume& floatingImage /*!< The floating (moving) image*/,
+			      const Self::Mode mode /*!< Selected initialization method.*/ );
 
   /** Align images based on their direction vectors.
    * The direction vectors are encoded in each volume's "AffineXform" field.
    */
-  static AffineXform *AlignDirectionVectors(
-      const UniformVolume &referenceImage /*!< The reference (fixed) image*/,
-      const UniformVolume &floatingImage /*!< The floating (moving) image*/, const bool centerXform = false /*!< If this flag is set, the rotation center of the transformation is set to the center of the reference image.*/);
-
+  static AffineXform* AlignDirectionVectors( const UniformVolume& referenceImage /*!< The reference (fixed) image*/,
+					     const UniformVolume& floatingImage /*!< The floating (moving) image*/,
+					     const bool centerXform = false /*!< If this flag is set, the rotation center of the transformation is set to the center of the reference image.*/ );
+  
   /** Align images based on fields of view.
-   *\return This function returns a transformation with three degrees of freedom
-   *for a translation only, which aligns the centers of field of view for the
-   *two input images. If a crop region is defined in an image, the crop region
-   *center is used, otherwise the bounding box center.
+   *\return This function returns a transformation with three degrees of freedom for a translation only, which
+   * aligns the centers of field of view for the two input images. If a crop region is defined in an image, the
+   * crop region center is used, otherwise the bounding box center.
    */
-  static AffineXform *AlignFieldsOfView(const UniformVolume &referenceImage,
-                                        const UniformVolume &floatingImage);
+  static AffineXform* AlignFieldsOfView( const UniformVolume& referenceImage, const UniformVolume& floatingImage );
 
   /** Align images based on center of mass.
-   *\return This function returns a transformation with three degrees of freedom
-   *for a translation only.
+   *\return This function returns a transformation with three degrees of freedom for a translation only.
    */
-  static AffineXform *AlignCentersOfMass(const UniformVolume &referenceImage,
-                                         const UniformVolume &floatingImage);
+  static AffineXform* AlignCentersOfMass( const UniformVolume& referenceImage, const UniformVolume& floatingImage );
 
   /** Rigidly align images based on principal axes.
-   * This function implies alignment by translation according to the centers of
-   * mass.
+   * This function implies alignment by translation according to the centers of mass.
    */
-  static AffineXform *AlignPrincipalAxes(const UniformVolume &referenceImage,
-                                         const UniformVolume &floatingImage);
+  static AffineXform* AlignPrincipalAxes( const UniformVolume& referenceImage, const UniformVolume& floatingImage );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMakeInitialAffineTransformation_h_included_
+#endif // #ifndef __cmtkMakeInitialAffineTransformation_h_included_

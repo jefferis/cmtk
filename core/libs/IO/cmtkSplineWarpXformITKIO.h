@@ -38,20 +38,21 @@
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
-/** Class for reading and writing affine transformations from and to ITK's file
- * format. This should also be understood by Slicer3 for transformation exchange
- * with CMTK tools run as plugins.
+/** Class for reading and writing affine transformations from and to ITK's file format.
+ * This should also be understood by Slicer3 for transformation exchange with CMTK tools
+ * run as plugins.
  */
-class SplineWarpXformITKIO {
- public:
+class SplineWarpXformITKIO
+{
+public:
   /// Write transformation to ITK file.
-  static void Write(const std::string &filename, const SplineWarpXform &xform,
-                    const UniformVolume &refVolume,
-                    const UniformVolume &fltVolume);
+  static void Write( const std::string& filename, const SplineWarpXform& xform, const UniformVolume& refVolume, const UniformVolume& fltVolume );
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSplineWarpXformITKIO_h_included__
+#endif // #ifndef __cmtkSplineWarpXformITKIO_h_included__

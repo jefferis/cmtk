@@ -74,6 +74,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "reflections.h"
 
+
 /*************************************************************************
 Reduction of a rectangular matrix to  bidiagonal form
 
@@ -124,8 +125,12 @@ m=6, n=5 (m > n):               m=5, n=6 (m < n):
 Here vi and ui are vectors which form H(i) and G(i), and d and e -
 are the diagonal and off-diagonal elements of matrix B.
 *************************************************************************/
-void rmatrixbd(ap::real_2d_array &a, int m, int n, ap::real_1d_array &tauq,
-               ap::real_1d_array &taup);
+void rmatrixbd(ap::real_2d_array& a,
+     int m,
+     int n,
+     ap::real_1d_array& tauq,
+     ap::real_1d_array& taup);
+
 
 /*************************************************************************
 Unpacking matrix Q which reduces a matrix to bidiagonal form.
@@ -148,9 +153,13 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackq(const ap::real_2d_array &qp, int m, int n,
-                      const ap::real_1d_array &tauq, int qcolumns,
-                      ap::real_2d_array &q);
+void rmatrixbdunpackq(const ap::real_2d_array& qp,
+     int m,
+     int n,
+     const ap::real_1d_array& tauq,
+     int qcolumns,
+     ap::real_2d_array& q);
+
 
 /*************************************************************************
 Multiplication by matrix Q which reduces matrix A to  bidiagonal form.
@@ -181,10 +190,16 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdmultiplybyq(const ap::real_2d_array &qp, int m, int n,
-                          const ap::real_1d_array &tauq, ap::real_2d_array &z,
-                          int zrows, int zcolumns, bool fromtheright,
-                          bool dotranspose);
+void rmatrixbdmultiplybyq(const ap::real_2d_array& qp,
+     int m,
+     int n,
+     const ap::real_1d_array& tauq,
+     ap::real_2d_array& z,
+     int zrows,
+     int zcolumns,
+     bool fromtheright,
+     bool dotranspose);
+
 
 /*************************************************************************
 Unpacking matrix P which reduces matrix A to bidiagonal form.
@@ -207,9 +222,13 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackpt(const ap::real_2d_array &qp, int m, int n,
-                       const ap::real_1d_array &taup, int ptrows,
-                       ap::real_2d_array &pt);
+void rmatrixbdunpackpt(const ap::real_2d_array& qp,
+     int m,
+     int n,
+     const ap::real_1d_array& taup,
+     int ptrows,
+     ap::real_2d_array& pt);
+
 
 /*************************************************************************
 Multiplication by matrix P which reduces matrix A to  bidiagonal form.
@@ -240,10 +259,16 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdmultiplybyp(const ap::real_2d_array &qp, int m, int n,
-                          const ap::real_1d_array &taup, ap::real_2d_array &z,
-                          int zrows, int zcolumns, bool fromtheright,
-                          bool dotranspose);
+void rmatrixbdmultiplybyp(const ap::real_2d_array& qp,
+     int m,
+     int n,
+     const ap::real_1d_array& taup,
+     ap::real_2d_array& z,
+     int zrows,
+     int zcolumns,
+     bool fromtheright,
+     bool dotranspose);
+
 
 /*************************************************************************
 Unpacking of the main and secondary diagonals of bidiagonal decomposition
@@ -267,8 +292,11 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixbdunpackdiagonals(const ap::real_2d_array &b, int m, int n,
-                              bool &isupper, ap::real_1d_array &d,
-                              ap::real_1d_array &e);
+void rmatrixbdunpackdiagonals(const ap::real_2d_array& b,
+     int m,
+     int n,
+     bool& isupper,
+     ap::real_1d_array& d,
+     ap::real_1d_array& e);
 
 #endif

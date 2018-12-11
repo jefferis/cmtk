@@ -37,24 +37,27 @@
 
 #include <Segmentation/cmtkLabelCombinationLocalWeighting.h>
 
-#include <System/cmtkSmartConstPtr.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
 #include <Base/cmtkUniformVolume.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Segmentation combination by locally-weighted label voting.
- *\attention All labels must be representable as unsigned, short integers
- *between 0 and 65535.
+ *\attention All labels must be representable as unsigned, short integers between 0 and 65535.
  */
-class LabelCombinationLocalVoting : public LabelCombinationLocalWeighting {
- public:
+class LabelCombinationLocalVoting
+  : public LabelCombinationLocalWeighting
+{
+public:
   /// This class.
   typedef LabelCombinationLocalVoting Self;
 
@@ -68,23 +71,21 @@ class LabelCombinationLocalVoting : public LabelCombinationLocalWeighting {
   typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalVoting(const UniformVolume::SmartConstPtr targetImage)
-      : Superclass(targetImage), m_UseGlobalAtlasWeights(false) {}
-
-  /// Add an atlas (pair of reformatted, target-matched intensity image and
-  /// label map).
-  void AddAtlas(const UniformVolume::SmartConstPtr image,
-                const UniformVolume::SmartConstPtr atlas);
+  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ), m_UseGlobalAtlasWeights( false ) {}
+  
+  /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
+  void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
 
   /// Get resulting combined segmentation.
   virtual TypedArray::SmartPtr GetResult() const;
 
   /// Set flag for using global atlas weights for normalization.
-  void SetUseGlobalAtlasWeights(const bool flag) {
+  void SetUseGlobalAtlasWeights( const bool flag )
+  {
     this->m_UseGlobalAtlasWeights = flag;
   }
-
- protected:
+  
+protected:
   /// Vector of target-matched atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
 
@@ -92,31 +93,31 @@ class LabelCombinationLocalVoting : public LabelCombinationLocalWeighting {
   int ComputeMaximumLabelValue() const;
 
   /// Compute number of pixels with given label value in all input label maps.
-  size_t ComputeLabelNumberOfPixels(const int label) const;
+  size_t ComputeLabelNumberOfPixels( const int label ) const;
 
-  /** Delete atlas with given index.
+  /** Delete atlas with given index. 
    * Call inherited member, then delete distance map.
    */
-  virtual void DeleteAtlas(const size_t i) {
-    this->Superclass::DeleteAtlas(i);
-    this->m_AtlasLabels.erase(this->m_AtlasLabels.begin() + i);
+  virtual void DeleteAtlas( const size_t i )
+  {
+    this->Superclass::DeleteAtlas( i );
+    this->m_AtlasLabels.erase( this->m_AtlasLabels.begin() + i );
   }
 
- private:
+private:
   /// Flag for using global atlas weights for normalization.
   bool m_UseGlobalAtlasWeights;
 
   /** Vector of global atlas weights.
-   * If global weights are used, these are the inverses of each atlas intensity
-   * image's correlation with the target image. Otherwise, these are all 1.
+   * If global weights are used, these are the inverses of each atlas intensity image's correlation with the
+   * target image. Otherwise, these are all 1.
    */
   mutable std::vector<Types::DataItem> m_GlobalAtlasWeights;
-
+  
   /// Compute result for a region.
-  void ComputeResultForRegion(const Self::TargetRegionType &region,
-                              TypedArray &result) const;
+  void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLabelCombinationLocalVoting_h_included_
+#endif // #ifndef __cmtkLabelCombinationLocalVoting_h_included_

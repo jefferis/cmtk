@@ -34,156 +34,173 @@
 
 #include <System/cmtkCoverity.h>
 
-void cmtk::CommandLine::KeyToActionEnum ::PrintHelp(const size_t globalIndent,
-                                                    const bool advanced) const {
-  if (((this->m_Properties & Self::PROPS_ADVANCED) == 0) || advanced) {
+void
+cmtk::CommandLine::KeyToActionEnum
+::PrintHelp( const size_t globalIndent, const bool advanced ) const
+{
+  if ( ((this->m_Properties & Self::PROPS_ADVANCED)==0) || advanced )
+    {
     std::ostringstream fmt;
-    this->Superclass::FormatHelp(fmt);
-
+    this->Superclass::FormatHelp( fmt );
+    
     fmt << "\nSupported values: ";
-    for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-         it != this->m_EnumGroup->end(); ++it) {
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
       fmt << "\"" << (*it)->m_Key.m_KeyString << "\", ";
-    }
-
+      }
+    
     const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
-    if (defaultKey.length()) {
+    if ( defaultKey.length() )
+      {
       fmt << "where the default is \"" << defaultKey << "\", ";
-    }
-
+      }
+    
     fmt << "or use one of the following";
-
-    StdOut.FormatText(fmt.str(), CommandLine::HelpTextIndent + globalIndent,
-                      StdErr.GetLineWidth(), -CommandLine::HelpTextIndent)
-        << "\n";
-
-    for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-         it != this->m_EnumGroup->end(); ++it) {
-      (*it)->PrintHelp(globalIndent + 10);
+    
+    StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+    
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      (*it)->PrintHelp( globalIndent + 10 );
+      }
     }
-  }
 }
 
-void cmtk::CommandLine::KeyToActionEnum ::PrintWikiWithPrefix(
-    const std::string &prefix) const {
-  this->Superclass::PrintWikiWithPrefix(prefix);
+void
+cmtk::CommandLine::KeyToActionEnum
+::PrintWikiWithPrefix( const std::string& prefix ) const
+{
+  this->Superclass::PrintWikiWithPrefix( prefix );
 
   StdOut << "Supported values: ";
-  for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
     StdOut << "\"<tt>" << (*it)->m_Key.m_KeyString << "</tt>\", ";
-  }
-
+    }
+  
   const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
-  if (defaultKey.length()) {
+  if ( defaultKey.length() )
+    {
     StdOut << "where the default is \"" << defaultKey << "\", ";
-  }
-
+    }
+  
   StdOut << "or use one of the following:\n";
-
-  for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
-    (*it)->PrintWikiWithPrefix(":");
-  }
+  
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    (*it)->PrintWikiWithPrefix( ":" );
+    }
 }
 
-void cmtk::CommandLine::KeyToActionEnum ::PrintManWithPrefix(
-    const std::string &prefix) const {
-  this->Superclass::PrintManWithPrefix(prefix);
+void
+cmtk::CommandLine::KeyToActionEnum
+::PrintManWithPrefix( const std::string& prefix ) const
+{
+  this->Superclass::PrintManWithPrefix( prefix );
 
   StdOut << "Supported values: ";
-  for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
     StdOut << "\"" << (*it)->m_Key.m_KeyString << "\", ";
-  }
-
+    }
+  
   const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
-  if (defaultKey.length()) {
+  if ( defaultKey.length() )
+    {
     StdOut << "where the default is \"" << defaultKey << "\", ";
-  }
-
+    }
+  
   StdOut << "or use one of the following:\n.RS 5\n";
-
-  for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
+  
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
     (*it)->PrintManWithPrefix();
-  }
+    }
 
   StdOut << ".RE\n";
 }
 
-mxml_node_t *cmtk::CommandLine::KeyToActionEnum ::MakeXML(
-    mxml_node_t *const parent) const {
-  if (!(this->m_Properties & PROPS_NOXML)) {
-    mxml_node_t *node = mxmlNewElement(parent, "string-enumeration");
-
-    mxml_node_t *defaultElement = mxmlNewElement(node, "default");
-    Coverity::FakeFree(mxmlNewText(defaultElement, 0,
-                                   this->m_EnumGroup->GetDefaultKey().c_str()));
-
-    for (EnumGroupBase::const_iterator it = this->m_EnumGroup->begin();
-         it != this->m_EnumGroup->end(); ++it) {
-      mxml_node_t *element = mxmlNewElement(node, "element");
-      Coverity::FakeFree(
-          mxmlNewText(element, 0, (*it)->m_Key.m_KeyString.c_str()));
+mxml_node_t*
+cmtk::CommandLine::KeyToActionEnum
+::MakeXML( mxml_node_t *const parent ) const
+{
+  if ( ! (this->m_Properties & PROPS_NOXML) )
+    {
+    mxml_node_t *node = mxmlNewElement( parent, "string-enumeration" );
+    
+    mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
+    Coverity::FakeFree( mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() ) );
+    
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {      
+      mxml_node_t* element = mxmlNewElement( node, "element" );
+      Coverity::FakeFree( mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() ) );
+      }
+    
+    return this->Superclass::MakeXML( node );
     }
-
-    return this->Superclass::MakeXML(node);
-  }
   return NULL;
 }
 
-bool cmtk::CommandLine::KeyToActionEnum ::MatchAndExecute(
-    const std::string &key, const size_t argc, const char *argv[],
-    size_t &index) {
-  if (this->MatchLongOption(std::string(key))) {
+bool
+cmtk::CommandLine::KeyToActionEnum
+::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )
+{
+  if ( this->MatchLongOption( std::string( key ) ) )
+    {
     // check if optional argument matches suboption
-    if (this->m_EnumGroup) {
-      for (EnumGroupBase::iterator it = this->m_EnumGroup->begin();
-           it != this->m_EnumGroup->end(); ++it) {
-        size_t ii = index + 1;
-        if ((*it)->MatchAndExecute(argv[ii], argc, argv, ii)) {
-          index = ii;
-          return true;
-        }
+    if ( this->m_EnumGroup )
+      {      
+      for ( EnumGroupBase::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+	{
+	size_t ii = index+1;
+	if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
+	  {
+	  index = ii;
+	  return true;
+	  }
+	}
       }
     }
-  }
 
   // also check for direct matches with the suboptions
-  if (this->m_EnumGroup) {
-    for (EnumGroupBase::iterator it = this->m_EnumGroup->begin();
-         it != this->m_EnumGroup->end(); ++it) {
-      if ((*it)->MatchAndExecute(key, argc, argv, index)) {
-        return true;
+  if ( this->m_EnumGroup )
+    {
+    for ( EnumGroupBase::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      if ( (*it)->MatchAndExecute( key, argc, argv, index ) )
+	{
+	return true;
+	}
       }
     }
-  }
-
+  
   return false;
 }
 
-bool cmtk::CommandLine::KeyToActionEnum ::MatchAndExecute(const char keyChar,
-                                                          const size_t argc,
-                                                          const char *argv[],
-                                                          size_t &index) {
+bool
+cmtk::CommandLine::KeyToActionEnum
+::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
+{
   // check if optional argument matches suboption
-  for (EnumGroupBase::iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
-    size_t ii = index + 1;
-    if ((*it)->MatchAndExecute(argv[ii], argc, argv, ii)) {
+  for ( EnumGroupBase::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    size_t ii = index+1;
+    if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
+      {
       index = ii;
       return true;
+      }
     }
-  }
-
+  
   // also check for direct matches with the suboptions
-  for (EnumGroupBase::iterator it = this->m_EnumGroup->begin();
-       it != this->m_EnumGroup->end(); ++it) {
-    if ((*it)->MatchAndExecute(keyChar, argc, argv, index)) {
+  for ( EnumGroupBase::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    if ( (*it)->MatchAndExecute( keyChar, argc, argv, index ) )
+      {
       return true;
+      }
     }
-  }
 
   return false;
 }

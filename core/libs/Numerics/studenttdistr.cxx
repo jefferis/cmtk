@@ -68,9 +68,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
+
 #include "studenttdistr.h"
 
-namespace alglib {
+namespace
+alglib
+{
 
 /*************************************************************************
 Student's t distribution
@@ -113,69 +116,82 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type studenttdistribution(int k, ap::real_value_type t) {
-  ap::real_value_type result;
-  ap::real_value_type x;
-  ap::real_value_type rk;
-  ap::real_value_type z;
-  ap::real_value_type f;
-  ap::real_value_type tz;
-  ap::real_value_type p;
-  ap::real_value_type xsqk;
-  int j;
+ap::real_value_type studenttdistribution(int k, ap::real_value_type t)
+{
+    ap::real_value_type result;
+    ap::real_value_type x;
+    ap::real_value_type rk;
+    ap::real_value_type z;
+    ap::real_value_type f;
+    ap::real_value_type tz;
+    ap::real_value_type p;
+    ap::real_value_type xsqk;
+    int j;
 
 #ifndef NO_AP_ASSERT
-  ap::ap_error::make_assertion(k > 0, "Domain error in StudentTDistribution");
+    ap::ap_error::make_assertion(k>0, "Domain error in StudentTDistribution");
 #endif
 
-  if (t == 0) {
-    result = 0.5;
-    return result;
-  }
-  if (t < -2.0) {
+    if( t==0 )
+    {
+        result = 0.5;
+        return result;
+    }
+    if( t<-2.0 )
+    {
+        rk = k;
+        z = rk/(rk+t*t);
+        result = 0.5*incompletebeta(0.5*rk, 0.5, z);
+        return result;
+    }
+    if( t<0 )
+    {
+        x = -t;
+    }
+    else
+    {
+        x = t;
+    }
     rk = k;
-    z = rk / (rk + t * t);
-    result = 0.5 * incompletebeta(0.5 * rk, 0.5, z);
+    z = 1.0+x*x/rk;
+    if( k%2!=0 )
+    {
+        xsqk = x/sqrt(rk);
+        p = atan(xsqk);
+        if( k>1 )
+        {
+            f = 1.0;
+            tz = 1.0;
+            j = 3;
+            while(j<=k-2&&tz/f>ap::machineepsilon)
+            {
+                tz = tz*((j-1)/(z*j));
+                f = f+tz;
+                j = j+2;
+            }
+            p = p+f*xsqk/z;
+        }
+        p = p*2.0/ap::pi();
+    }
+    else
+    {
+        f = 1.0;
+        tz = 1.0;
+        j = 2;
+        while(j<=k-2&&tz/f>ap::machineepsilon)
+        {
+            tz = tz*((j-1)/(z*j));
+            f = f+tz;
+            j = j+2;
+        }
+        p = f*x/sqrt(z*rk);
+    }
+    if( t<0 )
+    {
+        p = -p;
+    }
+    result = 0.5+0.5*p;
     return result;
-  }
-  if (t < 0) {
-    x = -t;
-  } else {
-    x = t;
-  }
-  rk = k;
-  z = 1.0 + x * x / rk;
-  if (k % 2 != 0) {
-    xsqk = x / sqrt(rk);
-    p = atan(xsqk);
-    if (k > 1) {
-      f = 1.0;
-      tz = 1.0;
-      j = 3;
-      while (j <= k - 2 && tz / f > ap::machineepsilon) {
-        tz = tz * ((j - 1) / (z * j));
-        f = f + tz;
-        j = j + 2;
-      }
-      p = p + f * xsqk / z;
-    }
-    p = p * 2.0 / ap::pi();
-  } else {
-    f = 1.0;
-    tz = 1.0;
-    j = 2;
-    while (j <= k - 2 && tz / f > ap::machineepsilon) {
-      tz = tz * ((j - 1) / (z * j));
-      f = f + tz;
-      j = j + 2;
-    }
-    p = f * x / sqrt(z * rk);
-  }
-  if (t < 0) {
-    p = -p;
-  }
-  result = 0.5 + 0.5 * p;
-  return result;
 }
 
-}  // namespace alglib
+} // namespace alglib

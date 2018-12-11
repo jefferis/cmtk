@@ -32,144 +32,154 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <IO/cmtkClassStreamAffineXform.h>
-#include <IO/cmtkClassStreamOutput.h>
 #include <IO/cmtkXformIO.h>
+#include <IO/cmtkClassStreamOutput.h>
+#include <IO/cmtkClassStreamAffineXform.h>
 
 #include <list>
 
-const char *OutputName = "average.xform";
+const char* OutputName = "average.xform";
 bool AppendToOutput = false;
 bool InvertOutput = false;
 bool IncludeReference = false;
 
-int doMain(const int argc, const char *argv[]) {
+int 
+doMain( const int argc, const char* argv[] )
+{
   std::list<cmtk::AffineXform::SmartPtr> xformList;
-  try {
+  try 
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Average affine transformations");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_DESCR,
-                      "This tool computes the average of a sequence of "
-                      "user-provided affine coordinate transformations.");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
-                      "average_affine [options] x0 [x1 ...] \n WHERE x0 ... xN "
-                      "is [{-i,--inverse}] affine transformation #. "
-                      "(If the first transformation in the sequence is "
-                      "inverted, then '--inverse' must be preceded by '--', "
-                      "i.e., use '-- --inverse xform.path').");
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average affine transformations" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the average of a sequence of user-provided affine coordinate transformations." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #. "
+		       "(If the first transformation in the sequence is inverted, then '--inverse' must be preceded by '--', i.e., use '-- --inverse xform.path')." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch(Key('r', "include-reference"), &IncludeReference, true,
-                 "Include reference coordinate system in averaging.");
-    cl.AddOption(Key('o', "outfile"), &OutputName, "Output transformation.");
-    cl.AddSwitch(Key('a', "append"), &AppendToOutput, true,
-                 "Append to output file [default: overwrite].");
-    cl.AddSwitch(Key('I', "invert-output"), &InvertOutput, true,
-                 "Invert averaged transformation before output [default: no].");
+    cl.AddSwitch( Key( 'r', "include-reference" ), &IncludeReference, true, "Include reference coordinate system in averaging." );
+    cl.AddOption( Key( 'o', "outfile" ), &OutputName, "Output transformation." );
+    cl.AddSwitch( Key( 'a', "append" ), &AppendToOutput, true, "Append to output file [default: overwrite]." );
+    cl.AddSwitch( Key( 'I', "invert-output" ), &InvertOutput, true, "Invert averaged transformation before output [default: no]." );
 
-    cl.Parse(argc, argv);
+    cl.Parse( argc, argv );
 
-    const cmtk::AffineXform *firstXform = NULL;
-    const char *next = cl.GetNextOptional();
-    while (next) {
-      const bool inverse = !strcmp(next, "-i") || !strcmp(next, "--inverse");
-      if (inverse) next = cl.GetNext();
+    const cmtk::AffineXform* firstXform = NULL;
+    const char* next = cl.GetNextOptional();
+    while ( next ) 
+      {
+      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+      if ( inverse ) 
+	next = cl.GetNext();
+      
+      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next ) );
+      if ( ! xform ) 
+	{
+	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
+	throw cmtk::ExitException( 1 );
+	}
 
-      cmtk::Xform::SmartPtr xform(cmtk::XformIO::Read(next));
-      if (!xform) {
-        cmtk::StdErr << "ERROR: could not read transformation from " << next
-                     << "\n";
-        throw cmtk::ExitException(1);
-      }
+      cmtk::AffineXform::SmartPtr affine( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
+      if ( ! affine )
+	{
+	cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
+	throw cmtk::ExitException( 1 );
+	}
 
-      cmtk::AffineXform::SmartPtr affine(
-          cmtk::AffineXform::SmartPtr::DynamicCastFrom(xform));
-      if (!affine) {
-        cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
-        throw cmtk::ExitException(1);
-      }
+      if ( inverse )
+	{
+	try
+	  {
+	  affine = affine->GetInverse();
+	  }
+	catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+	  {
+	  cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
+	  throw cmtk::ExitException( 1 );
+	  }
+	}
 
-      if (inverse) {
-        try {
-          affine = affine->GetInverse();
-        } catch (
-            const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
-          cmtk::StdErr << "ERROR: singular matrix encountered in "
-                          "cmtk::AffineXform::GetInverse()\n";
-          throw cmtk::ExitException(1);
-        }
-      }
+      if ( firstXform )
+	{
+	affine->ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>::FromPointer( firstXform->RetCenter() ) );
+	}
+      else
+	{
+	firstXform = affine;
+	}
+      
+      affine->SetUseLogScaleFactors( true );
 
-      if (firstXform) {
-        affine->ChangeCenter(
-            cmtk::FixedVector<3, cmtk::Types::Coordinate>::FromPointer(
-                firstXform->RetCenter()));
-      } else {
-        firstXform = affine;
-      }
-
-      affine->SetUseLogScaleFactors(true);
-
-      xformList.push_back(affine);
+      xformList.push_back( affine );
       next = cl.GetNextOptional();
+      }
     }
-  } catch (const cmtk::CommandLine::Exception &e) {
+  catch ( const cmtk::CommandLine::Exception& e ) 
+    {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
 
   cmtk::AffineXform average;
-  average.SetUseLogScaleFactors(true);
+  average.SetUseLogScaleFactors( true );
 
   const size_t numberOfXforms = xformList.size();
-  if (numberOfXforms) {
+  if ( numberOfXforms )
+    {
     cmtk::CoordinateVector v, vx;
-    for (std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit =
-             xformList.begin();
-         xit != xformList.end(); ++xit) {
-      if (xit == xformList.begin()) {
-        (*xit)->GetParamVector(v);
-      } else {
-        (*xit)->GetParamVector(vx);
-        for (size_t p = 0; p < 12; ++p) {
-          v[p] += vx[p];
-        }
-      }
-    }
-
-    for (size_t p = 0; p < 12; ++p) {
-      if (IncludeReference)
-        v[p] /= numberOfXforms + 1;
+    for ( std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit = xformList.begin(); xit != xformList.end(); ++xit )
+      {
+      if ( xit == xformList.begin() )
+	{
+	(*xit)->GetParamVector( v );
+	}
       else
-        v[p] /= numberOfXforms;
+	{
+	(*xit)->GetParamVector( vx );
+	for ( size_t p = 0; p < 12; ++p )
+	  {
+	  v[p] += vx[p];
+	  }
+	}
+      }
+    
+    for ( size_t p = 0; p < 12; ++p )
+      {
+      if ( IncludeReference )
+	v[p] /= numberOfXforms+1;
+      else
+	v[p] /= numberOfXforms;
+      }
+    
+    average.SetParamVector( v );
     }
-
-    average.SetParamVector(v);
-  }
 
   cmtk::ClassStreamOutput outStream;
-  if (AppendToOutput)
-    outStream.Open(OutputName, cmtk::ClassStreamOutput::MODE_APPEND);
+  if ( AppendToOutput )
+    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_APPEND );
   else
-    outStream.Open(OutputName, cmtk::ClassStreamOutput::MODE_WRITE);
-
-  if (InvertOutput) {
-    try {
+    outStream.Open( OutputName, cmtk::ClassStreamOutput::MODE_WRITE );
+  
+  if ( InvertOutput )
+    {
+    try
+      {
       outStream << (*average.GetInverse());
-    } catch (const cmtk::AffineXform::MatrixType::SingularMatrixException &) {
-      cmtk::StdErr << "ERROR: singular matrix encountered in "
-                      "cmtk::AffineXform::GetInverse()\n";
-      throw cmtk::ExitException(1);
+      }
+    catch ( const cmtk::AffineXform::MatrixType::SingularMatrixException& )
+      {
+      cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::AffineXform::GetInverse()\n";
+      throw cmtk::ExitException( 1 );
+      }
     }
-  } else {
+  else
+    {
     outStream << average;
-  }
+    }
 
   return 0;
 }

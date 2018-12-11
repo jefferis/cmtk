@@ -35,23 +35,25 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
-#include <Base/cmtkLandmarkPairList.h>
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkTypes.h>
-#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkFunctional.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkLandmarkPairList.h>
 
 #include <System/cmtkException.h>
 
 #if defined(CMTK_USE_SMP)
-#include <System/cmtkLockingPtr.h>
+#  include <System/cmtkLockingPtr.h>
 #endif
 
 #include <cassert>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -62,15 +64,18 @@ namespace cmtk {
  * any template parameters introduced later in the inheritance hierarchy. It
  * should therefore help avoiding unnecessary code duplication.
  */
-class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
- public:
+class VoxelMatchingFunctional :
+    public Functional,
+    private CannotBeCopied
+{
+public:
   /// This class.
   typedef VoxelMatchingFunctional Self;
 
   /// Superclass.
   typedef Functional Superclass;
 
- protected:
+protected:
   /// Pointer to the reference grid.
   UniformVolume::SmartPtr ReferenceGrid;
 
@@ -87,22 +92,22 @@ class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
   DataGrid::RegionType m_ReferenceCropRegion;
 
   /// Optional list of matched landmarks.
-  cmtkGetSetMacro(LandmarkPairList::SmartPtr, LandmarkPairs);
+  cmtkGetSetMacro(LandmarkPairList::SmartPtr,LandmarkPairs);
 
   /// Weight for the landmark registration error relative to image similarity.
-  cmtkGetSetMacro(Self::ReturnType, LandmarkErrorWeight);
+  cmtkGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
 
- public:
+public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
    *\param reference The reference (i.e. static) volume.
    *\param floating The floating (i.e. transformed) volume.
    */
-  VoxelMatchingFunctional(UniformVolume::SmartPtr &reference,
-                          UniformVolume::SmartPtr &floating) {
-    this->InitFloating(floating);
-    this->InitReference(reference);
+  VoxelMatchingFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
+  {
+    this->InitFloating( floating );
+    this->InitReference( reference );
     this->m_LandmarkErrorWeight = 0;
   }
 
@@ -110,7 +115,7 @@ class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
    */
   virtual ~VoxelMatchingFunctional() {}
 
- protected:
+protected:
   /// Grid dimensions of the floating volume.
   DataGrid::IndexType FloatingDims;
 
@@ -125,7 +130,7 @@ class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
 
   /// Fractional index coordinates of the floating image's cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegionFractional;
-
+ 
   /// Grid dimensions of the reference volume.
   DataGrid::IndexType ReferenceDims;
 
@@ -136,18 +141,16 @@ class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
   UniformVolume::CoordinateVectorType ReferenceInvDelta;
 
   /** Find rectilinear area in original reference grid.
-   *\return The smallest box of reference grid voxels that contains the given
-   *coordinate range.
+   *\return The smallest box of reference grid voxels that contains the given coordinate range.
    */
-  const DataGrid::RegionType GetReferenceGridRange(
-      const UniformVolume::CoordinateRegionType &region) const;
+  const DataGrid::RegionType GetReferenceGridRange( const UniformVolume::CoordinateRegionType& region ) const;
 
- private:
+private:
   /// Initialize internal data structures for floating image.
-  void InitFloating(UniformVolume::SmartPtr &floating);
+  void InitFloating( UniformVolume::SmartPtr& floating );
 
   /// Initialize internal data structures for reference image.
-  void InitReference(UniformVolume::SmartPtr &reference);
+  void InitReference( UniformVolume::SmartPtr& reference );
 };
 
 /** Functional that evaluates a voxel-based similarity measure.
@@ -156,53 +159,54 @@ class VoxelMatchingFunctional : public Functional, private CannotBeCopied {
  * and computes similarity as well as its gradient w.r.t. a given
  * transformation.
  *
- * The metric to be optimized is given by a template parameter, therefore
+ * The metric to be optimized is given by a template parameter, therefore 
  * allowing inlined code to be generated for efficient evaluation.
  *
  * This class, however, is still universal with respect to the registration
  * transformation. Derived classes can therefore efficiently implement all
  * transformation-dependent operations.
  */
-template <class VM>
-class VoxelMatchingFunctional_Template {
- protected:
+template<class VM>
+class VoxelMatchingFunctional_Template 
+{
+protected:
   /// Pointer to the voxel-metric.
   SmartPointer<VM> Metric;
 
- public:
+public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
    *\param reference The reference (i.e. static) volume.
    *\param floating The floating (i.e. transformed) volume.
    */
-  VoxelMatchingFunctional_Template(UniformVolume::SmartPtr &reference,
-                                   UniformVolume::SmartPtr &floating) {
-    Metric = SmartPointer<VM>(new VM(reference, floating));
-  }
-
+  VoxelMatchingFunctional_Template
+  ( UniformVolume::SmartPtr& reference, 
+    UniformVolume::SmartPtr& floating )
+  { Metric = SmartPointer<VM>( new VM( reference, floating ) ); }
+ 
   /** Destructor.
    * Delete metric object.
    */
-  virtual ~VoxelMatchingFunctional_Template() {}
+  virtual ~VoxelMatchingFunctional_Template () {}
 
 #if defined(CMTK_USE_SMP)
- protected:
-  /** Mutex lock.
-   * This mutex is used by the multi-threaded complete functional evaluation.
-   * At the end of its computation, each thread adds its contribution in the
-   * form of a local 2-D histogram to the global histogram. This one step is
-   * protected by the mutex lock, as it requires exclusive write access to the
-   * global metric object. It makes sense, however, to have the threads do
-   * this final step as some of them may finish before others, which gives
-   * them the required exclusive time.
-   */
-  MutexLock MetricMutex;
+protected:
+   /** Mutex lock.
+    * This mutex is used by the multi-threaded complete functional evaluation.
+    * At the end of its computation, each thread adds its contribution in the
+    * form of a local 2-D histogram to the global histogram. This one step is
+    * protected by the mutex lock, as it requires exclusive write access to the
+    * global metric object. It makes sense, however, to have the threads do
+    * this final step as some of them may finish before others, which gives
+    * them the required exclusive time.
+    */
+   MutexLock MetricMutex;
 #endif
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // __cmtkVoxelMatchingFunctional_h_included_
+#endif // __cmtkVoxelMatchingFunctional_h_included_

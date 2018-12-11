@@ -37,7 +37,9 @@
 
 #include <stdlib.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -47,14 +49,16 @@ namespace cmtk {
  * have already been visited during the optimization. This may save evaluations
  * of the target function when these locations are approached again later in
  * the optimum search. The type of relative vectors is defined by a template
- * argument R. For one step size only, the default setting of "short", even
+ * argument R. For one step size only, the default setting of "short", even 
  * "signed char" may be enough. To keep track of multiresolution schemes,
  * however, we shall need to use "float" or "double".
  */
-template <class R = short>
-class SearchTrace {
- private:
-  typedef struct _TraceListEntry {
+template<class R = short>
+class SearchTrace 
+{
+private:
+  typedef struct _TraceListEntry 
+  {
     /// Vector pointing to a relative location that has already been visited.
     R *RelativePosition;
 
@@ -84,20 +88,20 @@ class SearchTrace {
    *\return 1, if the list entry pointed to by "entry" is the location we
    * would be in when making the step defined by "dir" and "step", 0 otherwise.
    */
-  int IsHit(const TraceListEntry *entry, const int dir, const R step) const {
-    for (int idx = 0; idx < DOF; ++idx)
-      if (entry->RelativePosition[idx] &&
-          ((dir != idx) || (entry->RelativePosition[idx] != step)))
-        return 0;
-
+  int IsHit ( const TraceListEntry* entry, const int dir, const R step ) const 
+  {
+    for ( int idx=0; idx<DOF; ++idx )
+      if ( entry->RelativePosition[idx] && ( (dir != idx) || (entry->RelativePosition[idx] != step) ) )
+	return 0;
+    
     return 1;
   }
-
- public:
+  
+public:
   /** Constructor.
    * Set dimension of search space and initialize trace list.
    */
-  SearchTrace(const int _DOF) {
+  SearchTrace ( const int _DOF ) {
     DOF = _DOF;
     List = NULL;
   }
@@ -105,21 +109,22 @@ class SearchTrace {
   /** Destructor.
    * Call Clear() to remove list from memory.
    */
-  ~SearchTrace() { Clear(); }
+  ~SearchTrace () { Clear(); }
 
   /** Add a location to the trace list.
    *\param value The value of the target function at the location to be
    * added to the list.
    *\param dir Direction of the location to add with respect to the current
-   * position in search space. This is the index of the parameter we are
+   * position in search space. This is the index of the parameter we are 
    * modifying.
-   *\param step Size of the step, ie. distance of the new location from the
-   *current position in search space.
+   *\param step Size of the step, ie. distance of the new location from the current
+   * position in search space.
    */
-  void Add(const double value, const int dir = 0, const R step = 0) {
+  void Add ( const double value, const int dir = 0, const R step = 0 ) 
+  {
     TraceListEntry *add = new TraceListEntry;
-    add->RelativePosition = Memory::ArrayC::Allocate<R>(DOF);
-    memset(add->RelativePosition, 0, sizeof(R));
+    add->RelativePosition = Memory::ArrayC::Allocate<R>( DOF );
+    memset( add->RelativePosition, 0, sizeof(R) );
     add->RelativePosition[dir] += step;
     add->FunctionValue = value;
     add->Next = List;
@@ -135,15 +140,18 @@ class SearchTrace {
    *\param step Size of the step to make in the given direction.
    *\return 1 if the desired location was in the list, 0 otherwise.
    */
-  int Get(double &value, const int dir = 0, const R step = 0) const {
+  int Get ( double& value, const int dir = 0, const R step = 0 ) const 
+  {
     TraceListEntry *cursor = List;
-    while (cursor) {
-      if (IsHit(cursor, dir, step)) {
-        value = cursor->FunctionValue;
-        return 1;
+    while ( cursor ) 
+      {
+      if ( IsHit( cursor, dir, step ) ) 
+	{
+	value = cursor->FunctionValue;
+	return 1;
+	}
+      cursor = cursor ->Next;
       }
-      cursor = cursor->Next;
-    }
     return 0;
   }
 
@@ -153,30 +161,34 @@ class SearchTrace {
    *\param dir Parameter modified to do the move.
    *\param step Size of the update step in the direction defined by 'dir'.
    */
-  void Move(const int dir, const R step) {
+  void Move ( const int dir, const R step ) 
+  {
     TraceListEntry *cursor = List;
-    while (cursor) {
+    while ( cursor ) 
+      {
       cursor->RelativePosition[dir] -= step;
-      cursor = cursor->Next;
-    }
+      cursor = cursor ->Next;
+      }    
   }
 
   /** Clear list from memory.
-   * All list entries as well as the location vectors stored in them are
+   * All list entries as well as the location vectors stored in them are 
    * deleted and the list pointer is reset to NULL.
    */
-  void Clear() {
-    while (List) {
+  void Clear () 
+  {
+    while ( List ) 
+      {
       TraceListEntry *save = List->Next;
-      Memory::ArrayC::Delete(List->RelativePosition);
+      Memory::ArrayC::Delete( List->RelativePosition );
       delete List;
       List = save;
-    }
+      }
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSearchTrace_h_included_
+#endif // #ifndef __cmtkSearchTrace_h_included_

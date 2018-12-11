@@ -37,37 +37,41 @@
 
 #include <algorithm>
 
-cmtk::HausdorffDistance::HausdorffDistance(UniformVolume::SmartConstPtr &image0,
-                                           UniformVolume::SmartConstPtr &image1)
-    : m_Image0(image0), m_Image1(image1) {
-  if (!this->m_Image0->GridMatches(*(this->m_Image1))) {
+cmtk::HausdorffDistance::HausdorffDistance( UniformVolume::SmartConstPtr& image0, UniformVolume::SmartConstPtr& image1 )
+  : m_Image0( image0 ),
+    m_Image1( image1 )
+{
+  if ( !this->m_Image0->GridMatches( *(this->m_Image1) ) )
+    {
     cmtk::StdErr << "ERROR: the two image grids don't match.\n";
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
 }
 
-cmtk::Types::Coordinate cmtk::HausdorffDistance::GetBinary() const {
+cmtk::Types::Coordinate 
+cmtk::HausdorffDistance::GetBinary() const 
+{
   typedef UniformDistanceMap<Types::Coordinate> DistanceMapType;
 
-  UniformVolume::SmartConstPtr distance0 =
-      DistanceMapType(*(this->m_Image0), DistanceMapType::DEFAULT).Get();
-  UniformVolume::SmartConstPtr distance1 =
-      DistanceMapType(*(this->m_Image1), DistanceMapType::DEFAULT).Get();
+  UniformVolume::SmartConstPtr distance0 = DistanceMapType( *(this->m_Image0), DistanceMapType::DEFAULT ).Get(); 
+  UniformVolume::SmartConstPtr distance1 = DistanceMapType( *(this->m_Image1), DistanceMapType::DEFAULT ).Get(); 
 
-  return std::max(Self::HalfDistanceBinary(*(this->m_Image0), *distance1),
-                  Self::HalfDistanceBinary(*(this->m_Image1), *distance0));
+  return std::max( Self::HalfDistanceBinary( *(this->m_Image0), *distance1 ), Self::HalfDistanceBinary( *(this->m_Image1), *distance0 ) );
 }
 
-cmtk::Types::Coordinate cmtk::HausdorffDistance::HalfDistanceBinary(
-    const UniformVolume &image, const UniformVolume &dmap) {
+cmtk::Types::Coordinate 
+cmtk::HausdorffDistance::HalfDistanceBinary( const UniformVolume& image, const UniformVolume& dmap )
+{
   Types::Coordinate maxDistance = 0;
 
   const size_t nPixels = image.GetNumberOfPixels();
-  for (size_t n = 0; n < nPixels; ++n) {
-    if (image.GetDataAt(n)) {
-      maxDistance = std::max(maxDistance, dmap.GetDataAt(n));
+  for ( size_t n = 0; n < nPixels; ++n )
+    {
+    if ( image.GetDataAt( n ) )
+      {
+      maxDistance = std::max( maxDistance, dmap.GetDataAt( n ) );
+      }
     }
-  }
 
   return maxDistance;
 }

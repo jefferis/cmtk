@@ -38,29 +38,32 @@
 
 #include <Registration/cmtkVoxelMatchingFunctional.h>
 
+#include <Base/cmtkVector.h>
 #include <Base/cmtkAffineXform.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVolumeClipping.h>
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkTypes.h>
-#include <Base/cmtkUniformVolume.h>
-#include <Base/cmtkVector.h>
-#include <Base/cmtkVolume.h>
-#include <Base/cmtkVolumeClipping.h>
 
 #include <System/cmtkException.h>
 
 #include <cassert>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Base-class for affine registration functionals.
  */
-class VoxelMatchingAffineFunctional :
-    /// Inherit from voxel matching functional.
-    public VoxelMatchingFunctional {
- public:
+class VoxelMatchingAffineFunctional : 
+  /// Inherit from voxel matching functional.
+  public VoxelMatchingFunctional 
+{
+public:
   /// This class type.
   typedef VoxelMatchingAffineFunctional Self;
 
@@ -71,28 +74,30 @@ class VoxelMatchingAffineFunctional :
   typedef SmartPointer<Self> SmartPtr;
 
   /// Return parameter vector.
-  virtual void GetParamVector(CoordinateVector &v) {
-    this->m_AffineXform->GetParamVector(v);
+  virtual void GetParamVector ( CoordinateVector& v )  
+  {
+    this->m_AffineXform->GetParamVector( v );
   }
 
   /// Return parameter stepping.
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
-    return this->m_AffineXform->GetParamStep(idx, Vector3D(FloatingSize),
-                                             mmStep);
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    return this->m_AffineXform->GetParamStep( idx, Vector3D( FloatingSize ), mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.
-  virtual size_t ParamVectorDim() const {
+  virtual size_t ParamVectorDim() const 
+  {
     return this->m_AffineXform->ParamVectorDim();
   }
 
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const {
+  virtual size_t VariableParamVectorDim() const 
+  {
     return this->m_AffineXform->VariableParamVectorDim();
   }
 
- protected:
+protected:
   /// Current coordinate transformation.
   AffineXform::SmartPtr m_AffineXform;
 
@@ -102,7 +107,7 @@ class VoxelMatchingAffineFunctional :
   /** Perform clipping/cropping in z-direction.
    * This function computes the intersection of reference and floating data in
    * z-direction. It determines the range of indices of those planes in the
-   * reference that intersect the floating. This is the range over which to
+   * reference that intersect the floating. This is the range over which to 
    * for-loop during metric computation.
    *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
@@ -115,29 +120,23 @@ class VoxelMatchingAffineFunctional :
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  Types::GridIndexType ClipZ(const VolumeClipping &clipper,
-                             const Vector3D &origin,
-                             DataGrid::IndexType::ValueType &start,
-                             DataGrid::IndexType::ValueType &end) const {
+  Types::GridIndexType ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
-    if (!clipper.ClipZ(fromFactor, toFactor, origin)) return 0;
+    if (! clipper.ClipZ( fromFactor, toFactor, origin ) )
+      return 0;
 
     // there is an intersection: Look up the corresponding grid indices
-    start = static_cast<DataGrid::IndexType::ValueType>((ReferenceDims[2] - 1) *
-                                                        fromFactor);
-    end = 1 + std::min((Types::GridIndexType)(ReferenceDims[2] - 1),
-                       (Types::GridIndexType)(
-                           1 + ((ReferenceDims[2] - 1) * toFactor)));
-
+    start = static_cast<DataGrid::IndexType::ValueType>( (ReferenceDims[2]-1)*fromFactor );
+    end = 1+std::min( (Types::GridIndexType)(ReferenceDims[2]-1), (Types::GridIndexType)(1 + ((ReferenceDims[2]-1)*toFactor) ) );
+    
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<DataGrid::IndexType::ValueType>(
-        start, this->m_ReferenceCropRegion.From()[2]);
-    end = std::min<DataGrid::IndexType::ValueType>(
-        end, this->m_ReferenceCropRegion.To()[2]);
-
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[2] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[2] );
+    
     // return 1 iff index range is non-empty.
-    return (start < end);
+    return (start < end );
   }
 
   /** Perform clipping/cropping in x-direction.
@@ -166,45 +165,38 @@ class VoxelMatchingAffineFunctional :
    * the floating, 0 if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  Types::GridIndexType ClipX(const VolumeClipping &clipper,
-                             const Vector3D &origin,
-                             DataGrid::IndexType::ValueType &start,
-                             DataGrid::IndexType::ValueType &end) const {
+  Types::GridIndexType ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
-    if (!clipper.ClipX(fromFactor, toFactor, origin, 0, 2, false, true))
+    if ( ! clipper.ClipX( fromFactor, toFactor, origin, 0, 2, false, true ) )
       return 0;
 
-    fromFactor = std::min<Types::Coordinate>(1.0, fromFactor);
-
+    fromFactor = std::min<Types::Coordinate>( 1.0, fromFactor );
+	      
     // there is an intersection: Look up the corresponding grid indices
-    start = std::max<Types::GridIndexType>(
-        0, (Types::GridIndexType)((ReferenceDims[0] - 1) * fromFactor) - 1);
-    while (
-        (start * ReferenceGrid->m_Delta[0] < fromFactor * ReferenceSize[0]) &&
-        (start < ReferenceDims[0]))
+    start = std::max<Types::GridIndexType>( 0, (Types::GridIndexType)((ReferenceDims[0]-1)*fromFactor)-1 );
+    while ( ( start*ReferenceGrid->m_Delta[0] < fromFactor*ReferenceSize[0]) && ( start < ReferenceDims[0] ) ) 
       ++start;
-
-    if ((toFactor > 1.0) || (start == ReferenceDims[0])) {
+    
+    if ( (toFactor > 1.0) || (start == ReferenceDims[0]) ) 
+      {
       end = ReferenceDims[0];
-    } else {
-      end = std::min(
-          ReferenceDims[0] - 2,
-          (Types::GridIndexType)(1 + (ReferenceDims[0] - 1) * toFactor));
-      while (end * ReferenceGrid->m_Delta[0] >
-             toFactor * ReferenceSize[0])  // 'if' not sufficient!
-        --end;
-      ++end;  // otherwise end=1+min(...) and ...[0][end-1] above!!
-    }
-
+      } 
+    else
+      {
+      end = std::min( ReferenceDims[0]-2, (Types::GridIndexType)(1 + (ReferenceDims[0]-1)*toFactor));
+      while ( end*ReferenceGrid->m_Delta[0] > toFactor*ReferenceSize[0] ) // 'if' not sufficient!	
+	--end;
+      ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
+      }
+    
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<DataGrid::IndexType::ValueType>(
-        start, this->m_ReferenceCropRegion.From()[0]);
-    end = std::min<DataGrid::IndexType::ValueType>(
-        end, this->m_ReferenceCropRegion.To()[0]);
-
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[0] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[0] );
+    
     // return 1 iff index range is non-empty.
-    return (start < end);
+    return (start < end );
   }
 
   /** Perform clipping/cropping in y-direction.
@@ -220,62 +212,57 @@ class VoxelMatchingAffineFunctional :
    *\param end Upon return, this reference is set to one plus the index of the
    * last row in the reference that intersects the floating image.
    *\return 1 if there is an intersection of the current reference plane and
-   * the floating, 0 if there isn't. The range of indices returned in "start"
+   * the floating, 0 if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  Types::GridIndexType ClipY(const VolumeClipping &clipper,
-                             const Vector3D &origin,
-                             DataGrid::IndexType::ValueType &start,
-                             DataGrid::IndexType::ValueType &end) const {
+  Types::GridIndexType ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
+  {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
-    if (!clipper.ClipY(fromFactor, toFactor, origin)) return 0;
+    if ( !clipper.ClipY( fromFactor, toFactor, origin ) )
+      return 0;
 
     // there is an intersection: Look up the corresponding grid indices
-    start = static_cast<DataGrid::IndexType::ValueType>((ReferenceDims[1] - 1) *
-                                                        fromFactor);
-
-    if (toFactor > 1.0) {
+    start = static_cast<DataGrid::IndexType::ValueType>( (ReferenceDims[1]-1)*fromFactor );
+    
+    if ( toFactor > 1.0 ) 
+      {
       end = ReferenceDims[1];
-    } else {
-      end = 1 + std::min(ReferenceDims[1] - 1,
-                         (Types::GridIndexType)(1 + (ReferenceDims[1] - 1) *
-                                                        toFactor));
-    }
+      } 
+    else
+      {
+      end = 1+std::min( ReferenceDims[1]-1, (Types::GridIndexType)(1+(ReferenceDims[1]-1)*toFactor ) );
+      }
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<DataGrid::IndexType::ValueType>(
-        start, this->m_ReferenceCropRegion.From()[1]);
-    end = std::min<DataGrid::IndexType::ValueType>(
-        end, this->m_ReferenceCropRegion.To()[1]);
-
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[1] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[1] );
+    
     // return 1 iff index range is non-empty.
-    return (start < end);
+    return (start < end );
   }
 
- public:
+public:
   /// Constructor.
-  VoxelMatchingAffineFunctional(UniformVolume::SmartPtr refVolume,
-                                UniformVolume::SmartPtr modVolume,
-                                AffineXform::SmartPtr &affineXform)
-      : VoxelMatchingFunctional(refVolume, modVolume),
-        m_AffineXform(affineXform) {}
-
+  VoxelMatchingAffineFunctional( UniformVolume::SmartPtr refVolume, UniformVolume::SmartPtr modVolume, AffineXform::SmartPtr& affineXform ) 
+    : VoxelMatchingFunctional( refVolume, modVolume ),
+      m_AffineXform( affineXform )    
+  {}
+  
   /// Destructor.
   virtual ~VoxelMatchingAffineFunctional() {}
 
-  /** Constructor function for affine voxel registration functionals.
-   * This function takes the index of a metric in the list of available voxel
-   * similarity measures plus all required objects. It the creates an
-   * appropriate instance of VoxelMatchingAffineFunctional with the correct
-   * metric class as template parameter.
-   */
-  static VoxelMatchingAffineFunctional *Create(
-      const int metric, UniformVolume::SmartPtr &refVolume,
-      UniformVolume::SmartPtr &modVolume, AffineXform::SmartPtr &affineXform);
+/** Constructor function for affine voxel registration functionals.
+ * This function takes the index of a metric in the list of available voxel
+ * similarity measures plus all required objects. It the creates an appropriate
+ * instance of VoxelMatchingAffineFunctional with the correct metric class as template
+ * parameter.
+ */
+  static VoxelMatchingAffineFunctional* Create( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& modVolume, AffineXform::SmartPtr& affineXform );
+
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVoxelMatchingAffineFunctional_h_included_
+#endif // #ifndef __cmtkVoxelMatchingAffineFunctional_h_included_

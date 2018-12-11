@@ -37,21 +37,24 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkMacros.h>
+#include <Base/cmtkFunctional.h>
 
 #include <Registration/cmtkVoxelMatchingElasticFunctional.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Symmtric-consistent elastic registration functional.
 class SymmetricElasticFunctional :
-    /** Inherit from generic functional. */
-    public Functional {
- public:
+  /** Inherit from generic functional. */
+  public Functional
+{
+public:
   /// This class.
   typedef SymmetricElasticFunctional Self;
 
@@ -62,34 +65,34 @@ class SymmetricElasticFunctional :
   typedef Functional Superclass;
 
   /// Set inverse consistency weight.
-  virtual void SetInverseConsistencyWeight(const Self::ReturnType) = 0;
+  virtual void SetInverseConsistencyWeight( const Self::ReturnType ) = 0;
+  
+  /// Set adaptive parameter fixing flag.
+  virtual void SetAdaptiveFixParameters( const bool ) = 0;
 
   /// Set adaptive parameter fixing flag.
-  virtual void SetAdaptiveFixParameters(const bool) = 0;
-
-  /// Set adaptive parameter fixing flag.
-  virtual void SetAdaptiveFixThreshFactor(const Self::ReturnType) = 0;
+  virtual void SetAdaptiveFixThreshFactor( const Self::ReturnType ) = 0;
 
   /// Set Jacobian constraint weight.
-  virtual void SetJacobianConstraintWeight(const Self::ReturnType) = 0;
-
+  virtual void SetJacobianConstraintWeight( const Self::ReturnType ) = 0;
+  
   /// Set Jacobian constraint weight.
-  virtual void SetRigidityConstraintWeight(const Self::ReturnType) = 0;
-
+  virtual void SetRigidityConstraintWeight( const Self::ReturnType ) = 0;
+  
   /// Set smoothness constraint weight.
-  virtual void SetGridEnergyWeight(const Self::ReturnType) = 0;
+  virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform(SplineWarpXform::SmartPtr &warpFwd,
-                            SplineWarpXform::SmartPtr &warpBwd) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) = 0;
 };
 
 /// Template for symmtric-consistent elastic registration functional.
-template <class VM>
+template<class VM>
 class SymmetricElasticFunctional_Template :
-    /** Inherit from non-template base functional class. */
-    public SymmetricElasticFunctional {
- public:
+  /** Inherit from non-template base functional class. */
+  public SymmetricElasticFunctional
+{
+public:
   /// This class.
   typedef SymmetricElasticFunctional_Template<VM> Self;
 
@@ -106,117 +109,112 @@ class SymmetricElasticFunctional_Template :
   VoxelMatchingElasticFunctional_Template<VM> BwdFunctional;
 
   /// Constructor.
-  SymmetricElasticFunctional_Template(UniformVolume::SmartPtr &reference,
-                                      UniformVolume::SmartPtr &floating)
-      : FwdFunctional(reference, floating),
-        BwdFunctional(floating, reference) {}
+  SymmetricElasticFunctional_Template( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
+    : FwdFunctional( reference, floating ),
+      BwdFunctional( floating, reference )
+  {}
 
   /// Set inverse consistency weight.
-  virtual void SetInverseConsistencyWeight(
-      const typename Self::ReturnType inverseConsistencyWeight) {
-    this->FwdFunctional.SetInverseConsistencyWeight(inverseConsistencyWeight);
-    this->BwdFunctional.SetInverseConsistencyWeight(inverseConsistencyWeight);
+  virtual void SetInverseConsistencyWeight( const typename Self::ReturnType inverseConsistencyWeight ) 
+  {
+    this->FwdFunctional.SetInverseConsistencyWeight( inverseConsistencyWeight );
+    this->BwdFunctional.SetInverseConsistencyWeight( inverseConsistencyWeight );
   }
-
+  
   /// Set adaptive parameter fixing flag.
-  virtual void SetAdaptiveFixParameters(const bool adaptiveFixParameters) {
-    this->FwdFunctional.SetAdaptiveFixParameters(adaptiveFixParameters);
-    this->BwdFunctional.SetAdaptiveFixParameters(adaptiveFixParameters);
+  virtual void SetAdaptiveFixParameters( const bool adaptiveFixParameters ) 
+  {
+    this->FwdFunctional.SetAdaptiveFixParameters( adaptiveFixParameters );
+    this->BwdFunctional.SetAdaptiveFixParameters( adaptiveFixParameters );
   }
 
   /// Set adaptive parameter fixing threshold.
-  virtual void SetAdaptiveFixThreshFactor(
-      const typename Self::ReturnType threshFactor) {
-    this->FwdFunctional.SetAdaptiveFixThreshFactor(threshFactor);
-    this->BwdFunctional.SetAdaptiveFixThreshFactor(threshFactor);
+  virtual void SetAdaptiveFixThreshFactor( const typename Self::ReturnType threshFactor ) 
+  {
+    this->FwdFunctional.SetAdaptiveFixThreshFactor( threshFactor );
+    this->BwdFunctional.SetAdaptiveFixThreshFactor( threshFactor );
   }
 
   /// Set Jacobian constraint weight.
-  virtual void SetJacobianConstraintWeight(
-      const typename Self::ReturnType jacobianConstraintWeight) {
-    this->FwdFunctional.SetJacobianConstraintWeight(jacobianConstraintWeight);
-    this->BwdFunctional.SetJacobianConstraintWeight(jacobianConstraintWeight);
+  virtual void SetJacobianConstraintWeight( const typename Self::ReturnType jacobianConstraintWeight ) 
+  {
+    this->FwdFunctional.SetJacobianConstraintWeight( jacobianConstraintWeight );
+    this->BwdFunctional.SetJacobianConstraintWeight( jacobianConstraintWeight );
   }
-
+  
   /// Set rigidity constraint weight.
-  virtual void SetRigidityConstraintWeight(
-      const typename Self::ReturnType rigidityConstraintWeight) {
-    this->FwdFunctional.SetRigidityConstraintWeight(rigidityConstraintWeight);
-    this->BwdFunctional.SetRigidityConstraintWeight(rigidityConstraintWeight);
+  virtual void SetRigidityConstraintWeight( const typename Self::ReturnType rigidityConstraintWeight ) 
+  {
+    this->FwdFunctional.SetRigidityConstraintWeight( rigidityConstraintWeight );
+    this->BwdFunctional.SetRigidityConstraintWeight( rigidityConstraintWeight );
   }
-
+  
   /// Set smoothness constraint weight.
-  virtual void SetGridEnergyWeight(
-      const typename Self::ReturnType gridEnergyWeight) {
-    this->FwdFunctional.SetGridEnergyWeight(gridEnergyWeight);
-    this->BwdFunctional.SetGridEnergyWeight(gridEnergyWeight);
+  virtual void SetGridEnergyWeight( const typename Self::ReturnType gridEnergyWeight ) 
+  {
+    this->FwdFunctional.SetGridEnergyWeight( gridEnergyWeight );
+    this->BwdFunctional.SetGridEnergyWeight( gridEnergyWeight );
   }
-
+  
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform(SplineWarpXform::SmartPtr &warpFwd,
-                            SplineWarpXform::SmartPtr &warpBwd);
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd );
 
   /// Return parameter vector.
-  virtual void GetParamVector(CoordinateVector &v) {
+  virtual void GetParamVector ( CoordinateVector& v )  
+  {
     CoordinateVector vFwd, vBwd;
-    this->FwdFunctional.GetParamVector(vFwd);
-    this->BwdFunctional.GetParamVector(vBwd);
+    this->FwdFunctional.GetParamVector( vFwd );
+    this->BwdFunctional.GetParamVector( vBwd );
 
-    v.SetDim(vFwd.Dim + vBwd.Dim);
-    v.CopyToOffset(vFwd);
-    v.CopyToOffset(vBwd, vFwd.Dim);
+    v.SetDim( vFwd.Dim + vBwd.Dim );
+    v.CopyToOffset( vFwd );
+    v.CopyToOffset( vBwd, vFwd.Dim );
   }
 
   /// Evaluate functional value and gradient.
-  virtual typename Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &g,
-      const Types::Coordinate step = 1);
-
+  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
+    
   /// Evaluate functional value.
-  virtual typename Self::ReturnType EvaluateAt(CoordinateVector &v) {
-    CoordinateVector vFwd(this->FwdFunctional.ParamVectorDim(), v.Elements,
-                          false /*freeElements*/);
-    CoordinateVector vBwd(this->BwdFunctional.ParamVectorDim(),
-                          v.Elements + this->FwdFunctional.ParamVectorDim(),
-                          false /*freeElements*/);
-    return this->FwdFunctional.EvaluateAt(vFwd) +
-           this->BwdFunctional.EvaluateAt(vBwd);
+  virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
+  {
+    CoordinateVector vFwd( this->FwdFunctional.ParamVectorDim(), v.Elements, false /*freeElements*/ );
+    CoordinateVector vBwd( this->BwdFunctional.ParamVectorDim(), v.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
+    return this->FwdFunctional.EvaluateAt( vFwd ) + this->BwdFunctional.EvaluateAt( vBwd );
   }
-
-  virtual typename Self::ReturnType Evaluate() {
+  
+  virtual typename Self::ReturnType Evaluate () 
+  {
     return this->FwdFunctional.Evaluate() + this->BwdFunctional.Evaluate();
   }
-
+  
   /// Get parameter stepping in milimeters.
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
-    if (idx < this->FwdFunctional.ParamVectorDim())
-      return this->FwdFunctional.GetParamStep(idx, mmStep);
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    if ( idx < this->FwdFunctional.ParamVectorDim() )
+      return this->FwdFunctional.GetParamStep( idx, mmStep );
     else
-      return this->BwdFunctional.GetParamStep(
-          idx - this->FwdFunctional.ParamVectorDim(), mmStep);
+      return this->BwdFunctional.GetParamStep( idx - this->FwdFunctional.ParamVectorDim(), mmStep );
   }
-
+  
   /// Return the transformation's parameter vector dimension.
-  virtual size_t ParamVectorDim() const {
-    return this->FwdFunctional.ParamVectorDim() +
-           this->BwdFunctional.ParamVectorDim();
+  virtual size_t ParamVectorDim() const
+  {
+    return this->FwdFunctional.ParamVectorDim() + this->BwdFunctional.ParamVectorDim();
   }
-
+  
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const {
-    return this->FwdFunctional.VariableParamVectorDim() +
-           this->BwdFunctional.VariableParamVectorDim();
+  virtual size_t VariableParamVectorDim() const 
+  {
+    return this->FwdFunctional.VariableParamVectorDim() + this->BwdFunctional.VariableParamVectorDim();
   }
 };
 
 /// Constructor function.
-SymmetricElasticFunctional *CreateSymmetricElasticFunctional(
-    const int metric, UniformVolume::SmartPtr &refVolume,
-    UniformVolume::SmartPtr &fltVolume);
+SymmetricElasticFunctional*
+CreateSymmetricElasticFunctional( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSymmetricElasticFunctional_h_included_
+#endif // #ifndef __cmtkSymmetricElasticFunctional_h_included_

@@ -35,16 +35,18 @@
 #include <string.h>
 // GJ replaced above with:
 #ifdef __APPLE__
-#include <stdlib.h>
+#  include <stdlib.h>
 #else
-#include <malloc.h>
+#  include <malloc.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
 long CurrentTime = 1;
 
-}  // namespace cmtk
+} // namespace cmtk

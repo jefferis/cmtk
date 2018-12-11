@@ -72,8 +72,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-#include "reflections.h"
 #include "sblas.h"
+#include "reflections.h"
+
 
 /*************************************************************************
 Reduction of a symmetric matrix which is given by its higher or lower
@@ -144,9 +145,13 @@ Output parameters:
      Courant Institute, Argonne National Lab, and Rice University
      October 31, 1992
 *************************************************************************/
-void smatrixtd(ap::real_2d_array &a, int n, bool isupper,
-               ap::real_1d_array &tau, ap::real_1d_array &d,
-               ap::real_1d_array &e);
+void smatrixtd(ap::real_2d_array& a,
+     int n,
+     bool isupper,
+     ap::real_1d_array& tau,
+     ap::real_1d_array& d,
+     ap::real_1d_array& e);
+
 
 /*************************************************************************
 Unpacking matrix Q which reduces symmetric matrix to a tridiagonal
@@ -165,8 +170,10 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-void smatrixtdunpackq(const ap::real_2d_array &a, const int &n,
-                      const bool &isupper, const ap::real_1d_array &tau,
-                      ap::real_2d_array &q);
+void smatrixtdunpackq(const ap::real_2d_array& a,
+     const int& n,
+     const bool& isupper,
+     const ap::real_1d_array& tau,
+     ap::real_2d_array& q);
 
 #endif

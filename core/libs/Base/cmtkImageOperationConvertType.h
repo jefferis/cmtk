@@ -35,24 +35,27 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: convert data type.
 class ImageOperationConvertType
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
-  ImageOperationConvertType(const cmtk::ScalarDataType newType)
-      : m_NewType(newType) {}
-
+  ImageOperationConvertType( const cmtk::ScalarDataType newType ) : m_NewType( newType ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    switch (this->m_NewType) {
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {    
+    switch ( this->m_NewType ) 
+      {
       case cmtk::TYPE_CHAR:
       case cmtk::TYPE_BYTE:
       case cmtk::TYPE_SHORT:
@@ -61,72 +64,72 @@ class ImageOperationConvertType
       case cmtk::TYPE_UINT:
       case cmtk::TYPE_FLOAT:
       case cmtk::TYPE_DOUBLE:
-        if (this->m_NewType != volume->GetData()->GetType()) {
-          volume->SetData(cmtk::TypedArray::SmartPtr(
-              volume->GetData()->Convert(this->m_NewType)));
-        }
-        break;
+	if ( this->m_NewType != volume->GetData()->GetType() ) 
+	  {
+	  volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetData()->Convert( this->m_NewType ) ) );
+	  }
+	break;
       default:
-        break;
-    }
+	break;
+      }
     return volume;
   }
 
   /// Create object to convert to "char" data.
-  static void NewChar() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_CHAR)));
+  static void NewChar()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_CHAR ) ) );
   }
 
   /// Create object to convert to "byte" data.
-  static void NewByte() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_BYTE)));
+  static void NewByte()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_BYTE ) ) );
   }
 
   /// Create object to convert to "short" data.
-  static void NewShort() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_SHORT)));
+  static void NewShort()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_SHORT ) ) );
   }
 
   /// Create object to convert to "unsigned short" data.
-  static void NewUShort() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_USHORT)));
+  static void NewUShort()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_USHORT ) ) );
   }
 
   /// Create object to convert to "int" data.
-  static void NewInt() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_INT)));
+  static void NewInt()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_INT ) ) );
   }
 
   /// Create object to convert to "unsigned int" data.
-  static void NewUInt() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_UINT)));
+  static void NewUInt()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_UINT ) ) );
   }
 
   /// Create object to convert to "float" data.
-  static void NewFloat() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_FLOAT)));
+  static void NewFloat()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_FLOAT ) ) );
   }
 
   /// Create object to convert to "double" data.
-  static void NewDouble() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationConvertType(cmtk::TYPE_DOUBLE)));
+  static void NewDouble()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_DOUBLE ) ) );
   }
-
- private:
+  
+private:
   /// New data type.
   cmtk::ScalarDataType m_NewType;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationConvertType_h_included_
+#endif // #ifndef __cmtkImageOperationConvertType_h_included_

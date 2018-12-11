@@ -42,18 +42,20 @@
 
 #include <Registration/cmtkImagePairAffineRegistrationFunctionalTemplate.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-/// Template for symmtric affine registration functional for simultaneous
-/// forward/inverse transformation estimation.
-template <class VM>
+/// Template for symmtric affine registration functional for simultaneous forward/inverse transformation estimation.
+template<class VM>
 class ImagePairSymmetricAffineRegistrationFunctionalTemplate :
-    /** Inherit from non-template base functional class. */
-    public ImagePairSymmetricAffineRegistrationFunctional {
- public:
+  /** Inherit from non-template base functional class. */
+  public ImagePairSymmetricAffineRegistrationFunctional
+{
+public:
   /// This class.
   typedef ImagePairSymmetricAffineRegistrationFunctionalTemplate<VM> Self;
 
@@ -70,68 +72,70 @@ class ImagePairSymmetricAffineRegistrationFunctionalTemplate :
   ImagePairAffineRegistrationFunctionalTemplate<VM> BwdFunctional;
 
   /// Constructor.
-  ImagePairSymmetricAffineRegistrationFunctionalTemplate(
-      UniformVolume::SmartPtr &reference, UniformVolume::SmartPtr &floating,
-      const Interpolators::InterpolationEnum interpolation,
-      AffineXform::SmartPtr &affineXform)
-      : Superclass(affineXform),
-        FwdFunctional(reference, floating, interpolation, affineXform),
-        BwdFunctional(floating, reference, interpolation,
-                      affineXform->GetInverse()) {}
+  ImagePairSymmetricAffineRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation, AffineXform::SmartPtr& affineXform )
+    : Superclass( affineXform ),
+      FwdFunctional( reference, floating, interpolation, affineXform ),
+      BwdFunctional( floating, reference, interpolation, affineXform->GetInverse() )
+  {}
 
   /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside(const bool flag = true,
-                               const Types::DataItem value = 0) {
-    this->FwdFunctional.SetForceOutside(flag, value);
-    this->BwdFunctional.SetForceOutside(flag, value);
+  virtual void SetForceOutside
+  ( const bool flag = true, const Types::DataItem value = 0 )
+  {
+    this->FwdFunctional.SetForceOutside( flag, value );
+    this->BwdFunctional.SetForceOutside( flag, value );
   }
 
   /// Set optional restriction to axis-orthogonal in-plane transformations.
-  virtual void SetRestrictToInPlane(const int axis) {
-    this->FwdFunctional.SetRestrictToInPlane(axis);
+  virtual void SetRestrictToInPlane( const int axis )
+  {
+    this->FwdFunctional.SetRestrictToInPlane( axis );
   }
 
   /// Return parameter vector.
-  virtual void GetParamVector(CoordinateVector &v) {
-    this->FwdFunctional.GetParamVector(v);
+  virtual void GetParamVector ( CoordinateVector& v )
+  {
+    this->FwdFunctional.GetParamVector( v );
   }
 
   /// Evaluate functional value.
-  virtual typename Self::ReturnType EvaluateAt(CoordinateVector &v) {
-    this->m_FwdXform->SetParamVector(v);
+  virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
+  {
+    this->m_FwdXform->SetParamVector( v );
 
     CoordinateVector vInv;
-    this->m_FwdXform->GetInverse()->GetParamVector(vInv);
-
-    return this->FwdFunctional.EvaluateAt(v) +
-           this->BwdFunctional.EvaluateAt(vInv);
+    this->m_FwdXform->GetInverse()->GetParamVector( vInv );
+    
+    return this->FwdFunctional.EvaluateAt( v ) + this->BwdFunctional.EvaluateAt( vInv );
   }
 
   /// Evaluate functional with current parameter vector.
-  virtual typename Self::ReturnType Evaluate() {
+  virtual typename Self::ReturnType Evaluate () 
+  {
     return this->FwdFunctional.Evaluate() + this->BwdFunctional.Evaluate();
   }
-
+  
   /// Get parameter stepping in milimeters.
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
-    return this->FwdFunctional.GetParamStep(idx, mmStep);
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    return this->FwdFunctional.GetParamStep( idx, mmStep );
   }
-
+  
   /// Return the transformation's parameter vector dimension.
-  virtual size_t ParamVectorDim() const {
+  virtual size_t ParamVectorDim() const
+  {
     return this->FwdFunctional.ParamVectorDim();
   }
-
+  
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const {
+  virtual size_t VariableParamVectorDim() const 
+  {
     return this->FwdFunctional.VariableParamVectorDim();
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef
-        // __cmtkImagePairSymmetricAffineRegistrationFunctionalTemplate_h_included_
+#endif // #ifndef __cmtkImagePairSymmetricAffineRegistrationFunctionalTemplate_h_included_

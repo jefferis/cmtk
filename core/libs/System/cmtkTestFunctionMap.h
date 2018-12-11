@@ -33,39 +33,45 @@
 
 #include <cmtkconfig.h>
 
-#include <iostream>
-#include <map>
 #include <string>
+#include <map>
+#include <iostream>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /// Map from test name to test function.
-class TestFunctionMap {
- public:
+class TestFunctionMap
+{
+public:
   /// Test function pointer.
   typedef int (*TestFunctionPtr)();
 
   /// Add test.
-  void AddTest(const std::string &testName, TestFunctionPtr testFunction) {
+  void AddTest( const std::string& testName, TestFunctionPtr testFunction )
+  {
     this->m_Map[testName] = testFunction;
   }
 
   /// Run a test by name.
-  int RunTestByName(const std::string &testName) {
-    MapType::iterator test = this->m_Map.find(testName);
-    if (test == this->m_Map.end()) {
+  int RunTestByName( const std::string& testName )
+  {
+    MapType::iterator test = this->m_Map.find( testName );
+    if ( test == this->m_Map.end() )
+      {
       std::cerr << "Test '" << testName << "' not found.";
       return 2;
-    }
+      }
     return test->second();
   }
 
- private:
+private:
   /// Map from test name to test pointer.
-  typedef std::map<std::string, TestFunctionPtr> MapType;
+  typedef std::map< std::string, TestFunctionPtr > MapType;
 
   /// Map from test name to test function.
   MapType m_Map;
@@ -73,6 +79,6 @@ class TestFunctionMap {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkTestFunctionMap_h_included_
+#endif // #ifndef __cmtkTestFunctionMap_h_included_

@@ -32,85 +32,84 @@
 
 #include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
-#include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStreamAffineXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-ClassStreamOutput &operator<<(
-    ClassStreamOutput &stream,
-    const GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func) {
-  stream.Begin("template");
-  stream.WriteIntArray("dims", func.m_TemplateGrid->GetDims().begin(), 3);
-  stream.WriteCoordinateArray("delta", func.m_TemplateGrid->Deltas().begin(),
-                              3);
-  stream.WriteCoordinateArray("size", func.m_TemplateGrid->m_Size.begin(), 3);
-  stream.WriteCoordinateArray("origin", func.m_TemplateGrid->m_Offset.begin(),
-                              3);
+ClassStreamOutput& 
+operator<<
+  ( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
+{
+  stream.Begin( "template" );
+  stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
+  stream.WriteCoordinateArray( "delta", func.m_TemplateGrid->Deltas().begin(), 3 );
+  stream.WriteCoordinateArray( "size", func.m_TemplateGrid->m_Size.begin(), 3 );
+  stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.begin(), 3 );
   stream.End();
-
-  for (size_t idx = 0; idx < func.m_XformVector.size(); ++idx) {
-    stream.WriteString(
-        "target",
-        func.m_OriginalImageVector[idx]->GetMetaInfo(META_FS_PATH).c_str());
-    stream << (*func.GetXformByIndex(idx));
-  }
-
+  
+  for ( size_t idx = 0; idx < func.m_XformVector.size(); ++idx )
+    {
+    stream.WriteString( "target", func.m_OriginalImageVector[idx]->GetMetaInfo( META_FS_PATH ).c_str() );
+    stream << (*func.GetXformByIndex( idx ));
+    }
+  
   return stream;
 }
 
-ClassStreamInput &operator>>(
-    ClassStreamInput &stream,
-    GroupwiseRegistrationFunctionalXformTemplate<AffineXform> &func) {
-  if (!stream.Seek("template")) {
+ClassStreamInput& 
+operator>>
+  ( ClassStreamInput& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
+{
+  if ( ! stream.Seek( "template" ) )
+    {
     StdErr << "ERROR: no 'template' section in input archive\n";
     return stream;
-  }
+    }
 
   int dims[3];
-  stream.ReadIntArray("dims", dims, 3);
+  stream.ReadIntArray( "dims", dims, 3 );
   Types::Coordinate size[3];
-  stream.ReadCoordinateArray("size", size, 3);
+  stream.ReadCoordinateArray( "size", size, 3 );
   Types::Coordinate origin[3];
-  stream.ReadCoordinateArray("origin", origin, 3);
+  stream.ReadCoordinateArray( "origin", origin, 3 );
   stream.End();
 
-  UniformVolume::SmartPtr templateGrid(new UniformVolume(
-      UniformVolume::IndexType::FromPointer(dims),
-      UniformVolume::CoordinateVectorType::FromPointer(size)));
-  templateGrid->SetOffset(
-      FixedVector<3, Types::Coordinate>::FromPointer(origin));
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType::FromPointer( dims ), UniformVolume::CoordinateVectorType::FromPointer( size ) ) );
+  templateGrid->SetOffset( FixedVector<3,Types::Coordinate>::FromPointer( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;
   std::vector<AffineXform::SmartPtr> xformVector;
 
-  char *targetPath =
-      stream.ReadString("target", NULL /*default*/, false /*forward*/);
-  while (targetPath) {
-    UniformVolume::SmartPtr image(VolumeIO::ReadOriented(targetPath));
-    if (!image || !image->GetData()) {
+  char* targetPath = stream.ReadString( "target", NULL /*default*/, false /*forward*/ );
+  while ( targetPath )
+    {
+    UniformVolume::SmartPtr image( VolumeIO::ReadOriented( targetPath ) );
+    if ( ! image || ! image->GetData() )
+      {
       StdErr << "ERROR: Could not open image " << targetPath << "\n";
-      exit(1);
-    }
-    imageVector.push_back(image);
+      exit( 1 );
+      }
+    imageVector.push_back( image );
 
     AffineXform::SmartPtr xform;
     stream >> xform;
-    xformVector.push_back(xform);
+    xformVector.push_back( xform );
 
-    free(targetPath);
-    targetPath =
-        stream.ReadString("target", NULL /*default*/, true /*forward*/);
-  }
+    free( targetPath );
+    targetPath = stream.ReadString( "target", NULL /*default*/, true /*forward*/ );
+    }
 
-  func.SetTargetImages(imageVector);
-  func.SetTemplateGrid(templateGrid);
-  func.SetXforms(xformVector);
+  func.SetTargetImages( imageVector );
+  func.SetTemplateGrid( templateGrid );
+  func.SetXforms( xformVector );
 
   return stream;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

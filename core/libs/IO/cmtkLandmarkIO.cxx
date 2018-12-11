@@ -32,14 +32,17 @@
 
 #include "cmtkLandmarkIO.h"
 
-std::ostream &operator<<(std::ostream &stream, const cmtk::Landmark &lm) {
+std::ostream& operator<<( std::ostream& stream, const cmtk::Landmark& lm )
+{
   stream << lm.m_Location << " " << lm.m_Name << "\n";
   return stream;
 }
 
 /// Landmark input operator.
-std::istream &operator>>(std::istream &stream, cmtk::Landmark &lm) {
+std::istream& operator>>( std::istream& stream, cmtk::Landmark& lm )
+{
   stream >> lm.m_Location;
-  std::getline(stream, lm.m_Name);
+  std::getline( stream, lm.m_Name );
   return stream;
 }
+

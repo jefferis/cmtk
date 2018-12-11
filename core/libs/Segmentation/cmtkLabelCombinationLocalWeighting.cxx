@@ -40,53 +40,57 @@
 
 #include <Registration/cmtkTypedArraySimilarity.h>
 
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 
 #ifdef _OPENMP
-#include <omp.h>
+#  include <omp.h>
 #endif
 
-void cmtk::LabelCombinationLocalWeighting::AddAtlasImage(
-    const UniformVolume::SmartConstPtr image) {
-  if (!this->m_TargetImage->GridMatches(*image)) {
+void
+cmtk::LabelCombinationLocalWeighting::AddAtlasImage
+( const UniformVolume::SmartConstPtr image )
+{
+  if ( !this->m_TargetImage->GridMatches( *image ) )
+    {
     StdErr << "Atlas intensity image grid does not match target image.\n";
-    throw ExitException(1);
-  }
+    throw ExitException( 1 );
+    }
 
-  this->m_AtlasImages.push_back(image);
+  this->m_AtlasImages.push_back( image );
 }
 
-void cmtk::LabelCombinationLocalWeighting::ExcludeGlobalOutliers() {
-  std::vector<Types::DataItem> ncc(this->m_AtlasImages.size());
+void
+cmtk::LabelCombinationLocalWeighting::ExcludeGlobalOutliers()
+{
+  std::vector<Types::DataItem> ncc( this->m_AtlasImages.size() );
 
-  for (size_t i = 0; i < this->m_AtlasImages.size(); ++i) {
-    ncc[i] = TypedArraySimilarity::GetCrossCorrelation(
-        this->m_TargetImage->GetData(), this->m_AtlasImages[i]->GetData());
-  }
+  for ( size_t i = 0; i < this->m_AtlasImages.size(); ++i )
+    {
+    ncc[i] = TypedArraySimilarity::GetCrossCorrelation( this->m_TargetImage->GetData(), this->m_AtlasImages[i]->GetData() );
+    }
 
   std::vector<Types::DataItem> nccSort = ncc;
-  std::sort(nccSort.begin(), nccSort.end());
+  std::sort( nccSort.begin(), nccSort.end() );
 
   // determine 1st and 3rd quartile values
-  const Types::DataItem Q1 =
-      nccSort[static_cast<size_t>(0.25 * nccSort.size())];
-  const Types::DataItem Q3 =
-      nccSort[static_cast<size_t>(0.75 * nccSort.size())];
-
+  const Types::DataItem Q1 = nccSort[static_cast<size_t>( 0.25 * nccSort.size() )];
+  const Types::DataItem Q3 = nccSort[static_cast<size_t>( 0.75 * nccSort.size() )];
+  
   // compute threshold from 1st quartile and inter-quartile range
-  const Types::DataItem lThresh = Q1 - 1.5 * (Q3 - Q1);
-
+  const Types::DataItem lThresh = Q1 - 1.5 * (Q3-Q1);
+  
   size_t iAtlas = 0;
-  for (size_t i = 0; i < this->m_AtlasImages.size(); ++i) {
-    if (ncc[i] < lThresh) {
-      DebugOutput(2)
-          << "INFO: atlas #" << i
-          << " excluded as outlier based on low NCC with target image ("
-          << ncc[i] << ", thresh=" << lThresh << ")\n";
-      this->DeleteAtlas(iAtlas);
-    } else {
+  for ( size_t i = 0; i < this->m_AtlasImages.size(); ++i )
+    {
+    if ( ncc[i] < lThresh )
+      {
+      DebugOutput( 2 ) << "INFO: atlas #" << i << " excluded as outlier based on low NCC with target image (" << ncc[i] << ", thresh=" << lThresh << ")\n";
+      this->DeleteAtlas( iAtlas ); 
+      }
+    else
+      {
       ++iAtlas;
+      }
     }
-  }
 }

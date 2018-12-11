@@ -30,33 +30,43 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkHistogram.h>
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkHistogram.h>
 
-namespace cmtk {
+namespace 
+cmtk
+{
 
 /** Estimate noise level in data stored in a TypedArray.
  * Estimate Gaussian noise variance using naive peak finding method.
  *\author Torsten Rohlfing
  */
-class TypedArrayNoiseEstimatorNaiveGaussian {
- public:
+class
+TypedArrayNoiseEstimatorNaiveGaussian
+{
+public:
   /// This class.
   typedef TypedArrayNoiseEstimatorNaiveGaussian Self;
 
   /// Constructor.
-  TypedArrayNoiseEstimatorNaiveGaussian(const TypedArray &data,
-                                        const size_t histogramBins = 255);
-
+  TypedArrayNoiseEstimatorNaiveGaussian( const TypedArray& data, const size_t histogramBins = 255 );
+  
   /// Get noise level.
-  Types::DataItem GetNoiseLevelSigma() const { return this->m_NoiseLevelSigma; }
+  Types::DataItem GetNoiseLevelSigma() const
+  {
+    return this->m_NoiseLevelSigma;
+  }
 
   /// Get noise threshold.
-  Types::DataItem GetNoiseThreshold() const { return this->m_Threshold; }
+  Types::DataItem GetNoiseThreshold() const
+  {
+    return this->m_Threshold;
+  }
 
- protected:
+protected:
   /// Default constructor; should not be invoked by user code.
-  TypedArrayNoiseEstimatorNaiveGaussian() {
+  TypedArrayNoiseEstimatorNaiveGaussian()
+  {
     this->m_Threshold = 0;
     this->m_NoiseLevelSigma = 0;
   }
@@ -68,4 +78,4 @@ class TypedArrayNoiseEstimatorNaiveGaussian {
   Types::DataItem m_NoiseLevelSigma;
 };
 
-}  // namespace cmtk
+} // namespace cmtk

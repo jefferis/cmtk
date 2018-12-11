@@ -30,22 +30,27 @@
 
 #include "cmtkImageOperationResampleIsotropic.h"
 
-cmtk::UniformVolume::SmartPtr cmtk::ImageOperationResampleIsotropic ::Apply(
-    cmtk::UniformVolume::SmartPtr &volume) {
-  if (this->m_Exact)
-    return cmtk::UniformVolume::SmartPtr(
-        volume->GetResampledExact(this->m_Resolution));
+cmtk::UniformVolume::SmartPtr
+cmtk::ImageOperationResampleIsotropic
+::Apply( cmtk::UniformVolume::SmartPtr& volume )
+{
+  if ( this->m_Exact )
+    return cmtk::UniformVolume::SmartPtr( volume->GetResampledExact( this->m_Resolution ) );
   else
-    return cmtk::UniformVolume::SmartPtr(
-        volume->GetResampled(this->m_Resolution, true /*allowUpsampling*/));
+    return cmtk::UniformVolume::SmartPtr( volume->GetResampled( this->m_Resolution, true /*allowUpsampling*/ ) );
 }
 
-void cmtk::ImageOperationResampleIsotropic ::New(const double resolution) {
-  ImageOperation::m_ImageOperationList.push_back(
-      SmartPtr(new ImageOperationResampleIsotropic(resolution)));
+void
+cmtk::ImageOperationResampleIsotropic
+::New( const double resolution )
+{
+  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationResampleIsotropic( resolution ) ) );
 }
 
-void cmtk::ImageOperationResampleIsotropic ::NewExact(const double resolution) {
-  ImageOperation::m_ImageOperationList.push_back(
-      SmartPtr(new ImageOperationResampleIsotropic(resolution, true)));
+void
+cmtk::ImageOperationResampleIsotropic
+::NewExact( const double resolution )
+{
+  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationResampleIsotropic( resolution, true ) ) );
 }
+

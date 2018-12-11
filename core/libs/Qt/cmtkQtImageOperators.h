@@ -35,25 +35,28 @@
 
 #include <cmtkconfig.h>
 
-#include <QtCore/QObject>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QWidget>
+#include <qobject.h>
+#include <qwidget.h>
+#include <qmenu.h>
 
 #include <IO/cmtkStudy.h>
 #include <Qt/cmtkQtProgress.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
 /// A collection of 3D image operators with Qt menu.
 class QtImageOperators :
-    /// Inherit from QObject for event handling etc.
-    public QObject {
+  /// Inherit from QObject for event handling etc.
+  public QObject
+{
   Q_OBJECT
 
- public slots:
+public slots:
   /// Slot to open selected type of fusion window.
   void slotOperatorMedian();
   void slotOperatorSobel();
@@ -62,42 +65,41 @@ class QtImageOperators :
   void slotOperatorLog();
   void slotOperatorExp();
 
- signals:
+signals:
   /// This signal is sent when the image data has been changed.
-  void dataChanged(Study::SmartPtr &);
+ void dataChanged( Study::SmartPtr& );
 
- public:
+public:
   /// Constructor.
-  QtImageOperators(Study::SmartPtr *currentStudy, QWidget *const parent = NULL,
-                   QtProgress *const progressInstance = NULL)
-      : Parent(parent),
-        CurrentStudy(currentStudy),
-        ProgressInstance(progressInstance){};
-
+  QtImageOperators
+  ( Study::SmartPtr* currentStudy, QWidget *const parent = NULL, QtProgress *const progressInstance = NULL )
+    : Parent( parent ), CurrentStudy( currentStudy ),
+      ProgressInstance( progressInstance ) {};
+  
   /// Create and return popup menu that makes operators available.
-  QMenu *CreatePopupMenu();
+  QMenu* CreatePopupMenu();
 
- private:
+private:
   /** The parent widget.
    * This is for modal dialogs that may be opened for some operations.
    */
-  QWidget *Parent;
+  QWidget* Parent;
 
   /// Pointer to an object with the current study pointer.
-  Study::SmartPtr *CurrentStudy;
+  Study::SmartPtr* CurrentStudy;
 
   /// Optional instance of a Qt progress indicator.
-  QtProgress *ProgressInstance;
+  QtProgress* ProgressInstance;
 
   /// Check whether study and volume data are all valid.
-  bool StudyDataValid() const {
-    return (*(this->CurrentStudy)) && (*(this->CurrentStudy))->GetVolume() &&
-           (*(this->CurrentStudy))->GetVolume()->GetData();
+  bool StudyDataValid() const 
+  {
+    return (*(this->CurrentStudy)) && (*(this->CurrentStudy))->GetVolume() && (*(this->CurrentStudy))->GetVolume()->GetData();
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQtImageOperators_h_included_
+#endif // #ifndef __cmtkQtImageOperators_h_included_

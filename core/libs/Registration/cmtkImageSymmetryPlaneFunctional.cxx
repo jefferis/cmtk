@@ -36,39 +36,40 @@
 
 #include <Base/cmtkTransformedVolumeAxes.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional(
-    UniformVolume::SmartConstPtr &volume)
-    : ImageSymmetryPlaneFunctionalBase(volume) {
-  this->m_Metric = Self::MetricType::SmartPtr(
-      new ImagePairSimilarityMeasureMSD(this->m_Volume, this->m_Volume));
+ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
+( UniformVolume::SmartConstPtr& volume ) 
+  : ImageSymmetryPlaneFunctionalBase( volume )
+{
+  this->m_Metric = Self::MetricType::SmartPtr( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) );
 }
 
-ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional(
-    UniformVolume::SmartConstPtr &volume,
-    const Types::DataItemRange &valueRange)
-    : ImageSymmetryPlaneFunctionalBase(volume, valueRange) {
-  this->m_Metric = Self::MetricType::SmartPtr(
-      new ImagePairSimilarityMeasureMSD(this->m_Volume, this->m_Volume));
+ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
+( UniformVolume::SmartConstPtr& volume, 
+  const Types::DataItemRange& valueRange )
+  : ImageSymmetryPlaneFunctionalBase( volume, valueRange )
+{
+  this->m_Metric = Self::MetricType::SmartPtr( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) );
 }
 
 ImageSymmetryPlaneFunctional::ReturnType
-ImageSymmetryPlaneFunctional::Evaluate() {
-  const TransformedVolumeAxes gridHash(*m_Volume, this->m_ParametricPlane,
-                                       m_Volume->Deltas().begin());
-  const Vector3D *HashX = gridHash[0], *HashY = gridHash[1],
-                 *HashZ = gridHash[2];
+ImageSymmetryPlaneFunctional::Evaluate()
+{
+  const TransformedVolumeAxes gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->Deltas().begin() );
+  const Vector3D *HashX = gridHash[0], *HashY = gridHash[1], *HashZ = gridHash[2];
 
   Vector3D pFloating;
-
-  Self::MetricType &metric = *m_Metric;
+    
+  Self::MetricType& metric = *m_Metric;
   metric.Reset();
-
-  const DataGrid::IndexType &Dims = m_Volume->GetDims();
+    
+  const DataGrid::IndexType& Dims = m_Volume->GetDims();
   const Types::GridIndexType DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
   Types::GridIndexType fltIdx[3];
@@ -77,27 +78,29 @@ ImageSymmetryPlaneFunctional::Evaluate() {
   Vector3D planeStart, rowStart;
 
   Types::GridIndexType r = 0;
-  for (Types::GridIndexType pZ = 0; pZ < DimsZ; ++pZ) {
+  for ( Types::GridIndexType pZ = 0; pZ<DimsZ; ++pZ ) 
+    {
     planeStart = HashZ[pZ];
-
-    for (Types::GridIndexType pY = 0; pY < DimsY; ++pY) {
+    
+    for ( Types::GridIndexType pY = 0; pY<DimsY; ++pY ) 
+      {
       (rowStart = planeStart) += HashY[pY];
-
-      for (Types::GridIndexType pX = 0; pX < DimsX; ++pX, ++r) {
-        (pFloating = rowStart) += HashX[pX];
-
-        // Is the current location still within the floating image, then get the
-        // respective voxel.
-        if (m_Volume->FindVoxelByIndex(pFloating, fltIdx, fltFrac)) {
-          // Continue metric computation.
-          metric.Increment(metric.GetSampleX(r),
-                           metric.GetSampleY(fltIdx, fltFrac));
-        }
+      
+      for ( Types::GridIndexType pX = 0; pX<DimsX; ++pX, ++r ) 
+	{
+	(pFloating = rowStart) += HashX[pX];
+	
+	// Is the current location still within the floating image, then get the respective voxel.
+	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
+	  {
+	  // Continue metric computation.
+	  metric.Increment( metric.GetSampleX( r ), metric.GetSampleY( fltIdx, fltFrac ) );
+	  }
+	}
       }
     }
-  }
-
+  
   return metric.Get();
 }
 
-}  // namespace cmtk
+} // namespace cmtk

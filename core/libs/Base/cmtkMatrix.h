@@ -36,63 +36,74 @@
 #include <cmtkconfig.h>
 
 #include <string.h>
-#include <iostream>
 #include <vector>
+#include <iostream>
 
-#include <System/cmtkMemory.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkMemory.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 /// Rekursive matrix template.
-template <class TElement, size_t NDim>
-class Matrix {
- public:
+template<class TElement,size_t NDim>
+class Matrix
+{
+public:
   /// This class.
-  typedef Matrix<TElement, NDim> Self;
+  typedef Matrix<TElement,NDim> Self;
 
   /// Superclass.
-  typedef Matrix<TElement, NDim - 1> Superclass;
+  typedef Matrix<TElement,NDim-1> Superclass;
 
   /// Public constructor.
-  Matrix(const size_t (&dims)[NDim]) : m_SubMatrixArray(dims[0]) {}
+  Matrix( const size_t (&dims)[NDim] )
+    : m_SubMatrixArray( dims[0] )
+  {
+  }
 
   /// Destructor.
-  ~Matrix(){};
+  ~Matrix() {};
 
   /// Element pointer type.
-  typedef typename Superclass::ElementPointerType *ElementPointerType;
+  typedef typename Superclass::ElementPointerType* ElementPointerType;
 
-  typename Self::ElementPointerType &operator[](const size_t idx) {
+  typename Self::ElementPointerType& operator[]( const size_t idx )
+  {
+    return this->m_SubMatrixArray[idx];
+  }
+  
+  const typename Self::ElementPointerType& operator[]( const size_t idx ) const
+  {
     return this->m_SubMatrixArray[idx];
   }
 
-  const typename Self::ElementPointerType &operator[](const size_t idx) const {
-    return this->m_SubMatrixArray[idx];
-  }
-
- protected:
+protected:
   /// Recursive constructor.
-  Matrix(){};
-
- private:
+  Matrix() {};
+  
+private:
   /// Vector of pointers to lower-dimensional sub-matrices.
   std::vector<typename Self::ElementPointerType> m_SubMatrixArray;
-};  // class Matrix
+}; // class Matrix
 
-template <class TElement>
-class Matrix<TElement, 1> {};
+template<class TElement>
+class Matrix<TElement,1>
+{
+};
 
 /// Two-dimensional matrix template.
-template <class T>
+template<class T>
 class Matrix2D :
-    /// For access, make this a vector of pointers.
-    public std::vector<T *> {
- public:
+  /// For access, make this a vector of pointers.
+  public std::vector<T*>
+{
+public:
   /// Superclass.
-  typedef std::vector<T *> Superclass;
+  typedef std::vector<T*> Superclass;
 
   /// This class.
   typedef Matrix2D<T> Self;
@@ -101,101 +112,121 @@ class Matrix2D :
   typedef SmartPointer<Self> SmartPtr;
 
   /// Row vector type.
-  typedef std::vector<T *> RowVectorType;
-
+  typedef std::vector<T*> RowVectorType;  
+  
   /// Default constructor.
-  Matrix2D() : Superclass(1) {
+  Matrix2D()
+    : Superclass( 1 )
+  { 
     this->m_NumberOfColumns = 0;
     this->m_NumberOfRows = 0;
     this->m_NumberOfElements = 0;
-
+    
     (*this)[0] = NULL;
   }
-
+  
   /// Constructor: allocate and create cross-references.
-  Matrix2D(const size_t dims1, const size_t dims0, const T *dataPtr = NULL)
-      : Superclass(dims1) {
+  Matrix2D( const size_t dims1, const size_t dims0, const T* dataPtr = NULL )
+    : Superclass( dims1 )
+  { 
     this->m_NumberOfColumns = dims0;
     this->m_NumberOfRows = dims1;
     this->m_NumberOfElements = dims0 * dims1;
 
-    (*this)[0] = Memory::ArrayC::Allocate<T>(this->m_NumberOfElements);
-    for (size_t i = 1; i < this->m_NumberOfRows; ++i)
-      (*this)[i] = (*this)[i - 1] + this->m_NumberOfColumns;
-
-    if (dataPtr)
-      memcpy((*this)[0], dataPtr, this->m_NumberOfElements * sizeof(T));
+    (*this)[0] = Memory::ArrayC::Allocate<T>(  this->m_NumberOfElements  );
+    for ( size_t i = 1; i < this->m_NumberOfRows; ++i )
+      (*this)[i] = (*this)[i-1] + this->m_NumberOfColumns;
+    
+    if ( dataPtr )
+      memcpy( (*this)[0], dataPtr, this->m_NumberOfElements * sizeof( T ) );
   }
-
+  
   /// Copy constructor.
-  Matrix2D(const Matrix2D<T> &other) : Superclass(other.size()) {
+  Matrix2D( const Matrix2D<T>& other ) :
+    Superclass( other.size() )
+  { 
     this->m_NumberOfColumns = other.m_NumberOfColumns;
     this->m_NumberOfRows = other.m_NumberOfRows;
     this->m_NumberOfElements = other.m_NumberOfElements;
 
-    (*this)[0] = Memory::ArrayC::Allocate<T>(this->m_NumberOfElements);
-    for (size_t i = 1; i < this->m_NumberOfRows; ++i)
-      (*this)[i] = (*this)[i - 1] + this->m_NumberOfColumns;
-
-    memcpy((*this)[0], other[0], this->m_NumberOfElements * sizeof(T));
+    (*this)[0] = Memory::ArrayC::Allocate<T>(  this->m_NumberOfElements  );
+    for ( size_t i = 1; i < this->m_NumberOfRows; ++i )
+      (*this)[i] = (*this)[i-1] + this->m_NumberOfColumns;
+    
+    memcpy( (*this)[0], other[0], this->m_NumberOfElements * sizeof( T ) );
   }
 
   /// Destructor: free allocated array.
-  ~Matrix2D() {
-    if ((*this)[0]) {
-      Memory::ArrayC::Delete((*this)[0]);
+  ~Matrix2D() 
+  {
+    if ( (*this)[0] )
+      {
+      Memory::ArrayC::Delete( (*this)[0] );
       (*this)[0] = NULL;
-    }
+      }
   }
 
   /// Get number of rows.
-  size_t NumberOfRows() const { return this->m_NumberOfRows; }
+  size_t NumberOfRows() const 
+  { 
+    return this->m_NumberOfRows;
+  }
 
   /** Get number of columns.
    * Get this from underlying Array.
    */
-  size_t NumberOfColumns() const { return this->m_NumberOfColumns; }
+  size_t NumberOfColumns() const 
+  { 
+    return this->m_NumberOfColumns; 
+  }
 
   /// Resize the matrix.
-  void Resize(const size_t numberOfRows, const size_t numberOfColumns) {
-    if ((numberOfColumns != this->m_NumberOfColumns) ||
-        (numberOfRows != this->m_NumberOfRows)) {
-      if ((*this)[0]) {
-        Memory::ArrayC::Delete((*this)[0]);
-        (*this)[0] = NULL;
-      }
-
+  void Resize( const size_t numberOfRows, const size_t numberOfColumns )
+  {
+    if ( (numberOfColumns != this->m_NumberOfColumns) ||
+	 (numberOfRows != this->m_NumberOfRows) )
+      {
+      if ( (*this)[0] )
+	{
+	Memory::ArrayC::Delete( (*this)[0] );
+	(*this)[0] = NULL;
+	}
+      
       this->m_NumberOfColumns = numberOfColumns;
       this->m_NumberOfRows = numberOfRows;
       this->m_NumberOfElements = numberOfColumns * numberOfRows;
-
-      this->Superclass::resize(numberOfRows);
-      (*this)[0] = Memory::ArrayC::Allocate<T>(this->m_NumberOfElements);
-      for (size_t i = 1; i < numberOfRows; ++i)
-        (*this)[i] = (*this)[i - 1] + numberOfColumns;
-    }
+      
+      this->Superclass::resize( numberOfRows );
+      (*this)[0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
+      for ( size_t i = 1; i < numberOfRows; ++i )
+	(*this)[i] = (*this)[i-1] + numberOfColumns;
+      }
   }
-
+  
   /// Reset all values to zero.
-  void SetAllToZero() {
-    memset((*this)[0], 0, this->m_NumberOfElements * sizeof(T));
+  void SetAllToZero() 
+  {
+    memset( (*this)[0], 0, this->m_NumberOfElements * sizeof( T ) );
   }
-
+  
   /// Set all values.
-  void SetAll(const T value) {
-    for (size_t i = 0; i < this->m_NumberOfElements; ++i) {
+  void SetAll( const T value) 
+  {
+    for ( size_t i = 0; i < this->m_NumberOfElements; ++i ) 
+      {
       (*this)[0][i] = value;
-    }
+      }
   }
-
+  
   /// Copy another matrix.
-  Matrix2D<T> &operator=(const Matrix2D<T> &other) {
-    this->Resize(other.NumberOfColumns(), other.NumberOfRows());
-    memcpy((*this)[0], other[0], this->m_NumberOfElements * sizeof(T));
+  Matrix2D<T>& operator= ( const Matrix2D<T>& other ) 
+  {
+    this->Resize( other.NumberOfColumns(), other.NumberOfRows() );
+    memcpy( (*this)[0], other[0], this->m_NumberOfElements * sizeof( T ) );
     return *this;
   }
-
- private:
+  
+private:
   /// Size of the allocated array.
   size_t m_NumberOfElements;
 
@@ -207,11 +238,12 @@ class Matrix2D :
 };
 
 /// Three-dimensional matrix template.
-template <class T>
+template<class T>
 class Matrix3D :
-    /// For access, make this a 2-D matrix of pointers.
-    public Matrix2D<T *> {
- public:
+  /// For access, make this a 2-D matrix of pointers.
+  public Matrix2D<T*>
+{
+public:
   /// This class.
   typedef Matrix3D<T> Self;
 
@@ -219,75 +251,83 @@ class Matrix3D :
   typedef SmartPointer<Self> SmartPtr;
 
   /// Superclass.
-  typedef Matrix2D<T *> Superclass;
+  typedef Matrix2D<T*> Superclass;
 
   /// Constructor: allocate and create cross-references.
-  Matrix3D<T>(const size_t dims2, const size_t dims1, const size_t dims0)
-      : Matrix2D<T *>(dims2, dims1) {
+  Matrix3D<T>
+  ( const size_t dims2, const size_t dims1, const size_t dims0 )
+    : Matrix2D<T*>( dims2, dims1 )
+  {
     this->m_NumberOfPlanes = dims0;
     this->m_NumberOfElements = dims0 * dims1 * dims2;
-    (*this)[0][0] = Memory::ArrayC::Allocate<T>(this->m_NumberOfElements);
+    (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
 
-    for (size_t j = 0; j < this->NumberOfRows(); ++j)
-      for (size_t i = 0; i < this->NumberOfColumns(); ++i)
-        if (i && j) {
-          (*this)[i][j] = (*this)[0][0] + this->NumberOfRows() *
-                                              (i + this->NumberOfColumns() * j);
-        }
+    for ( size_t j = 0; j < this->NumberOfRows(); ++j )
+      for ( size_t i = 0; i < this->NumberOfColumns(); ++i )
+	if ( i && j )
+	  {
+	  (*this)[i][j] = (*this)[0][0] + this->NumberOfRows() * ( i + this->NumberOfColumns() * j );
+	  }
   }
 
   /// Return number of planes
-  size_t NumberOfPlanes() const { return this->m_NumberOfPlanes; }
-
+  size_t NumberOfPlanes() const
+  {
+    return this->m_NumberOfPlanes;
+  }
+  
   /// Resize the matrix.
-  void Resize(const size_t numberOfRows, const size_t numberOfColumns,
-              const size_t numberOfPlanes) {
-    if ((numberOfColumns != this->NumberOfColumns()) ||
-        (numberOfRows != this->NumberOfRows()) ||
-        (numberOfPlanes != this->NumberOfPlanes())) {
-      if ((*this)[0][0]) {
-        Memory::ArrayC::Delete((*this)[0][0]);
-        (*this)[0][0] = NULL;
-      }
-
+  void Resize( const size_t numberOfRows, const size_t numberOfColumns, const size_t numberOfPlanes )
+  {
+    if ( ( numberOfColumns != this->NumberOfColumns() ) ||
+	 ( numberOfRows != this->NumberOfRows() ) ||
+	 ( numberOfPlanes != this->NumberOfPlanes() ) )
+      {
+      if ( (*this)[0][0] )
+	{
+	Memory::ArrayC::Delete( (*this)[0][0] );
+	(*this)[0][0] = NULL;
+	}
+      
       this->m_NumberOfPlanes = numberOfPlanes;
-      this->m_NumberOfElements =
-          numberOfPlanes * numberOfRows * numberOfColumns;
+      this->m_NumberOfElements = numberOfPlanes * numberOfRows * numberOfColumns;
 
-      this->Superclass::Resize(numberOfRows, numberOfColumns);
-      (*this)[0][0] = Memory::ArrayC::Allocate<T>(this->m_NumberOfElements);
-
-      for (size_t j = 0; j < this->NumberOfRows(); ++j)
-        for (size_t i = 0; i < this->NumberOfColumns(); ++i)
-          if (i && j) {
-            (*this)[i][j] =
-                (*this)[0][0] +
-                this->NumberOfPlanes() * (i + this->NumberOfColumns() * j);
-          }
-    }
+      this->Superclass::Resize( numberOfRows, numberOfColumns );
+      (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
+      
+      for ( size_t j = 0; j < this->NumberOfRows(); ++j )
+	for ( size_t i = 0; i < this->NumberOfColumns(); ++i )
+	  if ( i && j )
+	    {
+	    (*this)[i][j] = (*this)[0][0] + this->NumberOfPlanes() * ( i + this->NumberOfColumns() * j );
+	    }
+      }
   }
-
+  
   /// Reset all values to zero.
-  void SetAllToZero() {
-    memset((*this)[0][0], 0, this->m_NumberOfElements * sizeof(T));
+  void SetAllToZero() 
+  {
+    memset( (*this)[0][0], 0, this->m_NumberOfElements * sizeof( T ) );
   }
-
+  
   /// Set all values.
-  void SetAll(const T value) {
-    for (size_t i = 0; i < this->m_NumberOfElements; ++i) {
+  void SetAll( const T value) 
+  {
+    for ( size_t i = 0; i < this->m_NumberOfElements; ++i ) 
+      {
       (*this)[0][0][i] = value;
-    }
+      }
   }
-
+  
   /// Copy another matrix.
-  Matrix2D<T> &operator=(const Matrix2D<T> &other) {
-    this->Resize(other.NumberOfColumns(), other.NumberOfRows(),
-                 other.NumberOfPlanes());
-    memcpy((*this)[0], other[0], this->m_NumberOfElements * sizeof(T));
+  Matrix2D<T>& operator= ( const Matrix2D<T>& other ) 
+  {
+    this->Resize( other.NumberOfColumns(), other.NumberOfRows(), other.NumberOfPlanes() );
+    memcpy( (*this)[0], other[0], this->m_NumberOfElements * sizeof( T ) );
     return *this;
   }
-
- private:
+  
+private:
   /// Planes in the 3D matrix.
   size_t m_NumberOfPlanes;
 
@@ -297,6 +337,6 @@ class Matrix3D :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMatrix_h_included_
+#endif // #ifndef __cmtkMatrix_h_included_

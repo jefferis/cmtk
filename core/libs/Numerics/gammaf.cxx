@@ -68,9 +68,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
+
 #include "gammaf.h"
 
-namespace alglib {
+namespace
+alglib
+{
 
 ap::real_value_type gammastirf(ap::real_value_type x);
 
@@ -94,83 +97,97 @@ Cephes Math Library Release 2.8:  June, 2000
 Original copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
-ap::real_value_type gamma(ap::real_value_type x) {
-  ap::real_value_type result;
-  ap::real_value_type p;
-  ap::real_value_type pp;
-  ap::real_value_type q;
-  ap::real_value_type qq;
-  ap::real_value_type z;
-  int i;
-  ap::real_value_type sgngam;
+ap::real_value_type gamma(ap::real_value_type x)
+{
+    ap::real_value_type result;
+    ap::real_value_type p;
+    ap::real_value_type pp;
+    ap::real_value_type q;
+    ap::real_value_type qq;
+    ap::real_value_type z;
+    int i;
+    ap::real_value_type sgngam;
 
-  sgngam = 1;
-  q = fabs(x);
-  if (q > 33.0) {
-    if (x < 0.0) {
-      p = ap::ifloor(q);
-      i = ap::round(p);
-      if (i % 2 == 0) {
-        sgngam = -1;
-      }
-      z = q - p;
-      if (z > 0.5) {
-        p = p + 1;
-        z = q - p;
-      }
-      z = q * sin(ap::pi() * z);
-      z = fabs(z);
-      z = ap::pi() / (z * gammastirf(q));
-    } else {
-      z = gammastirf(x);
+    sgngam = 1;
+    q = fabs(x);
+    if( q>33.0 )
+    {
+        if( x<0.0 )
+        {
+            p = ap::ifloor(q);
+            i = ap::round(p);
+            if( i%2==0 )
+            {
+                sgngam = -1;
+            }
+            z = q-p;
+            if( z>0.5 )
+            {
+                p = p+1;
+                z = q-p;
+            }
+            z = q*sin(ap::pi()*z);
+            z = fabs(z);
+            z = ap::pi()/(z*gammastirf(q));
+        }
+        else
+        {
+            z = gammastirf(x);
+        }
+        result = sgngam*z;
+        return result;
     }
-    result = sgngam * z;
+    z = 1;
+    while(x>=3)
+    {
+        x = x-1;
+        z = z*x;
+    }
+    while(x<0)
+    {
+        if( x>-0.000000001 )
+        {
+            result = z/((1+0.5772156649015329*x)*x);
+            return result;
+        }
+        z = z/x;
+        x = x+1;
+    }
+    while(x<2)
+    {
+        if( x<0.000000001 )
+        {
+            result = z/((1+0.5772156649015329*x)*x);
+            return result;
+        }
+        z = z/x;
+        x = x+1.0;
+    }
+    if( x==2 )
+    {
+        result = z;
+        return result;
+    }
+    x = x-2.0;
+    pp = 1.60119522476751861407E-4;
+    pp = 1.19135147006586384913E-3+x*pp;
+    pp = 1.04213797561761569935E-2+x*pp;
+    pp = 4.76367800457137231464E-2+x*pp;
+    pp = 2.07448227648435975150E-1+x*pp;
+    pp = 4.94214826801497100753E-1+x*pp;
+    pp = 9.99999999999999996796E-1+x*pp;
+    qq = -2.31581873324120129819E-5;
+    qq = 5.39605580493303397842E-4+x*qq;
+    qq = -4.45641913851797240494E-3+x*qq;
+    qq = 1.18139785222060435552E-2+x*qq;
+    qq = 3.58236398605498653373E-2+x*qq;
+    qq = -2.34591795718243348568E-1+x*qq;
+    qq = 7.14304917030273074085E-2+x*qq;
+    qq = 1.00000000000000000320+x*qq;
+    result = z*pp/qq;
     return result;
-  }
-  z = 1;
-  while (x >= 3) {
-    x = x - 1;
-    z = z * x;
-  }
-  while (x < 0) {
-    if (x > -0.000000001) {
-      result = z / ((1 + 0.5772156649015329 * x) * x);
-      return result;
-    }
-    z = z / x;
-    x = x + 1;
-  }
-  while (x < 2) {
-    if (x < 0.000000001) {
-      result = z / ((1 + 0.5772156649015329 * x) * x);
-      return result;
-    }
-    z = z / x;
-    x = x + 1.0;
-  }
-  if (x == 2) {
-    result = z;
-    return result;
-  }
-  x = x - 2.0;
-  pp = 1.60119522476751861407E-4;
-  pp = 1.19135147006586384913E-3 + x * pp;
-  pp = 1.04213797561761569935E-2 + x * pp;
-  pp = 4.76367800457137231464E-2 + x * pp;
-  pp = 2.07448227648435975150E-1 + x * pp;
-  pp = 4.94214826801497100753E-1 + x * pp;
-  pp = 9.99999999999999996796E-1 + x * pp;
-  qq = -2.31581873324120129819E-5;
-  qq = 5.39605580493303397842E-4 + x * qq;
-  qq = -4.45641913851797240494E-3 + x * qq;
-  qq = 1.18139785222060435552E-2 + x * qq;
-  qq = 3.58236398605498653373E-2 + x * qq;
-  qq = -2.34591795718243348568E-1 + x * qq;
-  qq = 7.14304917030273074085E-2 + x * qq;
-  qq = 1.00000000000000000320 + x * qq;
-  result = z * pp / qq;
-  return result;
 }
+
 
 /*************************************************************************
 Natural logarithm of gamma function
@@ -204,134 +221,151 @@ Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
-ap::real_value_type lngamma(ap::real_value_type x,
-                            ap::real_value_type &sgngam) {
-  ap::real_value_type result;
-  ap::real_value_type a;
-  ap::real_value_type b;
-  ap::real_value_type c;
-  ap::real_value_type p;
-  ap::real_value_type q;
-  ap::real_value_type u;
-  ap::real_value_type w;
-  ap::real_value_type z;
-  int i;
-  ap::real_value_type logpi;
-  ap::real_value_type ls2pi;
-  ap::real_value_type tmp;
+ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam)
+{
+    ap::real_value_type result;
+    ap::real_value_type a;
+    ap::real_value_type b;
+    ap::real_value_type c;
+    ap::real_value_type p;
+    ap::real_value_type q;
+    ap::real_value_type u;
+    ap::real_value_type w;
+    ap::real_value_type z;
+    int i;
+    ap::real_value_type logpi;
+    ap::real_value_type ls2pi;
+    ap::real_value_type tmp;
 
-  sgngam = 1;
-  logpi = 1.14472988584940017414;
-  ls2pi = 0.91893853320467274178;
-  if (x < -34.0) {
-    q = -x;
-    w = lngamma(q, tmp);
-    p = ap::ifloor(q);
-    i = ap::round(p);
-    if (i % 2 == 0) {
-      sgngam = -1;
-    } else {
-      sgngam = 1;
+    sgngam = 1;
+    logpi = 1.14472988584940017414;
+    ls2pi = 0.91893853320467274178;
+    if( x<-34.0 )
+    {
+        q = -x;
+        w = lngamma(q, tmp);
+        p = ap::ifloor(q);
+        i = ap::round(p);
+        if( i%2==0 )
+        {
+            sgngam = -1;
+        }
+        else
+        {
+            sgngam = 1;
+        }
+        z = q-p;
+        if( z>0.5 )
+        {
+            p = p+1;
+            z = p-q;
+        }
+        z = q*sin(ap::pi()*z);
+        result = logpi-log(z)-w;
+        return result;
     }
-    z = q - p;
-    if (z > 0.5) {
-      p = p + 1;
-      z = p - q;
+    if( x<13 )
+    {
+        z = 1;
+        p = 0;
+        u = x;
+        while(u>=3)
+        {
+            p = p-1;
+            u = x+p;
+            z = z*u;
+        }
+        while(u<2)
+        {
+            z = z/u;
+            p = p+1;
+            u = x+p;
+        }
+        if( z<0 )
+        {
+            sgngam = -1;
+            z = -z;
+        }
+        else
+        {
+            sgngam = 1;
+        }
+        if( u==2 )
+        {
+            result = log(z);
+            return result;
+        }
+        p = p-2;
+        x = x+p;
+        b = -1378.25152569120859100;
+        b = -38801.6315134637840924+x*b;
+        b = -331612.992738871184744+x*b;
+        b = -1162370.97492762307383+x*b;
+        b = -1721737.00820839662146+x*b;
+        b = -853555.664245765465627+x*b;
+        c = 1;
+        c = -351.815701436523470549+x*c;
+        c = -17064.2106651881159223+x*c;
+        c = -220528.590553854454839+x*c;
+        c = -1139334.44367982507207+x*c;
+        c = -2532523.07177582951285+x*c;
+        c = -2018891.41433532773231+x*c;
+        p = x*b/c;
+        result = log(z)+p;
+        return result;
     }
-    z = q * sin(ap::pi() * z);
-    result = logpi - log(z) - w;
-    return result;
-  }
-  if (x < 13) {
-    z = 1;
-    p = 0;
-    u = x;
-    while (u >= 3) {
-      p = p - 1;
-      u = x + p;
-      z = z * u;
+    q = (x-0.5)*log(x)-x+ls2pi;
+    if( x>100000000 )
+    {
+        result = q;
+        return result;
     }
-    while (u < 2) {
-      z = z / u;
-      p = p + 1;
-      u = x + p;
+    p = 1/(x*x);
+    if( x>=1000.0 )
+    {
+        q = q+((7.9365079365079365079365*0.0001*p-2.7777777777777777777778*0.001)*p+0.0833333333333333333333)/x;
     }
-    if (z < 0) {
-      sgngam = -1;
-      z = -z;
-    } else {
-      sgngam = 1;
+    else
+    {
+        a = 8.11614167470508450300*0.0001;
+        a = -5.95061904284301438324*0.0001+p*a;
+        a = 7.93650340457716943945*0.0001+p*a;
+        a = -2.77777777730099687205*0.001+p*a;
+        a = 8.33333333333331927722*0.01+p*a;
+        q = q+a/x;
     }
-    if (u == 2) {
-      result = log(z);
-      return result;
-    }
-    p = p - 2;
-    x = x + p;
-    b = -1378.25152569120859100;
-    b = -38801.6315134637840924 + x * b;
-    b = -331612.992738871184744 + x * b;
-    b = -1162370.97492762307383 + x * b;
-    b = -1721737.00820839662146 + x * b;
-    b = -853555.664245765465627 + x * b;
-    c = 1;
-    c = -351.815701436523470549 + x * c;
-    c = -17064.2106651881159223 + x * c;
-    c = -220528.590553854454839 + x * c;
-    c = -1139334.44367982507207 + x * c;
-    c = -2532523.07177582951285 + x * c;
-    c = -2018891.41433532773231 + x * c;
-    p = x * b / c;
-    result = log(z) + p;
-    return result;
-  }
-  q = (x - 0.5) * log(x) - x + ls2pi;
-  if (x > 100000000) {
     result = q;
     return result;
-  }
-  p = 1 / (x * x);
-  if (x >= 1000.0) {
-    q = q + ((7.9365079365079365079365 * 0.0001 * p -
-              2.7777777777777777777778 * 0.001) *
-                 p +
-             0.0833333333333333333333) /
-                x;
-  } else {
-    a = 8.11614167470508450300 * 0.0001;
-    a = -5.95061904284301438324 * 0.0001 + p * a;
-    a = 7.93650340457716943945 * 0.0001 + p * a;
-    a = -2.77777777730099687205 * 0.001 + p * a;
-    a = 8.33333333333331927722 * 0.01 + p * a;
-    q = q + a / x;
-  }
-  result = q;
-  return result;
 }
 
-ap::real_value_type gammastirf(ap::real_value_type x) {
-  ap::real_value_type result;
-  ap::real_value_type y;
-  ap::real_value_type w;
-  ap::real_value_type v;
-  ap::real_value_type stir;
 
-  w = 1 / x;
-  stir = 7.87311395793093628397E-4;
-  stir = -2.29549961613378126380E-4 + w * stir;
-  stir = -2.68132617805781232825E-3 + w * stir;
-  stir = 3.47222221605458667310E-3 + w * stir;
-  stir = 8.33333333333482257126E-2 + w * stir;
-  w = 1 + w * stir;
-  y = exp(x);
-  if (x > 143.01608) {
-    v = pow((ap::real_value_type)x, (ap::real_value_type)(0.5 * x - 0.25));
-    y = v * (v / y);
-  } else {
-    y = pow((ap::real_value_type)x, (ap::real_value_type)(x - 0.5)) / y;
-  }
-  result = 2.50662827463100050242 * y * w;
-  return result;
+ap::real_value_type gammastirf(ap::real_value_type x)
+{
+    ap::real_value_type result;
+    ap::real_value_type y;
+    ap::real_value_type w;
+    ap::real_value_type v;
+    ap::real_value_type stir;
+
+    w = 1/x;
+    stir = 7.87311395793093628397E-4;
+    stir = -2.29549961613378126380E-4+w*stir;
+    stir = -2.68132617805781232825E-3+w*stir;
+    stir = 3.47222221605458667310E-3+w*stir;
+    stir = 8.33333333333482257126E-2+w*stir;
+    w = 1+w*stir;
+    y = exp(x);
+    if( x>143.01608 )
+    {
+        v = pow((ap::real_value_type)x, (ap::real_value_type)(0.5*x-0.25));
+        y = v*(v/y);
+    }
+    else
+    {
+        y = pow((ap::real_value_type)x, (ap::real_value_type)(x-0.5))/y;
+    }
+    result = 2.50662827463100050242*y*w;
+    return result;
 }
 
-}  // namespace alglib
+} // namespace alglib

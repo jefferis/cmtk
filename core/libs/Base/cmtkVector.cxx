@@ -31,4 +31,5 @@
 
 #include <Base/cmtkVector.h>
 
-const char *DimensionMismatchError = "Vector dimension mismatch.";
+const char* DimensionMismatchError = "Vector dimension mismatch.";
+

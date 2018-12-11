@@ -34,42 +34,51 @@
 
 #include <cuda_runtime_api.h>
 
-namespace cmtk {
+namespace 
+cmtk
+{
 
-DeviceMemoryCUDA ::DeviceMemoryCUDA(const size_t nBytes,
-                                    const size_t padToMultiple) {
-  this->m_NumberOfBytesAllocated =
-      (((nBytes - 1) / padToMultiple) + 1) * padToMultiple;
+DeviceMemoryCUDA
+::DeviceMemoryCUDA( const size_t nBytes, const size_t padToMultiple )
+{
+  this->m_NumberOfBytesAllocated = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
 
-  cmtkCheckCallCUDA(
-      cudaMalloc(&(this->m_PointerDevice), this->m_NumberOfBytesAllocated));
+  cmtkCheckCallCUDA( cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated ) );
 }
 
-DeviceMemoryCUDA ::~DeviceMemoryCUDA() {
-  if (this->m_PointerDevice) cmtkCheckCallCUDA(cudaFree(this->m_PointerDevice));
+DeviceMemoryCUDA
+::~DeviceMemoryCUDA()
+{
+  if ( this->m_PointerDevice )
+    cmtkCheckCallCUDA( cudaFree( this->m_PointerDevice ) );
 }
 
-void DeviceMemoryCUDA ::CopyToDevice(const void *const srcPtrHost,
-                                     const size_t nBytes) {
-  cmtkCheckCallCUDA(cudaMemcpy(this->m_PointerDevice, srcPtrHost, nBytes,
-                               cudaMemcpyHostToDevice));
+void
+DeviceMemoryCUDA
+::CopyToDevice( const void *const srcPtrHost, const size_t nBytes )
+{
+  cmtkCheckCallCUDA( cudaMemcpy( this->m_PointerDevice, srcPtrHost, nBytes, cudaMemcpyHostToDevice ) );
+}
+  
+void
+DeviceMemoryCUDA
+::CopyToHost( void *const dstPtrHost, const size_t nBytes ) const
+{
+  cmtkCheckCallCUDA( cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost ) );
+} 
+
+void
+DeviceMemoryCUDA
+::CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes )
+{
+  cmtkCheckCallCUDA( cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice ) );
 }
 
-void DeviceMemoryCUDA ::CopyToHost(void *const dstPtrHost,
-                                   const size_t nBytes) const {
-  cmtkCheckCallCUDA(cudaMemcpy(dstPtrHost, this->m_PointerDevice, nBytes,
-                               cudaMemcpyDeviceToHost));
+void
+DeviceMemoryCUDA
+::Memset( const int value, const size_t nBytes )
+{
+  cmtkCheckCallCUDA( cudaMemset( this->m_PointerDevice, value, nBytes ) );
 }
 
-void DeviceMemoryCUDA ::CopyOnDevice(const Self &srcPtrDevice,
-                                     const size_t nBytes) {
-  cmtkCheckCallCUDA(cudaMemcpy(this->m_PointerDevice,
-                               srcPtrDevice.m_PointerDevice, nBytes,
-                               cudaMemcpyDeviceToDevice));
-}
-
-void DeviceMemoryCUDA ::Memset(const int value, const size_t nBytes) {
-  cmtkCheckCallCUDA(cudaMemset(this->m_PointerDevice, value, nBytes));
-}
-
-}  // namespace cmtk
+} // namespace cmtk

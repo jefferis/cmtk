@@ -61,6 +61,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************/
 
+
 #include "lq.h"
 
 /*************************************************************************
@@ -97,36 +98,42 @@ v(i) = 1, v(i+1:n-1) stored in A(i,i+1:n-1).
   -- ALGLIB --
      Copyright 2005-2007 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixlq(ap::real_2d_array &a, int m, int n, ap::real_1d_array &tau) {
-  ap::real_1d_array work;
-  ap::real_1d_array t;
-  int i;
-  int k;
-  int minmn;
-  ap::real_value_type tmp;
+void rmatrixlq(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau)
+{
+    ap::real_1d_array work;
+    ap::real_1d_array t;
+    int i;
+    int k;
+    int minmn;
+    ap::real_value_type tmp;
 
-  minmn = ap::minint(m, n);
-  work.setbounds(0, m);
-  t.setbounds(0, n);
-  tau.setbounds(0, minmn - 1);
-  k = ap::minint(m, n);
-  for (i = 0; i <= k - 1; i++) {
-    //
-    // Generate elementary reflector H(i) to annihilate A(i,i+1:n-1)
-    //
-    ap::vmove(&t(1), &a(i, i), ap::vlen(1, n - i));
-    generatereflection(t, n - i, tmp);
-    tau(i) = tmp;
-    ap::vmove(&a(i, i), &t(1), ap::vlen(i, n - 1));
-    t(1) = 1;
-    if (i < n) {
-      //
-      // Apply H(i) to A(i+1:m,i:n) from the right
-      //
-      applyreflectionfromtheright(a, tau(i), t, i + 1, m - 1, i, n - 1, work);
+    minmn = ap::minint(m, n);
+    work.setbounds(0, m);
+    t.setbounds(0, n);
+    tau.setbounds(0, minmn-1);
+    k = ap::minint(m, n);
+    for(i = 0; i <= k-1; i++)
+    {
+        
+        //
+        // Generate elementary reflector H(i) to annihilate A(i,i+1:n-1)
+        //
+        ap::vmove(&t(1), &a(i, i), ap::vlen(1,n-i));
+        generatereflection(t, n-i, tmp);
+        tau(i) = tmp;
+        ap::vmove(&a(i, i), &t(1), ap::vlen(i,n-1));
+        t(1) = 1;
+        if( i<n )
+        {
+            
+            //
+            // Apply H(i) to A(i+1:m,i:n) from the right
+            //
+            applyreflectionfromtheright(a, tau(i), t, i+1, m-1, i, n-1, work);
+        }
     }
-  }
 }
+
 
 /*************************************************************************
 Partial unpacking of matrix Q from the LQ decomposition of a matrix A
@@ -148,51 +155,63 @@ Output parameters:
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-void rmatrixlqunpackq(const ap::real_2d_array &a, int m, int n,
-                      const ap::real_1d_array &tau, int qrows,
-                      ap::real_2d_array &q) {
-  int i;
-  int j;
-  int k;
-  int minmn;
-  ap::real_1d_array v;
-  ap::real_1d_array work;
+void rmatrixlqunpackq(const ap::real_2d_array& a,
+     int m,
+     int n,
+     const ap::real_1d_array& tau,
+     int qrows,
+     ap::real_2d_array& q)
+{
+    int i;
+    int j;
+    int k;
+    int minmn;
+    ap::real_1d_array v;
+    ap::real_1d_array work;
 
 #ifndef NO_AP_ASSERT
-  ap::ap_error::make_assertion(qrows <= n, "RMatrixLQUnpackQ: QRows>N!");
+    ap::ap_error::make_assertion(qrows<=n, "RMatrixLQUnpackQ: QRows>N!");
 #endif
 
-  if (m <= 0 || n <= 0 || qrows <= 0) {
-    return;
-  }
-
-  //
-  // init
-  //
-  minmn = ap::minint(m, n);
-  k = ap::minint(minmn, qrows);
-  q.setbounds(0, qrows - 1, 0, n - 1);
-  v.setbounds(0, n);
-  work.setbounds(0, qrows);
-  for (i = 0; i <= qrows - 1; i++) {
-    for (j = 0; j <= n - 1; j++) {
-      if (i == j) {
-        q(i, j) = 1;
-      } else {
-        q(i, j) = 0;
-      }
+    if( m<=0||n<=0||qrows<=0 )
+    {
+        return;
     }
-  }
-
-  //
-  // unpack Q
-  //
-  for (i = k - 1; i >= 0; i--) {
+    
     //
-    // Apply H(i)
+    // init
     //
-    ap::vmove(&v(1), &a(i, i), ap::vlen(1, n - i));
-    v(1) = 1;
-    applyreflectionfromtheright(q, tau(i), v, 0, qrows - 1, i, n - 1, work);
-  }
+    minmn = ap::minint(m, n);
+    k = ap::minint(minmn, qrows);
+    q.setbounds(0, qrows-1, 0, n-1);
+    v.setbounds(0, n);
+    work.setbounds(0, qrows);
+    for(i = 0; i <= qrows-1; i++)
+    {
+        for(j = 0; j <= n-1; j++)
+        {
+            if( i==j )
+            {
+                q(i,j) = 1;
+            }
+            else
+            {
+                q(i,j) = 0;
+            }
+        }
+    }
+    
+    //
+    // unpack Q
+    //
+    for(i = k-1; i >= 0; i--)
+    {
+        
+        //
+        // Apply H(i)
+        //
+        ap::vmove(&v(1), &a(i, i), ap::vlen(1,n-i));
+        v(1) = 1;
+        applyreflectionfromtheright(q, tau(i), v, 0, qrows-1, i, n-1, work);
+    }
 }

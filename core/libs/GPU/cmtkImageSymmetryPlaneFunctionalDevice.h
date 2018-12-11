@@ -39,7 +39,9 @@
 
 #include <GPU/cmtkDeviceUniformVolumeArray.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
@@ -47,9 +49,10 @@ namespace cmtk {
 /** Functional for finding a symmetry plane in 3-D volumes using GPU support.
  */
 class ImageSymmetryPlaneFunctionalDevice :
-    /// Inherit functional interface.
-    public ImageSymmetryPlaneFunctionalBase {
- public:
+  /// Inherit functional interface.
+  public ImageSymmetryPlaneFunctionalBase
+{
+public:
   /// This class.
   typedef ImageSymmetryPlaneFunctionalDevice Self;
 
@@ -60,11 +63,10 @@ class ImageSymmetryPlaneFunctionalDevice :
   typedef ImageSymmetryPlaneFunctionalBase Superclass;
 
   /// Constructor.
-  ImageSymmetryPlaneFunctionalDevice(UniformVolume::SmartConstPtr &volume);
+  ImageSymmetryPlaneFunctionalDevice( UniformVolume::SmartConstPtr& volume );
 
   /// Constructor with value range limits.
-  ImageSymmetryPlaneFunctionalDevice(UniformVolume::SmartConstPtr &volume,
-                                     const Types::DataItemRange &valueRange);
+  ImageSymmetryPlaneFunctionalDevice( UniformVolume::SmartConstPtr& volume, const Types::DataItemRange& valueRange );
 
   /// Destructor.
   virtual ~ImageSymmetryPlaneFunctionalDevice() {}
@@ -72,13 +74,13 @@ class ImageSymmetryPlaneFunctionalDevice :
   /// Compute functional value.
   virtual Self::ReturnType Evaluate();
 
- private:
+private:
   /// Volume on compute device.
   DeviceUniformVolumeArray::SmartPtr m_VolumeOnDevice;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_h_included_
+#endif // #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_h_included_

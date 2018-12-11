@@ -35,20 +35,23 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkXform.h>
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkPolynomialXform.h>
 #include <Base/cmtkWarpXform.h>
-#include <Base/cmtkXform.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 /// An entry in a transformation sequence.
-class XformListEntry {
- public:
+class XformListEntry 
+{
+public:
   /// This class.
   typedef XformListEntry Self;
 
@@ -59,43 +62,41 @@ class XformListEntry {
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  XformListEntry(
-      const Xform::SmartConstPtr &xform = Xform::SmartConstPtr::Null(),
-      const bool inverse = false, const Types::Coordinate globalScale = 1.0);
-
+  XformListEntry( const Xform::SmartConstPtr& xform = Xform::SmartConstPtr::Null(), const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  
   /// Destructor.
   ~XformListEntry();
-
+  
   /// The actual transformation.
   const Xform::SmartConstPtr m_Xform;
-
+  
   /// The actual inverse if transformation is affine.
-  const AffineXform *InverseAffineXform;
-
+  const AffineXform* InverseAffineXform;
+  
   /// The actual transformation as polynomial transformation.
-  const PolynomialXform *m_PolyXform;
-
+  const PolynomialXform* m_PolyXform;
+  
   /// The actual transformation as spline warp.
-  const WarpXform *m_WarpXform;
-
+  const WarpXform* m_WarpXform;
+  
   /// Apply forward (false) or inverse (true) transformation.
   bool Inverse;
-
+  
   /// Global scale for normalizing the Jacobian.
   Types::Coordinate GlobalScale;
 
   /// Is this an affine transformation?
-  bool IsAffine() const {
+  bool IsAffine() const
+  {
     return (this->m_WarpXform == NULL) && (this->m_PolyXform == NULL);
   }
 
-  /// Make a copy of this entry in which all nonrigid transformations are
-  /// replaced with their associated affine initializers.
+  /// Make a copy of this entry in which all nonrigid transformations are replaced with their associated affine initializers.
   Self::SmartPtr CopyAsAffine() const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkXformListEntry_h_included_
+#endif // #ifndef __cmtkXformListEntry_h_included_

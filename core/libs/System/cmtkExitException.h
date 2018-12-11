@@ -35,25 +35,29 @@
 
 #include <cmtkconfig.h>
 
-#include <stdlib.h>
 #include <exception>
+#include <stdlib.h>
 #include <string>
 
 #include <System/cmtkConsole.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 /** Program exit exception class.
- * Throwing an object of this class should return control to the global main()
- *function, which should exit() with the given exit status. This should ensure
- *that all local automatic as well as global static objects have their
- *destructors called.
+ * Throwing an object of this class should return control to the global main() function,
+ * which should exit() with the given exit status. This should ensure that all local
+ * automatic as well as global static objects have their destructors called.
  *
- * The global main() function can make use of this exception via the following
- *wrapper construct, \code int main( const int argc, const char* argv[] )
+ * The global main() function can make use of this exception via the following wrapper
+ * construct,
+ *\code
+ * int
+ * main( const int argc, const char* argv[] )
  * {
  *   int exitCode = 0;
  *   try
@@ -67,34 +71,39 @@ namespace cmtk {
  *   return exitCode;
  * }
  *\endcode
- * where the actual function of the program is moved into the doMain()
- *implementation function.
+ * where the actual function of the program is moved into the doMain() implementation function.
  */
 class ExitException :
-    /// Inherit from C++ standard exception.
-    public std::exception {
- public:
+  /// Inherit from C++ standard exception.
+  public std::exception
+{
+public:
   /** Constructor.
    */
-  ExitException(const int exitCode = 0 /*!< Program exit code. */)
-      : m_ExitCode(exitCode) {}
-
+  ExitException( const int exitCode = 0 /*!< Program exit code. */ ) : m_ExitCode( exitCode ) {}
+  
   /// Virtual destructor.
-  virtual ~ExitException() throw(){};
+  virtual ~ExitException() throw() {};
 
   /// Overwrite inherited "what" member.
-  virtual const char *what() const throw() { return "cmtk::ExitException"; }
+  virtual const char* what() const throw()
+  {
+    return "cmtk::ExitException";
+  }  
 
   /// Return exit code.
-  int ExitCode() const { return this->m_ExitCode; }
+  int ExitCode() const
+  {
+    return this->m_ExitCode;
+  }
 
- private:
+private:
   /// Program exit code.
   const int m_ExitCode;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkExitException_h_included_
+#endif // #ifndef __cmtkExitException_h_included_

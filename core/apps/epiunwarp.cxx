@@ -43,7 +43,10 @@
 
 #include <Registration/cmtkEchoPlanarUnwarpFunctional.h>
 
-int doMain(const int argc, const char *argv[]) {
+int
+doMain
+( const int argc, const char *argv[] )
+{
   std::string inputImagePath1;
   std::string inputImagePath2;
 
@@ -54,7 +57,7 @@ int doMain(const int argc, const char *argv[]) {
   std::string outputDFieldRev;
 
   std::string writeJacobianPath1;
-  std::string writeJacobianPath2;
+  std::string writeJacobianPath2;  
 
   byte phaseEncodeDirection = 1;
   bool flipPEPolar = true;
@@ -67,146 +70,90 @@ int doMain(const int argc, const char *argv[]) {
   double smoothSigmaMax = 8.0;
   double smoothSigmaMin = 0;
   double smoothSigmaDiff = 0.25;
-
-  try {
+  
+  try
+    {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Unwarp Echo Planar Images");
-    cl.SetProgramInfo(
-        cmtk::CommandLine::PRG_DESCR,
-        "Correct B0 field inhomogeneity-induced distortion in Echo Planar "
-        "Images (e.g., diffusion-weighted images) using two images acquired "
-        "with opposing phase encoding directions.");
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unwarp Echo Planar Images" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Correct B0 field inhomogeneity-induced distortion in Echo Planar Images (e.g., diffusion-weighted images) using two images acquired with opposing phase encoding directions." );
 
     typedef cmtk::CommandLine::Key Key;
 
-    cl.BeginGroup("Input", "Input Image Parameters");
-    cmtk::CommandLine::EnumGroup<byte>::SmartPtr phaseEncodeGroup =
-        cl.AddEnum("phase-encode", &phaseEncodeDirection,
-                   "Define the phase-encoded image coordinate direction.");
-    phaseEncodeGroup->AddSwitch(
-        Key('y', "phase-encode-ap"), 1,
-        "Anterior/posterior phase encoding (this is the most common case)");
-    phaseEncodeGroup->AddSwitch(Key('z', "phase-encode-is"), 2,
-                                "Top/bottom phase encoding (this is rare)");
-    phaseEncodeGroup->AddSwitch(
-        Key('x', "phase-encode-lr"), 0,
-        "Lateral, left/right phase encoding (this is extremely rare)");
-    cl.AddSwitch(Key("no-flip"), &flipPEPolar, false,
-                 "Use this switch is the reverse phase-encoded image does not "
-                 "need to be flipped prior to unwarping. If normal and reverse "
-                 "phase-encoded image display in the same gross "
-                 "orientation in 'triplanar', then flipping is not necessary "
-                 "and must be turned off using this switch.");
+    cl.BeginGroup( "Input", "Input Image Parameters" );    
+    cmtk::CommandLine::EnumGroup<byte>::SmartPtr phaseEncodeGroup = cl.AddEnum( "phase-encode", &phaseEncodeDirection, "Define the phase-encoded image coordinate direction." );
+    phaseEncodeGroup->AddSwitch( Key( 'y', "phase-encode-ap" ), 1, "Anterior/posterior phase encoding (this is the most common case)" );
+    phaseEncodeGroup->AddSwitch( Key( 'z', "phase-encode-is" ), 2, "Top/bottom phase encoding (this is rare)" );
+    phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is extremely rare)" );
+    cl.AddSwitch( Key( "no-flip" ), &flipPEPolar, false, "Use this switch is the reverse phase-encoded image does not need to be flipped prior to unwarping. If normal and reverse phase-encoded image display in the same gross "
+		  "orientation in 'triplanar', then flipping is not necessary and must be turned off using this switch." );
     cl.EndGroup();
 
-    cl.BeginGroup("Optimization", "Optimization Parameters");
-    cl.AddSwitch(
-        Key("no-init-shift-com"), &initShiftCentersOfMass, false,
-        "Disable initialization of unwarping by shifting each row to align the "
-        "centers of mass of forward and reverse acquisition. "
-        "Instead, use all-zero initial deformation field.");
+    cl.BeginGroup( "Optimization", "Optimization Parameters" );    
+    cl.AddSwitch( Key( "no-init-shift-com" ), &initShiftCentersOfMass, false, "Disable initialization of unwarping by shifting each row to align the centers of mass of forward and reverse acquisition. "
+		  "Instead, use all-zero initial deformation field." );
 
-    cl.AddOption(Key("smooth-sigma-max"), &smoothSigmaMax,
-                 "Maximum image smoothing kernel width for coarsest level of "
-                 "multi-scale computation.");
-    cl.AddOption(
-        Key("smooth-sigma-min"), &smoothSigmaMin,
-        "Minimum image smoothing kernel width for finest level of multi-scale "
-        "computation (0 = no smoothing; original image scale).");
-    cl.AddOption(Key("smooth-sigma-diff"), &smoothSigmaDiff,
-                 "Difference between image smoothing kernel widths between two "
-                 "successive levels of the multi-scale computation.");
-
-    cl.AddOption(Key("smoothness-constraint-weight"),
-                 &smoothnessConstraintWeight,
-                 "Weight factor for the second-order smoothness constraint "
-                 "term in the unwarping cost function.");
-    cl.AddOption(Key("folding-constraint-weight"), &foldingConstraintWeight,
-                 "Weight factor for the folding-prevention constraint term in "
-                 "the unwarping cost function.");
-    cl.AddOption(
-        Key('i', "iterations"), &iterations,
-        "Number of L-BFGS optimization iterations (per multi-scale level).");
+    cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
+    cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (0 = no smoothing; original image scale)." );
+    cl.AddOption( Key( "smooth-sigma-diff" ), &smoothSigmaDiff, "Difference between image smoothing kernel widths between two successive levels of the multi-scale computation." );
+    
+    cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
+    cl.AddOption( Key( "folding-constraint-weight" ), &foldingConstraintWeight, "Weight factor for the folding-prevention constraint term in the unwarping cost function." );
+    cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations (per multi-scale level)." );
     cl.EndGroup();
 
-    cl.BeginGroup("Output", "Output Options");
-    cl.AddOption(Key("write-jacobian-fwd"), &writeJacobianPath1,
-                 "Write Jacobian intensity correction map for forward image.");
-    cl.AddOption(
-        Key("write-jacobian-rev"), &writeJacobianPath2,
-        "Write Jacobian intensity correction map for reverse-encoded image.");
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( "write-jacobian-fwd" ), &writeJacobianPath1, "Write Jacobian intensity correction map for forward image." );
+    cl.AddOption( Key( "write-jacobian-rev" ), &writeJacobianPath2, "Write Jacobian intensity correction map for reverse-encoded image." );
     cl.EndGroup();
 
-    cl.AddParameter(&inputImagePath1, "InputImage1",
-                    "First input image path - this is the standard b=0 image.")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
-    cl.AddParameter(&inputImagePath2, "InputImage2",
-                    "Second input image path - this is the b=0 image with "
-                    "reversed phase encoding direction.")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
-    cl.AddParameter(&outputImagePath1, "OutputImage1",
-                    "First output image path - this is the unwarped, corrected "
-                    "standard b=0 image.")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
-                        cmtk::CommandLine::PROPS_OUTPUT);
-    cl.AddParameter(&outputImagePath2, "OutputImage2",
-                    "Second output image path - this is the unwarped, "
-                    "corrected reversed-encoding b=0 image.")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
-                        cmtk::CommandLine::PROPS_OUTPUT);
-    cl.AddParameter(&outputDField, "OutputDField",
-                    "Path for deformation field (this can be applied to other "
-                    "images, e.g., diffusion-weighted images.")
-        ->SetProperties(cmtk::CommandLine::PROPS_XFORM |
-                        cmtk::CommandLine::PROPS_OUTPUT);
-    cl.AddParameter(&outputDFieldRev, "OutputDFieldRev",
-                    "Path for reverse deformation field (again, this can be "
-                    "applied to other images, e.g., diffusion-weighted images.")
-        ->SetProperties(cmtk::CommandLine::PROPS_XFORM |
-                        cmtk::CommandLine::PROPS_OUTPUT |
-                        cmtk::CommandLine::PROPS_OPTIONAL);
-
-    cl.Parse(argc, argv);
-  } catch (const cmtk::CommandLine::Exception &e) {
+    cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &inputImagePath2, "InputImage2", "Second input image path - this is the b=0 image with reversed phase encoding direction." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outputImagePath1, "OutputImage1", "First output image path - this is the unwarped, corrected standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputImagePath2, "OutputImage2", "Second output image path - this is the unwarped, corrected reversed-encoding b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputDField, "OutputDField", "Path for deformation field (this can be applied to other images, e.g., diffusion-weighted images." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputDFieldRev, "OutputDFieldRev", "Path for reverse deformation field (again, this can be applied to other images, e.g., diffusion-weighted images." )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT | cmtk::CommandLine::PROPS_OPTIONAL );
+    
+    cl.Parse( argc, argv );
+    }
+  catch ( const cmtk::CommandLine::Exception& e )
+    {
     cmtk::StdErr << e << "\n";
-    throw cmtk::ExitException(1);
-  }
+    throw cmtk::ExitException( 1 );
+    }
 
-  cmtk::UniformVolume::SmartPtr inputImage1 =
-      cmtk::VolumeIO::ReadOriented(inputImagePath1);
-  cmtk::UniformVolume::SmartPtr inputImage2 =
-      cmtk::VolumeIO::ReadOriented(inputImagePath2);
+  cmtk::UniformVolume::SmartPtr inputImage1 = cmtk::VolumeIO::ReadOriented( inputImagePath1 );
+  cmtk::UniformVolume::SmartPtr inputImage2 = cmtk::VolumeIO::ReadOriented( inputImagePath2 );
 
-  if (flipPEPolar) inputImage2->ApplyMirrorPlane(phaseEncodeDirection);
+  if ( flipPEPolar )
+    inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
-  cmtk::EchoPlanarUnwarpFunctional func(
-      inputImage1, inputImage2, phaseEncodeDirection, initShiftCentersOfMass);
+  cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection, initShiftCentersOfMass );
 
-  func.SetSmoothnessConstraintWeight(smoothnessConstraintWeight);
-  func.SetFoldingConstraintWeight(foldingConstraintWeight);
-  func.Optimize(iterations, cmtk::Units::GaussianSigma(smoothSigmaMax),
-                cmtk::Units::GaussianSigma(smoothSigmaMin),
-                cmtk::Units::GaussianSigma(smoothSigmaDiff));
+  func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
+  func.SetFoldingConstraintWeight( foldingConstraintWeight );
+  func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaMin ), cmtk::Units::GaussianSigma( smoothSigmaDiff ) );
 
-  cmtk::VolumeIO::Write(*func.GetCorrectedImage(+1), outputImagePath1);
-  cmtk::VolumeIO::Write(*func.GetCorrectedImage(-1), outputImagePath2);
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( +1 ), outputImagePath1 );
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( -1 ), outputImagePath2 );
 
-  if (!outputDField.empty()) {
-    cmtk::DeformationField::SmartPtr dfield(func.GetDeformationField(+1));
-    cmtk::XformIO::Write(dfield, outputDField);
-  }
+  if ( !outputDField.empty() )
+    {
+    cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( +1 ) );
+    cmtk::XformIO::Write( dfield, outputDField );
+    }
+    
+  if ( !outputDFieldRev.empty() )
+    {
+    cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( -1 ) );
+    cmtk::XformIO::Write( dfield, outputDFieldRev );
+    }
+    
+  if ( !writeJacobianPath1.empty() )
+    cmtk::VolumeIO::Write( *func.GetJacobianMap( +1 ), writeJacobianPath1 );
 
-  if (!outputDFieldRev.empty()) {
-    cmtk::DeformationField::SmartPtr dfield(func.GetDeformationField(-1));
-    cmtk::XformIO::Write(dfield, outputDFieldRev);
-  }
-
-  if (!writeJacobianPath1.empty())
-    cmtk::VolumeIO::Write(*func.GetJacobianMap(+1), writeJacobianPath1);
-
-  if (!writeJacobianPath2.empty())
-    cmtk::VolumeIO::Write(*func.GetJacobianMap(-1), writeJacobianPath2);
+  if ( !writeJacobianPath2.empty() )
+    cmtk::VolumeIO::Write( *func.GetJacobianMap( -1 ), writeJacobianPath2 );
 
   return 0;
 }

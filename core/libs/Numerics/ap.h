@@ -70,22 +70,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cmtkconfig.h>
 
-#include <math.h>
 #include <stdlib.h>
 #include <string>
+#include <math.h>
 
 /********************************************************************
 Array bounds check
 ********************************************************************/
 
-#ifndef NO_AP_ASSERT  //
-#define AP_ASSERT     // This code avoids definition of the
+#ifndef NO_AP_ASSERT     //
+#define AP_ASSERT  // This code avoids definition of the
 #endif                // both AP_ASSERT and NO_AP_ASSERT symbols
-#ifdef AP_ASSERT      //
-#ifdef NO_AP_ASSERT   //
-#undef AP_ASSERT      //
+#ifdef AP_ASSERT   //
+#ifdef NO_AP_ASSERT      //
+#undef AP_ASSERT   //
 #endif                //
 #endif                //
+
 
 /********************************************************************
 Current environment.
@@ -107,10 +108,12 @@ comments.
 ********************************************************************/
 //#define UNSAFE_MEM_COPY
 
+
 /********************************************************************
 Namespace of a standard library AlgoPascal.
 ********************************************************************/
-namespace ap {
+namespace ap
+{
 
 #ifdef CMTK_NUMERICS_DOUBLE
 typedef double real_value_type;
@@ -124,28 +127,26 @@ Service routines:
     afree - frees block allocated by amalloc
     vlen - just alias for n2-n1+1
 ********************************************************************/
-void *amalloc(size_t size, size_t alignment);
+void* amalloc(size_t size, size_t alignment);
 void afree(void *block);
 int vlen(int n1, int n2);
 
 /********************************************************************
 Exception class.
 ********************************************************************/
-class ap_error {
- public:
-  ap_error(){};
-  ap_error(const char *s) { msg = s; };
+class ap_error
+{
+public:
+    ap_error(){};
+    ap_error(const char *s){ msg = s; };
 
-  std::string msg;
+    std::string msg;
 
-  static void make_assertion(bool bClause) {
-    if (!bClause) throw ap_error();
-  };
-  static void make_assertion(bool bClause, const char *msg) {
-    if (!bClause) throw ap_error(msg);
-  };
-
- private:
+    static void make_assertion(bool bClause)
+        { if(!bClause) throw ap_error(); };
+    static void make_assertion(bool bClause, const char *msg)
+        { if(!bClause) throw ap_error(msg); };
+private:
 };
 
 /********************************************************************
@@ -153,100 +154,70 @@ Class defining a complex number with ap::real_value_type precision.
 ********************************************************************/
 class complex;
 
-class complex {
- public:
-  complex() : x(0.0), y(0.0){};
-  complex(const real_value_type &_x) : x(_x), y(0.0){};
-  complex(const real_value_type &_x, const real_value_type &_y)
-      : x(_x), y(_y){};
-  complex(const complex &z) : x(z.x), y(z.y){};
+class complex
+{
+public:
+    complex():x(0.0),y(0.0){};
+    complex(const real_value_type &_x):x(_x),y(0.0){};
+    complex(const real_value_type &_x, const real_value_type &_y):x(_x),y(_y){};
+    complex(const complex &z):x(z.x),y(z.y){};
 
-  complex &operator=(const real_value_type &v) {
-    x = v;
-    y = 0.0;
-    return *this;
-  };
-  complex &operator+=(const real_value_type &v) {
-    x += v;
-    return *this;
-  };
-  complex &operator-=(const real_value_type &v) {
-    x -= v;
-    return *this;
-  };
-  complex &operator*=(const real_value_type &v) {
-    x *= v;
-    y *= v;
-    return *this;
-  };
-  complex &operator/=(const real_value_type &v) {
-    x /= v;
-    y /= v;
-    return *this;
-  };
+    complex& operator= (const real_value_type& v){ x  = v; y = 0.0; return *this; };
+    complex& operator+=(const real_value_type& v){ x += v;          return *this; };
+    complex& operator-=(const real_value_type& v){ x -= v;          return *this; };
+    complex& operator*=(const real_value_type& v){ x *= v; y *= v;  return *this; };
+    complex& operator/=(const real_value_type& v){ x /= v; y /= v;  return *this; };
 
-  complex &operator=(const complex &z) {
-    x = z.x;
-    y = z.y;
-    return *this;
-  };
-  complex &operator+=(const complex &z) {
-    x += z.x;
-    y += z.y;
-    return *this;
-  };
-  complex &operator-=(const complex &z) {
-    x -= z.x;
-    y -= z.y;
-    return *this;
-  };
-  complex &operator*=(const complex &z) {
-    real_value_type t = x * z.x - y * z.y;
-    y = x * z.y + y * z.x;
-    x = t;
-    return *this;
-  };
-  complex &operator/=(const complex &z) {
-    ap::complex result;
-    real_value_type e;
-    real_value_type f;
-    if (fabs(z.y) < fabs(z.x)) {
-      e = z.y / z.x;
-      f = z.x + z.y * e;
-      result.x = (z.x + z.y * e) / f;
-      result.y = (z.y - z.x * e) / f;
-    } else {
-      e = z.x / z.y;
-      f = z.y + z.x * e;
-      result.x = (z.y + z.x * e) / f;
-      result.y = (-z.x + z.y * e) / f;
-    }
-    *this = result;
-    return *this;
-  };
+    complex& operator= (const complex& z){ x  = z.x; y  = z.y; return *this; };
+    complex& operator+=(const complex& z){ x += z.x; y += z.y; return *this; };
+    complex& operator-=(const complex& z){ x -= z.x; y -= z.y; return *this; };
+    complex& operator*=(const complex& z){ real_value_type t = x*z.x-y*z.y; y = x*z.y+y*z.x; x = t; return *this; };
+    complex& operator/=(const complex& z)
+    {
+        ap::complex result;
+        real_value_type e;
+        real_value_type f;
+        if( fabs(z.y)<fabs(z.x) )
+        {
+            e = z.y/z.x;
+            f = z.x+z.y*e;
+            result.x = (z.x+z.y*e)/f;
+            result.y = (z.y-z.x*e)/f;
+        }
+        else
+        {
+            e = z.x/z.y;
+            f = z.y+z.x*e;
+            result.x = (z.y+z.x*e)/f;
+            result.y = (-z.x+z.y*e)/f;
+        }
+        *this = result;
+        return *this;
+    };
 
-  real_value_type x, y;
+    real_value_type x, y;
 };
 
-const complex operator/(const complex &lhs, const complex &rhs);
-bool operator==(const complex &lhs, const complex &rhs);
-bool operator!=(const complex &lhs, const complex &rhs);
-const complex operator+(const complex &lhs);
-const complex operator-(const complex &lhs);
-const complex operator+(const complex &lhs, const complex &rhs);
-const complex operator+(const complex &lhs, const real_value_type &rhs);
-const complex operator+(const real_value_type &lhs, const complex &rhs);
-const complex operator-(const complex &lhs, const complex &rhs);
-const complex operator-(const complex &lhs, const real_value_type &rhs);
-const complex operator-(const real_value_type &lhs, const complex &rhs);
-const complex operator*(const complex &lhs, const complex &rhs);
-const complex operator*(const complex &lhs, const real_value_type &rhs);
-const complex operator*(const real_value_type &lhs, const complex &rhs);
-const complex operator/(const complex &lhs, const complex &rhs);
-const complex operator/(const real_value_type &lhs, const complex &rhs);
-const complex operator/(const complex &lhs, const real_value_type &rhs);
+const complex operator/(const complex& lhs, const complex& rhs);
+bool operator==(const complex& lhs, const complex& rhs);
+bool operator!=(const complex& lhs, const complex& rhs);
+const complex operator+(const complex& lhs);
+const complex operator-(const complex& lhs);
+const complex operator+(const complex& lhs, const complex& rhs);
+const complex operator+(const complex& lhs, const real_value_type& rhs);
+const complex operator+(const real_value_type& lhs, const complex& rhs);
+const complex operator-(const complex& lhs, const complex& rhs);
+const complex operator-(const complex& lhs, const real_value_type& rhs);
+const complex operator-(const real_value_type& lhs, const complex& rhs);
+const complex operator*(const complex& lhs, const complex& rhs);
+const complex operator*(const complex& lhs, const real_value_type& rhs);
+const complex operator*(const real_value_type& lhs, const complex& rhs);
+const complex operator/(const complex& lhs, const complex& rhs);
+const complex operator/(const real_value_type& lhs, const complex& rhs);
+const complex operator/(const complex& lhs, const real_value_type& rhs);
 const complex conj(const complex &z);
 const complex csqr(const complex &z);
+
 
 /********************************************************************
 Templates for vector operations
@@ -256,13 +227,12 @@ Templates for vector operations
 /********************************************************************
 BLAS functions
 ********************************************************************/
-real_value_type vdotproduct(const real_value_type *v1,
-                            const real_value_type *v2, int N);
+real_value_type vdotproduct(const real_value_type *v1, const real_value_type *v2, int N);
 complex vdotproduct(const complex *v1, const complex *v2, int N);
 
-void vmove(double *vdst, const double *vsrc, int N);
-void vmove(float *vdst, const float *vsrc, int N);
-void vmove(complex *vdst, const complex *vsrc, int N);
+void vmove(double *vdst, const double* vsrc, int N);
+void vmove(float *vdst, const float* vsrc, int N);
+void vmove(complex *vdst, const complex* vsrc, int N);
 
 void vmove(double *vdst, const double *vsrc, int N, double alpha);
 void vmove(float *vdst, const float *vsrc, int N, float alpha);
@@ -272,16 +242,14 @@ void vmove(complex *vdst, const complex *vsrc, int N, complex alpha);
 void vadd(real_value_type *vdst, const real_value_type *vsrc, int N);
 void vadd(complex *vdst, const complex *vsrc, int N);
 
-void vadd(real_value_type *vdst, const real_value_type *vsrc, int N,
-          real_value_type alpha);
+void vadd(real_value_type *vdst, const real_value_type *vsrc, int N, real_value_type alpha);
 void vadd(complex *vdst, const complex *vsrc, int N, real_value_type alpha);
 void vadd(complex *vdst, const complex *vsrc, int N, complex alpha);
 
 void vsub(real_value_type *vdst, const real_value_type *vsrc, int N);
 void vsub(complex *vdst, const complex *vsrc, int N);
 
-void vsub(real_value_type *vdst, const real_value_type *vsrc, int N,
-          real_value_type alpha);
+void vsub(real_value_type *vdst, const real_value_type *vsrc, int N, real_value_type alpha);
 void vsub(complex *vdst, const complex *vsrc, int N, real_value_type alpha);
 void vsub(complex *vdst, const complex *vsrc, int N, complex alpha);
 
@@ -289,310 +257,365 @@ void vmul(real_value_type *vdst, int N, real_value_type alpha);
 void vmul(complex *vdst, int N, real_value_type alpha);
 void vmul(complex *vdst, int N, complex alpha);
 
+
 /********************************************************************
 Template of a dynamical one-dimensional array
 ********************************************************************/
-template <class T, bool Aligned = false>
-class template_1d_array {
- public:
-  template_1d_array() {
-    m_Vec = 0;
-    m_iVecSize = 0;
-    m_iLow = 0;
-    m_iHigh = -1;
-  };
+template<class T, bool Aligned = false>
+class template_1d_array
+{
+public:
+    template_1d_array()
+    {
+        m_Vec=0;
+        m_iVecSize = 0;
+        m_iLow = 0;
+        m_iHigh = -1;
+    };
 
-  ~template_1d_array() {
-    if (m_Vec) {
-      if (Aligned)
-        ap::afree(m_Vec);
-      else
-        delete[] m_Vec;
-    }
-  };
+    ~template_1d_array()
+    {
+        if(m_Vec)
+        {
+            if( Aligned )
+                ap::afree(m_Vec);
+            else
+                delete[] m_Vec;
+        }
+    };
 
-  template_1d_array(const template_1d_array &rhs) {
-    m_Vec = 0;
-    m_iVecSize = 0;
-    m_iLow = 0;
-    m_iHigh = -1;
-    if (rhs.m_iVecSize != 0)
-      setcontent(rhs.m_iLow, rhs.m_iHigh, rhs.getcontent());
-  };
+    template_1d_array(const template_1d_array &rhs)
+    {
+        m_Vec=0;
+        m_iVecSize = 0;
+        m_iLow = 0;
+        m_iHigh = -1;
+        if( rhs.m_iVecSize!=0 )
+            setcontent(rhs.m_iLow, rhs.m_iHigh, rhs.getcontent());
+    };
 
-  const template_1d_array &operator=(const template_1d_array &rhs) {
-    if (this == &rhs) return *this;
 
-    if (rhs.m_iVecSize != 0)
-      setcontent(rhs.m_iLow, rhs.m_iHigh, rhs.getcontent());
-    else {
-      m_Vec = 0;
-      m_iVecSize = 0;
-      m_iLow = 0;
-      m_iHigh = -1;
-    }
-    return *this;
-  };
+    const template_1d_array& operator=(const template_1d_array &rhs)
+    {
+        if( this==&rhs )
+            return *this;
 
-  const T &operator()(int i) const {
-#ifndef NO_AP_ASSERT
-    ap_error::make_assertion(i >= m_iLow && i <= m_iHigh);
-#endif
-    return m_Vec[i - m_iLow];
-  };
+        if( rhs.m_iVecSize!=0 )
+            setcontent(rhs.m_iLow, rhs.m_iHigh, rhs.getcontent());
+        else
+        {
+            m_Vec=0;
+            m_iVecSize = 0;
+            m_iLow = 0;
+            m_iHigh = -1;
+        }
+        return *this;
+    };
 
-  T &operator()(int i) {
-#ifndef NO_AP_ASSERT
-    ap_error::make_assertion(i >= m_iLow && i <= m_iHigh);
-#endif
-    return m_Vec[i - m_iLow];
-  };
 
-  void setbounds(int iLow, int iHigh) {
-    if (m_Vec) {
-      if (Aligned)
-        ap::afree(m_Vec);
-      else
-        delete[] m_Vec;
-    }
-    m_iLow = iLow;
-    m_iHigh = iHigh;
-    m_iVecSize = iHigh - iLow + 1;
-    if (Aligned)
-      m_Vec = (T *)ap::amalloc(m_iVecSize * sizeof(T), 16);
-    else
-      m_Vec = new T[m_iVecSize];
-  };
+    const T& operator()(int i) const
+    {
+        #ifndef NO_AP_ASSERT
+        ap_error::make_assertion(i>=m_iLow && i<=m_iHigh);
+        #endif
+        return m_Vec[ i-m_iLow ];
+    };
 
-  void setcontent(int iLow, int iHigh, const T *pContent) {
-    setbounds(iLow, iHigh);
-    for (int i = 0; i < m_iVecSize; i++) m_Vec[i] = pContent[i];
-  };
 
-  T *getcontent() { return m_Vec; };
+    T& operator()(int i)
+    {
+        #ifndef NO_AP_ASSERT
+        ap_error::make_assertion(i>=m_iLow && i<=m_iHigh);
+        #endif
+        return m_Vec[ i-m_iLow ];
+    };
 
-  const T *getcontent() const { return m_Vec; };
 
-  int getlowbound(int = 0) const { return m_iLow; };
+    void setbounds( int iLow, int iHigh )
+    {
+        if(m_Vec)
+        {
+            if( Aligned )
+                ap::afree(m_Vec);
+            else
+                delete[] m_Vec;
+        }
+        m_iLow = iLow;
+        m_iHigh = iHigh;
+        m_iVecSize = iHigh-iLow+1;
+        if( Aligned )
+            m_Vec = (T*)ap::amalloc(m_iVecSize*sizeof(T), 16);
+        else
+            m_Vec = new T[m_iVecSize];
+    };
 
-  int gethighbound(int = 0) const { return m_iHigh; };
 
-  raw_vector<T> getvector(int iStart, int iEnd) {
-    if (iStart > iEnd || wrongIdx(iStart) || wrongIdx(iEnd))
-      return raw_vector<T>(0, 0, 1);
-    else
-      return raw_vector<T>(m_Vec + iStart - m_iLow, iEnd - iStart + 1, 1);
-  };
+    void setcontent( int iLow, int iHigh, const T *pContent )
+    {
+        setbounds(iLow, iHigh);
+        for(int i=0; i<m_iVecSize; i++)
+            m_Vec[i] = pContent[i];
+    };
 
-  const_raw_vector<T> getvector(int iStart, int iEnd) const {
-    if (iStart > iEnd || wrongIdx(iStart) || wrongIdx(iEnd))
-      return const_raw_vector<T>(0, 0, 1);
-    else
-      return const_raw_vector<T>(m_Vec + iStart - m_iLow, iEnd - iStart + 1, 1);
-  };
 
- private:
-  bool wrongIdx(int i) const { return i < m_iLow || i > m_iHigh; };
+    T* getcontent()
+    {
+        return m_Vec;
+    };
 
-  T *m_Vec;
-  long m_iVecSize;
-  long m_iLow, m_iHigh;
+    const T* getcontent() const
+    {
+        return m_Vec;
+    };
+
+
+    int getlowbound(int = 0) const
+    {
+        return m_iLow;
+    };
+
+
+    int gethighbound(int = 0) const
+    {
+        return m_iHigh;
+    };
+
+    raw_vector<T> getvector(int iStart, int iEnd)
+    {
+        if( iStart>iEnd || wrongIdx(iStart) || wrongIdx(iEnd) )
+            return raw_vector<T>(0, 0, 1);
+        else
+            return raw_vector<T>(m_Vec+iStart-m_iLow, iEnd-iStart+1, 1);
+    };
+
+
+    const_raw_vector<T> getvector(int iStart, int iEnd) const
+    {
+        if( iStart>iEnd || wrongIdx(iStart) || wrongIdx(iEnd) )
+            return const_raw_vector<T>(0, 0, 1);
+        else
+            return const_raw_vector<T>(m_Vec+iStart-m_iLow, iEnd-iStart+1, 1);
+    };
+private:
+    bool wrongIdx(int i) const { return i<m_iLow || i>m_iHigh; };
+
+    T         *m_Vec;
+    long      m_iVecSize;
+    long      m_iLow, m_iHigh;
 };
+
+
 
 /********************************************************************
 Template of a dynamical two-dimensional array
 ********************************************************************/
-template <class T, bool Aligned = false>
-class template_2d_array {
- public:
-  template_2d_array() {
-    m_Vec = 0;
-    m_iVecSize = 0;
-    m_iLow1 = 0;
-    m_iHigh1 = -1;
-    m_iLow2 = 0;
-    m_iHigh2 = -1;
-    m_iConstOffset = 0;
-    m_iLinearMember = 0;
-  };
+template<class T, bool Aligned = false>
+class template_2d_array
+{
+public:
+    template_2d_array()
+    {
+        m_Vec=0;
+        m_iVecSize=0;
+        m_iLow1 = 0;
+        m_iHigh1 = -1;
+        m_iLow2 = 0;
+        m_iHigh2 = -1;
+	m_iConstOffset = 0;
+	m_iLinearMember = 0;
+    };
 
-  ~template_2d_array() {
-    if (m_Vec) {
-      if (Aligned)
-        ap::afree(m_Vec);
-      else
-        delete[] m_Vec;
-    }
-  };
+    ~template_2d_array()
+    {
+        if(m_Vec)
+        {
+            if( Aligned )
+                ap::afree(m_Vec);
+            else
+                delete[] m_Vec;
+        }
+    };
 
-  template_2d_array(const template_2d_array &rhs) {
-    m_Vec = 0;
-    m_iVecSize = 0;
-    m_iLow1 = 0;
-    m_iHigh1 = -1;
-    m_iLow2 = 0;
-    m_iHigh2 = -1;
-    m_iConstOffset = 0;
-    m_iLinearMember = 0;
-    if (rhs.m_iVecSize != 0) {
-      setbounds(rhs.m_iLow1, rhs.m_iHigh1, rhs.m_iLow2, rhs.m_iHigh2);
-      for (int i = m_iLow1; i <= m_iHigh1; i++)
-        vmove(&(operator()(i, m_iLow2)), &(rhs(i, m_iLow2)),
-              m_iHigh2 - m_iLow2 + 1);
-    }
-  };
-  const template_2d_array &operator=(const template_2d_array &rhs) {
-    if (this == &rhs) return *this;
+    template_2d_array(const template_2d_array &rhs)
+    {
+        m_Vec=0;
+        m_iVecSize=0;
+        m_iLow1 = 0;
+        m_iHigh1 = -1;
+        m_iLow2 = 0;
+        m_iHigh2 = -1;
+	m_iConstOffset = 0;
+	m_iLinearMember = 0;
+        if( rhs.m_iVecSize!=0 )
+        {
+            setbounds(rhs.m_iLow1, rhs.m_iHigh1, rhs.m_iLow2, rhs.m_iHigh2);
+            for(int i=m_iLow1; i<=m_iHigh1; i++)
+                vmove(&(operator()(i,m_iLow2)), &(rhs(i,m_iLow2)), m_iHigh2-m_iLow2+1);
+        }
+    };
+    const template_2d_array& operator=(const template_2d_array &rhs)
+    {
+        if( this==&rhs )
+            return *this;
 
-    if (rhs.m_iVecSize != 0) {
-      setbounds(rhs.m_iLow1, rhs.m_iHigh1, rhs.m_iLow2, rhs.m_iHigh2);
-      for (int i = m_iLow1; i <= m_iHigh1; i++)
-        vmove(&(operator()(i, m_iLow2)), &(rhs(i, m_iLow2)),
-              m_iHigh2 - m_iLow2 + 1);
-    } else {
-      m_Vec = 0;
-      m_iVecSize = 0;
-      m_iLow1 = 0;
-      m_iHigh1 = -1;
-      m_iLow2 = 0;
-      m_iHigh2 = -1;
-    }
-    return *this;
-  };
+        if( rhs.m_iVecSize!=0 )
+        {
+            setbounds(rhs.m_iLow1, rhs.m_iHigh1, rhs.m_iLow2, rhs.m_iHigh2);
+            for(int i=m_iLow1; i<=m_iHigh1; i++)
+                vmove(&(operator()(i,m_iLow2)), &(rhs(i,m_iLow2)), m_iHigh2-m_iLow2+1);
+        }
+        else
+        {
+            m_Vec=0;
+            m_iVecSize=0;
+            m_iLow1 = 0;
+            m_iHigh1 = -1;
+            m_iLow2 = 0;
+            m_iHigh2 = -1;
+        }
+        return *this;
+    };
 
-  const T &operator()(int i1, int i2) const {
-#ifndef NO_AP_ASSERT
-    ap_error::make_assertion(i1 >= m_iLow1 && i1 <= m_iHigh1);
-    ap_error::make_assertion(i2 >= m_iLow2 && i2 <= m_iHigh2);
-#endif
-    return m_Vec[m_iConstOffset + i2 + i1 * m_iLinearMember];
-  };
+    const T& operator()(int i1, int i2) const
+    {
+        #ifndef NO_AP_ASSERT
+        ap_error::make_assertion(i1>=m_iLow1 && i1<=m_iHigh1);
+        ap_error::make_assertion(i2>=m_iLow2 && i2<=m_iHigh2);
+        #endif
+        return m_Vec[ m_iConstOffset + i2 +i1*m_iLinearMember];
+    };
 
-  T &operator()(int i1, int i2) {
-#ifndef NO_AP_ASSERT
-    ap_error::make_assertion(i1 >= m_iLow1 && i1 <= m_iHigh1);
-    ap_error::make_assertion(i2 >= m_iLow2 && i2 <= m_iHigh2);
-#endif
-    return m_Vec[m_iConstOffset + i2 + i1 * m_iLinearMember];
-  };
+    T& operator()(int i1, int i2)
+    {
+        #ifndef NO_AP_ASSERT
+        ap_error::make_assertion(i1>=m_iLow1 && i1<=m_iHigh1);
+        ap_error::make_assertion(i2>=m_iLow2 && i2<=m_iHigh2);
+        #endif
+        return m_Vec[ m_iConstOffset + i2 +i1*m_iLinearMember];
+    };
 
-  void setbounds(int iLow1, int iHigh1, int iLow2, int iHigh2) {
-    if (m_Vec) {
-      if (Aligned)
-        ap::afree(m_Vec);
-      else
-        delete[] m_Vec;
-    }
-    int n1 = iHigh1 - iLow1 + 1;
-    int n2 = iHigh2 - iLow2 + 1;
-    m_iVecSize = n1 * n2;
-    if (Aligned) {
-      // if( n2%2!=0 )
-      while ((n2 * sizeof(T)) % 16 != 0) {
-        n2++;
-        m_iVecSize += n1;
-      }
-      m_Vec = (T *)ap::amalloc(m_iVecSize * sizeof(T), 16);
-    } else
-      m_Vec = new T[m_iVecSize];
-    m_iLow1 = iLow1;
-    m_iHigh1 = iHigh1;
-    m_iLow2 = iLow2;
-    m_iHigh2 = iHigh2;
-    m_iConstOffset = -m_iLow2 - m_iLow1 * n2;
-    m_iLinearMember = n2;
-  };
+    void setbounds( int iLow1, int iHigh1, int iLow2, int iHigh2 )
+    {
+        if(m_Vec)
+        {
+            if( Aligned )
+                ap::afree(m_Vec);
+            else
+                delete[] m_Vec;
+        }
+        int n1 = iHigh1-iLow1+1;
+        int n2 = iHigh2-iLow2+1;
+        m_iVecSize = n1*n2;
+        if( Aligned )
+        {
+            //if( n2%2!=0 )
+            while( (n2*sizeof(T))%16!=0 )
+            {
+                n2++;
+                m_iVecSize += n1;
+            }
+            m_Vec = (T*)ap::amalloc(m_iVecSize*sizeof(T), 16);
+        }
+        else
+            m_Vec = new T[m_iVecSize];
+        m_iLow1  = iLow1;
+        m_iHigh1 = iHigh1;
+        m_iLow2  = iLow2;
+        m_iHigh2 = iHigh2;
+        m_iConstOffset = -m_iLow2-m_iLow1*n2;
+        m_iLinearMember = n2;
+    };
 
-  void setcontent(int iLow1, int iHigh1, int iLow2, int iHigh2,
-                  const T *pContent) {
-    setbounds(iLow1, iHigh1, iLow2, iHigh2);
-    for (int i = m_iLow1; i <= m_iHigh1;
-         i++, pContent += m_iHigh2 - m_iLow2 + 1)
-      vmove(&(operator()(i, m_iLow2)), pContent, m_iHigh2 - m_iLow2 + 1);
-  };
+    void setcontent( int iLow1, int iHigh1, int iLow2, int iHigh2, const T *pContent )
+    {
+        setbounds(iLow1, iHigh1, iLow2, iHigh2);
+        for(int i=m_iLow1; i<=m_iHigh1; i++, pContent += m_iHigh2-m_iLow2+1)
+            vmove(&(operator()(i,m_iLow2)), pContent, m_iHigh2-m_iLow2+1);
+    };
 
-  int getlowbound(int iBoundNum) const {
-    return iBoundNum == 1 ? m_iLow1 : m_iLow2;
-  };
+    int getlowbound(int iBoundNum) const
+    {
+        return iBoundNum==1 ? m_iLow1 : m_iLow2;
+    };
 
-  int gethighbound(int iBoundNum) const {
-    return iBoundNum == 1 ? m_iHigh1 : m_iHigh2;
-  };
+    int gethighbound(int iBoundNum) const
+    {
+        return iBoundNum==1 ? m_iHigh1 : m_iHigh2;
+    };
 
-  raw_vector<T> getcolumn(int iColumn, int iRowStart, int iRowEnd) {
-    if ((iRowStart > iRowEnd) || wrongColumn(iColumn) || wrongRow(iRowStart) ||
-        wrongRow(iRowEnd))
-      return raw_vector<T>(0, 0, 1);
-    else
-      return raw_vector<T>(&((*this)(iRowStart, iColumn)),
-                           iRowEnd - iRowStart + 1, m_iLinearMember);
-  };
+    raw_vector<T> getcolumn(int iColumn, int iRowStart, int iRowEnd)
+    {
+        if( (iRowStart>iRowEnd) || wrongColumn(iColumn) || wrongRow(iRowStart) ||wrongRow(iRowEnd) )
+            return raw_vector<T>(0, 0, 1);
+        else
+            return raw_vector<T>(&((*this)(iRowStart, iColumn)), iRowEnd-iRowStart+1, m_iLinearMember);
+    };
 
-  raw_vector<T> getrow(int iRow, int iColumnStart, int iColumnEnd) {
-    if ((iColumnStart > iColumnEnd) || wrongRow(iRow) ||
-        wrongColumn(iColumnStart) || wrongColumn(iColumnEnd))
-      return raw_vector<T>(0, 0, 1);
-    else
-      return raw_vector<T>(&((*this)(iRow, iColumnStart)),
-                           iColumnEnd - iColumnStart + 1, 1);
-  };
+    raw_vector<T> getrow(int iRow, int iColumnStart, int iColumnEnd)
+    {
+        if( (iColumnStart>iColumnEnd) || wrongRow(iRow) || wrongColumn(iColumnStart) || wrongColumn(iColumnEnd))
+            return raw_vector<T>(0, 0, 1);
+        else
+            return raw_vector<T>(&((*this)(iRow, iColumnStart)), iColumnEnd-iColumnStart+1, 1);
+    };
 
-  const_raw_vector<T> getcolumn(int iColumn, int iRowStart, int iRowEnd) const {
-    if ((iRowStart > iRowEnd) || wrongColumn(iColumn) || wrongRow(iRowStart) ||
-        wrongRow(iRowEnd))
-      return const_raw_vector<T>(0, 0, 1);
-    else
-      return const_raw_vector<T>(&((*this)(iRowStart, iColumn)),
-                                 iRowEnd - iRowStart + 1, m_iLinearMember);
-  };
+    const_raw_vector<T> getcolumn(int iColumn, int iRowStart, int iRowEnd) const
+    {
+        if( (iRowStart>iRowEnd) || wrongColumn(iColumn) || wrongRow(iRowStart) ||wrongRow(iRowEnd) )
+            return const_raw_vector<T>(0, 0, 1);
+        else
+            return const_raw_vector<T>(&((*this)(iRowStart, iColumn)), iRowEnd-iRowStart+1, m_iLinearMember);
+    };
 
-  const_raw_vector<T> getrow(int iRow, int iColumnStart, int iColumnEnd) const {
-    if ((iColumnStart > iColumnEnd) || wrongRow(iRow) ||
-        wrongColumn(iColumnStart) || wrongColumn(iColumnEnd))
-      return const_raw_vector<T>(0, 0, 1);
-    else
-      return const_raw_vector<T>(&((*this)(iRow, iColumnStart)),
-                                 iColumnEnd - iColumnStart + 1, 1);
-  };
+    const_raw_vector<T> getrow(int iRow, int iColumnStart, int iColumnEnd) const
+    {
+        if( (iColumnStart>iColumnEnd) || wrongRow(iRow) || wrongColumn(iColumnStart) || wrongColumn(iColumnEnd))
+            return const_raw_vector<T>(0, 0, 1);
+        else
+            return const_raw_vector<T>(&((*this)(iRow, iColumnStart)), iColumnEnd-iColumnStart+1, 1);
+    };
+private:
+    bool wrongRow(int i) const { return i<m_iLow1 || i>m_iHigh1; };
+    bool wrongColumn(int j) const { return j<m_iLow2 || j>m_iHigh2; };
 
- private:
-  bool wrongRow(int i) const { return i < m_iLow1 || i > m_iHigh1; };
-  bool wrongColumn(int j) const { return j < m_iLow2 || j > m_iHigh2; };
-
-  T *m_Vec;
-  long m_iVecSize;
-  long m_iLow1, m_iLow2, m_iHigh1, m_iHigh2;
-  long m_iConstOffset, m_iLinearMember;
+    T           *m_Vec;
+    long        m_iVecSize;
+    long        m_iLow1, m_iLow2, m_iHigh1, m_iHigh2;
+    long        m_iConstOffset, m_iLinearMember;
 };
 
-typedef template_1d_array<int> integer_1d_array;
-typedef template_1d_array<real_value_type, true> real_1d_array;
-typedef template_1d_array<complex> complex_1d_array;
-typedef template_1d_array<bool> boolean_1d_array;
 
-typedef template_2d_array<int> integer_2d_array;
-typedef template_2d_array<real_value_type, true> real_2d_array;
-typedef template_2d_array<complex> complex_2d_array;
-typedef template_2d_array<bool> boolean_2d_array;
+typedef template_1d_array<int>          integer_1d_array;
+typedef template_1d_array<real_value_type,true>  real_1d_array;
+typedef template_1d_array<complex>      complex_1d_array;
+typedef template_1d_array<bool>         boolean_1d_array;
+
+typedef template_2d_array<int>          integer_2d_array;
+typedef template_2d_array<real_value_type,true>  real_2d_array;
+typedef template_2d_array<complex>      complex_2d_array;
+typedef template_2d_array<bool>         boolean_2d_array;
 
 /********************************************************************
 Structs for use with the linear regression module
  (moved from linreg.h -mh 2009.05.31)
 ********************************************************************/
-struct linearmodel {
-  real_1d_array w;
+struct linearmodel
+{
+    real_1d_array w;
 };
-struct lrreport {
-  real_2d_array c;
-  real_value_type rmserror;
-  real_value_type avgerror;
-  real_value_type avgrelerror;
-  real_value_type cvrmserror;
-  real_value_type cvavgerror;
-  real_value_type cvavgrelerror;
-  int ncvdefects;
-  integer_1d_array cvdefects;
+struct lrreport
+{
+    real_2d_array c;
+    real_value_type rmserror;
+    real_value_type avgerror;
+    real_value_type avgrelerror;
+    real_value_type cvrmserror;
+    real_value_type cvavgerror;
+    real_value_type cvavgrelerror;
+    int ncvdefects;
+    integer_1d_array cvdefects;
 };
+
 
 /********************************************************************
 Constants and functions introduced for compatibility with AlgoPascal
@@ -612,6 +635,7 @@ int minint(int m1, int m2);
 real_value_type maxreal(real_value_type m1, real_value_type m2);
 real_value_type minreal(real_value_type m1, real_value_type m2);
 
-}  // namespace ap
+} //namespace ap
+
 
 #endif

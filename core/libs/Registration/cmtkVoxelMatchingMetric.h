@@ -39,28 +39,30 @@
 
 #include <System/cmtkSmartPtr.h>
 
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkInterpolator.h>
-#include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkFunctional.h>
 
 #include <cassert>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for voxel metrics with pre-converted image data.
  */
-template <class T, ScalarDataType DT,
-          Interpolators::InterpolationEnum I = cmtk::Interpolators::LINEAR>
+template<class T, ScalarDataType DT, Interpolators::InterpolationEnum I=cmtk::Interpolators::LINEAR>
 class VoxelMatchingMetric :
-    /// Inherit from type-template class.
-    public VoxelMatchingMetric_Type<T, DT> {
- public:
+  /// Inherit from type-template class.
+  public VoxelMatchingMetric_Type<T,DT>
+{
+public:
   /// This type.
-  typedef VoxelMatchingMetric<T, DT, I> Self;
+  typedef VoxelMatchingMetric<T,DT,I> Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -72,47 +74,49 @@ class VoxelMatchingMetric :
    * For reference and model volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The model (transformed) volume.
-   *\param initData If this flag is set (default), then the internal
+   *\param initData If this flag is set (default), then the internal 
    * representation of the pixel data for both volumes is also created.
    * Derived classes may want to prevent this if they define their own
    * specific initialization (e.g., igsVoxelMatchingJointHistogram).
    */
-  VoxelMatchingMetric(const UniformVolume *refVolume,
-                      const UniformVolume *fltVolume,
-                      const bool initData = true);
+  VoxelMatchingMetric( const UniformVolume* refVolume, const UniformVolume* fltVolume, const bool initData = true );
 
   /** Default constructor.
    */
-  VoxelMatchingMetric(){};
+  VoxelMatchingMetric() {};
 
   /// Get a value from the X distribution (reference image).
-  T GetSampleX(const size_t index) const { return this->DataX.Data[index]; }
-
+  T GetSampleX ( const size_t index ) const
+  { 
+    return this->DataX.Data[index]; 
+  }
+  
   /// Get a value from the Y distribution (floating image).
-  T GetSampleY(const size_t index) const { return this->DataY.Data[index]; }
-
+  T GetSampleY ( const size_t index ) const 
+  { 
+    return this->DataY.Data[index]; 
+  }
+  
   /// Interpolate a value from the Y distribution (floating image).
-  T GetSampleY(const size_t baseIndex, const Types::Coordinate *frac) const;
+  T GetSampleY ( const size_t baseIndex, const Types::Coordinate* frac ) const;
 };
 
 /// Convenience typedef.
-typedef VoxelMatchingMetric<short, TYPE_SHORT> VoxelMatchingMetricShort;
+typedef VoxelMatchingMetric<short,TYPE_SHORT> VoxelMatchingMetricShort;
 
 /// Convenience typedef.
-typedef VoxelMatchingMetric<byte, TYPE_BYTE> VoxelMatchingMetricByte;
+typedef VoxelMatchingMetric<byte,TYPE_BYTE> VoxelMatchingMetricByte;
 
 /// Convenience typedef.
-typedef VoxelMatchingMetric<short, TYPE_SHORT, Interpolators::NEAREST_NEIGHBOR>
-    VoxelMatchingMetricShort_NN;
+typedef VoxelMatchingMetric<short,TYPE_SHORT,Interpolators::NEAREST_NEIGHBOR> VoxelMatchingMetricShort_NN;
 
 /// Convenience typedef.
-typedef VoxelMatchingMetric<byte, TYPE_BYTE, Interpolators::NEAREST_NEIGHBOR>
-    VoxelMatchingMetricByte_NN;
+typedef VoxelMatchingMetric<byte,TYPE_BYTE,Interpolators::NEAREST_NEIGHBOR> VoxelMatchingMetricByte_NN;
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkVoxelMatchingMetric.txx"
 
-#endif  // #ifndef __cmtkVoxelMatchingMetric_h_included_
+#endif // #ifndef __cmtkVoxelMatchingMetric_h_included_

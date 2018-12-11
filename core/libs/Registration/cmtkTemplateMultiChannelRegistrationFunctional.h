@@ -37,20 +37,22 @@
 
 #include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Class for transformation-templated multi-channel registration functional. */
-template <class TXform, class TMetricFunctional>
+template<class TXform, class TMetricFunctional>
 class TemplateMultiChannelRegistrationFunctional :
-    /* Inherit from multi-channel registration functional base class. */
-    public TMetricFunctional {
- public:
+  /* Inherit from multi-channel registration functional base class. */
+  public TMetricFunctional
+{
+public:
   /** This class. */
-  typedef TemplateMultiChannelRegistrationFunctional<TXform, TMetricFunctional>
-      Self;
+  typedef TemplateMultiChannelRegistrationFunctional<TXform,TMetricFunctional> Self;
 
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
@@ -62,52 +64,54 @@ class TemplateMultiChannelRegistrationFunctional :
   typedef TXform TransformationType;
 
   /** Get transformation. */
-  TransformationType &GetTransformation() { return this->m_Transformation; }
+  TransformationType& GetTransformation() { return this->m_Transformation; }
 
   /** Get constant transformation. */
-  const TransformationType &GetTransformation() const {
-    return this->m_Transformation;
-  }
+  const TransformationType& GetTransformation() const { return this->m_Transformation; }
 
   /** Set number of degrees of freedom for transformation. */
-  void SetNumberDOFs(const int numberDOFs) {
-    this->m_Transformation.SetNumberDOFs(numberDOFs);
+  void SetNumberDOFs( const int numberDOFs )
+  {
+    this->m_Transformation.SetNumberDOFs( numberDOFs );
   }
 
   /// Return parameter vector.
-  virtual void GetParamVector(CoordinateVector &v) {
-    this->m_Transformation.GetParamVector(v);
+  virtual void GetParamVector ( CoordinateVector& v )  
+  {
+    this->m_Transformation.GetParamVector( v );
   };
 
   /// Return parameter vector.
-  virtual void SetParamVector(CoordinateVector &v) {
-    this->m_Transformation.SetParamVector(v);
+  virtual void SetParamVector ( CoordinateVector& v )  
+  {
+    this->m_Transformation.SetParamVector( v );
   };
 
   /// Return parameter stepping.
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
-    return this->m_Transformation.GetParamStep(idx, this->m_ReferenceSize,
-                                               mmStep);
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    return this->m_Transformation.GetParamStep( idx, this->m_ReferenceSize, mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.
-  virtual size_t ParamVectorDim() const {
+  virtual size_t ParamVectorDim() const 
+  {
     return this->m_Transformation.ParamVectorDim();
   }
 
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const {
+  virtual size_t VariableParamVectorDim() const 
+  {
     return this->m_Transformation.VariableParamVectorDim();
   }
 
- protected:
+protected:
   /** The templated coordinate transformation. */
   TransformationType m_Transformation;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkTemplateMultiChannelRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkTemplateMultiChannelRegistrationFunctional_h_included_

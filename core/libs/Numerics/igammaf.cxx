@@ -68,42 +68,48 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1985, 1987, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type incompletegamma(ap::real_value_type a,
-                                    ap::real_value_type x) {
-  ap::real_value_type result;
-  ap::real_value_type igammaepsilon;
-  ap::real_value_type ans;
-  ap::real_value_type ax;
-  ap::real_value_type c;
-  ap::real_value_type r;
-  ap::real_value_type tmp;
+ap::real_value_type incompletegamma(ap::real_value_type a, ap::real_value_type x)
+{
+    ap::real_value_type result;
+    ap::real_value_type igammaepsilon;
+    ap::real_value_type ans;
+    ap::real_value_type ax;
+    ap::real_value_type c;
+    ap::real_value_type r;
+    ap::real_value_type tmp;
 
-  igammaepsilon = 0.000000000000001;
-  if (x <= 0 || a <= 0) {
-    result = 0;
+    igammaepsilon = 0.000000000000001;
+    if( x<=0||a<=0 )
+    {
+        result = 0;
+        return result;
+    }
+    if( x>1&&x>a )
+    {
+        result = 1-incompletegammac(a, x);
+        return result;
+    }
+    ax = a*log(x)-x-lngamma(a, tmp);
+    if( ax<-709.78271289338399 )
+    {
+        result = 0;
+        return result;
+    }
+    ax = exp(ax);
+    r = a;
+    c = 1;
+    ans = 1;
+    do
+    {
+        r = r+1;
+        c = c*x/r;
+        ans = ans+c;
+    }
+    while(c/ans>igammaepsilon);
+    result = ans*ax/a;
     return result;
-  }
-  if (x > 1 && x > a) {
-    result = 1 - incompletegammac(a, x);
-    return result;
-  }
-  ax = a * log(x) - x - lngamma(a, tmp);
-  if (ax < -709.78271289338399) {
-    result = 0;
-    return result;
-  }
-  ax = exp(ax);
-  r = a;
-  c = 1;
-  ans = 1;
-  do {
-    r = r + 1;
-    c = c * x / r;
-    ans = ans + c;
-  } while (c / ans > igammaepsilon);
-  result = ans * ax / a;
-  return result;
 }
+
 
 /*************************************************************************
 Complemented incomplete gamma integral
@@ -138,78 +144,92 @@ arithmetic   domain   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1985, 1987, 2000 by Stephen L. Moshier
 *************************************************************************/
-ap::real_value_type incompletegammac(ap::real_value_type a,
-                                     ap::real_value_type x) {
-  ap::real_value_type result;
-  ap::real_value_type igammaepsilon;
-  ap::real_value_type igammabignumber;
-  ap::real_value_type igammabignumberinv;
-  ap::real_value_type ans;
-  ap::real_value_type ax;
-  ap::real_value_type c;
-  ap::real_value_type yc;
-  ap::real_value_type r;
-  ap::real_value_type t;
-  ap::real_value_type y;
-  ap::real_value_type z;
-  ap::real_value_type pk;
-  ap::real_value_type pkm1;
-  ap::real_value_type pkm2;
-  ap::real_value_type qk;
-  ap::real_value_type qkm1;
-  ap::real_value_type qkm2;
-  ap::real_value_type tmp;
+ap::real_value_type incompletegammac(ap::real_value_type a, ap::real_value_type x)
+{
+    ap::real_value_type result;
+    ap::real_value_type igammaepsilon;
+    ap::real_value_type igammabignumber;
+    ap::real_value_type igammabignumberinv;
+    ap::real_value_type ans;
+    ap::real_value_type ax;
+    ap::real_value_type c;
+    ap::real_value_type yc;
+    ap::real_value_type r;
+    ap::real_value_type t;
+    ap::real_value_type y;
+    ap::real_value_type z;
+    ap::real_value_type pk;
+    ap::real_value_type pkm1;
+    ap::real_value_type pkm2;
+    ap::real_value_type qk;
+    ap::real_value_type qkm1;
+    ap::real_value_type qkm2;
+    ap::real_value_type tmp;
 
-  igammaepsilon = 0.000000000000001;
-  igammabignumber = 4503599627370496.0;
-  igammabignumberinv = 2.22044604925031308085 * 0.0000000000000001;
-  if (x <= 0 || a <= 0) {
-    result = 1;
-    return result;
-  }
-  if (x < 1 || x < a) {
-    result = 1 - incompletegamma(a, x);
-    return result;
-  }
-  ax = a * log(x) - x - lngamma(a, tmp);
-  if (ax < -709.78271289338399) {
-    result = 0;
-    return result;
-  }
-  ax = exp(ax);
-  y = 1 - a;
-  z = x + y + 1;
-  c = 0;
-  pkm2 = 1;
-  qkm2 = x;
-  pkm1 = x + 1;
-  qkm1 = z * x;
-  ans = pkm1 / qkm1;
-  do {
-    c = c + 1;
-    y = y + 1;
-    z = z + 2;
-    yc = y * c;
-    pk = pkm1 * z - pkm2 * yc;
-    qk = qkm1 * z - qkm2 * yc;
-    if (qk != 0) {
-      r = pk / qk;
-      t = fabs((ans - r) / r);
-      ans = r;
-    } else {
-      t = 1;
+    igammaepsilon = 0.000000000000001;
+    igammabignumber = 4503599627370496.0;
+    igammabignumberinv = 2.22044604925031308085*0.0000000000000001;
+    if( x<=0||a<=0 )
+    {
+        result = 1;
+        return result;
     }
-    pkm2 = pkm1;
-    pkm1 = pk;
-    qkm2 = qkm1;
-    qkm1 = qk;
-    if (fabs(pk) > igammabignumber) {
-      pkm2 = pkm2 * igammabignumberinv;
-      pkm1 = pkm1 * igammabignumberinv;
-      qkm2 = qkm2 * igammabignumberinv;
-      qkm1 = qkm1 * igammabignumberinv;
+    if( x<1||x<a )
+    {
+        result = 1-incompletegamma(a, x);
+        return result;
     }
-  } while (t > igammaepsilon);
-  result = ans * ax;
-  return result;
+    ax = a*log(x)-x-lngamma(a, tmp);
+    if( ax<-709.78271289338399 )
+    {
+        result = 0;
+        return result;
+    }
+    ax = exp(ax);
+    y = 1-a;
+    z = x+y+1;
+    c = 0;
+    pkm2 = 1;
+    qkm2 = x;
+    pkm1 = x+1;
+    qkm1 = z*x;
+    ans = pkm1/qkm1;
+    do
+    {
+        c = c+1;
+        y = y+1;
+        z = z+2;
+        yc = y*c;
+        pk = pkm1*z-pkm2*yc;
+        qk = qkm1*z-qkm2*yc;
+        if( qk!=0 )
+        {
+            r = pk/qk;
+            t = fabs((ans-r)/r);
+            ans = r;
+        }
+        else
+        {
+            t = 1;
+        }
+        pkm2 = pkm1;
+        pkm1 = pk;
+        qkm2 = qkm1;
+        qkm1 = qk;
+        if( fabs(pk)>igammabignumber )
+        {
+            pkm2 = pkm2*igammabignumberinv;
+            pkm1 = pkm1*igammabignumberinv;
+            qkm2 = qkm2*igammabignumberinv;
+            qkm1 = qkm1*igammabignumberinv;
+        }
+    }
+    while(t>igammaepsilon);
+    result = ans*ax;
+    return result;
 }
+
+
+
+
+

@@ -35,46 +35,45 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Apply mask image.
 class ImageOperationApplyMask
-    /// Inherit generic image operation.
-    : public ImageOperation {
- public:
+/// Inherit generic image operation.
+  : public ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperationApplyMask Self;
 
   /// Constructor.
-  ImageOperationApplyMask(const cmtk::UniformVolume::SmartPtr &maskVolume)
-      : m_MaskVolume(maskVolume) {}
+  ImageOperationApplyMask( const cmtk::UniformVolume::SmartPtr& maskVolume ) : m_MaskVolume( maskVolume ) {}
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
 
   /// Create new mask operation.
-  static void New(const char *maskFileName) {
-    ImageOperation::m_ImageOperationList.push_back(SmartPtr(
-        new ImageOperationApplyMask(Self::ReadMaskFile(maskFileName))));
+  static void New( const char* maskFileName )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationApplyMask( Self::ReadMaskFile( maskFileName ) ) ) );
   }
 
   /// Create new inverse mask operation.
-  static void NewInverse(const char *maskFileName) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationApplyMask(
-            Self::ReadMaskFile(maskFileName, true /*inverse*/))));
+  static void NewInverse( const char* maskFileName )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationApplyMask( Self::ReadMaskFile( maskFileName, true /*inverse*/ ) ) ) );
   }
 
- private:
+private:
   /// The mask volume.
   cmtk::UniformVolume::SmartPtr m_MaskVolume;
 
   /// Read the actual mask file.
-  static cmtk::UniformVolume::SmartPtr ReadMaskFile(const char *maskFileName,
-                                                    const bool inverse = false);
+  static cmtk::UniformVolume::SmartPtr ReadMaskFile( const char* maskFileName, const bool inverse = false );
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationApplyMask_h_included_
+#endif // #ifndef __cmtkImageOperationApplyMask_h_included_

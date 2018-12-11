@@ -35,23 +35,26 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkSmartPtr.h>
 #include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkLandmarkPair.h>
-#include <System/cmtkSmartPtr.h>
 
 #include <list>
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// List of matched landmarks in 3-D.
 class LandmarkPairList :
-    /// Inherit STL list container.
-    public std::list<LandmarkPair> {
- public:
+  /// Inherit STL list container.
+  public std::list<LandmarkPair>
+{
+public:
   /// This class.
   typedef LandmarkPairList Self;
 
@@ -71,28 +74,26 @@ class LandmarkPairList :
   LandmarkPairList() {}
 
   /// Initialize from two separate landmark lists.
-  LandmarkPairList(const LandmarkList &sourceList,
-                   const LandmarkList &targetList) {
-    this->AddLandmarkLists(sourceList, targetList);
+  LandmarkPairList( const LandmarkList& sourceList, const LandmarkList& targetList )
+  {
+    this->AddLandmarkLists( sourceList, targetList );
   }
-
+  
   /// Initialize from two separate landmark lists.
-  void AddLandmarkLists(const LandmarkList &sourceList,
-                        const LandmarkList &targetList);
-
+  void AddLandmarkLists( const LandmarkList& sourceList, const LandmarkList& targetList );
+  
   /// Find landmark by name.
-  Self::Iterator FindByName(const std::string &name);
-
+  Self::Iterator FindByName( const std::string& name );
+  
   /// Find landmark by name and return constant pointer.
-  Self::ConstIterator FindByName(const std::string &name) const;
+  Self::ConstIterator FindByName( const std::string& name ) const;
 };
 
 /// Stream output operator.
-std::ostream &operator<<(std::ostream &stream,
-                         const LandmarkPairList &pairList);
+std::ostream& operator<<( std::ostream& stream, const LandmarkPairList& pairList );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLandmarkPairList_h_included_
+#endif // #ifndef __cmtkLandmarkPairList_h_included_

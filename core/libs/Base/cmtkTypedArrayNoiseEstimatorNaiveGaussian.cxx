@@ -30,48 +30,53 @@
 
 #include "cmtkTypedArrayNoiseEstimatorNaiveGaussian.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
-TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian(
-    const TypedArray &data, const size_t histogramBins) {
-  Histogram<unsigned int>::SmartPtr histogram(data.GetHistogram(histogramBins));
-
+TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian
+( const TypedArray& data, const size_t histogramBins )
+{
+  Histogram<unsigned int>::SmartPtr histogram( data.GetHistogram( histogramBins ) );
+  
   // find first maximum
   size_t idx = 0;
-  while ((idx < (histogramBins - 1)) &&
-         ((*histogram)[idx] <= (*histogram)[idx + 1])) {
+  while ( (idx < (histogramBins-1)) && ( (*histogram)[idx] <= (*histogram)[idx+1] ) )
+    {
     ++idx;
-  }
-
-  const Types::DataItem noiseMean = histogram->BinToValue(idx);
-
+    }
+  
+  const Types::DataItem noiseMean = histogram->BinToValue( idx );
+  
   // now find following minimum
-  while ((idx < (histogramBins - 1)) &&
-         ((*histogram)[idx] > (*histogram)[idx + 1])) {
+  while ( (idx < (histogramBins-1)) && ( (*histogram)[idx] > (*histogram)[idx+1] ) )
+    {
     ++idx;
-  }
-
+    }
+  
   // then, compute standard deviation of all values below that threshold from
   // first maximum.
-  this->m_Threshold = histogram->BinToValue(idx);
+  this->m_Threshold = histogram->BinToValue( idx );
 
   Types::DataItem sdev = 0;
   size_t count = 0;
-  for (size_t i = 0; i < data.GetDataSize(); ++i) {
+  for ( size_t i = 0; i < data.GetDataSize(); ++i )
+    {
     Types::DataItem value;
-    if (data.Get(value, i)) {
-      if (value <= this->m_Threshold) {
-        sdev +=
-            static_cast<Types::DataItem>(MathUtil::Square(value - noiseMean));
-        ++count;
+    if ( data.Get( value, i ) )
+      {
+      if ( value <= this->m_Threshold )
+	{
+        sdev += static_cast<Types::DataItem>( MathUtil::Square( value - noiseMean ) );
+	++count;
+	}
       }
     }
-  }
 
-  if (count)
-    this->m_NoiseLevelSigma = static_cast<Types::DataItem>(sqrt(sdev / count));
+  if ( count )
+    this->m_NoiseLevelSigma = static_cast<Types::DataItem>( sqrt( sdev/count ) );
   else
     this->m_NoiseLevelSigma = 0.0;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

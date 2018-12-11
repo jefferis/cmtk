@@ -39,11 +39,13 @@
 
 #include <Base/cmtkUniformVolumeInterpolatorBase.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkVector3D.h>
+#include <Base/cmtkUniformVolume.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -51,9 +53,10 @@ namespace cmtk {
  *
  */
 class UniformVolumeInterpolatorPartialVolume :
-    /// Inherit interface from base class.
-    public UniformVolumeInterpolatorBase {
- public:
+  /// Inherit interface from base class.
+  public UniformVolumeInterpolatorBase
+{
+public:
   /// This class type.
   typedef UniformVolumeInterpolatorPartialVolume Self;
 
@@ -61,9 +64,11 @@ class UniformVolumeInterpolatorPartialVolume :
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorPartialVolume(const UniformVolume &volume)
-      : UniformVolumeInterpolatorBase(volume) {}
-
+  UniformVolumeInterpolatorPartialVolume( const UniformVolume& volume )
+    : UniformVolumeInterpolatorBase( volume )
+  {
+  }
+  
   /** Get data at location.
    *
    * This function performs interpolation of one value from m_Volume at location
@@ -73,17 +78,15 @@ class UniformVolumeInterpolatorPartialVolume :
    * m_Volume at v, and it should return false if v is outside the range
    * where a value can be interpolated (i.e., outside the volume boundaries).
    */
-  virtual bool GetDataAt(const Vector3D &v, Types::DataItem &value) const;
+  virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const;
 
-  /// Get data at a pre-computed relative pixel index. This is faster if we
-  /// already know the pixel index and fractional coordinate of a location.
-  virtual Types::DataItem GetDataDirect(
-      const Types::GridIndexType *imageGridPoint,
-      const Types::Coordinate *insidePixel) const;
+  /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
+  virtual Types::DataItem GetDataDirect( const Types::GridIndexType* imageGridPoint, const Types::Coordinate* insidePixel ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkUniformVolumeInterpolatorPartialVolume_h_included_
+#endif // #ifndef __cmtkUniformVolumeInterpolatorPartialVolume_h_included_
+

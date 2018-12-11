@@ -38,7 +38,9 @@
 #include <Base/cmtkTypes.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -49,8 +51,9 @@ namespace cmtk {
  * therefore allows creation of different size bitsets as they are needed by
  * the program.
  */
-class BitVector {
- public:
+class BitVector 
+{
+public:
   /// Smart pointer to BitVector.
   typedef SmartPointer<BitVector> SmartPtr;
 
@@ -58,47 +61,50 @@ class BitVector {
    *\param size Number of bits handled by this object.
    *\param initial Initial value for the bits in the array.
    */
-  BitVector(const size_t size, const bool initial = false);
-
+  BitVector( const size_t size, const bool initial = false );
+  
   /** Constructor.
    *\param size Number of bits handled by this object.
    *\param bitset Byte array that is used to initialize the array.
    */
-  BitVector(const size_t size, byte *const bitset);
-
+  BitVector( const size_t size, byte *const bitset );
+  
   /** Destructor.
    */
   ~BitVector();
 
   /** Create copy of this object.
    */
-  BitVector *Clone() const;
+  BitVector* Clone() const;
 
   /// Set all bits to 1.
   void Set();
 
   /// Set one bit to a given value.
-  void Set(const size_t pos, const bool val = true);
+  void Set( const size_t pos, const bool val = true );
 
   /// Set all bits to given flag (default: clear all).
-  void Reset(const bool value = false);
+  void Reset( const bool value = false );
 
   /// Set one bit to 0.
-  void Reset(const size_t pos);
+  void Reset( const size_t pos );
 
   /// Flip (invert) the whole bitset.
   void Flip();
 
   /// Flip (invert) one bit.
-  void Flip(const size_t pos);
+  void Flip( const size_t pos );
 
   /// Return a given bit.
-  bool operator[](const size_t pos) const;
+  bool operator[]( const size_t pos ) const;
 
   /// Get pointer to bitset data.
-  const byte *GetBitVector() const { return this->m_BitVector; }
+  const byte* GetBitVector() const
+  { 
+    return this->m_BitVector; 
+  }
 
- private:
+private:
   /// The bitset.
   byte *m_BitVector;
 
@@ -108,6 +114,6 @@ class BitVector {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkBitVector_h_included_
+#endif // #ifndef __cmtkBitVector_h_included_

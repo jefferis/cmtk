@@ -34,20 +34,29 @@
 
 #include "cmtkCommandLine.h"
 
-long int cmtk::CommandLine::Item ::ConvertStrToLong(const char *str) {
-  char *endptr;
-  const long int value = strtol(str, &endptr, 0);
-  if ((endptr == str) || *endptr) {
-    throw(Exception("Option expects an integer argument"));
-  }
-  return value;
+long int
+cmtk::CommandLine::Item
+::ConvertStrToLong( const char* str )
+{
+  char* endptr;
+  const long int value = strtol( str, &endptr, 0 );
+  if ( (endptr == str) || *endptr )
+    {
+    throw( Exception( "Option expects an integer argument" ) );
+    }
+  return value; 
 }
 
-double cmtk::CommandLine::Item ::ConvertStrToDouble(const char *str) {
-  char *endptr;
-  const double value = strtod(str, &endptr);
-  if ((endptr == str) || *endptr) {
-    throw(Exception("Option expects a floating point argument"));
-  }
-  return value;
+double
+cmtk::CommandLine::Item
+::ConvertStrToDouble( const char* str )
+{
+  char* endptr;
+  const double value = strtod( str, &endptr );
+  if ( (endptr == str) || *endptr )
+    {
+    throw( Exception( "Option expects a floating point argument" ) );
+    }
+  return value; 
 }
+

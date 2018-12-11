@@ -39,7 +39,9 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUnits.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -48,23 +50,23 @@ namespace cmtk {
  */
 class UniformVolumeLaplaceFilter :
     /// Prevent copying by inheritance.
-    private DataGridFilter {
- public:
+  private DataGridFilter
+{
+public:
   /// This class.
   typedef UniformVolumeLaplaceFilter Self;
 
   /// Constructor: link to UniformVolume object.
-  explicit UniformVolumeLaplaceFilter(UniformVolume::SmartConstPtr &volume)
-      : DataGridFilter(volume), m_UniformVolume(volume) {}
+  explicit UniformVolumeLaplaceFilter( UniformVolume::SmartConstPtr& volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Laplacian (edge enhancing) filter.
   TypedArray::SmartPtr Get() const;
 
- private:
+private:
   /// The UniformVolume object we're working on.
   UniformVolume::SmartConstPtr m_UniformVolume;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkUniformVolumeLaplaceFilter_h_included_
+#endif // #ifndef __cmtkUniformVolumeLaplaceFilter_h_included_

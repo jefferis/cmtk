@@ -36,98 +36,109 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void SplineWarpXform::GetRigidityConstraintDerivative(
-    double &lower, double &upper, const int param,
-    const DataGrid::RegionType &voi, const Types::Coordinate step) const {
+void 
+SplineWarpXform::GetRigidityConstraintDerivative
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const
+{
   const int pixelsPerRow = voi.To()[0] - voi.From()[0];
-  std::vector<CoordinateMatrix3x3> arrayJ(pixelsPerRow);
-
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  
   double ground = 0;
 
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        ground += this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	ground += this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
-
+  
   upper = -ground;
   lower = -ground;
-
+  
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        upper += this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	upper += this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
-
+  
   this->m_Parameters[param] = oldCoeff - step;
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        lower += this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	lower += this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
   this->m_Parameters[param] = oldCoeff;
 
-  const double invVolume =
-      1.0 / ((voi.To()[0] - voi.From()[0]) * (voi.To()[1] - voi.From()[1]) *
-             (voi.To()[2] - voi.From()[2]));
+  const double invVolume = 1.0 / ((voi.To()[0]-voi.From()[0])*(voi.To()[1]-voi.From()[1])*(voi.To()[2]-voi.From()[2]));
   upper *= invVolume;
   lower *= invVolume;
 }
 
-void SplineWarpXform::GetRigidityConstraintDerivative(
-    double &lower, double &upper, const int param,
-    const DataGrid::RegionType &voi, const Types::Coordinate step,
-    const DataGrid *weightMap) const {
+void 
+SplineWarpXform::GetRigidityConstraintDerivative
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step, const DataGrid* weightMap ) const
+{
   const int pixelsPerRow = voi.To()[0] - voi.From()[0];
-  std::vector<CoordinateMatrix3x3> arrayJ(pixelsPerRow);
-
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  
   double ground = 0;
 
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        ground += weightMap->GetDataAt(voi.From()[0] + i, j, k) *
-                  this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	ground += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
-
+  
   upper = -ground;
   lower = -ground;
-
+  
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        upper += weightMap->GetDataAt(voi.From()[0] + i, j, k) *
-                 this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	upper += weightMap->GetDataAt( voi.From()[0] + i, j, k ) *
+	  this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
-
+  
   this->m_Parameters[param] = oldCoeff - step;
-  for (int k = voi.From()[2]; k < voi.To()[2]; ++k)
-    for (int j = voi.From()[1]; j < voi.To()[1]; ++j) {
-      this->GetJacobianRow(&(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow);
-      for (int i = 0; i < pixelsPerRow; ++i) {
-        lower += weightMap->GetDataAt(voi.From()[0] + i, j, k) *
-                 this->GetRigidityConstraint(arrayJ[i]);
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      for ( int i = 0; i < pixelsPerRow; ++i ) 
+	{
+	lower += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
+	}
       }
-    }
   this->m_Parameters[param] = oldCoeff;
 
   const double invVolume = 1.0 / voi.Size();
@@ -135,106 +146,111 @@ void SplineWarpXform::GetRigidityConstraintDerivative(
   lower *= invVolume;
 }
 
-void SplineWarpXform::GetRigidityConstraintDerivative(
-    double &lower, double &upper, const int param,
-    const Types::Coordinate step) const {
+void 
+SplineWarpXform::GetRigidityConstraintDerivative
+( double& lower, double& upper, const int param, const Types::Coordinate step )
+  const
+{
   const int controlPointIdx = param / nextI;
-  const unsigned short x = (controlPointIdx % this->m_Dims[0]);
-  const unsigned short y =
-      ((controlPointIdx / this->m_Dims[0]) % this->m_Dims[1]);
-  const unsigned short z =
-      ((controlPointIdx / this->m_Dims[0]) / this->m_Dims[1]);
-
+  const unsigned short x =  ( controlPointIdx %  this->m_Dims[0] );
+  const unsigned short y = ( (controlPointIdx /  this->m_Dims[0]) % this->m_Dims[1] );
+  const unsigned short z = ( (controlPointIdx /  this->m_Dims[0]) / this->m_Dims[1] );
+  
   const int thisDim = param % nextI;
-  const Types::Coordinate *coeff = this->m_Parameters + param - thisDim;
-
+  const Types::Coordinate* coeff = this->m_Parameters + param - thisDim;
+  
   double ground = 0;
 
-  const int iFrom = std::max(-1, 1 - x);
-  const int jFrom = std::max(-1, 1 - y);
-  const int kFrom = std::max(-1, 1 - z);
+  const int iFrom = std::max( -1, 1-x );
+  const int jFrom = std::max( -1, 1-y );
+  const int kFrom = std::max( -1, 1-z );
 
-  const int iTo = std::min(1, this->m_Dims[0] - 2 - x);
-  const int jTo = std::min(1, this->m_Dims[1] - 2 - y);
-  const int kTo = std::min(1, this->m_Dims[2] - 2 - z);
+  const int iTo = std::min( 1, this->m_Dims[0]-2-x );
+  const int jTo = std::min( 1, this->m_Dims[1]-2-y );
+  const int kTo = std::min( 1, this->m_Dims[2]-2-z );
 
-  for (int k = kFrom; k < kTo; ++k)
-    for (int j = jFrom; j < jTo; ++j)
-      for (int i = iFrom; i < iTo; ++i) {
-        ground += this->GetRigidityConstraint(this->GetJacobianAtControlPoint(
-            coeff + i * nextI + j * nextJ + k * nextK));
-      }
-
+  for ( int k = kFrom; k < kTo; ++k )
+    for ( int j = jFrom; j < jTo; ++j )
+      for ( int i = iFrom; i < iTo; ++i )
+	{
+	ground += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
+	}
+  
   upper = -ground;
   lower = -ground;
-
+  
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for (int k = kFrom; k < kTo; ++k)
-    for (int j = jFrom; j < jTo; ++j)
-      for (int i = iFrom; i < iTo; ++i) {
-        upper += this->GetRigidityConstraint(this->GetJacobianAtControlPoint(
-            coeff + i * nextI + j * nextJ + k * nextK));
-      }
+  for ( int k = kFrom; k < kTo; ++k )
+    for ( int j = jFrom; j < jTo; ++j )
+      for ( int i = iFrom; i < iTo; ++i )
+	{
+	upper += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
+	}
 
   this->m_Parameters[param] = oldCoeff - step;
-  for (int k = kFrom; k < kTo; ++k)
-    for (int j = jFrom; j < jTo; ++j)
-      for (int i = iFrom; i < iTo; ++i) {
-        lower += this->GetRigidityConstraint(this->GetJacobianAtControlPoint(
-            coeff + i * nextI + j * nextJ + k * nextK));
-      }
+  for ( int k = kFrom; k < kTo; ++k )
+    for ( int j = jFrom; j < jTo; ++j )
+      for ( int i = iFrom; i < iTo; ++i )
+	{
+	lower += this->GetRigidityConstraint( this->GetJacobianAtControlPoint( coeff + i*nextI + j*nextJ + k*nextK ) );
+	}
   this->m_Parameters[param] = oldCoeff;
 
   upper /= this->m_NumberOfControlPoints;
   lower /= this->m_NumberOfControlPoints;
 }
 
-Types::Coordinate SplineWarpXform::GetRigidityConstraint() const {
+Types::Coordinate
+SplineWarpXform::GetRigidityConstraint () const
+{
   const int pixelsPerRow = VolumeDims[0];
-  std::vector<CoordinateMatrix3x3> arrayJ(pixelsPerRow);
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
 
   double constraint = 0;
-  for (int z = 0; z < VolumeDims[2]; ++z)
-    for (int y = 0; y < VolumeDims[1]; ++y) {
-      this->GetJacobianRow(&(arrayJ[0]), 0, y, z, pixelsPerRow);
-      for (int x = 0; x < pixelsPerRow; ++x) {
-        constraint += this->GetRigidityConstraint(arrayJ[x]);
+  for ( int z = 0; z < VolumeDims[2]; ++z )
+    for ( int y = 0; y < VolumeDims[1]; ++y ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), 0, y, z, pixelsPerRow );
+      for ( int x = 0; x < pixelsPerRow; ++x ) 
+	{
+	constraint += this->GetRigidityConstraint( arrayJ[x] );
+	}
       }
-    }
-
+  
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
-  return constraint / (VolumeDims[0] * VolumeDims[1] * VolumeDims[2]);
+  return constraint / ( VolumeDims[0] * VolumeDims[1] * VolumeDims[2] );
 }
 
-Types::Coordinate SplineWarpXform::GetRigidityConstraint(
-    const DataGrid *weightMap) const {
+Types::Coordinate
+SplineWarpXform::GetRigidityConstraint( const DataGrid* weightMap ) const
+{
   const int pixelsPerRow = VolumeDims[0];
-  std::vector<CoordinateMatrix3x3> arrayJ(pixelsPerRow);
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
 
   double constraint = 0;
-  for (int z = 0; z < VolumeDims[2]; ++z)
-    for (int y = 0; y < VolumeDims[1]; ++y) {
-      this->GetJacobianRow(&(arrayJ[0]), 0, y, z, pixelsPerRow);
-      for (int x = 0; x < pixelsPerRow; ++x) {
-        constraint += weightMap->GetDataAt(x, y, z) *
-                      this->GetRigidityConstraint(arrayJ[x]);
+  for ( int z = 0; z < VolumeDims[2]; ++z )
+    for ( int y = 0; y < VolumeDims[1]; ++y ) 
+      {
+      this->GetJacobianRow( &(arrayJ[0]), 0, y, z, pixelsPerRow );
+      for ( int x = 0; x < pixelsPerRow; ++x ) 
+	{
+	constraint += weightMap->GetDataAt( x, y, z ) * this->GetRigidityConstraint( arrayJ[x] );
+	}
       }
-    }
-
+  
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
-  return constraint / (VolumeDims[0] * VolumeDims[1] * VolumeDims[2]);
+  return constraint / ( VolumeDims[0] * VolumeDims[1] * VolumeDims[2] );
 }
 
-Types::Coordinate SplineWarpXform::GetRigidityConstraint(
-    const CoordinateMatrix3x3 &J) const {
-  const Matrix2D<Types::Coordinate> R =
-      QRDecomposition<Types::Coordinate>(J).GetR();
-  return MathUtil::Square(R[0][1] / R[0][0]) +
-         MathUtil::Square(R[0][2] / R[0][0]) +
-         MathUtil::Square(R[1][2] / R[1][1]);
+Types::Coordinate
+SplineWarpXform::GetRigidityConstraint( const CoordinateMatrix3x3& J ) 
+  const
+{
+  const Matrix2D<Types::Coordinate> R = QRDecomposition<Types::Coordinate>( J ).GetR();  
+  return MathUtil::Square( R[0][1] / R[0][0] ) + MathUtil::Square( R[0][2] / R[0][0] ) + MathUtil::Square( R[1][2] / R[1][1] );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

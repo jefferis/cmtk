@@ -34,124 +34,124 @@
 
 #include "cmtkUniformVolumePainter.h"
 
-void cmtk::UniformVolumePainter::DrawSphere(
-    const UniformVolume::CoordinateVectorType &center,
-    const Types::Coordinate radius, const Types::DataItem value) {
-  UniformVolume &volume = *(this->m_Volume);
+void
+cmtk::UniformVolumePainter::DrawSphere
+( const UniformVolume::CoordinateVectorType& center, const Types::Coordinate radius, const Types::DataItem value )
+{
+  UniformVolume& volume = *(this->m_Volume);
 
-  UniformVolume::CoordinateVectorType centerAbsolute(center);
-  Types::Coordinate radiusAbsolute[3] = {radius, radius, radius};
-
-  switch (this->m_CoordinateMode) {
+  UniformVolume::CoordinateVectorType centerAbsolute( center );
+  Types::Coordinate radiusAbsolute[3] = { radius, radius, radius };
+  
+  switch ( this->m_CoordinateMode )
+    {
     default:
     case Self::COORDINATES_ABSOLUTE:
       // nothing to do - already absolute
       break;
     case Self::COORDINATES_RELATIVE:
-      for (int dim = 0; dim < 3; ++dim) {
-        (centerAbsolute[dim] *= volume.m_Size[dim]) += volume.m_Offset[dim];
-        radiusAbsolute[dim] *= volume.m_Size[dim];
-      }
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	(centerAbsolute[dim] *= volume.m_Size[dim]) += volume.m_Offset[dim];
+	radiusAbsolute[dim] *= volume.m_Size[dim];
+	}
       break;
     case Self::COORDINATES_INDEXED:
-      for (int dim = 0; dim < 3; ++dim) {
-        (centerAbsolute[dim] *= volume.m_Delta[dim]) += volume.m_Offset[dim];
-        radiusAbsolute[dim] *= volume.m_Delta[dim];
-      }
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	(centerAbsolute[dim] *= volume.m_Delta[dim]) += volume.m_Offset[dim];
+	radiusAbsolute[dim] *= volume.m_Delta[dim];
+	}
       break;
-  }
-
+    }
+  
   DataGrid::RegionType region = volume.GetWholeImageRegion();
-  for (int dim = 0; dim < 3; ++dim) {
-    region.From()[dim] = std::max(
-        region.From()[dim],
-        static_cast<Types::GridIndexType>(
-            (centerAbsolute[dim] - radiusAbsolute[dim] - volume.m_Offset[dim]) /
-            volume.m_Delta[dim]) -
-            1);
-    region.To()[dim] = std::min(
-        region.To()[dim],
-        static_cast<Types::GridIndexType>(
-            (centerAbsolute[dim] + radiusAbsolute[dim] - volume.m_Offset[dim]) /
-            volume.m_Delta[dim]) +
-            1);
-  }
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    region.From()[dim] = std::max( region.From()[dim], static_cast<Types::GridIndexType>( (centerAbsolute[dim] - radiusAbsolute[dim] - volume.m_Offset[dim]) / volume.m_Delta[dim] ) - 1 );
+    region.To()[dim] = std::min( region.To()[dim], static_cast<Types::GridIndexType>( (centerAbsolute[dim] + radiusAbsolute[dim] - volume.m_Offset[dim]) / volume.m_Delta[dim] ) + 1 );
+    }
 
-  for (Types::GridIndexType k = region.From()[2]; k < region.To()[2]; ++k) {
-    const Types::Coordinate Z = volume.GetPlaneCoord(2, k);
-    for (Types::GridIndexType j = region.From()[1]; j < region.To()[1]; ++j) {
-      const Types::Coordinate Y = volume.GetPlaneCoord(1, j);
+  for ( Types::GridIndexType k = region.From()[2]; k < region.To()[2]; ++k )
+    {
+    const Types::Coordinate Z = volume.GetPlaneCoord( 2, k );
+    for ( Types::GridIndexType j = region.From()[1]; j < region.To()[1]; ++j )
+      {
+      const Types::Coordinate Y = volume.GetPlaneCoord( 1, j );
+      
+      size_t offset = region.From()[0] + volume.m_Dims[0] * ( j + volume.m_Dims[1] * k );
+      for ( Types::GridIndexType i = region.From()[0]; i < region.To()[0]; ++i, ++offset )
+	{
+	const Types::Coordinate X = volume.GetPlaneCoord( 0, i );
+	
+	UniformVolume::CoordinateVectorType v = FixedVectorStaticInitializer<3,Types::Coordinate>::Init( X, Y, Z );
+	v -= centerAbsolute;
 
-      size_t offset =
-          region.From()[0] + volume.m_Dims[0] * (j + volume.m_Dims[1] * k);
-      for (Types::GridIndexType i = region.From()[0]; i < region.To()[0];
-           ++i, ++offset) {
-        const Types::Coordinate X = volume.GetPlaneCoord(0, i);
+	for ( int dim = 0; dim < 3; ++dim )
+	  {
+	  v[dim] /= radiusAbsolute[dim];
+	  }
 
-        UniformVolume::CoordinateVectorType v =
-            FixedVectorStaticInitializer<3, Types::Coordinate>::Init(X, Y, Z);
-        v -= centerAbsolute;
-
-        for (int dim = 0; dim < 3; ++dim) {
-          v[dim] /= radiusAbsolute[dim];
-        }
-
-        if (v.RootSumOfSquares() <= 1.0) volume.SetDataAt(value, offset);
+	if ( v.RootSumOfSquares() <= 1.0 )
+	  volume.SetDataAt( value, offset );
+	}
       }
     }
-  }
 }
 
-void cmtk::UniformVolumePainter::DrawBox(
-    const UniformVolume::CoordinateVectorType &boxFrom,
-    const UniformVolume::CoordinateVectorType &boxTo,
-    const Types::DataItem value) {
-  UniformVolume &volume = *(this->m_Volume);
+void
+cmtk::UniformVolumePainter::DrawBox
+( const UniformVolume::CoordinateVectorType& boxFrom, const UniformVolume::CoordinateVectorType& boxTo, const Types::DataItem value )
+{
+  UniformVolume& volume = *(this->m_Volume);
 
   Types::GridIndexType indexFrom[3], indexTo[3];
 
-  switch (this->m_CoordinateMode) {
+  switch ( this->m_CoordinateMode )
+    {
     default:
     case Self::COORDINATES_ABSOLUTE:
-      for (int dim = 0; dim < 3; ++dim) {
-        indexFrom[dim] = static_cast<Types::GridIndexType>(
-            MathUtil::Round(boxFrom[dim] / volume.m_Delta[dim]));
-        indexTo[dim] = static_cast<Types::GridIndexType>(
-            MathUtil::Round(boxTo[dim] / volume.m_Delta[dim]));
-      }
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = static_cast<Types::GridIndexType>( MathUtil::Round( boxFrom[dim] / volume.m_Delta[dim] ) );
+	indexTo[dim] = static_cast<Types::GridIndexType>( MathUtil::Round( boxTo[dim] / volume.m_Delta[dim] ) );
+	}
       break;
     case Self::COORDINATES_RELATIVE:
-      for (int dim = 0; dim < 3; ++dim) {
-        indexFrom[dim] = static_cast<Types::GridIndexType>(MathUtil::Round(
-            boxFrom[dim] * volume.m_Size[dim] / volume.m_Delta[dim]));
-        indexTo[dim] = static_cast<Types::GridIndexType>(MathUtil::Round(
-            boxTo[dim] * volume.m_Size[dim] / volume.m_Delta[dim]));
-      }
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = static_cast<Types::GridIndexType>( MathUtil::Round( boxFrom[dim] * volume.m_Size[dim] / volume.m_Delta[dim] ) );
+	indexTo[dim] = static_cast<Types::GridIndexType>( MathUtil::Round( boxTo[dim] * volume.m_Size[dim] / volume.m_Delta[dim] ) );
+	}
       break;
     case Self::COORDINATES_INDEXED:
       // nothing to do - already indexed
-      for (int dim = 0; dim < 3; ++dim) {
-        indexFrom[dim] = static_cast<Types::GridIndexType>(boxFrom[dim] + 0.5);
-        indexTo[dim] = static_cast<Types::GridIndexType>(boxTo[dim] + 0.5);
-      }
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = static_cast<Types::GridIndexType>( boxFrom[dim] + 0.5 );
+	indexTo[dim] = static_cast<Types::GridIndexType>( boxTo[dim] + 0.5 );
+	}
       break;
-  }
+    }
 
   // make sure boundaries are in correct order and in valid range
-  for (int dim = 0; dim < 3; ++dim) {
-    if (indexFrom[dim] > indexTo[dim]) std::swap(indexFrom[dim], indexTo[dim]);
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    if ( indexFrom[dim] > indexTo[dim] )
+      std::swap( indexFrom[dim], indexTo[dim] );
 
-    indexFrom[dim] = std::max<Types::GridIndexType>(
-        0, std::min(volume.m_Dims[dim] - 1, indexFrom[dim]));
-    indexTo[dim] = std::max<Types::GridIndexType>(
-        0, std::min(volume.m_Dims[dim] - 1, indexTo[dim]));
-  }
-
-  for (Types::GridIndexType k = indexFrom[2]; k <= indexTo[2]; ++k) {
-    for (Types::GridIndexType j = indexFrom[1]; j <= indexTo[1]; ++j) {
-      for (Types::GridIndexType i = indexFrom[0]; i <= indexTo[0]; ++i) {
-        volume.SetDataAt(value, volume.GetOffsetFromIndex(i, j, k));
+    indexFrom[dim] = std::max<Types::GridIndexType>( 0, std::min( volume.m_Dims[dim]-1, indexFrom[dim] ) );
+    indexTo[dim] = std::max<Types::GridIndexType>( 0, std::min( volume.m_Dims[dim]-1, indexTo[dim] ) );
+    }
+  
+  for ( Types::GridIndexType k = indexFrom[2]; k <= indexTo[2]; ++k )
+    {
+    for ( Types::GridIndexType j = indexFrom[1]; j <= indexTo[1]; ++j )
+      {
+      for ( Types::GridIndexType i = indexFrom[0]; i <= indexTo[0]; ++i )
+	{
+	volume.SetDataAt( value, volume.GetOffsetFromIndex( i, j, k ) );
+	}
       }
     }
-  }
 }

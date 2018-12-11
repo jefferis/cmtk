@@ -37,16 +37,19 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: match intensities to another image.
 class ImageOperationMatchIntensities
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperationMatchIntensities Self;
 
@@ -54,7 +57,8 @@ class ImageOperationMatchIntensities
   typedef ImageOperation Superclass;
 
   /// Operation mode.
-  typedef enum {
+  typedef enum
+  {
     /// Match histograms.
     MATCH_HISTOGRAMS,
     /// Match mean and standard deviation
@@ -62,22 +66,18 @@ class ImageOperationMatchIntensities
   } Mode;
 
   /// Constructor.
-  ImageOperationMatchIntensities(
-      const Self::Mode mode /*!< Operation mode.*/, const std::
-                                                        string&
-                                                            referenceImagePath /*!< Path of the reference image to match intensites to.*/);
+  ImageOperationMatchIntensities( const Self::Mode mode /*!< Operation mode.*/, const std::string& referenceImagePath /*!< Path of the reference image to match intensites to.*/ );
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr& volume);
-
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create new operation to match histograms.
   static void NewMatchHistograms( const char* referenceImagePath /*!< Path of the reference image to match intensites to.*/ );
-
+  
   /// Create new operation to match image mean and standard deviation.
   static void NewMatchMeanSDev( const char* referenceImagePath /*!< Path of the reference image to match intensites to.*/ );
-
- private:
+  
+private:
   /// Operation mode.
   Self::Mode m_Mode;
 
@@ -87,6 +87,6 @@ class ImageOperationMatchIntensities
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationMatchIntensities_h_included_
+#endif // #ifndef __cmtkImageOperationMatchIntensities_h_included_

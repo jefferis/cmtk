@@ -33,82 +33,72 @@
 #include <Registration/cmtkVoxelMatchingAffineFunctional.h>
 
 #ifdef CMTK_USE_SMP
-#include <System/cmtkThreads.h>
+#  include <System/cmtkThreads.h>
 #endif
 
 #include <Registration/cmtkVoxelMatchingAffineFunctionalTemplate.h>
-#include <Registration/cmtkVoxelMatchingCorrRatio.h>
-#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
-#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
 #include <Registration/cmtkVoxelMatchingMutInf.h>
 #include <Registration/cmtkVoxelMatchingNormMutInf.h>
+#include <Registration/cmtkVoxelMatchingCorrRatio.h>
+#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
+#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-VoxelMatchingAffineFunctional *VoxelMatchingAffineFunctional ::Create(
-    const int metric, UniformVolume::SmartPtr &refVolume,
-    UniformVolume::SmartPtr &fltVolume, AffineXform::SmartPtr &affineXform) {
-  switch (fltVolume->GetData()->GetDataClass()) {
-    case DATACLASS_UNKNOWN:
-    case DATACLASS_GREY:
-      switch (metric) {
-        case 0:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingNormMutInf_Trilinear>(refVolume, fltVolume,
-                                                 affineXform);
-        case 1:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingMutInf_Trilinear>(refVolume, fltVolume, affineXform);
-        case 2:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingCorrRatio_Trilinear>(refVolume, fltVolume,
-                                                affineXform);
-        case 3:
-          return NULL;  // masked nmi retired
-        case 4:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingMeanSquaredDifference>(refVolume, fltVolume,
-                                                  affineXform);
-        case 5:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingCrossCorrelation>(refVolume, fltVolume, affineXform);
-        default:
-          break;
-      }
+VoxelMatchingAffineFunctional* 
+VoxelMatchingAffineFunctional
+::Create
+( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, AffineXform::SmartPtr& affineXform )
+{
+  switch ( fltVolume->GetData()->GetDataClass() ) 
+    {
+    case DATACLASS_UNKNOWN :
+    case DATACLASS_GREY :
+      switch ( metric ) 
+	{
+	case 0:
+	  return new VoxelMatchingAffineFunctionalTemplate< VoxelMatchingNormMutInf_Trilinear >( refVolume, fltVolume, affineXform );
+	case 1:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume, affineXform );
+	case 2:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume, affineXform );
+	case 3:
+	  return NULL; // masked nmi retired
+	case 4:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume, affineXform );
+	case 5:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingCrossCorrelation>( refVolume, fltVolume, affineXform );
+	default:
+	  break;
+	}
       break;
-    case DATACLASS_LABEL:
-      switch (metric) {
-        case 0:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingNormMutInf_NearestNeighbor>(refVolume, fltVolume,
-                                                       affineXform);
-        case 1:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingMutInf_NearestNeighbor>(refVolume, fltVolume,
-                                                   affineXform);
-        case 2:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingCorrRatio_NearestNeighbor>(refVolume, fltVolume,
-                                                      affineXform);
-        case 3:
-          return NULL;  // masked nmi retired
-        case 4:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingMeanSquaredDifference>(refVolume, fltVolume,
-                                                  affineXform);
-        case 5:
-          return new VoxelMatchingAffineFunctionalTemplate<
-              VoxelMatchingCrossCorrelation>(refVolume, fltVolume, affineXform);
-        default:
-          break;
-      }
+    case DATACLASS_LABEL :
+      switch ( metric ) 
+	{
+	case 0:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingNormMutInf_NearestNeighbor>( refVolume, fltVolume, affineXform );
+	case 1:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume, affineXform );
+	case 2:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume, affineXform );
+	case 3:
+	  return NULL; // masked nmi retired
+	case 4:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume, affineXform );
+	case 5:
+	  return new VoxelMatchingAffineFunctionalTemplate<VoxelMatchingCrossCorrelation>( refVolume, fltVolume, affineXform );
+	default:
+	  break;
+	}
       break;
-  }
-
+    }
+  
   return NULL;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

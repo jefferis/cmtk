@@ -32,30 +32,31 @@
 
 #include "cmtkRegistrationJointHistogram.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-template <cmtk::Interpolators::InterpolationEnum I>
-RegistrationJointHistogram<I>::RegistrationJointHistogram(
-    const UniformVolume *refVolume, const UniformVolume *fltVolume,
-    const unsigned int numBinsX, const unsigned int numBinsY,
-    const Types::DataItemRange &boundsX, const Types::DataItemRange &boundsY)
-    :
+template<cmtk::Interpolators::InterpolationEnum I>
+RegistrationJointHistogram<I>::RegistrationJointHistogram 
+( const UniformVolume* refVolume, const UniformVolume* fltVolume,
+  const unsigned int numBinsX, const unsigned int numBinsY,
+  const Types::DataItemRange& boundsX,
+  const Types::DataItemRange& boundsY ) :
 #ifdef CMTK_PVI_HISTOGRAMS
-      JointHistogram<float>(),
+  JointHistogram<float>(),
 #else
-      JointHistogram<int>(),
+  JointHistogram<int>(),
 #endif
-      VoxelMatchingMetric<byte, TYPE_BYTE, I>(refVolume, fltVolume,
-                                              false /* initData */) {
-  this->Resize(this->DataX.Init(refVolume, numBinsX, boundsX),
-               this->DataY.Init(fltVolume, numBinsY, boundsY));
+  VoxelMatchingMetric<byte,TYPE_BYTE,I>( refVolume, fltVolume, false /* initData */ )
+{
+  this->Resize( this->DataX.Init( refVolume, numBinsX, boundsX ), this->DataY.Init( fltVolume, numBinsY, boundsY ) );
 }
 
 // instantiate required templates
 template class RegistrationJointHistogram<Interpolators::LINEAR>;
 template class RegistrationJointHistogram<Interpolators::NEAREST_NEIGHBOR>;
 
-}  // namespace cmtk
+} // namespace cmtk

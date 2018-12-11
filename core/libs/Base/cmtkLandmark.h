@@ -35,35 +35,36 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMacros.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkFixedVector.h>
 
-#include <System/cmtkSmartConstPtr.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 /// Coordinates of an (anatomical) landmark.
-class Landmark {
- public:
+class Landmark
+{
+public:
   /// This class.
   typedef Landmark Self;
 
   /// Space vector type.
-  typedef FixedVector<3, Types::Coordinate> SpaceVectorType;
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
   /// Default constructor.
-  Landmark(){};
+  Landmark() {};
 
   /// Explicit constructor.
-  Landmark(
-      const std::string &name /*!< Name of this landmark */,
-      const Self::SpaceVectorType &location /*!< Location of this landmark */);
+  Landmark( const std::string& name /*!< Name of this landmark */, const Self::SpaceVectorType& location /*!< Location of this landmark */ );
 
   /// Name of this landmark.
   std::string m_Name;
@@ -72,8 +73,9 @@ class Landmark {
   Self::SpaceVectorType m_Location;
 };
 
+
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLandmarks_h_included_
+#endif // #ifndef __cmtkLandmarks_h_included_

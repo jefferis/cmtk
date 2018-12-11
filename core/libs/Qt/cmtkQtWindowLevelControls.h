@@ -35,67 +35,69 @@
 
 #include <cmtkconfig.h>
 
-#include <QtWidgets/qcheckbox.h>
-#include <qboxlayout.h>
+#include <qcheckbox.h>
+#include <qslider.h>
 #include <qlayout.h>
-#include <QtWidgets/QSlider>
+#include <qboxlayout.h>
 
-#include <IO/cmtkStudy.h>
 #include <Qt/cmtkQtSliderEntry.h>
+#include <IO/cmtkStudy.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
 /// Widget for a group box with Window/Level controls.
 class QtWindowLevelControls :
-    /// Inherit from Qt's group box.
-    public QWidget {
-  Q_OBJECT  // we're using signals and slots
+  /// Inherit from Qt's group box.
+  public QWidget
+{
+  Q_OBJECT // we're using signals and slots
 
-      signals :
-      /// This signal is emitted when the controls change.
-      void
-      colormap(Study::SmartPtr &);
+signals:
+  /// This signal is emitted when the controls change.
+  void colormap( Study::SmartPtr& );
 
- public slots:
+public slots:
   /// This signal tells the controls that the study object has changed.
-  void slotSetStudy(Study::SmartPtr &study);
+  void slotSetStudy( Study::SmartPtr& study );
 
- private slots:
+private slots:
   /// This slot is called when the Window/Level mode is changed.
-  void slotSwitchModeWL(int);
+  void slotSwitchModeWL( int );
 
   /// This slot is called by the UI widgets when their values change.
   void slotControlsChanged();
 
   /// This slot is called when the user picks a new colormap.
-  void slotSelectColormap(int colormapIndex);
+  void slotSelectColormap( int colormapIndex );
 
- public:
+public:
   /// Constructor.
-  QtWindowLevelControls(QWidget *const parent);
+  QtWindowLevelControls( QWidget *const parent );
 
- private:
+private:
   /// The study object that we're working on.
   Study::SmartPtr m_Study;
 
   /// Layout of this widget.
-  QVBoxLayout *Layout;
+  QVBoxLayout* Layout;
 
   /// The top slider in the UI.
-  QtSliderEntry *BlackWindowSlider;
+  QtSliderEntry* BlackWindowSlider;
 
   /// The bottom slider in the UI.
-  QtSliderEntry *WhiteLevelSlider;
+  QtSliderEntry* WhiteLevelSlider;
 
   /// The gamma slider in the UI.
-  QtSliderEntry *GammaSlider;
+  QtSliderEntry* GammaSlider;
 
   /// The checkbox that switches between Window/Level and Black/White mode.
-  QCheckBox *WindowLevelCheckBox;
-
+  QCheckBox* WindowLevelCheckBox;
+  
   /// The smallest value in the image.
   float RangeFrom;
 
@@ -108,6 +110,7 @@ class QtWindowLevelControls :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQtWindowLevelControls_h_included_
+#endif // #ifndef __cmtkQtWindowLevelControls_h_included_
+

@@ -33,26 +33,28 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <System/cmtkSmartPtr.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <list>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Image operation base class.
- * Classes derived from this base class are used to implement an ordered
- *sequence of operations primarily for the "convertx" command line tool.
+ * Classes derived from this base class are used to implement an ordered sequence of operations
+ * primarily for the "convertx" command line tool.
  *
- *\warning This class is not thread-safe in the sense that the costructed
- *operation sequence is stored in a static member field of this class,
- *m_ImageOperationList.
+ *\warning This class is not thread-safe in the sense that the costructed operation sequence is
+ * stored in a static member field of this class, m_ImageOperationList.
  */
-class ImageOperation {
- public:
+class ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperation Self;
 
@@ -61,31 +63,30 @@ class ImageOperation {
 
   /// Virtual destructor.
   virtual ~ImageOperation() {}
-
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume ) 
+  {
     return volume;
   }
 
   /// Apply all operations in list.
-  static cmtk::UniformVolume::SmartPtr ApplyAll(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    for (std::list<Self::SmartPtr>::iterator opIt =
-             Self::m_ImageOperationList.begin();
-         opIt != Self::m_ImageOperationList.end(); ++opIt) {
-      volume = (*opIt)->Apply(volume);
-    }
+  static cmtk::UniformVolume::SmartPtr ApplyAll( cmtk::UniformVolume::SmartPtr& volume ) 
+  {
+    for ( std::list<Self::SmartPtr>::iterator opIt = Self::m_ImageOperationList.begin(); opIt != Self::m_ImageOperationList.end(); ++opIt )
+      {
+      volume = (*opIt)->Apply( volume );
+      }
     return volume;
   }
-
- protected:
+  
+protected:
   /// List of image operations.
   static std::list<Self::SmartPtr> m_ImageOperationList;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperation_h_included_
+#endif // #ifndef __cmtkImageOperation_h_included_

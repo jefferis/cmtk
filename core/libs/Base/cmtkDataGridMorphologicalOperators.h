@@ -35,28 +35,31 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGrid.h>
 #include <System/cmtkCannotBeCopied.h>
+#include <Base/cmtkDataGrid.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Morphological operators applied to a 3D grid of data.
- * This class provides a selection of morphological operators that act on data
- * arranged on a regular 3D grid, but do not require the real-world spacing of
- * the grid points for their operation.
+ * This class provides a selection of morphological operators that act on data arranged on
+ * a regular 3D grid, but do not require the real-world spacing of the grid points for
+ * their operation. 
  */
 class DataGridMorphologicalOperators :
-    /// Prevent copying by inheritance.
-    private CannotBeCopied {
- public:
+  /// Prevent copying by inheritance.
+  private CannotBeCopied 
+{
+public:
   /// This class.
   typedef DataGridMorphologicalOperators Self;
 
   /// Constructor: link to DataGrid object.
-  DataGridMorphologicalOperators(const DataGrid::SmartConstPtr &dataGrid);
+  DataGridMorphologicalOperators( const DataGrid::SmartConstPtr& dataGrid );
 
   /** Return map of region boundaries.
    * This function returns a byte data array where each pixel is one if it is
@@ -68,21 +71,18 @@ class DataGridMorphologicalOperators :
    *\note The boundary contours are at least 2 pixels wide since "boundaryness"
    * is a symmetric relationship.
    */
-  TypedArray::SmartPtr GetBoundaryMap(const bool multiValued = false) const;
+  TypedArray::SmartPtr GetBoundaryMap( const bool multiValued = false ) const;
 
   /// Get data after erosion operator.
-  TypedArray::SmartPtr GetEroded(
-      const int iterations = 1 /*!< Number of erosion iterations. */) const;
-
+  TypedArray::SmartPtr GetEroded( const int iterations = 1 /*!< Number of erosion iterations. */ ) const;
+  
   /// Get data after dilation operator.
-  TypedArray::SmartPtr GetDilated(
-      const int iterations = 1 /*!< Number of dilation iterations. */) const;
+  TypedArray::SmartPtr GetDilated( const int iterations = 1 /*!< Number of dilation iterations. */ ) const;
 
   /** Get connected components of a binary image.
    * All pixels with non-zero values are considered "foreground," and the result
-   * of this function is a partitioning of the foreground into connected
-   * components. Connectivity is determined based on 8 neighbours in the 3D
-   * grid.
+   * of this function is a partitioning of the foreground into connected components.
+   * Connectivity is determined based on 8 neighbours in the 3D grid.
    */
   TypedArray::SmartPtr GetBinaryConnectedComponents() const;
 
@@ -92,11 +92,11 @@ class DataGridMorphologicalOperators :
    */
   TypedArray::SmartPtr GetRegionsRenumberedBySize() const;
 
- private:
+private:
   /// The DataGrid object we're working on.
   DataGrid::SmartConstPtr m_DataGrid;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkDataGridMorphologicalOperators_h_included_
+#endif // #ifndef __cmtkDataGridMorphologicalOperators_h_included_

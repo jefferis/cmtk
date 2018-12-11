@@ -33,84 +33,77 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkMathUtil.h>
 #include <Base/cmtkUnits.h>
+#include <Base/cmtkMathUtil.h>
 
 #include <vector>
 
 /** \addtogroup Base */
 //@{
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Utility class for generating Gaussian kernels.
-template <class TFloat = double>
-class GaussianKernel {
- public:
+template<class TFloat=double>
+class GaussianKernel
+{
+public:
   /// This class.
   typedef GaussianKernel<TFloat> Self;
 
   /// Get raw kernel value.
-  static TFloat GetValue(const TFloat x, const TFloat mu, const TFloat sigma) {
-    return exp(-MathUtil::Square((x - mu) / sigma) / 2) /
-           (sqrt(2 * M_PI) * sigma);
+  static TFloat GetValue( const TFloat x, const TFloat mu, const TFloat sigma )
+  {
+    return  exp( -MathUtil::Square( (x-mu) / sigma ) / 2 ) / (sqrt(2*M_PI) * sigma);
   }
-
+  
   /// Create symmetric kernel.
-  static std::vector<TFloat> GetSymmetricKernel(const Units::GaussianSigma
-                                                    &sigma /*!< Sigma parameter
-                                                              (standard
-                                                              deviation) of the
-                                                              kernel */
-                                                ,
-                                                const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */) {
-    const TFloat normFactor =
-        static_cast<TFloat>(1.0 / (sqrt(2 * M_PI) * sigma.Value()));
-    const size_t radius =
-        static_cast<size_t>(Self::GetRadius(sigma, normFactor, maxError));
-
-    std::vector<TFloat> kernel(2 * radius + 1);
-    for (size_t i = 0; i <= radius; ++i) {
-      kernel[radius - i] = kernel[radius + i] = static_cast<TFloat>(
-          normFactor * exp(-MathUtil::Square(1.0 * i / sigma.Value()) / 2));
-    }
+  static std::vector<TFloat> GetSymmetricKernel( const Units::GaussianSigma& sigma /*!< Sigma parameter (standard deviation) of the kernel */, 
+						 const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
+  {
+    const TFloat normFactor = static_cast<TFloat>( 1.0/(sqrt(2*M_PI) * sigma.Value()) );
+    const size_t radius = static_cast<size_t>( Self::GetRadius( sigma, normFactor, maxError ) );
+    
+    std::vector<TFloat> kernel( 2 * radius + 1 );
+    for ( size_t i = 0; i <= radius; ++i )
+      {
+      kernel[radius-i] = kernel[radius+i] = static_cast<TFloat>( normFactor * exp( -MathUtil::Square( 1.0 * i / sigma.Value() ) / 2 ) );
+      }
 
     return kernel;
   }
 
   /// Create half kernel, starting with center element.
-  static std::vector<TFloat> GetHalfKernel(const Units::GaussianSigma &sigma /*!< Sigma parameter (standard deviation) of the kernel */, const TFloat
-                                                                                                                                             maxError =
-                                                                                                                                                 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */) {
-    const double normFactor = 1.0 / (sqrt(2 * M_PI) * sigma.Value());
-    const size_t radius =
-        static_cast<size_t>(Self::GetRadius(sigma, normFactor, maxError));
-
-    std::vector<TFloat> kernel(radius + 1);
-    for (size_t i = 0; i <= radius; ++i) {
-      kernel[i] =
-          normFactor * exp(-MathUtil::Square(1.0 * i / sigma.Value()) / 2);
-    }
-
+  static std::vector<TFloat> GetHalfKernel( const Units::GaussianSigma& sigma /*!< Sigma parameter (standard deviation) of the kernel */, 
+					    const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
+  {
+    const double normFactor = 1.0/(sqrt(2*M_PI) * sigma.Value());
+    const size_t radius = static_cast<size_t>( Self::GetRadius( sigma, normFactor, maxError ) );
+    
+    std::vector<TFloat> kernel( radius + 1 );
+    for ( size_t i = 0; i <= radius; ++i )
+      {
+      kernel[i] = normFactor * exp( -MathUtil::Square( 1.0 * i / sigma.Value() ) / 2 );
+      }
+    
     return kernel;
   }
 
- private:
-  /// Compute kernel radius based on maximum approximation error and
-  /// normalization factor.
-  static TFloat GetRadius(const Units::GaussianSigma &sigma,
-                          const TFloat normFactor, const TFloat maxError) {
-    if (maxError >= normFactor)  // if normFactor is less than max error, then
-                                 // we really need no kernel at all
+private:
+  /// Compute kernel radius based on maximum approximation error and normalization factor.
+  static TFloat GetRadius(  const Units::GaussianSigma& sigma, const TFloat normFactor, const TFloat maxError )
+  {
+    if ( maxError >= normFactor ) // if normFactor is less than max error, then we really need no kernel at all
       return 0;
     else
-      return static_cast<TFloat>(sqrt(-2.0 * log(maxError / normFactor)) *
-                                 sigma.Value());
+      return static_cast<TFloat>( sqrt( -2.0 * log( maxError / normFactor ) ) * sigma.Value() );
   }
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
 //@}
 
-#endif  // #ifndef __cmtkGaussianKernel_h_included_
+#endif // #ifndef __cmtkGaussianKernel_h_included_

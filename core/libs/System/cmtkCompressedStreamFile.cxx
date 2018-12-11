@@ -34,59 +34,86 @@
 
 #include <System/cmtkCompressedStream.h>
 
-#include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
-CompressedStream::File::File(const std::string &filename) {
-  this->m_File = fopen(filename.c_str(), CMTK_FILE_MODE);
-  if (!this->m_File) {
+CompressedStream::File::File( const std::string& filename )
+{
+  this->m_File = fopen( filename.c_str(), CMTK_FILE_MODE );
+  if ( !this->m_File ) 
+    {
     throw 0;
-  }
+    }
 }
 
-CompressedStream::File::~File() { this->Close(); }
+CompressedStream::File::~File()
+{
+  this->Close();
+}
 
-void CompressedStream::File::Close() {
-  if (this->m_File) {
-    fclose(this->m_File);
+void 
+CompressedStream::File::Close()
+{
+  if ( this->m_File )
+    {
+    fclose( this->m_File );
     this->m_File = NULL;
-  }
+    }
 }
 
-void CompressedStream::File::Rewind() {
-  rewind(this->m_File);
+void
+CompressedStream::File::Rewind () 
+{
+  rewind( this->m_File );
   this->CompressedStream::ReaderBase::Rewind();
 }
 
-int CompressedStream::File::Seek(const long int offset, int whence) {
-  return fseek(this->m_File, offset, whence);
+int
+CompressedStream::File::Seek ( const long int offset, int whence ) 
+{
+  return fseek( this->m_File, offset, whence );
 }
 
-size_t CompressedStream::File::Read(void *data, size_t size, size_t count) {
-  const size_t itemsRead = fread(data, size, count, this->m_File);
+size_t
+CompressedStream::File::Read( void *data, size_t size, size_t count ) 
+{
+  const size_t itemsRead = fread( data, size, count, this->m_File );
   this->m_BytesRead += itemsRead * size;
   return itemsRead;
 }
 
-bool CompressedStream::File::Get(char &c) {
-  const int data = fgetc(this->m_File);
-  if (data != EOF) {
-    c = (char)data;
+bool
+CompressedStream::File::Get ( char &c)
+{
+  const int data = fgetc( this->m_File );
+  if ( data != EOF ) 
+    {
+    c=(char) data;
     ++this->m_BytesRead;
     return true;
-  }
+    }
 
   return false;
 }
 
-int CompressedStream::File::Tell() const { return ftell(this->m_File); }
+int
+CompressedStream::File::Tell () const 
+{
+  return ftell( this->m_File );
+}
 
-bool CompressedStream::File::Feof() const { return (feof(this->m_File) != 0); }
+bool
+CompressedStream::File::Feof () const 
+{
+  return (feof( this->m_File ) != 0);
+}
 
-}  // namespace cmtk
+} // namespace cmtk

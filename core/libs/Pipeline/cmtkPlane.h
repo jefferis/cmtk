@@ -41,75 +41,78 @@
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkVector3D.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
 /** Class for 2D planes, that is uniform point meshes.
  */
-class Plane : public PipelineObject {
- public:
+class Plane : 
+  public PipelineObject
+{
+public:
   /// Create new object.
-  static Plane *New() { return new Plane; }
+  static Plane* New() { return new Plane; }
 
   /// Dimensions array.
-  igsClassParameter2Array(unsigned int, Dims);
+  igsClassParameter2Array(unsigned int,Dims);
 
   /// Spacing (ie. pixel size) array.
-  igsClassParameter2Array(Types::Coordinate, Spacing);
+  igsClassParameter2Array(Types::Coordinate,Spacing);
 
   /// Origin of image in 3D space.
-  igsClassParameter3Array(Types::Coordinate, Origin);
+  igsClassParameter3Array(Types::Coordinate,Origin);
 
   /// Direction of image's x-axis in 3D space.
-  igsClassParameter3Array(Types::Coordinate, DirectionX);
+  igsClassParameter3Array(Types::Coordinate,DirectionX);
 
   /// Direction of image's y-axis in 3D space.
-  igsClassParameter3Array(Types::Coordinate, DirectionY);
+  igsClassParameter3Array(Types::Coordinate,DirectionY);
 
   /** Copy the structure of another Plane object.
    * This function copies dimensions, pixel size, and spatial location of
    * a given object.
    */
-  void CopyStructure(const Plane *plane);
+  void CopyStructure( const Plane *plane );
 
   /// Return number of pixels in this object.
-  virtual unsigned int GetNumPixels() const { return Dims[0] * Dims[1]; }
+  virtual unsigned int GetNumPixels() const { return Dims[0]*Dims[1]; }
 
   /// Return 3D coordinate of a particular pixel.
-  void GetPixelLocation(Vector3D &v, const unsigned int x,
-                        const unsigned int y) const {
-    for (int dim = 0; dim < 3; ++dim)
-      v[dim] = Origin[dim] + x * DirectionX[dim] * Spacing[0] +
-               y * DirectionY[dim] * Spacing[1];
+  void GetPixelLocation( Vector3D& v, const unsigned int x, const unsigned int y ) const 
+  {
+    for ( int dim = 0; dim<3; ++dim )
+      v[dim] = Origin[dim] + x * DirectionX[dim] * Spacing[0] + y * DirectionY[dim] * Spacing[1];
   }
 
   /** Project 3D coordinate onto plane.
    *\param p Projected coordinate.
    *\param q Original coordinate.
    */
-  void Project(Vector3D &p, const Vector3D &q) const;
-
+  void Project( Vector3D& p, const Vector3D& q ) const;
+  
   /** Project 3D coordinate onto image plane pixels.
    *\param v Original coordinate.
    *\param i Index of projected pixel in x direction.
    *\param j Index of projected pixel in y direction.
    */
-  void ProjectPixel(const Vector3D &v, unsigned int &i, unsigned int &j) const;
-
- protected:
+  void ProjectPixel( const Vector3D& v, unsigned int& i, unsigned int& j ) const;
+  
+protected:
   /** Default constructor.
    * Set all plane fields to safe values.
    */
   Plane();
 
   /// Destructor.
-  virtual ~Plane(){};
+  virtual ~Plane() {};
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkPlane_h_included_
+#endif // #ifndef __cmtkPlane_h_included_

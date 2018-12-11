@@ -73,10 +73,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ap.h"
 
 #include "blas.h"
-#include "hessenberg.h"
-#include "hsschur.h"
 #include "reflections.h"
 #include "rotations.h"
+#include "hsschur.h"
+#include "hessenberg.h"
+
 
 /*************************************************************************
 Finding eigenvalues and eigenvectors of a general matrix
@@ -145,8 +146,14 @@ See also the InternalTREVC subroutine.
 
 The algorithm is based on the LAPACK 3.0 library.
 *************************************************************************/
-bool rmatrixevd(ap::real_2d_array a, int n, int vneeded, ap::real_1d_array &wr,
-                ap::real_1d_array &wi, ap::real_2d_array &vl,
-                ap::real_2d_array &vr);
+bool rmatrixevd(ap::real_2d_array a,
+     int n,
+     int vneeded,
+     ap::real_1d_array& wr,
+     ap::real_1d_array& wi,
+     ap::real_2d_array& vl,
+     ap::real_2d_array& vr);
+
+
 
 #endif

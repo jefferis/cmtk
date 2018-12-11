@@ -35,21 +35,24 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFixedSquareMatrix.h>
 #include <Base/cmtkMatrix.h>
+#include <Base/cmtkFixedSquareMatrix.h>
 
 #include "Numerics/ap.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Compute the QRDecomposition of a matrix
- */
-template <class TFloat>
-class QRDecomposition {
- public:
+ */  
+template<class TFloat>
+class QRDecomposition
+{
+public:
   /// This class.
   typedef QRDecomposition<TFloat> Self;
 
@@ -57,21 +60,20 @@ class QRDecomposition {
   typedef Matrix2D<TFloat> MatrixType;
 
   /// Constructor: compute QR decomposition of given matrix.
-  QRDecomposition(const typename Self::MatrixType &matrix);
+  QRDecomposition( const typename Self::MatrixType& matrix );
 
   /// Constructor: compute QR decomposition of given matrix.
-  template <size_t NDIM>
-  QRDecomposition(const FixedSquareMatrix<NDIM, TFloat> &matrix);
+  template<size_t NDIM> QRDecomposition( const FixedSquareMatrix<NDIM,TFloat>& matrix );
 
-  /// Get the Q factor
-  typename Self::MatrixType &GetQ();
+  /// Get the Q factor 
+  typename Self::MatrixType& GetQ();
+  
+  /// Get the R factor 
+  typename Self::MatrixType& GetR(); 
 
-  /// Get the R factor
-  typename Self::MatrixType &GetR();
-
- private:
+private:
   /// Number of rows in the input matrix
-  size_t m_Rows;
+  size_t m_Rows; 
 
   /// Number of columns in the input matrix
   size_t m_Cols;
@@ -84,15 +86,15 @@ class QRDecomposition {
 
   /// Q matrix.
   typename Self::MatrixType::SmartPtr m_Q;
-
+  
   /// R matrix.
   typename Self::MatrixType::SmartPtr m_R;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkQRDecomposition.txx"
 
-#endif  // #ifndef __cmtkQRDecomposition_h_included_
+#endif // #ifndef __cmtkQRDecomposition_h_included_

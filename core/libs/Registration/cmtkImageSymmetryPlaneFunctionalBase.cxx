@@ -32,47 +32,56 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalBase.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-ImageSymmetryPlaneFunctionalBase::ImageSymmetryPlaneFunctionalBase(
-    UniformVolume::SmartConstPtr &volume)
-    : m_Volume(volume), m_FixOffset(false) {}
+ImageSymmetryPlaneFunctionalBase::ImageSymmetryPlaneFunctionalBase
+( UniformVolume::SmartConstPtr& volume ) 
+  : m_Volume( volume ),
+    m_FixOffset( false )
+{
+}
 
-ImageSymmetryPlaneFunctionalBase::ImageSymmetryPlaneFunctionalBase(
-    UniformVolume::SmartConstPtr &volume,
-    const Types::DataItemRange &valueRange)
-    : m_Volume(Self::ApplyThresholds(*volume, valueRange)),
-      m_FixOffset(false) {}
+ImageSymmetryPlaneFunctionalBase::ImageSymmetryPlaneFunctionalBase
+( UniformVolume::SmartConstPtr& volume, 
+  const Types::DataItemRange& valueRange )
+  : m_Volume( Self::ApplyThresholds( *volume, valueRange ) ),
+    m_FixOffset( false )
+{
+}
 
-Types::Coordinate ImageSymmetryPlaneFunctionalBase::GetParamStep(
-    const size_t idx, const Types::Coordinate mmStep) const {
-  switch (idx) {
+Types::Coordinate 
+ImageSymmetryPlaneFunctionalBase::GetParamStep 
+( const size_t idx, const Types::Coordinate mmStep ) 
+  const
+{
+  switch ( idx ) 
+    {
     // plane offset is a translation
     case 0:
-      if (this->m_FixOffset)
-        return 0;
+      if ( this->m_FixOffset )
+	return 0;
       else
-        return mmStep;
+	return mmStep;
       // the other two parameters are rotations
     case 1:
     case 2:
-      return mmStep /
-             sqrt(MathUtil::Square(0.5 * m_Volume->m_Size[0]) +
-                  MathUtil::Square(0.5 * m_Volume->m_Size[1]) +
-                  MathUtil::Square(0.5 * m_Volume->m_Size[2])) *
-             90 / M_PI;
-  }
+      return mmStep / sqrt( MathUtil::Square( 0.5 * m_Volume->m_Size[0] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[1] ) + MathUtil::Square( 0.5 * m_Volume->m_Size[2] ) ) * 90/M_PI;
+    }
   return mmStep;
 }
 
-UniformVolume::SmartPtr ImageSymmetryPlaneFunctionalBase::ApplyThresholds(
-    const UniformVolume &volume, const Types::DataItemRange &valueRange) {
-  UniformVolume::SmartPtr result(volume.Clone());
-  result->GetData()->Threshold(valueRange);
+UniformVolume::SmartPtr 
+ImageSymmetryPlaneFunctionalBase::ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange )
+{
+  UniformVolume::SmartPtr result( volume.Clone() );
+  result->GetData()->Threshold( valueRange );
   return result;
 }
 
-}  // namespace cmtk
+
+} // namespace cmtk

@@ -37,7 +37,9 @@
 
 #include <Registration/cmtkImagePairAffineRegistration.h>
 
-namespace cmtk {
+namespace 
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -45,10 +47,11 @@ namespace cmtk {
 /** Class for command line-controlled affine registration.
  *\author T. Rohlfing
  */
-class ImagePairAffineRegistrationCommandLine :
-    /// Inherit generic affine registration.
-    public ImagePairAffineRegistration {
- public:
+class ImagePairAffineRegistrationCommandLine : 
+  /// Inherit generic affine registration.
+  public ImagePairAffineRegistration 
+{
+public:
   /// This class.
   typedef ImagePairAffineRegistrationCommandLine Self;
 
@@ -68,13 +71,13 @@ class ImagePairAffineRegistrationCommandLine :
    * cases, an information text describing the known options will have been
    * written to the standard error stream before throwing the exception.
    */
-  ImagePairAffineRegistrationCommandLine(const int argc, const char *argv[]);
+  ImagePairAffineRegistrationCommandLine ( const int argc, const char *argv [] );
 
   /** Perform registration.
    */
-  virtual CallbackResult Register();
+  virtual CallbackResult Register ();
 
- protected:
+protected:
   /** Initialize registration.
    * So far, this function has no effect other than calling the equivalent
    * inherited function.
@@ -83,32 +86,28 @@ class ImagePairAffineRegistrationCommandLine :
 
   /** Output registration result.
    * This function write the transformation that was found to a studylist
-   * archive with the name provided by command line arguments. The result is
+   * archive with the name provided by command line arguments. The result is 
    * also printed to stderr in parameter list form.
    *\param v The vector of resulting transformation parameters.
-   *\param irq The interrupt status - this allows the output function to
-   *determine whether computation finished or was interrupted.
+   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult(const CoordinateVector *v,
-                            const CallbackResult irq = CALLBACK_OK);
+  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
    * written.
    */
-  virtual void EnterResolution(CoordinateVector::SmartPtr &,
-                               Functional::SmartPtr &, const int, const int);
+  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
- private:
+private:
   /** Path of the actual input transformation, if any.
-   * If two input transformations are specified, i.e., one as the input
-   * studylist and one via the "--initial" command line switch, then this
-   * variable holds the path of the transformation that was actually used (the
-   * one specified with "--initial"). This is used when the optional
+   * If two input transformations are specified, i.e., one as the input studylist and one via
+   * the "--initial" command line switch, then this variable holds the path of the transformation
+   * that was actually used (the one specified with "--initial"). This is used when the optional
    * image/transformation database is updated.
    */
   std::string m_InitialXformPath;
-
+  
   /// Path for reformatted floating image.
   std::string m_ReformattedImagePath;
 
@@ -118,13 +117,13 @@ class ImagePairAffineRegistrationCommandLine :
   std::string Studylist;
 
   /** Name of the output matrix file.
-   * This is defined by the "--out-matrix" command line argument.
-   */
+    * This is defined by the "--out-matrix" command line argument.
+    */
   std::string OutMatrixName;
 
   /** Name of the output parameter file.
-   * This is defined by the "--out-params" command line argument.
-   */
+    * This is defined by the "--out-params" command line argument.
+    */
   std::string OutParametersName;
 
   /// Name of output transformation file in ITK format.
@@ -154,18 +153,18 @@ class ImagePairAffineRegistrationCommandLine :
   std::string m_ProtocolFileName;
 
   /// Output result as matrix (text) file.
-  void OutputResultMatrix(const std::string &matrixName) const;
+  void OutputResultMatrix( const std::string& matrixName ) const;
 
   /// Output result (and statistics) as studylist archive.
-  void OutputResultParameters(const std::string &paramsName,
-                              const CoordinateVector &v) const;
+  void OutputResultParameters( const std::string& paramsName, const CoordinateVector& v ) const;
 
   /// Output result (and statistics) as studylist archive.
-  void OutputResultList(const std::string &studyList) const;
+  void OutputResultList( const std::string& studyList ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef _COMMANDLINEVOXELREGISTRATION_H_
+#endif // #ifndef _COMMANDLINEVOXELREGISTRATION_H_
+

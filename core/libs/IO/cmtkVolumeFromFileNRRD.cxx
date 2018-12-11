@@ -38,319 +38,320 @@
 
 #include <IO/cmtkVolumeIO.h>
 
-#include <Base/cmtkAnatomicalOrientation.h>
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
 #include <System/cmtkConsole.h>
 
 #ifdef CMTK_BUILD_NRRD_TEEM
-#include <teem/nrrd.h>
+#  include <teem/nrrd.h>
 #else
-#include <NrrdIO.h>
+#  include <NrrdIO.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-const UniformVolume::SmartPtr VolumeFromFile::ReadNRRD(
-    const std::string &pathHdr) {
-  UniformVolume::SmartPtr volume(NULL);
-  try {
+const UniformVolume::SmartPtr
+VolumeFromFile::ReadNRRD( const std::string& pathHdr )
+{
+  UniformVolume::SmartPtr volume( NULL );
+  try 
+    {
     Nrrd *nrrd = nrrdNew();
-    if (nrrdLoad(nrrd, pathHdr.c_str(), NULL)) throw biffGetDone(NRRD);
+    if ( nrrdLoad( nrrd, pathHdr.c_str(), NULL ) )
+      throw biffGetDone(NRRD);
 
-    if (nrrd->dim > 3) {
-      StdErr << "ERROR: for now, nrrd input can only handle data with "
-                "dimension 3 or less.\n";
-      return UniformVolume::SmartPtr(NULL);
-    }
-
-    const int dims[3] = {
-        static_cast<int>((nrrd->dim > 0) ? nrrd->axis[0].size : 1),
-        static_cast<int>((nrrd->dim > 1) ? nrrd->axis[1].size : 1),
-        static_cast<int>((nrrd->dim > 2) ? nrrd->axis[2].size : 1)};
-
-    // for each axis, if spacing is NaN, use direction vector to compute
-    // spacing.
-    double spacing[3] = {1, 1, 1};
-    for (size_t ax = 0; ax < nrrd->dim; ++ax) {
-      switch (nrrdSpacingCalculate(nrrd, ax, spacing + ax,
-                                   nrrd->axis[ax].spaceDirection)) {
-        case nrrdSpacingStatusScalarNoSpace:
-          break;
-        case nrrdSpacingStatusDirection:
-          break;
-        case nrrdSpacingStatusScalarWithSpace:
-          StdErr << "WARNING: nrrdSpacingCalculate returned "
-                    "nrrdSpacingStatusScalarWithSpace\n";
-          spacing[ax] = nrrd->axis[ax].spacing;
-          break;
-        case nrrdSpacingStatusNone:
-        default:
-          StdErr << "WARNING: no pixel spacings in Nrrd for axis " << ax
-                 << "; setting to 1.0\n";
-          spacing[ax] = 1.0;
-          break;
+    if ( nrrd->dim > 3 )
+      {
+      StdErr << "ERROR: for now, nrrd input can only handle data with dimension 3 or less.\n";
+      return UniformVolume::SmartPtr( NULL );
       }
-    }
-    volume = UniformVolume::SmartPtr(
-        new UniformVolume(DataGrid::IndexType::FromPointer(dims), spacing[0],
-                          spacing[1], spacing[2]));
+
+    const int dims[3] = 
+      { 
+	static_cast<int>( (nrrd->dim > 0) ? nrrd->axis[0].size : 1 ),
+	static_cast<int>( (nrrd->dim > 1) ? nrrd->axis[1].size : 1 ),
+	static_cast<int>( (nrrd->dim > 2) ? nrrd->axis[2].size : 1 ) 
+      };
+
+    // for each axis, if spacing is NaN, use direction vector to compute spacing.
+    double spacing[3] = { 1, 1, 1 };
+    for ( size_t ax = 0; ax < nrrd->dim; ++ax )
+      {
+      switch ( nrrdSpacingCalculate( nrrd, ax, spacing+ax, nrrd->axis[ax].spaceDirection ) )
+	{
+	case nrrdSpacingStatusScalarNoSpace:
+	  break;
+	case nrrdSpacingStatusDirection:
+	  break;
+	case nrrdSpacingStatusScalarWithSpace:
+	  StdErr << "WARNING: nrrdSpacingCalculate returned nrrdSpacingStatusScalarWithSpace\n";
+	  spacing[ax] = nrrd->axis[ax].spacing;
+	  break;
+	case nrrdSpacingStatusNone:
+	default:
+	  StdErr << "WARNING: no pixel spacings in Nrrd for axis " << ax << "; setting to 1.0\n";
+	  spacing[ax] = 1.0;
+	  break;
+	}
+      }
+    volume = UniformVolume::SmartPtr( new UniformVolume( DataGrid::IndexType::FromPointer( dims ), spacing[0], spacing[1], spacing[2] ) );
 
     ScalarDataType type = TYPE_NONE;
-    switch (nrrd->type) {
-      case nrrdTypeUChar:
-        type = TYPE_BYTE;
-        break;
-      case nrrdTypeChar:
-        type = TYPE_CHAR;
-        break;
-      case nrrdTypeUShort:
-        type = TYPE_USHORT;
-        break;
-      case nrrdTypeShort:
-        type = TYPE_SHORT;
-        break;
-      case nrrdTypeInt:
-        type = TYPE_INT;
-        break;
-      case nrrdTypeUInt:
-        type = TYPE_UINT;
-        break;
-      case nrrdTypeFloat:
-        type = TYPE_FLOAT;
-        break;
-      case nrrdTypeDouble:
-        type = TYPE_DOUBLE;
-        break;
-      default:
-        break;
-    }
+    switch ( nrrd->type )
+      {
+      case nrrdTypeUChar:  type = TYPE_BYTE; break;
+      case nrrdTypeChar:   type = TYPE_CHAR; break;
+      case nrrdTypeUShort: type = TYPE_USHORT; break;
+      case nrrdTypeShort:  type = TYPE_SHORT; break;
+      case nrrdTypeInt:    type = TYPE_INT; break;
+      case nrrdTypeUInt:   type = TYPE_UINT; break;
+      case nrrdTypeFloat:  type = TYPE_FLOAT; break;
+      case nrrdTypeDouble: type = TYPE_DOUBLE; break;
+      default: break;
+      }
 
-    if (type != TYPE_NONE) {
-      TypedArray::SmartPtr data(
-          TypedArray::Create(type, nrrd->data, volume->GetNumberOfPixels()));
-      volume->SetData(data);
-    } else {
+    if ( type != TYPE_NONE )
+      {
+      TypedArray::SmartPtr data( TypedArray::Create( type, nrrd->data, volume->GetNumberOfPixels() ) );
+      volume->SetData( data );
+      }
+    else
+      {
       StdErr << "ERROR: unsupported data type in nrrd file.\n";
       return volume;
-    }
+      }
 
-    const char *orientationSpaceAnatomical = NULL;
-    switch (nrrd->space) {
+    const char* orientationSpaceAnatomical = NULL;
+    switch ( nrrd->space )
+      {
       case nrrdSpaceRightAnteriorSuperior:
       case nrrdSpaceRightAnteriorSuperiorTime:
-        orientationSpaceAnatomical = "RAS";
-        volume->SetMetaInfo(META_SPACE, orientationSpaceAnatomical);
-        break;
+	orientationSpaceAnatomical = "RAS";
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
+	break;
       case nrrdSpaceLeftAnteriorSuperior:
       case nrrdSpaceLeftAnteriorSuperiorTime:
-        orientationSpaceAnatomical = "LAS";
-        volume->SetMetaInfo(META_SPACE, orientationSpaceAnatomical);
-        break;
+	orientationSpaceAnatomical = "LAS";
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
+	break;
       case nrrdSpaceLeftPosteriorSuperior:
       case nrrdSpaceLeftPosteriorSuperiorTime:
-        orientationSpaceAnatomical = "LPS";
-        volume->SetMetaInfo(META_SPACE, orientationSpaceAnatomical);
-        break;
+	orientationSpaceAnatomical = "LPS";
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
+	break;
       case nrrdSpace3DRightHanded:
-        volume->SetMetaInfo(META_SPACE, "3DRH");
-        break;
+	volume->SetMetaInfo( META_SPACE, "3DRH" );
+	break;
       case nrrdSpace3DLeftHanded:
-        volume->SetMetaInfo(META_SPACE, "3DLH");
-        break;
+	volume->SetMetaInfo( META_SPACE, "3DLH" );
+	break;
       case nrrdSpace3DRightHandedTime:
-        volume->SetMetaInfo(META_SPACE, "3DRHT");
-        break;
+	volume->SetMetaInfo( META_SPACE, "3DRHT" );
+	break;
       case nrrdSpace3DLeftHandedTime:
-        volume->SetMetaInfo(META_SPACE, "3DLHT");
-        break;
+	volume->SetMetaInfo( META_SPACE, "3DLHT" );
+	break;
       default:
-        break;
-    }
+	break;
+      }
 
-    volume->SetMetaInfo(META_SPACE_ORIGINAL, volume->GetMetaInfo(META_SPACE));
-
-    const Types::Coordinate directions[3][3] = {
-        {nrrd->axis[0].spaceDirection[0] * spacing[0],
-         nrrd->axis[0].spaceDirection[1] * spacing[0],
-         nrrd->axis[0].spaceDirection[2] * spacing[0]},
-        {nrrd->axis[1].spaceDirection[0] * spacing[1],
-         nrrd->axis[1].spaceDirection[1] * spacing[1],
-         nrrd->axis[1].spaceDirection[2] * spacing[1]},
-        {nrrd->axis[2].spaceDirection[0] * spacing[2],
-         nrrd->axis[2].spaceDirection[1] * spacing[2],
-         nrrd->axis[2].spaceDirection[2] * spacing[2]}};
-
-    const Matrix3x3<Types::Coordinate> m3(directions);
-    Matrix4x4<Types::Coordinate> m4(m3);
-    for (int i = 0; i < 3; ++i)
-      m4[3][i] =
-          (MathUtil::IsFinite(nrrd->spaceOrigin[i]) ? nrrd->spaceOrigin[i] : 0);
+    volume->SetMetaInfo( META_SPACE_ORIGINAL, volume->GetMetaInfo( META_SPACE ) );
+    
+    const Types::Coordinate directions[3][3] = 
+      {
+	{ nrrd->axis[0].spaceDirection[0] * spacing[0],
+	  nrrd->axis[0].spaceDirection[1] * spacing[0],
+	  nrrd->axis[0].spaceDirection[2] * spacing[0] },
+	{ nrrd->axis[1].spaceDirection[0] * spacing[1], 
+	  nrrd->axis[1].spaceDirection[1] * spacing[1],
+	  nrrd->axis[1].spaceDirection[2] * spacing[1] },
+	{ nrrd->axis[2].spaceDirection[0] * spacing[2], 
+	  nrrd->axis[2].spaceDirection[1] * spacing[2], 
+	  nrrd->axis[2].spaceDirection[2] * spacing[2] }
+      };
+    
+    const Matrix3x3<Types::Coordinate> m3( directions );
+    Matrix4x4<Types::Coordinate> m4( m3 );
+    for ( int i = 0; i < 3; ++i )
+      m4[3][i] = ( MathUtil::IsFinite( nrrd->spaceOrigin[i] ) ? nrrd->spaceOrigin[i] : 0 );
     volume->m_IndexToPhysicalMatrix = m4;
-
-    if (orientationSpaceAnatomical) {
+    
+    if ( orientationSpaceAnatomical )
+      {        
       char orientationImage[4];
-      AnatomicalOrientation::GetOrientationFromDirections(
-          orientationImage, m4, orientationSpaceAnatomical);
-      volume->SetMetaInfo(META_IMAGE_ORIENTATION, orientationImage);
-      volume->SetMetaInfo(META_IMAGE_ORIENTATION_ORIGINAL, orientationImage);
-      volume->ChangeCoordinateSpace(
-          AnatomicalOrientation::ORIENTATION_STANDARD);
-    } else {
+      AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, orientationSpaceAnatomical );
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
+      volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
+      }
+    else
+      {
+      }
+
+    if ( nrrd->spaceUnits[0] )
+      volume->SetMetaInfo( META_SPACE_UNITS_STRING, nrrd->spaceUnits[0] );
+
+    char* desc = nrrdKeyValueGet( nrrd, "description" );
+    if ( desc )
+      {
+      volume->SetMetaInfo( META_IMAGE_DESCRIPTION, desc );
+      free( desc );
+      }
+
+    nrrdNix( nrrd );
     }
-
-    if (nrrd->spaceUnits[0])
-      volume->SetMetaInfo(META_SPACE_UNITS_STRING, nrrd->spaceUnits[0]);
-
-    char *desc = nrrdKeyValueGet(nrrd, "description");
-    if (desc) {
-      volume->SetMetaInfo(META_IMAGE_DESCRIPTION, desc);
-      free(desc);
-    }
-
-    nrrdNix(nrrd);
-  } catch (char *err) {
+  catch ( char* err )
+    {
     StdErr << "ERROR: nrrd library returned error '" << err << "'\n";
-    free(err);
-  }
+    free( err );
+    }
 
   return volume;
 }
 
-void VolumeFromFile::WriteNRRD(const std::string &pathHdr,
-                               const UniformVolume &volume) {
-  UniformVolume::SmartPtr writeVolume(volume.Clone());
-  if (writeVolume->MetaKeyExists(META_SPACE_ORIGINAL))
-    writeVolume->ChangeCoordinateSpace(
-        writeVolume->GetMetaInfo(META_SPACE_ORIGINAL));
 
-  void *val = const_cast<void *>(writeVolume->GetData()->GetDataPtr());
+void
+VolumeFromFile::WriteNRRD
+( const std::string& pathHdr, const UniformVolume& volume )
+{
+  UniformVolume::SmartPtr writeVolume( volume.Clone() );
+  if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
+    writeVolume->ChangeCoordinateSpace( writeVolume->GetMetaInfo( META_SPACE_ORIGINAL ) );
+  
+  void* val = const_cast<void*>( writeVolume->GetData()->GetDataPtr() );
   int type = nrrdTypeUnknown;
-  switch (writeVolume->GetData()->GetType()) {
-    case TYPE_BYTE:
-      type = nrrdTypeUChar;
-      break;
-    case TYPE_CHAR:
-      type = nrrdTypeChar;
-      break;
-    case TYPE_USHORT:
-      type = nrrdTypeUShort;
-      break;
-    case TYPE_SHORT:
-      type = nrrdTypeShort;
-      break;
-    case TYPE_INT:
-      type = nrrdTypeInt;
-      break;
-    case TYPE_UINT:
-      type = nrrdTypeUInt;
-      break;
-    case TYPE_FLOAT:
-      type = nrrdTypeFloat;
-      break;
-    case TYPE_DOUBLE:
-      type = nrrdTypeDouble;
-      break;
-    default:
-      break;
-  }
-
+  switch ( writeVolume->GetData()->GetType() )
+    {
+    case TYPE_BYTE:   type = nrrdTypeUChar; break;
+    case TYPE_CHAR:   type = nrrdTypeChar; break;
+    case TYPE_USHORT: type = nrrdTypeUShort; break;
+    case TYPE_SHORT:  type = nrrdTypeShort; break;
+    case TYPE_INT:    type = nrrdTypeInt; break;
+    case TYPE_UINT:   type = nrrdTypeUInt; break;
+    case TYPE_FLOAT:  type = nrrdTypeFloat; break;
+    case TYPE_DOUBLE: type = nrrdTypeDouble; break;
+    default: break;
+    }
+  
   Nrrd *nval = nrrdNew();
   NrrdIoState *nios = nrrdIoStateNew();
 
-  if (VolumeIO::GetWriteCompressed() && nrrdEncodingGzip->available()) {
-    nrrdIoStateEncodingSet(nios, nrrdEncodingGzip);
-    nrrdIoStateSet(nios, nrrdIoStateZlibLevel, 9);
-  } else {
-    StdErr
-        << "WARNING: Nrrd library does not support Gzip compression encoding.\n"
-        << " Please add -DTEEM_ZLIB to compiler options when building Nrrd "
-           "library.\n";
-  }
-
-  try {
-    if (nrrdWrap_va(nval, val, type, (size_t)3, (size_t)writeVolume->m_Dims[0],
-                    (size_t)writeVolume->m_Dims[1],
-                    (size_t)writeVolume->m_Dims[2])) {
-      throw(biffGetDone(NRRD));
+  if ( VolumeIO::GetWriteCompressed() && nrrdEncodingGzip->available() )
+    {
+    nrrdIoStateEncodingSet( nios, nrrdEncodingGzip );
+    nrrdIoStateSet( nios, nrrdIoStateZlibLevel, 9 );
     }
-
-    nrrdSpaceDimensionSet(nval, 3);
-
-    if (writeVolume->MetaKeyExists(META_SPACE_UNITS_STRING)) {
-      nval->spaceUnits[0] =
-          strdup(writeVolume->GetMetaInfo(META_SPACE_UNITS_STRING).c_str());
-      nval->spaceUnits[1] =
-          strdup(writeVolume->GetMetaInfo(META_SPACE_UNITS_STRING).c_str());
-      nval->spaceUnits[2] =
-          strdup(writeVolume->GetMetaInfo(META_SPACE_UNITS_STRING).c_str());
+  else
+    {
+    StdErr << "WARNING: Nrrd library does not support Gzip compression encoding.\n"
+	   << " Please add -DTEEM_ZLIB to compiler options when building Nrrd library.\n";
     }
+  
+  try
+    {
+    if ( nrrdWrap_va( nval, val, type, (size_t)3, (size_t)writeVolume->m_Dims[0], (size_t)writeVolume->m_Dims[1], (size_t)writeVolume->m_Dims[2] ) )
+      {
+      throw( biffGetDone(NRRD) );
+      }
 
-    if (writeVolume->MetaKeyExists(META_IMAGE_DESCRIPTION)) {
-      nrrdKeyValueAdd(nval, "description",
-                      volume.GetMetaInfo(META_IMAGE_DESCRIPTION).c_str());
-    }
+    nrrdSpaceDimensionSet( nval, 3 );
 
-    int kind[NRRD_DIM_MAX] = {nrrdKindDomain, nrrdKindDomain, nrrdKindDomain};
-    nrrdAxisInfoSet_nva(nval, nrrdAxisInfoKind, kind);
+    if ( writeVolume->MetaKeyExists(META_SPACE_UNITS_STRING) )
+      {
+      nval->spaceUnits[0] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
+      nval->spaceUnits[1] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
+      nval->spaceUnits[2] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
+      }
 
-    const std::string space = writeVolume->GetMetaInfo(META_SPACE);
+    if ( writeVolume->MetaKeyExists( META_IMAGE_DESCRIPTION ) )
+      {
+      nrrdKeyValueAdd( nval, "description", volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str() );
+      }
+    
+    int kind[NRRD_DIM_MAX] = { nrrdKindDomain, nrrdKindDomain, nrrdKindDomain };
+    nrrdAxisInfoSet_nva( nval, nrrdAxisInfoKind, kind );
 
+    const std::string space = writeVolume->GetMetaInfo( META_SPACE );
+    
     // if the volume has a direction table, write it to the Nrrd
-    if (space == "RAS") {
+    if ( space == "RAS" )
+      {
       nval->space = nrrdSpaceRightAnteriorSuperior;
-    } else if (space == "LAS") {
+      }
+    else if ( space == "LAS" )
+      {
       nval->space = nrrdSpaceLeftAnteriorSuperior;
-    } else if (space == "LPS") {
+      }
+    else if ( space == "LPS" )
+      {
       nval->space = nrrdSpaceLeftPosteriorSuperior;
-    } else if (space == "3DRH") {
+      }
+    else if ( space == "3DRH" )
+      {
       nval->space = nrrdSpace3DRightHanded;
-    } else if (space == "3DLH") {
+      }
+    else if ( space == "3DLH" )
+      {
       nval->space = nrrdSpace3DLeftHanded;
-    } else if (space == "3DRHT") {
+      }
+    else if ( space == "3DRHT" )
+      {
       nval->space = nrrdSpace3DRightHandedTime;
-    } else if (space == "3DLHT") {
+      }
+    else if ( space == "3DLHT" )
+      {
       nval->space = nrrdSpace3DLeftHandedTime;
-    } else {
-      if (space.length() == 3) {
-        writeVolume->ChangeCoordinateSpace("RAS");
-        nval->space = nrrdSpaceRightAnteriorSuperior;
+      }
+    else
+      {
+      if ( space.length() == 3 )
+	{
+	writeVolume->ChangeCoordinateSpace( "RAS" );
+	nval->space = nrrdSpaceRightAnteriorSuperior;
+	}
+      }
+    
+    const AffineXform::MatrixType& matrix = writeVolume->m_IndexToPhysicalMatrix;
+    double spaceDir[NRRD_DIM_MAX][NRRD_SPACE_DIM_MAX];
+    for ( int i = 0; i < 3; ++i ) 
+      {
+      for ( int j = 0; j < 3; ++j )
+	spaceDir[i][j] = matrix[i][j];
+      }
+    nrrdAxisInfoSet_nva( nval, nrrdAxisInfoSpaceDirection, spaceDir );
+    
+    double origin[NRRD_DIM_MAX] = { matrix[3][0], matrix[3][1], matrix[3][2] };
+    if ( nrrdSpaceOriginSet( nval, origin ) )
+      {
+      throw( biffGetDone(NRRD) );
+      }	
+  
+    nrrdAxisInfoSet_va( nval, nrrdAxisInfoLabel, "x", "y", "z" );
+
+    if ( nrrdSave( pathHdr.c_str(), nval, nios ) )
+      {
+      throw( biffGetDone(NRRD) );
       }
     }
-
-    const AffineXform::MatrixType &matrix =
-        writeVolume->m_IndexToPhysicalMatrix;
-    double spaceDir[NRRD_DIM_MAX][NRRD_SPACE_DIM_MAX];
-    for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) spaceDir[i][j] = matrix[i][j];
-    }
-    nrrdAxisInfoSet_nva(nval, nrrdAxisInfoSpaceDirection, spaceDir);
-
-    double origin[NRRD_DIM_MAX] = {matrix[3][0], matrix[3][1], matrix[3][2]};
-    if (nrrdSpaceOriginSet(nval, origin)) {
-      throw(biffGetDone(NRRD));
-    }
-
-    nrrdAxisInfoSet_va(nval, nrrdAxisInfoLabel, "x", "y", "z");
-
-    if (nrrdSave(pathHdr.c_str(), nval, nios)) {
-      throw(biffGetDone(NRRD));
-    }
-  } catch (char *err) {
+  catch ( char* err )
+    {
     StdErr << "ERROR: NrrdIO library returned error '" << err << "'\n";
-    free(err);
-  }
-
-  nrrdIoStateNix(nios);
-  nrrdNix(nval);
+    free( err );
+    }
+  
+  nrrdIoStateNix( nios );
+  nrrdNix(nval);    
 }
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef CMTK_BUILD_NRRD
+#endif // #ifdef CMTK_BUILD_NRRD

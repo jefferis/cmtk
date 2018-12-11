@@ -37,24 +37,27 @@
 
 #include <Pipeline/cmtkMultiFilter.h>
 
-#include <Base/cmtkMacros.h>
 #include <Pipeline/cmtkColormap.h>
 #include <Pipeline/cmtkImage.h>
 #include <Pipeline/cmtkImageRGB.h>
+#include <Base/cmtkMacros.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
 /** Filter to convert image to RGB image using a color lookup table.
  */
-class ImageToImageRGB :
-    /// This is a filter with multiple input.
-    public MultiFilter<ImageRGB> {
- public:
+class ImageToImageRGB : 
+  /// This is a filter with multiple input.
+  public MultiFilter<ImageRGB> 
+{
+public:
   /// Create new object.
-  static ImageToImageRGB *New() { return new ImageToImageRGB; }
+  static ImageToImageRGB* New() { return new ImageToImageRGB; }
 
   /// Enumeration of Alpha modes.
   typedef enum {
@@ -63,27 +66,27 @@ class ImageToImageRGB :
     /// Use constant alpha value (opaque).
     AlphaModeConst
   } igsAlphaMode;
-
+  
   /** This flag detemines if and how an alpha (transparancy) ramp is used.
    * If this flag is said, the attached Colormap object will generate
    * transparency information in addition to the usual RGB data. As a result,
    * and RGBA image will be generated instead of a plain RGB image.
    */
-  igsClassParameter(igsAlphaMode, AlphaMode);
-
+  igsClassParameter(igsAlphaMode,AlphaMode);
+  
   /// Use checkerboard pattern to fill PaddingData areas.
-  igsClassParameter(bool, CheckerboxPadding);
+  igsClassParameter(bool,CheckerboxPadding);
 
   /// Convert image to RGB image.
   virtual void Execute();
 
   /// Set an input image.
-  void SetInput(Image *const image);
+  void SetInput( Image *const image );
 
   /// Set a colormap.
-  void SetColormap(Colormap *const colormap);
+  void SetColormap( Colormap *const colormap );
 
- protected:
+protected:
   /// Default constructor.
   ImageToImageRGB();
 
@@ -92,7 +95,7 @@ class ImageToImageRGB :
    */
   virtual ~ImageToImageRGB();
 
- private:
+private:
   /// The input image.
   Image *m_Image;
 
@@ -103,13 +106,11 @@ class ImageToImageRGB :
   typedef MultiFilter<ImageRGB> Superclass;
 
   /// Overwrite padded regions with checkerboard pattern.
-  template <class T>
-  void MarkPaddingData(const unsigned int dimsx, const unsigned int dimsy,
-                       T *const rgba, const TypedArray *data) const;
+  template<class T> void MarkPaddingData( const unsigned int dimsx, const unsigned int dimsy, T *const rgba, const TypedArray* data ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageToImageRGB_h_included_
+#endif // #ifndef __cmtkImageToImageRGB_h_included_

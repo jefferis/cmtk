@@ -35,32 +35,34 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: revert binary mask.
 class ImageOperationRevert
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor.
   ImageOperationRevert() {}
-
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
-
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create a new lower reverting operation.
-  static void New() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationRevert()));
+  static void New()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationRevert() ) );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationRevert_h_included_
+#endif // #ifndef __cmtkImageOperationRevert_h_included_

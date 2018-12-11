@@ -34,75 +34,88 @@
 
 #include <cmtkconfig.h>
 
-#include <Pipeline/cmtkPipelineObject.h>
 #include <Pipeline/cmtkSource.h>
+#include <Pipeline/cmtkPipelineObject.h>
 
 #include <list>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
 
 /** Filter with several inputs.
  * This class combines the data source functions inherited from Source
- * with update control for an arbitrary number of input port. It therefore
+ * with update control for an arbitrary number of input port. It therefore 
  * serves as a template for all classes transforming more than one input into
  * an output object. For just one input, Filter is probably more efficient
  * as it gets along without the STL "list" class.
  *\see Source
  *\see Filter
  */
-template <class O>
-class MultiFilter : public Source<O> {
- public:
-  template <class I>
-  void RegisterInput(I **input) {
-    if (input) {
-      this->m_InputList.push_back((PipelineObject **)input);
-    }
-  }
-
-  template <class I>
-  void UnregisterInput(const I **input) {
-    if (input) {
-      InputListType::iterator it = this->m_InputList.begin();
-      while (it != this->m_InputList.end()) {
-        if (*it == input) {
-          this->m_InputList.erase(it);
-        }
-        ++it;
+template<class O> 
+class MultiFilter : 
+    public Source<O> 
+{
+public:
+  template<class I> void RegisterInput( I** input ) 
+  {
+    if ( input ) 
+      {
+      this->m_InputList.push_back( (PipelineObject**) input );
       }
-    }
   }
-
+  
+  template<class I> void UnregisterInput( const I** input ) 
+  {
+    if ( input ) 
+      {
+      InputListType::iterator it = this->m_InputList.begin();
+      while ( it != this->m_InputList.end() ) 
+	{
+	if ( *it == input ) 
+	  {
+	  this->m_InputList.erase( it );
+	  }
+	++it;
+	}
+      }
+  }
+  
   /** Update this object.
    * Check for changes in all input objects first, then call inherited Update()
    * function from PipelineObject.
    *\see PipelineObject#Update
    */
-  virtual long Update() {
+  virtual long Update () 
+  {
     InputListType::iterator it = this->m_InputList.begin();
-    while (it != this->m_InputList.end()) {
-      if (**it) this->CheckInputForUpdate(**it);
+    while ( it != this->m_InputList.end() ) 
+      {
+      if ( **it ) 
+	this->CheckInputForUpdate( **it );
       ++it;
-    }
+      }
     return this->PipelineObject::Update();
   }
 
- protected:
+protected:
   /// Default constructor.
   MultiFilter() {}
 
   /** Destructor.
    * Empty list of input objects.
    */
-  virtual ~MultiFilter() {
-    while (!this->m_InputList.empty()) this->m_InputList.pop_back();
+  virtual ~MultiFilter() 
+  { 
+    while ( ! this->m_InputList.empty() )
+      this->m_InputList.pop_back();
   }
-
+  
   /// Type for the STL list holding pointers to PipelineObjects.
-  typedef std::list<PipelineObject **> InputListType;
+  typedef std::list<PipelineObject**> InputListType;
 
   /// The actual input object.
   InputListType m_InputList;
@@ -110,6 +123,6 @@ class MultiFilter : public Source<O> {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkMultiFilter_h_included_
+#endif // #ifndef __cmtkMultiFilter_h_included_

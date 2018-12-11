@@ -32,46 +32,49 @@
 
 #include "cmtkImagePairRegistration.h"
 
-#include <Base/cmtkAffineXform.h>
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkXform.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkFunctional.h>
 
-#include <System/cmtkProgress.h>
 #include <System/cmtkTimers.h>
+#include <System/cmtkProgress.h>
 
 #ifdef HAVE_SYS_UTSNAME_H
-#include <sys/utsname.h>
+#  include <sys/utsname.h>
 #endif
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-ImagePairRegistration::ImagePairRegistration()
-    : m_Metric(0),
-      m_FloatingImageInterpolation(Interpolators::DEFAULT),
-      m_AutoMultiLevels(0),
-      m_MaxStepSize(-1),
-      m_MinStepSize(-1),
-      m_DeltaFThreshold(0.0),
-      m_Sampling(-1),
-      m_ForceOutsideFlag(false),
-      m_ForceOutsideValue(0.0),
-      m_PreprocessorRef("Reference", "ref"),
-      m_PreprocessorFlt("Floating", "flt"),
-      m_InitialTransformation(NULL),
-      m_InitialXformIsInverse(false),
-      m_Xform(NULL),
-      m_Optimizer(NULL),
-      m_TimeStartRegistration(0.0),
-      m_TimeStartLevel(0.0),
-      m_WalltimeStartRegistration(0.0),
-      m_WalltimeStartLevel(0.0),
-      m_ThreadTimeStartRegistration(0.0),
-      m_ThreadTimeStartLevel(0.0) {
-  this->m_Callback = RegistrationCallback::SmartPtr(new RegistrationCallback());
+ImagePairRegistration::ImagePairRegistration () 
+  : m_Metric( 0 ),
+    m_FloatingImageInterpolation( Interpolators::DEFAULT ),
+    m_AutoMultiLevels( 0 ),
+    m_MaxStepSize( -1 ),
+    m_MinStepSize( -1 ),
+    m_DeltaFThreshold( 0.0 ),
+    m_Sampling( -1 ),
+    m_ForceOutsideFlag( false ),
+    m_ForceOutsideValue( 0.0 ),
+    m_PreprocessorRef( "Reference", "ref" ),
+    m_PreprocessorFlt( "Floating", "flt" ),
+    m_InitialTransformation( NULL ),
+    m_InitialXformIsInverse( false ),
+    m_Xform( NULL ),
+    m_Optimizer( NULL ),
+    m_TimeStartRegistration ( 0.0 ),
+    m_TimeStartLevel( 0.0 ),
+    m_WalltimeStartRegistration( 0.0 ),
+    m_WalltimeStartLevel( 0.0 ),
+    m_ThreadTimeStartRegistration( 0.0 ),
+    m_ThreadTimeStartLevel( 0.0 )
+{ 
+  this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
 
   this->m_Sampling = -1;
   this->m_CoarsestResolution = -1;
@@ -82,119 +85,122 @@ ImagePairRegistration::ImagePairRegistration()
   this->m_OptimizerStepFactor = 0.5;
 }
 
-CallbackResult ImagePairRegistration::InitRegistration() {
-  if (this->m_AutoMultiLevels > 0) {
-    const Types::Coordinate minDelta = std::min(
-        this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta());
-    const Types::Coordinate maxDelta = std::max(
-        this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta());
+CallbackResult
+ImagePairRegistration::InitRegistration ()
+{
+  if ( this->m_AutoMultiLevels > 0 )
+    {
+    const Types::Coordinate minDelta = std::min( this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta() );
+    const Types::Coordinate maxDelta = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
 
     this->m_MinStepSize = 0.1 * minDelta;
     this->m_Sampling = maxDelta;
-    this->m_MaxStepSize = maxDelta * (1 << (this->m_AutoMultiLevels - 1));
-  }
-
-  if (this->m_Sampling <= 0)
-    this->m_Sampling = std::max(this->m_Volume_1->GetMaxDelta(),
-                                this->m_Volume_2->GetMaxDelta());
-
-  if (this->m_MaxStepSize <= 0) this->m_MaxStepSize = 8.0 * this->m_Sampling;
-
-  if (this->m_MinStepSize <= 0) this->m_MinStepSize = this->m_Sampling / 128;
-
-  this->m_TimeStartLevel = this->m_TimeStartRegistration =
-      cmtk::Timers::GetTimeProcess();
-  this->m_WalltimeStartLevel = this->m_WalltimeStartRegistration =
-      cmtk::Timers::GetWalltime();
-  this->m_ThreadTimeStartLevel = this->m_ThreadTimeStartRegistration =
-      cmtk::Timers::GetTimeThread();
+    this->m_MaxStepSize = maxDelta * (1<<(this->m_AutoMultiLevels-1));
+    }
+  
+  if ( this->m_Sampling <= 0 )
+    this->m_Sampling = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
+  
+  if ( this->m_MaxStepSize <= 0 )
+    this->m_MaxStepSize = 8.0 * this->m_Sampling;
+  
+  if ( this->m_MinStepSize <= 0 )
+    this->m_MinStepSize = this->m_Sampling / 128;
+  
+  this->m_TimeStartLevel = this->m_TimeStartRegistration = cmtk::Timers::GetTimeProcess();
+  this->m_WalltimeStartLevel = this->m_WalltimeStartRegistration = cmtk::Timers::GetWalltime();
+  this->m_ThreadTimeStartLevel = this->m_ThreadTimeStartRegistration = cmtk::Timers::GetTimeThread();
 
   return CALLBACK_OK;
 }
 
-CallbackResult ImagePairRegistration::Register() {
+CallbackResult
+ImagePairRegistration::Register ()
+{
   CallbackResult irq = this->InitRegistration();
-  if (irq != CALLBACK_OK) {
+  if ( irq != CALLBACK_OK ) 
+    {
     this->DoneRegistration();
     return irq;
-  }
+    }
 
-  this->m_Optimizer->SetDeltaFThreshold(this->m_DeltaFThreshold);
-
+  this->m_Optimizer->SetDeltaFThreshold( this->m_DeltaFThreshold );
+  
   Types::Coordinate currentExploration = this->m_MaxStepSize;
-  CoordinateVector::SmartPtr v(new CoordinateVector());
+  CoordinateVector::SmartPtr v( new CoordinateVector() );
   const size_t NumResolutionLevels = this->m_ParameterStack.size();
-
-  Progress::Begin(0, NumResolutionLevels, 1, "Multi-level Registration");
+  
+  Progress::Begin( 0, NumResolutionLevels, 1, "Multi-level Registration" );
 
   unsigned int index = 1;
-  while (!this->m_ParameterStack.empty() && (irq == CALLBACK_OK)) {
-    Functional::SmartPtr nextFunctional(
-        this->MakeFunctional(index - 1, this->m_ParameterStack.top()));
+  while ( ! this->m_ParameterStack.empty() && ( irq == CALLBACK_OK ) ) 
+    {
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( index-1, this->m_ParameterStack.top() ) );
     this->m_ParameterStack.pop();
-
+    
     // Reference functional as we still need if after the optimization when
     // calling DoneResolution().
     //    nextFunctional->Reference();
-
-    this->m_Optimizer->SetFunctional(nextFunctional);
+    
+    this->m_Optimizer->SetFunctional( nextFunctional );
 
     int doneResolution = 0;
-    while (!doneResolution && (irq == CALLBACK_OK)) {
-      this->EnterResolution(v, nextFunctional, index, NumResolutionLevels);
-
-      if (irq == CALLBACK_OK) {
-        Types::Coordinate effectiveAccuracy =
-            (index == NumResolutionLevels)
-                ? std::max<Types::Coordinate>(this->m_MinStepSize,
-                                              currentExploration / 1024)
-                : this->m_MinStepSize;
-
-        irq = this->m_Optimizer->Optimize(*v, currentExploration,
-                                          effectiveAccuracy);
-        this->m_Xform->SetParamVector(*v);
+    while ( ! doneResolution && ( irq == CALLBACK_OK )  ) 
+      {
+      this->EnterResolution( v, nextFunctional, index, NumResolutionLevels );
+      
+      if ( irq == CALLBACK_OK ) 
+	{
+	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( this->m_MinStepSize, currentExploration/1024 ) : this->m_MinStepSize;
+	
+	irq = this->m_Optimizer->Optimize( *v, currentExploration, effectiveAccuracy );
+	this->m_Xform->SetParamVector( *v );
+	}
+      
+      doneResolution = this->DoneResolution( v, nextFunctional, index, NumResolutionLevels );
       }
-
-      doneResolution =
-          this->DoneResolution(v, nextFunctional, index, NumResolutionLevels);
-    }
-
-    this->m_Optimizer->SetFunctional(Functional::SmartPtr::Null());
-
+    
+    this->m_Optimizer->SetFunctional( Functional::SmartPtr::Null() );
+    
     currentExploration *= 0.5;
 
-    Progress::SetProgress(index);
+    Progress::SetProgress( index );
 
     ++index;
-  }
+    }
 
   Progress::Done();
 
-  this->OutputResult(v, irq);
-  this->DoneRegistration(v);
-
+  this->OutputResult( v, irq );
+  this->DoneRegistration( v );
+  
   return irq;
 }
 
-void ImagePairRegistration::DoneRegistration(const CoordinateVector *v) {
-  if (v) this->m_Xform->SetParamVector(*v);
+void
+ImagePairRegistration::DoneRegistration( const CoordinateVector* v )
+{
+  if ( v )
+    this->m_Xform->SetParamVector( *v );
 }
 
-void ImagePairRegistration::EnterResolution(CoordinateVector::SmartPtr &v,
-                                            Functional::SmartPtr &f,
-                                            const int idx, const int total) {
-  if (this->m_Callback) {
+void
+ImagePairRegistration::EnterResolution
+( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
+  const int idx, const int total ) 
+{
+  if ( this->m_Callback ) 
+    {
     char comment[128];
-    snprintf(comment, sizeof(comment),
-             "Entering resolution level %d out of %d.", idx, total);
-    this->m_Callback->Comment(comment);
-  }
-
+    snprintf( comment, sizeof( comment ), "Entering resolution level %d out of %d.", idx, total );
+    this->m_Callback->Comment( comment );
+    }
+  
   this->m_TimeStartLevel = cmtk::Timers::GetTimeProcess();
   this->m_WalltimeStartLevel = cmtk::Timers::GetWalltime();
   this->m_ThreadTimeStartLevel = cmtk::Timers::GetTimeThread();
-
-  f->GetParamVector(*v);
+  
+  f->GetParamVector( *v );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

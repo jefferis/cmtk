@@ -37,17 +37,20 @@
 
 #include <Registration/cmtkOptimizer.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Optimizer derived from BestNeighbourOptimizer.
  */
-class BestDirectionOptimizer :
-    /// Inherit generic optimizer features.
-    public Optimizer {
- public:
+class BestDirectionOptimizer : 
+  /// Inherit generic optimizer features.
+  public Optimizer 
+{
+public:
   /// This class.
   typedef BestDirectionOptimizer Self;
 
@@ -55,7 +58,7 @@ class BestDirectionOptimizer :
   typedef Optimizer Superclass;
 
   /// Flag whether to use maximum (1) or Euclid (0) for normalization.
-  cmtkGetSetMacroDefault(bool, UseMaxNorm, true);
+  cmtkGetSetMacroDefault(bool,UseMaxNorm,true);
 
   /** Threshold for direction components.
    * Before searching in a certain directions, all components below this
@@ -65,46 +68,44 @@ class BestDirectionOptimizer :
    * set this flag to 0 to disable thresholding; set it to 1 to remove all but
    * the most significant components.
    */
-  cmtkGetSetMacroDefault(Self::ParameterType, DirectionThreshold, -1);
+  cmtkGetSetMacroDefault(Self::ParameterType,DirectionThreshold,-1);
 
-  /** Number of repetitions of each search level, even if previously
-   * unsuccessful. This is one by default, so whenever no successful update was
-   * made, the level is finished. Setting this to values larger than 1 only
-   * makes sense if the optimized functional is changing over time, e.g., due to
-   * probabilistic effects.
+  /** Number of repetitions of each search level, even if previously unsuccessful.
+   * This is one by default, so whenever no successful update was made, the level
+   * is finished. Setting this to values larger than 1 only makes sense if the
+   * optimized functional is changing over time, e.g., due to probabilistic 
+   * effects. 
    */
-  cmtkGetSetMacro(int, RepeatLevelCount);
+  cmtkGetSetMacro(int,RepeatLevelCount);
 
   /** Agressive mode.
    * If this flag is set, the optimization is continued at one level as long as
-   * there is an improvement to the target function at any step level.
-   * Otherwise, steps in the binary seach phase are not considered and search
-   * terminates earlier.
+   * there is an improvement to the target function at any step level. Otherwise,
+   * steps in the binary seach phase are not considered and search terminates 
+   * earlier.
    */
-  cmtkGetSetMacro(bool, AggressiveMode);
+  cmtkGetSetMacro(bool,AggressiveMode);
 
   /// Constructor.
-  BestDirectionOptimizer(const Self::ParameterType stepFactor = 0.5,
-                         const Self::ParameterType = 0.1) {
+  BestDirectionOptimizer ( const Self::ParameterType stepFactor = 0.5, const Self::ParameterType = 0.1 )
+  { 
     StepFactor = stepFactor;
     this->m_UseMaxNorm = true;
     this->m_DirectionThreshold = -1;
     this->m_RepeatLevelCount = 1;
     this->m_AggressiveMode = false;
   };
-
+ 
   /// Optimize functional.
-  virtual CallbackResult Optimize(CoordinateVector &,
-                                  const Self::ParameterType = 1,
-                                  const Self::ParameterType = 0);
+  virtual CallbackResult Optimize( CoordinateVector&, const Self::ParameterType = 1, const Self::ParameterType = 0 );
 
- private:
+private:
   /// Factor by which the step size is reduced after each pass.
   Self::ParameterType StepFactor;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkBestDirectionOptimizer_h_included_
+#endif // #ifndef __cmtkBestDirectionOptimizer_h_included_

@@ -38,15 +38,17 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
 
-/// Device memory representation of a uniform volume with static helper
-/// functions.
-class DeviceUniformVolume {
- public:
+/// Device memory representation of a uniform volume with static helper functions.
+class DeviceUniformVolume
+{
+public:
   /// This class.
   typedef DeviceUniformVolume Self;
 
@@ -54,25 +56,26 @@ class DeviceUniformVolume {
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create(
-      const UniformVolume &volume,
-      const size_t padDataToMultiple =
-          1 /*!< Allocate device memory for data as multiple of this value.*/) {
-    return Self::SmartPtr(new Self(volume, padDataToMultiple));
+  static Self::SmartPtr Create( const UniformVolume& volume, const size_t padDataToMultiple = 1 /*!< Allocate device memory for data as multiple of this value.*/ )
+  {
+    return Self::SmartPtr( new Self( volume, padDataToMultiple ) );
   }
-
+  
   /// Return device representation of volume.
-  DeviceMemory<UniformVolumeOnDevice> &GetOnDevice() {
+  DeviceMemory<UniformVolumeOnDevice>& GetOnDevice()
+  {
     return *(this->m_OnDevice);
   }
 
   /// Return device data pointer.
-  DeviceMemory<float> &GetDataOnDevice() { return *(this->m_OnDeviceData); }
+  DeviceMemory<float>& GetDataOnDevice()
+  {
+    return *(this->m_OnDeviceData);
+  }
 
- private:
+private:
   /// Constructor.
-  DeviceUniformVolume(const UniformVolume &volume,
-                      const size_t padDataToMultiple = 1);
+  DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple = 1 );
 
   /// Managed device memory pointer to parameter block.
   DeviceMemory<UniformVolumeOnDevice>::SmartPtr m_OnDevice;
@@ -81,6 +84,6 @@ class DeviceUniformVolume {
   DeviceMemory<float>::SmartPtr m_OnDeviceData;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkDeviceUniformVolume_h_included_
+#endif // #ifndef __cmtkDeviceUniformVolume_h_included_

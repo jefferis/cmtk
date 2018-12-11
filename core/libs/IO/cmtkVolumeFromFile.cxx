@@ -34,30 +34,36 @@
 
 #include <stdio.h>
 
-#include <Base/cmtkTypedArray.h>
 #include <IO/cmtkFileFormat.h>
+#include <Base/cmtkTypedArray.h>
 #include <System/cmtkCompressedStream.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-const UniformVolume::SmartPtr VolumeFromFile::Read(const std::string &path) {
-  FileFormatID id = FileFormat::Identify(path);
-  switch (id) {
+const UniformVolume::SmartPtr
+VolumeFromFile::Read( const std::string& path )
+{
+  FileFormatID id = FileFormat::Identify( path );
+  switch ( id )
+    {
     case FILEFORMAT_DICOM:
-      return VolumeFromFile::ReadDICOM(path);
+      return VolumeFromFile::ReadDICOM( path );
     case FILEFORMAT_VANDERBILT:
-      return VolumeFromFile::ReadVanderbilt(path);
+      return VolumeFromFile::ReadVanderbilt( path );
     case FILEFORMAT_ANALYZE_HDR:
-      return VolumeFromFile::ReadAnalyzeHdr(path, false /* bigendian */);
+      return VolumeFromFile::ReadAnalyzeHdr( path, false /* bigendian */ );
     case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
-      return VolumeFromFile::ReadAnalyzeHdr(path, true /* bigendian */);
-    default:;
-  }
-
-  return UniformVolume::SmartPtr(NULL);
+      return VolumeFromFile::ReadAnalyzeHdr( path, true /* bigendian */ );
+    default:
+      ;
+    }
+  
+  return UniformVolume::SmartPtr( NULL );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

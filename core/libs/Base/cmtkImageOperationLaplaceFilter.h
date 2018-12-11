@@ -36,35 +36,38 @@
 #include <Base/cmtkImageOperation.h>
 #include <Base/cmtkUniformVolumeLaplaceFilter.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: Laplacian edge enhancement filter.
 class ImageOperationLaplaceFilter
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
   ImageOperationLaplaceFilter() {}
-
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    volume->SetData(UniformVolumeLaplaceFilter(volume).Get());
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->SetData( UniformVolumeLaplaceFilter( volume ).Get() );
     return volume;
   }
-
+  
   /// Create a new filter.
-  static void New() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationLaplaceFilter));
+  static void New()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationLaplaceFilter ) );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationLaplaceFilter_h_included_
+#endif // #ifndef __cmtkImageOperationLaplaceFilter_h_included_

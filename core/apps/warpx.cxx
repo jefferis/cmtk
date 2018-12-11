@@ -39,16 +39,21 @@
 #include <stdio.h>
 #include <string.h>
 
-int doMain(const int argc, const char *argv[]) {
-  try {
-    cmtk::ImagePairNonrigidRegistrationCommandLine Registration(argc, argv);
-
+int
+doMain ( const int argc, const char *argv[] )
+{
+  try 
+    {
+    cmtk::ImagePairNonrigidRegistrationCommandLine Registration( argc, argv );
+    
     // set up console progress reporting
-    cmtk::ProgressConsole progressInstance("BSplineImageRegistration");
+    cmtk::ProgressConsole progressInstance( "BSplineImageRegistration" );
     Registration.Register();
-  } catch (const cmtk::ImagePairRegistration::ConstructorFailed &) {
+    }
+  catch ( const cmtk::ImagePairRegistration::ConstructorFailed& ) 
+    {
     return 1;
-  }
+    }
   return 0;
 }
 

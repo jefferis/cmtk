@@ -40,40 +40,39 @@
 
 #include <map>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// A label (class) in a segmentation.
-class SegmentationLabel {
- public:
+class SegmentationLabel
+{
+public:
   /// Init constructor.
-  SegmentationLabel() {
-    this->m_Name = NULL;
-    this->m_RGB[0] = this->m_RGB[1] = this->m_RGB[2] = 0;
-  }
+  SegmentationLabel() { this->m_Name = NULL; this->m_RGB[0] = this->m_RGB[1] = this->m_RGB[2] = 0; }
 
   /// Destructor.
-  ~SegmentationLabel() {
-    if (this->m_Name) free(this->m_Name);
-  }
+  ~SegmentationLabel() { if ( this->m_Name ) free( this->m_Name ); }
 
   /// Name of this label.
   cmtkGetSetMacroString(Name);
 
   /// Color as RGB components for visualization.
-  cmtkGetSetMacro3Array(byte, RGB);
+  cmtkGetSetMacro3Array(byte,RGB);
 };
 
 /// Map from numerical IDs to labels.
-typedef std::map<int, SegmentationLabel> SegmentationLabelMap;
+typedef std::map<int,SegmentationLabel> SegmentationLabelMap;
 
 /// Create system label map.
-void CreateSystemLabelColorMap(SegmentationLabelMap &map);
+void CreateSystemLabelColorMap( SegmentationLabelMap& map );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSegmentationLabel_h_included_
+#endif // #ifndef __cmtkSegmentationLabel_h_included_
+

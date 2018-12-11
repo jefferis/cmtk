@@ -33,51 +33,52 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGridMorphologicalOperators.h>
 #include <Base/cmtkImageOperation.h>
+#include <Base/cmtkDataGridMorphologicalOperators.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: create binary or multi-valued boundary map.
 class ImageOperationBoundaryMap
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
-  ImageOperationBoundaryMap(const bool multiValued)
-      : m_MultiValued(multiValued) {}
-
+  ImageOperationBoundaryMap( const bool multiValued ) : m_MultiValued( multiValued ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    cmtk::DataGridMorphologicalOperators ops(volume);
-    volume->SetData(ops.GetBoundaryMap(this->m_MultiValued));
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    cmtk::DataGridMorphologicalOperators ops( volume );
+    volume->SetData( ops.GetBoundaryMap( this->m_MultiValued ) );
     return volume;
   }
-
+  
   /// Create new binary boundary map operation.
-  static void New() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationBoundaryMap(false)));
+  static void New()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationBoundaryMap( false ) ) );
   }
 
   /// Create new multi-valued boundary map operation.
-  static void NewMulti() {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationBoundaryMap(true)));
+  static void NewMulti()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationBoundaryMap( true ) ) );
   }
 
- private:
-  /// Multi-valued flag: if this is set, a multi-valued boundary map will be
-  /// created, otherwise a binary map.
+private:
+  /// Multi-valued flag: if this is set, a multi-valued boundary map will be created, otherwise a binary map.
   bool m_MultiValued;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationBoundaryMap_h_included_
+#endif // #ifndef __cmtkImageOperationBoundaryMap_h_included_

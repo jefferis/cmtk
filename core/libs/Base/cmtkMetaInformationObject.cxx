@@ -30,23 +30,26 @@
 
 #include "cmtkMetaInformationObject.h"
 
-const std::string &cmtk::MetaInformationObject::GetMetaInfo(
-    const std::string &key, const std::string &defaultVal) const {
-  Self::KeyValueMapType::const_iterator it = this->m_MetaInformation.find(key);
-  if (it != this->m_MetaInformation.end())
+const std::string& 
+cmtk::MetaInformationObject::GetMetaInfo( const std::string& key, const std::string& defaultVal ) const
+{
+  Self::KeyValueMapType::const_iterator it = this->m_MetaInformation.find( key );
+  if ( it != this->m_MetaInformation.end() )
     return it->second;
   else
     return defaultVal;
 }
 
-void cmtk::MetaInformationObject::SetMetaInfo(const std::string &key,
-                                              const std::string &value) {
+void
+cmtk::MetaInformationObject::SetMetaInfo( const std::string& key, const std::string& value )
+{
   this->m_MetaInformation[key] = value;
 }
 
-void cmtk::MetaInformationObject::CopyMetaInfo(const Self &other,
-                                               const std::string &key) {
-  Self::KeyValueMapType::const_iterator it = other.m_MetaInformation.find(key);
-  if (it != other.m_MetaInformation.end())
-    this->SetMetaInfo(it->first, it->second);
+void
+cmtk::MetaInformationObject::CopyMetaInfo( const Self& other, const std::string& key )
+{
+  Self::KeyValueMapType::const_iterator it = other.m_MetaInformation.find( key );
+  if ( it != other.m_MetaInformation.end() )
+    this->SetMetaInfo( it->first, it->second );
 }

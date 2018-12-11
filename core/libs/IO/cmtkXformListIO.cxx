@@ -38,42 +38,46 @@
 
 #include <Base/cmtkPolynomial.h>
 
-cmtk::XformList cmtk::XformListIO::MakeFromStringList(
-    const std::vector<std::string> &stringList) {
+cmtk::XformList
+cmtk::XformListIO::MakeFromStringList( const std::vector<std::string>& stringList )
+{
   XformList xformList;
-  for (std::vector<std::string>::const_iterator it = stringList.begin();
-       it != stringList.end(); ++it) {
-    const bool inverse = (*it == "-i") || (*it == "--inverse");
-    if (inverse) {
+  for ( std::vector<std::string>::const_iterator it = stringList.begin(); it != stringList.end(); ++it )
+    {
+    const bool inverse = (*it == "-i" ) || (*it == "--inverse" );
+    if ( inverse ) 
+      {
       ++it;
-      if (it == stringList.end()) {
-        StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one "
-                  "more transformation\n";
-        throw ExitException(1);
+      if ( it == stringList.end() )
+	{
+	StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
+	throw ExitException( 1 );
+	}
       }
-    }
+    
+    try
+      {
+      Xform::SmartPtr xform( XformIO::Read( it->c_str() ) );
+      if ( ! xform ) 
+	{
+	StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
+	throw ExitException( 1 );
+	}
 
-    try {
-      Xform::SmartPtr xform(XformIO::Read(it->c_str()));
-      if (!xform) {
-        StdErr
-            << "ERROR: could not read target-to-reference transformation from "
-            << *it << "\n";
-        throw ExitException(1);
+      xformList.Add( xform, inverse );
       }
-
-      xformList.Add(xform, inverse);
-    } catch (const AffineXform::MatrixType::SingularMatrixException &) {
-      StdErr
-          << "ERROR: singular matrix encountered reading transformation from "
-          << *it << "\n";
-      throw ExitException(1);
-    } catch (const PolynomialHelper::DegreeUnsupported &ex) {
+    catch ( const AffineXform::MatrixType::SingularMatrixException& )
+      {
+      StdErr << "ERROR: singular matrix encountered reading transformation from " << *it << "\n";
+      throw ExitException( 1 );
+      }
+    catch ( const PolynomialHelper::DegreeUnsupported& ex )
+      {
       StdErr << "ERROR: polynomial degree unsupported in " << *it << "\n";
       StdErr << ex.what() << "\n";
-      throw ExitException(1);
+      throw ExitException( 1 );
+      }
     }
-  }
-
+  
   return xformList;
 }

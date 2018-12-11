@@ -35,39 +35,49 @@
 
 #include <cmtkconfig.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /// Histogram kernel scaling traits.
-template <class T>
-class ScaleHistogramValueTrait {
- public:
+template<class T> 
+class ScaleHistogramValueTrait
+{
+public:
   /// In general return original value as scaled value.
-  static T Scale(const Types::DataItem value) { return value; }
-};
-
-template <>
-class ScaleHistogramValueTrait<int> {
- public:
-  /// For integer bins, scale with factor 256 for added resolution.
-  static int Scale(const Types::DataItem value) {
-    return static_cast<int>(256 * value);
+  static T Scale( const  Types::DataItem value ) 
+  {
+    return value;
   }
 };
 
-template <>
-class ScaleHistogramValueTrait<unsigned int> {
- public:
+template<> 
+class ScaleHistogramValueTrait<int>
+{
+public:
   /// For integer bins, scale with factor 256 for added resolution.
-  static unsigned int Scale(const Types::DataItem value) {
-    return static_cast<unsigned int>(256 * value);
+  static int Scale( const  Types::DataItem value )
+  {
+    return static_cast<int>( 256 * value );
+  }
+};
+
+template<> 
+class ScaleHistogramValueTrait<unsigned int>
+{
+public:
+  /// For integer bins, scale with factor 256 for added resolution.
+  static unsigned int Scale( const Types::DataItem value )
+  {
+    return static_cast<unsigned int>( 256 * value );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #endif

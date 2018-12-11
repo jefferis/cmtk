@@ -34,113 +34,123 @@
 
 #include <Base/cmtkTypes.h>
 
-#include <System/cmtkCompressedStream.h>
 #include <System/cmtkConsole.h>
-#include <System/cmtkMountPoints.h>
 #include <System/cmtkStrUtility.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkCompressedStream.h>
+#include <System/cmtkMountPoints.h>
 
-#include <IO/cmtkClassStreamAffineXform.h>
-#include <IO/cmtkClassStreamInput.h>
 #include <IO/cmtkTypedStreamInput.h>
+#include <IO/cmtkClassStreamInput.h>
+#include <IO/cmtkClassStreamAffineXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-TypedStreamStudylist::TypedStreamStudylist() { this->Clear(); }
+TypedStreamStudylist::TypedStreamStudylist()
+{
+  this->Clear();
+}
 
-void TypedStreamStudylist::Clear() {
+void TypedStreamStudylist::Clear()
+{
   StudyPath[0] = StudyPath[1] = NULL;
   ReferenceStudyIndex = 0;
-  this->m_AffineXform = AffineXform::SmartPtr(NULL);
-  this->m_WarpXform = WarpXform::SmartPtr(NULL);
+  this->m_AffineXform = AffineXform::SmartPtr( NULL );
+  this->m_WarpXform = WarpXform::SmartPtr( NULL );
 }
 
-TypedStreamStudylist::~TypedStreamStudylist() {
-  if (StudyPath[0]) free(StudyPath[0]);
-  if (StudyPath[1]) free(StudyPath[1]);
+TypedStreamStudylist::~TypedStreamStudylist()
+{
+  if ( StudyPath[0] ) free( StudyPath[0] );
+  if ( StudyPath[1] ) free( StudyPath[1] );
 }
 
-bool TypedStreamStudylist::Read(const std::string &studylistpath) {
+bool
+TypedStreamStudylist::Read( const std::string& studylistpath )
+{
   char archive[PATH_MAX];
 
-  snprintf(archive, sizeof(archive), "%s%cstudylist",
-           MountPoints::Translate(studylistpath).c_str(),
-           (int)CMTK_PATH_SEPARATOR);
-  ClassStreamInput classStream(archive);
-  if (!classStream.IsValid()) {
-    StdErr.printf("Could not open studylist archive %s.\n", archive);
+  snprintf( archive, sizeof( archive ), "%s%cstudylist", MountPoints::Translate( studylistpath ).c_str(), (int)CMTK_PATH_SEPARATOR );
+  ClassStreamInput classStream( archive );
+  if ( ! classStream.IsValid() ) 
+    {
+    StdErr.printf( "Could not open studylist archive %s.\n", archive );
     return false;
-  }
-
-  if (StudyPath[0]) free(StudyPath[0]);
-  classStream.Seek("source");
-  StudyPath[0] = classStream.ReadString("studyname", "<unknown>");
-
-  if (StudyPath[1]) free(StudyPath[1]);
-  classStream.Seek("source");
-  StudyPath[1] = classStream.ReadString("studyname", "<unknown>");
+    }
+  
+  if ( StudyPath[0] ) free( StudyPath[0] );
+  classStream.Seek ( "source" );
+  StudyPath[0] = classStream.ReadString( "studyname", "<unknown>" );
+  
+  if ( StudyPath[1] ) free( StudyPath[1] );
+  classStream.Seek ( "source" );
+  StudyPath[1] = classStream.ReadString( "studyname", "<unknown>" );
   classStream.Close();
-
-  snprintf(archive, sizeof(archive), "%s%cregistration",
-           MountPoints::Translate(studylistpath).c_str(),
-           (int)CMTK_PATH_SEPARATOR);
-  classStream.Open(archive);
-  if (!classStream.IsValid()) {
-    StdErr.printf("Could not open studylist archive %s.\n", archive);
+  
+  snprintf( archive, sizeof( archive ), "%s%cregistration", MountPoints::Translate(studylistpath).c_str(), (int)CMTK_PATH_SEPARATOR  );
+  classStream.Open( archive );
+  if ( ! classStream.IsValid() ) 
+    {
+    StdErr.printf( "Could not open studylist archive %s.\n", archive );
     return false;
-  }
-
-  classStream.Seek("registration");
-  char *referenceStudy = classStream.ReadString("reference_study");
-  ReferenceStudyIndex = (StrCmp(referenceStudy, StudyPath[0])) ? 1 : 0;
+    }
+  
+  classStream.Seek ( "registration" );
+  char *referenceStudy = classStream.ReadString( "reference_study" );
+  ReferenceStudyIndex = ( StrCmp( referenceStudy, StudyPath[0] ) ) ? 1 : 0;
 
   bool legacy = false;
-  char *floatingStudy = classStream.ReadString("floating_study");
-  if (!floatingStudy) {
+  char *floatingStudy = classStream.ReadString( "floating_study" );
+  if ( !floatingStudy )
+    {
     classStream.Begin();
-    floatingStudy = classStream.ReadString("model_study");
-    if (floatingStudy) {
+    floatingStudy = classStream.ReadString( "model_study" );
+    if ( floatingStudy )
+      {
       legacy = true;
-    } else {
-      StdErr.printf(
-          "WARNING: Studylist %s/registration apparently has neither "
-          "new 'floating_study' nor old 'model_study' entry\n",
-          archive);
+      }
+    else
+      {
+      StdErr.printf( "WARNING: Studylist %s/registration apparently has neither new 'floating_study' nor old 'model_study' entry\n", archive );
+      }
     }
-  }
-
+  
   classStream >> this->m_AffineXform;
 
-  if (referenceStudy) {
-    this->m_AffineXform->SetMetaInfo(META_XFORM_FIXED_IMAGE_PATH,
-                                     referenceStudy);
-  }
-  if (floatingStudy) {
-    this->m_AffineXform->SetMetaInfo(META_XFORM_MOVING_IMAGE_PATH,
-                                     floatingStudy);
-  }
-
-  if (legacy) {
-    this->m_AffineXform =
-        AffineXform::SmartPtr(this->m_AffineXform->MakeInverse());
-  }
-
-  classStream.Get(this->m_WarpXform);
-  if (this->m_WarpXform) {
-    if (referenceStudy) {
-      this->m_WarpXform->SetMetaInfo(META_XFORM_FIXED_IMAGE_PATH,
-                                     referenceStudy);
+  if ( referenceStudy )
+    {
+    this->m_AffineXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
     }
-    if (floatingStudy) {
-      this->m_WarpXform->SetMetaInfo(META_XFORM_MOVING_IMAGE_PATH,
-                                     floatingStudy);
+  if ( floatingStudy )
+    {
+    this->m_AffineXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
     }
-  }
 
+  if ( legacy )
+    {
+    this->m_AffineXform = AffineXform::SmartPtr( this->m_AffineXform->MakeInverse() );
+    }
+
+  classStream.Get( this->m_WarpXform );
+  if ( this->m_WarpXform )
+    {
+    if ( referenceStudy )
+      {
+      this->m_WarpXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+      }
+    if ( floatingStudy )
+      {
+      this->m_WarpXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+      }
+    }
+  
   classStream.Close();
   return true;
 }
 
-}  // namespace cmtk
+} // namespace

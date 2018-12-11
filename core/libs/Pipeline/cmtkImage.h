@@ -38,11 +38,13 @@
 #include <Pipeline/cmtkPlane.h>
 
 #include <Base/cmtkMacros.h>
-#include <Base/cmtkScalarImage.h>
-#include <Base/cmtkTypedArray.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkScalarImage.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -50,14 +52,15 @@ namespace cmtk {
 /** Class for 2D image data.
  */
 class Image :
-    /// Inherit geometry information from Plane.
-    public Plane {
- public:
+  /// Inherit geometry information from Plane.
+  public Plane
+{
+public:
   /// Create new object.
-  static Image *New() { return new Image; }
+  static Image* New() { return new Image; }
 
   /// Scalar data type.
-  igsClassParameter(ScalarDataType, DataType);
+  igsClassParameter(ScalarDataType,DataType);
 
   /// Return a pointer to the object holding the image data.
   TypedArray::SmartPtr GetData();
@@ -66,65 +69,65 @@ class Image :
    * BEWARE! The size of the new array must match precisely the dimensions
    * as specified by the inherited Dims[] array.
    */
-  void SetData(TypedArray::SmartPtr &data);
+  void SetData( TypedArray::SmartPtr& data );
 
   /** Copy non-pipelined scalar image.
    */
-  void SetFromScalarImage(const ScalarImage &scalarImage);
+  void SetFromScalarImage( const ScalarImage& scalarImage );
 
   /** Return data at a certain grid location (pixel).
-   *\param x Index of requested pixel in x-direction. Valid range is
+   *\param x Index of requested pixel in x-direction. Valid range is 
    * [0..Dims[0]-1].
-   *\param y Index of requested pixel in y-direction. Valid range is
+   *\param y Index of requested pixel in y-direction. Valid range is 
    * [0..Dims[1]-1].
    *\param def Value returned when there is no valid data at the queried
    * position. This parameter defaults to zero.
    *\return The value of the pixel at position (x,y) or the value of parameter
    * def if there was no valid data for this position.
    */
-  double GetDataAt(const int x, const int y, const double def = 0);
+  double GetDataAt( const int x, const int y, const double def = 0 );
 
   /** Set data at a certain grid location (pixel).
-   *\param x Index of requested pixel in x-direction. Valid range is
+   *\param x Index of requested pixel in x-direction. Valid range is 
    * [0..Dims[0]-1].
-   *\param y Index of requested pixel in y-direction. Valid range is
+   *\param y Index of requested pixel in y-direction. Valid range is 
    * [0..Dims[1]-1].
    *\param value Value to set pixel to.
    */
-  void SetDataAt(const int x, const int y, const double value = 0);
+  void SetDataAt( const int x, const int y, const double value = 0 );
 
   /** Return data at a certain grid location (index).
-   *\param index Index of requested pixel. Valid range is
+   *\param index Index of requested pixel. Valid range is 
    * [0..GetNumPixels()-1].
    *\param def Value returned when there is no valid data at the queried
    * position. This parameter defaults to zero.
    *\return The value of the pixel at position (x,y) or the value of parameter
    * def if there was no valid data for this position.
    */
-  double GetDataAt(const int index, const double def = 0);
+  double GetDataAt( const int index, const double def = 0 );
 
   /** Set data at a certain grid location (index).
    *\param index Index of requested pixel. Valid range is [0..GetNumPixels()-1].
    *\param value Value to set pixel to.
    */
-  void SetDataAt(const int index, const double value = 0);
+  void SetDataAt( const int index, const double value = 0 );
 
   /** Return data at a certain grid location (in world coordinates).
    *\param x Location of requested pixel in x-direction.
-   *\param y Location of requested pixel in y-direction.
+   *\param y Location of requested pixel in y-direction. 
    *\param def Value returned when there is no valid data at the specified
    * position. This parameter defaults to zero.
    *\return The value of the pixel at position (x,y) or the value of parameter
    * "def" if there was no valid data for this position.
    */
-  double GetDataAt(const double x, const double y, const double def = 0);
+  double GetDataAt( const double x, const double y, const double def = 0 );
 
- protected:
+protected:
   /// Default constructor.
   Image();
 
   /// Destructor.
-  virtual ~Image(){};
+  virtual ~Image() {};
 
   /// The actual image data.
   TypedArray::SmartPtr Data;
@@ -132,6 +135,6 @@ class Image :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #endif

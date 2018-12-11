@@ -38,35 +38,39 @@
 #include <Base/cmtkImageTemplate.h>
 #include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Compute gradient field from scalar image
-class ScalarImageGradientField {
- public:
+class ScalarImageGradientField
+{
+public:
   /// This class.
   typedef ScalarImageGradientField Self;
 
   /// The gradient field type.
-  typedef ImageTemplate<FixedVector<3, Types::Coordinate>> GradientFieldType;
+  typedef ImageTemplate< FixedVector<3,Types::Coordinate> > GradientFieldType;
 
   /// Constructor: compute gradient field
-  ScalarImageGradientField(
-      const UniformVolume
-          &volume /*!< Scalar image volume to compute gradients from. */);
+  ScalarImageGradientField( const UniformVolume& volume /*!< Scalar image volume to compute gradients from. */ );
 
   /// Get gradient field.
-  Self::GradientFieldType::SmartPtr Get() { return this->m_GradientField; }
+  Self::GradientFieldType::SmartPtr Get()
+  {
+    return this->m_GradientField;
+  }
 
- private:
+private:
   /// The gradient field.
   Self::GradientFieldType::SmartPtr m_GradientField;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkScalarImageGradientField_h_included_
+#endif // #ifndef __cmtkScalarImageGradientField_h_included_

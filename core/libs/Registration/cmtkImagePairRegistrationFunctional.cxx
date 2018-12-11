@@ -38,70 +38,61 @@
 
 #include <assert.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-void ImagePairRegistrationFunctional::InitFloating(
-    UniformVolume::SmartConstPtr &floating) {
+void
+ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartConstPtr& floating )
+{
   this->m_FloatingGrid = floating;
-
+  
   this->m_FloatingDims = this->m_FloatingGrid->GetDims();
   this->m_FloatingSize = this->m_FloatingGrid->m_Size;
-  this->m_FloatingCropRegionCoordinates =
-      this->m_FloatingGrid->GetHighResCropRegion();
-  for (int dim = 0; dim < 3; ++dim) {
-    this->m_FloatingInverseDelta[dim] =
-        1.0 / this->m_FloatingGrid->m_Delta[dim];
-    this->m_FloatingCropRegionFractIndex.From()[dim] =
-        this->m_FloatingCropRegionCoordinates.From()[dim] *
-        this->m_FloatingInverseDelta[dim];
-    this->m_FloatingCropRegionFractIndex.To()[dim] =
-        this->m_FloatingCropRegionCoordinates.To()[dim] *
-        this->m_FloatingInverseDelta[dim];
-  }
-
+  this->m_FloatingCropRegionCoordinates = this->m_FloatingGrid->GetHighResCropRegion();
+  for ( int dim = 0; dim < 3; ++dim ) 
+    {
+    this->m_FloatingInverseDelta[dim] = 1.0 / this->m_FloatingGrid->m_Delta[dim];
+    this->m_FloatingCropRegionFractIndex.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * this->m_FloatingInverseDelta[dim];
+    this->m_FloatingCropRegionFractIndex.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * this->m_FloatingInverseDelta[dim];
+    }
+  
   this->m_FloatingDataClass = floating->GetData()->GetDataClass();
 }
 
-void ImagePairRegistrationFunctional::InitReference(
-    UniformVolume::SmartConstPtr &reference) {
+void
+ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartConstPtr& reference )
+{
   this->m_ReferenceGrid = reference;
 
   this->m_ReferenceDims = this->m_ReferenceGrid->GetDims();
   this->m_ReferenceSize = this->m_ReferenceGrid->m_Size;
   this->m_ReferenceCropRegion = this->m_ReferenceGrid->CropRegion();
 
-  for (int dim = 0; dim < 3; ++dim)
-    this->m_ReferenceInverseDelta[dim] =
-        1.0 / this->m_ReferenceGrid->m_Delta[dim];
+  for ( int dim = 0; dim < 3; ++dim )
+    this->m_ReferenceInverseDelta[dim] = 1.0 / this->m_ReferenceGrid->m_Delta[dim];
 
   this->m_ReferenceDataClass = reference->GetData()->GetDataClass();
 }
 
 const DataGrid::RegionType
-ImagePairRegistrationFunctional::GetReferenceGridRange(
-    const UniformVolume::CoordinateRegionType &region) const {
-  const DataGrid::IndexType &cropRegionFrom =
-      this->m_ReferenceCropRegion.From();
-  const DataGrid::IndexType &cropRegionTo = this->m_ReferenceCropRegion.To();
+ImagePairRegistrationFunctional::GetReferenceGridRange
+( const UniformVolume::CoordinateRegionType& region ) const
+{
+  const DataGrid::IndexType& cropRegionFrom = this->m_ReferenceCropRegion.From();
+  const DataGrid::IndexType& cropRegionTo = this->m_ReferenceCropRegion.To();
 
   DataGrid::IndexType from, to;
-  for (int i = 0; i < 3; ++i) {
-    from[i] = std::min(
-        cropRegionTo[i] - 1,
-        std::max(cropRegionFrom[i],
-                 static_cast<Types::GridIndexType>(
-                     region.From()[i] * this->m_ReferenceInverseDelta[i])));
-    to[i] = 1 + std::max(cropRegionFrom[i],
-                         std::min(cropRegionTo[i] - 1,
-                                  1 + static_cast<Types::GridIndexType>(
-                                          region.To()[i] *
-                                          this->m_ReferenceInverseDelta[i])));
-  }
+  for ( int i = 0; i < 3; ++i )
+    {
+    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<Types::GridIndexType>( region.From()[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<Types::GridIndexType>( region.To()[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    }
 
-  return DataGrid::RegionType(from, to);
+  return DataGrid::RegionType( from, to );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

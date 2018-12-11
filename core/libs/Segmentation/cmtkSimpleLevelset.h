@@ -38,69 +38,66 @@
 
 #include <System/cmtkException.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Class for computing a simple two-phase levelset evolution.
  */
-class SimpleLevelset {
- public:
+class SimpleLevelset
+{
+public:
   /// This class.
   typedef SimpleLevelset Self;
 
-  /// Exception that is thrown for degenerate levelsets, i.e., all foreground or
-  /// all background.
+  /// Exception that is thrown for degenerate levelsets, i.e., all foreground or all background.
   class DegenerateLevelsetException : public Exception {};
 
   /// Constructor.
-  SimpleLevelset(UniformVolume::SmartConstPtr &volume)
-      : m_Volume(volume),
-        m_ScaleInitialSphere(1.0),
-        m_TimeDelta(1.0),
-        m_LevelsetThreshold(0.0) {}
+  SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ), m_ScaleInitialSphere( 1.0 ), m_TimeDelta( 1.0 ), m_LevelsetThreshold( 0.0 ) {}
 
   /// Set initial sphere scale factor.
-  void SetScaleInitialSphere(const Types::Coordinate scale) {
+  void SetScaleInitialSphere( const Types::Coordinate scale )
+  {
     this->m_ScaleInitialSphere = scale;
   }
 
   /// Set filter sigma parameter.
-  void SetFilterSigma(const Units::GaussianSigma filterSigma) {
+  void SetFilterSigma( const Units::GaussianSigma filterSigma )
+  {
     this->m_FilterSigma = filterSigma;
   }
 
   /// Set evolution time delta.
-  void SetTimeDelta(const Types::Coordinate timeDelta) {
+  void SetTimeDelta( const Types::Coordinate timeDelta )
+  {
     this->m_TimeDelta = timeDelta;
   }
 
   /// Set levelset threshold.
-  void SetLevelsetThreshold(const Types::Coordinate levelsetThreshold) {
+  void SetLevelsetThreshold( const Types::Coordinate levelsetThreshold )
+  {
     this->m_LevelsetThreshold = levelsetThreshold;
   }
-
+  
   /// Initialize levelset with a centered sphere.
   void InitializeCenteredSphere();
 
   /// Levelset evolution.
-  virtual void Evolve(
-      const int numberOfIterations /*!< Number of iterations */, const bool
-                                                                     forceIterations =
-                                                                         false /*!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */);
+  virtual void Evolve( const int numberOfIterations /*!< Number of iterations */, 
+		       const bool forceIterations = false /*!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */ );
 
-  /** Return levelset, optionally converting to a binarized byte pixel
-   *representation. \warning If the levelset is retrieved with the "binarize"
-   *flag set, then the levelset stored in this object will remain binarized
-   *after the call and should be re-initialized before calling "Evolve" again.
+  /** Return levelset, optionally converting to a binarized byte pixel representation.
+   *\warning If the levelset is retrieved with the "binarize" flag set, then the
+   *  levelset stored in this object will remain binarized after the call and
+   *  should be re-initialized before calling "Evolve" again.
    */
-  UniformVolume::SmartPtr &GetLevelset(
-      const bool binarize = false,
-      /*!< If set, levelset is binarized and converted to byte data */
-      const float threshold = 0.5 /*!< Threshold for optional binarization */);
+  UniformVolume::SmartPtr& GetLevelset( const bool binarize = false, /*!< If set, levelset is binarized and converted to byte data */ const float threshold = 0.5 /*!< Threshold for optional binarization */ );
 
- protected:
+protected:
   /// The volume to compute a levelset segmentation for.
   UniformVolume::SmartConstPtr m_Volume;
 
@@ -120,6 +117,6 @@ class SimpleLevelset {
   Types::Coordinate m_LevelsetThreshold;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSimpleLevelset_h_included_
+#endif // #ifndef __cmtkSimpleLevelset_h_included_

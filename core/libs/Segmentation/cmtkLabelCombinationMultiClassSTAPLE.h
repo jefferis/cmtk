@@ -35,23 +35,27 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkMatrix.h>
 #include <Base/cmtkTypedArray.h>
 #include <System/cmtkSmartPtr.h>
+#include <Base/cmtkMatrix.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Multi-class STAPLE label combination.
- * This class implements combination of multiple-label images using the
- * multi-class STAPLE algorithm.
- */
-class LabelCombinationMultiClassSTAPLE {
- public:
+  * This class implements combination of multiple-label images using the
+  * multi-class STAPLE algorithm.
+  */
+class
+LabelCombinationMultiClassSTAPLE
+{
+public:
   /// This class.
   typedef LabelCombinationMultiClassSTAPLE Self;
 
@@ -60,17 +64,19 @@ class LabelCombinationMultiClassSTAPLE {
 
   /// Confusion matrix type.
   typedef Matrix2D<RealValueType> ConfusionMatrixType;
-
+  
   /// Constructor: compute label combination.
-  LabelCombinationMultiClassSTAPLE(
-      const std::vector<TypedArray::SmartPtr>
-          &data /*!< Array of typed arrays with input data.*/,
-      const int maxIterations /*!< Maximum number of STAPLE iterations.*/, const bool disputedOnly /*!< If set, restrict computation to "disputed" voxels. */);
+  LabelCombinationMultiClassSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
+				    const int maxIterations /*!< Maximum number of STAPLE iterations.*/,
+				    const bool disputedOnly /*!< If set, restrict computation to "disputed" voxels. */ );
 
   /// Get result.
-  TypedArray::SmartPtr &GetResult() { return this->m_Result; }
+  TypedArray::SmartPtr& GetResult()
+  {
+    return this->m_Result;
+  }
 
- private:
+private:
   /// Resulting data array.
   TypedArray::SmartPtr m_Result;
 
@@ -84,6 +90,6 @@ class LabelCombinationMultiClassSTAPLE {
   std::vector<Self::ConfusionMatrixType> m_ConfusionNew;
 };
 
-};  // namespace cmtk
+}; // namespace cmtk
 
-#endif  // #ifndef __cmtkLabelCombinationMultiClassSTAPLE_h_included_
+#endif // #ifndef __cmtkLabelCombinationMultiClassSTAPLE_h_included_

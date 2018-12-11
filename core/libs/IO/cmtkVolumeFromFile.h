@@ -38,79 +38,75 @@
 #include <Base/cmtkUniformVolume.h>
 #include <System/cmtkException.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** Class to read uniform volume from disk file(s).
  */
-class VolumeFromFile {
- public:
+class VolumeFromFile 
+{
+public:
   /// Read volume from file automatically.
-  static const UniformVolume::SmartPtr Read(const std::string &filename);
+  static const UniformVolume::SmartPtr Read( const std::string& filename );
 
 #ifdef CMTK_USE_DCMTK
   /// Read volume in multi-slice DICOM format.
-  static const UniformVolume::SmartPtr ReadDICOM(const std::string &filename);
+  static const UniformVolume::SmartPtr ReadDICOM( const std::string& filename );
 #else
-  static const UniformVolume::SmartPtr ReadDICOM(const std::string &) {
-    throw Exception("Library was configured without DICOM support.");
+  static const UniformVolume::SmartPtr ReadDICOM( const std::string& )
+  {
+    throw Exception( "Library was configured without DICOM support." );
   }
 #endif
 
   /// Read volume in Vanderbilt format.
-  static const UniformVolume::SmartPtr ReadVanderbilt(
-      const std::string &filename);
+  static const UniformVolume::SmartPtr ReadVanderbilt( const std::string& filename );
 
   /// Read BioRad PIC file (confocal microscopy image).
-  static const UniformVolume::SmartPtr ReadBioRad(const std::string &path);
+  static const UniformVolume::SmartPtr ReadBioRad( const std::string& path );
 
   /// Read Analyze 7.5 file (separate header file).
-  static const UniformVolume::SmartPtr ReadAnalyzeHdr(
-      const std::string &pathHdr, const bool bigEndian = false,
-      const bool readData = true);
+  static const UniformVolume::SmartPtr ReadAnalyzeHdr( const std::string& pathHdr, const bool bigEndian = false, const bool readData = true );
 
   /// Read Nifti file.
-  static const UniformVolume::SmartPtr ReadNifti(const std::string &pathHdr,
-                                                 const bool detached,
-                                                 const bool readData = true);
+  static const UniformVolume::SmartPtr ReadNifti( const std::string& pathHdr, const bool detached, const bool readData = true );
 
   /// Write Analyze 7.5 file (separate header file).
-  static void WriteAnalyzeHdr(const std::string &pathHdr,
-                              const UniformVolume &volume);
+  static void WriteAnalyzeHdr( const std::string& pathHdr, const UniformVolume& volume );
 
   /// Write Nifti file.
-  static void WriteNifti(const std::string &pathImg,
-                         const UniformVolume &volume);
+  static void WriteNifti( const std::string& pathImg, const UniformVolume& volume );
 
   /// Write MetaImage file.
-  static void WriteMetaImage(const std::string &pathHdr,
-                             const UniformVolume &volume);
+  static void WriteMetaImage( const std::string& pathHdr, const UniformVolume& volume );
 
 #ifdef CMTK_BUILD_NRRD
   /// Read NRRD file.
-  static const UniformVolume::SmartPtr ReadNRRD(const std::string &path);
+  static const UniformVolume::SmartPtr ReadNRRD( const std::string& path );
 
   /// Write NRRD file.
-  static void WriteNRRD(const std::string &pathHdr,
-                        const UniformVolume &volume);
+  static void WriteNRRD( const std::string& pathHdr, const UniformVolume& volume );
 #else
   /// Read NRRD file.
-  static const UniformVolume::SmartPtr ReadNRRD(const std::string &) {
-    throw Exception("Library was configured without Nrrd support.");
+  static const UniformVolume::SmartPtr ReadNRRD( const std::string& ) 
+  {
+    throw Exception( "Library was configured without Nrrd support." );
   }
 
   /// Write NRRD file.
-  static void WriteNRRD(const std::string &, const UniformVolume &,
-                        const bool = false) {
-    throw Exception("Library was configured without Nrrd support.");
+  static void WriteNRRD( const std::string&, const UniformVolume&, const bool = false )
+  {
+    throw Exception( "Library was configured without Nrrd support." );
   }
 #endif
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVolumeFromFile_h_included_
+#endif // #ifndef __cmtkVolumeFromFile_h_included_

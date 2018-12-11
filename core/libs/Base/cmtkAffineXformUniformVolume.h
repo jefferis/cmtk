@@ -35,10 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkXformUniformVolume.h>
+#include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -46,9 +48,10 @@ namespace cmtk {
 /** Pre-compute transformation for grid locations in a uniform volume.
  */
 class AffineXformUniformVolume :
-    /// Inherit from class to prevent copying.
-    public XformUniformVolume {
- public:
+  /// Inherit from class to prevent copying.
+  public XformUniformVolume
+{
+public:
   /// This class.
   typedef AffineXformUniformVolume Self;
 
@@ -62,35 +65,35 @@ class AffineXformUniformVolume :
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  AffineXformUniformVolume(const UniformVolume &volume,
-                           const AffineXform &xform);
-
+  AffineXformUniformVolume( const UniformVolume& volume, const AffineXform& xform );
+  
   /// Virtual destructor.
   virtual ~AffineXformUniformVolume() {}
-
+  
   /** Get transformed location of linked grid pixel.
    */
-  virtual void GetTransformedGrid(Vector3D &v, const int idxX, const int idxY,
-                                  const int idxZ) const {
-    ((v = this->m_VolumeAxesX[idxX]) += this->m_VolumeAxesY[idxY]) +=
-        this->m_VolumeAxesZ[idxZ];
+  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
+  {
+    ( (v = this->m_VolumeAxesX[idxX]) 
+      += this->m_VolumeAxesY[idxY]) 
+      += this->m_VolumeAxesZ[idxZ]; 
   }
-
+  
   /** Get transformed locations of a series (scanline) of linked grid pixels.
    */
-  virtual void GetTransformedGridRow(Vector3D *const v, const size_t numPoints,
-                                     const int idxX, const int idxY,
-                                     const int idxZ) const {
+  virtual void GetTransformedGridRow( Vector3D *const v, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) const
+  {
     Vector3D v0 = this->m_VolumeAxesY[idxY];
     v0 += this->m_VolumeAxesZ[idxZ];
-
+    
     int idx = idxX;
-    for (size_t n = 0; n < numPoints; ++n, ++idx) {
+    for ( size_t n=0; n < numPoints; ++n, ++idx ) 
+      {
       (v[n] = v0) += this->m_VolumeAxesX[idx];
-    }
+      }
   }
-
- private:
+  
+private:
   /// Axes hash for the points of a registered Volume.
   std::vector<Vector3D> m_VolumeAxesX;
 
@@ -101,6 +104,6 @@ class AffineXformUniformVolume :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef __cmtkAffineXformUniformVolume_h_included_
+#endif // #ifdef __cmtkAffineXformUniformVolume_h_included_

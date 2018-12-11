@@ -36,17 +36,16 @@
 /** \addtogroup GPU */
 //@{
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Update output image using either additive or multiplicative bias field.
-void EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage(
-    float *output, float *input, const int dims0, const int dims1,
-    const int dims2, const int degree, const int multiply, const int nargs,
-    const float *weights, const float *corrections);
+void EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
+( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections );
 
-}  // namespace cmtk
+} // namespace cmtk
 
 //@}
 
-#endif  // #ifndef
-        // __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_

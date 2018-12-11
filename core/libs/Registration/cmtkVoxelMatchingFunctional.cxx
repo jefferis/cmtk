@@ -38,58 +38,59 @@
 
 #include <assert.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
-void VoxelMatchingFunctional::InitFloating(UniformVolume::SmartPtr &floating) {
+void
+VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
+{
   FloatingGrid = floating;
-
+  
   this->FloatingDims = this->FloatingGrid->GetDims();
   this->FloatingSize = this->FloatingGrid->m_Size;
 
   this->m_FloatingCropRegionCoordinates = FloatingGrid->GetHighResCropRegion();
-  for (int dim = 0; dim < 3; ++dim) {
+  for ( int dim = 0; dim < 3; ++dim ) 
+    {
     this->FloatingInverseDelta[dim] = 1.0 / FloatingGrid->m_Delta[dim];
-    this->m_FloatingCropRegionFractional.From()[dim] =
-        this->m_FloatingCropRegionCoordinates.From()[dim] *
-        FloatingInverseDelta[dim];
-    this->m_FloatingCropRegionFractional.To()[dim] =
-        this->m_FloatingCropRegionCoordinates.To()[dim] *
-        FloatingInverseDelta[dim];
-  }
-
+    this->m_FloatingCropRegionFractional.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * FloatingInverseDelta[dim];
+    this->m_FloatingCropRegionFractional.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * FloatingInverseDelta[dim];
+    }
+  
   FloatingDataClass = floating->GetData()->GetDataClass();
 }
 
-void VoxelMatchingFunctional::InitReference(
-    UniformVolume::SmartPtr &reference) {
+void
+VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
+{
   ReferenceGrid = reference;
 
   this->ReferenceDims = this->ReferenceGrid->GetDims();
   this->ReferenceSize = this->ReferenceGrid->m_Size;
   this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
 
-  for (int dim = 0; dim < 3; ++dim)
+  for ( int dim = 0; dim < 3; ++dim )
     this->ReferenceInvDelta[dim] = 1.0 / ReferenceGrid->m_Delta[dim];
 
   ReferenceDataClass = reference->GetData()->GetDataClass();
 }
 
-const DataGrid::RegionType VoxelMatchingFunctional::GetReferenceGridRange(
-    const UniformVolume::CoordinateRegionType &region) const {
+const DataGrid::RegionType
+VoxelMatchingFunctional::GetReferenceGridRange
+( const UniformVolume::CoordinateRegionType& region ) const
+{
   DataGrid::IndexType from, to;
-  for (int i = 0; i < 3; ++i) {
-    from[i] = std::max(this->m_ReferenceCropRegion.From()[i],
-                       static_cast<Types::GridIndexType>(
-                           region.From()[i] * this->ReferenceInvDelta[i]));
-    to[i] = 1 + std::min(this->m_ReferenceCropRegion.To()[i] - 1,
-                         1 + static_cast<Types::GridIndexType>(
-                                 region.To()[i] * this->ReferenceInvDelta[i]));
-  }
+  for ( int i = 0; i < 3; ++i )
+    {
+    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<Types::GridIndexType>( region.From()[i] * this->ReferenceInvDelta[i] ) );
+    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<Types::GridIndexType>( region.To()[i] * this->ReferenceInvDelta[i] ) );
+    }
 
-  return DataGrid::RegionType(from, to);
+  return DataGrid::RegionType( from, to );
 }
 
-}  // namespace cmtk
+} // namespace cmtk

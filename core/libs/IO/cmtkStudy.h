@@ -35,108 +35,112 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkAffineXform.h>
-#include <Base/cmtkLandmarkList.h>
 #include <Base/cmtkMacros.h>
-#include <Base/cmtkSegmentationLabel.h>
-#include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAffineXform.h>
 #include <Base/cmtkWarpXform.h>
+#include <Base/cmtkLandmarkList.h>
+#include <Base/cmtkSegmentationLabel.h>
 
 #include <IO/cmtkFileFormat.h>
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** Constants to identify color table.
  */
-enum {
-  /// Grayscale color table.
+enum
+{
+/// Grayscale color table.
   PALETTE_GRAY = 0,
-  /// Red color table.
+/// Red color table.
   PALETTE_RED = 1,
-  /// Green color table.
+/// Green color table.
   PALETTE_GREEN = 2,
-  /// Blue color table.
+/// Blue color table.
   PALETTE_BLUE = 3,
-  /// Rainbow color table.
+/// Rainbow color table.
   PALETTE_RAINBOW = 4,
-  /// Color table for labels.
+/// Color table for labels.
   PALETTE_LABELS = 5
 };
 
 /** Class for parameters of a general imaging study.
  */
-class Study {
- public:
+class Study
+{
+public:
   /// This class.
   typedef Study Self;
 
   /// Path of this study in the file system.
-  cmtkGetSetMacro(std::string, FileSystemPath);
+  cmtkGetSetMacro(std::string,FileSystemPath);
 
   /// Short, memorable name assigned to this study.
-  cmtkGetSetMacro(std::string, Name);
+  cmtkGetSetMacro(std::string,Name);
 
   /// Textual description of study file type.
-  cmtkGetSetMacro(std::string, Description);
+  cmtkGetSetMacro(std::string,Description);
 
   /// Textual description of study file type.
   cmtkGetSetMacroString(Modality);
 
   /// Volume data associated with this study.
-  cmtkGetSetMacro(UniformVolume::SmartPtr, Volume);
+  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume);
 
   /// Landmark list.
-  cmtkGetSetMacro(LandmarkList::SmartPtr, LandmarkList);
+  cmtkGetSetMacro(LandmarkList::SmartPtr,LandmarkList);
 
   /// Voxel dimensions of the volume image.
   DataGrid::IndexType m_Dims;
 
   /// Minimum value.
-  cmtkGetSetMacro(Types::DataItem, MinimumValue);
+  cmtkGetSetMacro(Types::DataItem,MinimumValue);
 
   /// Maximum value.
-  cmtkGetSetMacro(Types::DataItem, MaximumValue);
+  cmtkGetSetMacro(Types::DataItem,MaximumValue);
 
   /// Pixel padding value.
-  cmtkGetSetMacro(bool, Padding);
+  cmtkGetSetMacro(bool,Padding);
 
   /// Pixel padding value.
-  cmtkGetSetMacro(Types::DataItem, PaddingValue);
+  cmtkGetSetMacro(Types::DataItem,PaddingValue);
 
   /// Flag for user-defined colormap.
-  cmtkGetSetMacro(bool, HaveUserColorMap);
+  cmtkGetSetMacro(bool,HaveUserColorMap);
 
   /// Index of colormap.
-  cmtkGetSetMacro(char, StandardColormap);
+  cmtkGetSetMacro(char,StandardColormap);
 
   /// Is colormap reversed?
-  cmtkGetSetMacro(bool, ReverseColormap);
+  cmtkGetSetMacro(bool,ReverseColormap);
 
   /// Value corresponding to "black".
-  cmtkGetSetMacro(Types::DataItem, Black);
+  cmtkGetSetMacro(Types::DataItem,Black);
 
   /// Value corresponding to "white".
-  cmtkGetSetMacro(Types::DataItem, White);
+  cmtkGetSetMacro(Types::DataItem,White);
 
   /// Gamma value.
-  cmtkGetSetMacro(double, Gamma);
+  cmtkGetSetMacro(double,Gamma);
 
   /// Index of currently displayed image.
-  cmtkGetSetMacro(unsigned int, DisplayedImageIndex);
+  cmtkGetSetMacro(unsigned int,DisplayedImageIndex);
 
   /// Displayed image zoom.
-  cmtkGetSetMacro(unsigned int, ZoomFactor);
+  cmtkGetSetMacro(unsigned int,ZoomFactor);
 
   /// Slice normal coordinate axis.
-  cmtkGetSetMacro(int, SliceNormal);
+  cmtkGetSetMacro(int,SliceNormal);
 
- public:
+public:
   /// Smart pointer to Study.
   typedef SmartPointer<Study> SmartPtr;
 
@@ -144,7 +148,7 @@ class Study {
   Study();
 
   /// Constructor: Construct study from image file.
-  Study(const std::string &fileSystemPath, const std::string &name = "");
+  Study( const std::string& fileSystemPath, const std::string& name = "" );
 
   /// Virtual destructor.
   virtual ~Study() {}
@@ -156,42 +160,47 @@ class Study {
    *\return True if reading was successful; the "Volume" field has a pointer to
    * the resulting image volume.
    */
-  bool ReadVolume(const bool reRead = false, const char *orientation = NULL);
+  bool ReadVolume( const bool reRead = false, const char* orientation = NULL );
 
   /** Set study name; create name if no name given.
    * This function sets the name of this study. If no name is given (name
-   * parameter is NULL pointer), then a name is constructed from the file
+   * parameter is NULL pointer), then a name is constructed from the file 
    * system path of this study.
    */
-  std::string
-  SetMakeName(const std::string &name = "" /*!< New study name */, const int
-                                                                       suffix =
-                                                                           0 /*!< Unique numerical suffix to be added to study name if other studies with the same name exist. */);
+  std::string SetMakeName( const std::string& name = "" /*!< New study name */, const int suffix = 0 /*!< Unique numerical suffix to be added to study name if other studies with the same name exist. */ );
 
   /// Static study reader function.
-  static Self *Read(const std::string &path) { return new Self(path); }
+  static Self* Read( const std::string& path )
+  {
+    return new Self( path );
+  }
 
   /** Copy colormap information from another study object.
    */
-  void CopyColormap(const Self *other);
+  void CopyColormap( const Self* other );
 
   /** Get colormap from label list.
    */
-  void SetFromLabelMap(const SegmentationLabelMap &lblMap) {
+  void SetFromLabelMap( const SegmentationLabelMap& lblMap ) 
+  {
     this->m_HaveUserColorMap = true;
     UserLabelMap = lblMap;
   }
 
   /// Get user-defined label map.
-  const SegmentationLabelMap &GetUserLabelMap() const { return UserLabelMap; }
-
- private:
+  const SegmentationLabelMap& GetUserLabelMap() const 
+  {
+    return UserLabelMap; 
+  }
+  
+private:
   /// User-defined label and colormap.
   SegmentationLabelMap UserLabelMap;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkStudy_h_included_
+#endif // #ifndef __cmtkStudy_h_included_
+

@@ -32,47 +32,72 @@
 
 #include "cmtkQtTriplanarViewer.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Qt */
 //@{
 
-int QtTriplanarViewer ::ExecuteBatchMode(const int argc, char *argv[]) {
+int
+QtTriplanarViewer
+::ExecuteBatchMode( const int argc, char* argv[] )
+{
   this->m_BatchMode = true;
-  for (int i = 0; i < argc; ++i) {
-    if (!strcmp(argv[i], "load")) {
-      this->slotAddStudy(argv[++i]);
-    } else if (!strcmp(argv[i], "goto-pixel")) {
-      this->slotGoToPixel(argv[++i]);
-    } else if (!strcmp(argv[i], "goto-location")) {
-      this->slotGoToLocation(argv[++i]);
-    } else if (!strcmp(argv[i], "colormap")) {
-      this->slotSetColormap(argv[++i]);
-    } else if (!strcmp(argv[i], "window-level")) {
-      this->slotSetWindowLevel(argv[++i]);
-    } else if (!strcmp(argv[i], "zoom")) {
-      this->slotSetZoom(atoi(argv[++i]));
-    } else if (!strcmp(argv[i], "crosshair")) {
-      const char *chOnOff = argv[++i];
-      this->slotSetCrosshairMode(!strcmp(chOnOff, "on") ||
-                                 !strcmp(chOnOff, "yes") ||
-                                 !strcmp(chOnOff, "true"));
-    } else if (!strcmp(argv[i], "checkerboard")) {
-      const char *chOnOff = argv[++i];
-      this->slotSetCheckerboardMode(!strcmp(chOnOff, "on") ||
-                                    !strcmp(chOnOff, "yes") ||
-                                    !strcmp(chOnOff, "true"));
-    } else if (!strcmp(argv[i], "export-axial")) {
-      this->slotExportImage(argv[++i], 1);
-    } else if (!strcmp(argv[i], "export-coronal")) {
-      this->slotExportImage(argv[++i], 2);
-    } else if (!strcmp(argv[i], "export-sagittal")) {
-      this->slotExportImage(argv[++i], 3);
-    } else if (!strcmp(argv[i], "export-panel")) {
-      this->slotExportImage(argv[++i], 4);
+  for ( int i = 0; i < argc; ++i )
+    {
+    if ( !strcmp( argv[i], "load" ) )
+      {
+      this->slotAddStudy( argv[++i] );      
+      }
+    else if ( !strcmp( argv[i], "goto-pixel" ) )
+      {
+      this->slotGoToPixel( argv[++i] );
+      }
+    else if ( !strcmp( argv[i], "goto-location" ) )
+      {
+      this->slotGoToLocation( argv[++i] );
+      }
+    else if ( !strcmp( argv[i], "colormap" ) )
+      {
+      this->slotSetColormap( argv[++i] );
+      }
+    else if ( !strcmp( argv[i], "window-level" ) )
+      {
+      this->slotSetWindowLevel( argv[++i] );
+      }
+    else if ( !strcmp( argv[i], "zoom" ) )
+      {
+      this->slotSetZoom( atoi( argv[++i] ) );
+      }
+    else if ( !strcmp( argv[i], "crosshair" ) )
+      {
+      const char* chOnOff = argv[++i];
+      this->slotSetCrosshairMode( ! strcmp( chOnOff, "on" ) || ! strcmp( chOnOff, "yes" ) || ! strcmp( chOnOff, "true" ) );
+      }
+    else if ( !strcmp( argv[i], "checkerboard" ) )
+      {
+      const char* chOnOff = argv[++i];
+      this->slotSetCheckerboardMode( ! strcmp( chOnOff, "on" ) || ! strcmp( chOnOff, "yes" ) || ! strcmp( chOnOff, "true" ) );
+      }
+    else if ( !strcmp( argv[i], "export-axial" ) )
+      {
+      this->slotExportImage( argv[++i], 1 );
+      }
+    else if ( !strcmp( argv[i], "export-coronal" ) )
+      {
+      this->slotExportImage( argv[++i], 2 );
+      }
+    else if ( !strcmp( argv[i], "export-sagittal" ) )
+      {
+      this->slotExportImage( argv[++i], 3 );
+      }
+    else if ( !strcmp( argv[i], "export-panel" ) )
+      {
+      this->slotExportImage( argv[++i], 4 );
+      }
     }
-  }
   return 0;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

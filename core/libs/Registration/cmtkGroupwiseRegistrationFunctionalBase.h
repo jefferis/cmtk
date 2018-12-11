@@ -44,21 +44,23 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Base class for groupwise registration functionals.
- * This class provides the lowest-level components of groupwise image
- * registration, such as image IO, preprocessing, generic access to
- * transformation and image vectors, and parameters common to all algorithms
- * such as zero-sum optimization.
+ * This class provides the lowest-level components of groupwise image registration, such as
+ * image IO, preprocessing, generic access to transformation and image vectors, and parameters
+ * common to all algorithms such as zero-sum optimization.
  */
-class GroupwiseRegistrationFunctionalBase :
-    /** Inherit from abstract functional base class. */
-    public Functional {
- public:
+class GroupwiseRegistrationFunctionalBase : 
+  /** Inherit from abstract functional base class. */
+  public Functional
+{
+public:
   /// Type of parent class.
   typedef Functional Superclass;
 
@@ -78,20 +80,23 @@ class GroupwiseRegistrationFunctionalBase :
   virtual ~GroupwiseRegistrationFunctionalBase();
 
   /** Set flag for freeing and rereading images.
-   * If registration uses smoothed images, the original data can be freed after
-   * smoothing and reread from the file system if needed again. This saves
-   * roughly 1/2 of memory allocation.
+   * If registration uses smoothed images, the original data can be freed after smoothing
+   * and reread from the file system if needed again. This saves roughly 1/2 of memory
+   * allocation.
    */
-  virtual void SetFreeAndRereadImages(const bool flag = true) {
+  virtual void SetFreeAndRereadImages( const bool flag = true )
+  {
     this->m_FreeAndRereadImages = flag;
   }
 
   /// Set flag for repeated histogram-based intensity matching.
-  virtual void SetRepeatIntensityHistogramMatching(const bool flag = true) {
+  virtual void SetRepeatIntensityHistogramMatching( const bool flag = true )
+  {
     this->m_RepeatIntensityHistogramMatching = flag;
-    if (flag) {
-      this->SetFreeAndRereadImages(false);
-    }
+    if ( flag )
+      {
+      this->SetFreeAndRereadImages( false );
+      }
   }
 
   /** Create template grid based on target images.
@@ -103,155 +108,157 @@ class GroupwiseRegistrationFunctionalBase :
    *\param downsample Downsampling factor. The voxel size in the template
    * image is increased by this factor.
    */
-  virtual void CreateTemplateGridFromTargets(
-      const std::vector<UniformVolume::SmartPtr> &targets,
-      const int downsample = 0);
+  virtual void CreateTemplateGridFromTargets( const std::vector<UniformVolume::SmartPtr>& targets, const int downsample = 0 );
 
   /** Create template grid based on geometry.
    */
-  virtual void CreateTemplateGrid(
-      const DataGrid::IndexType &dims /*!< Template grid dimensions */,
-      const UniformVolume::CoordinateVectorType
-          &deltas /*!< Template grid deltas (i.e., pixel size). */);
+  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims /*!< Template grid dimensions */, const UniformVolume::CoordinateVectorType& deltas /*!< Template grid deltas (i.e., pixel size). */ );
 
   /** Set template grid.
    */
-  virtual void SetTemplateGrid(
-      UniformVolume::SmartPtr
-          &templateGrid /*!< The template grid that defines size and resolution
-                           for the implicit registration template. */
-      ,
-      const int downsample = 1 /*!< Downsampling factor */,
-      const bool useTemplateData =
-          false /*!< Flag to use template data, not just grid */);
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid /*!< The template grid that defines size and resolution for the implicit registration template. */, 
+				const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template data, not just grid */ );
 
   /** Retrieve the template grid.
    */
-  virtual UniformVolume::SmartPtr &GetTemplateGrid() {
-    return this->m_TemplateGrid;
+  virtual UniformVolume::SmartPtr& GetTemplateGrid() 
+  { 
+    return this->m_TemplateGrid; 
   }
 
   /** Retrieve the template grid.
    */
-  virtual const UniformVolume *GetTemplateGrid() const {
-    return this->m_TemplateGrid;
+  virtual const UniformVolume* GetTemplateGrid() const
+  {
+    return this->m_TemplateGrid; 
   }
 
   /** Set target images.
    *\param tImages Vector of all images to be registered.
    */
-  virtual void SetTargetImages(std::vector<UniformVolume::SmartPtr> &tImages);
+  virtual void SetTargetImages( std::vector<UniformVolume::SmartPtr>& tImages );
 
   /** Get the original target images.
    */
-  virtual void GetOriginalTargetImages(
-      std::vector<UniformVolume::SmartPtr> &tImages) {
+  virtual void GetOriginalTargetImages( std::vector<UniformVolume::SmartPtr>& tImages )
+  {
     tImages = this->m_OriginalImageVector;
-  }
+  }  
 
   /** Get the original target images.
    */
-  virtual std::vector<UniformVolume::SmartPtr> &GetOriginalTargetImages() {
+  virtual std::vector<UniformVolume::SmartPtr>& GetOriginalTargetImages()
+  {
     return this->m_OriginalImageVector;
-  }
+  }  
 
   /** Get number of target images.
    */
-  virtual size_t GetNumberOfTargetImages() const {
+  virtual size_t GetNumberOfTargetImages() const
+  {
     return this->m_OriginalImageVector.size();
-  }
+  }  
 
   /** Get a smart pointer to one original target image.
    */
-  virtual UniformVolume::SmartPtr GetOriginalTargetImage(
-      const size_t imageIdx) {
+  virtual UniformVolume::SmartPtr GetOriginalTargetImage( const size_t imageIdx )
+  {
     return this->m_OriginalImageVector[imageIdx];
-  }
+  }  
 
   /** Get a constant pointer to one original target image.
    */
-  virtual const UniformVolume *GetOriginalTargetImage(
-      const size_t imageIdx) const {
+  virtual const UniformVolume* GetOriginalTargetImage( const size_t imageIdx ) const
+  {
     return this->m_OriginalImageVector[imageIdx];
-  }
+  }  
 
   /** Set Gaussian smoothing kernel width for target images.
    * Non-positive values turn off smoothing.
    */
-  virtual void SetGaussianSmoothImagesSigma(
-      const Types::Coordinate gaussianSmoothImagesSigma) {
+  virtual void SetGaussianSmoothImagesSigma( const Types::Coordinate gaussianSmoothImagesSigma )
+  {
     this->m_GaussianSmoothImagesSigma = gaussianSmoothImagesSigma;
   }
 
-  /** Set user-defined image background value to be substituted outside the
-   * field of view. */
-  virtual void SetUserBackgroundValue(const byte value = 0) {
+  /** Set user-defined image background value to be substituted outside the field of view. */
+  virtual void SetUserBackgroundValue( const byte value = 0 )
+  {
     this->m_UserBackgroundValue = value;
     this->m_UserBackgroundFlag = true;
   }
 
   /** Unset user-defined image background value. */
-  virtual void UnsetUserBackgroundValue() {
+  virtual void UnsetUserBackgroundValue()
+  {
     this->m_UserBackgroundFlag = false;
   }
 
   /// Set flag for zero-sum updates.
-  virtual void SetForceZeroSum(const bool forceZeroSum = true) {
+  virtual void SetForceZeroSum( const bool forceZeroSum = true )
+  {
     this->m_ForceZeroSum = forceZeroSum;
   }
 
   /// Set count for restricted zero-sum updates.
-  virtual void SetForceZeroSumFirstN(const size_t forceZeroSumFirstN) {
+  virtual void SetForceZeroSumFirstN( const size_t forceZeroSumFirstN )
+  {
     this->m_ForceZeroSumFirstN = forceZeroSumFirstN;
-    this->m_ForceZeroSum =
-        this->m_ForceZeroSum || (this->m_ForceZeroSumFirstN > 0);
+    this->m_ForceZeroSum = this->m_ForceZeroSum || (this->m_ForceZeroSumFirstN>0);
   }
 
   /** Set range of currently active images.
    * The "to" parameter is the index of the last active image plus one, so
    * it can be used directly as the upper bound in a "for" loop.
    */
-  virtual void SetActiveImagesFromTo(const size_t from, const size_t to) {
+  virtual void SetActiveImagesFromTo( const size_t from, const size_t to )
+  {
     this->m_ActiveImagesFrom = from;
     this->m_ActiveImagesTo = to;
   }
 
   /** Set range of currently active transformations.
-   * The "to" parameter is the index of the last active transformation plus one,
-   * so it can be used directly as the upper bound in a "for" loop.
+   * The "to" parameter is the index of the last active transformation plus one, so
+   * it can be used directly as the upper bound in a "for" loop.
    */
-  virtual void SetActiveXformsFromTo(const size_t from, const size_t to) {
+  virtual void SetActiveXformsFromTo( const size_t from, const size_t to )
+  {
     this->m_ActiveXformsFrom = from;
     this->m_ActiveXformsTo = to;
   }
 
   /** Set probabilistic sampling density.
    */
-  virtual void SetProbabilisticSampleDensity(const float density) {
+  virtual void SetProbabilisticSampleDensity( const float density )
+  {
     this->m_ProbabilisticSampleDensity = density;
   }
 
   /** Set number of iterations after which probabilistic samples are updated.
    */
-  virtual void SetProbabilisticSampleUpdatesAfter(const int iterations) {
+  virtual void SetProbabilisticSampleUpdatesAfter( const int iterations )
+  {
     this->m_ProbabilisticSampleUpdatesAfter = iterations;
     this->m_ProbabilisticSampleUpdatesSince = 0;
   }
 
   /** Set transformations.
    */
-  void SetXforms(const std::vector<Xform::SmartPtr> &xformVector) {
-    this->m_XformVector.resize(xformVector.size());
-    for (size_t i = 0; i < this->m_XformVector.size(); ++i) {
+  void SetXforms( const std::vector<Xform::SmartPtr>& xformVector )
+  {
+    this->m_XformVector.resize( xformVector.size() );
+    for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
+      {
       this->m_XformVector[i] = xformVector[i];
-    }
+      }
   }
 
   /** Get coordinate transformation for one image in the group.
    *\param idx Index of the volume/transformation.
    *\return Transformation for the selected volume.
    */
-  virtual const Xform *GetGenericXformByIndex(const size_t idx) const {
+  virtual const Xform* GetGenericXformByIndex( const size_t idx ) const
+  {
     return this->m_XformVector[idx];
   }
 
@@ -259,7 +266,8 @@ class GroupwiseRegistrationFunctionalBase :
    *\param idx Index of the volume/transformation.
    *\return Transformation for the selected volume.
    */
-  virtual Xform::SmartPtr GetGenericXformByIndex(const size_t idx) {
+  virtual Xform::SmartPtr GetGenericXformByIndex( const size_t idx )
+  {
     return this->m_XformVector[idx];
   }
 
@@ -267,7 +275,8 @@ class GroupwiseRegistrationFunctionalBase :
    *\param idx Index of the volume/transformation.
    *\return Transformation for the selected volume.
    */
-  virtual const Xform *GetGenericActiveXformByIndex(const size_t idx) const {
+  virtual const Xform* GetGenericActiveXformByIndex( const size_t idx ) const
+  {
     return this->m_XformVector[idx + this->m_ActiveXformsFrom];
   }
 
@@ -275,66 +284,67 @@ class GroupwiseRegistrationFunctionalBase :
    *\param idx Index of the volume/transformation.
    *\return Transformation for the selected volume.
    */
-  virtual Xform::SmartPtr GetGenericActiveXformByIndex(const size_t idx) {
+  virtual Xform::SmartPtr GetGenericActiveXformByIndex( const size_t idx )
+  {
     return this->m_XformVector[idx + this->m_ActiveXformsFrom];
   }
 
   /** Get parameter stepping in milimeters.
    *\param idx Parameter index.
-   *\param mmStep Desired step length. This is typically used as a scalar factor
-   *for the default (1mm) step size. \return Step of given parameter that
-   *corresponds to 1 mm effective motion.
+   *\param mmStep Desired step length. This is typically used as a scalar factor for the default (1mm) step size.
+   *\return Step of given parameter that corresponds to 1 mm effective motion.
    */
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
     const size_t xformIdx = idx / this->m_ParametersPerXform;
-    if ((xformIdx >= this->m_ActiveXformsFrom) &&
-        (xformIdx < this->m_ActiveXformsTo)) {
-      return this->m_XformVector[xformIdx]->GetParamStep(
-          idx % this->m_ParametersPerXform,
-          this->m_ImageVector[xformIdx]->m_Size, mmStep);
-    } else {
+    if ( (xformIdx >= this->m_ActiveXformsFrom) && (xformIdx < this->m_ActiveXformsTo) )
+      {
+      return this->m_XformVector[xformIdx]->GetParamStep( idx % this->m_ParametersPerXform, this->m_ImageVector[xformIdx]->m_Size, mmStep );
+      }
+    else
+      {
       return 0.0;
-    }
+      }
   }
-
+  
   /** Return the functional's parameter vector dimension.
    * We assume that all transformations have the same number of parameters.
    * This is true for affine transformations.
    */
-  virtual size_t ParamVectorDim() const {
-    return this->m_ParametersPerXform * this->m_XformVector.size();
+  virtual size_t ParamVectorDim() const 
+  { 
+    return this->m_ParametersPerXform * this->m_XformVector.size(); 
   }
-
+  
   /** Return the number of variable parameters of the transformation.
-   *\return This function returns the same value as ParamVectorDim().
+   *\return This function returns the same value as ParamVectorDim(). 
    *  Non-varying parameters (e.g., rotation centers) are handled via
    *  parameter step values.
    */
-  virtual size_t VariableParamVectorDim() const {
+  virtual size_t VariableParamVectorDim() const
+  { 
     return this->ParamVectorDim();
   }
-
+  
   /** Get parameter vector.
    */
-  virtual void GetParamVector(CoordinateVector &v);
+  virtual void GetParamVector( CoordinateVector& v );
 
   /** Set parameter vector.
    */
-  virtual void SetParamVector(CoordinateVector &v);
+  virtual void SetParamVector( CoordinateVector& v );
 
   /** Set parameter vector for a given transformation.
    */
-  virtual void SetParamVector(CoordinateVector &v, const size_t xformIdx);
+  virtual void SetParamVector( CoordinateVector& v, const size_t xformIdx );
 
   /** Set single parameter value.
    */
-  virtual void SetParameter(const size_t param, const Types::Coordinate value);
+  virtual void SetParameter( const size_t param, const Types::Coordinate value );
 
   /** Set single parameter value with separate xform and parameter index.
    */
-  virtual void SetParameter(const size_t xform, const size_t param,
-                            const Types::Coordinate value);
+  virtual void SetParameter( const size_t xform, const size_t param, const Types::Coordinate value );
 
   /** Evaluate functional with given parameter vector.
    * This function sets the current parameter vector, reformats all image data
@@ -343,7 +353,7 @@ class GroupwiseRegistrationFunctionalBase :
    *\param v Parameter vector.
    *\return Const function value for given parameters.
    */
-  virtual Self::ReturnType EvaluateAt(CoordinateVector &v);
+  virtual Self::ReturnType EvaluateAt ( CoordinateVector& v );
 
   /** Compute functional value and gradient.
    *\param v Parameter vector.
@@ -352,26 +362,22 @@ class GroupwiseRegistrationFunctionalBase :
    *  is 1 mm.
    *\return Const function value for given parameters.
    */
-  virtual Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &g,
-      const Types::Coordinate step = 1);
+  virtual Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
 
   /** Allocate storage for reformatted images etc.
-   * This function must be called AFTER setting template grid and target images,
-   * but BEFORE any calls to Evaluate, EvaluateAt, or EvaluateWithGradient.
+   * This function must be called AFTER setting template grid and target images, but BEFORE
+   * any calls to Evaluate, EvaluateAt, or EvaluateWithGradient.
    */
   virtual void AllocateStorage();
 
   /// Write all images for debug purposes.
   void DebugWriteImages();
 
- protected:
-  /// Number of threads in thread pool (for allocation of temporary thread
-  /// memory).
+protected:
+  /// Number of threads in thread pool (for allocation of temporary thread memory).
   size_t m_NumberOfThreads;
 
-  /// Number of tasks for thread pool (for allocation of task arguments and
-  /// results).
+  /// Number of tasks for thread pool (for allocation of task arguments and results).
   size_t m_NumberOfTasks;
 
   /// Flag for freeing and re-reading original images if using smoothed data.
@@ -379,7 +385,7 @@ class GroupwiseRegistrationFunctionalBase :
 
   /// Flag for enforcing zero-sum parameter changes.
   bool m_ForceZeroSum;
-
+  
   /// Restrict zero-sum computation to first N images.
   size_t m_ForceZeroSumFirstN;
 
@@ -396,7 +402,7 @@ class GroupwiseRegistrationFunctionalBase :
   size_t m_ActiveXformsTo;
 
   /// Enforce gradient to be zero-sum over all images.
-  virtual void ForceZeroSumGradient(CoordinateVector &g) const;
+  virtual void ForceZeroSumGradient( CoordinateVector& g ) const;
 
   /// Number of pixels in template.
   size_t m_TemplateNumberOfPixels;
@@ -410,8 +416,7 @@ class GroupwiseRegistrationFunctionalBase :
   /// Flag for use of template pixel data in registration.
   bool m_UseTemplateData;
 
-  /// Prepared (smoothed, scaled etc.) data of the template image if used in
-  /// registration.
+  /// Prepared (smoothed, scaled etc.) data of the template image if used in registration.
   std::vector<byte> m_TemplateData;
 
   /// Vector of image volumes with pre-scaled pixel values.
@@ -429,7 +434,7 @@ class GroupwiseRegistrationFunctionalBase :
   /// Pixel indices of probabilistic samples.
   std::vector<size_t> m_ProbabilisticSamples;
 
-  /** Number of iterations (calls to Evaluate()) after which probabilistic
+  /** Number of iterations (calls to Evaluate()) after which probabilistic 
    * samples are updated.
    */
   int m_ProbabilisticSampleUpdatesAfter;
@@ -446,7 +451,7 @@ class GroupwiseRegistrationFunctionalBase :
   virtual void UpdateProbabilisticSamples();
 
   /** Interpolate all moving images.
-   * By default, this only calls InterpolateImage() for each image.
+   * By default, this only calls InterpolateImage() for each image. 
    */
   virtual void InterpolateAllImages();
 
@@ -457,14 +462,10 @@ class GroupwiseRegistrationFunctionalBase :
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage(const size_t idx, byte *const destination) {
-    UNUSED(idx);
-    UNUSED(destination);
-  }  // cannot make this pure virtual because we need to instantiate for affine
-     // initialization
+  virtual void InterpolateImage( const size_t idx, byte* const destination ) { UNUSED(idx); UNUSED(destination); } // cannot make this pure virtual because we need to instantiate for affine initialization
 
   /// Vector of reformatted and rescaled image data.
-  std::vector<byte *> m_Data;
+  std::vector<byte*> m_Data;
 
   /// Temporary data allocated at correct size of template grid.
   std::vector<byte> m_TempData;
@@ -477,7 +478,7 @@ class GroupwiseRegistrationFunctionalBase :
 
   /// User-defined value to fill regions outside FOV.
   byte m_UserBackgroundValue;
-
+  
   /// Flag for user-defined background value.
   bool m_UserBackgroundFlag;
 
@@ -491,17 +492,15 @@ class GroupwiseRegistrationFunctionalBase :
   virtual bool Wiggle();
 
   /// Prepare data for one image.
-  virtual UniformVolume::SmartPtr PrepareSingleImage(
-      UniformVolume::SmartPtr &image);
+  virtual UniformVolume::SmartPtr PrepareSingleImage( UniformVolume::SmartPtr& image );
 
   /// Smooth and pre-scale target images.
   virtual void PrepareTargetImages();
 
   /// Reformat one image to a given target grid.
-  virtual const UniformVolume::SmartPtr GetReformattedImage(
-      const UniformVolume::SmartPtr &targetGrid, const size_t idx) const;
+  virtual const UniformVolume::SmartPtr GetReformattedImage( const UniformVolume::SmartPtr& targetGrid, const size_t idx ) const;
 
- private:
+private:
   /// Copy template data from TypedArray to byte vector.
   void CopyTemplateData();
 
@@ -511,6 +510,6 @@ class GroupwiseRegistrationFunctionalBase :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkGroupwiseRegistrationFunctionalBase_h_included_
+#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalBase_h_included_

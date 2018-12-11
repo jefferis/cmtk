@@ -34,87 +34,122 @@
 
 #include <limits>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-template <class T>
-size_t Histogram<T>::GetMaximumBinIndex() const {
+template<class T> 
+size_t
+Histogram<T>
+::GetMaximumBinIndex () const 
+{
   T maximum = this->m_Bins[0];
   size_t maximumIndex = 0;
-
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i) {
-    if (this->m_Bins[i] > maximum) {
-      maximum = this->m_Bins[i];
+  
+  for ( size_t i = 0; i<this->GetNumberOfBins(); ++i ) 
+    {
+    if ( this->m_Bins[ i ] > maximum ) 
+      {
+      maximum = this->m_Bins[ i ];
       maximumIndex = i;
+      }
     }
-  }
   return maximumIndex;
 }
 
-template <class T>
-double Histogram<T>::GetEntropy() const {
+template<class T>
+double
+Histogram<T>
+::GetEntropy() const 
+{
   double H = 0;
-
+  
   const T sampleCount = this->SampleCount();
-  if (!sampleCount) return std::numeric_limits<double>::signaling_NaN();
-
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i) {
-    if (this->m_Bins[i]) {
+  if ( ! sampleCount ) 
+    return std::numeric_limits<double>::signaling_NaN();
+  
+  for ( size_t i=0; i<this->GetNumberOfBins(); ++i ) 
+    {
+    if ( this->m_Bins[i] ) 
+      {
       const double pX = ((double)this->m_Bins[i]) / sampleCount;
-      H -= pX * log(pX);
+      H -= pX*log(pX);
+      }
     }
-  }
   return H;
 }
 
-template <class T>
-void Histogram<T>::AddHistogram(const Self &other) {
-  assert(this->GetNumberOfBins() == other.GetNumberOfBins());
-
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i) {
+template<class T> 
+void
+Histogram<T>
+::AddHistogram
+( const Self& other )
+{
+  assert( this->GetNumberOfBins() == other.GetNumberOfBins() );
+  
+  for ( size_t i = 0; i<this->GetNumberOfBins(); ++i ) 
+    {
     this->m_Bins[i] += other.m_Bins[i];
-  }
+    }
 }
 
-template <class T>
-void Histogram<T>::RemoveHistogram(const Self &other) {
-  assert(this->GetNumberOfBins() == other.GetNumberOfBins());
-
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i) {
-    assert(this->m_Bins[i] >= other.m_Bins[i]);
+template<class T> 
+void 
+Histogram<T>
+::RemoveHistogram
+( const Self& other ) 
+{
+  assert( this->GetNumberOfBins() == other.GetNumberOfBins() );
+  
+  for ( size_t i = 0; i<this->GetNumberOfBins(); ++i ) 
+    {
+    assert( this->m_Bins[i] >= other.m_Bins[i] );
     this->m_Bins[i] -= other.m_Bins[i];
-  }
+    }
 }
 
-template <class T>
-void Histogram<T>::Normalize(const T normalizeTo) {
+template<class T>
+void
+Histogram<T>
+::Normalize
+( const T normalizeTo ) 
+{
   T sampleCount = this->SampleCount();
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i)
-    (this->m_Bins[i] *= normalizeTo) /= sampleCount;
+  for ( size_t i = 0; i < this->GetNumberOfBins(); ++i )
+    ( this->m_Bins[ i ] *= normalizeTo ) /= sampleCount;
 }
 
-template <class T>
-void Histogram<T>::NormalizeMaximum(const T normalizeTo) {
+template<class T>
+void
+Histogram<T>
+::NormalizeMaximum
+( const T normalizeTo ) 
+{
   T maximum = this->GetMaximumBinValue();
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i)
-    (this->m_Bins[i] *= normalizeTo) /= maximum;
+  for ( size_t i = 0; i < this->GetNumberOfBins(); ++i )
+    ( this->m_Bins[i] *= normalizeTo ) /= maximum;
 }
 
-template <class T>
-Types::DataItem Histogram<T>::GetPercentile(
-    const Types::DataItem percentile) const {
+template<class T>
+Types::DataItem 
+Histogram<T>
+::GetPercentile( const Types::DataItem percentile ) const
+{
   const Types::DataItem threshold = percentile * this->SampleCount();
   Types::DataItem cumulative = 0;
-  for (size_t i = 0; i < this->GetNumberOfBins(); ++i) {
+  for ( size_t i = 0; i < this->GetNumberOfBins(); ++i )
+    {
     cumulative += (*this)[i];
-    if (cumulative >= threshold) return this->BinToValue(i);
-  }
+    if ( cumulative >= threshold )
+      return this->BinToValue( i );
+    }
 
-  return this->m_BinsLowerBound +
-         this->m_BinWidth * (this->GetNumberOfBins() - 1);
+  return this->m_BinsLowerBound + this->m_BinWidth * (this->GetNumberOfBins() - 1);
 }
+
 
 template class Histogram<int>;
 template class Histogram<unsigned int>;
@@ -122,4 +157,4 @@ template class Histogram<long int>;
 template class Histogram<float>;
 template class Histogram<double>;
 
-}  // namespace cmtk
+} // namespace cmtk

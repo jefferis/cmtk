@@ -36,48 +36,48 @@
 #include <Base/cmtkImageOperation.h>
 #include <Base/cmtkUniformVolumeGaussianFilter.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: Gaussian smoothing filter.
 class ImageOperationGaussFilter
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
-  ImageOperationGaussFilter(const Units::GaussianSigma &sigma)
-      : m_Sigma(sigma) {}
-
+  ImageOperationGaussFilter( const Units::GaussianSigma& sigma ) : m_Sigma( sigma ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    volume->SetData(UniformVolumeGaussianFilter(volume).GetFiltered3D(
-        this->m_Sigma,
-        0.001 /* kernel truncation approximation error threshold */));
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->SetData( UniformVolumeGaussianFilter( volume ).GetFiltered3D( this->m_Sigma, 0.001 /* kernel truncation approximation error threshold */ ) );
     return volume;
   }
-
+  
   /// Create a new filter based on sigma parameter.
-  static void NewSigma(const double sigma) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationGaussFilter(Units::GaussianSigma(sigma))));
+  static void NewSigma( const double sigma )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianSigma( sigma ) ) ) );
   }
-
+  
   /// Create a new filter based on full-width-at-half-maximum parameter.
-  static void NewFWHM(const double fwhm) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationGaussFilter(Units::GaussianFWHM(fwhm))));
+  static void NewFWHM( const double fwhm )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianFWHM( fwhm ) ) ) );
   }
-
- private:
+  
+private:
   /// Kernel with specified by coefficient sigma.
   Units::GaussianSigma m_Sigma;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationGaussFilter_h_included_
+#endif // #ifndef __cmtkImageOperationGaussFilter_h_included_

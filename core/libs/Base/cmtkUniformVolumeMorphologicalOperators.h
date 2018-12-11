@@ -35,51 +35,46 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkUniformVolume.h>
 #include <System/cmtkCannotBeCopied.h>
+#include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Morphological operators acting on a 3D volume with known grid spacings.
- * This class provides implementations of morphological operators that take into
- * account the spacing of grid points (i.e., pixel size). These operators may be
- * preferable to the ones in cmtk::DataGridMorphologicalOperators in cases where
- * the data grid is anisotropic.
+ * This class provides implementations of morphological operators that take into account
+ * the spacing of grid points (i.e., pixel size). These operators may be preferable to the
+ * ones in cmtk::DataGridMorphologicalOperators in cases where the data grid is anisotropic.
  */
 class UniformVolumeMorphologicalOperators :
-    /// Prevent copying by inheritance.
-    private CannotBeCopied {
- public:
+  /// Prevent copying by inheritance.
+  private CannotBeCopied 
+{
+public:
   /// This class.
   typedef UniformVolumeMorphologicalOperators Self;
 
   /// Constructor: link to UniformVolume object.
-  UniformVolumeMorphologicalOperators(
-      const UniformVolume::SmartConstPtr &uniformVolume);
+  UniformVolumeMorphologicalOperators( const UniformVolume::SmartConstPtr& uniformVolume );
 
-  /// Get binary data after erosion operator using the Euclidean distance
-  /// transform.
-  TypedArray::SmartPtr GetErodedByDistance(
-      const Types::Coordinate erodeBy /*!< Erosion distance. */) const;
+  /// Get binary data after erosion operator using the Euclidean distance transform.
+  TypedArray::SmartPtr GetErodedByDistance( const Types::Coordinate erodeBy /*!< Erosion distance. */ ) const;
+  
+  /// Get multi-label data after erosion operator using the Euclidean distance transform.
+  TypedArray::SmartPtr GetErodedByDistanceMultiLabels( const Types::Coordinate erodeBy /*!< Erosion distance. */ ) const;
+  
+  /// Get binary data after dilation operator using the Euclidean distance transform.
+  TypedArray::SmartPtr GetDilatedByDistance( const Types::Coordinate dilateBy /*!< Dilation distance. */ ) const;
 
-  /// Get multi-label data after erosion operator using the Euclidean distance
-  /// transform.
-  TypedArray::SmartPtr GetErodedByDistanceMultiLabels(
-      const Types::Coordinate erodeBy /*!< Erosion distance. */) const;
-
-  /// Get binary data after dilation operator using the Euclidean distance
-  /// transform.
-  TypedArray::SmartPtr GetDilatedByDistance(
-      const Types::Coordinate dilateBy /*!< Dilation distance. */) const;
-
- private:
+private:
   /// The UniformVolume object we're working on.
   UniformVolume::SmartConstPtr m_UniformVolume;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkUniformVolumeMorphologicalOperators_h_included_
+#endif // #ifndef __cmtkUniformVolumeMorphologicalOperators_h_included_

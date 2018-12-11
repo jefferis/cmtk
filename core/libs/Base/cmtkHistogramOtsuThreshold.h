@@ -35,22 +35,24 @@
 
 #include <Base/cmtkHistogram.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-/** Class for computing binarization threshold from intensity histogram using
- *Otsu's method. \see https://en.wikipedia.org/wiki/Otsu%27s_method \see N. Otsu
- *(1979). "A threshold selection method from gray-level histograms." IEEE Trans.
- *Sys., Man., Cyber. 9 (1): 62–66. http://dx.doi.org/10.1109/TSMC.1979.4310076
- *\see D.-Y. Huang and C.-H. Wang, "Optimal multi-level thresholding using a
- *two-stage Otsu optimization approach," Pattern Recognition Letters, vol. 30,
- *no. 3, pp. 275-284, 2009. http://dx.doi.org/10.1016/j.patrec.2008.10.003
+/** Class for computing binarization threshold from intensity histogram using Otsu's method.
+ *\see https://en.wikipedia.org/wiki/Otsu%27s_method
+ *\see N. Otsu (1979). "A threshold selection method from gray-level histograms." IEEE Trans. Sys., Man., Cyber. 9 (1): 62–66. 
+ * http://dx.doi.org/10.1109/TSMC.1979.4310076
+ *\see D.-Y. Huang and C.-H. Wang, "Optimal multi-level thresholding using a two-stage Otsu optimization approach," Pattern Recognition Letters, vol. 30, no. 3, 
+ * pp. 275-284, 2009. http://dx.doi.org/10.1016/j.patrec.2008.10.003
  */
-template <class THistogram>
-class HistogramOtsuThreshold {
- public:
+template<class THistogram>
+class HistogramOtsuThreshold
+{
+public:
   /// This class.
   typedef HistogramOtsuThreshold<THistogram> Self;
 
@@ -64,20 +66,23 @@ class HistogramOtsuThreshold {
   typedef THistogram HistogramType;
 
   /// Constructor: compute and store threshold.
-  HistogramOtsuThreshold(const typename Self::HistogramType &histogram);
+  HistogramOtsuThreshold( const typename Self::HistogramType& histogram );
 
   /// Get the computed threshold.
-  Types::DataItem Get() const { return this->m_Threshold; }
-
- private:
+  Types::DataItem Get() const 
+  {
+    return this->m_Threshold;
+  }
+  
+private:
   /// Computed threshold.
   Types::DataItem m_Threshold;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkHistogramOtsuThreshold.txx"
 
-#endif  // #ifndef __cmtkHistogramOtsuThreshold_h_included_
+#endif // #ifndef __cmtkHistogramOtsuThreshold_h_included_

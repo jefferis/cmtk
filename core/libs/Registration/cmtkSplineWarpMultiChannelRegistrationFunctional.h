@@ -35,33 +35,35 @@
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 #include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
 #include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 
 #include <Base/cmtkSplineWarpXform.h>
 
-#include <System/cmtkMutexLock.h>
 #include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
 
 #include <list>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Forward declaration of class template. */
-template <class MetricFunctionalClass>
+template<class MetricFunctionalClass> 
 class SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional;
 
 /** Class for spline warp multi-channel registration functional. */
-template <class TMetricFunctional = MultiChannelRMIRegistrationFunctional<>>
+template<class TMetricFunctional = MultiChannelRMIRegistrationFunctional<> >
 class SplineWarpMultiChannelRegistrationFunctional :
-    /** Inherit from multi-channel registration functional base class. */
-    public TemplateMultiChannelRegistrationFunctional<SplineWarpXform,
-                                                      TMetricFunctional> {
- public:
+  /** Inherit from multi-channel registration functional base class. */
+  public TemplateMultiChannelRegistrationFunctional<SplineWarpXform, TMetricFunctional >
+{
+public:
   /** This class. */
   typedef SplineWarpMultiChannelRegistrationFunctional Self;
 
@@ -69,9 +71,7 @@ class SplineWarpMultiChannelRegistrationFunctional :
   typedef SmartPointer<Self> SmartPtr;
 
   /** This class. */
-  typedef TemplateMultiChannelRegistrationFunctional<SplineWarpXform,
-                                                     TMetricFunctional>
-      Superclass;
+  typedef TemplateMultiChannelRegistrationFunctional<SplineWarpXform, TMetricFunctional > Superclass;
 
   /** Metric data subclass */
   typedef typename Superclass::MetricData MetricData;
@@ -80,82 +80,82 @@ class SplineWarpMultiChannelRegistrationFunctional :
   SplineWarpMultiChannelRegistrationFunctional();
 
   /** Constructor from affine multi-channel functional. */
-  template <class TAffineMetricFunctional>
-  SplineWarpMultiChannelRegistrationFunctional(
-      AffineMultiChannelRegistrationFunctional<TAffineMetricFunctional>
-          &affineFunctional);
+  template<class TAffineMetricFunctional>
+  SplineWarpMultiChannelRegistrationFunctional
+  ( AffineMultiChannelRegistrationFunctional<TAffineMetricFunctional>& affineFunctional );
 
   /** Set initial affine transformation. */
-  virtual void SetInitialAffineTransformation(
-      const AffineXform &initialAffine) {
+  virtual void SetInitialAffineTransformation( const AffineXform& initialAffine )
+  {
     this->m_InitialAffineTransformation = initialAffine;
   }
 
   /** Set flag for entropy vs. intensity thresholding. */
-  void SetAdaptiveFixEntropyThreshold(const bool flag) {
+  void SetAdaptiveFixEntropyThreshold( const bool flag )
+  {
     this->m_AdaptiveFixEntropyThreshold = flag;
   }
 
   /** Set adaptive fixing entropy threshold factor. */
-  void SetAdaptiveFixThreshFactor(const float factor) {
+  void SetAdaptiveFixThreshFactor( const float factor )
+  {
     this->m_AdaptiveFixThreshFactor = factor;
   }
 
   /** Clear list of fixed coordinate dimensions. */
-  void ClearFixedCoordinateDimensions() {
+  void ClearFixedCoordinateDimensions()
+  {
     this->m_FixedCoordinateDimensions.clear();
   }
 
   /** Add a coordinate list of fixed coordinate dimensions. */
-  void AddFixedCoordinateDimension(const int dim) {
-    this->m_FixedCoordinateDimensions.push_back(dim);
+  void AddFixedCoordinateDimension( const int dim )
+  {
+    this->m_FixedCoordinateDimensions.push_back( dim );
   }
 
   /** Set Jacobian volume preservation constraint weight. */
-  void SetJacobianConstraintWeight(const float weight) {
+  void SetJacobianConstraintWeight( const float weight )
+  {
     this->m_JacobianConstraintWeight = weight;
   }
 
   /** Initialize transformation. */
-  virtual void InitTransformation(const Vector3D &domain,
-                                  const Types::Coordinate gridSpacing,
-                                  const bool exact);
+  virtual void InitTransformation( const Vector3D& domain, const Types::Coordinate gridSpacing, const bool exact );
 
   /** Refine transformation control point grid by factor 2. */
   virtual void RefineTransformation();
 
   /** Reset channels, clear all images. */
-  virtual void ClearAllChannels() {
+  virtual void ClearAllChannels()
+  {
     this->ClearReformattedFloatingChannels();
     Superclass::ClearAllChannels();
   }
 
   /** Compute functional value. */
   virtual typename Self::ReturnType Evaluate();
-
+  
   /** Compute functional value and gradient. */
-  virtual typename Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &g,
-      const Types::Coordinate step = 1);
+  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
 
- protected:
-  /** Update all transformation-related data after init, refine, or image
-   * change. */
-  virtual void NewReferenceChannelGeometry() {
+protected:
+  /** Update all transformation-related data after init, refine, or image change. */
+  virtual void NewReferenceChannelGeometry() 
+  {
     this->UpdateTransformationData();
   }
 
- private:
+private:
   /** Initial affine transformation. */
   AffineXform m_InitialAffineTransformation;
 
-  /** Update all transformation-related data after init, refine, or image
-   * change. */
+  /** Update all transformation-related data after init, refine, or image change. */
   virtual void UpdateTransformationData();
 
   /** Floating channels reformatted under current baseline transformation. */
-  std::vector<std::vector<float>> m_ReformattedFloatingChannels;
-
+  std::vector< std::vector<float> > m_ReformattedFloatingChannels;
+  
   /** Allocate reformatted floating channel memory. */
   virtual void AllocateReformattedFloatingChannels();
 
@@ -163,19 +163,13 @@ class SplineWarpMultiChannelRegistrationFunctional :
   virtual void ClearReformattedFloatingChannels();
 
   /** Evaluate metric after a local transformation change. */
-  typename Self::ReturnType EvaluateIncremental(
-      const SplineWarpXform *warp, MetricData &metricData,
-      const DataGrid::RegionType &region);
+  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform* warp, MetricData& metricData, const DataGrid::RegionType& region );
 
-  /** Continue metric computation and store reformatted floating channels for
-   * local recomputation. */
-  virtual void ContinueMetricStoreReformatted(MetricData &metricData,
-                                              const size_t rindex,
-                                              const Vector3D &fvector);
+  /** Continue metric computation and store reformatted floating channels for local recomputation. */
+  virtual void ContinueMetricStoreReformatted( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
 
   /** Locally undo metric computation. */
-  virtual void BacktraceMetric(MetricData &metricData,
-                               const DataGrid::RegionType &voi);
+  virtual void BacktraceMetric( MetricData& metricData, const DataGrid::RegionType& voi );
 
   /** Parameter step scale vector. */
   std::vector<Types::Coordinate> m_StepScaleVector;
@@ -189,8 +183,7 @@ class SplineWarpMultiChannelRegistrationFunctional :
   /** Threshold for adaptive parameter fixing. */
   float m_AdaptiveFixThreshFactor;
 
-  /** List of coordinate dimensions (x=0, y=1, z=2) that are fixed during
-   * optimization. */
+  /** List of coordinate dimensions (x=0, y=1, z=2) that are fixed during optimization. */
   std::list<int> m_FixedCoordinateDimensions;
 
   /** Weight for Jacobian volume preservation constraint. */
@@ -206,9 +199,7 @@ class SplineWarpMultiChannelRegistrationFunctional :
   const size_t m_NumberOfThreads;
 
   /** Thread function for gradient computation. */
-  static void EvaluateThreadFunction(void *args, const size_t taskIdx,
-                                     const size_t taskCnt,
-                                     const size_t threadIdx, const size_t);
+  static void EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Mutex lock for shared metric data object. */
   MutexLock m_MetricDataMutex;
@@ -217,41 +208,36 @@ class SplineWarpMultiChannelRegistrationFunctional :
   std::vector<SplineWarpXform::SmartPtr> m_ThreadTransformations;
 
   /** Parameters for threaded gradient computation. */
-  class EvaluateGradientThreadParameters :
-      /// Inherit from generic thread parameters.
-      public ThreadParameters<Self> {
-   public:
+  class EvaluateGradientThreadParameters : 
+    /// Inherit from generic thread parameters.
+    public ThreadParameters<Self>
+  {
+  public:
     /// Global parameter step scale factor.
     Types::Coordinate m_Step;
 
     /// Pointer to array with computed local gradient components.
-    Types::Coordinate *m_Gradient;
+    Types::Coordinate* m_Gradient;
 
     /** Current baseline parameter vector. */
-    const CoordinateVector *m_ParameterVector;
+    const CoordinateVector* m_ParameterVector;
 
     /// Current metric value.
     typename Self::ReturnType m_MetricBaseValue;
   };
 
   /** Thread function for gradient computation. */
-  static void EvaluateWithGradientThreadFunction(void *args,
-                                                 const size_t taskIdx,
-                                                 const size_t taskCnt,
-                                                 const size_t threadIdx,
-                                                 const size_t);
+  static void EvaluateWithGradientThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Make functional class with Jacobian intensity correction a friend. */
-  template <class MetricFunctionalClass>
-  friend class SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional;
+  template<class MetricFunctionalClass> friend class SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkSplineWarpMultiChannelRegistrationFunctional.txx"
 #include "cmtkSplineWarpMultiChannelRegistrationFunctionalThreadFunctions.txx"
 
-#endif  // #ifndef
-        // __cmtkSplineWarpMultiChannelRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkSplineWarpMultiChannelRegistrationFunctional_h_included_

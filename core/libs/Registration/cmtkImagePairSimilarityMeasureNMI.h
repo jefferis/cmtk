@@ -39,20 +39,23 @@
 
 #include <Base/cmtkUniformVolume.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 #ifdef _MSC_VER
-#pragma warning(disable : 4521)
+#pragma warning (disable:4521)
 #endif
 /** Base class for voxel metrics with pre-converted image data.
  */
 class ImagePairSimilarityMeasureNMI :
-    /// Inherit generic image pair similarity class.
-    public ImagePairSimilarityJointHistogram {
- public:
+  /// Inherit generic image pair similarity class.
+  public ImagePairSimilarityJointHistogram
+{
+public:
   /// This type.
   typedef ImagePairSimilarityMeasureNMI Self;
 
@@ -68,34 +71,32 @@ class ImagePairSimilarityMeasureNMI :
    *\param fltVolume The model (transformed) volume.
    *\param interpolation ID of the selected floating image interpolation.
    */
-  ImagePairSimilarityMeasureNMI(UniformVolume::SmartConstPtr &refVolume,
-                                UniformVolume::SmartConstPtr &fltVolume,
-                                const Interpolators::InterpolationEnum
-                                    interpolation = Interpolators::DEFAULT)
-      : ImagePairSimilarityJointHistogram(refVolume, fltVolume, interpolation) {
-  }
+  ImagePairSimilarityMeasureNMI( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT )
+    : ImagePairSimilarityJointHistogram( refVolume, fltVolume, interpolation )
+  {}
 
   /** Default constructor.
    */
-  ImagePairSimilarityMeasureNMI(){};
+  ImagePairSimilarityMeasureNMI() {};
 
   /** Virtual destructor.
    */
-  virtual ~ImagePairSimilarityMeasureNMI(){};
+  virtual ~ImagePairSimilarityMeasureNMI() {};
 
   /// Get the value of the metric.
-  virtual Self::ReturnType Get() const {
+  virtual Self::ReturnType Get() const 
+  {
     double HX, HY;
-
-    this->m_JointHistogram.GetMarginalEntropies(HX, HY);
+    
+    this->m_JointHistogram.GetMarginalEntropies(HX,HY);
     const double HXY = this->m_JointHistogram.GetJointEntropy();
-
-    return static_cast<Self::ReturnType>((HX + HY) / HXY);
+    
+    return static_cast<Self::ReturnType>( (HX + HY) / HXY );
   }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImagePairSimilarityMeasureNMI_h_included_
+#endif // #ifndef __cmtkImagePairSimilarityMeasureNMI_h_included_

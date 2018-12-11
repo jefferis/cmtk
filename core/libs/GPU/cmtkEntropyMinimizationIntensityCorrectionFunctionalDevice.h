@@ -37,33 +37,31 @@
 
 #include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
-#include "cmtkDeviceHistogram.h"
 #include "cmtkDeviceMemory.h"
+#include "cmtkDeviceHistogram.h"
 #include "cmtkDeviceUniformVolume.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
-/// Base class for GPU implementation entropy-minimzation MR bias correction
-/// functional using Device.
-template <unsigned int NOrderAdd, unsigned int NOrderMul>
+/// Base class for GPU implementation entropy-minimzation MR bias correction functional using Device.
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
 class EntropyMinimizationIntensityCorrectionFunctionalDevice
     /// Inherit non-GPU base class.
-    : public EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,
-                                                              NOrderMul> {
- public:
+  : public EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+{
+public:
   /// This class type.
-  typedef EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,
-                                                                 NOrderMul>
-      Self;
+  typedef EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul> Self;
 
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Superclass type.
-  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd, NOrderMul>
-      Superclass;
+  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> Superclass;
 
   /// Return type of the functional evaluation.
   typedef typename Superclass::ReturnType ReturnType;
@@ -72,14 +70,15 @@ class EntropyMinimizationIntensityCorrectionFunctionalDevice
   virtual ~EntropyMinimizationIntensityCorrectionFunctionalDevice() {}
 
   /// Set input image.
-  virtual void SetInputImage(UniformVolume::SmartConstPtr &inputImage);
+  virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
   /// Set foreground mask.
-  virtual void SetForegroundMask(const UniformVolume &foregroundMask);
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
 
   /// GPU-based functional evaluation for given parameter vector.
-  virtual typename Self::ReturnType EvaluateAt(CoordinateVector &v) {
-    this->SetParamVector(v);
+  virtual typename Self::ReturnType EvaluateAt( CoordinateVector& v )
+  {
+    this->SetParamVector( v );
     this->UpdateOutputImageDevice();
     return this->EvaluateDevice();
   }
@@ -88,10 +87,9 @@ class EntropyMinimizationIntensityCorrectionFunctionalDevice
    * This function uses UpdateOutputImageDevice to update the output image using
    * the computation device.
    */
-  virtual typename Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &g, const Types::Coordinate step);
+  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step );
 
- protected:
+protected:
   /// Number of image pixels.
   size_t m_NumberOfPixels;
 
@@ -115,35 +113,31 @@ class EntropyMinimizationIntensityCorrectionFunctionalDevice
 };
 
 /// Create functional templated over polynomial degrees.
-template <unsigned int NDegreeMul>
+template<unsigned int NDegreeMul>
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctionalDevice(
-    const unsigned int polynomialDegreeAdd);
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd );
 
 /// Create functional templated over polynomial degrees.
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctionalDevice(
-    const unsigned int polynomialDegreeAdd,
-    const unsigned int polynomialDegreeMul);
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul );
 
-/** Create functional templated over polynomial degrees with initialization from
- * old functional. This function creates a new functional and copies the
- * polynomial coefficients from an existing functional of equal or lower
- * polynomial degrees into the correct locations of the new functional's
+/** Create functional templated over polynomial degrees with initialization from old functional.
+ * This function creates a new functional and copies the polynomial coefficients from an existing
+ * functional of equal or lower polynomial degrees into the correct locations of the new functional's
  * parameter vector. This is for incremental computation.
  */
 EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateEntropyMinimizationIntensityCorrectionFunctionalDevice(
-    const unsigned int polynomialDegreeAdd,
-    const unsigned int polynomialDegreeMul,
-    EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-        oldFunctional);
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul,
+  EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr oldFunctional );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.txx"
 
-#endif  // #ifndef
-        // __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
+

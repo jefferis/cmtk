@@ -33,10 +33,12 @@
 #ifndef __cmtkRenderer_h_included_
 #define __cmtkRenderer_h_included_
 
-#include <Pipeline/cmtkImageRGB.h>
 #include <Pipeline/cmtkPipelineObject.h>
+#include <Pipeline/cmtkImageRGB.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -46,13 +48,15 @@ namespace cmtk {
  * for client code. It also provides an ImageRGB input object representing
  * the actual image to be rendered.
  */
-class Renderer : public PipelineObject {
- public:
+class Renderer 
+  : public PipelineObject 
+{
+public:
   /// Calls to this function should make derived objects update their display.
   virtual void Render();
 
   /// Set image to display.
-  void SetInput(ImageRGB *const input);
+  void SetInput( ImageRGB *const input );
 
   /// The actual Update() function.
   virtual long Update();
@@ -60,7 +64,7 @@ class Renderer : public PipelineObject {
   /** Make this renderer active.
    *\see Active
    */
-  virtual void SetActive() { Active = true; }
+  virtual void SetActive() {Active = true; }
 
   /** Make this renderer inactive.
    *\see Active
@@ -72,7 +76,7 @@ class Renderer : public PipelineObject {
    */
   virtual int IsActive() const { return Active; }
 
- protected:
+protected:
   /// Default constructor.
   Renderer();
 
@@ -80,11 +84,11 @@ class Renderer : public PipelineObject {
   ~Renderer();
 
   /// Image to be displayed.
-  ImageRGB *Input;
+  ImageRGB* Input;
 
- private:
+private:
   /** Active flag.
-   * If this flag is set, the renderer is active. It will display its
+   * If this flag is set, the renderer is active. It will display its 
    * associated image if Render() is called. If this flag is not
    * set, calls to Render() will result in this object setting its
    * output to size 0.
@@ -97,7 +101,7 @@ class Renderer : public PipelineObject {
    * pipeline can lead to calls back to the environment, Tcl for example, for
    * status output. That, in turn can cause calls to the renderer again.
    *
-   * So while this object is in its Render() method, this flag is set to
+   * So while this object is in its Render() method, this flag is set to 
    * 'true'.
    * If Render() is then called again, the function simply returns without
    * actually updating anything, thus avoiding recursion.
@@ -110,6 +114,6 @@ class Renderer : public PipelineObject {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkRenderer_h_included_
+#endif // #ifndef __cmtkRenderer_h_included_

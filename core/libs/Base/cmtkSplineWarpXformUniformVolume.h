@@ -37,10 +37,12 @@
 
 #include <Base/cmtkXformUniformVolume.h>
 
-#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -48,9 +50,10 @@ namespace cmtk {
 /** Pre-compute transformation for grid locations in a uniform volume.
  */
 class SplineWarpXformUniformVolume :
-    /// Inherit from class to prevent copying.
-    public XformUniformVolume {
- public:
+  /// Inherit from class to prevent copying.
+  public XformUniformVolume
+{
+public:
   /// This class.
   typedef SplineWarpXformUniformVolume Self;
 
@@ -64,37 +67,30 @@ class SplineWarpXformUniformVolume :
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  SplineWarpXformUniformVolume(const UniformVolume &volume,
-                               const SplineWarpXform::SmartConstPtr &xform);
-
+  SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartConstPtr& xform );
+  
   /// Virtual destructor.
   virtual ~SplineWarpXformUniformVolume() {}
-
+  
   /** Get transformed location of linked grid pixel.
    */
-  virtual void GetTransformedGrid(Vector3D &v, const int idxX, const int idxY,
-                                  const int idxZ) const;
-
+  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
+  
   /** Get transformed locations of a series (scanline) of linked grid pixels.
    */
-  virtual void GetTransformedGridRow(Vector3D *const v, const size_t numPoints,
-                                     const int idxX, const int idxY,
-                                     const int idxZ) const;
-
- private:
+  virtual void GetTransformedGridRow( Vector3D *const v, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  
+private:
   /// The linked transformation.
   const SplineWarpXform::SmartConstPtr m_Xform;
 
   /// Register axes points of the volume to be deformed.
-  void RegisterVolume(const UniformVolume &volume);
+  void RegisterVolume( const UniformVolume& volume );
 
   /// Register a single axis of the uniform volume to be deformed.
-  void RegisterVolumeAxis(const int, const Types::Coordinate delta,
-                          const Types::Coordinate origin, const int,
-                          const Types::Coordinate, std::vector<int> &g,
-                          std::vector<Types::Coordinate> &spline,
-                          std::vector<Types::Coordinate> &dspline);
-
+  void RegisterVolumeAxis ( const int, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, std::vector<int>& g, 
+			    std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
+  
   /**\name Precomputed grid indices.
    * These arrays hold the precomputed grid indices of the deformed grid's
    * voxels with respect to the control point grid of this deformation.
@@ -140,6 +136,6 @@ class SplineWarpXformUniformVolume :
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef __cmtkSplineWarpXformUniformVolume_h_included_
+#endif // #ifdef __cmtkSplineWarpXformUniformVolume_h_included_

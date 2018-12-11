@@ -35,18 +35,20 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFixedVector.h>
 #include <Base/cmtkRegion.h>
+#include <Base/cmtkFixedVector.h>
 
-#include <System/cmtkSmartConstPtr.h>
 #include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
-namespace cmtk {
-/// Iterator for rectangular region of n-dimensional image, providing grid index
-/// of each position.
-template <typename TRegion>
-class RegionIndexIterator {
- public:
+namespace
+cmtk
+{
+/// Iterator for rectangular region of n-dimensional image, providing grid index of each position.
+template<typename TRegion>
+class RegionIndexIterator
+{
+public:
   /// This class.
   typedef RegionIndexIterator<TRegion> Self;
 
@@ -60,7 +62,7 @@ class RegionIndexIterator {
   typedef typename RegionType::ScalarType ScalarType;
 
   /// Index type.
-  typedef FixedVector<Self::Dimension, typename Self::ScalarType> IndexType;
+  typedef FixedVector<Self::Dimension,typename Self::ScalarType> IndexType;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -69,55 +71,73 @@ class RegionIndexIterator {
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor from two index, from and to.
-  RegionIndexIterator(const typename Self::RegionType &region)
-      : m_Region(region), m_Index(region.From()) {
+  RegionIndexIterator( const typename Self::RegionType& region )
+    : m_Region( region ),
+      m_Index( region.From() )
+  {
     this->m_End = this->m_Region.From();
-    if (this->m_Region.From() < this->m_Region.To()) {
+    if ( this->m_Region.From() < this->m_Region.To() )
+      {
       // for non-empty regions "End" index is one after last valid element.
-      this->m_End[Self::Dimension - 1] =
-          this->m_Region.To()[Self::Dimension - 1];
-    }
+      this->m_End[Self::Dimension-1] = this->m_Region.To()[Self::Dimension-1];
+      }
     // (for empty regions, "From" is already the "End"
   }
 
   /// Increment operator.
-  Self &operator++() {
-    for (size_t idx = 0; idx < Self::Dimension; ++idx) {
-      if ((++this->m_Index[idx]) >= this->m_Region.To()[idx]) {
-        if (idx + 1 < Self::Dimension)
-          this->m_Index[idx] = this->m_Region.From()[idx];
-      } else
-        break;
-    }
+  Self& operator++()
+  {
+    for ( size_t idx = 0; idx < Self::Dimension; ++idx)
+      {
+      if ( (++this->m_Index[idx]) >= this->m_Region.To()[idx] )
+	{
+	if ( idx+1 < Self::Dimension )
+	  this->m_Index[idx] = this->m_Region.From()[idx];
+	}
+      else
+	break;
+      }
     return *this;
   }
-
+  
   /// Get index.
-  const typename Self::IndexType &Index() const { return this->m_Index; }
+  const typename Self::IndexType& Index() const
+  {
+    return this->m_Index;
+  }
 
   /// Region "begin" index.
-  const typename Self::IndexType begin() const { return this->m_Region.From(); }
-
+  const typename Self::IndexType begin() const
+  {
+    return this->m_Region.From();
+  }
+  
   /// Region "end" index.
-  const typename Self::IndexType &end() const { return this->m_End; }
+  const typename Self::IndexType& end() const
+  {
+    return this->m_End;
+  }
 
   /// Assign index.
-  Self &operator=(const typename Self::IndexType &index) {
+  Self& operator=( const typename Self::IndexType& index )
+  {
     this->m_Index = index;
     return *this;
   }
 
   /// Index equality.
-  bool operator==(const typename Self::IndexType &index) {
+  bool operator==( const typename Self::IndexType& index )
+  {
     return (this->m_Index == index);
   }
 
   /// Index inequality.
-  bool operator!=(const typename Self::IndexType &index) {
+  bool operator!=( const typename Self::IndexType& index )
+  {
     return !(this->m_Index == index);
   }
 
- private:
+private:
   /// Iterated region.
   typename Self::RegionType m_Region;
 
@@ -128,6 +148,6 @@ class RegionIndexIterator {
   typename Self::IndexType m_Index;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkRegionIndexIterator_h_included_
+#endif // #ifndef __cmtkRegionIndexIterator_h_included_

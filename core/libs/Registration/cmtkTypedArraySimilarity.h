@@ -35,25 +35,28 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkFunctional.h>
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkFunctional.h>
 
 #include <Registration/cmtkTypedArraySimilarityMemory.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 /** Class with operators to compute various pixel similarity measures.
  */
-class TypedArraySimilarity {
- public:
+class TypedArraySimilarity 
+{
+public:
   /// Identifiers for all available metrics.
   typedef enum {
     /// Mutual information.
-    MI = 0,
+    MI = 0, 
     /// Normalized mutual information.
     NMI = 1,
     /// Correlation ratio.
@@ -70,77 +73,61 @@ class TypedArraySimilarity {
 
   /// Return type for all similarity measures: match cmtk::Functional's
   typedef Functional::ReturnType ReturnType;
-
+  
   /// Compute mutual information between two pixel arrays.
-  static ReturnType GetMutualInformation(
-      const TypedArray *array0, const TypedArray *array1,
-      TypedArraySimilarityMemory *const memory = NULL);
-
+  static ReturnType GetMutualInformation
+  ( const TypedArray* array0, const TypedArray* array1,
+    TypedArraySimilarityMemory *const memory = NULL );
+  
   /// Compute mutual information between two sets of pixel arrays.
-  static ReturnType GetMutualInformation(
-      const std::vector<const TypedArray *> &data0,
-      const std::vector<const TypedArray *> &data1,
-      const bool normalized = false);
-
+  static ReturnType GetMutualInformation( const std::vector<const TypedArray*>& data0, const std::vector<const TypedArray*>& data1, const bool normalized = false );
+  
   /// Compute norrmalized mutual information between two sets of pixel arrays.
-  static ReturnType GetNormalizedMutualInformation(
-      const std::vector<const TypedArray *> &data0,
-      const std::vector<const TypedArray *> &data1) {
-    return GetMutualInformation(data0, data1, true /*normalized*/);
+  static ReturnType GetNormalizedMutualInformation( const std::vector<const TypedArray*>& data0, const std::vector<const TypedArray*>& data1 )
+  {
+    return GetMutualInformation( data0, data1, true /*normalized*/ );
   }
-
+  
   /** Compute correlation ratio between two pixel arrays.
    * This function is implemented using a 1-D histogram.
    */
-  static ReturnType GetCorrelationRatio(const TypedArray *array0,
-                                        const TypedArray *array1);
+  static ReturnType GetCorrelationRatio( const TypedArray* array0, const TypedArray* array1 );
 
   /// Compute normalized mutual information between two pixel arrays.
-  static ReturnType GetNormalizedMutualInformation(
-      const TypedArray *array0, const TypedArray *array1,
-      TypedArraySimilarityMemory *const memory = NULL);
+  static ReturnType GetNormalizedMutualInformation( const TypedArray* array0, const TypedArray* array1, TypedArraySimilarityMemory *const memory = NULL );
 
-  /// Compute negated (i.e., sign-switched) mean squared pixel difference
-  /// between two pixel arrays.
-  static ReturnType GetMinusMeanSquaredDifference(const TypedArray *array0,
-                                                  const TypedArray *array1);
+  /// Compute negated (i.e., sign-switched) mean squared pixel difference between two pixel arrays.
+  static ReturnType GetMinusMeanSquaredDifference( const TypedArray* array0, const TypedArray* array1 );
 
   /** Compute Peak-Signal-to-Noise-Ratio.
    *\param data Measured data.
    *\param signal Pure signal without noise.
    */
-  static ReturnType GetPeakSignalToNoiseRatio(const TypedArray *data,
-                                              const TypedArray *signal);
+  static ReturnType GetPeakSignalToNoiseRatio( const TypedArray* data, const TypedArray* signal );
 
   /// Compute normalized cross correlation between two pixel arrays.
-  static ReturnType GetCrossCorrelation(const TypedArray *array0,
-                                        const TypedArray *array1);
+  static ReturnType GetCrossCorrelation( const TypedArray* array0, const TypedArray* array1 );
 
   /** Compute scaled difference of two images.
    * The values of the second array are scaled with a comon factor so that the
    * entropy of the difference array is minimized. The resulting scale factor
    * is returned via a reference argument.
    */
-  static TypedArray::SmartPtr GetDifferenceArray(const TypedArray *array0,
-                                                 const TypedArray *array1,
-                                                 Types::DataItem &scaleFactor);
+  static TypedArray::SmartPtr GetDifferenceArray( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor );
 
   /// Compute entropy of difference of two images.
-  static ReturnType GetDifferenceArrayEntropy(const TypedArray *array0,
-                                              const TypedArray *array1,
-                                              Types::DataItem &scaleFactor);
+  static ReturnType GetDifferenceArrayEntropy( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor );
 
   /// Check whether two pixel arrays have matching pixel dimensions.
-  static bool CheckArrayDimensions(const TypedArray *array0,
-                                   const TypedArray *array1);
+  static bool CheckArrayDimensions( const TypedArray* array0, const TypedArray* array1 );
 
   /** Compute the optimal scale factor between two images.
    * This implementation uses least squares fitting
    */
-  static ReturnType GetOptimalScale(const TypedArray *array0,
-                                    const TypedArray *array1);
+  static ReturnType GetOptimalScale( const TypedArray* array0, const TypedArray* array1 );
 };
 
-}  // namespace cmtk
+} // namespace
 
-#endif  // #ifndef __cmtkTypedArraySimilarity_h_included_
+#endif // #ifndef __cmtkTypedArraySimilarity_h_included_
+

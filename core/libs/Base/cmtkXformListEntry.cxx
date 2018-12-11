@@ -34,53 +34,56 @@
 
 #include <System/cmtkExitException.h>
 
-cmtk::XformListEntry::XformListEntry(const Xform::SmartConstPtr &xform,
-                                     const bool inverse,
-                                     const Types::Coordinate globalScale)
-    : m_Xform(xform),
-      InverseAffineXform(NULL),
-      m_PolyXform(NULL),
-      m_WarpXform(NULL),
-      Inverse(inverse),
-      GlobalScale(globalScale) {
-  if (this->m_Xform) {
-    this->m_WarpXform =
-        dynamic_cast<const WarpXform *>(this->m_Xform.GetConstPtr());
-    this->m_PolyXform =
-        dynamic_cast<const PolynomialXform *>(this->m_Xform.GetConstPtr());
-
-    AffineXform::SmartConstPtr affineXform(
-        AffineXform::SmartConstPtr::DynamicCastFrom(this->m_Xform));
-    if (affineXform) {
+cmtk::XformListEntry::XformListEntry
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale )
+  : m_Xform( xform ), 
+    InverseAffineXform( NULL ),
+    m_PolyXform( NULL ),
+    m_WarpXform( NULL ),
+    Inverse( inverse ), 
+    GlobalScale( globalScale )
+{
+  if ( this->m_Xform ) 
+    {
+    this->m_WarpXform = dynamic_cast<const WarpXform*>( this->m_Xform.GetConstPtr() );
+    this->m_PolyXform = dynamic_cast<const PolynomialXform*>( this->m_Xform.GetConstPtr() );
+    
+    AffineXform::SmartConstPtr affineXform( AffineXform::SmartConstPtr::DynamicCastFrom( this->m_Xform ) );
+    if ( affineXform ) 
+      {
       this->InverseAffineXform = affineXform->MakeInverse();
+      }
     }
-  }
 }
 
-cmtk::XformListEntry::~XformListEntry() {
+cmtk::XformListEntry::~XformListEntry()
+{
   // we got the inverse affine from AffineXform::MakeInverse, so we
   // need to get rid of it explicitly.
   delete this->InverseAffineXform;
 }
 
-cmtk::XformListEntry::SmartPtr cmtk::XformListEntry::CopyAsAffine() const {
-  try {
-    if (this->m_WarpXform) {
-      return Self::SmartPtr(new Self(this->m_WarpXform->m_InitialAffineXform,
-                                     this->Inverse, this->GlobalScale));
-    } else if (this->m_PolyXform) {
-      return Self::SmartPtr(new Self(
-          Xform::SmartPtr(
-              new AffineXform(this->m_PolyXform->GetGlobalAffineMatrix())),
-          this->Inverse, this->GlobalScale));
-    } else {
-      return Self::SmartPtr(
-          new Self(this->m_Xform, this->Inverse, this->GlobalScale));
+cmtk::XformListEntry::SmartPtr 
+cmtk::XformListEntry::CopyAsAffine() const
+{
+  try
+    {  
+    if ( this->m_WarpXform )
+      {
+      return Self::SmartPtr( new Self( this->m_WarpXform->m_InitialAffineXform, this->Inverse, this->GlobalScale ) );
+      }
+    else if ( this->m_PolyXform )
+      {
+      return Self::SmartPtr( new Self( Xform::SmartPtr( new AffineXform( this->m_PolyXform->GetGlobalAffineMatrix() ) ), this->Inverse, this->GlobalScale ) );
+      }
+    else
+      {
+      return Self::SmartPtr( new Self( this->m_Xform, this->Inverse, this->GlobalScale ) );
+      }
     }
-  } catch (const AffineXform::MatrixType::SingularMatrixException &) {
-    cmtk::StdErr << "ERROR: singular matrix encountered in "
-                    "cmtk::XformListEntry::CopyAsAffine() - this should not be "
-                    "happening!\n";
-    throw cmtk::ExitException(1);
-  }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
+    {
+    cmtk::StdErr << "ERROR: singular matrix encountered in cmtk::XformListEntry::CopyAsAffine() - this should not be happening!\n";
+    throw cmtk::ExitException( 1 );
+    }
 }

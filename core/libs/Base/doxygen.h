@@ -31,6 +31,6 @@
 */
 
 /**\defgroup Base cmtkBase Library
- * This library provides classes for basic objects, such as volumes,
- * transformations, vectors, functionals, and meta information.
+ * This library provides classes for basic objects, such as volumes, transformations,
+ * vectors, functionals, and meta information.
  */

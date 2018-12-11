@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <cassert>
+#include <math.h>
+#include <string.h>
 
 #include <algorithm>
 
@@ -47,7 +47,9 @@
 #include <Base/cmtkTypes.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -55,9 +57,10 @@ namespace cmtk {
 /** Numerical vector class.
  *\author Torsten Rohlfing
  */
-template <class T>
-class Vector {
- public:
+template<class T>
+class Vector
+{
+public:
   /// Vector dimension.
   size_t Dim;
 
@@ -73,54 +76,64 @@ class Vector {
   /**\name Constructors */
   //@{
   /// Create constant (zero-)vector.
-  Vector(const size_t dim = 0, const T value = 0) {
+  Vector ( const size_t dim = 0, const T value = 0 ) 
+  {
     Dim = dim;
-    if (Dim) {
-      Elements = Memory::ArrayC::Allocate<T>(Dim);
+    if ( Dim ) 
+      {
+      Elements = Memory::ArrayC::Allocate<T>( Dim );
       FreeElements = true;
-      if (value == 0)
-        memset(Elements, 0, Dim * sizeof(T));
+      if ( value==0 )
+	memset( Elements, 0, Dim * sizeof(T) );
       else
-        for (size_t i = 0; i < Dim; ++i) Elements[i] = value;
-    } else {
+	for ( size_t i=0; i<Dim; ++i )
+	  Elements[i]=value;
+      } 
+    else
+      {
       Elements = NULL;
       FreeElements = false;
-    }
+      }
   }
 
   /** Create vector from existing array.
    */
-  Vector(const size_t dim, T *const elements, const bool freeElements = true) {
+  Vector ( const size_t dim, T *const elements, const bool freeElements = true ) 
+  {
     Dim = dim;
     Elements = elements;
     FreeElements = freeElements;
   }
-
+  
   /// Create vector from other vector (also subvector).
-  Vector(const Vector &other, const size_t len = 0, const size_t from = 0) {
-    if (len)
-      Dim = std::min(len, other.Dim - from);
+  Vector ( const Vector& other, const size_t len = 0, const size_t from = 0 ) 
+  {
+    if ( len )
+      Dim = std::min( len, other.Dim - from );
     else
       Dim = other.Dim - from;
-
-    Elements = Memory::ArrayC::Allocate<T>(Dim);
+    
+    Elements = Memory::ArrayC::Allocate<T>( Dim );
     FreeElements = true;
-    memcpy(Elements, other.Elements + from, Dim * sizeof(T));
+    memcpy( Elements, other.Elements + from, Dim * sizeof(T) );
   }
   //@}
 
   /// Clone (sub)vector.
-  Vector *Clone(const size_t len = 0, const size_t from = 0) const {
-    return new Vector(*this, len, from);
+  Vector* Clone( const size_t len = 0, const size_t from = 0 ) const
+  { 
+    return new Vector( *this, len, from ); 
   }
-
+  
   /// Destructor.
-  ~Vector() {
-    if (Elements && FreeElements) {
-      Memory::ArrayC::Delete(this->Elements);
-    }
+  ~Vector () 
+  {
+    if ( Elements && FreeElements ) 
+      {
+      Memory::ArrayC::Delete( this->Elements );
+      }
   }
-
+  
   /** Set vector dimension.
    * If the current vector dimension is not equal to the requested dimension,
    * the elements array is deleted and a new one is allocated. In any case,
@@ -132,24 +145,30 @@ class Vector {
    * the zero value in their respective data type.
    *\return A reference to this object after changing the dimension.
    */
-  Vector &SetDim(const size_t dim, const bool zero = true) {
-    if (Dim != dim) {
-      if (Elements) {
-        Memory::ArrayC::Delete(this->Elements);
-      }
+  Vector& SetDim ( const size_t dim, const bool zero = true ) 
+  {
+    if ( Dim != dim ) 
+      {
+      if ( Elements ) 
+	{
+	Memory::ArrayC::Delete( this->Elements );
+	}
 
       Dim = dim;
-
-      if (Dim) {
-        Elements = Memory::ArrayC::Allocate<T>(Dim);
-      } else
-        Elements = NULL;
-    }
-
-    if (zero && Dim) {
-      memset(Elements, 0, Dim * sizeof(T));
-    }
-
+      
+      if ( Dim ) 
+	{
+	Elements = Memory::ArrayC::Allocate<T>( Dim );
+	} 
+      else
+	Elements = NULL;
+      }
+    
+    if ( zero && Dim ) 
+      {
+      memset( Elements, 0, Dim * sizeof(T) );
+      }
+    
     return *this;
   }
 
@@ -162,224 +181,260 @@ class Vector {
    * the zero value in their respective data type.
    *\return A reference to this object after changing the dimension.
    */
-  Vector &AdjustDimension(const size_t dim, const bool zero = true) {
+  Vector& AdjustDimension( const size_t dim, const bool zero = true ) 
+  {
     // If old and new size are the same, there is nothing to do.
-    if (Dim != dim) {
-      T *newElements = Memory::ArrayC::Allocate<T>(dim);
+    if ( Dim != dim ) 
+      {
+      T* newElements = Memory::ArrayC::Allocate<T>( dim );
       // copy common elements
-      memcpy(newElements, this->Elements, sizeof(T) * std::min(dim, Dim));
+      memcpy( newElements, this->Elements, sizeof(T) * std::min( dim, Dim ) );
 
       // reset new elements if so desired
-      if (zero && (dim > Dim)) {
-        memset(newElements + Dim, 0, sizeof(T) * (dim - Dim));
-      }
+      if ( zero && (dim > Dim) )
+	{
+	memset( newElements + Dim, 0, sizeof(T) * (dim-Dim) );
+	}
 
       // new set new array.
       this->Dim = dim;
-      if (this->FreeElements) {
-        Memory::ArrayC::Delete(this->Elements);
-      }
+      if ( this->FreeElements )
+	{
+	Memory::ArrayC::Delete( this->Elements );
+	}
       this->Elements = newElements;
       this->FreeElements = true;
-    }
-
+      } 
+    
     return *this;
   }
-
+  
   /// Vector assignment.
-  Vector &operator=(const Vector &other) {
-    if (Dim != other.Dim) {
-      if (Elements) {
-        Memory::ArrayC::Delete(this->Elements);
-        Elements = NULL;
+  Vector& operator = ( const Vector& other ) 
+  {
+    if ( Dim != other.Dim ) {
+    if (Elements) 
+      {
+      Memory::ArrayC::Delete( this->Elements );
+      Elements = NULL;
       }
-
-      Dim = other.Dim;
+    
+    Dim = other.Dim;
     }
-
-    if (Elements == NULL) {
-      Elements = Memory::ArrayC::Allocate<T>(Dim);
-    }
-
-    memcpy(Elements, other.Elements, Dim * sizeof(T));
-    return *this;
+    
+    if ( Elements == NULL ) 
+      {
+      Elements = Memory::ArrayC::Allocate<T>( Dim );
+      }
+    
+    memcpy( Elements, other.Elements, Dim * sizeof(T) );
+    return *this; 
   }
 
   /** Copy another vector to given offset.
    *\param other Vector from which the specified elements are copied.
    *\param offs Destination offset. Copying starts at this position in this
    * instance.
-   *\param len Number of elements to be copied. If zero, all elements are
+   *\param len Number of elements to be copied. If zero, all elements are 
    * copied until the end of one of the vectors is reached.
    */
-  void CopyToOffset(const Vector &other, const size_t offs = 0,
-                    size_t len = 0) {
-    if (!len) len = std::min(this->Dim - offs, other.Dim);
-    for (size_t idx = 0; idx < len; ++idx)
-      Elements[offs + idx] = other.Elements[idx];
+  void CopyToOffset( const Vector& other, const size_t offs = 0, size_t len = 0 )
+  {
+    if ( ! len ) 
+      len = std::min( this->Dim - offs, other.Dim );
+    for ( size_t idx=0; idx<len; ++idx )
+      Elements[offs+idx] = other.Elements[idx];
   }
 
   /// Test for vector equality.
-  int operator==(const Vector &other) const {
-    if (Dim != other.Dim) return 0;
-
-    for (size_t i = 0; i < Dim; ++i)
-      if (Elements[i] != other.Elements[i]) return 0;
-
+  int operator== ( const Vector& other ) const 
+  {
+    if ( Dim != other.Dim )
+      return 0;
+    
+    for ( size_t i=0; i<Dim; ++i )
+      if ( Elements[i] != other.Elements[i] )
+	return 0;
+    
     return 1;
   }
-
+  
   /// Test for vector inequality.
-  int operator!=(const Vector &other) const { return !(*this == other); }
-
+  int operator!= ( const Vector& other ) const 
+  {
+    return !(*this == other );
+  }
+  
   /// Calculate Euclid's vector norm.
-  T EuclidNorm() const {
+  T EuclidNorm () const 
+  { 
     T Result = 0;
-
+    
 #ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim > 1e4) reduction(+ : Result)
+#pragma omp parallel for if (Dim>1e4) reduction(+:Result)
 #endif
-    for (int i = 0; i < static_cast<int>(this->Dim); ++i) {
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i ) 
+      {
       const T e = Elements[i];
-      Result += e * e;
-    }
-
+      Result+=e*e;
+      }
+    
     return sqrt(Result);
   }
 
   /// Calculate maximum vector norm.
-  T MaxNorm() const {
+  T MaxNorm () const 
+  { 
     T Result = 0;
-
-    for (size_t i = 0; i < Dim; ++i) {
-      Result = std::max<T>(Result, fabs(Elements[i]));
-    }
-
+    
+    for ( size_t i=0; i<Dim; ++i ) 
+      {
+      Result = std::max<T>( Result, fabs( Elements[i] ) );
+      }
+    
     return Result;
   }
 
   /// Set all vector elements to zero.
-  void Clear() { memset(Elements, 0, Dim * sizeof(*Elements)); }
+  void Clear() 
+  { 
+    memset( Elements, 0, Dim * sizeof( *Elements ) ); 
+  }
 
-  /// Set vector from C-style array of arbitrary type (that can be converted to
-  /// vector's element type).
-  template <class T2>
-  void SetFromArray(const T2 *ptr, const size_t dim = 0) {
-    const size_t nCopy = dim ? std::min(dim, this->Dim) : this->Dim;
-    for (size_t i = 0; i < nCopy; ++i) {
-      this->Elements[i] = static_cast<T>(ptr[i]);
-    }
+  /// Set vector from C-style array of arbitrary type (that can be converted to vector's element type).
+  template<class T2>
+  void SetFromArray( const T2* ptr, const size_t dim = 0 )
+  {
+    const size_t nCopy = dim ? std::min( dim, this->Dim ) : this->Dim;
+    for ( size_t i = 0; i < nCopy; ++i )
+      {
+      this->Elements[i] = static_cast<T>( ptr[i] );
+      }
   }
 
   /// Set all vector elements to constant value.
-  void SetAll(const T value) {
+  void SetAll( const T value )
+  {
 #ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim > 1e5)
+#pragma omp parallel for if (Dim>1e5)
 #endif
-    for (int i = 0; i < static_cast<int>(this->Dim); ++i)
+    for ( int i=0; i < static_cast<int>( this->Dim ); ++i ) 
       this->Elements[i] = value;
   }
 
   /// Get vector element by coordinate index.
-  T &operator[](const size_t index) { return this->Elements[index]; }
+  T& operator [] ( const size_t index ) 
+  {
+    return this->Elements[index];
+  }
 
   /// Get constant vector element by coordinate index.
-  const T &operator[](const size_t index) const {
+  const T& operator [] ( const size_t index ) const 
+  {
     return this->Elements[index];
   }
 
   /// Increment vector by another.
-  Vector<T> &operator+=(const Vector<T> &delta) {
-    assert(Dim == delta.Dim);
+  Vector<T>& operator+= ( const Vector<T>& delta ) 
+  {
+    assert( Dim == delta.Dim );
 
 #ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim > 1e4)
+#pragma omp parallel for if (Dim>1e4)
 #endif
-    for (int i = 0; i < static_cast<int>(this->Dim); ++i)
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i )
       Elements[i] += delta.Elements[i];
-
+    
     return *this;
   }
 
   /// Decrement vector by another.
-  Vector<T> &operator-=(const Vector<T> &delta) {
-    assert(Dim == delta.Dim);
-
+  Vector<T>& operator-= ( const Vector<T>& delta ) 
+  {
+    assert( Dim == delta.Dim );
+    
 #ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim > 1e4)
+#pragma omp parallel for if (Dim>1e4)
 #endif
-    for (int i = 0; i < static_cast<int>(this->Dim); ++i)
+    for ( int i=0; i < static_cast<int>( this->Dim ); ++i )
       Elements[i] -= delta.Elements[i];
-
+    
     return *this;
   }
 
   /// Multiply by a scalar.
-  Vector<T> &operator*=(const T a) {
+  Vector<T>& operator*= ( const T a ) 
+  {
 #ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim > 1e4)
+#pragma omp parallel for if (Dim>1e4)
 #endif
-    for (int i = 0; i < static_cast<int>(this->Dim); ++i)
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i )
       this->Elements[i] *= a;
-
+    
     return *this;
   }
 
-  void Print(FILE *const fp = NULL, const char *format = " %f") const {
-    if (fp) {
-      for (size_t idx = 0; idx < Dim; ++idx)
-        fprintf(fp, format, (float)Elements[idx]);
-      fputs("\n", fp);
-    } else {
-      for (size_t idx = 0; idx < Dim; ++idx)
-        printf(format, (float)Elements[idx]);
-      puts("");
-    }
+  void Print ( FILE *const fp = NULL, const char* format = " %f" ) const 
+  {
+    if ( fp ) 
+      {
+      for ( size_t idx=0; idx < Dim; ++idx )
+	fprintf( fp, format, (float) Elements[idx] );
+      fputs( "\n", fp );
+      } 
+    else
+      {
+      for ( size_t idx=0; idx < Dim; ++idx )
+	printf( format, (float) Elements[idx] );
+      puts( "" );
+      }
   }
-
+  
   /** Sort values in the vector.
    * Using the two parameters, from and len, this function can be used to sort
-   * only a subrange of values in this vector. In particular, it can be used to
+   * only a subrange of values in this vector. In particular, it can be used to 
    * sort the first len elements if from == 0.
    *\param from Index of first element in the range to sort.
    *\param len Number of elements to be sorted.
    */
-  void Sort(const size_t from = 0, const size_t len = 0) {
-    T *ptr = Elements + from;
-    if (len)
-      qsort(ptr, len, sizeof(T), Vector<T>::Compare);
+  void Sort( const size_t from = 0, const size_t len = 0 ) 
+  {
+    T *ptr = Elements+from;
+    if ( len )
+      qsort( ptr, len, sizeof( T ), Vector<T>::Compare );
     else
-      qsort(ptr, Dim - from, sizeof(T), Vector<T>::Compare);
+      qsort( ptr, Dim-from, sizeof( T ), Vector<T>::Compare );
   }
-
- private:
+  
+private:
   /// Flag for memory deallocation of value array.
   bool FreeElements;
 
   /// Compare two vector elements; this is needed for sorting.
-  static int Compare(const void *a, const void *b) {
-    const T *Ta = (const T *)a;
-    const T *Tb = (const T *)b;
+  static int Compare( const void* a, const void* b ) 
+  {
+    const T *Ta = (const T *) a;
+    const T *Tb = (const T *) b;
     return (*Ta > *Tb) - (*Ta < *Tb);
   }
 };
 
 /** Shortcut definition.
- * This typedef defines a name for the frequently used vectors over the
+ * This typedef defines a name for the frequently used vectors over the 
  * Types::Coordinate type. This is used for all kinds of parameters vectors etc.
  */
 typedef Vector<Types::Coordinate> CoordinateVector;
 
 /** Shortcut definition.
- * This typedef defines a name for the frequently used vectors over the
+ * This typedef defines a name for the frequently used vectors over the 
  * float type.
  */
 typedef Vector<float> FloatVector;
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkVector.txx"
 
-#endif  // #ifndef __cmtkVector_h_included_
+#endif // #ifndef __cmtkVector_h_included_

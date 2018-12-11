@@ -32,10 +32,12 @@
 #ifndef __cmtkFilter_h_included_
 #define __cmtkFilter_h_included_
 
-#include <Pipeline/cmtkPipelineObject.h>
 #include <Pipeline/cmtkSource.h>
+#include <Pipeline/cmtkPipelineObject.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -43,36 +45,42 @@ namespace cmtk {
 /** Basic filter class.
  * This class combines the data source functions inherited from Source
  * with an additional input port. It therefore serves as a template for
- * all classes transforming an input into an output object. Both, input and
+ * all classes transforming an input into an output object. Both, input and 
  * output type are defined by template parameters "I" and "O", respectively.
  * "O" is passed directly to the Source parent class.
  *\see Source
  */
-template <class I, class O>
-class Filter : public Source<O> {
- public:
+template<class I, class O> class Filter : public Source<O> 
+{
+public:
   /// Replace the current Input object with a new one.
-  void SetInput(I *const input) { this->ReplaceObject(Input, input); }
+  void SetInput ( I *const input ) 
+  {
+    this->ReplaceObject( Input, input );
+  }
 
   /** Update this object.
    * Check for changes in the Input object first, then call inherited Update()
    * function from Object.
    *\see Object#Update
    */
-  virtual long Update() {
-    this->CheckInputForUpdate(Input);
+  virtual long Update () 
+  {
+    this->CheckInputForUpdate( Input );
     return this->PipelineObject::Update();
   }
 
- protected:
+protected:
   /// Default constructor.
   Filter() { Input = NULL; }
 
   /** Destructor.
    * Unregister from the Input object if one was set.
    */
-  virtual ~Filter() {
-    if (Input) Input->Delete();
+  virtual ~Filter() 
+  { 
+    if ( Input ) 
+      Input->Delete();
   }
 
   /// The actual input object.
@@ -81,6 +89,6 @@ class Filter : public Source<O> {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkFilter_h_included_
+#endif // #ifndef __cmtkFilter_h_included_

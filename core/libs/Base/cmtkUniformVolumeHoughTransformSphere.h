@@ -38,32 +38,32 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUnits.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Spherical Hough transform for 3D uniform image data.
  */
-class UniformVolumeHoughTransformSphere {
- public:
+class UniformVolumeHoughTransformSphere
+{
+public:
   /// This class.
   typedef UniformVolumeHoughTransformSphere Self;
 
   /// Constructor: link to UniformVolume object.
-  explicit UniformVolumeHoughTransformSphere(
-      UniformVolume::SmartConstPtr &volume)
-      : m_UniformVolume(volume) {}
+  explicit UniformVolumeHoughTransformSphere( UniformVolume::SmartConstPtr& volume ) : m_UniformVolume( volume ) {}
 
   /// Get Hough-transformed data for a specific radius in world units.
-  TypedArray::SmartPtr Get(
-      const Types::Coordinate radius /*!< Radius of detected spheres */) const;
-
- private:
+  TypedArray::SmartPtr Get( const Types::Coordinate radius /*!< Radius of detected spheres */ ) const;
+  
+private:
   /// The UniformVolume object we're working on.
   UniformVolume::SmartConstPtr m_UniformVolume;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkUniformVolumeHoughTransformSphere_h_included_
+#endif // #ifndef __cmtkUniformVolumeHoughTransformSphere_h_included_

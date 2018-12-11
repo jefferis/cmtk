@@ -39,21 +39,24 @@
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** StudyList with class stream file system interface.
  */
-class ClassStreamStudyList {
- public:
+class ClassStreamStudyList 
+{
+public:
   /// Write studylist.
-  static void Write(const std::string &path, const StudyList *studyList);
+  static void Write( const std::string& path, const StudyList *studyList );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkClassStreamStudyList_h_included_
+#endif // #ifndef __cmtkClassStreamStudyList_h_included_

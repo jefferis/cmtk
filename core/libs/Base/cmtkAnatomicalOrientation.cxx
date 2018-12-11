@@ -38,75 +38,80 @@
 
 #include <math.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-void AnatomicalOrientation ::GetOrientationFromDirections(
-    char *orientation, const AffineXform::MatrixType &directions,
-    const char *spaceAxes) {
-  const Types::Coordinate spacing[3] = {
-      sqrt(directions[0][0] * directions[0][0] +
-           directions[0][1] * directions[0][1] +
-           directions[0][2] * directions[0][2]),
-      sqrt(directions[1][0] * directions[1][0] +
-           directions[1][1] * directions[1][1] +
-           directions[1][2] * directions[1][2]),
-      sqrt(directions[2][0] * directions[2][0] +
-           directions[2][1] * directions[2][1] +
-           directions[2][2] * directions[2][2])};
+void
+AnatomicalOrientation
+::GetOrientationFromDirections( char* orientation,  const AffineXform::MatrixType& directions, const char* spaceAxes )
+{
+  const Types::Coordinate spacing[3] =
+    {
+      sqrt( directions[0][0]*directions[0][0] + directions[0][1]*directions[0][1] + directions[0][2]*directions[0][2] ),
+      sqrt( directions[1][0]*directions[1][0] + directions[1][1]*directions[1][1] + directions[1][2]*directions[1][2] ),
+      sqrt( directions[2][0]*directions[2][0] + directions[2][1]*directions[2][1] + directions[2][2]*directions[2][2] )
+    };
 
-  // keep track of which axes are already used in the direction code - need 4
-  // entries to allow for access when axes are non-ortogonal
-  bool axisUsed[4] = {false, false, false, true};
+  // keep track of which axes are already used in the direction code - need 4 entries to allow for access when axes are non-ortogonal
+  bool axisUsed[4] = { false, false, false, true };
 
-  for (int axis = 0; axis < 3; ++axis) {
+  for ( int axis = 0; axis < 3; ++axis )
+    {
     // skip axes already used
     int maxDim = 0;
-    while (axisUsed[maxDim]) ++maxDim;
-
+    while ( axisUsed[maxDim] ) ++maxDim;
+    
     // get closest aligned of remaining axes
-    Types::Coordinate max = fabs(directions[axis][0] / spacing[axis]);
-    for (int dim = 1; dim < 3; ++dim) {
-      const Types::Coordinate positive =
-          fabs(directions[axis][dim] / spacing[axis]);
-      if ((positive > max) && !axisUsed[dim]) {
-        max = positive;
-        maxDim = dim;
-      } else {
-        if (positive == max) {
-          maxDim = 3;
-        }
+    Types::Coordinate max = fabs( directions[axis][0] / spacing[axis] );
+    for ( int dim = 1; dim < 3; ++dim )
+      {
+      const Types::Coordinate positive = fabs( directions[axis][dim] / spacing[axis] );
+      if ( (positive > max) && !axisUsed[dim] )
+	{
+	max = positive;
+	maxDim = dim;
+	}
+      else
+	{
+	if ( positive == max )
+	  {
+	  maxDim = 3;
+	  }
+	}
       }
-    }
-
-    if (maxDim == 3) {
-      StdErr << "WARNING: image seems to have an oblique orientation. This is "
-                "not going to end well...\n";
-    }
-
-    orientation[axis] = (directions[axis][maxDim] > 0)
-                            ? spaceAxes[maxDim]
-                            : Self::OppositeDirection(spaceAxes[maxDim]);
+    
+    if ( maxDim == 3 )
+      {
+      StdErr << "WARNING: image seems to have an oblique orientation. This is not going to end well...\n";
+      }
+    
+    orientation[axis] = (directions[axis][maxDim] > 0) ? spaceAxes[maxDim] : Self::OppositeDirection( spaceAxes[maxDim] );
     axisUsed[maxDim] = true;
-  }
+    }
   orientation[3] = 0;
 }
 
-void AnatomicalOrientation ::GetImageToSpaceAxesPermutation(
-    Types::GridIndexType (&imageToSpaceAxesPermutation)[3][3],
-    const char *orientation, const char *spaceAxes) {
-  for (int j = 0; j < 3; ++j) {
-    for (int i = 0; i < 3; ++i) {
-      if (orientation[j] == spaceAxes[i])
-        imageToSpaceAxesPermutation[j][i] = 1;
-      else if (Self::OnSameAxis(orientation[j], spaceAxes[i]))
-        imageToSpaceAxesPermutation[j][i] = -1;
-      else
-        imageToSpaceAxesPermutation[j][i] = 0;
+void
+AnatomicalOrientation
+::GetImageToSpaceAxesPermutation( Types::GridIndexType (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes )
+{
+  for ( int j = 0; j < 3; ++j )
+    {
+    for ( int i = 0; i < 3; ++i )
+      {
+      if ( orientation[j] == spaceAxes[i] )
+	 imageToSpaceAxesPermutation[j][i] = 1;
+      else 
+	if ( Self::OnSameAxis( orientation[j], spaceAxes[i] ) )
+	  imageToSpaceAxesPermutation[j][i] = -1;
+	else
+	  imageToSpaceAxesPermutation[j][i] = 0;
+      }
     }
-  }
 }
 
-}  // namespace cmtk
+} // namespace cmtk

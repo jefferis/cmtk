@@ -40,47 +40,47 @@
 #include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
 
 #include <Base/cmtkAffineXform.h>
-#include <Base/cmtkTransformedVolumeAxes.h>
 #include <Base/cmtkVolumeClipping.h>
+#include <Base/cmtkTransformedVolumeAxes.h>
 
-#include <System/cmtkMutexLock.h>
 #include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Forward declaration of class template. */
-template <class MetricFunctionalClass>
+template<class MetricFunctionalClass> 
 class SplineWarpMultiChannelRegistrationFunctional;
 
 /** Class for affine multi-channel registration functional. */
-template <class TMultiChannelMetricFunctional>
+template<class TMultiChannelMetricFunctional>
 class AffineMultiChannelRegistrationFunctional :
-    /** Inherit from multi-channel registration functional base class. */
-    public TemplateMultiChannelRegistrationFunctional<
-        AffineXform, TMultiChannelMetricFunctional> {
- public:
+  /** Inherit from multi-channel registration functional base class. */
+  public TemplateMultiChannelRegistrationFunctional<AffineXform,TMultiChannelMetricFunctional>
+{
+public:
   /** This class. */
-  typedef AffineMultiChannelRegistrationFunctional<
-      TMultiChannelMetricFunctional>
-      Self;
+  typedef AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional> Self;
 
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
 
   /** This class. */
-  typedef TemplateMultiChannelRegistrationFunctional<
-      AffineXform, TMultiChannelMetricFunctional>
-      Superclass;
-
+  typedef TemplateMultiChannelRegistrationFunctional<AffineXform,TMultiChannelMetricFunctional> Superclass;
+  
   /** Default constructor. */
   AffineMultiChannelRegistrationFunctional()
-      : m_NumberOfThreads(Threads::GetNumberOfThreads()) {}
+    : m_NumberOfThreads( Threads::GetNumberOfThreads() )
+  {
+  }
 
   /** Initialize transformation. */
-  void InitTransformation(const bool alignCenters);
+  void InitTransformation( const bool alignCenters );
 
   /** Compute functional value with volume clipping using multi-threading.
    * This function iterates over all voxels of the reference image that - after
@@ -88,22 +88,22 @@ class AffineMultiChannelRegistrationFunctional :
    * mode image. This set of voxels is determined on-the-fly by an extension of
    * Liang and Barsky's "Parameterized Line-Clipping" technique.
    *
-   * From the resulting sequence of reference/floating voxel pairs, the
+   * From the resulting sequence of reference/floating voxel pairs, the 
    * selected voxel-based similarity measure (metric) is computed.
-   *\return The computed similarity measure as returned by the "Metric"
+   *\return The computed similarity measure as returned by the "Metric" 
    * subobject.
    *\see VolumeClipping
    */
   virtual typename Self::ReturnType Evaluate();
 
- private:
+private:
   /** Volume clipping object. */
   VolumeClipping m_VolumeClipper;
 
   /** Perform clipping/cropping in z-direction.
    * This function computes the intersection of reference and floating data in
    * z-direction. It determines the range of indices of those planes in the
-   * reference that intersect the floating. This is the range over which to
+   * reference that intersect the floating. This is the range over which to 
    * for-loop during metric computation.
    *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
@@ -112,13 +112,12 @@ class AffineMultiChannelRegistrationFunctional :
    * in the reference that intersects the floating.
    *\param end Upon return, this reference is set to one plus the index of the
    * last plane in the reference that intersects the floating.
-   *\return true if there is an intersection of reference and floating, false if
-   *there isn't. The range of indices returned in "start" and "end" is only
+   *\return true if there is an intersection of reference and floating, false if there
+   * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  bool ClipZ(const VolumeClipping &clipper, const Vector3D &origin,
-             Types::GridIndexType &start, Types::GridIndexType &end) const;
-
+  bool ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const;
+    
   /** Perform clipping/cropping in x-direction.
    * This function computes the intersection of reference and floating data in
    * x-direction. It determines the range of indices of those voxels in the
@@ -142,12 +141,10 @@ class AffineMultiChannelRegistrationFunctional :
    *\param end Upon return, this reference is set to one plus the index of the
    * last voxel in the reference that intersects the floating image.
    *\return true if there is an intersection of the current reference row and
-   * the floating, false if there isn't. The range of indices returned in
-   *"start" and "end" is only guaranteed to be valid if true is the return
-   *value.
+   * the floating, false if there isn't. The range of indices returned in "start"
+   * and "end" is only guaranteed to be valid if true is the return value.
    */
-  bool ClipX(const VolumeClipping &clipper, const Vector3D &origin,
-             Types::GridIndexType &start, Types::GridIndexType &end) const;
+  bool ClipX( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType &end ) const;
 
   /** Perform clipping/cropping in y-direction.
    * This function computes the intersection of reference and floating data in
@@ -162,23 +159,22 @@ class AffineMultiChannelRegistrationFunctional :
    *\param end Upon return, this reference is set to one plus the index of the
    * last row in the reference that intersects the floating image.
    *\return true if there is an intersection of the current reference plane and
-   * the floating, false if there isn't. The range of indices returned in
-   *"start" and "end" is only guaranteed to be valid if true is the return
-   *value.
+   * the floating, false if there isn't. The range of indices returned in "start" 
+   * and "end" is only guaranteed to be valid if true is the return value.
    */
-  bool ClipY(const VolumeClipping &clipper, const Vector3D &origin,
-             Types::GridIndexType &start, Types::GridIndexType &end) const;
+  bool ClipY( const VolumeClipping& clipper, const Vector3D& origin, Types::GridIndexType& start, Types::GridIndexType& end ) const;
 
   /** Number of parallel threads. */
   const size_t m_NumberOfThreads;
 
   /** Parameters for threaded metric computation. */
-  class EvaluateThreadParameters :
-      /// Inherit from generic thread parameters.
-      public ThreadParameters<Self> {
-   public:
+  class EvaluateThreadParameters : 
+    /// Inherit from generic thread parameters.
+    public ThreadParameters<Self>
+  {
+  public:
     /** Pointer to transformed reference axes arrays. */
-    const TransformedVolumeAxes *m_TransformedAxes;
+    const TransformedVolumeAxes* m_TransformedAxes;
 
     /** First clipped pixel index in z direction. */
     Types::GridIndexType m_StartZ;
@@ -188,25 +184,21 @@ class AffineMultiChannelRegistrationFunctional :
   };
 
   /** Thread function for metric computation. */
-  static void EvaluateThreadFunction(void *args, const size_t taskIdx,
-                                     const size_t taskCnt, const size_t,
-                                     const size_t);
+  static void EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
 #ifdef CMTK_USE_SMP
   /** Mutex lock for shared metric data object. */
   MutexLock m_MetricDataMutex;
 #endif
 
-  /** Make spline functional friend to access this class' channel image vectors.
-   */
-  template <class MetricFunctionalClass>
-  friend class SplineWarpMultiChannelRegistrationFunctional;
+  /** Make spline functional friend to access this class' channel image vectors. */
+  template<class MetricFunctionalClass> friend class SplineWarpMultiChannelRegistrationFunctional;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkAffineMultiChannelRegistrationFunctional.txx"
 
-#endif  // #ifndef __cmtkAffineMultiChannelRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkAffineMultiChannelRegistrationFunctional_h_included_

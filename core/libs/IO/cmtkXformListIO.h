@@ -37,31 +37,33 @@
 
 #include <Base/cmtkXformList.h>
 
-#include <string>
 #include <vector>
+#include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /** Utility class to generate a list of concatenated transformation objects.
  */
-class XformListIO {
- public:
+class XformListIO 
+{
+public:
   /// This class.
   typedef XformListIO Self;
 
-  /** Create transformation list from string list.
-   *\return An XformList object with concatenated Xform (and derived) objects,
-   *each of which may be optionally inverted.
+  /** Create transformation list from string list. 
+   *\return An XformList object with concatenated Xform (and derived) objects, each of which
+   * may be optionally inverted.
    */
-  static XformList MakeFromStringList(const std::vector<std::
-                                                            string> &stringList /*!< List of transformation paths. If an entry is "--inverse" or "-i", then the next following transformation is marked to be applied inverse.*/);
+  static XformList MakeFromStringList( const std::vector<std::string>& stringList /*!< List of transformation paths. If an entry is "--inverse" or "-i", then the next following transformation is marked to be applied inverse.*/ );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkXformListIO_h_included__
+#endif // #ifndef __cmtkXformListIO_h_included__

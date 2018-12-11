@@ -34,41 +34,40 @@
 
 #include <System/cmtkExitException.h>
 
-cmtk::TransformChangeToSpaceAffine ::TransformChangeToSpaceAffine(
-    const AffineXform &xform, const UniformVolume &reference,
-    const UniformVolume &floating, const char *forceSpace) {
-  // adapt transformation to Slicer's image coordinate systems as defined in the
-  // Nrrd files we probably read
-  UniformVolume::SmartPtr refVolumeOriginalSpace(reference.CloneGrid());
-  UniformVolume::SmartPtr fltVolumeOriginalSpace(floating.CloneGrid());
-
-  // first bring volumes back into their native coordinate space, or into forced
-  // space if one is provided.
-  if (forceSpace) {
-    refVolumeOriginalSpace->ChangeCoordinateSpace(forceSpace);
-    fltVolumeOriginalSpace->ChangeCoordinateSpace(forceSpace);
-  } else {
-    refVolumeOriginalSpace->ChangeCoordinateSpace(
-        reference.GetMetaInfo(META_SPACE_ORIGINAL));
-    fltVolumeOriginalSpace->ChangeCoordinateSpace(
-        floating.GetMetaInfo(META_SPACE_ORIGINAL));
-  }
-
+cmtk::TransformChangeToSpaceAffine
+::TransformChangeToSpaceAffine
+( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating, const char* forceSpace )
+{
+// adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
+  UniformVolume::SmartPtr refVolumeOriginalSpace( reference.CloneGrid() );
+  UniformVolume::SmartPtr fltVolumeOriginalSpace( floating.CloneGrid() );
+  
+  // first bring volumes back into their native coordinate space, or into forced space if one is provided.
+  if ( forceSpace )
+    {
+    refVolumeOriginalSpace->ChangeCoordinateSpace( forceSpace );
+    fltVolumeOriginalSpace->ChangeCoordinateSpace( forceSpace );
+    }
+  else
+    {
+    refVolumeOriginalSpace->ChangeCoordinateSpace( reference.GetMetaInfo( META_SPACE_ORIGINAL ) );
+    fltVolumeOriginalSpace->ChangeCoordinateSpace( floating.GetMetaInfo( META_SPACE_ORIGINAL ) );
+    }
+  
   // now determine image-to-physical transformations and concatenate these.
-  const AffineXform::MatrixType refMatrix =
-      refVolumeOriginalSpace->GetImageToPhysicalMatrix();
-  const AffineXform::MatrixType fltMatrix =
-      fltVolumeOriginalSpace->GetImageToPhysicalMatrix();
+  const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix();
+  const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix();
 
-  try {
-    const AffineXform::MatrixType concatMatrix =
-        (refMatrix.GetInverse() * xform.Matrix) * fltMatrix;
-
+  try
+    {
+    const AffineXform::MatrixType concatMatrix = (refMatrix.GetInverse() * xform.Matrix) * fltMatrix;
+    
     // create output transformation and write
-    this->m_NewXform.SetMatrix(concatMatrix);
-  } catch (const AffineXform::MatrixType::SingularMatrixException &) {
-    StdErr << "ERROR: singular matrix in TransformChangeToSpaceAffine "
-              "constructor.\n";
-    throw ExitException(1);
-  }
+    this->m_NewXform.SetMatrix( concatMatrix );
+    }
+  catch ( const AffineXform::MatrixType::SingularMatrixException& )
+    {
+    StdErr << "ERROR: singular matrix in TransformChangeToSpaceAffine constructor.\n";
+    throw ExitException( 1 );
+    }
 }

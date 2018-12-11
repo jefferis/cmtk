@@ -39,8 +39,8 @@
 
 #include <IO/cmtkTypedStream.h>
 
-#include <stdio.h>
 #include <stack>
+#include <stdio.h>
 
 #include <zlib.h>
 
@@ -50,7 +50,9 @@
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
@@ -59,8 +61,9 @@ namespace cmtk {
 
 /** Class for reading "typedstream" archives.
  */
-class TypedStreamInput : public TypedStream {
- public:
+class TypedStreamInput : public TypedStream
+{
+public:
   /// This class.
   typedef TypedStreamInput Self;
 
@@ -74,13 +77,13 @@ class TypedStreamInput : public TypedStream {
    *\param filename Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStreamInput(const std::string &filename);
+  TypedStreamInput( const std::string& filename );
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    */
-  TypedStreamInput(const std::string &dir, const std::string &archive);
+  TypedStreamInput( const std::string& dir, const std::string& archive );
 
   /** Destructor.
    * Close() is called to close a possibly open archive.
@@ -89,11 +92,11 @@ class TypedStreamInput : public TypedStream {
 
   /** Open another archive without constructing a new object.
    */
-  void Open(const std::string &filename);
+  void Open( const std::string& filename );
 
   /** Open another archive in explicit directory.
    */
-  void Open(const std::string &dir, const std::string &archive);
+  void Open( const std::string& dir, const std::string& archive );
 
   /** Close an open archive.
    */
@@ -104,7 +107,7 @@ class TypedStreamInput : public TypedStream {
    * section or after it on the same level.
    *
    * This function may only be called for read-only archive, ie. for such that
-   * were opened in MODE_READONLY mode. For writeable archive, it
+   * were opened in MODE_READONLY mode. For writeable archive, it 
    * will return an error.
    */
   Self::Condition Seek( const char* section /*!< Name of the section whose beginning stream pointer is moved to. */, 
@@ -117,14 +120,14 @@ class TypedStreamInput : public TypedStream {
   Self::Condition Rewind();
 
   /** Move to beginning of section.
-   * This function will set the file read pointer to the beginning of the
-   *current section \return Error condition.
+   * This function will set the file read pointer to the beginning of the current section
+   *\return Error condition.
    */
   Self::Condition Begin();
 
   /** Close current section.
-   * In the open archive, this function will close the last section and decrease
-   *the nesting level by one. \return Error condition.
+   * In the open archive, this function will close the last section and decrease the nesting level by one.
+   *\return Error condition.
    */
   Self::Condition End();
 
@@ -135,75 +138,63 @@ class TypedStreamInput : public TypedStream {
    *\return If reading was succesful, the value from the archive is returned.
    * Otherwise the value given as the "defaultValue" parameter is returned.
    */
-  bool ReadBool(
-      const char *key /*!< The name of the boolean entry in the archive.*/, const bool defaultValue = false /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to false.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  bool ReadBool( const char* key /*!< The name of the boolean entry in the archive.*/, 
+		 const bool defaultValue = false /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to false.*/,
+		 const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of boole values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  Self::
-      Condition
-      ReadBoolArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          byte *const array /*!< Pointer to allocated storage for the array to
-                               be read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  Self::Condition ReadBoolArray( const char* key /*!< The name of the array in the archive.*/, 
+				      byte *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				      const int size /*!< Size of the array.*/, 
+				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  
   /** Read integer value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  int ReadInt(
-      const char *key /*!< The name of the field in the archive.*/, const int defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  int ReadInt( const char* key /*!< The name of the field in the archive.*/, 
+	       const int defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, 
+	       const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of integer values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  Self::
-      Condition
-      ReadIntArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          int *const array /*!< Pointer to allocated storage for the array to be
-                              read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  Self::Condition ReadIntArray( const char* key /*!< The name of the array in the archive.*/, 
+				     int *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				     const int size /*!< Size of the array.*/, 
+				     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  
   /** Read single-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  float ReadFloat(
-      const char *key /*!< The name of the field in the archive.*/, const float defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  float ReadFloat( const char* key /*!< The name of the field in the archive.*/, 
+		   const float defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, 
+		   const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of single-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  Self::
-      Condition
-      ReadFloatArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          float *const array /*!< Pointer to allocated storage for the array to
-                                be read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  Self::Condition ReadFloatArray( const char* key /*!< The name of the array in the archive.*/, 
+				       float *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				       const int size /*!< Size of the array.*/, 
+				       const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read double-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  double ReadDouble(
-      const char *key /*!< The name of the field in the archive.*/, const double defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  double ReadDouble( const char* key /*!< The name of the field in the archive.*/,
+		     const double defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, 
+		     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of double-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  Self::
-      Condition
-      ReadDoubleArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          double *const array /*!< Pointer to allocated storage for the array to
-                                 be read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  Self::Condition ReadDoubleArray( const char* key /*!< The name of the array in the archive.*/, 
+					double *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+					const int size /*!< Size of the array.*/, 
+					const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  
   /** Read double- or single precision value from an open archive.
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_COORDINATES_DOUBLE preprocessor symbol. This function is thus
@@ -211,15 +202,17 @@ class TypedStreamInput : public TypedStream {
    *\see CMTK_COORDINATES_DOUBLE
    *\see Types::Coordinate
    */
-  Types::Coordinate ReadCoordinate(
-      const char *key /*!< The name of the field in the archive.*/, const Types::Coordinate defaultValue = 0 /*!< Default value if the field is not found.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) {
+  Types::Coordinate ReadCoordinate( const char* key /*!< The name of the field in the archive.*/, 
+				    const Types::Coordinate defaultValue = 0 /*!< Default value if the field is not found.*/, 
+				    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  {
 #ifdef CMTK_COORDINATES_DOUBLE
-    return this->ReadDouble(key, defaultValue, forward);
+    return this->ReadDouble( key, defaultValue, forward );
 #else
-    return this->ReadFloat(key, defaultValue, forward);
+    return this->ReadFloat( key, defaultValue, forward );
 #endif
   }
-
+  
   /** Read double- or single precision value from an open archive.
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_DATA_DOUBLE preprocessor symbol. This function is thus
@@ -227,15 +220,17 @@ class TypedStreamInput : public TypedStream {
    *\see CMTK_DATA_DOUBLE
    *\see Types::DataItem
    */
-  Types::DataItem ReadItem(
-      const char *key /*!< The name of the field in the archive.*/, const Types::DataItem defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) {
+  Types::DataItem ReadItem( const char* key /*!< The name of the field in the archive.*/, 
+			    const Types::DataItem defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, 
+			    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  {
 #ifdef CMTK_DATA_DOUBLE
-    return this->ReadDouble(key, defaultValue, forward);
+    return this->ReadDouble( key, defaultValue, forward );
 #else
-    return this->ReadFloat(key, defaultValue, forward);
+    return this->ReadFloat( key, defaultValue, forward );
 #endif
   }
-
+  
   /** Read array of double- or single precision values from an open archive.
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_COORDINATES_DOUBLE preprocessor symbol. This function is thus
@@ -243,18 +238,15 @@ class TypedStreamInput : public TypedStream {
    *\see CMTK_COORDINATES_DOUBLE
    *\see Types::Coordinate
    */
-  Self::
-      Condition
-      ReadCoordinateArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          Types::Coordinate *const array /*!< Pointer to allocated storage for
-                                            the array to be read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) {
+  Self::Condition ReadCoordinateArray( const char* key /*!< The name of the array in the archive.*/, 
+					    Types::Coordinate *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+					    const int size /*!< Size of the array.*/, 
+					    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */)
+  {
 #ifdef CMTK_COORDINATES_DOUBLE
-    return this->ReadDoubleArray(key, array, size, forward);
+    return this->ReadDoubleArray( key, array, size, forward );
 #else
-    return this->ReadFloatArray(key, array, size, forward);
+    return this->ReadFloatArray( key, array, size, forward );
 #endif
   }
 
@@ -265,18 +257,15 @@ class TypedStreamInput : public TypedStream {
    *\see CMTK_DATA_DOUBLE
    *\see Types::DataItem
    */
-  Self::
-      Condition
-      ReadItemArray(
-          const char *key /*!< The name of the array in the archive.*/,
-          Types::DataItem *const array /*!< Pointer to allocated storage for the
-                                          array to be read into.*/
-          ,
-          const int size /*!< Size of the array.*/, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) {
+  Self::Condition ReadItemArray( const char* key /*!< The name of the array in the archive.*/, 
+				      Types::DataItem *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				      const int size /*!< Size of the array.*/, 
+				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  {
 #ifdef CMTK_DATA_DOUBLE
-    return this->ReadDoubleArray(key, array, size, forward);
+    return this->ReadDoubleArray( key, array, size, forward );
 #else
-    return this->ReadFloatArray(key, array, size, forward);
+    return this->ReadFloatArray( key, array, size, forward );
 #endif
   }
 
@@ -286,50 +275,60 @@ class TypedStreamInput : public TypedStream {
    * avoid memory leaks.
    *\return A pointer to a newly allocated string is returned if reading was
    * succesful. If no valid entry could be read from the archive, a copy of
-   * the string given as "defaultValue" parameter is returned. If that
+   * the string given as "defaultValue" parameter is returned. If that 
    * parameter was NULL, the same value is also returned.
    */
-  char *ReadString(
-      const char *key /*!< The name of the field in the archive.*/, const char *defaultValue = NULL /*!< Default value returned if the field is not found in the archive. */, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  char* ReadString( const char* key /*!< The name of the field in the archive.*/, 
+		    const char* defaultValue = NULL /*!< Default value returned if the field is not found in the archive. */, 
+		    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read STL string from an open archive.
-   *\return The string that was read. If no valid entry could be read from the
-   *archive, a copy of the string given as "defaultValue" parameter is returned.
+   *\return The string that was read. If no valid entry could be read from the archive, a copy of
+   * the string given as "defaultValue" parameter is returned.
    */
-  std::string ReadStdString(
-      const char *key /*!< The name of the field in the archive.*/, const std::string &defaultValue = "" /*!< Default value returned if the field is not found in the archive. */, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  std::string ReadStdString( const char* key /*!< The name of the field in the archive.*/, 
+			     const std::string& defaultValue = "" /*!< Default value returned if the field is not found in the archive. */, 
+			     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /// Get open stream major version.
-  int GetReleaseMajor() const {
-    if (this->m_Status == Self::ERROR_NONE) {
+  int GetReleaseMajor() const
+  {
+    if ( this->m_Status == Self::ERROR_NONE )
+      {
       return this->m_ReleaseMajor;
-    } else {
+      }
+    else
+      {
       return -1;
-    }
+      }
   }
 
   /// Get open stream minor version.
-  int GetReleaseMinor() const {
-    if (this->m_Status == Self::ERROR_NONE) {
+  int GetReleaseMinor() const
+  {
+    if ( this->m_Status == Self::ERROR_NONE )
+      {
       return this->m_ReleaseMinor;
-    } else {
+      }
+    else
+      {
       return -1;
-    }
+      }
   }
 
- private:
+private:
   /** Utility function: Read an array of arbitrary type.
    * This function is called by all reader functions. Internally, a "switch"
    * statement selects the correct code for the effective data type to be read.
    * Besides, common functions such as the skipping of inserted sections are
    * implemented as shared code for all data types.
    */
-  Self::Condition GenericReadArray(
-      const char *key /*!< Field key (name)*/,
-      const int type /*!< Array data type ID */,
-      void *const array /*!< Target storage space for read data */,
-      const int arraySize /*!< Number of array elements */, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  Self::Condition GenericReadArray( const char* key /*!< Field key (name)*/, 
+				    const int type /*!< Array data type ID */, 
+				    void *const array /*!< Target storage space for read data */, 
+				    const int arraySize /*!< Number of array elements */, 
+				    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
+  
   /// Read the next archive line to the buffer.
   Self::Token ReadLineToken();
 
@@ -342,8 +341,8 @@ class TypedStreamInput : public TypedStream {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 //@}
 
-#endif  // #ifndef __cmtkTypedStreamInput_h_included_
+#endif // #ifndef __cmtkTypedStreamInput_h_included_

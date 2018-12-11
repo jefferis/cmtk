@@ -35,47 +35,51 @@
 
 #include <cmtkconfig.h>
 
-#include <IO/cmtkFileFormat.h>
 #include <IO/cmtkStudy.h>
+#include <IO/cmtkFileFormat.h>
 
 #include <list>
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
 /// An imaging study that is constructed from multiple 2-D images.
 class StudyImageSet :
-    /// Inherit basic study fields and functions.
-    public Study,
-    /// Inherit string list for list of file names.
-    public std::list<std::string> {
- private:
+  /// Inherit basic study fields and functions.
+  public Study,
+  /// Inherit string list for list of file names.
+  public std::list<std::string>
+{
+private:
   /// Convenience typedef.
   typedef Study Superclass;
 
- public:
+public:
   /// Is this a single file or a multi-file study?
-  cmtkGetSetMacro(bool, MultiFile);
+  cmtkGetSetMacro(bool,MultiFile);
 
   /// Directory that contains the image files.
   cmtkGetSetMacroString(ImageDirectory);
 
   /// Directory that contains the image files.
-  cmtkGetSetMacro(FileFormatID, ImageFormat);
+  cmtkGetSetMacro(FileFormatID,ImageFormat);
 
   /// Default constructor.
-  StudyImageSet()
-      : Study(),
-        m_MultiFile(false),
-        m_ImageDirectory(NULL),
-        m_ImageFormat(FILEFORMAT_UNKNOWN) {}
+  StudyImageSet() : 
+    Study(),
+    m_MultiFile( false ),
+    m_ImageDirectory( NULL ), 
+    m_ImageFormat( FILEFORMAT_UNKNOWN )
+  {}
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkStudyImageSet_h_included_
+#endif // #ifndef __cmtkStudyImageSet_h_included_

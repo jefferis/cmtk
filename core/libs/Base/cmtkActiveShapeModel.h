@@ -35,19 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDirectionSet.h>
 #include <Base/cmtkTypes.h>
+#include <Base/cmtkDirectionSet.h>
 
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Class for a three-dimensional active shape model.
-class ActiveShapeModel {
- public:
+class ActiveShapeModel
+{
+public:
   /// Smart pointer to active shape model.
   typedef SmartPointer<ActiveShapeModel> SmartPtr;
 
@@ -73,32 +76,26 @@ class ActiveShapeModel {
   CoordinateVector::SmartPtr ModeVariances;
 
   /// Default constructor.
-  ActiveShapeModel()
-      : NumberOfPoints(0), Mean(NULL), NumberOfModes(0), Modes(NULL) {}
+  ActiveShapeModel() : NumberOfPoints( 0 ), Mean( NULL ), NumberOfModes( 0 ), Modes( NULL ) {}
 
   /// Construct using given mean and modes.
-  ActiveShapeModel(CoordinateVector::SmartPtr &mean,
-                   DirectionSet::SmartPtr &modes,
-                   CoordinateVector::SmartPtr &modeVariances);
+  ActiveShapeModel( CoordinateVector::SmartPtr& mean, DirectionSet::SmartPtr& modes, CoordinateVector::SmartPtr& modeVariances );
 
   /** Generative constructor.
    * For a description of the parameters, see the Construct() member function.
    *\see ActiveShapeModel::Construct
    */
-  ActiveShapeModel(const Types::Coordinate *const *trainingSet,
-                   const unsigned int numberOfSamples,
-                   const unsigned int numberOfPoints,
-                   const unsigned int numberOfModes)
-      : NumberOfPoints(0), Mean(NULL), NumberOfModes(0), Modes(NULL) {
-    this->Construct(trainingSet, numberOfSamples, numberOfPoints,
-                    numberOfModes);
+  ActiveShapeModel( const Types::Coordinate *const* trainingSet, const unsigned int numberOfSamples, const unsigned int numberOfPoints, const unsigned int numberOfModes ) 
+    : NumberOfPoints( 0 ), Mean( NULL ), NumberOfModes( 0 ), Modes( NULL )
+  {
+    this->Construct( trainingSet, numberOfSamples, numberOfPoints, numberOfModes ); 
   }
 
   /** Construct model.
    *\param trainingSet The training set. This is a an array with size
    * [numberOfSamples]. Each entry is a pointer to an array of size
    * [numberOfPoints] Types::Coordinate values. Each of these latter arrays is a
-   * sample vector from the training set, for example a sequential
+   * sample vector from the training set, for example a sequential 
    * concatenation of 2-D or 3-D point coordinates. The order of these values
    * within the vectors is irrelevant, as long as the order is the same in all
    * vectors. This order also defines the order of parameters in the generated
@@ -108,43 +105,37 @@ class ActiveShapeModel {
    *\param numberOfPoints This is the number of values in each array pointed
    * to by a pointer in the "trainingSet" array.
    *\param numberOfModes Number of modes in the generated model. This can be
-   * at most as many as "numberOfSamples", the number of samples in the
-   * training set. If the value of this parameter is to large, it will
+   * at most as many as "numberOfSamples", the number of samples in the 
+   * training set. If the value of this parameter is to large, it will 
    * automatically be reduced to equal numberOfSamples.
-   *\return Percentage of the total variance of the training set that is
+   *\return Percentage of the total variance of the training set that is 
    * explained by the generated model.
    */
-  float Construct(const Types::Coordinate *const *trainingSet,
-                  const unsigned int numberOfSamples,
-                  const unsigned int numberOfPoints,
-                  const unsigned int numberOfModes);
+  float Construct( const Types::Coordinate *const* trainingSet, const unsigned int numberOfSamples, const unsigned int numberOfPoints, const unsigned int numberOfModes );
 
   /** Generate a model instance.
    */
-  Types::Coordinate *Generate(Types::Coordinate *const instance,
-                              const Types::Coordinate *modeWeights) const;
+  Types::Coordinate* Generate( Types::Coordinate *const instance, const Types::Coordinate* modeWeights ) const;
 
   /** Decompose a vector into mean and modes of this model.
    *\param input Input vector.
    *\param weights Weights of the modes that make up the given input vector.
    * This parameter is optional. If not given, no weights will be returned.
-   *\return The value of the multivariate Gaussian PDF represented by this
+   *\return The value of the multivariate Gaussian PDF represented by this 
    * model atr the location of the input vector.
    */
-  float Decompose(const CoordinateVector *input,
-                  Types::Coordinate *const weights = NULL) const;
+  float Decompose( const CoordinateVector* input, Types::Coordinate *const weights = NULL ) const;
 
  protected:
   /** Allocate data structures.
    * If this instance already has data structures allocated, these are
    * deallocated first.
    */
-  void Allocate(const unsigned int numberOfPoints,
-                const unsigned int numberOfModes);
+  void Allocate( const unsigned int numberOfPoints, const unsigned int numberOfModes );
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkActiveShapeModel_h_included_
+#endif // #ifndef __cmtkActiveShapeModel_h_included_

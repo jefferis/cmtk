@@ -38,23 +38,29 @@
 #define HAVE_STL_HASH_MAP
 
 #if defined(HAVE_UNORDERED_MAP)
-#include <unordered_map>
+#  include <unordered_map>
 #elif defined(HAVE_HASH_MAP_H)
-#include <hash_map.h>
+#  include <hash_map.h>
 #elif defined(HAVE_HASH_MAP)
-#include <hash_map>
+#  include <hash_map>
 #else
-#undef HAVE_STL_HASH_MAP
+#  undef HAVE_STL_HASH_MAP
 #endif
 
 #ifdef HAVE_STL_HASH_MAP
-namespace cmtk {
+namespace
+cmtk
+{
 
 /// Generic hash function for all integer types.
-template <typename TKey>
-struct HashFunctionInteger {
+template<typename TKey>
+struct HashFunctionInteger
+{
   /// Simply cast integer key to size_t
-  size_t operator()(const TKey x) const { return static_cast<size_t>(x); }
+  size_t operator()( const TKey x ) const
+  { 
+    return static_cast<size_t>( x ); 
+  }
 };
 
 /** Wrapper class for STL hash_map or unordered_map classes.
@@ -62,23 +68,27 @@ struct HashFunctionInteger {
  * currently used STL. If both unordered_map and hash_map are provided, the
  * former is used as it is the future standard class.
  */
-template <class TKey, class TValue, class THashFunc = HashFunctionInteger<TKey>>
-class HashMapSTL :
-/// Inherit STL hash/unordered map.
+template<
+  class TKey, 
+  class TValue, 
+  class THashFunc = HashFunctionInteger<TKey>
+  >
+class HashMapSTL : 
+    /// Inherit STL hash/unordered map.
 #if defined(_MSC_VER)
-    public std::tr1::unordered_map<TKey, TValue, THashFunc>
+    public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP)
-    public std::unordered_map<TKey, TValue, THashFunc>
+    public std::unordered_map<TKey,TValue,THashFunc>
 #elif defined(__GNUC__)
-    public __gnu_cxx::hash_map<TKey, TValue, THashFunc>
+    public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
 #else
-    public std::hash_map<TKey, TValue, THashFunc>
+    public std::hash_map<TKey,TValue,THashFunc>
 #endif
 {
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifdef HAVE_STL_HASH_MAP
+#endif // #ifdef HAVE_STL_HASH_MAP
 
-#endif  // #ifndef __cmtkHashMapSTL_h_included_
+#endif // #ifndef __cmtkHashMapSTL_h_included_

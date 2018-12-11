@@ -37,28 +37,30 @@
 
 #include <Registration/cmtkMultiChannelRegistrationFunctional.h>
 
-#include <Base/cmtkSymmetricMatrix.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSymmetricMatrix.h>
 
 #include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
-/** Base class for multi-channel registration functionals using the RMI metric.
- */
-template <class TRealType = double, class TDataType = float,
-          class TInterpolator =
-              UniformVolumeInterpolator<Interpolators::Linear>>
+/** Base class for multi-channel registration functionals using the RMI metric. */
+template<class TRealType = double,
+	 class TDataType = float,
+	 class TInterpolator = UniformVolumeInterpolator<Interpolators::Linear> >
 class MultiChannelRMIRegistrationFunctional :
-    /** Inherit functional interface. */
-    public MultiChannelRegistrationFunctional<TInterpolator> {
- public:
+  /** Inherit functional interface. */
+  public MultiChannelRegistrationFunctional<TInterpolator>
+{
+public:
   /** This class. */
-  typedef MultiChannelRMIRegistrationFunctional<TRealType, TDataType> Self;
+  typedef MultiChannelRMIRegistrationFunctional<TRealType,TDataType> Self;
 
   /** Smart pointer. */
   typedef SmartPointer<Self> SmartPtr;
@@ -72,70 +74,70 @@ class MultiChannelRMIRegistrationFunctional :
   /** Real value type for data representation. */
   typedef TDataType DataType;
 
- protected:
+protected:
   /** Local class for data needed to compute similarity metric. */
-  class MetricData {
-   private:
+  class MetricData
+  {
+  private:
     /** Typedef of parent class. */
-    typedef MultiChannelRMIRegistrationFunctional<TRealType, TDataType> Parent;
-
-   public:
+    typedef MultiChannelRMIRegistrationFunctional<TRealType,TDataType> Parent;
+    
+  public:
     /** This class type. */
     typedef MetricData Self;
 
     /** Initialize metric object and local storage. */
-    void Init(Parent *const parent);
+    void Init( Parent *const parent );
 
     /** Vector of pixel value sums. */
     std::vector<RealType> m_Sums;
-
+    
     /** Vector (actually matrix) of pairwise pixel value products. */
     std::vector<RealType> m_Products;
-
+    
     /** Covariance matrix for joint entropy computation. */
     SymmetricMatrix<RealType> m_CovarianceMatrix;
-
+    
     /** Covariance matrix for reference channels entropy computation. */
     SymmetricMatrix<RealType> m_CovarianceMatrixRef;
-
+    
     /** Covariance matrix for floating channels entropy computation. */
     SymmetricMatrix<RealType> m_CovarianceMatrixFlt;
-
+    
     /** Total number of samples (pixels) under current transformation. */
     size_t m_TotalNumberOfSamples;
 
     /** Assignment operator. */
-    Self &operator=(const Self &source);
+    Self& operator=( const Self& source );
 
     /** In-place addition operator. */
-    Self &operator+=(const Self &other);
+    Self& operator+=( const Self& other );
 
     /** In-place subtraction operator. */
-    Self &operator-=(const Self &other);
+    Self& operator-=( const Self& other );
 
     /** In-place single sample addition operator. */
-    void operator+=(const std::vector<Types::DataItem> &values);
+    void operator+=( const std::vector<Types::DataItem>& values );
 
     /** In-place single sample subtraction operator. */
-    void operator-=(const std::vector<Types::DataItem> &values);
+    void operator-=( const std::vector<Types::DataItem>& values );
   };
 
   /// Global data structure for metric computation.
   MetricData m_MetricData;
 
   /** Continue metric computation. */
-  virtual void ContinueMetric(MetricData &metricData, const size_t rindex,
-                              const Vector3D &fvector);
+  virtual void ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
 
   /** Get metric value. */
-  virtual RealType GetMetric(MetricData &metricData) const;
+  virtual RealType GetMetric( MetricData& metricData ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkMultiChannelRMIRegistrationFunctional.txx"
 #include "cmtkMultiChannelRMIRegistrationFunctionalMetricData.txx"
 
-#endif  // #ifndef __cmtkMultiChannelRMIRegistrationFunctional_h_included_
+#endif // #ifndef __cmtkMultiChannelRMIRegistrationFunctional_h_included_

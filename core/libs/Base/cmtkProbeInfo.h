@@ -38,7 +38,9 @@
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkVector3D.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
@@ -48,8 +50,9 @@ namespace cmtk {
  * partial derivative computation. It holds a grid location and the node data
  * on the corners of the grid cube containing that location.
  */
-class ProbeInfo {
- public:
+class ProbeInfo 
+{
+public:
   /** Node data on cube corners around given location.
    * The order of the data elements is as follows: (x0,y0,z0), (x1,y0,z0),
    * (x0,y1,z0), (x1,y1,z0), (x0,y0,z1), (x1,y0,z1), (x0,y1,z1), (x1,y1,z1).
@@ -75,42 +78,35 @@ class ProbeInfo {
   /** Return data value at desired location.
    * Trlinear interpolation is performed using the pre-calculated coefficients.
    */
-  Types::DataItem GetValueTrilinear() const {
-    return static_cast<Types::DataItem>(
-        Offsets[2] *
-            (Offsets[1] * (Offsets[0] * Values[0] + Offsets[3] * Values[1]) +
-             Offsets[4] * (Offsets[0] * Values[2] + Offsets[3] * Values[3])) +
-        Offsets[5] *
-            (Offsets[1] * (Offsets[0] * Values[4] + Offsets[3] * Values[5]) +
-             Offsets[4] * (Offsets[0] * Values[6] + Offsets[3] * Values[7])));
+  Types::DataItem GetValueTrilinear () const 
+  {
+    return static_cast<Types::DataItem>( Offsets[2]*(Offsets[1]*(Offsets[0]*Values[0]+Offsets[3]*Values[1])+ 
+					     Offsets[4]*(Offsets[0]*Values[2]+Offsets[3]*Values[3]))+
+				 Offsets[5]*(Offsets[1]*(Offsets[0]*Values[4]+Offsets[3]*Values[5])+ 
+					     Offsets[4]*(Offsets[0]*Values[6]+Offsets[3]*Values[7]) ) );
   }
 
   /// Return relative weight of given index.
-  Types::Coordinate GetWeight(const int index) const {
-    switch (index) {
-      case 0:
-        return Offsets[2] * Offsets[1] * Offsets[0];
-      case 1:
-        return Offsets[2] * Offsets[1] * Offsets[3];
-      case 2:
-        return Offsets[2] * Offsets[4] * Offsets[0];
-      case 3:
-        return Offsets[2] * Offsets[4] * Offsets[3];
-      case 4:
-        return Offsets[5] * Offsets[1] * Offsets[0];
-      case 5:
-        return Offsets[5] * Offsets[1] * Offsets[3];
-      case 6:
-        return Offsets[5] * Offsets[4] * Offsets[0];
-      case 7:
-        return Offsets[5] * Offsets[4] * Offsets[3];
-    }
+  Types::Coordinate GetWeight( const int index ) const 
+  {
+    switch ( index ) 
+      {
+      case 0: return Offsets[2] * Offsets[1] * Offsets[0];
+      case 1: return Offsets[2] * Offsets[1] * Offsets[3];
+      case 2: return Offsets[2] * Offsets[4] * Offsets[0];
+      case 3: return Offsets[2] * Offsets[4] * Offsets[3];
+      case 4: return Offsets[5] * Offsets[1] * Offsets[0];
+      case 5: return Offsets[5] * Offsets[1] * Offsets[3];
+      case 6: return Offsets[5] * Offsets[4] * Offsets[0];
+      case 7: return Offsets[5] * Offsets[4] * Offsets[3];
+      }
     return 0;
   }
+
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkProbeInfo_h_included_
+#endif // #ifndef __cmtkProbeInfo_h_included_

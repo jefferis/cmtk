@@ -40,37 +40,47 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 
 /** Binary STAPLE label combination.
- * This class implements combination of binary images using the
- * binary STAPLE algorithm. If multi-class images are provided as inputs,
- * all values other than zero are interpreted as binary "1" for the
- * purpose of the algorithm.
- */
-class LabelCombinationSTAPLE {
- public:
+  * This class implements combination of binary images using the
+  * binary STAPLE algorithm. If multi-class images are provided as inputs,
+  * all values other than zero are interpreted as binary "1" for the
+  * purpose of the algorithm.
+  */
+class
+LabelCombinationSTAPLE
+{
+public:
   /// Constructor: compute label combination.
-  LabelCombinationSTAPLE(
-      const std::vector<TypedArray::SmartPtr>
-          &data /*!< Array of typed arrays with input data.*/,
-      const int maxIterations /*!< Maximum number of STAPLE iterations. */,
-      const ScalarDataType resultType =
-          TYPE_DOUBLE /*!< Primitive data type for results.*/);
-
+  LabelCombinationSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
+			  const int maxIterations /*!< Maximum number of STAPLE iterations. */,
+			  const ScalarDataType resultType = TYPE_DOUBLE /*!< Primitive data type for results.*/ );
+  
   /// Get result.
-  TypedArray::SmartPtr &GetResult() { return this->m_Result; }
+  TypedArray::SmartPtr& GetResult()
+  {
+    return this->m_Result;
+  }
 
   /// Get one p value.
-  double GetPValue(const size_t i) const { return this->m_VecP[i]; }
+  double GetPValue( const size_t i ) const
+  {
+    return this->m_VecP[i];
+  }
 
   /// Get one q value.
-  double GetQValue(const size_t i) const { return this->m_VecQ[i]; }
+  double GetQValue( const size_t i ) const
+  {
+    return this->m_VecQ[i];
+  }
 
- private:
+private:
   /// Resulting data array.
   TypedArray::SmartPtr m_Result;
 
@@ -81,6 +91,6 @@ class LabelCombinationSTAPLE {
   std::vector<double> m_VecQ;
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkLabelCombinationSTAPLE_h_included_
+#endif // #ifndef __cmtkLabelCombinationSTAPLE_h_included_

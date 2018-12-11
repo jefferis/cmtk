@@ -36,7 +36,9 @@
 
 #include <Pipeline/cmtkPipelineObject.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -44,42 +46,46 @@ namespace cmtk {
  * This class provides common fields and acces functions for data source
  * objects. The output object type is defined by the template parameter "O".
  */
-template <class O>
-class Source :
-    /// This is a pipeline object.
-    public PipelineObject {
- protected:
+template<class O>
+class Source : 
+  /// This is a pipeline object.
+  public PipelineObject 
+{
+protected:
   /// Default constructor.
   Source() { Output = NULL; }
 
   /** Destructor.
    * Unregister from the output object.
    */
-  virtual ~Source() {
-    if (Output) Output->Unregister(this);
+  virtual ~Source() 
+  { 
+    if ( Output ) Output->Unregister( this );
   }
-
- public:
+  
+public:
   /** Get output object.
    * If the output object does not yet exist, a new objet is created. The
    * current Source object is then registered as the new output object's
    * primary owner.
    */
-  virtual O *GetOutput() {
-    if (Output == NULL) {
+  virtual O *GetOutput()
+  {
+    if ( Output == NULL ) 
+      {
       Output = O::New();
-      Output->Register(this);
-    }
+      Output->Register( this );
+      }
     return Output;
   }
-
- protected:
+  
+protected:
   /// Pointer to the actual output object.
   O *Output;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSource_h_included_
+#endif // #ifndef __cmtkSource_h_included_

@@ -35,11 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkInterpolator.h>
 #include <Registration/cmtkRegistrationJointHistogram.h>
+#include <Base/cmtkInterpolator.h>
 #include <System/cmtkSmartPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
@@ -47,17 +49,18 @@ namespace cmtk {
 /** Voxel metric "normalized mutual information".
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNMI instead.
  */
-template <Interpolators::InterpolationEnum I = Interpolators::LINEAR>
-class VoxelMatchingNormMutInf :
-    /// Inherit basic functionality from 2D histogram.
-    public RegistrationJointHistogram<I> {
- public:
+template<Interpolators::InterpolationEnum I=Interpolators::LINEAR>
+class VoxelMatchingNormMutInf : 
+  /// Inherit basic functionality from 2D histogram.
+  public RegistrationJointHistogram<I> 
+{
+public:
   /// This type.
   typedef VoxelMatchingNormMutInf<I> Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
-
+  
   /// Parent class.
   typedef RegistrationJointHistogram<I> Superclass;
 
@@ -65,20 +68,17 @@ class VoxelMatchingNormMutInf :
    * For reference and floating volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
    *\param fltVolume The floating (transformed) volume.
-   *\param numRefBins The desired number of bins to classify the
+   *\param numRefBins The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *\param numFltBins The desired number of bins to classify the
+   *\param numFltBins The desired number of bins to classify the 
    * floating image data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */
-  VoxelMatchingNormMutInf(
-      const UniformVolume *refVolume, const UniformVolume *fltVolume,
-      const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS,
-      const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS)
-      : RegistrationJointHistogram<I>(refVolume, fltVolume, numRefBins,
-                                      numFltBins){};
-
+  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume,
+			    const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
+    : RegistrationJointHistogram<I>( refVolume, fltVolume, numRefBins, numFltBins ) {};
+  
   /** Constructor with explicit value range limits.
    * For reference and floating volume, InitDataset is called.
    *\param refVolume The reference (fixed) volume.
@@ -86,34 +86,28 @@ class VoxelMatchingNormMutInf :
    *\param rangeRef Range of reference image values.
    *\param rangeFlt Range of floating image values.
    */
-  VoxelMatchingNormMutInf(const UniformVolume *refVolume,
-                          const UniformVolume *fltVolume,
-                          const Types::DataItemRange &rangeRef,
-                          const Types::DataItemRange &rangeFlt)
-      : RegistrationJointHistogram<I>(
-            refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS,
-            CMTK_HISTOGRAM_AUTOBINS, rangeRef, rangeFlt){};
-
+  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItemRange& rangeRef, const Types::DataItemRange& rangeFlt )
+    : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, rangeRef, rangeFlt ) {};
+  
   /// Return normalized mutual information.
-  typename Self::ReturnType Get() const {
+  typename Self::ReturnType Get () const 
+  {
     double HX, HY;
-    this->GetMarginalEntropies(HX, HY);
+    this->GetMarginalEntropies(HX,HY);
     const double HXY = this->GetJointEntropy();
-
-    return static_cast<typename Self::ReturnType>((HX + HY) / HXY);
+    
+    return static_cast<typename Self::ReturnType>( (HX + HY) / HXY );
   }
 };
 
 /// Normalized mutual information with trilinear interpolation.
-typedef VoxelMatchingNormMutInf<Interpolators::LINEAR>
-    VoxelMatchingNormMutInf_Trilinear;
+typedef VoxelMatchingNormMutInf<Interpolators::LINEAR> VoxelMatchingNormMutInf_Trilinear;
 
 /// Normalized mutual information with nearest-neighbor interpolation.
-typedef VoxelMatchingNormMutInf<Interpolators::NEAREST_NEIGHBOR>
-    VoxelMatchingNormMutInf_NearestNeighbor;
+typedef VoxelMatchingNormMutInf<Interpolators::NEAREST_NEIGHBOR> VoxelMatchingNormMutInf_NearestNeighbor;
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkVoxelMatchingNormMutInf_h_included_
+#endif // #ifndef __cmtkVoxelMatchingNormMutInf_h_included_

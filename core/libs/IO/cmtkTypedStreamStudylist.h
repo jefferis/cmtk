@@ -42,7 +42,9 @@
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
@@ -51,8 +53,9 @@ namespace cmtk {
  * This class provides the necessary functions to read studylist objects
  * from typedstream archives.
  */
-class TypedStreamStudylist {
- public:
+class TypedStreamStudylist 
+{
+public:
   /// Smart pointer to TypedStreamStudylist
   typedef SmartPointer<TypedStreamStudylist> SmartPtr;
 
@@ -65,42 +68,54 @@ class TypedStreamStudylist {
   /** Read constructor.
    */
   TypedStreamStudylist ( const std::string& studylistpath /*!<  The typedstream archive to read the object from. */) 
-  {
+  { 
     this->Clear();
-    this->Read(studylistpath);
+    this->Read( studylistpath );
   }
 
   /// Read object from disk.
-  bool Read(const std::string &studylistpath);
+  bool Read( const std::string& studylistpath );
 
   /// Return affine transformation as stored in the studylist.
-  AffineXform::SmartPtr &GetAffineXform() { return this->m_AffineXform; }
+  AffineXform::SmartPtr& GetAffineXform() 
+  { 
+    return this->m_AffineXform; 
+  }
 
   /// Return local deformation as stored in the studylist.
-  WarpXform::SmartPtr &GetWarpXform() { return this->m_WarpXform; }
+  WarpXform::SmartPtr& GetWarpXform() 
+  { 
+    return this->m_WarpXform;
+  }
 
   /// Return study path.
-  const char *GetStudyPath(const int index) const { return StudyPath[index]; }
+  const char* GetStudyPath( const int index ) const 
+  {
+    return StudyPath[index];
+  }
 
   /// Return reference study path.
-  const char *GetReferenceStudyPath() const {
+  const char* GetReferenceStudyPath() const 
+  {
     return StudyPath[ReferenceStudyIndex];
   }
 
   /// Return floating study path.
-  const char *GetFloatingStudyPath(const int floatingIndex = 0) const {
-    if (floatingIndex < ReferenceStudyIndex)
+  const char* GetFloatingStudyPath( const int floatingIndex = 0 ) const 
+  {
+    if ( floatingIndex < ReferenceStudyIndex )
       return StudyPath[floatingIndex];
-    else if (floatingIndex < 1)
-      return StudyPath[floatingIndex + 1];
     else
-      return NULL;
+      if ( floatingIndex < 1 )
+	return StudyPath[floatingIndex+1];
+      else
+	return NULL;
   }
-
- private:
+  
+private:
   /// The names of the two studies referenced in the studylist.
   char *StudyPath[2];
-
+  
   /// Index of the reference study among the studies in this list (from 0).
   int ReferenceStudyIndex;
 
@@ -116,6 +131,6 @@ class TypedStreamStudylist {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkTypedStreamStudylist_h_included_
+#endif // #ifndef __cmtkTypedStreamStudylist_h_included_

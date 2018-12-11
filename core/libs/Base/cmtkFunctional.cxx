@@ -32,40 +32,50 @@
 
 #include "cmtkFunctional.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-Functional::ReturnType Functional::EvaluateWithGradient(
-    Self::ParameterVectorType &v, Self::ParameterVectorType &g,
-    const Types::Coordinate step) {
-  const Self::ReturnType baseValue = this->EvaluateAt(v);
-
-  for (size_t dim = 0; dim < this->VariableParamVectorDim(); ++dim) {
-    const Types::Coordinate stepScale = this->GetParamStep(dim, step);
-    if (stepScale <= 0) {
+Functional::ReturnType
+Functional::EvaluateWithGradient
+( Self::ParameterVectorType& v, Self::ParameterVectorType& g, const Types::Coordinate step )
+{ 
+  const Self::ReturnType baseValue = this->EvaluateAt( v );
+  
+  for ( size_t dim = 0; dim < this->VariableParamVectorDim(); ++dim ) 
+    {
+    const Types::Coordinate stepScale = this->GetParamStep( dim, step );
+    if ( stepScale <= 0 ) 
+      {
       g[dim] = 0;
-    } else {
+      } 
+    else
+      {
       const Types::Coordinate v0 = v[dim];
-
+      
       v[dim] += stepScale;
-      const Self::ReturnType upper = this->EvaluateAt(v);
-
+      const Self::ReturnType upper = this->EvaluateAt( v );
+      
       v[dim] = v0 - stepScale;
-      const Self::ReturnType lower = this->EvaluateAt(v);
-
+      const Self::ReturnType lower = this->EvaluateAt( v );
+      
       v[dim] = v0;
-
-      if ((upper > baseValue) || (lower > baseValue)) {
-        g[dim] = upper - lower;
-      } else {
-        g[dim] = 0;
+      
+      if ( (upper > baseValue) || (lower > baseValue) ) 
+	{
+	g[dim] = upper-lower;
+	} 
+      else 
+	{
+	g[dim] = 0;
+	}
       }
-    }
-  }
-
+    }  
+  
   return baseValue;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

@@ -35,7 +35,9 @@
 
 #include <Base/cmtkTypes.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Pipeline */
 //@{
@@ -60,7 +62,7 @@ typedef struct {
 /** RGB components plus transparency (alpha value).
  */
 class RGBA {
- public:
+public:
 #ifdef WORDS_BIGENDIAN
   /** Transparency.
    * Opacity is linear between 0 (fully transparent) and 255 (fully opaque).
@@ -79,15 +81,11 @@ class RGBA {
   byte Alpha;
 #endif
   /// Assignment operator.
-  void operator=(const RGB &rgb) {
-    R = rgb.R;
-    G = rgb.G;
-    B = rgb.B;
-  }
+  void operator =( const RGB& rgb ) { R = rgb.R; G = rgb.G; B = rgb.B; }
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkRGB_h_included_
+#endif // #ifndef __cmtkRGB_h_included_

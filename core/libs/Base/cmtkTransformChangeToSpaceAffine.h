@@ -40,36 +40,36 @@
 
 #include <string>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-/// Compute affine coordinate transformation between native spaces of reference
-/// and floating images.
-class TransformChangeToSpaceAffine {
- public:
-  /// Simplified constructor: compute transformation between images in new,
-  /// common space.
-  TransformChangeToSpaceAffine(
-      const AffineXform &xform /*!< Transformation from reference to floating in
-                                  their current spaces.*/
-      ,
-      const UniformVolume &reference /*!< Reference (fixed) image.*/,
-      const UniformVolume &floating /*! Floating (moving) image.*/,
-      const char *forceSpace =
-          NULL /*!< Force transformation to be in this coordinate space.*/);
-
+/// Compute affine coordinate transformation between native spaces of reference and floating images.
+class TransformChangeToSpaceAffine
+{
+public:
+  /// Simplified constructor: compute transformation between images in new, common space.
+  TransformChangeToSpaceAffine( const AffineXform& xform /*!< Transformation from reference to floating in their current spaces.*/,
+				const UniformVolume& reference /*!< Reference (fixed) image.*/,
+				const UniformVolume& floating /*! Floating (moving) image.*/,
+				const char* forceSpace = NULL /*!< Force transformation to be in this coordinate space.*/ );
+  
   /// Return transformation in native spaces.
-  const AffineXform &GetTransformation() const { return this->m_NewXform; }
+  const AffineXform& GetTransformation() const
+  {
+    return this->m_NewXform;
+  }
 
- private:
+private:
   /// Transformation between native spaces.
   AffineXform m_NewXform;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkTransformChangeToSpaceAffine_h_included_
+#endif // #ifndef __cmtkTransformChangeToSpaceAffine_h_included_

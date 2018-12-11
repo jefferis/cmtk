@@ -38,12 +38,16 @@
 #include <QtGui/QGraphicsPixmapItem>
 #include <QtGui/QGraphicsSceneMouseEvent>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
-/// Class that derives from Qt's pixmap graphics item and signals events it
-/// receives.
-class QGraphicsPixmapItemEvents : public QGraphicsPixmapItem {
- public:
+/// Class that derives from Qt's pixmap graphics item and signals events it receives.
+class QGraphicsPixmapItemEvents : public QObject, public QGraphicsPixmapItem
+{
+  Q_OBJECT
+  
+public:
   /// This class.
   typedef QGraphicsPixmapItemEvents Self;
 
@@ -51,25 +55,24 @@ class QGraphicsPixmapItemEvents : public QGraphicsPixmapItem {
   typedef QGraphicsPixmapItem Superclass;
 
   /// Default constructor.
-  QGraphicsPixmapItemEvents(QGraphicsItem *parent = 0)
-      : QGraphicsPixmapItem(parent) {}
+  QGraphicsPixmapItemEvents( QGraphicsItem* parent = 0 ) : QGraphicsPixmapItem ( parent ) {}
 
   /// Constructor.
-  QGraphicsPixmapItemEvents(const QPixmap &pixmap, QGraphicsItem *parent = 0)
-      : QGraphicsPixmapItem(pixmap, parent) {}
+  QGraphicsPixmapItemEvents( const QPixmap& pixmap, QGraphicsItem* parent = 0 ) : QGraphicsPixmapItem ( pixmap, parent ) {}
 
- signals:
+signals:
   /// Signal that is sent when "mouse press" event is received.
-  void mousePressed(QGraphicsSceneMouseEvent *event);
+  void mousePressed( QGraphicsSceneMouseEvent* event );
 
- protected:
+protected:
   /// Catch mouse press event.
-  virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    emit(mousePressed(event));
-    Superclass::mousePressEvent(event);
+  virtual void mousePressEvent( QGraphicsSceneMouseEvent* event )
+  {
+    emit( mousePressed( event ) );
+    Superclass::mousePressEvent( event );
   }
 };
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkQGraphicsPixmapItemEvents_h_included_
+#endif // #ifndef __cmtkQGraphicsPixmapItemEvents_h_included_

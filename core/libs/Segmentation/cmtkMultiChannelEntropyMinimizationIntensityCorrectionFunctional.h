@@ -37,32 +37,32 @@
 
 #include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
-#include <Base/cmtkDataGrid.h>
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkDataGrid.h>
 
 #include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 /** Functional to correct MR intensity bias by miniming image entropy.
  */
-template <unsigned int NOrderAdd, unsigned int NOrderMul>
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
 class MultiChannelEntropyMinimizationIntensityCorrectionFunctional :
-    /// Inherit from base class.
-    public Functional {
- public:
+  /// Inherit from base class.
+  public Functional
+{
+public:
   /// This class type.
-  typedef MultiChannelEntropyMinimizationIntensityCorrectionFunctional<
-      NOrderAdd, NOrderMul>
-      Self;
-
+  typedef MultiChannelEntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> Self;
+  
   /// Class for single-channel functional type.
-  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd, NOrderMul>
-      SingleChannelFunctionalType;
+  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> SingleChannelFunctionalType;
 
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -71,67 +71,65 @@ class MultiChannelEntropyMinimizationIntensityCorrectionFunctional :
   typedef Functional Superclass;
 
   /// Constructor.
-  MultiChannelEntropyMinimizationIntensityCorrectionFunctional(
-      std::vector<UniformVolume::SmartConstPointer> &inputImages)
-      : m_InputImages(inputImages) {
-    this->m_SingleChannelFunctionals.resize(this->m_InputImages.size());
-    for (size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx) {
-      this->m_SingleChannelFunctionals[idx] =
-          SingleChannelFunctionalType::SmartPtr(
-              new SingleChannelFunctionalType);
-      this->m_SingleChannelFunctionals[idx]->SetInputImage(
-          this->m_InputImages[idx]);
-    }
+  MultiChannelEntropyMinimizationIntensityCorrectionFunctional( std::vector<UniformVolume::SmartConstPointer>& inputImages ) 
+    : m_InputImages( inputImages )
+  {
+    this->m_SingleChannelFunctionals.resize( this->m_InputImages.size() );
+    for ( size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx )
+      {
+      this->m_SingleChannelFunctionals[idx] = SingleChannelFunctionalType::SmartPtr( new SingleChannelFunctionalType );
+      this->m_SingleChannelFunctionals[idx]->SetInputImage( this->m_InputImages[idx] );
+      }
   }
 
   /// Set foreground mask for all input images.
-  virtual void SetForegroundMask(const UniformVolume &foregroundMask) {
-    for (size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx) {
-      this->m_SingleChannelFunctionals[idx]->SetForegroundMask(foregroundMask);
-    }
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask )
+  {
+    for ( size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx )
+      {
+      this->m_SingleChannelFunctionals[idx]->SetForegroundMask( foregroundMask );
+      }
   }
 
   /// Virtual destructor.
   virtual ~MultiChannelEntropyMinimizationIntensityCorrectionFunctional() {}
 
   /// Return parameter vector length.
-  virtual size_t ParamVectorDim() const {
-    return SingleChannelFunctionalType::NumberOfParameters *
-           this->m_InputImages.size();
+  virtual size_t ParamVectorDim() const
+  {
+    return SingleChannelFunctionalType::NumberOfParameters * this->m_InputImages.size();
   }
 
   /// Return parameter stepping.
 #pragma GCC diagnostic ignored "-Wtype-limits"
-  virtual Types::Coordinate GetParamStep(
-      const size_t idx, const Types::Coordinate mmStep = 1) const {
-    // delegate to corresponding single-channel functional, although they are
-    // really all the same.
-    return this
-        ->m_SingleChannelFunctionals
-            [idx / SingleChannelFunctionalType::NumberOfParameters]
-        ->GetParamStep(idx % SingleChannelFunctionalType::NumberOfParameters);
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    // delegate to corresponding single-channel functional, although they are really all the same.
+    return this->m_SingleChannelFunctionals[idx / SingleChannelFunctionalType::NumberOfParameters]->GetParamStep( idx % SingleChannelFunctionalType::NumberOfParameters );
   }
 
   /// Copy parameters to the two correction polynomials.
-  virtual void SetParamVector(CoordinateVector &v) {
+  virtual void SetParamVector( CoordinateVector& v )
+  {
     this->m_ParameterVector = v;
-    for (size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx) {
-    }
+    for ( size_t idx = 0; idx < this->m_SingleChannelFunctionals.size(); ++idx )
+      {
+      }
   }
 
   /// Extract parameter vector from the two correction polynomials.
-  virtual void GetParamVector(CoordinateVector &v) {
+  virtual void GetParamVector( CoordinateVector& v )
+  {
     v = this->m_ParameterVector;
   }
 
   /** Fast implementation of gradient evaluation.
-   * This function only updates either the additive of the multiplicative bias
+   * This function only updates either the additive of the multiplicative bias 
    * field, depending on which gradient component is being determined.
    */
-  virtual typename Self::ReturnType EvaluateWithGradient(
-      CoordinateVector &v, CoordinateVector &g, const Types::Coordinate step);
+  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step );
 
- private:
+private:
   /// Keep a copy of the current parameter vector.
   CoordinateVector m_ParameterVector;
 
@@ -139,40 +137,35 @@ class MultiChannelEntropyMinimizationIntensityCorrectionFunctional :
   std::vector<UniformVolume::SmartConstPtr> m_InputImages;
 
   /// Vector of single-channel functionals.
-  std::vector<typename SingleChannelFunctionalType::SmartPtr>
-      m_SingleChannelFunctionals;
+  std::vector<typename SingleChannelFunctionalType::SmartPtr> m_SingleChannelFunctionals;
 };
 
 /// Create functional templated over polynomial degrees.
-template <unsigned int NDegreeMul>
+template<unsigned int NDegreeMul>
 MultiChannelEntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional(
-    const unsigned int polynomialDegreeAdd);
+CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional
+( const unsigned int polynomialDegreeAdd );
 
 /// Create functional templated over polynomial degrees.
 MultiChannelEntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional(
-    const unsigned int polynomialDegreeAdd,
-    const unsigned int polynomialDegreeMul);
+CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul );
 
-/** Create functional templated over polynomial degrees with initialization from
- * old functional. This function creates a new functional and copies the
- * polynomial coefficients from an existing functional of equal or lower
- * polynomial degrees into the correct locations of the new functional's
+/** Create functional templated over polynomial degrees with initialization from old functional.
+ * This function creates a new functional and copies the polynomial coefficients from an existing
+ * functional of equal or lower polynomial degrees into the correct locations of the new functional's
  * parameter vector. This is for incremental computation.
  */
 MultiChannelEntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional(
-    const unsigned int polynomialDegreeAdd,
-    const unsigned int polynomialDegreeMul,
-    MultiChannelEntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
-        oldFunctional);
+CreateMultiChannelEntropyMinimizationIntensityCorrectionFunctional
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul,
+  MultiChannelEntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr oldFunctional );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
 #include "cmtkMultiChannelEntropyMinimizationIntensityCorrectionFunctional.txx"
 
-#endif  // #ifndef
-        // __cmtkMultiChannelEntropyMinimizationIntensityCorrectionFunctional_h_included_
+#endif // #ifndef __cmtkMultiChannelEntropyMinimizationIntensityCorrectionFunctional_h_included_
+

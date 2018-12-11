@@ -33,412 +33,228 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkDebugOutput.h>
-#include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
-#include <IO/cmtkClassStreamStudyList.h>
 #include <IO/cmtkStudyList.h>
+#include <IO/cmtkClassStreamStudyList.h>
 
 #include <math.h>
 
 #include <Base/cmtkImageOperation.h>
-#include <Base/cmtkImageOperationBoundaryMap.h>
-#include <Base/cmtkImageOperationConnectedComponents.h>
 #include <Base/cmtkImageOperationConvertType.h>
-#include <Base/cmtkImageOperationCropRegion.h>
-#include <Base/cmtkImageOperationCropThreshold.h>
-#include <Base/cmtkImageOperationDistanceMap.h>
-#include <Base/cmtkImageOperationDownsample.h>
+#include <Base/cmtkImageOperationFlip.h>
 #include <Base/cmtkImageOperationErodeDilate.h>
 #include <Base/cmtkImageOperationErodeDilateDistance.h>
-#include <Base/cmtkImageOperationFlip.h>
-#include <Base/cmtkImageOperationGaussFilter.h>
+#include <Base/cmtkImageOperationBoundaryMap.h>
+#include <Base/cmtkImageOperationConnectedComponents.h>
+#include <Base/cmtkImageOperationDownsample.h>
+#include <Base/cmtkImageOperationResampleIsotropic.h>
 #include <Base/cmtkImageOperationHistogramEqualization.h>
-#include <Base/cmtkImageOperationLaplaceFilter.h>
-#include <Base/cmtkImageOperationMapValues.h>
+#include <Base/cmtkImageOperationCropRegion.h>
+#include <Base/cmtkImageOperationCropThreshold.h>
+#include <Base/cmtkImageOperationScaleToRange.h>
+#include <Base/cmtkImageOperationThreshold.h>
 #include <Base/cmtkImageOperationOtsuThreshold.h>
 #include <Base/cmtkImageOperationPruneHistogram.h>
-#include <Base/cmtkImageOperationRegionFilter.h>
-#include <Base/cmtkImageOperationReplace.h>
-#include <Base/cmtkImageOperationResampleIsotropic.h>
-#include <Base/cmtkImageOperationRevert.h>
-#include <Base/cmtkImageOperationScaleToRange.h>
 #include <Base/cmtkImageOperationSetDataClass.h>
 #include <Base/cmtkImageOperationSetPadding.h>
-#include <Base/cmtkImageOperationThreshold.h>
+#include <Base/cmtkImageOperationMapValues.h>
+#include <Base/cmtkImageOperationReplace.h>
+#include <Base/cmtkImageOperationRegionFilter.h>
+#include <Base/cmtkImageOperationGaussFilter.h>
+#include <Base/cmtkImageOperationLaplaceFilter.h>
+#include <Base/cmtkImageOperationDistanceMap.h>
+#include <Base/cmtkImageOperationRevert.h>
 
 #include <IO/cmtkImageOperationApplyMask.h>
 #include <IO/cmtkImageOperationMatchIntensities.h>
 
 #include <stdlib.h>
-#include <fstream>
 #include <iostream>
-#include <map>
+#include <fstream>
 #include <set>
+#include <map>
 
 #ifdef HAVE_IEEEFP_H
-#include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
-int doMain(const int argc, const char *argv[]) {
+int
+doMain( const int argc, const char* argv[] )
+{
   std::string imagePathIn;
   std::string imagePathOut;
 
 #ifdef CMTK_USE_SQLITE
-  const char *updateDB = NULL;
+  const char* updateDB = NULL;
 #endif
 
-  try {
-    cmtk::CommandLine cl;
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_TITLE,
-                      "Convert between image file formats and data types.");
-    cl.SetProgramInfo(
-        cmtk::CommandLine::PRG_DESCR,
-        "This tool converts between image file formats and pixel data types. "
-        "It can also apply simple, general-purpose image operations in the "
-        "process. "
-        "An arbitrary number of operations can be specified on the command "
-        "line, which will be applied exactly in the order given.");
-    cl.SetProgramInfo(cmtk::CommandLine::PRG_SYNTX,
-                      "convertx [options] infile outfile");
+  try 
+    {
+    cmtk::CommandLine cl;  
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts between image file formats and pixel data types. It can also apply simple, general-purpose image operations in the process. "
+		       "An arbitrary number of operations can be specified on the command line, which will be applied exactly in the order given." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "convertx [options] infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
 #ifdef CMTK_USE_SQLITE
-    cl.BeginGroup("Database", "Image/Transformation Database");
-    cl.AddOption(Key("db"), &updateDB,
-                 "Path to image/transformation database that should be updated "
-                 "with the newly created image.");
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
     cl.EndGroup();
 #endif
 
-    cl.BeginGroup("Input", "Input Image Controls");
-    cl.AddCallback(Key("set-padding"), &cmtk::ImageOperationSetPadding::New,
-                   "Set padding value: all pixels in the input image that have "
-                   "this value will be ignored in all subsequent operations.");
-    cl.AddCallback(Key("unset-padding"),
-                   &cmtk::ImageOperationSetPadding::NewUnset,
-                   "Unset padding value: for all subsequent operations, all "
-                   "pixels will be treated according to their value.");
-    cl.AddCallback(
-        Key("labels"), &cmtk::ImageOperationSetDataClass::NewLabels,
-        "Specify that the image values are to be treated as discrete labels. "
-        "This will result in the appropriate intent code to be set in output "
-        "files in NIfTI format.");
-    cl.AddCallback(
-        Key("grey"), &cmtk::ImageOperationSetDataClass::NewGrey,
-        "Specify that the image values are to be treated as continuous grey "
-        "levels. "
-        "This will reset the intent code in files read from NIfTI format.");
+    cl.BeginGroup( "Input", "Input Image Controls" );
+    cl.AddCallback( Key( "set-padding" ), &cmtk::ImageOperationSetPadding::New, "Set padding value: all pixels in the input image that have this value will be ignored in all subsequent operations." );
+    cl.AddCallback( Key( "unset-padding" ), &cmtk::ImageOperationSetPadding::NewUnset, "Unset padding value: for all subsequent operations, all pixels will be treated according to their value." );
+    cl.AddCallback( Key( "labels" ), &cmtk::ImageOperationSetDataClass::NewLabels, "Specify that the image values are to be treated as discrete labels. "
+		    "This will result in the appropriate intent code to be set in output files in NIfTI format." );
+    cl.AddCallback( Key( "grey" ), &cmtk::ImageOperationSetDataClass::NewGrey, "Specify that the image values are to be treated as continuous grey levels. "
+		    "This will reset the intent code in files read from NIfTI format." );
     cl.EndGroup();
 
-    cl.BeginGroup("Conversion", "Data Type Conversion");
-    cl.AddCallback(Key("char"), &cmtk::ImageOperationConvertType::NewChar,
-                   "8 bits, signed integer");
-    cl.AddCallback(Key("byte"), &cmtk::ImageOperationConvertType::NewByte,
-                   "8 bits, unsigned integer");
-    cl.AddCallback(Key("short"), &cmtk::ImageOperationConvertType::NewShort,
-                   "16 bits, signed integer");
-    cl.AddCallback(Key("ushort"), &cmtk::ImageOperationConvertType::NewUShort,
-                   "16 bits, unsigned integer");
-    cl.AddCallback(Key("int"), &cmtk::ImageOperationConvertType::NewInt,
-                   "32 bits signed integer");
-    cl.AddCallback(Key("uint"), &cmtk::ImageOperationConvertType::NewUInt,
-                   "32 bits unsigned integer");
-    cl.AddCallback(Key("float"), &cmtk::ImageOperationConvertType::NewFloat,
-                   "32 bits floating point");
-    cl.AddCallback(Key("double"), &cmtk::ImageOperationConvertType::NewDouble,
-                   "64 bits floating point\n");
+    cl.BeginGroup( "Conversion", "Data Type Conversion" );
+    cl.AddCallback( Key( "char" ), &cmtk::ImageOperationConvertType::NewChar, "8 bits, signed integer" );
+    cl.AddCallback( Key( "byte" ), &cmtk::ImageOperationConvertType::NewByte, "8 bits, unsigned integer" );
+    cl.AddCallback( Key( "short" ), &cmtk::ImageOperationConvertType::NewShort, "16 bits, signed integer" );
+    cl.AddCallback( Key( "ushort" ), &cmtk::ImageOperationConvertType::NewUShort, "16 bits, unsigned integer" );
+    cl.AddCallback( Key( "int" ), &cmtk::ImageOperationConvertType::NewInt, "32 bits signed integer" );
+    cl.AddCallback( Key( "uint" ), &cmtk::ImageOperationConvertType::NewUInt, "32 bits unsigned integer" );
+    cl.AddCallback( Key( "float" ), &cmtk::ImageOperationConvertType::NewFloat, "32 bits floating point" );
+    cl.AddCallback( Key( "double" ), &cmtk::ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Mappings", "Value Mappings" );
+    cl.AddCallback( Key( "map-values" ), &cmtk::ImageOperationMapValues::New, "Apply mapping function to pixel values. Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. "
+		    "If NEWVAL is not given, values are set to padding." );
+    cl.AddCallback( Key( "map-values-only" ), &cmtk::ImageOperationMapValues::NewExclusive, "Apply mapping function to pixel values and replace unmapped pixels with padding. Multiple such mapping rules can be concatenated as "
+		    "RULE0+RULE1[+...]; all concatenated rules will be applied simultaneously."
+		    "Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding. Multiple such mapping rules can be concatenated as "
+		    "RULE0+RULE1[+...]; all concatenated rules will be applied simultaneously." );
+    cl.AddCallback( Key( "replace-padding" ), &cmtk::ImageOperationReplace::NewReplacePadding, "Replace padded pixel data with given value." );
+    cl.AddCallback( Key( "replace-inf-nan" ), &cmtk::ImageOperationReplace::NewReplaceInfNaN, "Replace all infinite and not-a-number pixels with given value." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Flipping", "Image Flipping" );
+    cl.AddCallback( Key( "flip-x" ), &cmtk::ImageOperationFlip::NewX, "Flip (mirror) along x-direction" );
+    cl.AddCallback( Key( "flip-y" ), &cmtk::ImageOperationFlip::NewY, "Flip (mirror) along y-direction" );
+    cl.AddCallback( Key( "flip-z" ), &cmtk::ImageOperationFlip::NewZ, "Flip (mirror) along z-direction" );
     cl.EndGroup();
 
-    cl.BeginGroup("Mappings", "Value Mappings");
-    cl.AddCallback(Key("map-values"), &cmtk::ImageOperationMapValues::New,
-                   "Apply mapping function to pixel values. Mapping is defined "
-                   "as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, "
-                   "etc. to new value NEWVAL. "
-                   "If NEWVAL is not given, values are set to padding.");
-    cl.AddCallback(
-        Key("map-values-only"), &cmtk::ImageOperationMapValues::NewExclusive,
-        "Apply mapping function to pixel values and replace unmapped pixels "
-        "with padding. Multiple such mapping rules can be concatenated as "
-        "RULE0+RULE1[+...]; all concatenated rules will be applied "
-        "simultaneously."
-        "Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, "
-        "VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are "
-        "set to padding. Multiple such mapping rules can be concatenated as "
-        "RULE0+RULE1[+...]; all concatenated rules will be applied "
-        "simultaneously.");
-    cl.AddCallback(Key("replace-padding"),
-                   &cmtk::ImageOperationReplace::NewReplacePadding,
-                   "Replace padded pixel data with given value.");
-    cl.AddCallback(
-        Key("replace-inf-nan"), &cmtk::ImageOperationReplace::NewReplaceInfNaN,
-        "Replace all infinite and not-a-number pixels with given value.");
+    cl.BeginGroup( "MaskAndThreshold", "Image Masking and Thresholding" );
+    cl.AddCallback( Key( "mask" ), &cmtk::ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0. "
+		    "Masked-out pixels will NOT be set to zero, but will instead be replaced with the currently-set padding value. Use '--set-padding 0' prior to '--mask' to force setting to zero." );
+    cl.AddCallback( Key( "mask-inverse" ), &cmtk::ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0. See also notes regarding padding under '--mask' above." );
+
+    cl.AddCallback( Key( "thresh-below" ), &cmtk::ImageOperationThreshold::NewBelow, "Set all values below threshold to threshold value." );
+    cl.AddCallback( Key( "thresh-above" ), &cmtk::ImageOperationThreshold::NewAbove, "Set all values above threshold to threshold value." );
+    cl.AddCallback( Key( "thresh-below-to-padding" ), &cmtk::ImageOperationThreshold::NewBelowToPadding, "Set all values below threshold to padding value." );
+    cl.AddCallback( Key( "thresh-above-to-padding" ), &cmtk::ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
+    cl.AddCallback( Key( "binarize-thresh" ), &cmtk::ImageOperationThreshold::NewBinarize, "Set all values below threshold to 0, all values equal or above to 1." );
+    cl.AddCallback( Key( "otsu-thresh" ), &cmtk::ImageOperationOtsuThreshold::New, "Binarize image to 0/1 using threshold computed with Otsu's method. "
+		    "Argument is number of histogram bins for threshold computation." );
+    cl.AddCallback( Key( "otsu-thresh-nbins" ), &cmtk::ImageOperationOtsuThreshold::NewBins, "Binarization using Otsu's method with user-defined number of histogram bins "
+		    "for threshold computation." );
+    cl.AddCallback( Key( "prune-histogram" ), &cmtk::ImageOperationPruneHistogram::New, "Threshold image by 'intensity histogram pruning', i.e., for given argument n [histogram bins] "
+		    "determine thresholds such that the 1/n-th fraction of highest and lowest voxels are thresholded." );
+    cl.AddCallback( Key( "prune-histogram-high" ), &cmtk::ImageOperationPruneHistogram::NewHigh, "Like '--prune-histograms', but only remove high intensities." );
+    cl.AddCallback( Key( "prune-histogram-low" ), &cmtk::ImageOperationPruneHistogram::NewLow, "Like '--prune-histograms', but only remove low intensities." );
     cl.EndGroup();
 
-    cl.BeginGroup("Flipping", "Image Flipping");
-    cl.AddCallback(Key("flip-x"), &cmtk::ImageOperationFlip::NewX,
-                   "Flip (mirror) along x-direction");
-    cl.AddCallback(Key("flip-y"), &cmtk::ImageOperationFlip::NewY,
-                   "Flip (mirror) along y-direction");
-    cl.AddCallback(Key("flip-z"), &cmtk::ImageOperationFlip::NewZ,
-                   "Flip (mirror) along z-direction");
+    cl.BeginGroup( "Intensity", "Intensity Transformations" );
+    cl.AddCallback( Key( "scale-to-range" ), &cmtk::ImageOperationScaleToRange::New, "Scale image intensities to range 'from:to', e.g., '0:255' before conversion to byte data." );
+    cl.AddCallback( Key( "histogram-equalization" ), &cmtk::ImageOperationHistogramEqualization::New, "Apply histogram equalization." );
+    cl.AddCallback( Key( "histogram-equalization-nbins" ), &cmtk::ImageOperationHistogramEqualization::NewBins, "Apply histogram equalization with <int> number of bins." );
+    cl.AddCallback( Key( "match-histograms" ), cmtk::ImageOperationMatchIntensities::NewMatchHistograms, "Transform intensities to match the distribution in the image provided as the argument for this command." );
+    cl.AddCallback( Key( "match-mean-sdev" ), cmtk::ImageOperationMatchIntensities::NewMatchMeanSDev, "Scale intensities to match the mean and standard distribution of intensities in the image provided as the argument for this command." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Morphological", "Morphological Operations" );
+    cl.AddCallback( Key( "revert" ), &cmtk::ImageOperationRevert::New, "Revert a binary mask, i.e., exchange foreground and background." );
+    cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator (by pixels)" );
+    cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator (by pixels)" );
+    cl.AddCallback( Key( "erode-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewErode, "Morphological erosion operator (by distance). Often preferable for anisotropic data." );
+    cl.AddCallback( Key( "erode-distance-multilabel" ), &cmtk::ImageOperationErodeDilateDistance::NewErodeMultiLabels, "Morphological erosion operator (by distance) for multi-label maps. "
+		    "The result will be either byte, unsigned short, or unsigned int data, depending on the index of the largest used label in the input." );
+    cl.AddCallback( Key( "dilate-distance" ), &cmtk::ImageOperationErodeDilateDistance::NewDilate, "Morphological dilation operator (by distance). Oftern preferable for anisotropic data." );
+    cl.AddCallback( Key( "connected-components" ), &cmtk::ImageOperationConnectedComponents::New, "Create connected components map with regions numbered by decreasing component size" );
+    cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
+    cl.AddCallback( Key( "multi-boundary-map" ), &cmtk::ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
+
+    cl.AddCallback( Key( "distance-map" ), &cmtk::ImageOperationDistanceMap::NewUnsigned, "Compute unsigned Euclidean distance map. Input image is interpreted as binary mask." );
+    cl.AddCallback( Key( "signed-distance-map" ), &cmtk::ImageOperationDistanceMap::NewSigned, "Compute signed (inside=negative, outside=positive) Euclidean distance map" );
     cl.EndGroup();
 
-    cl.BeginGroup("MaskAndThreshold", "Image Masking and Thresholding");
-    cl.AddCallback(
-        Key("mask"), &cmtk::ImageOperationApplyMask::New,
-        "Binary mask file name: eliminate all image pixels where mask is 0. "
-        "Masked-out pixels will NOT be set to zero, but will instead be "
-        "replaced with the currently-set padding value. Use '--set-padding 0' "
-        "prior to '--mask' to force setting to zero.");
-    cl.AddCallback(
-        Key("mask-inverse"), &cmtk::ImageOperationApplyMask::NewInverse,
-        "Inverse binary mask file name eliminate all image pixels where mask "
-        "is NOT 0. See also notes regarding padding under '--mask' above.");
-
-    cl.AddCallback(Key("thresh-below"),
-                   &cmtk::ImageOperationThreshold::NewBelow,
-                   "Set all values below threshold to threshold value.");
-    cl.AddCallback(Key("thresh-above"),
-                   &cmtk::ImageOperationThreshold::NewAbove,
-                   "Set all values above threshold to threshold value.");
-    cl.AddCallback(Key("thresh-below-to-padding"),
-                   &cmtk::ImageOperationThreshold::NewBelowToPadding,
-                   "Set all values below threshold to padding value.");
-    cl.AddCallback(Key("thresh-above-to-padding"),
-                   &cmtk::ImageOperationThreshold::NewAboveToPadding,
-                   "Set all values above threshold to padding value.");
-    cl.AddCallback(
-        Key("binarize-thresh"), &cmtk::ImageOperationThreshold::NewBinarize,
-        "Set all values below threshold to 0, all values equal or above to 1.");
-    cl.AddCallback(
-        Key("otsu-thresh"), &cmtk::ImageOperationOtsuThreshold::New,
-        "Binarize image to 0/1 using threshold computed with Otsu's method. "
-        "Argument is number of histogram bins for threshold computation.");
-    cl.AddCallback(Key("otsu-thresh-nbins"),
-                   &cmtk::ImageOperationOtsuThreshold::NewBins,
-                   "Binarization using Otsu's method with user-defined number "
-                   "of histogram bins "
-                   "for threshold computation.");
-    cl.AddCallback(Key("prune-histogram"),
-                   &cmtk::ImageOperationPruneHistogram::New,
-                   "Threshold image by 'intensity histogram pruning', i.e., "
-                   "for given argument n [histogram bins] "
-                   "determine thresholds such that the 1/n-th fraction of "
-                   "highest and lowest voxels are thresholded.");
-    cl.AddCallback(
-        Key("prune-histogram-high"),
-        &cmtk::ImageOperationPruneHistogram::NewHigh,
-        "Like '--prune-histograms', but only remove high intensities.");
-    cl.AddCallback(
-        Key("prune-histogram-low"), &cmtk::ImageOperationPruneHistogram::NewLow,
-        "Like '--prune-histograms', but only remove low intensities.");
+    cl.BeginGroup( "Filtering", "Filter Operations" );
+    cl.AddCallback( Key( "median-filter" ), &cmtk::ImageOperationRegionFilter::NewMedian, "Median filter. This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "mean-filter" ), &cmtk::ImageOperationRegionFilter::NewMean, "Regional mean filter. This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "fast-mean-filter" ), &cmtk::ImageOperationRegionFilter::NewFastMean, "Regional mean filter (fast, linear time implementation). This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "variance-filter" ), &cmtk::ImageOperationRegionFilter::NewVariance, "Regional variance filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "fast-variance-filter" ), &cmtk::ImageOperationRegionFilter::NewFastVariance, "Fast (linear-time) regional variance filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "third-moment-filter" ), &cmtk::ImageOperationRegionFilter::NewThirdMoment, "Regional third moment filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "standard-deviation-filter" ), &cmtk::ImageOperationRegionFilter::NewStandardDeviation, "Regional standard deviation filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "smoothness-filter" ), &cmtk::ImageOperationRegionFilter::NewSmoothness, "Regional 'smoothness' filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "gaussian-filter-sigma" ), &cmtk::ImageOperationGaussFilter::NewSigma, 
+		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel coefficient sigma in world units [e.g., mm] as the parameter." );
+    cl.AddCallback( Key( "gaussian-filter-fwhm" ), &cmtk::ImageOperationGaussFilter::NewFWHM, 
+		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel full width at half maximum in world units [e.g., mm]." );
+    cl.AddCallback( Key( "laplace-filter" ), &cmtk::ImageOperationLaplaceFilter::New, "Filter image with edge-enhancing Laplacian kernel." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Grid", "Grid Operations" );
+    cl.AddCallback( Key( "downsample-select" ), &cmtk::ImageOperationDownsample::NewSelect, "Downsample image by pixel selection using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
+    cl.AddCallback( Key( "downsample-average" ), &cmtk::ImageOperationDownsample::NewAverage, "Downsample image by averaging using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
+    cl.AddCallback( Key( "resample" ), &cmtk::ImageOperationResampleIsotropic::New, "Resample image to near-isotropic pixels while preserving the image field-of-view. "
+		    "Takes one argument, the target resolution in world units [e.g., mm]" );
+    cl.AddCallback( Key( "resample-exact" ), &cmtk::ImageOperationResampleIsotropic::NewExact, "Resample image to exactly isotropic pixels of the given resolution while matching the image field-of-view as closely as possible. "
+		    "Takes one argument, the target resolution in world units [e.g., mm]" );
+    cl.AddCallback( Key( "crop-by-index" ), &cmtk::ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as comma-separated integers x0,y0,z0,x1,y1,z1" );
+    cl.AddCallback( Key( "crop-by-threshold" ), &cmtk::ImageOperationCropThreshold::New, "Crop image to region determined via a given threshold. "
+		    "The resulting image will contain all pixels larger than the given parameter." );
+    cl.AddCallback( Key( "crop-by-threshold-write-region" ), &cmtk::ImageOperationCropThreshold::NewWriteRegion, 
+		    "Crop image to region determined via a given threshold and write cropping region to standard output." );
+    cl.AddCallback( Key( "crop-by-threshold-write-xform" ), &cmtk::ImageOperationCropThreshold::NewWriteXform, 
+		    "Crop image to region determined via a given threshold and write cropping transformation to standard output." );
     cl.EndGroup();
 
-    cl.BeginGroup("Intensity", "Intensity Transformations");
-    cl.AddCallback(Key("scale-to-range"),
-                   &cmtk::ImageOperationScaleToRange::New,
-                   "Scale image intensities to range 'from:to', e.g., '0:255' "
-                   "before conversion to byte data.");
-    cl.AddCallback(Key("histogram-equalization"),
-                   &cmtk::ImageOperationHistogramEqualization::New,
-                   "Apply histogram equalization.");
-    cl.AddCallback(Key("histogram-equalization-nbins"),
-                   &cmtk::ImageOperationHistogramEqualization::NewBins,
-                   "Apply histogram equalization with <int> number of bins.");
-    cl.AddCallback(Key("match-histograms"),
-                   cmtk::ImageOperationMatchIntensities::NewMatchHistograms,
-                   "Transform intensities to match the distribution in the "
-                   "image provided as the argument for this command.");
-    cl.AddCallback(
-        Key("match-mean-sdev"),
-        cmtk::ImageOperationMatchIntensities::NewMatchMeanSDev,
-        "Scale intensities to match the mean and standard distribution of "
-        "intensities in the image provided as the argument for this command.");
-    cl.EndGroup();
+    cl.AddParameter( &imagePathIn, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &imagePathOut, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.BeginGroup("Morphological", "Morphological Operations");
-    cl.AddCallback(
-        Key("revert"), &cmtk::ImageOperationRevert::New,
-        "Revert a binary mask, i.e., exchange foreground and background.");
-    cl.AddCallback(Key("erode"), &cmtk::ImageOperationErodeDilate::NewErode,
-                   "Morphological erosion operator (by pixels)");
-    cl.AddCallback(Key("dilate"), &cmtk::ImageOperationErodeDilate::NewDilate,
-                   "Morphological dilation operator (by pixels)");
-    cl.AddCallback(Key("erode-distance"),
-                   &cmtk::ImageOperationErodeDilateDistance::NewErode,
-                   "Morphological erosion operator (by distance). Often "
-                   "preferable for anisotropic data.");
-    cl.AddCallback(
-        Key("erode-distance-multilabel"),
-        &cmtk::ImageOperationErodeDilateDistance::NewErodeMultiLabels,
-        "Morphological erosion operator (by distance) for multi-label maps. "
-        "The result will be either byte, unsigned short, or unsigned int data, "
-        "depending on the index of the largest used label in the input.");
-    cl.AddCallback(Key("dilate-distance"),
-                   &cmtk::ImageOperationErodeDilateDistance::NewDilate,
-                   "Morphological dilation operator (by distance). Oftern "
-                   "preferable for anisotropic data.");
-    cl.AddCallback(Key("connected-components"),
-                   &cmtk::ImageOperationConnectedComponents::New,
-                   "Create connected components map with regions numbered by "
-                   "decreasing component size");
-    cl.AddCallback(Key("boundary-map"), &cmtk::ImageOperationBoundaryMap::New,
-                   "Create boundary map");
-    cl.AddCallback(Key("multi-boundary-map"),
-                   &cmtk::ImageOperationBoundaryMap::NewMulti,
-                   "Create multi-valued boundary map");
-
-    cl.AddCallback(Key("distance-map"),
-                   &cmtk::ImageOperationDistanceMap::NewUnsigned,
-                   "Compute unsigned Euclidean distance map. Input image is "
-                   "interpreted as binary mask.");
-    cl.AddCallback(Key("signed-distance-map"),
-                   &cmtk::ImageOperationDistanceMap::NewSigned,
-                   "Compute signed (inside=negative, outside=positive) "
-                   "Euclidean distance map");
-    cl.EndGroup();
-
-    cl.BeginGroup("Filtering", "Filter Operations");
-    cl.AddCallback(Key("median-filter"),
-                   &cmtk::ImageOperationRegionFilter::NewMedian,
-                   "Median filter. This operation takes the filter radius in "
-                   "pixels as the parameter. "
-                   "A single integer defines the kernel radius in all three "
-                   "dimensions. Three comma-separated integers define separate "
-                   "radii for the three dimensions.");
-    cl.AddCallback(Key("mean-filter"),
-                   &cmtk::ImageOperationRegionFilter::NewMean,
-                   "Regional mean filter. This operation takes the filter "
-                   "radius in pixels as the parameter. "
-                   "A single integer defines the kernel radius in all three "
-                   "dimensions. Three comma-separated integers define separate "
-                   "radii for the three dimensions.");
-    cl.AddCallback(
-        Key("fast-mean-filter"), &cmtk::ImageOperationRegionFilter::NewFastMean,
-        "Regional mean filter (fast, linear time implementation). This "
-        "operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("variance-filter"), &cmtk::ImageOperationRegionFilter::NewVariance,
-        "Regional variance filter. "
-        "This operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("fast-variance-filter"),
-        &cmtk::ImageOperationRegionFilter::NewFastVariance,
-        "Fast (linear-time) regional variance filter. "
-        "This operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("third-moment-filter"),
-        &cmtk::ImageOperationRegionFilter::NewThirdMoment,
-        "Regional third moment filter. "
-        "This operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("standard-deviation-filter"),
-        &cmtk::ImageOperationRegionFilter::NewStandardDeviation,
-        "Regional standard deviation filter. "
-        "This operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("smoothness-filter"),
-        &cmtk::ImageOperationRegionFilter::NewSmoothness,
-        "Regional 'smoothness' filter. "
-        "This operation takes the filter radius in pixels as the parameter. "
-        "A single integer defines the kernel radius in all three dimensions. "
-        "Three comma-separated integers define separate radii for the three "
-        "dimensions.");
-    cl.AddCallback(
-        Key("gaussian-filter-sigma"),
-        &cmtk::ImageOperationGaussFilter::NewSigma,
-        "Filter image with Gaussian kernel. This operation takes a single "
-        "real-valued parameter, which specifies the kernel coefficient sigma "
-        "in world units [e.g., mm] as the parameter.");
-    cl.AddCallback(Key("gaussian-filter-fwhm"),
-                   &cmtk::ImageOperationGaussFilter::NewFWHM,
-                   "Filter image with Gaussian kernel. This operation takes a "
-                   "single real-valued parameter, which specifies the kernel "
-                   "full width at half maximum in world units [e.g., mm].");
-    cl.AddCallback(Key("laplace-filter"),
-                   &cmtk::ImageOperationLaplaceFilter::New,
-                   "Filter image with edge-enhancing Laplacian kernel.");
-    cl.EndGroup();
-
-    cl.BeginGroup("Grid", "Grid Operations");
-    cl.AddCallback(Key("downsample-select"),
-                   &cmtk::ImageOperationDownsample::NewSelect,
-                   "Downsample image by pixel selection using per-axis factors "
-                   "'Fx,Fy,Fz' or using single factor 'Fxyz'");
-    cl.AddCallback(Key("downsample-average"),
-                   &cmtk::ImageOperationDownsample::NewAverage,
-                   "Downsample image by averaging using per-axis factors "
-                   "'Fx,Fy,Fz' or using single factor 'Fxyz'");
-    cl.AddCallback(
-        Key("resample"), &cmtk::ImageOperationResampleIsotropic::New,
-        "Resample image to near-isotropic pixels while preserving the image "
-        "field-of-view. "
-        "Takes one argument, the target resolution in world units [e.g., mm]");
-    cl.AddCallback(
-        Key("resample-exact"), &cmtk::ImageOperationResampleIsotropic::NewExact,
-        "Resample image to exactly isotropic pixels of the given resolution "
-        "while matching the image field-of-view as closely as possible. "
-        "Takes one argument, the target resolution in world units [e.g., mm]");
-    cl.AddCallback(
-        Key("crop-by-index"), &cmtk::ImageOperationCropRegion::New,
-        "Crop image to a region specified by a set of six grid index "
-        "coordinates given as comma-separated integers x0,y0,z0,x1,y1,z1");
-    cl.AddCallback(Key("crop-by-threshold"),
-                   &cmtk::ImageOperationCropThreshold::New,
-                   "Crop image to region determined via a given threshold. "
-                   "The resulting image will contain all pixels larger than "
-                   "the given parameter.");
-    cl.AddCallback(Key("crop-by-threshold-write-region"),
-                   &cmtk::ImageOperationCropThreshold::NewWriteRegion,
-                   "Crop image to region determined via a given threshold and "
-                   "write cropping region to standard output.");
-    cl.AddCallback(Key("crop-by-threshold-write-xform"),
-                   &cmtk::ImageOperationCropThreshold::NewWriteXform,
-                   "Crop image to region determined via a given threshold and "
-                   "write cropping transformation to standard output.");
-    cl.EndGroup();
-
-    cl.AddParameter(&imagePathIn, "InputImage", "Input image path")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE);
-    cl.AddParameter(&imagePathOut, "OutputImage", "Output image path")
-        ->SetProperties(cmtk::CommandLine::PROPS_IMAGE |
-                        cmtk::CommandLine::PROPS_OUTPUT);
-
-    if (!cl.Parse(argc, argv)) return 1;
-  } catch (const cmtk::CommandLine::Exception &ex) {
+    if ( ! cl.Parse( argc, argv ) ) 
+      return 1;
+    }
+  catch ( const cmtk::CommandLine::Exception& ex ) 
+    {
     cmtk::StdErr << ex << "\n";
     return false;
-  }
-
-  cmtk::UniformVolume::SmartPtr volume(
-      cmtk::VolumeIO::ReadOriented(imagePathIn));
+    }
+  
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePathIn ) );
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
 
-  volume = cmtk::ImageOperation::ApplyAll(volume);
+  volume = cmtk::ImageOperation::ApplyAll( volume );
 
-  cmtk::DebugOutput(1) << "Writing to file " << imagePathOut << "\n";
-  cmtk::VolumeIO::Write(*volume, imagePathOut);
+  cmtk::DebugOutput( 1 ) << "Writing to file " << imagePathOut << "\n";  
+  cmtk::VolumeIO::Write( *volume, imagePathOut );
   return 0;
 }
 

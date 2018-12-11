@@ -35,41 +35,41 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: histogram equalization with optional number of bins.
 class ImageOperationHistogramEqualization
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Default number of bins for histogram equalization.
   static const size_t DefaultNumberOfBins = 1024;
 
   /// Constructor.
-  ImageOperationHistogramEqualization(const size_t nBins)
-      : m_NumberOfBins(nBins) {}
-
+  ImageOperationHistogramEqualization( const size_t nBins ) : m_NumberOfBins( nBins ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
-
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create a histogram equalization operation with default number of bins.
   static void New();
-
-  /// Create a histogram equalization operation with user-supplied number of
-  /// bins.
-  static void NewBins(const long int nBins);
-
- private:
+  
+  /// Create a histogram equalization operation with user-supplied number of bins.
+  static void NewBins( const long int nBins);
+  
+private:
   /// Number of histogram bins.
   size_t m_NumberOfBins;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationHistogramEqualization_h_included_
+#endif // #ifndef __cmtkImageOperationHistogramEqualization_h_included_

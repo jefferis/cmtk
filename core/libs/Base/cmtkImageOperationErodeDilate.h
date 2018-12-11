@@ -33,56 +33,63 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkDataGridMorphologicalOperators.h>
 #include <Base/cmtkImageOperation.h>
+#include <Base/cmtkDataGridMorphologicalOperators.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: erode or dilate.
 class ImageOperationErodeDilate
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// Constructor:
-  ImageOperationErodeDilate(const int iterations) : m_Iterations(iterations) {}
-
+  ImageOperationErodeDilate( const int iterations ) : m_Iterations( iterations ) {}
+  
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume) {
-    if (this->m_Iterations < 0) {
-      cmtk::DataGridMorphologicalOperators ops(volume);
-      volume->SetData(ops.GetEroded(-this->m_Iterations));
-    } else {
-      if (this->m_Iterations > 0) {
-        cmtk::DataGridMorphologicalOperators ops(volume);
-        volume->SetData(ops.GetDilated(this->m_Iterations));
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    if ( this->m_Iterations < 0 )
+      {
+      cmtk::DataGridMorphologicalOperators ops( volume );
+      volume->SetData( ops.GetEroded( -this->m_Iterations ) );
       }
-    }
+    else
+      {
+      if ( this->m_Iterations > 0 )
+	{
+	cmtk::DataGridMorphologicalOperators ops( volume );
+	volume->SetData( ops.GetDilated( this->m_Iterations ) );
+	}
+      }
     return volume;
   }
 
   /// Create new dilation operation.
-  static void NewDilate(const long int iterations) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationErodeDilate(iterations)));
+  static void NewDilate( const long int iterations )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( iterations ) ) );
   }
 
   /// Create new erosion operation.
-  static void NewErode(const long int iterations) {
-    ImageOperation::m_ImageOperationList.push_back(
-        SmartPtr(new ImageOperationErodeDilate(-iterations)));
+  static void NewErode( const long int iterations )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( -iterations ) ) );
   }
-
- private:
+  
+private:
   /// Number of iterations of erosion (if negative) or dilation (if positive).
   int m_Iterations;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationErodeDilate_h_included_
+#endif // #ifndef __cmtkImageOperationErodeDilate_h_included_

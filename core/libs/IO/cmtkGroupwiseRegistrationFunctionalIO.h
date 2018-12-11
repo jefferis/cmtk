@@ -40,19 +40,19 @@
 
 #include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup IO */
 //@{
 
-ClassStreamOutput &operator<<(ClassStreamOutput &stream,
-                              const GroupwiseRegistrationFunctionalBase &func);
+ClassStreamOutput& operator<<( ClassStreamOutput& stream, const GroupwiseRegistrationFunctionalBase& func );
 
-ClassStreamInput &operator>>(ClassStreamInput &stream,
-                             GroupwiseRegistrationFunctionalBase &func);
+ClassStreamInput& operator>>( ClassStreamInput& stream, GroupwiseRegistrationFunctionalBase& func );
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkGroupwiseRegistrationFunctionalIO_h_included_
+#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalIO_h_included_

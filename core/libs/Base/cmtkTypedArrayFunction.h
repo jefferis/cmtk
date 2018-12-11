@@ -37,19 +37,23 @@
 
 #include <Base/cmtkTypes.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /** Base class for lookup classes.
- * The purpose of a lookup class is to provide a value translation table for the
+ * The purpose of a lookup class is to provide a value translation table for the 
  * cmtk::TypedArray class and its derivatives.
  */
-class TypedArrayFunction {
- public:
+class
+TypedArrayFunction
+{
+public:
   /// Map a single value to its new value.
-  virtual Types::DataItem operator()(const Types::DataItem valueIn) const = 0;
+  virtual Types::DataItem operator()( const Types::DataItem valueIn ) const = 0;
 
   /// Virtual destructor.
   virtual ~TypedArrayFunction() {}
@@ -57,6 +61,6 @@ class TypedArrayFunction {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkTypedArrayFunction_h_included_
+#endif // #ifndef __cmtkTypedArrayFunction_h_included_

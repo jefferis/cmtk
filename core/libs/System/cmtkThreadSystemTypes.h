@@ -33,38 +33,40 @@
 #define __cmtkThreadSystemTypes_h_included_
 
 #ifndef _MSC_VER
-#if defined(CMTK_USE_PTHREADS)
-#include <pthread.h>
-#endif
+#  if defined(CMTK_USE_PTHREADS)
+#    include <pthread.h>
+#  endif
 /// Return type of a thread function.
-#define CMTK_THREAD_RETURN_TYPE void*
+#  define CMTK_THREAD_RETURN_TYPE void*
 /// Return type of a thread function.
-#define CMTK_THREAD_ARG_TYPE void*
+#  define CMTK_THREAD_ARG_TYPE void*
 /// Return value of a thread function.
-#define CMTK_THREAD_RETURN_VALUE NULL
-#else  // _MSC_VER
-#include <windows.h>
-#define CMTK_THREAD_RETURN_TYPE DWORD
+#  define CMTK_THREAD_RETURN_VALUE NULL
+#else // _MSC_VER
+#  include <windows.h>
+#  define CMTK_THREAD_RETURN_TYPE DWORD
 /// Return type of a thread function.
-#define CMTK_THREAD_ARG_TYPE LPVOID
-#define CMTK_THREAD_RETURN_VALUE NULL
-#endif  // _MSC_VER
+#  define CMTK_THREAD_ARG_TYPE LPVOID
+#  define CMTK_THREAD_RETURN_VALUE NULL
+#endif // _MSC_VER
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
 
 #ifndef _MSC_VER
-#if defined(CMTK_USE_PTHREADS)
+#  if defined(CMTK_USE_PTHREADS)
 typedef pthread_t ThreadIDType;
-#else
+#  else
 /// Dummy definition for non-threading builds.
 typedef int ThreadIDType;
-#endif
-#else   // _MSC_VER
+#  endif
+#else // _MSC_VER
 typedef DWORD ThreadIDType;
-#endif  // _MSC_VER
+#  endif // _MSC_VER
 
 /// Type of thread function
 typedef CMTK_THREAD_RETURN_TYPE (*ThreadFunction)(CMTK_THREAD_ARG_TYPE);
@@ -81,6 +83,6 @@ typedef CMTK_THREAD_RETURN_TYPE (*ThreadFunction)(CMTK_THREAD_ARG_TYPE);
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkThreadSystemTypes_h_included_
+#endif // #ifndef __cmtkThreadSystemTypes_h_included_

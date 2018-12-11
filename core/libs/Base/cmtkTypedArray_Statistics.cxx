@@ -32,27 +32,34 @@
 
 #include "cmtkTypedArray.h"
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
-Types::DataItem TypedArray ::GetPercentile(const Types::DataItem percentile,
-                                           const size_t nBins) const {
-  const Histogram<unsigned int>::SmartPtr histogram(this->GetHistogram(nBins));
-  return histogram->GetPercentile(percentile);
+Types::DataItem
+TypedArray
+::GetPercentile
+( const Types::DataItem percentile, const size_t nBins ) const
+{
+  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
+  return histogram->GetPercentile( percentile );
 }
 
-std::vector<Types::DataItem> TypedArray ::GetPercentileList(
-    const std::vector<Types::DataItem> &percentileList,
-    const size_t nBins) const {
-  const Histogram<unsigned int>::SmartPtr histogram(this->GetHistogram(nBins));
+std::vector<Types::DataItem>
+TypedArray
+::GetPercentileList
+( const std::vector<Types::DataItem>& percentileList, const size_t nBins ) const
+{
+  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
 
-  std::vector<Types::DataItem> results(percentileList.size());
-  for (size_t i = 0; i < percentileList.size(); ++i)
-    results[i] = histogram->GetPercentile(percentileList[i]);
-
+  std::vector<Types::DataItem> results( percentileList.size() );
+  for ( size_t i = 0; i < percentileList.size(); ++i )
+    results[i] = histogram->GetPercentile( percentileList[i] );
+  
   return results;
 }
 
-}  // namespace cmtk
+} // namespace cmtk

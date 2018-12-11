@@ -35,21 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include <Base/cmtkAffineXform.h>
 #include <Registration/cmtkGroupwiseRegistrationRMIFunctional.h>
+#include <Base/cmtkAffineXform.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Registration */
 //@{
 
 /** Functional for affine groupwise registration using "RMI" metric.
  */
-typedef GroupwiseRegistrationRMIFunctional<AffineXform>
-    AffineGroupwiseRegistrationRMIFunctional;
+typedef GroupwiseRegistrationRMIFunctional<AffineXform> AffineGroupwiseRegistrationRMIFunctional;
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkAffineGroupwiseRegistrationRMIFunctional_h_included_
+#endif // #ifndef __cmtkAffineGroupwiseRegistrationRMIFunctional_h_included_

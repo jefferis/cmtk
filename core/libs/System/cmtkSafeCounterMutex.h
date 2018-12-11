@@ -35,10 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkLockingPtr.h>
 #include <System/cmtkMutexLock.h>
+#include <System/cmtkLockingPtr.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup System */
 //@{
@@ -49,30 +51,34 @@ namespace cmtk {
  * mutex lock supplied by the MutexLock class is used to protect the
  * counter from concurrent access of multiple threads.
  */
-class SafeCounterMutex {
- public:
+class SafeCounterMutex
+{
+public:
   /// Constructor.
-  SafeCounterMutex(const unsigned int counter = 0) : m_Counter(counter) {}
+  SafeCounterMutex( const unsigned int counter = 0 ) : m_Counter( counter ) {}
 
   /// Retrieve counter value.
-  unsigned int Get() const {
-    LockingPtr<const unsigned int> counter(this->m_Counter, this->m_Mutex);
+  unsigned int Get() const
+  { 
+    LockingPtr<const unsigned int> counter( this->m_Counter, this->m_Mutex );
     return *counter;
   }
-
+  
   /// Increment and return new counter value.
-  unsigned int Increment() {
-    LockingPtr<unsigned int> counter(this->m_Counter, this->m_Mutex);
+  unsigned int Increment()
+  { 
+    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return ++(*counter);
   }
-
+  
   /// Decrement and return new counter value.
-  unsigned int Decrement() {
-    LockingPtr<unsigned int> counter(this->m_Counter, this->m_Mutex);
+  unsigned int Decrement()
+  { 
+    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return --(*counter);
   }
 
- private:
+private:
   /// The actual counter.
   unsigned int m_Counter;
 
@@ -82,6 +88,6 @@ class SafeCounterMutex {
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkSafeCounterMutex_h_included_
+#endif // #ifndef __cmtkSafeCounterMutex_h_included_

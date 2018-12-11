@@ -35,45 +35,44 @@
 
 #include <Base/cmtkImageOperation.h>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{
 
 /// Image operation: grid downsampling.
 class ImageOperationDownsample
-    /// Inherit from image operation base class.
-    : public ImageOperation {
- public:
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
   /// This class.
   typedef ImageOperationDownsample Self;
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr Apply(
-      cmtk::UniformVolume::SmartPtr &volume);
-
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
+  
   /// Create a new selecting downsampler.
-  static void NewSelect(const char *arg) {
-    Self::NewGeneric(false /*doAverage*/, arg);
+  static void NewSelect( const char* arg )
+  {
+    Self::NewGeneric( false /*doAverage*/, arg );
   }
-
+  
   /// Create a new averaging downsampler.
-  static void NewAverage(const char *arg) {
-    Self::NewGeneric(true /*doAverage*/, arg);
+  static void NewAverage( const char* arg )
+  {
+    Self::NewGeneric( true /*doAverage*/, arg );
   }
-
- private:
+  
+private:
   /// Constructor:
-  ImageOperationDownsample(const bool doAverage, const int factorX,
-                           const int factorY, const int factorZ)
-      : m_DoAverage(doAverage),
-        m_FactorX(factorX),
-        m_FactorY(factorY),
-        m_FactorZ(factorZ) {}
-
+  ImageOperationDownsample( const bool doAverage, const int factorX, const int factorY, const int factorZ ) : m_DoAverage( doAverage ), m_FactorX( factorX ), m_FactorY( factorY ), m_FactorZ( factorZ ) {}
+  
   /// Create a new generic downsampler.
-  static void NewGeneric(const bool doAverage, const char *arg);
-
+  static void NewGeneric( const bool doAverage, const char* arg );
+  
   /// Flag for averaging vs. selecting downsampling.
   bool m_DoAverage;
 
@@ -89,6 +88,6 @@ class ImageOperationDownsample
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkImageOperationDownsample_h_included_
+#endif // #ifndef __cmtkImageOperationDownsample_h_included_

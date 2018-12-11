@@ -39,43 +39,45 @@
 
 #include <vector>
 
-namespace cmtk {
+namespace
+cmtk
+{
 
 /** \addtogroup Segmentation */
 //@{
 /// Class for overlap measures between multiple segmentations.
-class OverlapMeasures {
- public:
-  /// Constructor: allocate local data structures and do precomputations (e.g.,
-  /// count labels, etc).
-  OverlapMeasures(const std::vector<TypedArray::SmartPtr> &dataArrays);
+class OverlapMeasures
+{
+public:
+  /// Constructor: allocate local data structures and do precomputations (e.g., count labels, etc).
+  OverlapMeasures( const std::vector<TypedArray::SmartPtr>& dataArrays );
 
   /** Compute groupwise overlap with advanced options.
-   *\return Number of labels included in computation. If this is zero, the
-   *resulting overlap values are invalid.
+   *\return Number of labels included in computation. If this is zero, the resulting overlap values are invalid.
    */
-  size_t ComputeGroupwiseOverlap(
-      const int firstLabel /*!< Analysis starts with this label.*/,
-      const int numberOfLabels /*!< Analysis covers these labels*/, double &overlapEqualWeighted /*!< Equal-weighted overlap score is returned herein.*/, double &overlapVolumeWeighted /*!< Volume-weighted overlap score is returned herein.*/, double &overlapInverseWeighted /*!< Inverse volume-weighted overlap score is returned herein.*/)
-      const;
-
+  size_t ComputeGroupwiseOverlap( const int firstLabel /*!< Analysis starts with this label.*/,
+				  const int numberOfLabels /*!< Analysis covers these labels*/,
+				  double& overlapEqualWeighted /*!< Equal-weighted overlap score is returned herein.*/,
+				  double& overlapVolumeWeighted /*!< Volume-weighted overlap score is returned herein.*/,
+				  double& overlapInverseWeighted /*!< Inverse volume-weighted overlap score is returned herein.*/  ) const;
+  
   /** Compute simple groupwise overlap.
-   *\return Number of labels included in computation. If this is zero, the
-   *resulting overlap values are invalid.
+   *\return Number of labels included in computation. If this is zero, the resulting overlap values are invalid.
    */
   size_t ComputeGroupwiseOverlap( double& overlapEqualWeighted /*!< Equal-weighted overlap score is returned herein.*/,
 				  double& overlapVolumeWeighted /*!< Volume-weighted overlap score is returned herein.*/,
 				  double& overlapInverseWeighted /*!< Inverse volume-weighted overlap score is returned herein.*/ ) const
   {
-    return this->ComputeGroupwiseOverlap(
-        0, this->m_MaxLabelValue + 1, overlapEqualWeighted,
-        overlapVolumeWeighted, overlapInverseWeighted);
+    return this->ComputeGroupwiseOverlap( 0, this->m_MaxLabelValue+1, overlapEqualWeighted, overlapVolumeWeighted, overlapInverseWeighted );
   }
 
   /// Return maximum label value used in data.
-  unsigned int GetMaxLabelValue() const { return this->m_MaxLabelValue; }
+  unsigned int GetMaxLabelValue() const
+  {
+    return this->m_MaxLabelValue;
+  }
 
- private:
+private:
   /// Number of images.
   size_t m_NumberOfImages;
 
@@ -89,14 +91,12 @@ class OverlapMeasures {
   std::vector<TypedArray::SmartPtr> m_DataArrays;
 
   /// Compute pairwise overlap minimum.
-  double ComputePairwiseOverlapMinMax(double &overlap_min, double &overlap_max,
-                                      const TypedArray::SmartPtr &data0,
-                                      const TypedArray::SmartPtr &data1,
-                                      const int label) const;
+  double ComputePairwiseOverlapMinMax( double& overlap_min, double& overlap_max, const TypedArray::SmartPtr& data0, const TypedArray::SmartPtr& data1, const int label ) const;
 };
 
 //@}
 
-}  // namespace cmtk
+} // namespace cmtk
 
-#endif  // #ifndef __cmtkOverlapMeasures_h_included_
+#endif // #ifndef __cmtkOverlapMeasures_h_included_
+
