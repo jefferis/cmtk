@@ -29,7 +29,7 @@
 */
 
 #ifndef __cmtkImageOperationErodeDilate_h_included_
-#define __cmtkImageOperationErodaDilate_h_included_
+#define __cmtkImageOperationErodeDilate_h_included_
 
 #include <cmtkconfig.h>
 
