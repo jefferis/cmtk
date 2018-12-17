@@ -18,8 +18,8 @@ before_install:
   - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew update'
 
 install:
-  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew install qt4 sqlite'
-  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew link --force qt4'
+  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew install qt sqlite'
+  - '[[ "$TRAVIS_OS_NAME" != "osx" ]] || brew link --force qt'
 
 before_script:
   - cd core
