@@ -82,7 +82,11 @@ AddPatternToMap( std::map<DcmTagKey,std::string>& map, const char* pattern )
     const std::string tagName( pattern, static_cast<size_t>( equals-pattern ) );
 
     const DcmDictEntry* dictEntry = dcmDataDict.rdlock().findEntry( tagName.c_str() );
+#if PACKAGE_VERSION_NUMBER < 364
     dcmDataDict.unlock();
+#else
+    dcmDataDict.rdunlock();
+#endif
 
     if ( dictEntry )
       {
@@ -482,14 +486,22 @@ doMain ( const int argc, const char *argv[] )
 #ifdef CMTK_DCMDICTPATH
     if ( dcmDataDict.wrlock().loadDictionary( CMTK_DCMDICTPATH ) )
       {
+#if PACKAGE_VERSION_NUMBER < 364
       dcmDataDict.unlock();
+#else
+      dcmDataDict.wrunlock();
+#endif
       }
     else
 #endif
 #ifdef CMTK_DCMDICTPATH_INSTALL
     if ( dcmDataDict.wrlock().loadDictionary( CMTK_DCMDICTPATH_INSTALL ) )
       {
+#if PACKAGE_VERSION_NUMBER < 364
       dcmDataDict.unlock();
+#else
+      dcmDataDict.wrunlock();
+#endif
       }
     else
 #endif
@@ -566,9 +578,17 @@ doMain ( const int argc, const char *argv[] )
   
   if ( !dcmDataDict.rdlock().findEntry( "RawDataType_ImageType" ) )
     {
+#if PACKAGE_VERSION_NUMBER < 364
     dcmDataDict.unlock();
+#else
+    dcmDataDict.rdunlock();
+#endif
     dcmDataDict.wrlock().addEntry( new DcmDictEntry( 0x0043, 0x102f, EVR_SS, "RawDataType_ImageType", 1, 1, NULL, OFFalse, "GE" ) );
+#if PACKAGE_VERSION_NUMBER < 364
     dcmDataDict.unlock();
+#else
+    dcmDataDict.wrunlock();
+#endif
     }
   
   VolumeList volumeList( Tolerance );
