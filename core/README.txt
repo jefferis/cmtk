@@ -2,6 +2,16 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
+
+Release Notes -- CMTK 3.3.1p1
+=============================
+
+The sole purpose of this release is to fix compilation errors resulting
+from a changed API in the DCMTK toolkit, release 3.6.4. There should be
+no differences to CMTK 3.3.1 when building against an older version of
+DCMTK.
+
+
 Release Notes -- CMTK 3.3.1
 ===========================
 

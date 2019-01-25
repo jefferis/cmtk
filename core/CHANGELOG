@@ -1,9 +1,15 @@
+Release CMTK-3.3.1p1 (2019-01-24):
+
+(r5440) Fixed: compilation error when building with DCMTK 3.6.4.
+
+
 Release CMTK-3.3.1 (2016-01-23):
 
 (r5419) Fixed: bug in PolynomialXform class, which lead to out-of-range
 	array access in the parameter vector when trying to get the
 	linear matrix of a zero-degree transform (which doesn't exist).
 (r5418) Fixed: some compiler warnings revealed by SolarisStudio compiler.
+
 
 Release CMTK-3.3.0 (2016-01-16):
 

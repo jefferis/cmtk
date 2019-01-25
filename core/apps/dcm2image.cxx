@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2014 Google Inc.
+//  Copyright 2014, 2019 Google LLC
 //
 //  Copyright 1997-2012 Torsten Rohlfing
 //
