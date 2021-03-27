@@ -1,3 +1,7 @@
+Release CMTK-3.3.1p2 (2021-03-27):
+
+(r5443) Fixed: compilation errors using C++17.
+
 Release CMTK-3.3.1p1 (2019-01-24):
 
 (r5440) Fixed: compilation error when building with DCMTK 3.6.4.
