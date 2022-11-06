@@ -287,8 +287,10 @@ Threads::CheckEnvironment()
     if ( numThreads )
       {
       SetNumberOfThreads( numThreads );
+#ifndef NDEBUG
       // cannot use StdErr here, because it may not be initialized yet
       std::cerr << "INFO: number of threads set to " << numThreads << " according to environment variable CMTK_NUM_THREADS\n";
+#endif
       }
     else
       {

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2014 SRI International
+//  Copyright 2004-2014, 2022 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -36,6 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <IO/cmtkImageFileDICOM.h>
+#include <IO/cmtkImageOperationXMLOptions.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
@@ -46,73 +47,80 @@
 
 #include <vector>
 
-namespace
-cmtk
+namespace cmtk
 {
 
-/** \addtogroup IO */
-//@{
+  /** \addtogroup IO */
+  //@{
 
-/// Class handling a stack of DICOM image files.
-class ImageStackDICOM : public std::vector<ImageFileDICOM::SmartConstPtr> 
-{
-public:
-  /// This class.
-  typedef ImageStackDICOM Self;
-  
-  /// Smart pointer to this class.
-  typedef SmartPointer<Self> SmartPtr;
-
-  /// Smart pointer to const object of this class.
-  typedef SmartConstPointer<Self> SmartConstPtr;
-
-  /// Enum type to select DICOM information to be embedded into output images as "description".
-  typedef enum
+  /// Class handling a stack of DICOM image files.
+  class ImageStackDICOM : public std::vector<ImageFileDICOM::SmartConstPtr>
   {
-    /// No embedding.
-    EMBED_NONE = 0,
-    /// Embed StudyID plus Date.
-    EMBED_STUDYID_STUDYDATE = 1,
-    /// Embed patient name.
-    EMBED_PATIENTNAME = 2,
-    /// Embed series description.
-    EMBED_SERIESDESCR = 3
-  } EmbedInfoEnum;
+  public:
+    /// This class.
+    typedef ImageStackDICOM Self;
 
-  /// Constructor.
-  ImageStackDICOM( const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/ ) : m_Tolerance( tolerance ) {}
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
 
-  /// Add new DICOM image file to this stack.
-  void AddImageFile( ImageFileDICOM::SmartConstPtr& image );
+    /// Smart pointer to const object of this class.
+    typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Match new image file against this volume stack.
-  bool Match ( const ImageFileDICOM& newImage /*!< New image - test whether this belongs with the ones already in this stack.*/, 
-	       const Types::Coordinate numericalTolerance = 0, /*!< Numerical comparison tolerance; values with absolute difference less than this threshold are considered equal. */
-	       const bool disableCheckOrientation = false /*!< Flag for disabling the checking of image orientation vectors.*/,
-	       const bool ignoreAcquisitionNumber = false /*!< When this flag is set, the AcquisitionNumber DICOM tag is ignore for matching images*/ ) const;
-  
-  /// Write XML sidecar file.
-  void WriteXML( const std::string& name /*!< Sidecar XML file name. */, const cmtk::UniformVolume& volume /*!< Previously written image volume - provides information about coordinate system etc. */,
-		 const bool includeIdentifiers = false /*!< If this is set, protected "identifiers" such as device serial numbers will also be included in the XML output.*/ ) const;
+    /// Enum type to select DICOM information to be embedded into output images as "description".
+    typedef enum
+    {
+      /// No embedding.
+      EMBED_NONE = 0,
+      /// Embed StudyID plus Date.
+      EMBED_STUDYID_STUDYDATE = 1,
+      /// Embed patient name.
+      EMBED_PATIENTNAME = 2,
+      /// Embed series description.
+      EMBED_SERIESDESCR = 3
+    } EmbedInfoEnum;
 
-  /// Write to image file.
-  cmtk::UniformVolume::SmartConstPtr WriteImage ( const std::string& name /*!< File name and path for new image.*/, const Self::EmbedInfoEnum embedInfo /*!< Flag for selecting information embedded into image description.*/  ) const;
+    /// Constructor.
+    ImageStackDICOM(const Types::Coordinate tolerance = 0 /*!< Tolerance for floating point comparisons, e.g., when testing for uniform pixel/slice spacings.*/) : m_Tolerance(tolerance) {}
 
-  /// Print stack information.
-  void print() const;
+    /// Add new DICOM image file to this stack.
+    void AddImageFile(ImageFileDICOM::SmartConstPtr &image);
 
-private:
-  /// Stored floating point tolerance.
-  Types::Coordinate m_Tolerance;
+    /// Match new image file against this volume stack.
+    bool Match(const ImageFileDICOM &newImage /*!< New image - test whether this belongs with the ones already in this stack.*/,
+               const Types::Coordinate numericalTolerance = 0, /*!< Numerical comparison tolerance; values with absolute difference less than this threshold are considered equal. */
+               const bool disableCheckOrientation = false /*!< Flag for disabling the checking of image orientation vectors.*/,
+               const bool ignoreAcquisitionNumber = false /*!< When this flag is set, the AcquisitionNumber DICOM tag is ignore for matching images*/) const;
 
-  /// Assemble slice times vector from current set of slices.
-  std::vector<double> AssembleSliceTimes() const;
+    /// Write XML sidecar file.
+    void WriteXML(const std::string &name /*!< Sidecar XML file name. */, 
+                  const cmtk::UniformVolume &volume /*!< Previously written image volume - provides information about coordinate system etc. */,
+                  const ImageOperationXMLOptions &outputOptions /*!< Various XML output options that may be set.*/) const;
 
-  /// Generate custom whitespaces for XML output.
-  static const char *WhitespaceWriteMiniXML( mxml_node_t*, int where);
-};
+    void WriteXML(const std::string &name /*!< Sidecar XML file name. */, 
+                  const cmtk::UniformVolume &volume /*!< Previously written image volume - provides information about coordinate system etc. */,
+                  const bool includeIdentifiers = false /*!< If this is set, protected "identifiers" such as device serial numbers will also be included in the XML output.*/) const;
 
-//@}
+    /// Write to image file.
+    cmtk::UniformVolume::SmartConstPtr WriteImage(
+                  const std::string &name /*!< File name and path for new image.*/,
+                  const Self::EmbedInfoEnum embedInfo /*!< Flag for selecting information embedded into image description.*/,
+                  const bool dryRun = false /*!< If this is set, do not actually write the image file. */) const;
+
+    /// Print stack information.
+    void print() const;
+
+  private:
+    /// Stored floating point tolerance.
+    Types::Coordinate m_Tolerance;
+
+    /// Assemble slice times vector from current set of slices.
+    std::vector<double> AssembleSliceTimes() const;
+
+    /// Generate custom whitespaces for XML output.
+    static const char *WhitespaceWriteMiniXML(mxml_node_t *, int where);
+  };
+
+  //@}
 
 } // namespace cmtk
 

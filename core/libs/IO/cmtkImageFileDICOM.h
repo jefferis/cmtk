@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2014 SRI International
+//  Copyright 2004-2014, 2022 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -183,6 +183,12 @@ private:
 
   /// Map DCMTK tags to their string values in this image file.
   std::map<DcmTagKey,std::string> m_TagToStringMap;
+
+  /// Handle tags that are needed to compute FOV
+  void DoFOV();
+
+  /// Handle Acquisition Matrix
+  void DoAcquisitionMatrix();
 
   /// Handle Siemens private tags.
   void DoVendorTagsSiemens();

@@ -1,3 +1,10 @@
+Release CMTK-3.3.2 (2022-11-06):
+
+(r5445) Merged 'ndar' branch:
+        * Support valid XML output
+        * Addition of additional DICOM values which are required to support 
+          submission to NIH NDA.
+
 Release CMTK-3.3.1p2 (2021-03-27):
 
 (r5443) Fixed: compilation errors using C++17.
