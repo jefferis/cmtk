@@ -141,8 +141,7 @@ private:
 			int& unmosaicImageCols /*!< Return demosaiced image columns */, 
 			int& unmosaicImageRows /*!< Return demosaiced image rows */, 
 			int& slices /*!< Return demosaiced image slices */, 
-			FixedVector<3,double>& sliceNormal /*!< Return demosaiced image slice normal */,
-			FixedVector<3,double>& imageOrigin /*!< Return demosaiced image origin */ );
+			FixedVector<3,double>& sliceNormal /*!< Return demosaiced image slice normal */);
 };
 
 //@}

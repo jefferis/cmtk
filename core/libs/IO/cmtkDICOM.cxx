@@ -344,6 +344,14 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 }
 
 
+inline const FixedVector<3,double>
+CornerToCenterTranslation
+(const FixedArray< 2, FixedVector<3,double> >& imageOrientation, const FixedVector<3,Types::Coordinate>& deltas, const FixedVector<3,int>& dims)
+{
+  return 0.5 * ((dims[0]-1) * deltas[0] * imageOrientation[0] + (dims[1]-1) * deltas[1] * imageOrientation[1]);
+}
+
+
 const FixedVector<3,double>
 DICOM::DemosaicAndGetNormal
 ( const FixedArray< 2, FixedVector<3,double> >& imageOrientation, const FixedVector<3,Types::Coordinate>& deltas, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray, FixedVector<3,double>& imageOrigin )
@@ -360,71 +368,74 @@ DICOM::DemosaicAndGetNormal
       Uint16 tempUint16 = 0;
       const DcmTagKey nSlicesTag(0x0019,0x100a);
       if ( this->Document().getValue( nSlicesTag, tempUint16 ) )
-	{
-	dims[2] = tempUint16;
-	}
+        {
+        dims[2] = tempUint16;
+        }
 
       // check for mosaic
       if ( dims[2] || (this->Document().getValue( DCM_ImageType, tmpStr ) && strstr( tmpStr, "MOSAIC" )) )
-	{
-	int unmosaicImageRows;
-	int unmosaicImageCols;
+        {
+        int unmosaicImageRows;
+        int unmosaicImageCols;
 
-	const DcmTagKey mosaicTag(0x0051,0x100b);
-	if ( this->Document().getValue( mosaicTag, tmpStr ) )
-	  {
-	  if ( 2 != sscanf( tmpStr, "%6dp*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
-	    {
-	    if ( 2 != sscanf( tmpStr, "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
-	      {
-	      StdErr << "ERROR: unable to parse mosaic size from (0x0051,0x100b): " << tmpStr << "\n";
-	      }
-	    }
-	  }
-	  
-// For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
-	this->ParseSiemensCSA( DcmTagKey(0x0029,0x1020), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal, imageOrigin ); // series information
-	this->ParseSiemensCSA( DcmTagKey(0x0029,0x1010), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal, imageOrigin ); // image information
-	
-	// hopefully we have figured out the mosaic dimensions by now.
-	if ( (unmosaicImageCols > 0) && (unmosaicImageRows > 0 ) )
-	  {
-	  const int xMosaic = dims[0] / unmosaicImageCols;
-	  
-	  dims[0] = unmosaicImageCols;
-	  dims[1] = unmosaicImageRows;
-	  
-	  // de-mosaic the data array
-	  const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
-	  TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
-	  
-	  const size_t pixelsPerSlice = unmosaicImageCols * unmosaicImageRows;
-	  size_t toOffset = 0;
-	  for ( int slice = 0; slice < dims[2]; ++slice )
-	    {
-	    for ( int j = 0; j < unmosaicImageRows; ++j, toOffset += dims[0] )
-	      {
-	      const size_t iPatch = slice % xMosaic;
-	      const size_t jPatch = slice / xMosaic;
-	      
-	      const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * unmosaicImageCols + iPatch * unmosaicImageCols;
-	      pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, unmosaicImageCols );
-	      }
-	    }
-	  
-	  pixelDataArray = newDataArray;
+        const DcmTagKey mosaicTag(0x0051,0x100b);
+        if ( this->Document().getValue( mosaicTag, tmpStr ) )
+          {
+          if ( 2 != sscanf( tmpStr, "%6dp*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
+            {
+            if ( 2 != sscanf( tmpStr, "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
+              {
+              StdErr << "ERROR: unable to parse mosaic size from (0x0051,0x100b): " << tmpStr << "\n";
+              }
+            }
+          }
+        
+        // For the following, see here: https://github.com/nipy/nibabel/blob/master/doc/source/dicom/siemens_csa.rst
+        this->ParseSiemensCSA( DcmTagKey(0x0029,0x1020), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal); // series information
+        this->ParseSiemensCSA( DcmTagKey(0x0029,0x1010), unmosaicImageCols, unmosaicImageRows, dims[2], sliceNormal); // image information
+      
+        // hopefully we have figured out the mosaic dimensions by now.
+        if ( (unmosaicImageCols > 0) && (unmosaicImageRows > 0 ) )
+          {
+          const int xMosaic = dims[0] / unmosaicImageCols;
 
-	  // convert CSA-header center-of-image origin to corner-of-image standard origin (Issue #6754)
-	  imageOrigin -= (0.5 * ((dims[0]-1) * deltas[0] * imageOrientation[0] + (dims[1]-1) * deltas[1] * imageOrientation[1]) );
-	  }
-	}
+          // For reasoning, see the folllowing https://github.com/nipy/nibabel/blob/master/doc/source/dicom/dicom_mosaic.rst
+          imageOrigin += CornerToCenterTranslation(imageOrientation, deltas, dims);
+          
+          dims[0] = unmosaicImageCols;
+          dims[1] = unmosaicImageRows;
+          
+          // de-mosaic the data array
+          const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
+          TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
+          
+          const size_t pixelsPerSlice = unmosaicImageCols * unmosaicImageRows;
+          size_t toOffset = 0;
+          for ( int slice = 0; slice < dims[2]; ++slice )
+            {
+            for ( int j = 0; j < unmosaicImageRows; ++j, toOffset += dims[0] )
+              {
+              const size_t iPatch = slice % xMosaic;
+              const size_t jPatch = slice / xMosaic;
+              
+              const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * unmosaicImageCols + iPatch * unmosaicImageCols;
+              pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, unmosaicImageCols );
+              }
+            }
+          
+          pixelDataArray = newDataArray;
+
+          // convert CSA-header center-of-image origin to corner-of-image standard origin (Issue #6754)
+          imageOrigin -= CornerToCenterTranslation(imageOrientation, deltas, dims);
+          }
+        }
       }  
     }
   return sliceNormal;
 }
 
 void
-DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& unmosaicImageRows, int& slices, FixedVector<3,double>& sliceNormal, FixedVector<3,double>& imageOrigin )
+DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& unmosaicImageRows, int& slices, FixedVector<3,double>& sliceNormal)
 {
   const Uint8* csaHeaderInfo = NULL;
   unsigned long csaHeaderLength = 0;
@@ -436,12 +447,12 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
     if ( (it != csaHeader.end()) && !it->second.empty() )
       {
       if ( 2 != sscanf( it->second[0].c_str(), "%6dp*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
-	{
-	if ( 2 != sscanf( it->second[0].c_str(), "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
-	  {
-	  StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << " in file " << this->m_Path << "\n";
-	  }
-	}
+        {
+        if ( 2 != sscanf( it->second[0].c_str(), "%6d*%6ds", &unmosaicImageRows, &unmosaicImageCols) )
+          {
+          StdErr << "ERROR: unable to parse mosaic size from CSA field AcquisitionMatrixText: " << it->second[0] << " in file " << this->m_Path << "\n";
+          }
+        }
       }
 
     it = csaHeader.find( "NumberOfImagesInMosaic" );
@@ -452,38 +463,7 @@ DICOM::ParseSiemensCSA( const DcmTagKey& tagKey, int& unmosaicImageCols, int& un
     if ( (it != csaHeader.end()) && (it->second.size() >= 3) )
       {
       for ( size_t i = 0; i < 3; ++i )
-	sliceNormal[i] = atof( it->second[i].c_str() );
-      }
-
-    // get true slice0 location from CSA header
-    it = csaHeader.find( "MrPhoenixProtocol" );
-    if ( (it != csaHeader.end()) && !it->second.empty() )
-      {
-      // ID strings for three axes in CSA header
-      const std::string sliceOrientationString[] = { "dSag", "dCor", "dTra" };
-      
-      for ( int i = 0; i < 3; ++i )
-	{
-	const size_t sliceTagPos = it->second[0].find( std::string( "sSliceArray.asSlice[0].sPosition." ) + sliceOrientationString[i] );
-	  if ( sliceTagPos != std::string::npos )
-	    {
-	    const size_t equalPos = it->second[0].find( '=', sliceTagPos );
-	    if ( equalPos != std::string::npos )
-	      {
-	      imageOrigin[i] = atof( it->second[0].substr( equalPos + 1 ).c_str() );
-	      }
-	    else
-	      {
-	      StdErr << "ERROR: unable to get image origin component from: " << it->second[0] << " in file " << this->m_Path << "\nAssuming zero.\n";
-	      imageOrigin[i] = 0;
-	      }
-	    }
-	  else
-	    {
-	    StdErr << "ERROR: unable to get image origin tag for component " <<  sliceOrientationString[i] << " from CSA header in file " << this->m_Path << "\nAssuming zero.\n";
-	    imageOrigin[i] = 0;	    
-	    }
-	}
+	      sliceNormal[i] = atof( it->second[i].c_str() );
       }
     }
 }

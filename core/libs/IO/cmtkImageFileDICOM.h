@@ -40,6 +40,8 @@
 
 #include <Base/cmtkFixedVector.h>
 
+#include <IO/cmtkSiemensCSAHeader.h>
+
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmimgle/didocu.h>
 
@@ -64,6 +66,13 @@
 #define DCM_Siemens_MosaicRefAcqTimes DcmTagKey(0x0019,0x1029)
 #endif
 
+// Siemens private DICOM attributes for Diffusion MR.  
+#define DCM_Siemens_DiffusionDirectionality DcmTagKey(0x0019, 0x100d)
+#define DCM_Siemens_DiffusionBValue DcmTagKey(0x0019,0x100c)
+#define DCM_Siemens_DiffusionGradientOrientation DcmTagKey(0x0019,0x100e)
+#define DCM_Siemens_PhaseEncodingDirectionPositive DcmTagKey(0x0021,0x111c)
+#define DCM_Siemens_RealDwellTime DcmTagKey(0x0021,0x1142)
+
 #include <string>
 #include <map>
 #include <memory>
@@ -87,6 +96,12 @@ public:
 
   /// Smart pointer to constant object of this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Floating point type for members if this class.
+  // typedef double FLoatType;
+
+  /// Type of the B Vector member of this class.
+  // typedef cmtk::FixedVector<3,FLoatType> BVectorType;
 
   /// File name.
   std::string m_FileName;
@@ -198,6 +213,19 @@ private:
 
   /// Handle Philips private tags.
   void DoVendorTagsPhilips();
+
+  /// Handle loading dwell-time from Siemens private tags.
+  bool DoVendorTagsSiemensDwellTime(const SiemensCSAHeader* csaImageHeader = NULL);
+
+  /// Handle loading phase encode direction from Siemens private tags.
+  bool DoVendorTagsSiemensPhaseEncodeDirection(const SiemensCSAHeader* csaImageHeader = NULL);
+
+  /// Handle loading b-value from Siemens private tags.
+  bool DoVendorTagsSiemensDiffusionBValue(const SiemensCSAHeader* csaImageHeader = NULL);
+
+  /// Handle loading b-vector from Siemens private tags.
+  bool DoVendorTagsSiemensDiffusionBVector(const SiemensCSAHeader* csaImageHeader = NULL);
+
 };
 
 //@}

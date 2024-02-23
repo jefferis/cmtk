@@ -1,3 +1,11 @@
+Release CMTK-3.4.0 (2023-09-08):
+
+(r5471) Updated test snapshots to accomodate updated Siemens support.
+
+(r5468) Added support for extracting values from:
+        * Siemens MOSAIC format
+        * Siemens CSA DICOM headers
+
 Release CMTK-3.3.2 (2022-11-06):
 
 (r5456) Merged 'ndar' branch:
