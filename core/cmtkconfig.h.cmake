@@ -189,6 +189,11 @@ inline int finite( const double x ) { return _finite(x); }
 #  define CMTK_PATH_SEPARATOR '/'
 #  define CMTK_PATH_SEPARATOR_STR "/"
 
+#ifndef HAVE_FINITE
+#include <math.h>
+inline int finite( const double x ) { return isfinite(x); }
+#endif // #ifndefHAVE_FINITE
+
 #endif //#ifdef _MSC_VER
 
 #endif // #ifndef __cmtkconfig_h_included__
