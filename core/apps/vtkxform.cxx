@@ -187,7 +187,7 @@ doMain( const int argc, const char* argv[] )
       // Read original point coordinates from file
       if ( binaryMode )
 	{
-	float xyzFloat[3] = { xyz[0], xyz[1], xyz[2] };
+	float xyzFloat[3] = {static_cast<float>(xyz[0]), static_cast<float>(xyz[1]), static_cast<float>(xyz[2])};
 
 #ifndef WORDS_BIGENDIAN
 	for ( size_t i = 0; i<3; ++i )
