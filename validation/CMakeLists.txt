@@ -26,13 +26,11 @@
 ##  $LastChangedBy$
 ##
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-SET(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW) ## libraries with full paths vs. search paths
 ENDIF(COMMAND cmake_policy)
-SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
 
 PROJECT(CMTKvalidation)
 
@@ -45,5 +43,5 @@ ELSE(CMTK_FOUND)
   MESSAGE(FATAL_ERROR "Cannot build CMTKvalidation without CMTK.  Please set CMTK_DIR.")
 ENDIF(CMTK_FOUND)
 
-SUBDIRS(RIRE)
-SUBDIRS(CURT)
+ADD_SUBDIRECTORY(RIRE)
+ADD_SUBDIRECTORY(CURT)

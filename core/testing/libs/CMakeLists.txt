@@ -31,12 +31,12 @@
 # ==========================================
 # Delegate testing to separate subdirs for each library
 
-SUBDIRS(System)
-SUBDIRS(Registration)
-SUBDIRS(IO)
-SUBDIRS(Base)
+ADD_SUBDIRECTORY(System)
+ADD_SUBDIRECTORY(Registration)
+ADD_SUBDIRECTORY(IO)
+ADD_SUBDIRECTORY(Base)
 
 IF(CMTK_USE_CUDA)
-  SUBDIRS(GPU)
+  ADD_SUBDIRECTORY(GPU)
 ENDIF(CMTK_USE_CUDA)
 

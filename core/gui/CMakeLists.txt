@@ -30,6 +30,6 @@
 
 SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
 
-SUBDIRS(triplanar)
-SUBDIRS(fview)
+ADD_SUBDIRECTORY(triplanar)
+ADD_SUBDIRECTORY(fview)
 

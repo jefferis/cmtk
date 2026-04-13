@@ -37,9 +37,6 @@ IF(CMTK_USE_SMP)
   SET(WITH_THREADS 1)
 ENDIF(CMTK_USE_SMP)
 
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
-
 CHECK_TYPE_SIZE(int64_t HAVE_INT64_T)
 CHECK_TYPE_SIZE(uint64_t HAVE_UINT64_T)
 

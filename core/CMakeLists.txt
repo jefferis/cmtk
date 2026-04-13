@@ -35,13 +35,11 @@
 ## It may have evolved away since then, however.
 ##
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-SET(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW) ## libraries with full paths vs. search paths
 ENDIF(COMMAND cmake_policy)
-SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
 
 PROJECT(CMTK)
 SET(CMTK_VERSION_MAJOR "3")
@@ -52,9 +50,6 @@ SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERS
 
 #-----------------------------------------------------------------------------
 # Test for some required system information.
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeDetermineSystem.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
 #-----------------------------------------------------------------------------
 # On Mac, if we have MacPorts installed, we need to look for libraries in 
@@ -101,9 +96,9 @@ IF(NOT CMTK_INSTALL_LIB_DIR)
   # Ref: http://docs.sun.com/app/docs/doc/816-5138/6mba6ua5m?a=view
   SET(sun64 )
   IF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-    EXEC_PROGRAM("uname"
-      ARGS "-p"
+    execute_process(COMMAND uname "-p"
       OUTPUT_VARIABLE sunproc
+      OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     IF("${sunproc}" STREQUAL "sparc")
       SET(sun64 "/sparcv9")
@@ -233,12 +228,12 @@ ENDIF(HAVE_PTHREAD_H)
 IF(CMTK_USE_PTHREADS)
 
   IF(${CMAKE_SYSTEM} MATCHES "SunOS.*")
-    IF(CMAKE_COMPILER_IS_GNUCXX)
+    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -D_PTHREADS")
-    ELSE(CMAKE_COMPILER_IS_GNUCXX)
+    ELSE(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mt")
       SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mt")
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   ENDIF(${CMAKE_SYSTEM} MATCHES "SunOS.*")
 ENDIF(CMTK_USE_PTHREADS)
 
@@ -578,7 +573,7 @@ ENDIF(CMTK_USE_QT)
 
 OPTION(BUILD_APPS "Build command line tools" ON)
 IF(BUILD_APPS)
-  SUBDIRS(apps)
+  ADD_SUBDIRECTORY(apps)
 ENDIF(BUILD_APPS)
 
 IF(CMTK_USE_QT AND QT_FOUND)
@@ -618,7 +613,7 @@ ENDIF(CMTK_USE_FFTW)
 
 OPTION(BUILD_TESTING "Build test code" ON)
 IF (BUILD_TESTING)
-  SUBDIRS(testing)
+  ADD_SUBDIRECTORY(testing)
 ENDIF (BUILD_TESTING)
 
 #-----------------------------------------------------------------------------
@@ -630,7 +625,7 @@ INCLUDE_DIRECTORIES(
   ${CMTK_INCLUDE_DIRS_SYSTEM}
   )
 
-SUBDIRS(libs)
+ADD_SUBDIRECTORY(libs)
 
 LINK_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR} ${DCMTK_LIBRARY_DIR}
@@ -642,10 +637,10 @@ SET(CMTK_SYSTEM_LIBRARIES ${CMAKE_THREAD_LIBS})
 # Dispatch the build into the proper subdirectories.
 
 IF(BUILD_GUI)
-  SUBDIRS(gui)
+  ADD_SUBDIRECTORY(gui)
 ENDIF(BUILD_GUI)    
 
-SUBDIRS(scripts)
+ADD_SUBDIRECTORY(scripts)
 
 #-----------------------------------------------------------------------------
 # Configure this tree
@@ -693,10 +688,6 @@ IF(CMTK_BUILD_SHARED_LIBS)
 ELSE(CMTK_BUILD_SHARED_LIBS)
   SET(CMAKE_SKIP_RPATH TRUE)
 ENDIF(CMTK_BUILD_SHARED_LIBS)
-
-# Save library dependencies.
-EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
-INSTALL(FILES ${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake DESTINATION ${CMTK_INSTALL_LIB_DIR} COMPONENT libraries)
 
 #-----------------------------------------------------------------------------
 # After everything else is done, do we want to build man pages?
