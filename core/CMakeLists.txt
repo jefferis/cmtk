@@ -35,8 +35,7 @@
 ## It may have evolved away since then, however.
 ##
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-SET(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW) ## libraries with full paths vs. search paths
@@ -49,12 +48,6 @@ SET(CMTK_VERSION_MINOR "4")
 SET(CMTK_VERSION_PATCH "0")
 
 SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}")
-
-#-----------------------------------------------------------------------------
-# Test for some required system information.
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeDetermineSystem.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
 #-----------------------------------------------------------------------------
 # On Mac, if we have MacPorts installed, we need to look for libraries in 
