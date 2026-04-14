@@ -128,6 +128,7 @@ ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
 #-----------------------------------------------------------------------------
 # Check for system headers.
 INCLUDE (CheckIncludeFiles)
+INCLUDE (CheckTypeSize)
 CHECK_INCLUDE_FILES (dirent.h HAVE_DIRENT_H)
 CHECK_INCLUDE_FILES (execinfo.h HAVE_EXECINFO_H)
 CHECK_INCLUDE_FILES (fcntl.h HAVE_FCNTL_H)
