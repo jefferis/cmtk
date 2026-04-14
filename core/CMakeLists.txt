@@ -160,6 +160,7 @@ SET(CMAKE_EXTRA_INCLUDE_FILES)
 
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+SET(CMAKE_WORDS_BIGENDIAN ${WORDS_BIGENDIAN})
 
 #-----------------------------------------------------------------------------
 # Test NaN high bit
