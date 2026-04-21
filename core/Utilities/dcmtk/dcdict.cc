@@ -156,9 +156,9 @@ stripWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t;
-    register char *p;
+    char c;
+    char *t;
+    char *p;
     t=p=s;
     while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
@@ -183,9 +183,9 @@ stripLeadingWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t=s;
-    register char *p=s;
+    char c;
+    char *t=s;
+    char *p=s;
     while (isspace(*t)) t++;
     while ((c = *t++)) *p++ = c;
     *p = '\0';
