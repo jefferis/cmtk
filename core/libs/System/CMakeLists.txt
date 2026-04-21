@@ -54,7 +54,7 @@ SET(cmtkSystem_SRCS
   cmtkProgress.cxx	
   cmtkProgressConsole.cxx
   cmtkRegressionTracker.cxx
-  cmtkStackBacktrace
+  cmtkStackBacktrace.cxx
   cmtkStrUtility.cxx
   cmtkThreads.cxx
   cmtkThreadPoolThreads.cxx

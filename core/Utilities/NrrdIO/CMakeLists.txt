@@ -28,7 +28,7 @@
 # (C) 2012 SRI International
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+cmake_minimum_required(VERSION 3.16...3.29)
 PROJECT(NrrdIO)
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
