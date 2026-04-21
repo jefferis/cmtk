@@ -90,7 +90,9 @@ ImagePairNonrigidRegistrationCommandLine
 ::ImagePairNonrigidRegistrationCommandLine
 ( const int argc, const char *argv[] )
 {
+  this->Time = NULL;
   this->m_OutputIntermediate = 0;
+  this->m_InitialTransformationInverse = false;
 
   IntermediateResultIndex = 0;
 
@@ -608,4 +610,3 @@ cmtkImagePairNonrigidRegistrationCommandLineDispatchSIGUSR1( int sig )
   // preserve to final numbering of levels.
   cmtk::ImagePairNonrigidRegistrationCommandLine::StaticThis->OutputIntermediate( true /* Increment count*/ );
 }
-

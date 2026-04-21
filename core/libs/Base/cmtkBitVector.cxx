@@ -46,7 +46,7 @@ cmtk
 BitVector::BitVector( const size_t size, const bool initial )
 {
   this->m_Size = (size+7) / 8; // +7 to allocate an extra byte for 8n+1...8n+7 bits
-  this->m_BitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
+  this->m_BitVector = Memory::ArrayC::Allocate<unsigned char>( this->m_Size );
 
   if ( initial )
     this->Set();
@@ -54,7 +54,7 @@ BitVector::BitVector( const size_t size, const bool initial )
     this->Reset();
 }
 
-BitVector::BitVector( const size_t size, byte *const bitSet )
+BitVector::BitVector( const size_t size, unsigned char *const bitSet )
 {
   this->m_Size = (size+7) / 8; // +7 to allocate an extra byte for 8n+1...8n+7 bits
   this->m_BitVector = bitSet;
@@ -68,7 +68,7 @@ BitVector::~BitVector()
 BitVector* 
 BitVector::Clone() const
 {
-  byte *newBitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
+  unsigned char *newBitVector = Memory::ArrayC::Allocate<unsigned char>( this->m_Size );
   memcpy( newBitVector, this->m_BitVector, this->m_Size );
   return new BitVector( 8*this->m_Size, newBitVector );
 }

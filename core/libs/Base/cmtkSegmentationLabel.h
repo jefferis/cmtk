@@ -61,7 +61,7 @@ public:
   cmtkGetSetMacroString(Name);
 
   /// Color as RGB components for visualization.
-  cmtkGetSetMacro3Array(byte,RGB);
+  cmtkGetSetMacro3Array(unsigned char,RGB);
 };
 
 /// Map from numerical IDs to labels.
@@ -75,4 +75,3 @@ void CreateSystemLabelColorMap( SegmentationLabelMap& map );
 } // namespace cmtk
 
 #endif // #ifndef __cmtkSegmentationLabel_h_included_
-

@@ -67,7 +67,7 @@ public:
    *\param size Number of bits handled by this object.
    *\param bitset Byte array that is used to initialize the array.
    */
-  BitVector( const size_t size, byte *const bitset );
+  BitVector( const size_t size, unsigned char *const bitset );
   
   /** Destructor.
    */
@@ -99,14 +99,14 @@ public:
   bool operator[]( const size_t pos ) const;
 
   /// Get pointer to bitset data.
-  const byte* GetBitVector() const
+  const unsigned char* GetBitVector() const
   { 
     return this->m_BitVector; 
   }
 
 private:
   /// The bitset.
-  byte *m_BitVector;
+  unsigned char *m_BitVector;
 
   /// The size of the allocated bitset in BYTES (!!).
   size_t m_Size;

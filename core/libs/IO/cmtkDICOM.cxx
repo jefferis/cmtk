@@ -316,8 +316,8 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
 	} 
       else 
 	{
-	const char paddingByte = static_cast<byte>( paddingValue );
-	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, pixelDataLength, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<byte> );
+	const unsigned char paddingByte = static_cast<unsigned char>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, pixelDataLength, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<unsigned char> );
 	}
       }
 
