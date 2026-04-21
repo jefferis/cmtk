@@ -43,7 +43,7 @@ namespace cmtk
 void CreateSystemLabelColorMap( SegmentationLabelMap& map )
 {
   // table of random label RGB color mappings.
-  const byte labelRGB[][3] =
+  const unsigned char labelRGB[][3] =
     {
       { 000, 000, 000 }, { 255, 128, 255 }, { 177,  18, 255 }, {  45, 255,  47 }, { 106, 209, 255 }, { 122, 255, 158 }, { 255,  87, 186 }, { 183, 150,  54 }, 
       { 216, 255, 159 }, { 181, 169,  80 }, { 255, 152,   0 }, {  42, 255, 255 }, { 116, 255,  77 }, {   6, 253, 234 }, { 218, 108, 255 }, {  24, 255, 108 }, 

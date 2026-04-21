@@ -27,11 +27,11 @@
 ##
 
 # ########## Project setup ##########
+cmake_minimum_required(VERSION 3.16...3.29)
 PROJECT(numdiff-5.2.1)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4.5)
 
 IF(COMMAND cmake_policy)
-  cmake_policy(SET CMP0005 OLD) ## explicit escaping of compiler definition strings
+  cmake_policy(SET CMP0005 NEW) ## explicit escaping of compiler definition strings
 ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_CONFIG_PACKAGE_BUGREPORT "<ivprimi at libero dot it>")
@@ -40,7 +40,7 @@ SET(CMAKE_CONFIG_PACKAGE_STRING "Numdiff 5.2")
 SET(CMAKE_CONFIG_PACKAGE_TARNAME "numdiff")
 SET(CMAKE_CONFIG_PACKAGE_VERSION "5.2")
 
-ADD_DEFINITIONS(-DPACKAGE=\\\"numdiff\\\")
+ADD_DEFINITIONS(-DPACKAGE=\"numdiff\")
 
 # ######### General setup ##########
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})

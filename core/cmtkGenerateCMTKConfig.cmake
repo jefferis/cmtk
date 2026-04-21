@@ -52,9 +52,6 @@ SET(CMTK_BUILD_SETTINGS_FILE       CMTKBuildSettings.cmake)
 # Config file prefix is the root of the build tree itself.
 SET(CMTK_CONFIG_PREFIX_CONFIG ${CMTK_BINARY_DIR})
 
-# The library dependencies file.
-SET(CMTK_LIBRARY_DEPENDS_FILE       CMTKLibraryDepends.cmake)
-
 # Library directory.
 SET(CMTK_LIBRARY_DIRS_CONFIG ${CMTK_LIBRARY_PATH})
 
@@ -88,9 +85,6 @@ CONFIGURE_FILE(${CMTK_SOURCE_DIR}/cmtkconfig.h.cmake ${CMTK_BINARY_DIR}/cmtkconf
 
 # Config prefix is under install tree.
 SET(CMTK_CONFIG_PREFIX_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR})
-
-# The library dependencies file.
-SET(CMTK_LIBRARY_DEPENDS_FILE      CMTKLibraryDepends.cmake)
 
 # Include directories.
 SET(CMTK_INCLUDE_DIRS_CONFIG \${CMTK_INSTALL_PREFIX}/${CMTK_INSTALL_INCLUDE_DIR})
