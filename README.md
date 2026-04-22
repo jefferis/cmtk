@@ -1,6 +1,7 @@
 # cmtk
 
 [![CMake CI](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml?query=branch%3Anatdev)
+[![Release Builds](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev)
 
 ## README
 
@@ -16,15 +17,25 @@ for information:
 Prebuilt binaries are available from several places:
 
   * [NITRC downloads](https://www.nitrc.org/projects/cmtk/) remain the main upstream download location.
-  * [GitHub Releases](https://github.com/jefferis/cmtk/releases) are the intended home for tagged release artifacts in this mirror.
-  * The latest `natdev` build artifacts are published by the [Release Builds workflow](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev). Open the most recent successful `natdev` run and download the workflow artifacts:
-    * `cmtk-linux-x86_64-openmp`
-    * `cmtk-macos-arm64-gcd`
+  * [Latest tagged release assets](https://github.com/jefferis/cmtk/releases/latest) are published on GitHub Releases.
+  * [Latest `natdev` release assets](https://github.com/jefferis/cmtk/releases/tag/natdev-latest) are published as a rolling prerelease on GitHub Releases.
+    Rolling `natdev` package filenames use the form `cmtk-<version>-dev-...` to distinguish them from tagged releases.
+  * The [Release Builds workflow](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev) still keeps per-run workflow artifacts for debugging and reproducibility, but GitHub release assets are the preferred download format.
 
 The current GitHub release-artifact builds target:
 
-  * Linux `x86_64` with OpenMP enabled
-  * macOS `arm64` with Grand Central Dispatch enabled, built on `macos-15` and targeting `macOS 12.0+`
+  * Linux `x86_64` with OpenMP enabled, currently publishing `.deb`, `.rpm`, and `.tar.gz` packages
+  * macOS `arm64` with Grand Central Dispatch enabled, built on `macos-15` and targeting `macOS 12.0+`, currently publishing `.pkg` and `.tar.gz` packages. The `.pkg` is the preferred macOS download.
+
+Current macOS packages are unsigned and not notarized. Gatekeeper will warn that the `.pkg` is from an unidentified developer.
+
+For the current unsigned macOS `.pkg`, use Finder to open it via the context menu:
+
+  1. Control-click or right-click the downloaded `.pkg`
+  2. Choose `Open`
+  3. Confirm the additional prompt to proceed
+
+If macOS still blocks the installer, open `System Settings` > `Privacy & Security` and use `Open Anyway` for the blocked package.
 
 Source builds can be configured from the repository root with:
 
