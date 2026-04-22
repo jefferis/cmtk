@@ -3,6 +3,10 @@ name: Release Builds
 on:
   push:
     branches: [ "natdev" ]
+    tags: [ "v*" ]
+  # Scheduled workflows run from the repository default branch on GitHub.
+  schedule:
+    - cron: "17 2 * * *"
   workflow_dispatch:
 
 jobs:
@@ -14,13 +18,18 @@ jobs:
       matrix:
         include:
           - os: ubuntu-24.04
-            artifact_name: cmtk-linux-x86_64
+            artifact_name: cmtk-linux-x86_64-openmp
             c_compiler: gcc
             cpp_compiler: g++
+            cmake_args: >-
+              -DCMTK_USE_OPENMP=ON
           - os: macos-15
-            artifact_name: cmtk-macos-arm64
+            artifact_name: cmtk-macos-arm64-gcd
             c_compiler: clang
             cpp_compiler: clang++
+            cmake_args: >-
+              -DCMTK_USE_OPENMP=OFF
+              -DCMTK_USE_GCD=ON
 
     steps:
     - uses: actions/checkout@v4
@@ -42,8 +51,8 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DBUILD_TESTING=OFF
-        -DCMTK_USE_OPENMP=OFF
         -DCMAKE_INSTALL_PREFIX=${{ steps.paths.outputs.install-dir }}
+        ${{ matrix.cmake_args }}
 
     - name: Build
       run: cmake --build ${{ steps.paths.outputs.build-dir }} --parallel 4
