@@ -1,0 +1,76 @@
+name: Release Builds
+
+on:
+  push:
+    branches: [ "natdev" ]
+    tags: [ "v*" ]
+  # Scheduled workflows run from the repository default branch on GitHub.
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            artifact_name: cmtk-linux-x86_64-openmp
+            c_compiler: gcc
+            cpp_compiler: g++
+            cmake_args: >-
+              -DCMTK_USE_OPENMP=ON
+          - os: macos-15
+            artifact_name: cmtk-macos-arm64-gcd
+            c_compiler: clang
+            cpp_compiler: clang++
+            cmake_args: >-
+              -DCMTK_USE_OPENMP=OFF
+              -DCMTK_USE_GCD=ON
+              -DCMAKE_OSX_ARCHITECTURES=arm64
+              -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable paths
+      id: paths
+      shell: bash
+      run: |
+        echo "src-dir=${{ github.workspace }}/core" >> "$GITHUB_OUTPUT"
+        echo "build-dir=${{ github.workspace }}/build-release" >> "$GITHUB_OUTPUT"
+        echo "install-dir=${{ github.workspace }}/install-release" >> "$GITHUB_OUTPUT"
+        echo "dist-dir=${{ github.workspace }}/dist" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.paths.outputs.build-dir }}
+        -S ${{ steps.paths.outputs.src-dir }}
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DBUILD_TESTING=OFF
+        -DCMAKE_INSTALL_PREFIX=${{ steps.paths.outputs.install-dir }}
+        ${{ matrix.cmake_args }}
+
+    - name: Build
+      run: cmake --build ${{ steps.paths.outputs.build-dir }} --parallel 4
+
+    - name: Install
+      run: cmake --install ${{ steps.paths.outputs.build-dir }}
+
+    - name: Archive install tree
+      shell: bash
+      run: |
+        mkdir -p "${{ steps.paths.outputs.dist-dir }}"
+        tar -C "${{ steps.paths.outputs.install-dir }}" -czf "${{ steps.paths.outputs.dist-dir }}/${{ matrix.artifact_name }}.tar.gz" .
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ steps.paths.outputs.dist-dir }}/${{ matrix.artifact_name }}.tar.gz
+        if-no-files-found: error
