@@ -9,6 +9,9 @@ on:
     - cron: "17 2 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-release:
     runs-on: ${{ matrix.os }}
@@ -18,15 +21,17 @@ jobs:
       matrix:
         include:
           - os: ubuntu-24.04
-            artifact_name: cmtk-linux-x86_64-openmp
+            artifact_name: cmtk-linux-x86_64-openmp-packages
             c_compiler: gcc
             cpp_compiler: g++
+            cpack_generators: "TGZ RPM DEB"
             cmake_args: >-
               -DCMTK_USE_OPENMP=ON
           - os: macos-15
-            artifact_name: cmtk-macos-arm64-gcd
+            artifact_name: cmtk-macos-arm64-gcd-packages
             c_compiler: clang
             cpp_compiler: clang++
+            cpack_generators: "productbuild TGZ"
             cmake_args: >-
               -DCMTK_USE_OPENMP=OFF
               -DCMTK_USE_GCD=ON
@@ -42,8 +47,13 @@ jobs:
       run: |
         echo "src-dir=${{ github.workspace }}/core" >> "$GITHUB_OUTPUT"
         echo "build-dir=${{ github.workspace }}/build-release" >> "$GITHUB_OUTPUT"
-        echo "install-dir=${{ github.workspace }}/install-release" >> "$GITHUB_OUTPUT"
         echo "dist-dir=${{ github.workspace }}/dist" >> "$GITHUB_OUTPUT"
+
+    - name: Install Linux packaging tools
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y rpm dpkg-dev
 
     - name: Configure CMake
       run: >
@@ -53,24 +63,152 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DBUILD_TESTING=OFF
-        -DCMAKE_INSTALL_PREFIX=${{ steps.paths.outputs.install-dir }}
+        -DCMAKE_INSTALL_PREFIX=/usr/local
         ${{ matrix.cmake_args }}
 
     - name: Build
       run: cmake --build ${{ steps.paths.outputs.build-dir }} --parallel 4
 
-    - name: Install
-      run: cmake --install ${{ steps.paths.outputs.build-dir }}
-
-    - name: Archive install tree
+    - name: Package with CPack
       shell: bash
       run: |
         mkdir -p "${{ steps.paths.outputs.dist-dir }}"
-        tar -C "${{ steps.paths.outputs.install-dir }}" -czf "${{ steps.paths.outputs.dist-dir }}/${{ matrix.artifact_name }}.tar.gz" .
+        for generator in ${{ matrix.cpack_generators }}; do
+          extra_args=()
+          if [ "${generator}" != "productbuild" ]; then
+            extra_args+=(-D CPACK_MONOLITHIC_INSTALL=ON)
+          fi
+          cpack \
+            --config "${{ steps.paths.outputs.build-dir }}/CPackConfig.cmake" \
+            -G "${generator}" \
+            -B "${{ steps.paths.outputs.dist-dir }}" \
+            "${extra_args[@]}"
+        done
+        ls -l "${{ steps.paths.outputs.dist-dir }}"
+
+    - name: Mark natdev package filenames as development builds
+      if: github.ref == 'refs/heads/natdev'
+      shell: bash
+      run: |
+        set -euo pipefail
+        shopt -s nullglob
+        package_version=$(
+          awk '
+            BEGIN { IGNORECASE=1 }
+            $0 ~ /^set\(CPACK_PACKAGE_VERSION "/ {
+              match($0, /"[^"]+"/)
+              if (RSTART > 0) {
+                print substr($0, RSTART + 1, RLENGTH - 2)
+                exit
+              }
+            }
+          ' "${{ steps.paths.outputs.build-dir }}/CPackConfig.cmake"
+        )
+        dist_dir="${{ steps.paths.outputs.dist-dir }}"
+
+        if [ "${{ runner.os }}" = "Linux" ]; then
+          for packaged_file in "${dist_dir}"/*.deb; do
+            mv "${packaged_file}" "${dist_dir}/cmtk-${package_version}-dev-linux-x86_64-openmp.deb"
+          done
+          for packaged_file in "${dist_dir}"/*.rpm; do
+            mv "${packaged_file}" "${dist_dir}/cmtk-${package_version}-dev-linux-x86_64-openmp.rpm"
+          done
+          for packaged_file in "${dist_dir}"/*.tar.gz; do
+            mv "${packaged_file}" "${dist_dir}/cmtk-${package_version}-dev-linux-x86_64-openmp.tar.gz"
+          done
+        else
+          for packaged_file in "${dist_dir}"/*.pkg; do
+            mv "${packaged_file}" "${dist_dir}/cmtk-${package_version}-dev-macos-arm64-gcd.pkg"
+          done
+          for packaged_file in "${dist_dir}"/*.tar.gz; do
+            mv "${packaged_file}" "${dist_dir}/cmtk-${package_version}-dev-macos-arm64-gcd.tar.gz"
+          done
+        fi
+        ls -l "${{ steps.paths.outputs.dist-dir }}"
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
-        path: ${{ steps.paths.outputs.dist-dir }}/${{ matrix.artifact_name }}.tar.gz
+        path: |
+          ${{ steps.paths.outputs.dist-dir }}/*.pkg
+          ${{ steps.paths.outputs.dist-dir }}/*.tar.gz
+          ${{ steps.paths.outputs.dist-dir }}/*.deb
+          ${{ steps.paths.outputs.dist-dir }}/*.rpm
         if-no-files-found: error
+
+  publish-release:
+    needs: build-release
+    runs-on: ubuntu-24.04
+    if: always() && (github.ref == 'refs/heads/natdev' || startsWith(github.ref, 'refs/tags/v'))
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download all build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ${{ github.workspace }}/release-assets
+        merge-multiple: true
+
+    - name: Publish natdev rolling release assets
+      if: github.ref == 'refs/heads/natdev'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        shopt -s nullglob
+        tag_name="natdev-latest"
+        release_title="natdev latest"
+        release_notes="Rolling prerelease build from natdev commit ${GITHUB_SHA}."
+        assets=(
+          "${GITHUB_WORKSPACE}/release-assets"/*.pkg
+          "${GITHUB_WORKSPACE}/release-assets"/*.tar.gz
+          "${GITHUB_WORKSPACE}/release-assets"/*.deb
+          "${GITHUB_WORKSPACE}/release-assets"/*.rpm
+        )
+        if [ ${#assets[@]} -eq 0 ]; then
+          echo "No release assets were produced by the matrix jobs."
+          exit 0
+        fi
+
+        git tag -f "${tag_name}" "${GITHUB_SHA}"
+        git push --force origin "refs/tags/${tag_name}"
+
+        if gh release view "${tag_name}" >/dev/null 2>&1; then
+          gh release edit "${tag_name}" --title "${release_title}" --notes "${release_notes}" --prerelease
+          while IFS= read -r asset_name; do
+            [ -n "${asset_name}" ] || continue
+            gh release delete-asset "${tag_name}" "${asset_name}" --yes
+          done < <(gh release view "${tag_name}" --json assets --jq '.assets[].name')
+        else
+          gh release create "${tag_name}" --target "${GITHUB_SHA}" --title "${release_title}" --notes "${release_notes}" --prerelease
+        fi
+
+        gh release upload "${tag_name}" "${assets[@]}" --clobber
+
+    - name: Publish tagged release assets
+      if: startsWith(github.ref, 'refs/tags/v')
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        shopt -s nullglob
+        tag_name="${GITHUB_REF_NAME}"
+        assets=(
+          "${GITHUB_WORKSPACE}/release-assets"/*.pkg
+          "${GITHUB_WORKSPACE}/release-assets"/*.tar.gz
+          "${GITHUB_WORKSPACE}/release-assets"/*.deb
+          "${GITHUB_WORKSPACE}/release-assets"/*.rpm
+        )
+        if [ ${#assets[@]} -eq 0 ]; then
+          echo "No release assets were produced by the matrix jobs."
+          exit 0
+        fi
+        if gh release view "${tag_name}" >/dev/null 2>&1; then
+          gh release upload "${tag_name}" "${assets[@]}" --clobber
+        else
+          gh release create "${tag_name}" "${assets[@]}" --title "${tag_name}" --generate-notes
+        fi
