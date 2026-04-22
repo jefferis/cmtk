@@ -1,7 +1,6 @@
 # cmtk
 
 [![CMake CI](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml?query=branch%3Anatdev)
-[![Release Builds](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev)
 
 ## README
 
@@ -20,7 +19,6 @@ Prebuilt binaries are available from several places:
   * [Latest tagged release assets](https://github.com/jefferis/cmtk/releases/latest) are published on GitHub Releases.
   * [Latest `natdev` release assets](https://github.com/jefferis/cmtk/releases/tag/natdev-latest) are published as a rolling prerelease on GitHub Releases.
     Rolling `natdev` package filenames use the form `cmtk-<version>-dev-...` to distinguish them from tagged releases.
-  * The [Release Builds workflow](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev) still keeps per-run workflow artifacts for debugging and reproducibility, but GitHub release assets are the preferred download format.
 
 The current GitHub release-artifact builds target:
 
@@ -36,6 +34,10 @@ For the current unsigned macOS `.pkg`, use Finder to open it via the context men
   3. Confirm the additional prompt to proceed
 
 If macOS still blocks the installer, open `System Settings` > `Privacy & Security` and use `Open Anyway` for the blocked package.
+
+## Related Tools
+
+  * [Parallel Fiji CMTK Registration](https://github.com/sandorbx/Parallel-Fiji-CMTK-Registration) provides a Fiji/ImageJ-based graphical front end for CMTK batch registration workflows on Linux, macOS, and Windows.
 
 Source builds can be configured from the repository root with:
 
