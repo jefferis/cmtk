@@ -30,6 +30,8 @@ jobs:
             cmake_args: >-
               -DCMTK_USE_OPENMP=OFF
               -DCMTK_USE_GCD=ON
+              -DCMAKE_OSX_ARCHITECTURES=arm64
+              -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0
 
     steps:
     - uses: actions/checkout@v4
