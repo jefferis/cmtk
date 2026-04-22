@@ -30,8 +30,26 @@
 ##  $LastChangedBy$
 ##
 
-export CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
-export CMTK_LIBRARY_DIR=${CMTK_BINARY_DIR:-@CMTK_LIBRARY_DIR_CONFIG@}
+if [ -z "${CMTK_BINARY_DIR}" ]; then
+    script_dir=`CDPATH= cd -- "\`dirname -- "$0"\`" && pwd`
+    if [ -d "${script_dir}/../lib/cmtk/bin" ]; then
+        CMTK_BINARY_DIR=`CDPATH= cd -- "${script_dir}/../lib/cmtk/bin" && pwd`
+    elif [ -d "${script_dir}" ] && [ "\`basename -- "${script_dir}"\`" = "bin" ] && [ "\`basename -- "\`dirname -- "${script_dir}"\`"\`" = "cmtk" ]; then
+        CMTK_BINARY_DIR="${script_dir}"
+    else
+        CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+    fi
+fi
+export CMTK_BINARY_DIR
+
+if [ -z "${CMTK_LIBRARY_DIR}" ]; then
+    if [ -d "${CMTK_BINARY_DIR}/.." ]; then
+        CMTK_LIBRARY_DIR=`CDPATH= cd -- "${CMTK_BINARY_DIR}/.." && pwd`
+    else
+        CMTK_LIBRARY_DIR=@CMTK_LIBRARY_DIR_CONFIG@
+    fi
+fi
+export CMTK_LIBRARY_DIR
 
 CMD=$1
 CMDPATH=${CMTK_BINARY_DIR}/$CMD

@@ -28,7 +28,17 @@
 ##  $LastChangedBy$
 ##
 
-CMTK_BINARY_DIR=${CMTK_BINARY_DIR:-@CMTK_BINARY_DIR_CONFIG@}
+if [ -z "${CMTK_BINARY_DIR}" ]; then
+    script_dir=`CDPATH= cd -- "\`dirname -- "$0"\`" && pwd`
+    if [ -d "${script_dir}" ] && [ "\`basename -- "${script_dir}"\`" = "bin" ] && [ "\`basename -- "\`dirname -- "${script_dir}"\`"\`" = "cmtk" ]; then
+        CMTK_BINARY_DIR="${script_dir}"
+    elif [ -d "${script_dir}/../lib/cmtk/bin" ]; then
+        CMTK_BINARY_DIR=`CDPATH= cd -- "${script_dir}/../lib/cmtk/bin" && pwd`
+    else
+        CMTK_BINARY_DIR=@CMTK_BINARY_DIR_CONFIG@
+    fi
+fi
+export CMTK_BINARY_DIR
  
 # Get the cmtk_functions.sh script from the scripts/ directory in the CMTK source tree
 . ${CMTK_BINARY_DIR}/cmtk_functions.sh
