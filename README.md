@@ -1,6 +1,7 @@
 # cmtk
 
 [![CMake CI](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/cmake-multi-platform.yml?query=branch%3Anatdev)
+[![Release Builds](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml/badge.svg?branch=natdev)](https://github.com/jefferis/cmtk/actions/workflows/release-builds.yml?query=branch%3Anatdev)
 
 ## README
 
@@ -16,9 +17,9 @@ for information:
 Prebuilt binaries are available from several places:
 
   * [NITRC downloads](https://www.nitrc.org/projects/cmtk/) remain the main upstream download location.
-  * [Latest tagged release assets](https://github.com/jefferis/cmtk/releases/latest) are published on GitHub Releases.
   * [Latest `natdev` release assets](https://github.com/jefferis/cmtk/releases/tag/natdev-latest) are published as a rolling prerelease on GitHub Releases.
     Rolling `natdev` package filenames use the form `cmtk-<version>-dev-...` to distinguish them from tagged releases.
+  * [GitHub Releases](https://github.com/jefferis/cmtk/releases) are available for historical tags and rolling `natdev` prereleases, but older tagged releases may not include packaged binaries from this mirror.
 
 The current GitHub release-artifact builds target:
 
@@ -37,7 +38,7 @@ If macOS still blocks the installer, open `System Settings` > `Privacy & Securit
 
 ## Related Tools
 
-  * [Parallel Fiji CMTK Registration](https://github.com/sandorbx/Parallel-Fiji-CMTK-Registration) provides a Fiji/ImageJ-based graphical front end for CMTK batch registration workflows on Linux, macOS, and Windows.
+  * [Parallel Fiji CMTK Registration](https://github.com/sandorbx/Parallel-Fiji-CMTK-Registration) provides a Fiji/ImageJ-based graphical front end for CMTK batch registration workflows on Linux, macOS, and Windows. This is the recommended Fiji GUI in preference to the older [fiji-cmtk-gui](https://github.com/jefferis/fiji-cmtk-gui).
 
 Source builds can be configured from the repository root with:
 
