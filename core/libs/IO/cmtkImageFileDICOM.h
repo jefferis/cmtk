@@ -176,7 +176,7 @@ public:
   /// Release memory allocated for complete DICOM document.
   void ReleaseDocument()
   {
-    this->m_Document = std::auto_ptr<DiDocument>( NULL );
+    this->m_Document.reset();
   }
 
   /// Get tag value.
@@ -191,10 +191,10 @@ public:
 
 private:
   /// Pointer to DICOM dataset object
-  std::auto_ptr<DcmDataset> m_Dataset;
+  std::unique_ptr<DcmDataset> m_Dataset;
 
   /// DICOM document object.
-  std::auto_ptr<DiDocument> m_Document;
+  std::unique_ptr<DiDocument> m_Document;
 
   /// Map DCMTK tags to their string values in this image file.
   std::map<DcmTagKey,std::string> m_TagToStringMap;

@@ -134,7 +134,7 @@ private:
   DcmDataset* m_Dataset;
 
   /// Pointer to the DICOM document object
-  std::auto_ptr<DiDocument> m_Document;
+  std::unique_ptr<DiDocument> m_Document;
 
   /// Parse private Siemens CSA data.
   void ParseSiemensCSA( const DcmTagKey& tagKey /*!< DCM tag with the Siemens CSA header data */, 

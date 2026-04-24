@@ -39,7 +39,6 @@ SET(cmtkIO_SRCS
   cmtkClassStreamWarpXform.cxx
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
-  cmtkImageFileDICOM.cxx
   cmtkImageOperationApplyMask.cxx
   cmtkImageOperationMatchIntensities.cxx
   cmtkImageStackDICOM.cxx
@@ -73,6 +72,7 @@ SET(cmtkIO_SRCS
 IF(CMTK_USE_DCMTK)
   SET(cmtkIO_SRCS ${cmtkIO_SRCS} 
     cmtkDICOM.cxx
+    cmtkImageFileDICOM.cxx
     cmtkVolumeFromStudy.cxx
     cmtkVolumeFromFileDICOM.cxx)
 ENDIF(CMTK_USE_DCMTK)

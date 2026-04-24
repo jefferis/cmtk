@@ -151,7 +151,7 @@ namespace cmtk
       }
     }
 
-    std::auto_ptr<DcmFileFormat> fileformat(new DcmFileFormat);
+    std::unique_ptr<DcmFileFormat> fileformat(new DcmFileFormat);
     OFCondition status = fileformat->loadFile(filepath.c_str());
 
     if (!status.good())
@@ -160,13 +160,13 @@ namespace cmtk
       throw(0);
     }
 
-    this->m_Dataset = std::auto_ptr<DcmDataset>(fileformat->getAndRemoveDataset());
+    this->m_Dataset = std::unique_ptr<DcmDataset>(fileformat->getAndRemoveDataset());
     if (!this->m_Dataset.get())
     {
       throw(1);
     }
 
-    this->m_Document = std::auto_ptr<DiDocument>(new DiDocument(this->m_Dataset.get(), this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility));
+    this->m_Document = std::unique_ptr<DiDocument>(new DiDocument(this->m_Dataset.get(), this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility));
     if (!this->m_Document.get() || !this->m_Document->good())
     {
       throw(2);
@@ -248,7 +248,7 @@ namespace cmtk
     {
       const DcmTagKey& tagKey = intTagKeys[tagIdx];
       const Uint16 *pTmpInt = NULL;
-      DcmObject *pObj = NULL;
+      DcmItem *pObj = NULL;
       if (this->m_Document->getValue(tagKey, pTmpInt, pObj) > 0) {
         std::ostringstream s;
         s << *pTmpInt;
@@ -274,7 +274,7 @@ namespace cmtk
   ImageFileDICOM::DoAcquisitionMatrix()
   {
     Uint16 tmpDbl = 0;
-    DcmObject *pObj = NULL;
+    DcmItem *pObj = NULL;
     std::vector<std::string> vAcquisitionMatrix;
     for (size_t dim = 0, nDims = this->m_Document->getVM(DCM_AcquisitionMatrix); dim < nDims; ++dim) 
     {
@@ -306,7 +306,7 @@ namespace cmtk
     {
       if( dwell_time_found = ((dwell_time_buffer != NULL) && (dwell_time_length > 0)) )
       {
-        dwell_time_str.assign( OFstatic_cast(const char*, dwell_time_buffer), dwell_time_length);
+        dwell_time_str.assign( reinterpret_cast<const char*>(dwell_time_buffer), dwell_time_length);
         dwell_time_value = atof( dwell_time_str.c_str() );
       }
     } 
@@ -351,7 +351,7 @@ namespace cmtk
     if ( this->m_Dataset->findAndGetUint8Array( DCM_Siemens_PhaseEncodingDirectionPositive, polarity_buffer, &polarity_length ).good() ) 
     {
       if( polarity_found = (polarity_buffer != NULL && polarity_length > 0) )
-        polarity_value = *( OFstatic_cast(const char*, polarity_buffer) );
+        polarity_value = *( reinterpret_cast<const char*>(polarity_buffer) );
     }
 
     if ( !polarity_found && this->m_Document->getValue(DCM_Siemens_PhaseEncodingDirectionPositive, polarity_str) )
@@ -399,7 +399,7 @@ namespace cmtk
     {
       if( bvalue_buffer != NULL && bvalue_length > 0 )
       {
-        bvalue_str.assign( OFstatic_cast(const char*, bvalue_buffer), bvalue_length);
+        bvalue_str.assign( reinterpret_cast<const char*>(bvalue_buffer), bvalue_length);
         this->m_BValue = atof( bvalue_str.c_str() );
         return true;
       }
@@ -436,7 +436,7 @@ namespace cmtk
     {
       if ( bvector_buffer != NULL && (bvector_length * sizeof(Uint8)) >= (this->m_BVector.Size() * sizeof(double)) )
       {
-        const double* input_itr = OFstatic_cast(const double*, bvector_buffer);
+        const double* input_itr = reinterpret_cast<const double*>(bvector_buffer);
         std::copy(input_itr, input_itr + this->m_BVector.Size(), this->m_BVector.begin());
         return true;
       }  
@@ -497,10 +497,10 @@ namespace cmtk
       // the retrieval of subsequent imagining quantities
       const Uint8* csaImageHeaderInfo = NULL;
       unsigned long csaImageHeaderLength = 0;
-      std::auto_ptr<SiemensCSAHeader> csaImageHeader;
+      std::unique_ptr<SiemensCSAHeader> csaImageHeader;
       if ( this->m_Dataset->findAndGetUint8Array( DcmTagKey(0x0029,0x1010), csaImageHeaderInfo, &csaImageHeaderLength ).status() == OF_ok ) // the "Image" CSA header, not the "Series" header.
       {
-        csaImageHeader.reset( new SiemensCSAHeader( OFstatic_cast(const char*, csaImageHeaderInfo), csaImageHeaderLength ) );
+        csaImageHeader.reset( new SiemensCSAHeader( reinterpret_cast<const char*>(csaImageHeaderInfo), csaImageHeaderLength ) );
       }
 
       DoVendorTagsSiemensDwellTime(csaImageHeader.get());
@@ -521,7 +521,7 @@ namespace cmtk
       if ( this->m_Dataset->findAndGetUint8Array( DCM_Siemens_DiffusionDirectionality, directionality_buffer, &directionality_length ).good() ) 
       {
         if( found_directionality = (directionality_buffer != NULL && directionality_length > 0) )
-          directionality.assign( OFstatic_cast(const char *, directionality_buffer), directionality_length );
+          directionality.assign( reinterpret_cast<const char *>(directionality_buffer), directionality_length );
       }
 
       if ( !found_directionality )

@@ -93,7 +93,7 @@ DICOM::InitFromFile( const std::string& path )
     }
 #endif
   
-  std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
+  std::unique_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
   if (!fileformat.get()) 
     {
     throw Exception( "Could not create DICOM file format object." );
@@ -114,7 +114,7 @@ DICOM::InitFromFile( const std::string& path )
     throw Exception( "File format has NULL dataset." );
     }
   
-  this->m_Document = std::auto_ptr<DiDocument>( new DiDocument( this->m_Dataset, this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
+  this->m_Document = std::unique_ptr<DiDocument>( new DiDocument( this->m_Dataset, this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
   if ( ! this->m_Document.get() || ! this->m_Document->good() ) 
     {
     throw Exception( "Could not create document representation." );
