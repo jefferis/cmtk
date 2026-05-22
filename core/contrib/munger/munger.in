@@ -1062,7 +1062,7 @@ EOF
 sub init {
 # copied from: http://www.cs.mcgill.ca/~abatko/computers/programming/perl/howto/getopts
 	use Getopt::Std;      # to handle command line options
-	my $opt_string = 'hvtawuic:r:l:s:b:f:FE:X:M:C:G:R:T:J:I:zp:d:k:g0A:W:e:o:HPLm:x:1:';
+	my $opt_string = 'hvtawuic:r:l:s:b:f:FE:X:M:C:G:R:T:J:I:zp:d:k:g0A:W:e:o:HPLm:x:1:2:';
 	getopts( "$opt_string", \%opt ) or usage();
 	usage() if $opt{h} or $#ARGV==-1;
 	return;
